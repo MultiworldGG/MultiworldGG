@@ -406,6 +406,9 @@ class DSTransition:
     def __str__(self):
         return self.name
 
+    def __repr__(self):
+        return f"{self.__class__} {self.name} {hex_f(self.entrance)} => {hex_f(self.exit)} | {self.extra_data}"
+
     def debug_print(self):
         printl(f"Debug print for entrance {self.name}")
         printl(f"\tentrance {self.entrance}")

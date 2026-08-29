@@ -1,0 +1,724 @@
+{
+  "Tosla Square - Starting Area": {
+    "level": "Tosla's Offices",
+    "sublevel": "Tosla Square",
+    "gears": {
+      "Tosla Square - Gear - Oil Pump": 50100011
+    },
+    "coins": {
+      "Tosla Square - Coin on Ramp in Alley #1": 50300062,
+      "Tosla Square - Coin on Ramp in Alley #2": 50300061,
+      "Tosla Square - Coin on Ramp in Alley #3": 50300064,
+      "Tosla Square - Coin on Ramp in Alley #4": 50300063,
+      "Tosla Square - Coin on Ramp in Alley #5": 50300066,
+      "Tosla Square - Coin on Ramp in Alley #6": 50300065,
+      "Tosla Square - Coin on Ramp in Alley #7": 50300068,
+      "Tosla Square - Coin on Ramp in Alley #8": 50300067
+    },
+    "checkpoints": {
+      "Tosla Square - Checkpoint in Front of Tosla's Offices": 50900760
+    },
+    "cheeses": {
+      "Tosla Square - Cheese Behind Billboard at Start": 52100004,
+      "Tosla Square - Cheese in Alley Left of Start": 52100000,
+      "Tosla Square - Cheese in Alley Right of Start": 52100003
+    },
+    "connections": {
+      "Tosla Square - Tosla Sign": "J1/B1",
+      "Tosla Square - Lower Buildings": "B1 | X2+J2 | X3+J1"
+    },
+    "subwarps": {
+      "Tosla Square - Tosla Offices Entrance": ["Tosla Offices (Ground Floor)", ""]
+    },
+    "warps": {
+      "Tosla Square - Morio's Lab Portal": ["{RETURNPORTAL}", ""]
+    },
+    "specialrules": {
+      "Tosla Square - Gear - Oil Pump": "SP"
+    }
+  },
+  "Tosla Square - Tosla Sign": {
+    "level": "Tosla's Offices",
+    "sublevel": "Tosla Square",
+    "coinbags": {
+      "Tosla Square - Coin Bag on Tosla Sign": 50300163
+    },
+    "coins": {
+      "Tosla Square - Coin on Tosla Sign #1": 50300161,
+      "Tosla Square - Coin on Tosla Sign #2": 50300162,
+      "Tosla Square - Coin on Tosla Sign #3": 50300164,
+      "Tosla Square - Coin on Tosla Sign #4": 50300165
+    }
+  },
+  "Tosla Square - Lower Buildings": {
+    "level": "Tosla's Offices",
+    "sublevel": "Tosla Square",
+    "gears": {
+      "Tosla Square - Gear - In Lower Building Alcove": 50100003
+    },
+    "coinbags": {
+      "Tosla Square - Coin Bag on Path Right of Checkpoint on Lower Buildings": 50300270,
+      "Tosla Square - Coin Bag Surrounding Gelatin Hat #1": 50300311,
+      "Tosla Square - Coin Bag Surrounding Gelatin Hat #2": 50300306,
+      "Tosla Square - Coin Bag Surrounding Gelatin Hat #3": 50300307,
+      "Tosla Square - Coin Bag Surrounding Gelatin Hat #4": 50300302,
+      "Tosla Square - Coin Bag on Building Under Gelatin Hat": 50300200,
+      "Tosla Square - Coin Bag on Building Below Tosla Employee Hat": 50300292,
+      "Tosla Square - Coin Bag on Building Below Homing Beacon Path Gear": 50300205
+    },
+    "coins": {
+      "Tosla Square - Coin on Ramp Left of Checkpoint on Lower Buildings #1": 50300209,
+      "Tosla Square - Coin on Ramp Left of Checkpoint on Lower Buildings #2": 50300210,
+      "Tosla Square - Coin on Ramp Left of Checkpoint on Lower Buildings #3": 50300218,
+      "Tosla Square - Coin on Ramp Left of Checkpoint on Lower Buildings #4": 50300222,
+      "Tosla Square - Coin on Ramp Left of Checkpoint on Lower Buildings #5": 50300223,
+      "Tosla Square - Coin on Ramp Left of Checkpoint on Lower Buildings #6": 50300224,
+      "Tosla Square - Coin on Ramp Left of Checkpoint on Lower Buildings #7": 50300245,
+      "Tosla Square - Coin on Ramp Left of Checkpoint on Lower Buildings #8": 50300247,
+      "Tosla Square - Coin on Ramp Left of Checkpoint on Lower Buildings #9": 50300249,
+      "Tosla Square - Coin on Ramp Left of Checkpoint on Lower Buildings #10": 50300254,
+      "Tosla Square - Coin on Ramp Left of Checkpoint on Lower Buildings #11": 50300255,
+      "Tosla Square - Coin on Ramp Left of Checkpoint on Lower Buildings #12": 50300256,
+      "Tosla Square - Coin on Ramp Left of Checkpoint on Lower Buildings #13": 50300262,
+      "Tosla Square - Coin on Ramp Left of Checkpoint on Lower Buildings #14": 50300263,
+      "Tosla Square - Coin on Ramp Left of Checkpoint on Lower Buildings #15": 50300264,
+      "Tosla Square - Coin on Path Right of Checkpoint on Lower Buildings #1": 50300220,
+      "Tosla Square - Coin on Path Right of Checkpoint on Lower Buildings #2": 50300219,
+      "Tosla Square - Coin on Path Right of Checkpoint on Lower Buildings #3": 50300225,
+      "Tosla Square - Coin on Path Right of Checkpoint on Lower Buildings #4": 50300250,
+      "Tosla Square - Coin on Path Right of Checkpoint on Lower Buildings #5": 50300257,
+      "Tosla Square - Coin on Path Right of Checkpoint on Lower Buildings #6": 50300267,
+      "Tosla Square - Coin on Path Right of Checkpoint on Lower Buildings #7": 50300265,
+      "Tosla Square - Coin on Path Right of Checkpoint on Lower Buildings #8": 50300266,
+      "Tosla Square - Coin on Path Right of Checkpoint on Lower Buildings #9": 50300268,
+      "Tosla Square - Coin on Path Right of Checkpoint on Lower Buildings #10": 50300269,
+      "Tosla Square - Coin on Path Right of Checkpoint on Lower Buildings #11": 50300271,
+      "Tosla Square - Coin on Path Right of Checkpoint on Lower Buildings #12": 50300272,
+      "Tosla Square - Coin on Path Right of Checkpoint on Lower Buildings #13": 50300273,
+      "Tosla Square - Coin on Path Right of Checkpoint on Lower Buildings #14": 50300274,
+      "Tosla Square - Coin on Path Right of Checkpoint on Lower Buildings #15": 50300275,
+      "Tosla Square - Coin on Path Right of Checkpoint on Lower Buildings #16": 50300276,
+      "Tosla Square - Coin on Path Right of Checkpoint on Lower Buildings #17": 50300277,
+      "Tosla Square - Coin on Path Right of Checkpoint on Lower Buildings #18": 50300279,
+      "Tosla Square - Coin on Path Right of Checkpoint on Lower Buildings #19": 50300280,
+      "Tosla Square - Coin on Path Right of Checkpoint on Lower Buildings #20": 50300281,
+      "Tosla Square - Coin on Path Right of Checkpoint on Lower Buildings #21": 50300282,
+      "Tosla Square - Coin on Path Right of Checkpoint on Lower Buildings #22": 50300278,
+      "Tosla Square - Coin on Path Right of Checkpoint on Lower Buildings #23": 50300283,
+      "Tosla Square - Coin on Path Right of Checkpoint on Lower Buildings #24": 50300284,
+      "Tosla Square - Coin on Ramp Towards Gelatin Hat #1": 50300231,
+      "Tosla Square - Coin on Ramp Towards Gelatin Hat #2": 50300232,
+      "Tosla Square - Coin on Ramp Towards Gelatin Hat #3": 50300233,
+      "Tosla Square - Coin on Ramp Towards Gelatin Hat #4": 50300251,
+      "Tosla Square - Coin on Ramp Towards Gelatin Hat #5": 50300252,
+      "Tosla Square - Coin on Ramp Towards Gelatin Hat #6": 50300253,
+      "Tosla Square - Coin on Ramp Towards Gelatin Hat #7": 50300259,
+      "Tosla Square - Coin on Ramp Towards Gelatin Hat #8": 50300260,
+      "Tosla Square - Coin on Ramp Towards Gelatin Hat #9": 50300261,
+      "Tosla Square - Coin Surrounding Gelatin Hat #1": 50300310,
+      "Tosla Square - Coin Surrounding Gelatin Hat #2": 50300312,
+      "Tosla Square - Coin Surrounding Gelatin Hat #3": 50300308,
+      "Tosla Square - Coin Surrounding Gelatin Hat #4": 50300309,
+      "Tosla Square - Coin Surrounding Gelatin Hat #5": 50300304,
+      "Tosla Square - Coin Surrounding Gelatin Hat #6": 50300305,
+      "Tosla Square - Coin Surrounding Gelatin Hat #7": 50300301,
+      "Tosla Square - Coin Surrounding Gelatin Hat #8": 50300303,
+      "Tosla Square - Coin on Building Under Gelatin Hat #1": 50300198,
+      "Tosla Square - Coin on Building Under Gelatin Hat #2": 50300199,
+      "Tosla Square - Coin on Building Under Gelatin Hat #3": 50300201,
+      "Tosla Square - Coin on Building Under Gelatin Hat #4": 50300202,
+      "Tosla Square - Coin on Building Below Tosla Employee Hat #1": 50300287,
+      "Tosla Square - Coin on Building Below Tosla Employee Hat #2": 50300286,
+      "Tosla Square - Coin on Building Below Tosla Employee Hat #3": 50300285,
+      "Tosla Square - Coin on Building Below Tosla Employee Hat #4": 50300290,
+      "Tosla Square - Coin on Building Below Tosla Employee Hat #5": 50300289,
+      "Tosla Square - Coin on Building Below Tosla Employee Hat #6": 50300288,
+      "Tosla Square - Coin on Building Below Tosla Employee Hat #7": 50300293,
+      "Tosla Square - Coin on Building Below Tosla Employee Hat #8": 50300291,
+      "Tosla Square - Coin on Building Below Tosla Employee Hat #9": 50300296,
+      "Tosla Square - Coin on Building Below Tosla Employee Hat #10": 50300295,
+      "Tosla Square - Coin on Building Below Tosla Employee Hat #11": 50300294,
+      "Tosla Square - Coin on Building Below Tosla Employee Hat #12": 50300299,
+      "Tosla Square - Coin on Building Below Tosla Employee Hat #13": 50300298,
+      "Tosla Square - Coin on Building Below Tosla Employee Hat #14": 50300297,
+      "Tosla Square - Coin on Buildings Below Homing Beacon Gear Path #1": 50300211,
+      "Tosla Square - Coin on Buildings Below Homing Beacon Gear Path #2": 50300212,
+      "Tosla Square - Coin on Buildings Below Homing Beacon Gear Path #3": 50300213,
+      "Tosla Square - Coin on Buildings Below Homing Beacon Gear Path #4": 50300214,
+      "Tosla Square - Coin on Buildings Below Homing Beacon Gear Path #5": 50300215,
+      "Tosla Square - Coin on Buildings Below Homing Beacon Gear Path #6": 50300216,
+      "Tosla Square - Coin on Buildings Below Homing Beacon Gear Path #7": 50300217,
+      "Tosla Square - Coin on Building Bump Below Homing Beacon Gear Path #1": 50300226,
+      "Tosla Square - Coin on Building Bump Below Homing Beacon Gear Path #2": 50300227,
+      "Tosla Square - Coin on Building Bump Below Homing Beacon Gear Path #3": 50300228,
+      "Tosla Square - Coin on Building Bump Below Homing Beacon Gear Path #4": 50300229,
+      "Tosla Square - Coin on Building Bump Below Homing Beacon Gear Path #5": 50300230,
+      "Tosla Square - Coin on Building Below Homing Beacon Path Gear #1": 50300203,
+      "Tosla Square - Coin on Building Below Homing Beacon Path Gear #2": 50300204,
+      "Tosla Square - Coin on Building Below Homing Beacon Path Gear #3": 50300206,
+      "Tosla Square - Coin on Building Below Homing Beacon Path Gear #4": 50300207,
+      "Tosla Square - Coin in Large Arrow Formation on Building #1": 50300243,
+      "Tosla Square - Coin in Large Arrow Formation on Building #2": 50300242,
+      "Tosla Square - Coin in Large Arrow Formation on Building #3": 50300241,
+      "Tosla Square - Coin in Large Arrow Formation on Building #4": 50300240,
+      "Tosla Square - Coin in Large Arrow Formation on Building #5": 50300239,
+      "Tosla Square - Coin in Large Arrow Formation on Building #6": 50300238,
+      "Tosla Square - Coin in Large Arrow Formation on Building #7": 50300248,
+      "Tosla Square - Coin in Large Arrow Formation on Building #8": 50300246,
+      "Tosla Square - Coin in Large Arrow Formation on Building #9": 50300244,
+      "Tosla Square - Coin in Large Arrow Formation on Building #10": 50300237,
+      "Tosla Square - Coin in Large Arrow Formation on Building #11": 50300236,
+      "Tosla Square - Coin in Large Arrow Formation on Building #12": 50300235,
+      "Tosla Square - Coin in Large Arrow Formation on Building #13": 50300234
+    },
+    "checkpoints": {
+      "Tosla Square - Checkpoint on Lower Buildings": 50900695
+    },
+    "cheeses": {
+      "Tosla Square - Cheese on Lower Buildings": 52100001
+    },
+    "hats": {
+      "Gelatin Hat": 50700013
+    },
+    "connections": {
+      "Tosla Square - Medium High Buildings": "B1/J2 | X3+J1",
+      "Tosla Square - High Ground": "X3+J1"
+    }
+  },
+  "Tosla Square - Medium High Buildings": {
+    "level": "Tosla's Offices",
+    "sublevel": "Tosla Square",
+    "coinbags": {
+      "Tosla Square - Coin Bag Surrounding Tosla Employee Hat #1": 50300322,
+      "Tosla Square - Coin Bag Surrounding Tosla Employee Hat #2": 50300318,
+      "Tosla Square - Coin Bag Surrounding Tosla Employee Hat #3": 50300327,
+      "Tosla Square - Coin Bag Surrounding Tosla Employee Hat #4": 50300323
+    },
+    "coins": {
+      "Tosla Square - Coin Surrounding Tosla Employee Hat #1": 50300320,
+      "Tosla Square - Coin Surrounding Tosla Employee Hat #2": 50300324,
+      "Tosla Square - Coin Surrounding Tosla Employee Hat #3": 50300317,
+      "Tosla Square - Coin Surrounding Tosla Employee Hat #4": 50300326,
+      "Tosla Square - Coin Surrounding Tosla Employee Hat #5": 50300319,
+      "Tosla Square - Coin Surrounding Tosla Employee Hat #6": 50300328,
+      "Tosla Square - Coin Surrounding Tosla Employee Hat #7": 50300321,
+      "Tosla Square - Coin Surrounding Tosla Employee Hat #8": 50300325
+    },
+    "checkpoints": {
+      "Tosla Square - Checkpoint on Upper Buildings Before Homing Beacons": 50900655
+    },
+    "hats": {
+      "Tosla Employee Hat": 50700015
+    },
+    "connections": {
+      "Tosla Square - High Ground": "B1"
+    }
+  },
+  "Tosla Square - High Ground": {
+    "level": "Tosla's Offices",
+    "sublevel": "Tosla Square",
+    "gears": {
+      "Tosla Square - Gear - Homing Beacon Path": 50100000,
+      "Tosla Square - Gear - In Higher Building Alcove": 50100004,
+      "Tosla Square - Gear - Under Marble Arch": 50100002,
+      "Tosla Square - Gear - In Giant Gear Logo": 50100005
+    },
+    "bunnies": {
+      "Tosla Square - Bunny - In Marble Pillar Alcove": 50200000
+    },
+    "coinbags": {
+      "Tosla Square - Coin Bag on Highest Non-Tosla Building": 50300399,
+      "Tosla Square - Coin Bag on Marble Pillar in Back-Right Corner": 50300353,
+      "Tosla Square - Coin Bag on Marble Pillar Directly Behind Office Building": 50300340
+    },
+    "coins": {
+      "Tosla Square - Coin on Higher Building Ramp After Highest Homing Beacons #1": 50300372,
+      "Tosla Square - Coin on Higher Building Ramp After Highest Homing Beacons #2": 50300373,
+      "Tosla Square - Coin on Higher Building Ramp After Highest Homing Beacons #3": 50300374,
+      "Tosla Square - Coin on Higher Building Ramp After Highest Homing Beacons #4": 50300376,
+      "Tosla Square - Coin on Higher Building Ramp After Highest Homing Beacons #5": 50300377,
+      "Tosla Square - Coin on Higher Building Ramp After Highest Homing Beacons #6": 50300378,
+      "Tosla Square - Coin on Higher Building Ramp After Highest Homing Beacons #7": 50300379,
+      "Tosla Square - Coin on Higher Building Ramp After Highest Homing Beacons #8": 50300380,
+      "Tosla Square - Coin on Higher Building Ramp After Highest Homing Beacons #9": 50300381,
+      "Tosla Square - Coin on Highest Non-Tosla Building #1": 50300402,
+      "Tosla Square - Coin on Highest Non-Tosla Building #2": 50300403,
+      "Tosla Square - Coin on Highest Non-Tosla Building #3": 50300404,
+      "Tosla Square - Coin on Highest Non-Tosla Building #4": 50300405,
+      "Tosla Square - Coin on Highest Non-Tosla Building #5": 50300406,
+      "Tosla Square - Coin on Highest Non-Tosla Building #6": 50300397,
+      "Tosla Square - Coin on Highest Non-Tosla Building #7": 50300398,
+      "Tosla Square - Coin on Highest Non-Tosla Building #8": 50300400,
+      "Tosla Square - Coin on Highest Non-Tosla Building #9": 50300401,
+      "Tosla Square - Coin on Highest Non-Tosla Building #10": 50300392,
+      "Tosla Square - Coin on Highest Non-Tosla Building #11": 50300393,
+      "Tosla Square - Coin on Highest Non-Tosla Building #12": 50300394,
+      "Tosla Square - Coin on Highest Non-Tosla Building #13": 50300395,
+      "Tosla Square - Coin on Highest Non-Tosla Building #14": 50300396,
+      "Tosla Square - Coin Leading to Gear in Higher Building Alcove #1": 50300364,
+      "Tosla Square - Coin Leading to Gear in Higher Building Alcove #2": 50300365,
+      "Tosla Square - Coin Leading to Gear in Higher Building Alcove #3": 50300366,
+      "Tosla Square - Coin Leading to Gear in Higher Building Alcove #4": 50300367,
+      "Tosla Square - Coin Leading to Gear in Higher Building Alcove #5": 50300368,
+      "Tosla Square - Coin Leading to Gear in Higher Building Alcove #6": 50300369,
+      "Tosla Square - Coin Leading to Gear in Higher Building Alcove #7": 50300370,
+      "Tosla Square - Coin on Marble Pillar Connected to Building #1": 50300363,
+      "Tosla Square - Coin on Marble Pillar Connected to Building #2": 50300362,
+      "Tosla Square - Coin on Marble Pillar Connected to Building #3": 50300361,
+      "Tosla Square - Coin on Marble Pillar Connected to Building #4": 50300360,
+      "Tosla Square - Coin on Marble Pillar Connected to Building #5": 50300359,
+      "Tosla Square - Coin on Marble Pillar in Back-Right Corner #1": 50300358,
+      "Tosla Square - Coin on Marble Pillar in Back-Right Corner #2": 50300355,
+      "Tosla Square - Coin on Marble Pillar in Back-Right Corner #3": 50300356,
+      "Tosla Square - Coin on Marble Pillar in Back-Right Corner #4": 50300357,
+      "Tosla Square - Coin on Marble Pillar in Back-Right Corner #5": 50300352,
+      "Tosla Square - Coin on Marble Pillar in Back-Right Corner #6": 50300354,
+      "Tosla Square - Coin on Marble Pillar in Back-Right Corner #7": 50300349,
+      "Tosla Square - Coin on Marble Pillar in Back-Right Corner #8": 50300350,
+      "Tosla Square - Coin on Marble Pillar in Back-Right Corner #9": 50300351,
+      "Tosla Square - Coin on Marble Pillar in Back-Right Corner #10": 50300348,
+      "Tosla Square - Coin on Marble Pillar Directly Behind Office Building #1": 50300346,
+      "Tosla Square - Coin on Marble Pillar Directly Behind Office Building #2": 50300343,
+      "Tosla Square - Coin on Marble Pillar Directly Behind Office Building #3": 50300344,
+      "Tosla Square - Coin on Marble Pillar Directly Behind Office Building #4": 50300345,
+      "Tosla Square - Coin on Marble Pillar Directly Behind Office Building #5": 50300338,
+      "Tosla Square - Coin on Marble Pillar Directly Behind Office Building #6": 50300339,
+      "Tosla Square - Coin on Marble Pillar Directly Behind Office Building #7": 50300341,
+      "Tosla Square - Coin on Marble Pillar Directly Behind Office Building #8": 50300342,
+      "Tosla Square - Coin on Marble Pillar Directly Behind Office Building #9": 50300335,
+      "Tosla Square - Coin on Marble Pillar Directly Behind Office Building #10": 50300336,
+      "Tosla Square - Coin on Marble Pillar Directly Behind Office Building #11": 50300337,
+      "Tosla Square - Coin on Marble Pillar Directly Behind Office Building #12": 50300334
+    },
+    "checkpoints": {
+      "Tosla Square - Checkpoint on Final Building Before Suspended Scaffoldings": 50900560
+    },
+    "cheeses": {
+      "Tosla Square - Cheese on Higher Building After Highest Homing Beacons": 52100002
+    },
+    "connections": {
+      "Tosla Square - Highest Ground": "X3/B2"
+    }
+  },
+  "Tosla Square - Highest Ground": {
+    "level": "Tosla's Offices",
+    "sublevel": "Tosla Square",
+    "gears": {
+      "Tosla Square - Gear - On Suspended Scaffolding": 50100001
+    },
+    "bunnies": {
+      "Tosla Square - Bunny - On High Building": 50200001
+    },
+    "coins": {
+      "Tosla Square - Coin on Suspended Scaffolding #1": 50300383,
+      "Tosla Square - Coin on Suspended Scaffolding #2": 50300385,
+      "Tosla Square - Coin on Suspended Scaffolding #3": 50300387,
+      "Tosla Square - Coin on Suspended Scaffolding #4": 50300389,
+      "Tosla Square - Coin on Suspended Scaffolding #5": 50300390,
+      "Tosla Square - Coin on Suspended Scaffolding #6": 50300391,
+      "Tosla Square - Coin on Suspended Scaffolding #7": 50300407,
+      "Tosla Square - Coin on Suspended Scaffolding #8": 50300408,
+      "Tosla Square - Coin on Suspended Scaffolding #9": 50300409,
+      "Tosla Square - Coin on Suspended Scaffolding #10": 50300410
+    },
+    "checkpoints": {
+      "Tosla Square - Checkpoint on Marble Pillar": 50901145
+    },
+    "specialrules": {
+      "Tosla Square - Bunny - On High Building": "B2 & X1/J1"
+    }
+  },
+  "Tosla Offices (Ground Floor)": {
+    "level": "Tosla's Offices",
+    "sublevel": "Tosla Offices (Ground Floor)",
+    "gears": {
+      "Tosla Offices (Ground Floor) - Gear - Above Exit": 50100006
+    },
+    "subwarps": {
+      "Tosla Offices (Ground Floor) - Exit": ["Tosla Square - Starting Area", ""],
+      "Tosla Offices (Ground Floor) - Elevator": ["Tosla Offices (Second Floor)", ""]
+    },
+    "specialrules": {
+      "Tosla Offices (Ground Floor) - Gear - Above Exit": "X1/OS & J1 | J2"
+    }
+  },
+  "Tosla Offices (Second Floor)": {
+    "level": "Tosla's Offices",
+    "sublevel": "Tosla Offices (Second Floor)",
+    "coinbags": {
+      "Tosla Offices (Second Floor) - Coin Bag Near Down Elevator": 50300109,
+      "Tosla Offices (Second Floor) - Coin Bag Near Up Elevator": 50300090
+    },
+    "coins": {
+      "Tosla Offices (Second Floor) - Coin Near Down Elevator #1": 50300091,
+      "Tosla Offices (Second Floor) - Coin Near Down Elevator #2": 50300093,
+      "Tosla Offices (Second Floor) - Coin Near Down Elevator #3": 50300095,
+      "Tosla Offices (Second Floor) - Coin Near Down Elevator #4": 50300097,
+      "Tosla Offices (Second Floor) - Coin Near Down Elevator #5": 50300099,
+      "Tosla Offices (Second Floor) - Coin Near Down Elevator #6": 50300101,
+      "Tosla Offices (Second Floor) - Coin Near Down Elevator #7": 50300103,
+      "Tosla Offices (Second Floor) - Coin Near Down Elevator #8": 50300105,
+      "Tosla Offices (Second Floor) - Coin Near Down Elevator #9": 50300107,
+      "Tosla Offices (Second Floor) - Coin Near Up Elevator #1": 50300092,
+      "Tosla Offices (Second Floor) - Coin Near Up Elevator #2": 50300094,
+      "Tosla Offices (Second Floor) - Coin Near Up Elevator #3": 50300096,
+      "Tosla Offices (Second Floor) - Coin Near Up Elevator #4": 50300098,
+      "Tosla Offices (Second Floor) - Coin Near Up Elevator #5": 50300100,
+      "Tosla Offices (Second Floor) - Coin Near Up Elevator #6": 50300102,
+      "Tosla Offices (Second Floor) - Coin Near Up Elevator #7": 50300104,
+      "Tosla Offices (Second Floor) - Coin Near Up Elevator #8": 50300106,
+      "Tosla Offices (Second Floor) - Coin Near Up Elevator #9": 50300108,
+      "Tosla Offices (Second Floor) - Coin Near Up Elevator #10": 50300110
+    },
+    "checkpoints": {
+      "Tosla Offices (Second Floor) - Checkpoint": 50900115
+    },
+    "subwarps": {
+      "Tosla Offices (Second Floor) - Down Elevator": ["Tosla Offices (Ground Floor)", ""],
+      "Tosla Offices (Second Floor) - Up Elevator": ["Tosla Offices (Third Floor) - Starting Area", ""]
+    }
+  },
+  "Tosla Offices (Third Floor) - Starting Area": {
+    "level": "Tosla's Offices",
+    "sublevel": "Tosla Offices (Third Floor)",
+    "checkpoints": {
+      "Tosla Offices (Third Floor) - Checkpoint": 50900275
+    },
+    "connections": {
+      "Tosla Offices (Third Floor) - After Golden Spring": "X2/GST/PMJ"
+    },
+    "subwarps": {
+      "Tosla Offices (Third Floor) - Down Elevator": ["Tosla Offices (Second Floor)", ""]
+    }
+  },
+  "Tosla Offices (Third Floor) - After Golden Spring": {
+    "level": "Tosla's Offices",
+    "sublevel": "Tosla Offices (Third Floor)",
+    "gears": {
+      "Tosla Offices (Third Floor) - Gear": 50100007
+    },
+    "connections": {
+      "Tosla Offices (Third Floor) - Starting Area": ""
+    },
+    "subwarps": {
+      "Tosla Offices (Third Floor) - Up Elevator": ["Tosla Offices (Fourth Floor) - Starting Area", ""]
+    }
+  },
+  "Tosla Offices (Fourth Floor) - Starting Area": {
+    "level": "Tosla's Offices",
+    "sublevel": "Tosla Offices (Fourth Floor)",
+    "coins": {
+      "Tosla Offices (Fourth Floor) - Coin Leading Onto Desks Near Entrance #1": 50300118,
+      "Tosla Offices (Fourth Floor) - Coin Leading Onto Desks Near Entrance #2": 50300117,
+      "Tosla Offices (Fourth Floor) - Coin Leading Onto Desks Near Entrance #3": 50300116,
+      "Tosla Offices (Fourth Floor) - Coin Leading Onto Desks Near Entrance #4": 50300127,
+      "Tosla Offices (Fourth Floor) - Coin Leading Onto Desks Near Entrance #5": 50300141,
+      "Tosla Offices (Fourth Floor) - Coin Leading Onto Desks Near Entrance #6": 50300142,
+      "Tosla Offices (Fourth Floor) - Coin Leading Onto Desks Near Entrance #7": 50300143
+    },
+    "checkpoints": {
+      "Tosla Offices (Fourth Floor) - Checkpoint": 50900445
+    },
+    "connections": {
+      "Tosla Offices (Fourth Floor) - Ledge Near Start": "PMB/PMJ",
+      "Tosla Offices (Fourth Floor) - After Ledge": "X2/J1/PMJ/PMB",
+      "Tosla Offices (Fourth Floor) - High Ground": "J1+PMB"
+    },
+    "subwarps": {
+      "Tosla Offices (Fourth Floor) - Down Elevator": ["Tosla Offices (Third Floor) - After Golden Spring", ""]
+    }
+  },
+  "Tosla Offices (Fourth Floor) - Ledge Near Start": {
+    "level": "Tosla's Offices",
+    "sublevel": "Tosla Offices (Fourth Floor)",
+    "gears": {
+      "Tosla Offices (Fourth Floor) - Gear - Ledge Near Start": 50100008
+    },
+    "coins": {
+      "Tosla Offices (Fourth Floor) - Coin on Ledge Near Start #1": 50300186,
+      "Tosla Offices (Fourth Floor) - Coin on Ledge Near Start #2": 50300185,
+      "Tosla Offices (Fourth Floor) - Coin on Ledge Near Start #3": 50300184,
+      "Tosla Offices (Fourth Floor) - Coin on Ledge Near Start #4": 50300183,
+      "Tosla Offices (Fourth Floor) - Coin on Ledge Near Start #5": 50300182,
+      "Tosla Offices (Fourth Floor) - Coin on Ledge Near Start #6": 50300181,
+      "Tosla Offices (Fourth Floor) - Coin on Ledge Near Start #7": 50300180,
+      "Tosla Offices (Fourth Floor) - Coin on Ledge Near Start #8": 50300179,
+      "Tosla Offices (Fourth Floor) - Coin on Ledge Near Start #9": 50300178,
+      "Tosla Offices (Fourth Floor) - Coin on Ledge Near Start #10": 50300177,
+      "Tosla Offices (Fourth Floor) - Coin on Ledge Near Start #11": 50300176,
+      "Tosla Offices (Fourth Floor) - Coin on Ledge Near Start #12": 50300175,
+      "Tosla Offices (Fourth Floor) - Coin on Ledge Near Start #13": 50300174,
+      "Tosla Offices (Fourth Floor) - Coin on Ledge Near Start #14": 50300173,
+      "Tosla Offices (Fourth Floor) - Coin on Ledge Near Start #15": 50300171,
+      "Tosla Offices (Fourth Floor) - Coin on Ledge Near Start #16": 50300169
+    }
+  },
+  "Tosla Offices (Fourth Floor) - After Ledge": {
+    "level": "Tosla's Offices",
+    "sublevel": "Tosla Offices (Fourth Floor)",
+    "safes": {
+      "Tosla Offices (Fourth Floor) - Safe": 50300140
+    },
+    "chests": {
+      "Tosla Offices (Fourth Floor) - Chest on Spiky Ledge": 50300145,
+      "Tosla Offices (Fourth Floor) - Chest Behind Window": 50300137
+    },
+    "coinbags": {
+      "Tosla Offices (Fourth Floor) - Coin Bag After Spiky Ledge": 50300119,
+      "Tosla Offices (Fourth Floor) - Coin Bag Behind Window #1": 50300135,
+      "Tosla Offices (Fourth Floor) - Coin Bag Behind Window #2": 50300138
+    },
+    "coins": {
+      "Tosla Offices (Fourth Floor) - Coin on Spiky Ledge #1": 50300160,
+      "Tosla Offices (Fourth Floor) - Coin on Spiky Ledge #2": 50300159,
+      "Tosla Offices (Fourth Floor) - Coin on Spiky Ledge #3": 50300158,
+      "Tosla Offices (Fourth Floor) - Coin on Spiky Ledge #4": 50300157,
+      "Tosla Offices (Fourth Floor) - Coin on Spiky Ledge #5": 50300156,
+      "Tosla Offices (Fourth Floor) - Coin on Spiky Ledge #6": 50300155,
+      "Tosla Offices (Fourth Floor) - Coin on Spiky Ledge #7": 50300154,
+      "Tosla Offices (Fourth Floor) - Coin on Spiky Ledge #8": 50300153,
+      "Tosla Offices (Fourth Floor) - Coin on Spiky Ledge #9": 50300152,
+      "Tosla Offices (Fourth Floor) - Coin on Spiky Ledge #10": 50300151,
+      "Tosla Offices (Fourth Floor) - Coin on Spiky Ledge #11": 50300150,
+      "Tosla Offices (Fourth Floor) - Coin on Spiky Ledge #12": 50300149,
+      "Tosla Offices (Fourth Floor) - Coin on Spiky Ledge #13": 50300148,
+      "Tosla Offices (Fourth Floor) - Coin on Spiky Ledge #14": 50300147,
+      "Tosla Offices (Fourth Floor) - Coin on Spiky Ledge #15": 50300146,
+      "Tosla Offices (Fourth Floor) - Coin After Spiky Ledge #1": 50300136,
+      "Tosla Offices (Fourth Floor) - Coin After Spiky Ledge #2": 50300134,
+      "Tosla Offices (Fourth Floor) - Coin After Spiky Ledge #3": 50300133,
+      "Tosla Offices (Fourth Floor) - Coin After Spiky Ledge #4": 50300132,
+      "Tosla Offices (Fourth Floor) - Coin After Spiky Ledge #5": 50300131,
+      "Tosla Offices (Fourth Floor) - Coin After Spiky Ledge #6": 50300130,
+      "Tosla Offices (Fourth Floor) - Coin After Spiky Ledge #7": 50300129,
+      "Tosla Offices (Fourth Floor) - Coin After Spiky Ledge #8": 50300128
+    },
+    "connections": {
+      "Tosla Offices (Fourth Floor) - Starting Area": "",
+      "Tosla Offices (Fourth Floor) - High Ground": "X1+PMB",
+      "Tosla Offices (Fourth Floor) - After Golden Spring": "GST/PMJ | X2 & PW/OOB"
+    }
+  },
+  "Tosla Offices (Fourth Floor) - After Golden Spring": {
+    "level": "Tosla's Offices",
+    "sublevel": "Tosla Offices (Fourth Floor)",
+    "coinbags": {
+      "Tosla Offices (Fourth Floor) - Coin Bag Near Up Elevator": 50300115,
+      "Tosla Offices (Fourth Floor) - Coin Bag on High Filing Cabinets": 50300172
+    },
+    "coins": {
+      "Tosla Offices (Fourth Floor) - Coin in Spike Hallway #1": 50300126,
+      "Tosla Offices (Fourth Floor) - Coin in Spike Hallway #2": 50300125,
+      "Tosla Offices (Fourth Floor) - Coin in Spike Hallway #3": 50300124,
+      "Tosla Offices (Fourth Floor) - Coin in Spike Hallway #4": 50300123,
+      "Tosla Offices (Fourth Floor) - Coin in Spike Hallway #5": 50300122,
+      "Tosla Offices (Fourth Floor) - Coin in Spike Hallway #6": 50300121,
+      "Tosla Offices (Fourth Floor) - Coin in Spike Hallway #7": 50300120,
+      "Tosla Offices (Fourth Floor) - Coin Near Up Elevator #1": 50300113,
+      "Tosla Offices (Fourth Floor) - Coin Near Up Elevator #2": 50300114,
+      "Tosla Offices (Fourth Floor) - Coin on High Filing Cabinets #1": 50300168,
+      "Tosla Offices (Fourth Floor) - Coin on High Filing Cabinets #2": 50300170
+    },
+    "connections": {
+      "Tosla Offices (Fourth Floor) - After Ledge": "",
+      "Tosla Offices (Fourth Floor) - High Ground": "PMJ"
+    },
+    "subwarps": {
+      "Tosla Offices (Fourth Floor) - Up Elevator": ["Tosla Offices (Fifth Floor) - Starting Area", ""]
+    }
+  },
+  "Tosla Offices (Fourth Floor) - High Ground": {
+    "level": "Tosla's Offices",
+    "sublevel": "Tosla Offices (Fourth Floor)",
+    "coins": {
+      "Tosla Offices (Fourth Floor) - Coin on High Ledge #1": 50300189,
+      "Tosla Offices (Fourth Floor) - Coin on High Ledge #2": 50300190,
+      "Tosla Offices (Fourth Floor) - Coin on High Ledge #3": 50300191,
+      "Tosla Offices (Fourth Floor) - Coin on High Ledge #4": 50300192,
+      "Tosla Offices (Fourth Floor) - Coin on High Ledge #5": 50300193,
+      "Tosla Offices (Fourth Floor) - Coin on High Ledge #6": 50300194,
+      "Tosla Offices (Fourth Floor) - Coin on High Ledge #7": 50300195,
+      "Tosla Offices (Fourth Floor) - Coin on High Ledge #8": 50300196,
+      "Tosla Offices (Fourth Floor) - Coin on High Ledge #9": 50300197
+    },
+    "hats": {
+      "Mug Hat": 50700014
+    },
+    "connections": {
+      "Tosla Offices (Fourth Floor) - After Golden Spring": "X1+PMB"
+    }
+  },
+  "Tosla Offices (Fifth Floor) - Starting Area": {
+    "level": "Tosla's Offices",
+    "sublevel": "Tosla Offices (Fifth Floor)",
+    "gears": {
+      "Tosla Offices (Fifth Floor) - Gear - On Pillar": 50100010
+    },
+    "coins": {
+      "Tosla Offices (Fifth Floor) - Coin Leading to First Golden Spring #1": 50300060,
+      "Tosla Offices (Fifth Floor) - Coin Leading to First Golden Spring #2": 50300059,
+      "Tosla Offices (Fifth Floor) - Coin Leading to First Golden Spring #3": 50300058,
+      "Tosla Offices (Fifth Floor) - Coin Leading to First Golden Spring #4": 50300057,
+      "Tosla Offices (Fifth Floor) - Coin Leading to First Golden Spring #5": 50300056,
+      "Tosla Offices (Fifth Floor) - Coin Leading to First Golden Spring #6": 50300055,
+      "Tosla Offices (Fifth Floor) - Coin Leading to First Golden Spring #7": 50300054,
+      "Tosla Offices (Fifth Floor) - Coin Leading to First Golden Spring #8": 50300053,
+      "Tosla Offices (Fifth Floor) - Coin Leading to First Golden Spring #9": 50300052
+    },
+    "checkpoints": {
+      "Tosla Offices (Fifth Floor) - Checkpoint": 50901595
+    },
+    "connections": {
+      "Tosla Offices (Fifth Floor) - Golden Spring Area": "X3/GST/PMJ",
+      "Tosla Offices (Fifth Floor) - Exit Area": "SpikeT | X2+PMB | X1+PMJ"
+    },
+    "subwarps": {
+      "Tosla Offices (Fifth Floor) - Down Elevator": ["Tosla Offices (Fourth Floor) - After Golden Spring", ""],
+      "Tosla Offices (Fifth Floor) - Employees Only Door": ["Tosla Offices (Employees Only) - Starting Area", "EmployeeHat"]
+    },
+    "specialrules": {
+      "Tosla Offices (Fifth Floor) - Gear - On Pillar": "PMB/PMJ"
+    }
+  },
+  "Tosla Offices (Fifth Floor) - Golden Spring Area": {
+    "level": "Tosla's Offices",
+    "sublevel": "Tosla Offices (Fifth Floor)",
+    "gears": {
+      "Tosla Offices (Fifth Floor) - Gear - In Desk Maze": 50100009
+    },
+    "chests": {
+      "Tosla Offices (Fifth Floor) - Chest in Top Half of Desk Maze": 50300024,
+      "Tosla Offices (Fifth Floor) - Chest in Bottom Half of Desk Maze": 50300011
+    },
+    "coinbags": {
+      "Tosla Offices (Fifth Floor) - Coin Bag Between Upper Desks #1": 50300045,
+      "Tosla Offices (Fifth Floor) - Coin Bag Between Upper Desks #2": 50300035,
+      "Tosla Offices (Fifth Floor) - Coin Bag Between Lower Desks #1": 50300044,
+      "Tosla Offices (Fifth Floor) - Coin Bag Between Lower Desks #2": 50300034
+    },
+    "coins": {
+      "Tosla Offices (Fifth Floor) - Coin Leading to Golden Spring in Desk Maze #1": 50300026,
+      "Tosla Offices (Fifth Floor) - Coin Leading to Golden Spring in Desk Maze #2": 50300028,
+      "Tosla Offices (Fifth Floor) - Coin Leading to Golden Spring in Desk Maze #3": 50300030,
+      "Tosla Offices (Fifth Floor) - Coin Leading to Golden Spring in Desk Maze #4": 50300032,
+      "Tosla Offices (Fifth Floor) - Coin Leading to Golden Spring in Desk Maze #5": 50300036,
+      "Tosla Offices (Fifth Floor) - Coin Leading to Golden Spring in Desk Maze #6": 50300038,
+      "Tosla Offices (Fifth Floor) - Coin Leading to Golden Spring in Desk Maze #7": 50300040,
+      "Tosla Offices (Fifth Floor) - Coin Leading to Golden Spring in Desk Maze #8": 50300042,
+      "Tosla Offices (Fifth Floor) - Coin Leading to Golden Spring in Desk Maze #9": 50300046,
+      "Tosla Offices (Fifth Floor) - Coin Leading to Golden Spring in Desk Maze #10": 50300048,
+      "Tosla Offices (Fifth Floor) - Coin Leading to Gear in Desk Maze #1": 50300025,
+      "Tosla Offices (Fifth Floor) - Coin Leading to Gear in Desk Maze #2": 50300027,
+      "Tosla Offices (Fifth Floor) - Coin Leading to Gear in Desk Maze #3": 50300029,
+      "Tosla Offices (Fifth Floor) - Coin Leading to Gear in Desk Maze #4": 50300031,
+      "Tosla Offices (Fifth Floor) - Coin Leading to Gear in Desk Maze #5": 50300033,
+      "Tosla Offices (Fifth Floor) - Coin Leading to Gear in Desk Maze #6": 50300037,
+      "Tosla Offices (Fifth Floor) - Coin Leading to Gear in Desk Maze #7": 50300039,
+      "Tosla Offices (Fifth Floor) - Coin Leading to Gear in Desk Maze #8": 50300041,
+      "Tosla Offices (Fifth Floor) - Coin Leading to Gear in Desk Maze #9": 50300043,
+      "Tosla Offices (Fifth Floor) - Coin Leading to Gear in Desk Maze #10": 50300047,
+      "Tosla Offices (Fifth Floor) - Coin Leading to Upper Chest in Desk Maze #1": 50300018,
+      "Tosla Offices (Fifth Floor) - Coin Leading to Upper Chest in Desk Maze #2": 50300019,
+      "Tosla Offices (Fifth Floor) - Coin Leading to Upper Chest in Desk Maze #3": 50300020,
+      "Tosla Offices (Fifth Floor) - Coin Leading to Upper Chest in Desk Maze #4": 50300021,
+      "Tosla Offices (Fifth Floor) - Coin Leading to Upper Chest in Desk Maze #5": 50300022,
+      "Tosla Offices (Fifth Floor) - Coin Leading to Upper Chest in Desk Maze #6": 50300023,
+      "Tosla Offices (Fifth Floor) - Coin Leading to Lower Chest in Desk Maze #1": 50300017,
+      "Tosla Offices (Fifth Floor) - Coin Leading to Lower Chest in Desk Maze #2": 50300016,
+      "Tosla Offices (Fifth Floor) - Coin Leading to Lower Chest in Desk Maze #3": 50300015,
+      "Tosla Offices (Fifth Floor) - Coin Leading to Lower Chest in Desk Maze #4": 50300014,
+      "Tosla Offices (Fifth Floor) - Coin Leading to Lower Chest in Desk Maze #5": 50300013,
+      "Tosla Offices (Fifth Floor) - Coin Leading to Lower Chest in Desk Maze #6": 50300012
+    }
+  },
+  "Tosla Offices (Fifth Floor) - Exit Area": {
+    "level": "Tosla's Offices",
+    "sublevel": "Tosla Offices (Fifth Floor)",
+    "connections": {
+      "Tosla Offices (Fifth Floor) - Starting Area": ""
+    },
+    "subwarps": {
+      "Tosla Offices (Fifth Floor) - Up Elevator": ["Tosla Offices (Final Floor) - Starting Area", ""]
+    }
+  },
+  "Tosla Offices (Final Floor) - Starting Area": {
+    "level": "Tosla's Offices",
+    "sublevel": "Tosla Offices (Final Floor)",
+    "checkpoints": {
+      "Tosla Offices (Final Floor) - Checkpoint": 50901260
+    },
+    "connections": {
+      "Tosla Offices (Final Floor) - Boss Fight": "X1/GST"
+    },
+    "subwarps": {
+      "Tosla Offices (Final Floor) - Elevator": ["Tosla Offices (Fifth Floor) - Exit Area", ""]
+    }
+  },
+  "Tosla Offices (Final Floor) - Boss Fight": {
+    "level": "Tosla's Offices",
+    "sublevel": "Tosla Offices (Final Floor)",
+    "warps": {
+      "Tosla Offices (Final Floor) - Boss Fight Ending Cutscene": ["{RETURNPORTAL}", ""]
+    }
+  },
+  "Tosla Offices (Employees Only) - Starting Area": {
+    "level": "Tosla's Offices",
+    "sublevel": "Tosla Offices (Employees Only)",
+    "chests": {
+      "Tosla Offices (Employees Only) - Chest on Left Path": 50300088
+    },
+    "coins": {
+      "Tosla Offices (Employees Only) - Coin Near Entrance #1": 50300010,
+      "Tosla Offices (Employees Only) - Coin Near Entrance #2": 50300009,
+      "Tosla Offices (Employees Only) - Coin Near Entrance #3": 50300008,
+      "Tosla Offices (Employees Only) - Coin Near Entrance #4": 50300007,
+      "Tosla Offices (Employees Only) - Coin Near Entrance #5": 50300006,
+      "Tosla Offices (Employees Only) - Coin Near Entrance #6": 50300005,
+      "Tosla Offices (Employees Only) - Coin Near Entrance #7": 50300004,
+      "Tosla Offices (Employees Only) - Coin Near Entrance #8": 50300003,
+      "Tosla Offices (Employees Only) - Coin Near Entrance #9": 50300002,
+      "Tosla Offices (Employees Only) - Coin Near Entrance #10": 50300001,
+      "Tosla Offices (Employees Only) - Coin on Right Path Before Spikes #1": 50300074,
+      "Tosla Offices (Employees Only) - Coin on Right Path Before Spikes #2": 50300075,
+      "Tosla Offices (Employees Only) - Coin on Right Path Above Spikes #1": 50300076,
+      "Tosla Offices (Employees Only) - Coin on Right Path Above Spikes #2": 50300077,
+      "Tosla Offices (Employees Only) - Coin on Left Path #1": 50300078,
+      "Tosla Offices (Employees Only) - Coin on Left Path #2": 50300079,
+      "Tosla Offices (Employees Only) - Coin on Left Path #3": 50300080,
+      "Tosla Offices (Employees Only) - Coin on Left Path #4": 50300081,
+      "Tosla Offices (Employees Only) - Coin on Left Path #5": 50300082,
+      "Tosla Offices (Employees Only) - Coin on Left Path #6": 50300083,
+      "Tosla Offices (Employees Only) - Coin on Left Path #7": 50300084,
+      "Tosla Offices (Employees Only) - Coin on Left Path #8": 50300085,
+      "Tosla Offices (Employees Only) - Coin on Left Path #9": 50300086,
+      "Tosla Offices (Employees Only) - Coin on Left Path #10": 50300087
+    },
+    "connections": {
+      "Tosla Offices (Employees Only) - Higher Ground": "PMB/PMJ"
+    },
+    "subwarps": {
+      "Tosla Offices (Employees Only) - Exit": ["Tosla Offices (Fifth Floor) - Starting Area", ""]
+    },
+    "specialrules": {
+      "Tosla Offices (Employees Only) - Coin on Right Path Above Spikes #1": "X1/PMJ/PMB",
+      "Tosla Offices (Employees Only) - Coin on Right Path Above Spikes #2": "X3/PMJ/PMB"
+    }
+  },
+  "Tosla Offices (Employees Only) - Higher Ground": {
+    "level": "Tosla's Offices",
+    "sublevel": "Tosla Offices (Employees Only)",
+    "bunnies": {
+      "Tosla Offices (Employees Only) - Bunny": 50200002
+    },
+    "coins": {
+      "Tosla Offices (Employees Only) - Coin on Right Path After Spikes #1": 50300069,
+      "Tosla Offices (Employees Only) - Coin on Right Path After Spikes #2": 50300070,
+      "Tosla Offices (Employees Only) - Coin on Right Path After Spikes #3": 50300071,
+      "Tosla Offices (Employees Only) - Coin on Right Path After Spikes #4": 50300072,
+      "Tosla Offices (Employees Only) - Coin on Right Path After Spikes #5": 50300073
+    },
+    "specialrules": {
+      "Tosla Offices (Employees Only) - Bunny": "PMB"
+    }
+  }
+}

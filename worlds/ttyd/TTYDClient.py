@@ -48,11 +48,23 @@ GP_BASE = 0x803DAC18
 GSWF_BASE = 0x178
 GSW0 = 0x174
 GSW_BASE = 0x578
+
+# Ever-obtained ledger (mirrors rel/include/tracker.h): GSWF 6600+rom for
+# singles, GSW byte counters for consumables logic requires in multiples.
+EVER_OBTAINED_FLAG_BASE = 6600
+EVER_OBTAINED_COUNTERS = {
+    125: 1801,  # Star Piece
+    38: 1802,   # Palace Key (Tower)
+    12: 1803,   # Castle Key
+    46: 1804,   # Palace Key
+    73: 1805,   # Wedding Ring
+}
 ROOM = 0x803DF728
 GAME_ID_ADDRESS = 0x80000000
 EXPECTED_GAME_ID = b"G8ME01"
 
 RECV_FLAG_RING = 0x80004600
+SENDER_NAME_RING = 0x80004700  # protocol 3: 16 slots x 16 bytes, sender names for the item feed
 RECV_FLAG_HEAD = RECV_FLAG_RING + 0x0
 RECV_FLAG_TAIL = RECV_FLAG_RING + 0x2
 RECV_FLAG_EVENTS = RECV_FLAG_RING + 0x4
@@ -159,10 +171,9 @@ class TTYDCommandProcessor(ClientCommandProcessor):
         Subcommands:
           /ghost names [on|off|toggle]     - hide/show your name tag
           /ghost name [text]               - set your ghost display name (blank to clear)
-          /ghost test [on|off|toggle]      - single-client loopback test ghost
         """
         if not args:
-            logger.info("ghost: subcommands - names, name, test")
+            logger.info("ghost: subcommands - names, name")
             return
         sub = args[0].strip().lower()
         rest = args[1:]
@@ -170,10 +181,8 @@ class TTYDCommandProcessor(ClientCommandProcessor):
             self._ghost_names(*rest)
         elif sub == "name":
             self._ghost_name(*rest)
-        elif sub == "test":
-            self._ghost_test(*rest)
         else:
-            logger.info(f"ghost: unknown subcommand '{sub}'. Use names, name, test.")
+            logger.info(f"ghost: unknown subcommand '{sub}'. Use names, name.")
 
 
 
@@ -303,29 +312,6 @@ class TTYDCommandProcessor(ClientCommandProcessor):
         else:
             logger.info("Ghost display name cleared (using slot name).")
 
-    """def _ghost_test(self, mode: str = "toggle"):
-        Single-client loopback: spawn a copy of your own Mario as a
-        ghost ~100 units to your right so you can verify ghost rendering
-        without a second client. Not persisted across reconnect.
-
-        Usage: /ghost test          - toggle
-               /ghost test on       - force on
-               /ghost test off      - force off
-        ctx = self.ctx
-        m = (mode or "toggle").strip().lower()
-        cur = getattr(ctx, "_ghost_test", False)
-        if m in ("on", "1", "true"):
-            new = True
-        elif m in ("off", "0", "false"):
-            new = False
-        elif m in ("toggle", "t", ""):
-            new = not cur
-        else:
-            logger.info(f"ghost test: unknown mode '{mode}'. Use on/off/toggle.")
-            return
-        ctx._ghost_test = new
-        logger.info(f"Ghost test loopback {'ON' if new else 'OFF'}.")"""
-
 
 class TTYDContext(cmmCtx):
     command_processor = TTYDCommandProcessor
@@ -422,12 +408,35 @@ class TTYDContext(cmmCtx):
             return
         if index > len(self.items_received):
             return
-        items = min(len(self.items_received) - index, 255)
+        items = min(len(self.items_received) - index, 15)
         if items <= 0:
             return
 
         dirty_run(DIRTY_ITEM_REPLAY)
-        item_ids = [get_rom_item_id(self.items_received[i]) for i in range(index, index + items)]
+        if dolphin.read_word(MOD_PROTOCOL) >= 3:
+            batch_slots: dict = {}
+            item_ids = []
+            for i in range(index, index + items):
+                net_item = self.items_received[i]
+                packed = get_rom_item_id(net_item) & 0x1FF
+                cls = 3 if net_item.flags & 0b100 else 2 if net_item.flags & 0b001 \
+                    else 1 if net_item.flags & 0b010 else 0
+                packed |= cls << 14
+                if net_item.player != self.slot:
+                    name = self.player_names.get(net_item.player, "")
+                    if name not in batch_slots:
+                        slot = len(batch_slots)
+                        batch_slots[name] = slot
+                        raw = name.encode("ascii", "replace")[:15].ljust(16, b"\x00")
+                        dolphin.write_bytes(SENDER_NAME_RING + slot * 16, raw)
+                    packed |= 0x2000 | (batch_slots[name] << 9)
+                elif net_item.location >= -1:
+                    # Own-slot items announce with ring slot 15 = "no sender";
+                    # starting inventory (location -2) stays silent.
+                    packed |= 0x2000 | (15 << 9)
+                item_ids.append(packed)
+        else:
+            item_ids = [get_rom_item_id(self.items_received[i]) for i in range(index, index + items)]
         packed_data = struct.pack(f'>{len(item_ids)}H', *item_ids)
         dolphin.write_bytes(RECEIVED_ITEM_ARRAY, packed_data)
         dolphin.write_word(RECEIVED_LENGTH, items)
@@ -490,6 +499,31 @@ class TTYDContext(cmmCtx):
             else:
                 break
 
+    async def set_ever_obtained_flags(self):
+        # Backfill the mod's ever-obtained ledger from received-items history.
+        if not self.save_loaded():
+            return
+
+        counts = {}
+        for item in self.items_received:
+            rom = get_rom_item_id(item)
+            if rom < 1 or rom > 255:
+                continue
+            counts[rom] = counts.get(rom, 0) + 1
+            flag = EVER_OBTAINED_FLAG_BASE + rom
+            if flag in self._pushed_recv_flags:
+                continue
+            if gswf_check(flag):
+                self._pushed_recv_flags.add(flag)
+                continue
+            if self._push_recv_flag(flag):
+                self._pushed_recv_flags.add(flag)
+
+        for rom, gsw in EVER_OBTAINED_COUNTERS.items():
+            received = min(counts.get(rom, 0), 255)
+            if received > gsw_check(gsw):
+                gsw_set(gsw, received)
+
     async def check_ttyd_locations(self):
         locations_to_send = set()
         try:
@@ -509,7 +543,7 @@ class TTYDContext(cmmCtx):
                         locations_to_send.add(location)
             if len(locations_to_send) > 0:
                 self.checked_locations &= locations_to_send
-                await self.send_msgs([{"cmd": 'LocationChecks', "locations": locations_to_send}])
+                await self.check_locations(locations_to_send)
         except Exception as e:
             logger.error(traceback.format_exc())
 
@@ -768,6 +802,7 @@ async def ttyd_sync_task(ctx: TTYDContext):
                     await ctx.receive_items()
                     await ctx.set_received_item_flags()
                     await ctx.set_ingredient_unlock_flags()
+                    await ctx.set_ever_obtained_flags()
                     await ctx.check_ttyd_locations()
                     goal = ctx.slot_data.get("goal", 0)
                     if goal == 1: # Shadow Queen

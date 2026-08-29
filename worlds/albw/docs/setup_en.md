@@ -18,7 +18,7 @@
 
 3. In Azahar, select `File > Open Azahar Folder`. Create a `load` folder inside this folder, and inside the `load` folder create a `mods` folder.
 4. Also in Azahar, select `Emulation > Configure`. Then, in the general section, on the top, select `Debug`. Finally, at the bottom, ensure that the `Enable RPC Server` option is enabled.
-5. (Optional) If you want the patcher to automatically install the mod, run the MultiworldGG Launcher and select `Open host.yaml`. Under `albw_settings`, set `mod_path` to `"<path-to-your-azahar-folder>/load/mods"`.
+5. (Optional) If you want the patcher to automatically install the mod, run the MultiworldGG Launcher and select `Open host.yaml`. Under `albw_settings`, set `mod_path` to `"<path-to-your-azahar-folder>/load/mods"`. If you are on Windows, make sure to replace all `\` with `/` in the path.
 
 ### Setup (3DS)
 
@@ -29,12 +29,13 @@
 	3. Press Start or choose `Save and exit`.
 5. Press L+DPadDown+Select to open the Rosalina menu, and make sure that `Plugin loader` is set to `[Enabled]`.
 6. Download [plugin.3gx](https://github.com/LittleCube-hax/albw-ap-plugin/releases/latest) and copy it to `/luma/plugins/00040000000EC300/` on your SD card.
-7. (Optional) If you want the patcher to automatically install the mod, run the MultiworldGG Launcher and select `Open host.yaml`. Under `albw_settings`, set `mod_path` to `"<path-to-your-sd-card>/luma/titles"`.
+7. (Optional) If you want the patcher to automatically install the mod, run the Archipelago Launcher and select `Open host.yaml`. Under `albw_settings`, set `mod_path` to `"<path-to-your-sd-card>/luma/titles"`. If you are on Windows, make sure to replace all `\` with `/` in the path.
+
 
 ## Generating a Game
 
 1. Create your player options YAML file. A sample YAML is included.
-2. Gather the YAMLs of all players into the `MultiworldGG/Players` folder.
+2. Gather the YAMLs of all players into the `Archipelago/Players` folder.
 3. Run the MultiworldGG Launcher and select Generate.
 4. A zip file will be created in the `MultiworldGG/output` folder. Upload this to [the MultiworldGG website](/uploads) to host your game.
 5. Inside the zip file is a `.apalbw` file. You **will need** this file to play the game.

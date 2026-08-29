@@ -1,0 +1,856 @@
+{
+  "Morio's Island - Starting Area": {
+    "level": "Morio's Home",
+    "sublevel": "Morio's Island",
+    "coins": {
+      "Morio's Island - Coin in Starting Area Arrow #1": 30300094,
+      "Morio's Island - Coin in Starting Area Arrow #2": 30300095,
+      "Morio's Island - Coin in Starting Area Arrow #3": 30300097,
+      "Morio's Island - Coin in Starting Area Arrow #4": 30300098,
+      "Morio's Island - Coin in Starting Area Arrow #5": 30300109,
+      "Morio's Island - Coin in Starting Area Arrow #6": 30300112,
+      "Morio's Island - Coin in Starting Area Arrow #7": 30300114,
+      "Morio's Island - Coin in Starting Area Arrow #8": 30300110,
+      "Morio's Island - Coin in Starting Area Arrow #9": 30300113,
+      "Morio's Island - Coin in Starting Area Arrow #10": 30300111,
+      "Morio's Island - Coin in Starting Area Arrow #11": 30300108,
+      "Morio's Island - Coin in Starting Area Back Row #1": 30300157,
+      "Morio's Island - Coin in Starting Area Back Row #2": 30300158,
+      "Morio's Island - Coin in Starting Area Back Row #3": 30300159,
+      "Morio's Island - Coin in Starting Area Back Row #4": 30300160,
+      "Morio's Island - Coin in Starting Area Back Row #5": 30300161,
+      "Morio's Island - Coin in Starting Area Left Triangle #1": 30300175,
+      "Morio's Island - Coin in Starting Area Left Triangle #2": 30300177,
+      "Morio's Island - Coin in Starting Area Left Triangle #3": 30300179,
+      "Morio's Island - Coin in Starting Area Left Triangle #4": 30300182,
+      "Morio's Island - Coin in Starting Area Left Triangle #5": 30300189,
+      "Morio's Island - Coin in Starting Area Right Triangle #1": 30300174,
+      "Morio's Island - Coin in Starting Area Right Triangle #2": 30300176,
+      "Morio's Island - Coin in Starting Area Right Triangle #3": 30300178,
+      "Morio's Island - Coin in Starting Area Right Triangle #4": 30300181,
+      "Morio's Island - Coin in Starting Area Right Triangle #5": 30300188,
+      "Morio's Island - Coin in Starting Area Forward Row #1": 30300116,
+      "Morio's Island - Coin in Starting Area Forward Row #2": 30300117,
+      "Morio's Island - Coin in Starting Area Forward Row #3": 30300118,
+      "Morio's Island - Coin in Starting Area Forward Row #4": 30300119,
+      "Morio's Island - Coin in Starting Area Forward Row #5": 30300120,
+      "Morio's Island - Coin in Starting Area Forward Row #6": 30300124,
+      "Morio's Island - Coin in Starting Area Forward Row #7": 30300125,
+      "Morio's Island - Coin in Starting Area Forward Row #8": 30300126,
+      "Morio's Island - Coin in Starting Area Forward Row #9": 30300127
+    },
+    "connections": {
+      "Morio's Island - First Hurdle": "X2/J1/B1",
+      "Morio's Island - Cliffs Above Starting Area": "X3/J1/B1"
+    }
+  },
+  "Morio's Island - First Hurdle": {
+    "level": "Morio's Home",
+    "sublevel": "Morio's Island",
+    "coins": {
+      "Morio's Island - Coin in Row Before First Checkpoint #1": 30300063,
+      "Morio's Island - Coin in Row Before First Checkpoint #2": 30300064,
+      "Morio's Island - Coin in Row Before First Checkpoint #3": 30300065,
+      "Morio's Island - Coin on First Hurdle Ramp #1": 30300066,
+      "Morio's Island - Coin on First Hurdle Ramp #2": 30300067,
+      "Morio's Island - Coin on First Hurdle Ramp #3": 30300142,
+      "Morio's Island - Coin on First Hurdle Ramp #4": 30300146,
+      "Morio's Island - Coin on First Hurdle Ramp #5": 30300203,
+      "Morio's Island - Coin Behind First Hurdle Ramp Left #1": 30300046,
+      "Morio's Island - Coin Behind First Hurdle Ramp Left #2": 30300048,
+      "Morio's Island - Coin Behind First Hurdle Ramp Left #3": 30300050,
+      "Morio's Island - Coin Behind First Hurdle Ramp Left #4": 30300052,
+      "Morio's Island - Coin Behind First Hurdle Ramp Left #5": 30300056,
+      "Morio's Island - Coin Behind First Hurdle Ramp Left #6": 30300055,
+      "Morio's Island - Coin Behind First Hurdle Ramp Right #1": 30300045,
+      "Morio's Island - Coin Behind First Hurdle Ramp Right #2": 30300047,
+      "Morio's Island - Coin Behind First Hurdle Ramp Right #3": 30300049,
+      "Morio's Island - Coin Behind First Hurdle Ramp Right #4": 30300051,
+      "Morio's Island - Coin Behind First Hurdle Ramp Right #5": 30300053,
+      "Morio's Island - Coin Behind First Hurdle Ramp Right #6": 30300054
+    },
+    "checkpoints": {
+      "Morio's Island - Checkpoint After First Hurdle": 30901175
+    },
+    "cheeses": {
+      "Morio's Island - Cheese Behind First Hurdle Ramp": 32100001
+    },
+    "connections": {
+      "Morio's Island - High Ground": "J1/B1"
+    }
+  },
+  "Morio's Island - Cliffs Above Starting Area": {
+    "level": "Morio's Home",
+    "sublevel": "Morio's Island",
+    "coinbags": {
+      "Morio's Island - Coin Bag on Starting Area Left Cliff": 30300345,
+      "Morio's Island - Coin Bag on Starting Area Right Cliff": 30300344
+    },
+    "coins": {
+      "Morio's Island - Coin in Triangle on Starting Area Left Cliff #1": 30300314,
+      "Morio's Island - Coin in Triangle on Starting Area Left Cliff #2": 30300318,
+      "Morio's Island - Coin in Triangle on Starting Area Left Cliff #3": 30300324,
+      "Morio's Island - Coin in Triangle on Starting Area Left Cliff #4": 30300328,
+      "Morio's Island - Coin in Triangle on Starting Area Left Cliff #5": 30300330,
+      "Morio's Island - Coin in Triangle on Starting Area Left Cliff #6": 30300317,
+      "Morio's Island - Coin in Triangle on Starting Area Left Cliff #7": 30300323,
+      "Morio's Island - Coin in Triangle on Starting Area Left Cliff #8": 30300327,
+      "Morio's Island - Coin in Triangle on Starting Area Left Cliff #9": 30300322,
+      "Morio's Island - Coin in Row on Starting Area Left Cliff #1": 30300335,
+      "Morio's Island - Coin in Row on Starting Area Left Cliff #2": 30300337,
+      "Morio's Island - Coin in Row on Starting Area Left Cliff #3": 30300339,
+      "Morio's Island - Coin in Row on Starting Area Left Cliff #4": 30300341,
+      "Morio's Island - Coin in Row on Starting Area Left Cliff #5": 30300343,
+      "Morio's Island - Coin in Triangle on Starting Area Right Cliff #1": 30300313,
+      "Morio's Island - Coin in Triangle on Starting Area Right Cliff #2": 30300315,
+      "Morio's Island - Coin in Triangle on Starting Area Right Cliff #3": 30300319,
+      "Morio's Island - Coin in Triangle on Starting Area Right Cliff #4": 30300325,
+      "Morio's Island - Coin in Triangle on Starting Area Right Cliff #5": 30300329,
+      "Morio's Island - Coin in Triangle on Starting Area Right Cliff #6": 30300316,
+      "Morio's Island - Coin in Triangle on Starting Area Right Cliff #7": 30300320,
+      "Morio's Island - Coin in Triangle on Starting Area Right Cliff #8": 30300326,
+      "Morio's Island - Coin in Triangle on Starting Area Right Cliff #9": 30300321,
+      "Morio's Island - Coin in Row on Starting Area Right Cliff #1": 30300334,
+      "Morio's Island - Coin in Row on Starting Area Right Cliff #2": 30300336,
+      "Morio's Island - Coin in Row on Starting Area Right Cliff #3": 30300338,
+      "Morio's Island - Coin in Row on Starting Area Right Cliff #4": 30300340,
+      "Morio's Island - Coin in Row on Starting Area Right Cliff #5": 30300342
+    }
+  },
+  "Morio's Island - High Ground": {
+    "level": "Morio's Home",
+    "sublevel": "Morio's Island",
+    "gears": {
+      "Morio's Island - Gear - After First Ramp": 30100004,
+      "Morio's Island - Gear - On Stone Pedestal": 30100010,
+      "Morio's Island - Gear - Stone Island Above Morio's Home Island": 30100014,
+      "Morio's Island - Gear - On Morio's Roof": 30100000,
+      "Morio's Island - Gear - On the Rubber Ducks": 30100009
+    },
+    "chests": {
+      "Morio's Island - Chest on First Stone Arch": 30300423,
+      "Morio's Island - Chest on Home Island Stone Pillar": 30300385
+    },
+    "coinbags": {
+      "Morio's Island - Coin Bag on First Stone Arch #1": 30300424,
+      "Morio's Island - Coin Bag on First Stone Arch #2": 30300422,
+      "Morio's Island - Coin Bag Near Fence on Island Leading to Morio's Home": 30300331,
+      "Morio's Island - Coin Bag on Umbrella": 30300143,
+      "Morio's Island - Coin Bag on Home Island Stone Pillar #2": 30300290,
+      "Morio's Island - Coin Bag on Low Stone Island Near Mori-O-Tron #1": 30300015,
+      "Morio's Island - Coin Bag on Low Stone Island Near Mori-O-Tron #2": 30300021
+    },
+    "coins": {
+      "Morio's Island - Coin on First Stone Arch #1": 30300425,
+      "Morio's Island - Coin on First Stone Arch #2": 30300421,
+      "Morio's Island - Coin on First Stone Ramp #1": 30300213,
+      "Morio's Island - Coin on First Stone Ramp #2": 30300212,
+      "Morio's Island - Coin on First Stone Ramp #3": 30300211,
+      "Morio's Island - Coin on First Stone Ramp #4": 30300210,
+      "Morio's Island - Coin on First Stone Ramp #5": 30300221,
+      "Morio's Island - Coin on First Stone Ramp #6": 30300292,
+      "Morio's Island - Coin on First Stone Ramp #7": 30300355,
+      "Morio's Island - Coin on First Stone Ramp #8": 30300387,
+      "Morio's Island - Coin on First Stone Ramp #9": 30300394,
+      "Morio's Island - Coin on First Stone Ramp #10": 30300400,
+      "Morio's Island - Coin on First Stone Ramp #11": 30300426,
+      "Morio's Island - Coin on First Stone Ramp #12": 30300429,
+      "Morio's Island - Coin on First Stone Ramp #13": 30300428,
+      "Morio's Island - Coin on First Stone Ramp #14": 30300427,
+      "Morio's Island - Coin Behind First Stone Ramp #1": 30300218,
+      "Morio's Island - Coin Behind First Stone Ramp #2": 30300216,
+      "Morio's Island - Coin Behind First Stone Ramp #3": 30300214,
+      "Morio's Island - Coin Behind First Stone Ramp #4": 30300209,
+      "Morio's Island - Coin Behind First Stone Ramp #5": 30300208,
+      "Morio's Island - Coin Behind First Stone Ramp #6": 30300206,
+      "Morio's Island - Coin Behind First Stone Ramp #7": 30300217,
+      "Morio's Island - Coin Behind First Stone Ramp #8": 30300215,
+      "Morio's Island - Coin Behind First Stone Ramp #9": 30300207,
+      "Morio's Island - Coin Behind First Stone Ramp #10": 30300205,
+      "Morio's Island - Coin Before Second Checkpoint #1": 30300350,
+      "Morio's Island - Coin Before Second Checkpoint #2": 30300349,
+      "Morio's Island - Coin Before Second Checkpoint #3": 30300348,
+      "Morio's Island - Coin Before Second Checkpoint #4": 30300347,
+      "Morio's Island - Coin Before Second Checkpoint #5": 30300346,
+      "Morio's Island - Coin on Ramp Island #1": 30300384,
+      "Morio's Island - Coin on Ramp Island #2": 30300383,
+      "Morio's Island - Coin on Ramp Island #3": 30300386,
+      "Morio's Island - Coin on Ramp Island #4": 30300391,
+      "Morio's Island - Coin in Arrow Towards Home Island #1": 30300289,
+      "Morio's Island - Coin in Arrow Towards Home Island #2": 30300288,
+      "Morio's Island - Coin in Arrow Towards Home Island #3": 30300287,
+      "Morio's Island - Coin in Arrow Towards Home Island #4": 30300286,
+      "Morio's Island - Coin in Arrow Towards Home Island #5": 30300283,
+      "Morio's Island - Coin in Arrow Towards Home Island #6": 30300285,
+      "Morio's Island - Coin in Arrow Towards Home Island #7": 30300282,
+      "Morio's Island - Coin in Arrow Towards Home Island #8": 30300284,
+      "Morio's Island - Coin in Arrow Towards Home Island #9": 30300281,
+      "Morio's Island - Coin in Arrow Towards Home Island #10": 30300279,
+      "Morio's Island - Coin in Arrow Towards Home Island #11": 30300280,
+      "Morio's Island - Coin in Arrow Towards Home Island #12": 30300278,
+      "Morio's Island - Coin in Arrow Towards Home Island #13": 30300277,
+      "Morio's Island - Coin in Zigzag Leading to Morio's Home #1": 30300135,
+      "Morio's Island - Coin in Zigzag Leading to Morio's Home #2": 30300132,
+      "Morio's Island - Coin in Zigzag Leading to Morio's Home #3": 30300131,
+      "Morio's Island - Coin in Zigzag Leading to Morio's Home #4": 30300130,
+      "Morio's Island - Coin in Zigzag Leading to Morio's Home #5": 30300129,
+      "Morio's Island - Coin in Zigzag Leading to Morio's Home #6": 30300128,
+      "Morio's Island - Coin Near Fence on Island Leading to Morio's Home #1": 30300333,
+      "Morio's Island - Coin Near Fence on Island Leading to Morio's Home #2": 30300332,
+      "Morio's Island - Coin on Gem-Shaped Island #1": 30300198,
+      "Morio's Island - Coin on Gem-Shaped Island #2": 30300197,
+      "Morio's Island - Coin on Gem-Shaped Island #3": 30300196,
+      "Morio's Island - Coin on Gem-Shaped Island #4": 30300195,
+      "Morio's Island - Coin on Gem-Shaped Island #5": 30300194,
+      "Morio's Island - Coin on Gem-Shaped Island #6": 30300193,
+      "Morio's Island - Coin on Gem-Shaped Island #7": 30300192,
+      "Morio's Island - Coin on Umbrella #1": 30300084,
+      "Morio's Island - Coin on Umbrella #2": 30300085,
+      "Morio's Island - Coin on Umbrella #3": 30300086,
+      "Morio's Island - Coin on Umbrella #4": 30300082,
+      "Morio's Island - Coin on Umbrella #5": 30300083,
+      "Morio's Island - Coin on Umbrella #6": 30300079,
+      "Morio's Island - Coin on Umbrella #7": 30300080,
+      "Morio's Island - Coin on Umbrella #8": 30300081,
+      "Morio's Island - Coin on Morio's Garage #1": 30300090,
+      "Morio's Island - Coin on Morio's Garage #2": 30300091,
+      "Morio's Island - Coin on Morio's Garage #3": 30300092,
+      "Morio's Island - Coin on Morio's Garage #4": 30300087,
+      "Morio's Island - Coin on Morio's Garage #5": 30300088,
+      "Morio's Island - Coin on Morio's Garage #6": 30300089,
+      "Morio's Island - Coin on Low Stone Island After Rubber Ducks #1": 30300014,
+      "Morio's Island - Coin on Low Stone Island After Rubber Ducks #2": 30300013,
+      "Morio's Island - Coin on Low Stone Island After Rubber Ducks #3": 30300012,
+      "Morio's Island - Coin on Low Stone Island After Rubber Ducks #4": 30300011,
+      "Morio's Island - Coin on Low Stone Island After Rubber Ducks #5": 30300010,
+      "Morio's Island - Coin on Low Stone Island After Rubber Ducks #6": 30300009,
+      "Morio's Island - Coin on Low Stone Island After Rubber Ducks #7": 30300008,
+      "Morio's Island - Coin on Low Stone Island After Rubber Ducks #8": 30300007,
+      "Morio's Island - Coin on Low Stone Island After Rubber Ducks #9": 30300006,
+      "Morio's Island - Coin on Low Stone Island After Rubber Ducks #10": 30300005,
+      "Morio's Island - Coin in Oval on High Stone Island on Rubber Duck Path #1": 30300311,
+      "Morio's Island - Coin in Oval on High Stone Island on Rubber Duck Path #2": 30300308,
+      "Morio's Island - Coin in Oval on High Stone Island on Rubber Duck Path #3": 30300305,
+      "Morio's Island - Coin in Oval on High Stone Island on Rubber Duck Path #4": 30300312,
+      "Morio's Island - Coin in Oval on High Stone Island on Rubber Duck Path #5": 30300310,
+      "Morio's Island - Coin in Oval on High Stone Island on Rubber Duck Path #6": 30300307,
+      "Morio's Island - Coin in Oval on High Stone Island on Rubber Duck Path #7": 30300304,
+      "Morio's Island - Coin in Oval on High Stone Island on Rubber Duck Path #8": 30300302,
+      "Morio's Island - Coin in Oval on High Stone Island on Rubber Duck Path #9": 30300309,
+      "Morio's Island - Coin in Oval on High Stone Island on Rubber Duck Path #10": 30300306,
+      "Morio's Island - Coin in Oval on High Stone Island on Rubber Duck Path #11": 30300303,
+      "Morio's Island - Coin in Line on High Stone Island on Rubber Duck Path #1": 30300372,
+      "Morio's Island - Coin in Line on High Stone Island on Rubber Duck Path #2": 30300371,
+      "Morio's Island - Coin in Line on High Stone Island on Rubber Duck Path #3": 30300370,
+      "Morio's Island - Coin in Line on High Stone Island on Rubber Duck Path #4": 30300369,
+      "Morio's Island - Coin in Line on High Stone Island on Rubber Duck Path #5": 30300368,
+      "Morio's Island - Coin on High Grass Island on Rubber Duck Path #1": 30300269,
+      "Morio's Island - Coin on High Grass Island on Rubber Duck Path #2": 30300268,
+      "Morio's Island - Coin on High Grass Island on Rubber Duck Path #3": 30300267,
+      "Morio's Island - Coin on High Grass Island on Rubber Duck Path #4": 30300265,
+      "Morio's Island - Coin on High Grass Island on Rubber Duck Path #5": 30300263,
+      "Morio's Island - Coin on Low Grass Island on Rubber Duck Path #1": 30300170,
+      "Morio's Island - Coin on Low Grass Island on Rubber Duck Path #2": 30300169,
+      "Morio's Island - Coin on Low Grass Island on Rubber Duck Path #3": 30300168,
+      "Morio's Island - Coin on Low Grass Island on Rubber Duck Path #4": 30300167,
+      "Morio's Island - Coin on Low Grass Island on Rubber Duck Path #5": 30300166,
+      "Morio's Island - Coin on Low Stone Island Near Mori-O-Tron #1": 30300016,
+      "Morio's Island - Coin on Low Stone Island Near Mori-O-Tron #2": 30300017,
+      "Morio's Island - Coin on Low Stone Island Near Mori-O-Tron #3": 30300018,
+      "Morio's Island - Coin on Low Stone Island Near Mori-O-Tron #4": 30300019,
+      "Morio's Island - Coin on Low Stone Island Near Mori-O-Tron #5": 30300020
+    },
+    "checkpoints": {
+      "Morio's Island - Checkpoint Before Stone Section": 30901125
+    },
+    "cheeses": {
+      "Morio's Island - Cheese Behind First Stone Ramp": 32100003,
+      "Morio's Island - Cheese on High Stone Island on Rubber Duck Path": 32100000
+    },
+    "hats": {
+      "Propeller Cap": 30700001
+    },
+    "connections": {
+      "Morio's Island - Morio's Home Island": "",
+      "Morio's Island - First Bunny Arch": "X1/J1 & B2 | J1+X1+B1 | X2+B1",
+      "Morio's Island - Second Bunny Arch": "B2 | X2+B1 & X3/J1 | X3+J1",
+      "Morio's Island - Center Stone Island": "X1+B1 & J1/X2 | J2+X2 | B2 & J1/X1",
+      "Morio's Island - Highest Ground": "B2 | J2+X1 | X2+J1 & X3/B1",
+      "Propeller Cap Access": ""
+    }
+  },
+  "Morio's Island - Morio's Home Island": {
+    "level": "Morio's Home",
+    "sublevel": "Morio's Island",
+    "coinbags": {
+      "Morio's Island - Coin Bag on Home Island Stone Pillar #1": 30300093,
+      "Morio's Island - Coin Bag in Ocean": 30300002
+    },
+    "coins": {
+      "Morio's Island - Coin on Home Island Stone Pillar #1": 30300043,
+      "Morio's Island - Coin on Home Island Stone Pillar #2": 30300057,
+      "Morio's Island - Coin on Home Island Stone Pillar #3": 30300059,
+      "Morio's Island - Coin on Home Island Stone Pillar #4": 30300058,
+      "Morio's Island - Coin on Home Island Stone Pillar #5": 30300044,
+      "Morio's Island - Coin in Ocean #1": 30300003,
+      "Morio's Island - Coin in Ocean #2": 30300004,
+      "Morio's Island - Coin in Ocean #3": 30300000,
+      "Morio's Island - Coin in Ocean #4": 30300001
+    },
+    "checkpoints": {
+      "Morio's Island - Checkpoint Near Morio's Home": 30900436
+    },
+    "cheeses": {
+      "Morio's Island - Cheese Near Morio's Home": 32100002
+    },
+    "connections": {
+      "Morio's Island - Starting Area": "J1/B1",
+      "Morio's Island - Stone Arch in Ocean Near Morio's Home": "B1 | X1+J1"
+    },
+    "subwarps": {
+      "Morio's Island - Morio's Garage": ["Morio's Home - Starting Area", ""]
+    }
+  },
+  "Morio's Island - Stone Arch in Ocean Near Morio's Home": {
+    "level": "Morio's Home",
+    "sublevel": "Morio's Island",
+    "chests": {
+      "Morio's Island - Chest Stone Arch Near Morio's Home": 30300154
+    },
+    "coinbags": {
+      "Morio's Island - Coin Bag on Stone Arch Near Morio's Home": 30300155
+    },
+    "coins": {
+      "Morio's Island - Coin on Stone Arch Near Morio's Home #1": 30300149,
+      "Morio's Island - Coin on Stone Arch Near Morio's Home #2": 30300150,
+      "Morio's Island - Coin on Stone Arch Near Morio's Home #3": 30300153,
+      "Morio's Island - Coin on Stone Arch Near Morio's Home #4": 30300152,
+      "Morio's Island - Coin on Stone Arch Near Morio's Home #5": 30300151,
+      "Morio's Island - Coin on Stone Arch Near Morio's Home #6": 30300156
+    }
+  },
+  "Morio's Island - First Bunny Arch": {
+    "level": "Morio's Home",
+    "sublevel": "Morio's Island",
+    "bunnies": {
+      "Morio's Island - Bunny - On First Optional Path": 30200000
+    },
+    "coins": {
+      "Morio's Island - Coin on First Bunny Arch #1": 30300431,
+      "Morio's Island - Coin on First Bunny Arch #2": 30300432,
+      "Morio's Island - Coin on First Bunny Arch #3": 30300433,
+      "Morio's Island - Coin on First Bunny Arch #4": 30300434,
+      "Morio's Island - Coin on First Bunny Arch #5": 30300435,
+      "Morio's Island - Coin on First Bunny Arch #6": 30300436
+    }
+  },
+  "Morio's Island - Second Bunny Arch": {
+    "level": "Morio's Home",
+    "sublevel": "Morio's Island",
+    "bunnies": {
+      "Morio's Island - Bunny - On Second Optional Path": 30200001
+    },
+    "coinbags": {
+      "Morio's Island - Coin Bag on Second Bunny Arch #1": 30300416,
+      "Morio's Island - Coin Bag on Second Bunny Arch #2": 30300414
+    },
+    "coins": {
+      "Morio's Island - Coin on Second Bunny Arch #1": 30300417,
+      "Morio's Island - Coin on Second Bunny Arch #2": 30300420,
+      "Morio's Island - Coin on Second Bunny Arch #3": 30300419,
+      "Morio's Island - Coin on Second Bunny Arch #4": 30300418,
+      "Morio's Island - Coin on Second Bunny Arch #5": 30300412,
+      "Morio's Island - Coin on Second Bunny Arch #6": 30300411,
+      "Morio's Island - Coin on Second Bunny Arch #7": 30300410,
+      "Morio's Island - Coin on Second Bunny Arch #8": 30300413
+    }
+  },
+  "Morio's Island - Center Stone Island": {
+    "level": "Morio's Home",
+    "sublevel": "Morio's Island",
+    "chests": {
+      "Morio's Island - Chest on Center Stone Island": 30300273
+    },
+    "coinbags": {
+      "Morio's Island - Coin Bag on Center Stone Island": 30300274
+    },
+    "coins": {
+      "Morio's Island - Coin on Center Stone Island #1": 30300062,
+      "Morio's Island - Coin on Center Stone Island #2": 30300061,
+      "Morio's Island - Coin on Center Stone Island #3": 30300060,
+      "Morio's Island - Coin on Center Stone Island #4": 30300141,
+      "Morio's Island - Coin on Center Stone Island #5": 30300140,
+      "Morio's Island - Coin on Center Stone Island #6": 30300138,
+      "Morio's Island - Coin on Center Stone Island #7": 30300139,
+      "Morio's Island - Coin on Center Stone Island #8": 30300137,
+      "Morio's Island - Coin on Center Stone Island #9": 30300136,
+      "Morio's Island - Coin on Center Stone Island #10": 30300134,
+      "Morio's Island - Coin on Center Stone Island #11": 30300133,
+      "Morio's Island - Coin on Center Stone Island #12": 30300199,
+      "Morio's Island - Coin on Center Stone Island #13": 30300200,
+      "Morio's Island - Coin on Center Stone Island #14": 30300202,
+      "Morio's Island - Coin on Center Stone Island #15": 30300201,
+      "Morio's Island - Coin on Center Stone Island #16": 30300276,
+      "Morio's Island - Coin on Center Stone Island #17": 30300275,
+      "Morio's Island - Coin on Center Stone Island #18": 30300272,
+      "Morio's Island - Coin on Center Stone Island #19": 30300270,
+      "Morio's Island - Coin on Center Stone Island #20": 30300271
+    }
+  },
+  "Morio's Island - Highest Ground": {
+    "level": "Morio's Home",
+    "sublevel": "Morio's Island",
+    "chests": {
+      "Morio's Island - Chest on Dirt Arch": 30300484
+    },
+    "coinbags": {
+      "Morio's Island - Coin Bag on Dirt Arch #1": 30300485,
+      "Morio's Island - Coin Bag on Dirt Arch #2": 30300483,
+      "Morio's Island - Coin Bag on Center Stone Cliffside": 30300407,
+      "Morio's Island - Coin Bag on Center Stone Clifftop #1": 30300442,
+      "Morio's Island - Coin Bag on Center Stone Clifftop #2": 30300441,
+      "Morio's Island - Coin Bag on Center Stone Clifftop #3": 30300440
+    },
+    "coins": {
+      "Morio's Island - Coin on Dirt Arch #1": 30300487,
+      "Morio's Island - Coin on Dirt Arch #2": 30300486,
+      "Morio's Island - Coin on Dirt Arch #3": 30300482,
+      "Morio's Island - Coin on Dirt Arch #4": 30300481,
+      "Morio's Island - Coin on Highest Center Stone Pillar #1": 30300462,
+      "Morio's Island - Coin on Highest Center Stone Pillar #2": 30300461,
+      "Morio's Island - Coin on Highest Center Stone Pillar #3": 30300460,
+      "Morio's Island - Coin on Highest Center Stone Pillar #4": 30300459,
+      "Morio's Island - Coin on Highest Center Stone Pillar #5": 30300458,
+      "Morio's Island - Coin on Highest Center Stone Pillar #6": 30300457,
+      "Morio's Island - Coin on Highest Center Stone Pillar #7": 30300456,
+      "Morio's Island - Coin on Center Stone Cliffside #1": 30300409,
+      "Morio's Island - Coin on Center Stone Cliffside #2": 30300408
+    },
+    "connections": {
+      "Morio's Island - Center Stone Island": ""
+    }
+  },
+  "Morio's Home - Starting Area": {
+    "level": "Morio's Home",
+    "sublevel": "Morio's Home",
+    "gears": {
+      "Morio's Home - Gear - Living Room Nook": 30100002,
+      "Morio's Home - Gear - Upper Bedroom Platform": 30100003,
+      "Morio's Home - Gear - In Bedroom Corner": 30100007,
+      "Morio's Home - Gear - On Garage Shelf": 30100015
+    },
+    "bunnies": {
+      "Morio's Home - Bunny - In Hidden Room in Hallway": 30200002
+    },
+    "coinbags": {
+      "Morio's Home - Coin Bag on Bookshelf": 30300293,
+      "Morio's Home - Coin Bag on Bump in Bedroom": 30300389,
+      "Morio's Home - Coin Bag on Upper Bedroom Platform #1": 30300500,
+      "Morio's Home - Coin Bag on Upper Bedroom Platform #2": 30300496,
+      "Morio's Home - Coin Bag on Upper Bedroom Platform #3": 30300502,
+      "Morio's Home - Coin Bag on Upper Bedroom Platform #4": 30300506,
+      "Morio's Home - Coin Bag on Bedroom Path": 30300448,
+      "Morio's Home - Coin Bag on Wooden Beam in Bedroom": 30300403,
+      "Morio's Home - Coin Bag on Garage Wall Shelf": 30300395
+    },
+    "coins": {
+      "Morio's Home - Coin on Garage Ramp #1": 30300078,
+      "Morio's Home - Coin on Garage Ramp #2": 30300144,
+      "Morio's Home - Coin on Garage Ramp #3": 30300162,
+      "Morio's Home - Coin on Garage Ramp #4": 30300219,
+      "Morio's Home - Coin on Garage Ramp #5": 30300252,
+      "Morio's Home - Coin on Garage Workbench #1": 30300163,
+      "Morio's Home - Coin on Garage Workbench #2": 30300165,
+      "Morio's Home - Coin on Garage Workbench #3": 30300171,
+      "Morio's Home - Coin on Garage Workbench #4": 30300172,
+      "Morio's Home - Coin on Garage Workbench #5": 30300173,
+      "Morio's Home - Coin in Living Room #1": 30300183,
+      "Morio's Home - Coin in Living Room #2": 30300184,
+      "Morio's Home - Coin in Living Room #3": 30300185,
+      "Morio's Home - Coin in Living Room #4": 30300186,
+      "Morio's Home - Coin on Living Room Couch #1": 30300187,
+      "Morio's Home - Coin on Living Room Couch #2": 30300266,
+      "Morio's Home - Coin on Living Room Couch #3": 30300301,
+      "Morio's Home - Coin on Bookshelf #1": 30300295,
+      "Morio's Home - Coin on Bookshelf #2": 30300294,
+      "Morio's Home - Coin in Hallway #1": 30300107,
+      "Morio's Home - Coin in Hallway #2": 30300106,
+      "Morio's Home - Coin in Hallway #3": 30300105,
+      "Morio's Home - Coin in Hallway #4": 30300104,
+      "Morio's Home - Coin in Hallway #5": 30300103,
+      "Morio's Home - Coin in Hallway #6": 30300102,
+      "Morio's Home - Coin in Hallway #7": 30300101,
+      "Morio's Home - Coin in Hallway #8": 30300100,
+      "Morio's Home - Coin in Hallway #9": 30300099,
+      "Morio's Home - Coin in Hallway #10": 30300096,
+      "Morio's Home - Coin in Hallway #11": 30300145,
+      "Morio's Home - Coin in Hallway #12": 30300180,
+      "Morio's Home - Coin in Hallway #13": 30300220,
+      "Morio's Home - Coin in Hallway #14": 30300262,
+      "Morio's Home - Coin in Hallway #15": 30300261,
+      "Morio's Home - Coin in Hallway #16": 30300259,
+      "Morio's Home - Coin in Hallway #17": 30300257,
+      "Morio's Home - Coin in Hallway #18": 30300255,
+      "Morio's Home - Coin in Hallway #19": 30300254,
+      "Morio's Home - Coin in Hallway #20": 30300253,
+      "Morio's Home - Coin in Hallway #21": 30300256,
+      "Morio's Home - Coin in Hallway #22": 30300258,
+      "Morio's Home - Coin in Hallway #23": 30300260,
+      "Morio's Home - Coin in Bedroom Before Checkpoint #1": 30300373,
+      "Morio's Home - Coin in Bedroom Before Checkpoint #2": 30300374,
+      "Morio's Home - Coin in Bedroom Before Checkpoint #3": 30300375,
+      "Morio's Home - Coin in Bedroom Before Checkpoint #4": 30300376,
+      "Morio's Home - Coin in Bedroom Before Checkpoint #5": 30300377,
+      "Morio's Home - Coin Leading to Weird Tunnels Door #1": 30300378,
+      "Morio's Home - Coin Leading to Weird Tunnels Door #2": 30300379,
+      "Morio's Home - Coin Leading to Weird Tunnels Door #3": 30300380,
+      "Morio's Home - Coin on Bump in Bedroom #1": 30300390,
+      "Morio's Home - Coin on Bump in Bedroom #2": 30300388,
+      "Morio's Home - Coin on First Bed in Bedroom #1": 30300406,
+      "Morio's Home - Coin on First Bed in Bedroom #2": 30300430,
+      "Morio's Home - Coin on Second Bed in Bedroom #1": 30300439,
+      "Morio's Home - Coin on Second Bed in Bedroom #2": 30300447,
+      "Morio's Home - Coin on Second Bed in Bedroom #3": 30300454,
+      "Morio's Home - Coin on Highest Bed in Bedroom #1": 30300480,
+      "Morio's Home - Coin on Highest Bed in Bedroom #2": 30300491,
+      "Morio's Home - Coin on Highest Bed in Bedroom #3": 30300493,
+      "Morio's Home - Coin on Upper Bedroom Platform #1": 30300498,
+      "Morio's Home - Coin on Upper Bedroom Platform #2": 30300495,
+      "Morio's Home - Coin on Upper Bedroom Platform #3": 30300497,
+      "Morio's Home - Coin on Upper Bedroom Platform #4": 30300499,
+      "Morio's Home - Coin on Upper Bedroom Platform #5": 30300504,
+      "Morio's Home - Coin on Upper Bedroom Platform #6": 30300507,
+      "Morio's Home - Coin on Upper Bedroom Platform #7": 30300505,
+      "Morio's Home - Coin on Upper Bedroom Platform #8": 30300503,
+      "Morio's Home - Coin on Bedroom Path #1": 30300476,
+      "Morio's Home - Coin on Bedroom Path #2": 30300455,
+      "Morio's Home - Coin on Bedroom Bed Wall #1": 30300438,
+      "Morio's Home - Coin on Bedroom Bed Wall #2": 30300446,
+      "Morio's Home - Coin on Bedroom Bed Wall #3": 30300453,
+      "Morio's Home - Coin on Bedroom Bed Wall #4": 30300475,
+      "Morio's Home - Coin on Bedroom Bed Wall #5": 30300473,
+      "Morio's Home - Coin on Bedroom Bed Wall #6": 30300451,
+      "Morio's Home - Coin on Bedroom Bed Wall #7": 30300470,
+      "Morio's Home - Coin on Bedroom Bed Wall #8": 30300478,
+      "Morio's Home - Coin on Bedroom Bed Wall #9": 30300490,
+      "Morio's Home - Coin on Bedroom Bed Wall #10": 30300489,
+      "Morio's Home - Coin on Wooden Beam in Bedroom #1": 30300405,
+      "Morio's Home - Coin on Wooden Beam in Bedroom #2": 30300404,
+      "Morio's Home - Coin on Wooden Beam in Bedroom #3": 30300402,
+      "Morio's Home - Coin on Wooden Beam in Bedroom #4": 30300401
+    },
+    "checkpoints": {
+      "Morio's Home - Checkpoint in Bedroom": 30900380
+    },
+    "connections": {
+      "Morio's Home - Expert 2 High Ground": "X2/J1/B1",
+      "Morio's Home - High Ground": "J1/B1",
+      "Morio's Home - Loft": "B2 & X2/J2 | X1+J2 | X1+B2+J1 | X3+B1+J1",
+      "Morio's Home - Kitchen": "SP/SCOOB"
+    },
+    "subwarps": {
+      "Morio's Home - Door in Bedroom": ["Weird Tunnels - Entrance Area", ""]
+    },
+    "specialrules": {
+      "Morio's Home - Coin Bag on Garage Wall Shelf": "J1 | X2+B1",
+      "Morio's Home - Gear - On Garage Shelf": "X3/B1/J1"
+    }
+  },
+  "Morio's Home - Expert 2 High Ground": {
+    "level": "Morio's Home",
+    "sublevel": "Morio's Home",
+    "gears": {
+      "Morio's Home - Gear - In Hidden Room Near Garage": 30100013
+    },
+    "safes": {
+      "Morio's Home - Safe in Hidden Room Near Garage": 30300264
+    },
+    "chests": {
+      "Morio's Home - Chest on Garage Shelf Near Tire": 30300300
+    },
+    "coinbags": {
+      "Morio's Home - Coin Bag on Garage Shelf Near Tire": 30300299
+    },
+    "coins": {
+      "Morio's Home - Coin on Garage Shelf Near Gear #1": 30300356,
+      "Morio's Home - Coin on Garage Shelf Near Gear #2": 30300357,
+      "Morio's Home - Coin on Garage Shelf Near Gear #3": 30300358,
+      "Morio's Home - Coin on Garage Shelf Near Gear #4": 30300366,
+      "Morio's Home - Coin on Garage Shelf Near Tire #1": 30300297,
+      "Morio's Home - Coin on Garage Shelf Near Tire #2": 30300298
+    }
+  },
+  "Morio's Home - High Ground": {
+    "level": "Morio's Home",
+    "sublevel": "Morio's Home",
+    "gears": {
+      "Morio's Home - Gear - Above Hallway": 30100011
+    },
+    "coinbags": {
+      "Morio's Home - Coin Bag on Hallway Ledge #1": 30300365,
+      "Morio's Home - Coin Bag on Hallway Ledge #2": 30300359
+    },
+    "coins": {
+      "Morio's Home - Coin on Hallway Ledge #1": 30300364,
+      "Morio's Home - Coin on Hallway Ledge #2": 30300363,
+      "Morio's Home - Coin on Hallway Ledge #3": 30300362,
+      "Morio's Home - Coin on Hallway Ledge #4": 30300361,
+      "Morio's Home - Coin on Hallway Ledge #5": 30300360
+    },
+    "connections": {
+      "Morio's Home - Before Bed Pillars": "X1/B1/J2"
+    },
+    "specialrules": {
+      "Morio's Home - Gear - Above Hallway": "X1/B1/J2"
+    }
+  },
+  "Morio's Home - Before Bed Pillars": {
+    "level": "Morio's Home",
+    "sublevel": "Morio's Home",
+    "coins": {
+      "Morio's Home - Coin on Bed Pillar #1": 30300443,
+      "Morio's Home - Coin on Bed Pillar #2": 30300449,
+      "Morio's Home - Coin on Bed Pillar #3": 30300463
+    },
+    "checkpoints": {
+      "Morio's Home - Checkpoint Before Bed Pillars": 30900425
+    },
+    "connections": {
+      "Morio's Home - Starting Area": "",
+      "Morio's Home - Bed Pillars": "B2 & X1/J1 | X3+J1 | X1+B1 & X2/J1"
+    }
+  },
+  "Morio's Home - Bed Pillars": {
+    "level": "Morio's Home",
+    "sublevel": "Morio's Home",
+    "gears": {
+      "Morio's Home - Gear - After Bed Pillars": 30100012
+    },
+    "safes": {
+      "Morio's Home - Safe After Bed Pillars": 30300494
+    },
+    "coins": {
+      "Morio's Home - Coin After Bed Pillars #1": 30300469,
+      "Morio's Home - Coin After Bed Pillars #2": 30300472,
+      "Morio's Home - Coin After Bed Pillars #3": 30300471,
+      "Morio's Home - Coin After Bed Pillars #4": 30300467,
+      "Morio's Home - Coin After Bed Pillars #5": 30300465,
+      "Morio's Home - Coin After Bed Pillars #6": 30300466
+    },
+    "warps": {
+      "Morio's Home - Morio's Lab Portal": ["{RETURNPORTAL}", ""]
+    }
+  },
+  "Morio's Home - Loft": {
+    "level": "Morio's Home",
+    "sublevel": "Morio's Home",
+    "coinbags": {
+      "Morio's Home - Coin Bag in Loft #1": 30300513,
+      "Morio's Home - Coin Bag in Loft #2": 30300523,
+      "Morio's Home - Coin Bag in Loft #3": 30300533
+    },
+    "coins": {
+      "Morio's Home - Coin in Loft #1": 30300511,
+      "Morio's Home - Coin in Loft #2": 30300516,
+      "Morio's Home - Coin in Loft #3": 30300521,
+      "Morio's Home - Coin in Loft #4": 30300526,
+      "Morio's Home - Coin in Loft #5": 30300531,
+      "Morio's Home - Coin in Loft #6": 30300508,
+      "Morio's Home - Coin in Loft #7": 30300512,
+      "Morio's Home - Coin in Loft #8": 30300517,
+      "Morio's Home - Coin in Loft #9": 30300518,
+      "Morio's Home - Coin in Loft #10": 30300527,
+      "Morio's Home - Coin in Loft #11": 30300532,
+      "Morio's Home - Coin in Loft #12": 30300536,
+      "Morio's Home - Coin in Loft #13": 30300509,
+      "Morio's Home - Coin in Loft #14": 30300522,
+      "Morio's Home - Coin in Loft #15": 30300528,
+      "Morio's Home - Coin in Loft #16": 30300537,
+      "Morio's Home - Coin in Loft #17": 30300510,
+      "Morio's Home - Coin in Loft #18": 30300514,
+      "Morio's Home - Coin in Loft #19": 30300519,
+      "Morio's Home - Coin in Loft #20": 30300524,
+      "Morio's Home - Coin in Loft #21": 30300525,
+      "Morio's Home - Coin in Loft #23": 30300534,
+      "Morio's Home - Coin in Loft #24": 30300538,
+      "Morio's Home - Coin in Loft #25": 30300515,
+      "Morio's Home - Coin in Loft #26": 30300520,
+      "Morio's Home - Coin in Loft #27": 30300529,
+      "Morio's Home - Coin in Loft #28": 30300530,
+      "Morio's Home - Coin in Loft #29": 30300535
+    },
+    "connections": {
+      "Morio's Home - Kitchen High Ground": ""
+    }
+  },
+  "Morio's Home - Kitchen": {
+    "level": "Morio's Home",
+    "sublevel": "Morio's Home",
+    "gears": {
+      "Morio's Home - Gear - In Dining Room Nook": 30100001
+    },
+    "coins": {
+      "Morio's Home - Coin on Kitchen Sink": 30300190,
+      "Morio's Home - Coin on Kitchen Stove": 30300191,
+      "Morio's Home - Coin in Kitchen Hallway #1": 30300121,
+      "Morio's Home - Coin in Kitchen Hallway #2": 30300122,
+      "Morio's Home - Coin in Kitchen Hallway #3": 30300123,
+      "Morio's Home - Coin on Dining Room Cupboard #1": 30300147,
+      "Morio's Home - Coin on Dining Room Cupboard #2": 30300148
+    },
+    "hats": {
+      "Lasagna Hat": 30700010
+    },
+    "connections": {
+      "Morio's Home - Kitchen Expert 2": "X2/B1/J1",
+      "Morio's Home - Kitchen High Ground": "J1 | X1+B2 | X2+B1"
+    }
+  },
+  "Morio's Home - Kitchen Expert 2": {
+    "level": "Morio's Home",
+    "sublevel": "Morio's Home",
+    "chests": {
+      "Morio's Home - Chest on Dining Room Pantry": 30300224
+    },
+    "coinbags": {
+      "Morio's Home - Coin Bag on Kitchen Cabinet #1": 30300353,
+      "Morio's Home - Coin Bag on Kitchen Cabinet #2": 30300352
+    },
+    "coins": {
+      "Morio's Home - Coin on Dining Room Pantry #1": 30300222,
+      "Morio's Home - Coin on Dining Room Pantry #2": 30300223,
+      "Morio's Home - Coin on Kitchen Cabinet #1": 30300354,
+      "Morio's Home - Coin on Kitchen Cabinet #2": 30300351
+    },
+    "hats": {
+      "Pot Hat": 30700009
+    }
+  },
+  "Morio's Home - Kitchen High Ground": {
+    "level": "Morio's Home",
+    "sublevel": "Morio's Home",
+    "gears": {
+      "Morio's Home - Gear - Above Kitchen": 30100008
+    },
+    "coinbags": {
+      "Morio's Home - Coin Bag on Path Above Kitchen": 30300397,
+      "Morio's Home - Coin Bag Above Dining Room": 30300444
+    },
+    "coins": {
+      "Morio's Home - Coin on Path Above Kitchen #1": 30300396,
+      "Morio's Home - Coin on Path Above Kitchen #2": 30300398,
+      "Morio's Home - Coin on Path Above Kitchen #3": 30300399,
+      "Morio's Home - Coin on Ramp Above Dining Room #1": 30300445,
+      "Morio's Home - Coin on Ramp Above Dining Room #2": 30300450,
+      "Morio's Home - Coin on Ramp Above Dining Room #3": 30300452,
+      "Morio's Home - Coin on Ramp Above Dining Room #4": 30300474,
+      "Morio's Home - Coin on Ramp Above Dining Room #5": 30300477,
+      "Morio's Home - Coin on Ramp Above Dining Room #6": 30300479
+    },
+    "connections": {
+      "Morio's Home - Kitchen": ""
+    },
+    "specialrules": {
+      "Morio's Home - Gear - Above Kitchen": "X1/B1/J2"
+    }
+  },
+  "Weird Tunnels - Entrance Area": {
+    "level": "Morio's Home",
+    "sublevel": "Weird Tunnels",
+    "coins": {
+      "Weird Tunnels - Coin on Path Before First Boosts #1": 30300068,
+      "Weird Tunnels - Coin on Path Before First Boosts #2": 30300069,
+      "Weird Tunnels - Coin on Path Before First Boosts #3": 30300070,
+      "Weird Tunnels - Coin on Path Before First Boosts #4": 30300071,
+      "Weird Tunnels - Coin on Path Before First Boosts #5": 30300072
+    },
+    "connections": {
+      "Weird Tunnels - Expert 2": "X2/B1/J1"
+    }
+  },
+  "Weird Tunnels - Expert 2": {
+    "level": "Morio's Home",
+    "sublevel": "Weird Tunnels",
+    "coins": {
+      "Weird Tunnels - Coin on Path Before Second Boosts #1": 30300073,
+      "Weird Tunnels - Coin on Path Before Second Boosts #2": 30300074,
+      "Weird Tunnels - Coin on Path Before Second Boosts #3": 30300075,
+      "Weird Tunnels - Coin on Path Before Second Boosts #4": 30300076,
+      "Weird Tunnels - Coin on Path Before Second Boosts #5": 30300077
+    },
+    "connections": {
+      "Weird Tunnels - Expert 3": "X3/B1/J1"
+    }
+  },
+  "Weird Tunnels - Expert 3": {
+    "level": "Morio's Home",
+    "sublevel": "Weird Tunnels",
+    "gears": {
+      "Weird Tunnels - Gear - On Lower Path": 30100005
+    },
+    "coinbags": {
+      "Weird Tunnels - Coin Bag Near Lower Gear #1": 30300024,
+      "Weird Tunnels - Coin Bag Near Lower Gear #2": 30300036
+    },
+    "coins": {
+      "Weird Tunnels - Coin on Left Upper Path #1": 30300225,
+      "Weird Tunnels - Coin on Left Upper Path #2": 30300226,
+      "Weird Tunnels - Coin on Left Upper Path #3": 30300227,
+      "Weird Tunnels - Coin on Left Upper Path #4": 30300228,
+      "Weird Tunnels - Coin on Left Upper Path #5": 30300229,
+      "Weird Tunnels - Coin Surrounding Lower Gear #1": 30300022,
+      "Weird Tunnels - Coin Surrounding Lower Gear #2": 30300025,
+      "Weird Tunnels - Coin Surrounding Lower Gear #3": 30300023,
+      "Weird Tunnels - Coin Surrounding Lower Gear #4": 30300028,
+      "Weird Tunnels - Coin Surrounding Lower Gear #5": 30300027,
+      "Weird Tunnels - Coin Surrounding Lower Gear #6": 30300026,
+      "Weird Tunnels - Coin Surrounding Lower Gear #7": 30300031,
+      "Weird Tunnels - Coin Surrounding Lower Gear #8": 30300029,
+      "Weird Tunnels - Coin Surrounding Lower Gear #9": 30300034,
+      "Weird Tunnels - Coin Surrounding Lower Gear #10": 30300033,
+      "Weird Tunnels - Coin Surrounding Lower Gear #11": 30300032,
+      "Weird Tunnels - Coin Surrounding Lower Gear #12": 30300037,
+      "Weird Tunnels - Coin Surrounding Lower Gear #13": 30300035,
+      "Weird Tunnels - Coin Surrounding Lower Gear #14": 30300038,
+      "Weird Tunnels - Coin Leading Towards Exit #1": 30300039,
+      "Weird Tunnels - Coin Leading Towards Exit #2": 30300040,
+      "Weird Tunnels - Coin Leading Towards Exit #3": 30300041,
+      "Weird Tunnels - Coin Leading Towards Exit #4": 30300042
+    },
+    "connections": {
+      "Weird Tunnels - High Ground": "B1/J1"
+    }
+  },
+  "Weird Tunnels - High Ground": {
+    "level": "Morio's Home",
+    "sublevel": "Weird Tunnels",
+    "gears": {
+      "Weird Tunnels - Gear - On Upper Path": 30100006
+    },
+    "coinbags": {
+      "Weird Tunnels - Coin Bag on Right Upper Path #1": 30300235,
+      "Weird Tunnels - Coin Bag on Right Upper Path #2": 30300251
+    },
+    "coins": {
+      "Weird Tunnels - Coin on Right Upper Path #1": 30300234,
+      "Weird Tunnels - Coin on Right Upper Path #2": 30300233,
+      "Weird Tunnels - Coin on Right Upper Path #3": 30300232,
+      "Weird Tunnels - Coin on Right Upper Path #4": 30300231,
+      "Weird Tunnels - Coin on Right Upper Path #5": 30300230,
+      "Weird Tunnels - Coin on Right Upper Path #6": 30300238,
+      "Weird Tunnels - Coin on Right Upper Path #7": 30300237,
+      "Weird Tunnels - Coin on Right Upper Path #8": 30300236,
+      "Weird Tunnels - Coin on Right Upper Path #9": 30300241,
+      "Weird Tunnels - Coin on Right Upper Path #10": 30300240,
+      "Weird Tunnels - Coin on Right Upper Path #11": 30300239,
+      "Weird Tunnels - Coin on Right Upper Path #12": 30300244,
+      "Weird Tunnels - Coin on Right Upper Path #13": 30300242,
+      "Weird Tunnels - Coin on Right Upper Path #14": 30300247,
+      "Weird Tunnels - Coin on Right Upper Path #15": 30300246,
+      "Weird Tunnels - Coin on Right Upper Path #16": 30300245,
+      "Weird Tunnels - Coin on Right Upper Path #17": 30300250,
+      "Weird Tunnels - Coin on Right Upper Path #18": 30300249,
+      "Weird Tunnels - Coin on Right Upper Path #19": 30300248
+    }
+  }
+}

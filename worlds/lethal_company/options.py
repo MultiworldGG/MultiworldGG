@@ -450,6 +450,18 @@ class ModifyScrapSpawns(Toggle):
     slot = True
     slot_name = "fixscrapsanity"
 
+class DeathLinkScrapLoss(Range):
+    """
+    The percentage of scrap lost when the last living player dies from death link. 0 means no scrap is lost, 50 means 
+    half of the scrap in the ship is lost, 100 means all scrap is lost. This option does not preserve scrap if the last 
+    player dies naturally, and does nothing if death link is disabled.
+    """
+    display_name = "Death Link Scrap Loss"
+    range_start = 0
+    range_end = 100
+    default = 50
+    slot = True
+    slot_name = "DeathLinkScrapLossPercent"
 
 class LogicDifficulty(Choice):
     """
@@ -521,3 +533,4 @@ class LCOptions(PerGameCommonOptions):
     time_trap: DayDecreaseWeight #done
     money: MoneyWeight #done
     death_link: DeathLink
+    death_link_percent_scrap_lost: DeathLinkScrapLoss

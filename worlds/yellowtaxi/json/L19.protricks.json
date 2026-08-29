@@ -1,0 +1,51 @@
+{
+  "Pro Tricks! - Starting Area": {
+    "level": "Pro Tricks!",
+    "sublevel": "Pro Tricks!",
+    "gears": {
+      "Pro Tricks! - Gear - #1 Near Spikes at Start": 190100007,
+      "Pro Tricks! - Gear - #2 Above Ramps": 190100008
+    },
+    "connections": {
+      "Pro Tricks! - First Gap Ramp": "B1/J1",
+      "Pro Tricks! - Final Section": "J2 | X2+J1"
+    },
+    "specialrules": {
+      "Pro Tricks! - Gear - #2 Above Ramps": "B1/J2 | X2+J1"
+    }
+  },
+  "Pro Tricks! - First Gap Ramp": {
+    "level": "Pro Tricks!",
+    "sublevel": "Pro Tricks!",
+    "gears": {
+      "Pro Tricks! - Gear - #3 Above Gap": 190100002,
+      "Pro Tricks! - Gear - #4 On Ramp Island": 190100001
+    },
+    "connections": {
+      "Pro Tricks! - Middle Section": "B1 | X1+J1"
+    }
+  },
+  "Pro Tricks! - Middle Section": {
+    "level": "Pro Tricks!",
+    "sublevel": "Pro Tricks!",
+    "gears": {
+      "Pro Tricks! - Gear - #5 After Gap": 190100003,
+      "Pro Tricks! - Gear - #6 Sharp Turn Through Spikes": 190100000,
+      "Pro Tricks! - Gear - #7 On Flat Island": 190100005
+    },
+    "connections": {
+      "Pro Tricks! - Final Section": "X1/J1 & B1"
+    }
+  },
+  "Pro Tricks! - Final Section": {
+    "level": "Pro Tricks!",
+    "sublevel": "Pro Tricks!",
+    "gears": {
+      "Pro Tricks! - Gear - #8 On Ramp Pillar": 190100006,
+      "Pro Tricks! - Gear - #9 Cliff Above Start": 190100004
+    },
+    "specialrules": {
+      "Pro Tricks! - Complete Time Trial": "B1 | X3+J1"
+    }
+  }
+}

@@ -591,11 +591,11 @@ class DSZeldaClient(BizHawkClient):
                     res = self.add_special_er_data(ctx, res, data.scene, data, exit_data)
 
             self.er_map = res
-            # printl(f"ER Map:")
-            # for scene, data in self.er_map.items():
-            #     printl(f"\t{hex(scene)}")
-            #     for d2, d3 in data.items():
-            #         printl(f"\t\t{d2} => {d3}")
+            printl(f"ER Map:")
+            for scene, data in self.er_map.items():
+                printl(f"\t{hex(scene)}")
+                for d2, d3 in data.items():
+                    printl(f"\t\t{d2} => {d3}")
 
 
 
@@ -884,7 +884,7 @@ class DSZeldaClient(BizHawkClient):
         return write_list
 
     async def _set_dynamic_entrances(self, ctx, scene):
-        self.er_in_scene = self.er_map.get(scene, dict())
+        self.er_in_scene = self.er_map.get(scene, dict()).copy()
         self.er_messages.clear()
         if not self.dynamic_entrances_by_scene:
             self.dynamic_entrances_by_scene = build_scene_to_dynamic_entrance(ctx)

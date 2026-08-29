@@ -159,7 +159,8 @@ void _addFieldSkill(int id, int lv){
 	*fieldSkillOffset = (char)lv;
 }
 
-// 1 = Skell License, 2 = Flight Module, 3 = Overdrive, 4 = FNet, 5=Blade, 14=Level
+// 1 = Skell License, 2 = Flight Module, 3 = Overdrive, 4 = FNet, 5=Licenses, 14=Level
+// 1, 2 unused now just for fallback
 // Some important unlocks are tied to the scenario flag, which is not desired
 // Replace all functions with a call to our own for these items
 // To anchor them in the savedata we use unused items from the "Important Items" Category
@@ -199,13 +200,23 @@ void _addKey(int id, int flag){
 	int flightModuleFlag = 0x7610; // getFlightUnitFlag
 	int overdriveFlag = 0x6bc3; // IsPermit
 
+	// only for compatability
 	if(id == 1) setLocal(1, skellLicenseFlag, flag);
 	else if(id == 2) setLocal(1, flightModuleFlag, flag);
+
 	else if(id == 3) setLocal(1, overdriveFlag, flag);
 	else if(id == 4) changeScenarioFlag(fnetBasePtr, flag*3001);
 	else if(id == 5){
 		setLocal(2, _collepediaFlag, 3);
 		setLocal(2, _bladeFlag, 3);
+		if(flag >= 2){
+			_addItem(0x1d, 24 + 1 - 1);
+			setLocal(1, skellLicenseFlag, 1);
+		}
+		if(flag >= 3){
+			_addItem(0x1d, 24 + 2 - 1);
+			setLocal(1, flightModuleFlag, 1);
+		}
 	}
 	else if(id == 14 && characterLevel){
 		// cap max level

@@ -4,9 +4,9 @@ import random
 from worlds._bizhawk.client import BizHawkClient
 from .ClientData import *
 from .Locations import location_names
-from .Data import sm64hack_items, sr6_25_locations, junk, useful
+from .Data import sm64hack_items, sr6_25_locations, junk, useful, sr8courseorder, sr8extraorder
 from time import time
-from struct import unpack
+from struct import unpack, pack
 from NetUtils import ClientStatus
 from Utils import get_unique_identifier
 from asyncio import sleep
@@ -95,14 +95,20 @@ class SM64HackClient(BizHawkClient):
         self.coin_discounts = 0
         self.cap_timer_buffs = 0
         self.additional_wallkick_frames = 0
-        self.basecoincount = 100
-        self.base_cap_times = [600, 600, 1800]
-        self.base_wallkick_frames = 5
+        self.basecoincount = None
+        self.base_cap_times = None
+        self.base_wallkick_frames = None
         self.receiving_ring = False
         self.receiving_ring_amount = 0
         self.supposed_ring_count = 0
         self.file_locked = False
         self.li = False
+        self.framesPtr = None
+        self.maxHealthPtr = None
+        self.wallkickFramePtr = None
+        self.capDataPtr = None
+        self.coinStarCountPtr = None
+        self.frame_timer = 0
         global victory
         victory = False
     
@@ -149,19 +155,8 @@ class SM64HackClient(BizHawkClient):
         return file2data
 
     def dont_kill(self, action):
-        match action:
-            case "00001302":
-                return True #stargrab, to prevent fake deaths
-            case "00001303":
-                return True #stargrab, to prevent fake deaths
-            case "00001307":
-                return True #stargrab, to prevent fake deaths
-            case "00001904":
-                return True #stargrab, to prevent fake deaths
-            case "00001320":
-                return True #pulling door, to prevent fake deaths
-            case "00001321":
-                return True #pushing door, to prevent fake deaths
+        if action in dont_kill_actions:
+            return True
         return False
 
     async def check_death(self, read, ctx):
@@ -181,18 +176,6 @@ class SM64HackClient(BizHawkClient):
             return False
         
         match action:
-            case "00001302":
-                return 0 #stargrab, to prevent fake deaths
-            case "00001303":
-                return 0 #stargrab, to prevent fake deaths
-            case "00001307":
-                return 0 #stargrab, to prevent fake deaths
-            case "00001904":
-                return 0 #stargrab, to prevent fake deaths
-            case "00001320":
-                return 0 #pulling door, to prevent fake deaths
-            case "00001321":
-                return 0 #pushing door, to prevent fake deaths
             case "00021312":
                 return 1 #quicksand
             case "300222E3":
@@ -269,16 +252,18 @@ class SM64HackClient(BizHawkClient):
         return level_badges
 
     def get_coin_star_writes(self, coins:int):
-        return [(hundredCoinStarPtr1, coins.to_bytes(2), "RDRAM"), (hundredCoinStarPtr2, coins.to_bytes(2), "RDRAM")]
+        return [(self.coinStarCountPtr, coins.to_bytes(4), "RDRAM")]
                 
     def get_cap_timer_writes(self):
         times = []
+        assert self.base_cap_times is not None
         for time in self.base_cap_times:
-            times.append(time + 60) #2 seconds
-        return [(vanishCapTimerPtr, times[0].to_bytes(2), "RDRAM"), (metalCapTimerPtr, times[1].to_bytes(2), "RDRAM"), (wingCapTimerPtr, times[2].to_bytes(2), "RDRAM")]
+            times.append(time + 60 * self.cap_timer_buffs) #2 seconds
+        data = pack(">HHH", *[t for t in times])
+        return [(self.capDataPtr, data, "RDRAM")] # type: ignore
 
     def get_wallkick_frame_writes(self):
-        return [(wallkickFramePtr, (self.base_wallkick_frames + self.additional_wallkick_frames).to_bytes(2), "RDRAM"), (wallkickFramePtr2, (self.base_wallkick_frames + self.additional_wallkick_frames).to_bytes(2), "RDRAM")]
+        return [(self.wallkickFramePtr, (self.base_wallkick_frames + self.additional_wallkick_frames).to_bytes(2), "RDRAM")]
 
 
     def get_choir_write(self):
@@ -356,12 +341,15 @@ class SM64HackClient(BizHawkClient):
     
     def get_junk_item_write(self, name, number=None):
         match name:
-            case "Green Demon Trap":
+            case "Green Demon Trap" | "-1 Life":
                 if self.flagPtr:
                     return (self.flagPtr, bytes.fromhex("00000069"), "RDRAM")
             case "Heave-Ho Trap":
                 if self.flagPtr:
                     return (self.flagPtr, bytes.fromhex("0000006A"), "RDRAM")
+            case "+1 Bomb":
+                if self.flagPtr:
+                    return (self.flagPtr, bytes.fromhex("0000006C"), "RDRAM")
             case "Mario Choir":
                 if self.choirFlagPtr:
                     self.choir_active = 1
@@ -373,20 +361,26 @@ class SM64HackClient(BizHawkClient):
                 return (marioSquishPtr, bytes.fromhex("FE"), "RDRAM")
             case "Coin":
                 return (coinPtr, (number + 1).to_bytes(2), "RDRAM")
-            case "1-Up Mushroom":
+            case "1-Up Mushroom" | "+1 Life":
                 return (self.flagPtr, bytes.fromhex("0000006B"), "RDRAM")
             case "Spin Trap":
                 self.spin = True
                 self.spin_timer = time()
-                return (self.spinFlagPtr, bytes.fromhex("0000006A"), "RDRAM")
+                return (self.spinFlagPtr, bytes.fromhex("0000006C"), "RDRAM")
             case "Steve":
                 self.spin = True
                 self.spin_timer = time()
-                return (self.spinFlagPtr, bytes.fromhex("0000006B"), "RDRAM")
+                return (self.spinFlagPtr, bytes.fromhex("0000006D"), "RDRAM")
             case "Tempo Trap":
                 self.tempo_timer = time()
                 self.tempos += 1
                 return None
+            case "+1 Power Point":
+                self.frame_timer = time()
+                return (self.framesPtr, bytes.fromhex("00000009"), "RDRAM")
+            case "Aya Speed":
+                self.frame_timer = time()
+                return (self.framesPtr, bytes.fromhex("00000000"), "RDRAM")
 
             
     def get_segmented_behavior(self, absolute_behavior, bank_13_ram_start):
@@ -443,6 +437,8 @@ class SM64HackClient(BizHawkClient):
             coins = self.receiving_ring_amount + current
             self.receiving_ring_amount = 0
 
+            assert self.basecoincount is not None
+
             coin_star_coins = int(self.basecoincount * (0.95 ** self.coin_discounts))
             if current < coin_star_coins:
                 coins = min(coins, coin_star_coins - 1) #doesn't give you more coins than you need for the 100c star if you havent gotten the star yet
@@ -498,6 +494,11 @@ class SM64HackClient(BizHawkClient):
         discounts = 0
         captimerbuffs = 0
         wallkickframes = 0
+        maincoursetickets = 0
+        bowsertickets = 0
+        extratickets = 0
+        lowerdifficulties = 0
+        maxhealth = 0x880 
 
         for index, item in enumerate(ctx.items_received):
             item_name = self.sm64hack_items[item.item - self.base_id]
@@ -545,24 +546,22 @@ class SM64HackClient(BizHawkClient):
                 case "Wing Cap":
                     self.flags[4] = True
                 case "Progressive Stomp Badge":
-                    if badgeCounter == 0:
-                        self.file1Stars[5] |= 16
-                        badgeCounter = 1
-                    else:
-                        self.file1Stars[5] |= 32
+                    if not fileselect:
+                        if badgeCounter == 0:
+                            self.file1Stars[5] |= 16
+                            badgeCounter = 1
+                        else:
+                            self.file1Stars[5] |= 32
                 case "Wall Badge":
-                    self.file1Stars[5] |= 8
+                    if not fileselect:
+                        self.file1Stars[5] |= 8
                 case "Triple Jump Badge":
-                    self.file1Stars[5] |= 128
+                    if not fileselect:
+                        self.file1Stars[5] |= 128
                 case "Lava Badge":    
-                    self.file1Stars[5] |= 64
-                case "Yellow Switch":
-                    self.moat = 1
-                case "Black Switch":
-                    self.moat = 1
-                case "Gray Switch":
-                    self.moat = 1
-                case "Castle Moat":
+                    if not fileselect:
+                        self.file1Stars[5] |= 64
+                case "Yellow Switch" | "Black Switch" | "Gray Switch" | "Castle Moat":
                     self.moat = 1
                 case "Overworld Cannon Star":
                     starcount += 1
@@ -578,31 +577,58 @@ class SM64HackClient(BizHawkClient):
                     wallkickframes += 1
                 case s if s.endswith("Ticket"):
                     self.tickets.add(item_name)
-                case _:
-                    if("Cannon" in item_name):
-                        course = item_name[:-7]
-                        course_num = list(filter(lambda key: courseIndex[key] == course,courseIndex))[0]
-                        if(course_num == 8):
-                            self.cannons[12] = True
-                        else:
-                            self.cannons[course_num + 1] = True
-                    elif item_name in moves:
-                        if item_name == "Progressive Jump":
-                            item_name = jump_names[jumps]
-                            jumps += 1
-                        if item_name in self.moves:
-                            continue
-                        else:
-                            self.moves.add(item_name)
-                            writes.append(self.get_move_num_write())
+                case "Progressive Main Course":
+                    maincoursetickets += 1
+                    while f"Course {maincoursetickets}" in ctx.slot_data["NoTicketCourses"]: #skip courses with no ticket
+                        maincoursetickets += 1
+                        if maincoursetickets >= 15: #failsafe
+                            break
+                    self.tickets.add(f"Course {maincoursetickets} Ticket")
+                case "Progressive Bowser Course":
+                    bowsertickets += 1
+                    while f"Bowser {bowsertickets}" in ctx.slot_data["NoTicketCourses"]: #skip courses with no ticket
+                        bowsertickets += 1
+                        if bowsertickets >= 3: #failsafe
+                            break
+                    self.tickets.add(f"Bowser {bowsertickets} Ticket")
+                case "Next Stage":
+                    self.tickets.add(f"{sr8courseorder[maincoursetickets]} Ticket")
+                    maincoursetickets += 1
+                case "Extra Stage":
+                    self.tickets.add(f"{sr8extraorder[extratickets]} Ticket")
+                    extratickets += 1
+                    
+                case "Mario A - Italian Plumber":
+                    maxhealth = 0x280
+                case "Lower Difficulty":
+                    lowerdifficulties += 1
+                case s if "Cannon" in s:
+                    course = item_name[:-7]
+                    course_num = list(filter(lambda key: courseIndex[key] == course,courseIndex))[0]
+                    if(course_num == 8):
+                        self.cannons[12] = True
                     else:
-                        if(not fileselect): #dont want to receive junk when mario doesn't exist
-                            num = read[18] if item_name == "Coin" else read[22]
-                            write = await self.receive_junk_item(ctx, index, item_name, int.from_bytes(num))
-                            if write:
-                                writes.append(write)
+                        self.cannons[course_num + 1] = True
+                case s if s in moves:
+                    if item_name == "Progressive Jump":
+                        item_name = jump_names[jumps]
+                        jumps += 1
+                    if item_name in self.moves:
+                        continue
+                    else:
+                        self.moves.add(item_name)
+                        writes.append(self.get_move_num_write())
+                    
+                case _:
+                    if(not fileselect): #dont want to receive junk when mario doesn't exist
+                        num = read[18] if item_name == "Coin" else read[22]
+                        write = await self.receive_junk_item(ctx, index, item_name, int.from_bytes(num))
+                        if write:
+                            writes.append(write)
 
-        
+        if maxhealth == 0x280:
+            maxhealth += 0x200 * lowerdifficulties
+            writes.append((self.maxHealthPtr, maxhealth.to_bytes(4), "RDRAM"))
 
         starcount += stars
         cannons = ctx.slot_data["Cannons"]
@@ -669,16 +695,16 @@ class SM64HackClient(BizHawkClient):
             writes.append((starsCountPtr, bytearray([starcount]), "RDRAM"))
 
         if not fileselect: #these things only matter when mario exists
-            if discounts > self.coin_discounts:
+            if discounts > self.coin_discounts and self.basecoincount is not None:
                 self.coin_discounts = discounts
                 coins_required = int(self.basecoincount * (0.95 ** discounts))
                 writes.extend(self.get_coin_star_writes(coins_required))
 
-            if captimerbuffs > self.cap_timer_buffs:
+            if captimerbuffs > self.cap_timer_buffs and self.base_cap_times is not None:
                 self.cap_timer_buffs = captimerbuffs
                 writes.extend(self.get_cap_timer_writes())
 
-            if wallkickframes > self.additional_wallkick_frames:
+            if wallkickframes > self.additional_wallkick_frames and self.base_wallkick_frames is not None:
                 self.additional_wallkick_frames = wallkickframes
                 writes.extend(self.get_wallkick_frame_writes())
 
@@ -705,6 +731,7 @@ class SM64HackClient(BizHawkClient):
                 trapPatch = pkgutil.get_data(__name__, "asm/trap_patch")
                 choirPatch = pkgutil.get_data(__name__, "asm/choir_patch")
                 movePatch = pkgutil.get_data(__name__, "asm/move_patch")
+                powerpointPatch = pkgutil.get_data(__name__, "asm/powerpoint_patch")
                 self.choirFlagPtr = len(choirPatch) + choirPatchPtr - 4
                 self.spinFlagPtr = len(trapPatch) + trapPatchPtr - 20
                 self.starIdPtr = len(trapPatch) + trapPatchPtr - 16
@@ -712,18 +739,24 @@ class SM64HackClient(BizHawkClient):
                 self.greenDemonPtr = len(trapPatch) + trapPatchPtr - 8
                 self.heaveHoPtr = len(trapPatch) + trapPatchPtr - 4
                 self.movesPtr = len(movePatch) + movePatchPtr - 4
+                self.framesPtr = len(powerpointPatch) + powerpointPatchPtr - 4
+                self.maxHealthPtr = len(powerpointPatch) + powerpointPatchPtr - 8
+                self.coinStarCountPtr = len(powerpointPatch) + powerpointPatchPtr - 12
+                self.capDataPtr = len(powerpointPatch) + powerpointPatchPtr - 18
+                self.wallkickFramePtr = len(powerpointPatch) + powerpointPatchPtr - 20
+                self.storedCountsPtr = len(powerpointPatch) + powerpointPatchPtr
             reads = [
                 (filesPtr[self.current_file], 0x70, "RDRAM"),         #0
                 (filesPtr[1], 0x70, "RDRAM"),         #1
                 (hpPtr, 0x2, "RDRAM"),                #2
-                (flagAPPtr, 0x4, "RDRAM"),      #3
+                (flagAPPtr, 0x4, "RDRAM"),            #3
                 (marioObjectPtr, 0x4, "RDRAM"),       #4
                 (marioActionPtr, 0x4, "RDRAM"),       #5
                 (marioFloorPtr, 0x4, "RDRAM"),        #6
                 (marioYPosPtr, 0x4, "RDRAM"),         #7
                 (marioFloorHeightPtr, 0x4, "RDRAM"),  #8
                 (igtPtr, 0x4, "RDRAM"),               #9
-                (0x2E0, 0x1, "RDRAM"),                #10, blank memory unless you run the victory.js script
+                (0x2E0, 0x1, "RDRAM"),                #10, blank memory unless you run the obsolete victory.js script
                 (levelPtr, 0x1, "RDRAM"),             #11
                 (0x20, 0x14, "ROM"),                  #12, EEPROM name
                 (areaPtr, 0x1, "RDRAM"),              #13
@@ -733,14 +766,16 @@ class SM64HackClient(BizHawkClient):
                 (self.starIdPtr, 0x4, "RDRAM"),       #17
                 (coinPtr, 0x2, "RDRAM"),              #18
                 (currFilePtr, 0x2, "RDRAM"),          #19
-                (slope_fix_ptr, 0x4, "RDRAM"),       #20
+                (slope_fix_ptr, 0x4, "RDRAM"),        #20
                 (tempoPtr, 0x2, "RDRAM"),             #21
                 (livesPtr, 0x2, "RDRAM"),             #22
                 (hundredCoinStarPtr1, 0x2, "RDRAM"),  #23
                 (vanishCapTimerPtr, 0x2, "RDRAM"),    #24
                 (metalCapTimerPtr, 0x2, "RDRAM"),     #25
                 (wingCapTimerPtr, 0x2, "RDRAM"),      #26
-                (wallkickFramePtr, 0x2, "RDRAM")      #27
+                (wallkickFramePtr, 0x2, "RDRAM"),     #27
+                (self.framesPtr, 0x4, "RDRAM"),       #28
+                (self.storedCountsPtr, 0xC, "RDRAM") #29
             ]
             
 
@@ -774,10 +809,20 @@ class SM64HackClient(BizHawkClient):
             if(resettest.hex() != "24180002" or self.loops == 0):
                 if resettest.hex() != "24180002":
                     logger.info("Reminder: Save and load a savestate so that traps, move rando, or some other things can take effect")
+                    self.basecoincount = int.from_bytes(read[23])
+                    self.base_cap_times = [int.from_bytes(read[24]),int.from_bytes(read[25]),int.from_bytes(read[26])]
+                    self.base_wallkick_frames = int.from_bytes(read[27])
+                    powerpoint_patch = pkgutil.get_data(__name__, "asm/powerpoint_patch")
+                    writes.append((powerpointPatchPtr, powerpoint_patch, "RDRAM")) #need to do this before applying the base amounts since it will override them otherwise
+                    writes.append((self.storedCountsPtr, pack(">HHHHI", self.base_wallkick_frames, *self.base_cap_times, self.basecoincount), "RDRAM"))
+                    writes.extend(self.get_coin_star_writes(int(self.basecoincount * (0.95 ** self.coin_discounts))))
+                    writes.extend(self.get_cap_timer_writes())
+                    writes.extend(self.get_wallkick_frame_writes())
+                else:
+                    bwkf, *bct, bcc = unpack(">HHHHI", read[29])
+                    if bcc != 0:
+                        self.base_wallkick_frames, self.base_cap_times, self.basecoincount = bwkf, bct, bcc
                 self.receive_items = True
-                self.basecoincount = int.from_bytes(read[23])
-                self.base_cap_times = [int.from_bytes(read[24]),int.from_bytes(read[25]),int.from_bytes(read[26])]
-                self.base_wallkick_frames = int.from_bytes(read[27])
                 self.coin_discounts = 0
                 self.cap_timer_buffs = 0
                 self.additional_wallkick_frames = 0
@@ -786,6 +831,13 @@ class SM64HackClient(BizHawkClient):
                 choir_patch = pkgutil.get_data(__name__, "asm/choir_patch")
                 star_patch = pkgutil.get_data(__name__, "asm/star_patch")
                 decades_later_patch = pkgutil.get_data(__name__, "asm/decades_later_patch")
+                powerpoint_hook = pkgutil.get_data(__name__, "asm/powerpoint_hook")
+                health_hook = pkgutil.get_data(__name__, "asm/health_hook")
+                coincount_patch = pkgutil.get_data(__name__, "asm/100c_patch")
+                vc_patch = pkgutil.get_data(__name__, "asm/vc_patch")
+                mc_patch = pkgutil.get_data(__name__, "asm/mc_patch")
+                wc_patch = pkgutil.get_data(__name__, "asm/wc_patch")
+                wallkick_frame_patch = pkgutil.get_data(__name__, "asm/wallkick_frame_patch")
                 if ctx.slot_data.get("decadeslater") != 0: #decadeslater overhauls save system so need to do a bunch of code to mitigate that
                     writes.extend([
                         (starCountDLPtr1, bytes.fromhex("30900100"), "RDRAM"),
@@ -831,23 +883,33 @@ class SM64HackClient(BizHawkClient):
                     (moatAPPtr, bytes.fromhex("10000005"), "RDRAM"),
                     (trapPatchPtr, trap_patch, "RDRAM"),
                     (choirPatchPtr, choir_patch, "RDRAM"),
+                    (powerpointHookPtr, powerpoint_hook, "RDRAM"),
+                    (healthHookPtr, health_hook, "RDRAM"),
                     (choirHookPtr, bytes.fromhex("0C09FFC0"), "RDRAM"),
-                    (stevePtr, "HE IS WATCHING".encode("ascii"), "RDRAM")
+                    (stevePtr, "HE IS WATCHING".encode("ascii"), "RDRAM"),
+                    (coincountPatchPtr, coincount_patch, "RDRAM"),
+                    (vcPatchPtr, vc_patch, "RDRAM"),
+                    (mcPatchPtr, mc_patch, "RDRAM"),
+                    (wcPatchPtr, wc_patch, "RDRAM"),
+                    (wallkickFramePatchPtr1, wallkick_frame_patch, "RDRAM"),
+                    (wallkickFramePatchPtr2, wallkick_frame_patch, "RDRAM")
                 ])
 
-                if(read[12].decode("ascii").startswith("SM64 LAST IMPACT")):
-                    writes.extend([
-                        (lastImpactPtr1, bytes.fromhex("24040002"), "RDRAM"),
-                        (lastImpactPtr2, bytes.fromhex("24040002"), "RDRAM")
-                    ])
-                    self.li = True
-                elif read[12].decode("ascii").startswith("Star Revenge 0"):
-                    writes.append((0x75D6D,bytes.fromhex("161B0B0E0A1C1D9E160E1D1B18191815121CFF"), "RDRAM"))
+                match read[12].decode("ascii"):
+                    case "SM64 LAST IMPACT    ":
+                        writes.extend([
+                            (lastImpactPtr1, bytes.fromhex("24040002"), "RDRAM"),
+                            (lastImpactPtr2, bytes.fromhex("24040002"), "RDRAM")
+                        ])
+                        self.li = True
+                    case "Star Revenge 0      ":
+                        writes.append((0x75D6D,bytes.fromhex("161B0B0E0A1C1D9E160E1D1B18191815121CFF"), "RDRAM"))
+                    case "SM64 ZTAR ATTACK R  ":
+                        writes.extend([(0x40B084, bytes.fromhex("24190002"), "RDRAM"), (0x40B284, bytes.fromhex("24190002"), "RDRAM")]) #key blockers
 
                 if ctx.slot_data.get("moves"):
                     move_patch = pkgutil.get_data(__name__, "asm/move_patch")
                     move_patch_hook = pkgutil.get_data(__name__, "asm/move_patch_hook")
-
                     burning_hook = pkgutil.get_data(__name__, "asm/burning_patch")
                     tree_hook_1 = pkgutil.get_data(__name__, "asm/tree_patch_1")
                     tree_hook_2 = pkgutil.get_data(__name__, "asm/tree_patch_2")
@@ -932,7 +994,6 @@ class SM64HackClient(BizHawkClient):
                 location_id_to_name = dict((value, key) for key, value in self.location_name_to_id.items()) #sync local stars with server, easier coordination if people are sharing a slot
                 index_course = dict((value, key) for key, value in courseIndex.items())
                 if self.checked_locations != ctx.checked_locations:
-                    print("true")
                     self.checked_locations = ctx.checked_locations.copy()
                     for location in ctx.checked_locations:
                         location_name = location_id_to_name[location]
@@ -970,7 +1031,6 @@ class SM64HackClient(BizHawkClient):
                                         else:
                                             location_name = courseIndex[i - 1] + " Cannon"
                                     if self.li and (i == 27 or i == 28):
-                                        logger.info(f"test: {i} {self.file1Stars[i]}")
                                         location_name = f"Key {i - 26}" #last impact is weird and stores keys in c15 and b1 cannons
 
                                     writes.append((filesPtr[self.current_file] + i, bytearray([self.file1Stars[i] & 0b01111111]), "RDRAM")) #reset cannon flag so you can detect both troll stars and cannons
@@ -1084,6 +1144,8 @@ class SM64HackClient(BizHawkClient):
                     writes.append((self.spinFlagPtr, bytes.fromhex("00000000"), "RDRAM"))
                     writes.append((rollPtr, bytes.fromhex("0000"), "RDRAM"))
 
+            if read[28] != 0 and time() - self.frame_timer > 60:
+                writes.append((self.framesPtr, bytes.fromhex("00000001"), "RDRAM"))
 
             locs = []
             # badges/choir
@@ -1204,7 +1266,7 @@ class SM64HackClient(BizHawkClient):
                 if random.random() < (2/1731): #approx 1 every 5 minutes
                     trap = random.choice(self.async_traps)
                     self.async_traps.remove(trap)
-                    if trap != "1-Up Mushroom":
+                    if trap != "1-Up Mushroom" and trap != "+1 Life":
                         logger.info(f"A trap has appeared!")
                     await ctx.send_msgs([{
                         "cmd": "Set",

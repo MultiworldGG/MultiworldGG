@@ -91,13 +91,11 @@ def set_openRCT2_items(options: Options.openRCT2Options, random: Random) -> tupl
             openRCT2_items.append(rule)  # Add an item to disable
 
     # Adds some useful filler items. 15 is the absolute minimum to not break generation.
-    count = 0
-    while count < 15:
+    for each in range(15):
         openRCT2_items.append(random.choice(item_info["filler_items"]))
-        count += 1
 
     # Add extra traps if there's not enough for the negative awards.
-    if options.selected_awards == Options.Awards.all_awards: # 0: all awards
+    if options.selected_awards == Options.Awards.all_awards: 
         #Add extra traps if there's fewer than 5.
         if(sum(1 for item in openRCT2_items if item in item_info["trap_items"]) < 5):
             openRCT2_items.append("Bathroom Trap")
@@ -118,11 +116,15 @@ def set_openRCT2_items(options: Options.openRCT2Options, random: Random) -> tupl
         else:
             openRCT2_items.append(random.choice(item_info["filler_rare"]))
 
-    openRCT2_items.append("Beauty Contest") #Every park has a beauty contest award. You are beautiful!
-    
-    # print(openRCT2_items)
+    # Ensure we have enough useful items for awards.
+    if options.selected_awards == Options.Awards.all_awards or options.selected_awards == Options.Awards.positive:
+        while(sum(1 for item in openRCT2_items if item in item_info["useful_items"]) < 11):
+            openRCT2_items.append(random.choice(item_info["useful_filler_items"]))
+            
 
-    # handles the starting ride
+    openRCT2_items.append("Beauty Contest") #Every park has a beauty contest award. You are beautiful!
+
+    # Handles the starting ride.
     candidate_list = [item for item in openRCT2_items if item in item_info["Rides"] and item not in item_info["non_starters"]]  
     candidate = random.choice(candidate_list)
     starting_ride: str = candidate

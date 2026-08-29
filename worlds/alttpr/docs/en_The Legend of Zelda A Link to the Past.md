@@ -18,7 +18,9 @@ would in the vanilla game.
 * Set the number of crystals required for GT/Ganon, and number of Triforce pieces,
 * All varieties of keysanity, including key drop shuffle,
 * Shopsanity
-* Enemy and boss shuffle, including logical enemy shuffle where enemies which require specific items to kill can block progression,
+* Potsanity
+* Enemy and boss shuffle, including logical enemy shuffle where enemies which require specific items to kill can block progression
+* Enemy Drop Shuffle
 * Crossed entrance shuffle
 * Option for Zelgawoods to add two Skull Woods dropdowns into the entrance shuffle pool. [Example](https://raw.githubusercontent.com/aurabot24/Archipelago-ALttPR/refs/heads/alttpr/worlds/alttpr/docs/Zelgawoods.png)
 * Option to add Pendants and Crystals to the item pool

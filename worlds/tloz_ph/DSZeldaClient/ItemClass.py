@@ -74,7 +74,7 @@ async def receive_normal(client: "DSZeldaClient", ctx: "BizHawkClientContext", i
     res = []
     if hasattr(item, "progressive"):
         prog_received = min(client.item_count(ctx, item.name, num_received_items),
-                            len(item.progressive))
+                            len(item.progressive)-1)
         item_address, item_value = item.progressive[prog_received]
     else:
         item_address = item.address

@@ -3,11 +3,11 @@ from . import Itm as Data
 
 # flake8: noqa
 keys_data:list[Data] = [
-Data("Skell License"),
-Data("Flight Module"),
+Data("Skell License", count=0),
+Data("Flight Module", count=0),
 Data("Overdrive"),
 Data("FNet"),
-Data("Blade License"),
+Data("Progressive License", count=3),
 Data("Death", count=0),
 Data("Filler", count=0, progression=ItemClassification.filler),
 Data("Victory", count=0),

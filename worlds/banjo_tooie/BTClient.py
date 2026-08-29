@@ -1,4 +1,4 @@
-import asyncio, hashlib, json, os, multiprocessing, copy, sys, time, atexit, pkgutil
+import asyncio, hashlib, json, os, multiprocessing, copy, sys, time, atexit, pkgutil, random
 import bsdiff4 # pyright: ignore[reportMissingTypeStubs]
 from typing import TYPE_CHECKING, Any, List, TypedDict, cast
 from collections import Counter
@@ -46,6 +46,28 @@ BTHACK_SUB_POINTER_OFFSETS = (
     0x30,  # n64_saves_signposts
 )
 
+DEATH_MESSAGES = [
+    "Did you hear that lovely clack,\nMy broomstick gave you such a whack!",
+    "AAAH! I see it makes you sad,\nTo know your skills are really bad!",
+    "I hit that bird right on the beak,\nLet it be the end of her cheek!",
+    "My fiery blast you just tasted,\nGrunty's spells on you are wasted!",
+    "Hopeless bear runs to and fro,\nBut takes a whack for being so slow!",
+    "So I got you there once more,\nI knew your skills were very poor!",
+    "Simply put I'm rather proud,\nYour yelps and screams I heard quite loud!",
+    "Grunty's fireball you did kiss,\nYou're so slow I can hardly miss!",
+    "In this world you breathe your last,\nNow your friends had better think fast!",
+    "This is fun it's quite a treat,\nTo see you suffer in defeat",
+    "That death just now, I saw coming,\nYour skill issues are rather stunning!",
+    "Seeing this pathetic display,\nIs serotonin in my day",
+    "What a selfish thing to do,\nYour friends just died because of you!",
+    "You tried something rather stupid,\nI hope no one will try what you did",
+    "I see you're having trouble with this seed,\nit's too bad you never learned how to read.",
+    "You'll label that one unfair, but I found that beat was rare.",
+    "You were not prepared for trouble, so now my minions will be working on the double.",
+    "Seeing you trip and fall is rather funny, I get to watch you run out of honey.",
+    "Welcome bozos to death's door... \nWait, hold on, you're back for more?",
+    "Can't believe you died at this stage, \nWhy don't you look elsewhere on your tracker page!"
+]
 
 def is_rdram_pointer(value: int) -> bool:
     return RDRAM_BASE <= value < RDRAM_BASE + RDRAM_SIZE
@@ -143,7 +165,7 @@ bt_loc_name_to_id = BanjoTooieWorld.location_name_to_id
 bt_itm_name_to_id = BanjoTooieWorld.item_name_to_id
 script_version: int = 5
 version: str = BanjoTooieWorld.world_version.as_simple_string()
-patch_md5: str = "761f2e88490ee64f2e29a418409e5bbf"
+patch_md5: str = "1876534db1ec87691faf474f461619d8"
 bt_options = BanjoTooieWorld.settings
 program = None
 
@@ -546,10 +568,12 @@ class BanjoTooieContext(CommonContext):
                 assert False, (
                     f"ERROR: Your Patched ROM is version {self.rom_version}, expected {version}. " +
                     "Please update to the latest version. " +
-                    f"Your connection to the {apname} server will not be accepted."
+                    "Your connection to the Archipelago server will not be accepted."
                 )
             self.deathlink_enabled = bool(self.slot_data["options"]["death_link"])
             self.taglink_enabled = bool(self.slot_data["options"]["tag_link"])
+            async_start(self.update_death_link(self.deathlink_enabled), name="Update Deathlink")
+            async_start(self.update_tag_link(self.taglink_enabled), name="Update Taglink")
             self.n64_sync_task = asyncio.create_task(n64_sync_task(self), name="N64 Sync")
         elif cmd == "ReceivedItems":
             self.tracker.refresh_items()
@@ -764,16 +788,6 @@ async def parse_payload(payload: Payload, ctx: BanjoTooieContext, force: bool):
         ctx.auth = payload["playerName"]
         await ctx.send_connect()
         return
-
-    # Turn on deathlink if it is on, and if the client hasn't overriden it
-    if payload["deathlinkActive"] and ctx.deathlink_enabled and not ctx.deathlink_client_override:
-        await ctx.update_death_link(True)
-        ctx.deathlink_enabled = True
-
-    # Turn on taglink if it is on, and if the client hasn't overriden it
-    if payload["taglinkActive"] and ctx.taglink_enabled and not ctx.taglink_client_override:
-        await ctx.update_tag_link(True)
-        ctx.taglink_enabled = True
 
     # Locations handling
     demo = payload["DEMO"]
@@ -1154,7 +1168,6 @@ async def parse_payload(payload: Payload, ctx: BanjoTooieContext, force: bool):
             ctx.deathlink_pending = False
             if not ctx.deathlink_sent_this_death:
                 ctx.deathlink_sent_this_death = True
-
                 await ctx.send_death()
         else: # Banjo is somehow still alive
             ctx.deathlink_sent_this_death = False
@@ -1424,12 +1437,31 @@ async def emu_loader_monitor_task(ctx: BanjoTooieContext):
                         if not ctx.deathlink_sent_this_death and ctx.server is not None:
                             ctx.deathlink_sent_this_death = True
                             await ctx.send_death()
+                            message = random.choice(DEATH_MESSAGES)
+                            emu_game.send_pc_dialog(ctx.emu_loader, message, 15)
                     else:
                         ctx.deathlink_sent_this_death = False
                     if ctx.deathlink_pending:
                         cur_ap = ctx.emu_loader.read_u8(pc_ptr + emu_state.PC_DEATH_AP)
                         ctx.emu_loader.write_u8(pc_ptr + emu_state.PC_DEATH_AP, (cur_ap + 1) & 0xFF)
                         ctx.deathlink_pending = False
+
+            if ctx.emu_settings_written and ctx.taglink_enabled:
+                pc_ptr = bth.pc_ptr()
+                if pc_ptr is not None:
+                    n64_us = bth.n64_tag()
+                    pc_us = bth.pc_tag()
+                    if n64_us != pc_us:
+                        ctx.emu_loader.write_u8(pc_ptr + emu_state.PC_TAG_US, n64_us & 0xFF)
+                        if not ctx.taglink_sent_this_tag and ctx.server is not None:
+                            ctx.taglink_sent_this_tag = True
+                            await ctx.send_tag_link()
+                    else:
+                        ctx.taglink_sent_this_tag = False
+                    if ctx.pending_tag_link:
+                        cur_ap = ctx.emu_loader.read_u8(pc_ptr + emu_state.PC_TAG_AP)
+                        ctx.emu_loader.write_u8(pc_ptr + emu_state.PC_TAG_AP, (cur_ap + 1) & 0xFF)
+                        ctx.pending_tag_link = False
 
             if ctx.emu_settings_written and ctx.slot_data:
                 eligible = emu_game.check_world_entrances_open(ctx.emu_loader, ctx.slot_data)

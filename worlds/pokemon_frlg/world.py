@@ -450,7 +450,7 @@ class PokemonFRLGWorld(World):
         self.auth = self.random.getrandbits(16 * 8).to_bytes(16, "little")
 
     @classmethod
-    def stage_generate_output(cls, multiworld, output_directory):
+    def stage_finalize_multiworld(cls, multiworld) -> None:
         # Change all but one instance of a Pokémon in each sphere to useful classification
         # This cuts down on time calculating the playthrough
         found_mons = set()
@@ -476,6 +476,9 @@ class PokemonFRLGWorld(World):
                     mon_locations.sort()
                     for location in mon_locations[1:]:
                         location.item.classification = ItemClassification.useful
+
+    @classmethod
+    def stage_generate_output(cls, multiworld, output_directory):
         level_scaling(multiworld)
 
     def generate_output(self, output_directory: str) -> None:

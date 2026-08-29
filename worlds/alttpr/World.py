@@ -8,7 +8,7 @@ import typing
 from urllib.request import urlopen
 
 # Imports of base Archipelago modules must be absolute.
-from BaseClasses import CollectionState, Entrance, Item, ItemClassification, Region, MultiWorld, Tutorial
+from BaseClasses import CollectionState, Entrance, Item, ItemClassification, Location, MultiWorld, Tutorial
 from Options import OptionError
 import settings
 from worlds.AutoWorld import LogicMixin, WebWorld, World
@@ -110,6 +110,7 @@ class ALttPRWorld(World):
     item_name_groups = {
         "Bottles": {"Bottle", "Bottle (Green Potion)", "Bottle (Red Potion)", "Bottle (Blue Potion)", "Bottle (Bee)", "Bottle (Good Bee)", "Bottle (Fairy)"},
         "Ocarina": {"Ocarina", "Ocarina (Activated)"},
+        "Progressive Mail": {"Progressive Armor"}
     }
 
     # There is always one region that the generator starts from & assumes you can always go back to.
@@ -195,6 +196,14 @@ class ALttPRWorld(World):
         Items.place_pre_fill_items(self)
 
 
+    def fill_hook(self,
+                  progitempool: typing.List[Item],
+                  usefulitempool: typing.List[Item],
+                  filleritempool: typing.List[Item],
+                  fill_locations: typing.List[Location]) -> None:
+        Items.place_junk_items_in_pots(progitempool, usefulitempool, filleritempool, fill_locations, self)
+
+
     # Our world class must also have a create_item function that can create any one of our items by name at any time.
     def create_item(self, name: str, classification: ItemClassification = ItemClassification.filler) -> Items.ALttPRItem:
         try:
@@ -231,12 +240,22 @@ class ALttPRWorld(World):
                     logger.error(f"Could not find item {location.item.name} in door rando itempool.")
                     raise Exception()
             else:
+                trap_classification = None
+                # If this is trap + another classification, use the other classification
+                if location.item.classification == ItemClassification.trap:
+                    if self.options.trap_appearance == "major_only":
+                        trap_classification = ItemClassification.progression
+                    elif self.options.trap_appearance == "junk_only":
+                        trap_classification = ItemClassification.filler
+                    else:
+                        trap_classification = self.random.choice([ItemClassification.progression, ItemClassification.useful, ItemClassification.filler])
+
                 # Using the green/blue/red clocks as placeholders for AP items.
                 # TODO: Edit the base ROM to add AP items and matching sprites
-                if location.item.classification & ItemClassification.progression:
+                if location.item.classification & ItemClassification.progression or trap_classification == ItemClassification.progression:
                     dr_item = ItemFactory("Green Clock", 1)
                     dr_item.price = 100
-                elif location.item.classification & ItemClassification.useful:
+                elif location.item.classification & ItemClassification.useful or trap_classification == ItemClassification.useful:
                     dr_item = ItemFactory("Blue Clock", 1)
                     dr_item.price = 50
                 else:
@@ -354,6 +373,20 @@ class ALttPRWorld(World):
         # The world can create a multiworld with many players each with different options, but we only need to
         # generate for one player, hence all the "1"s everywhere.
         shuffled_doors = self.options.door_shuffle != "vanilla"
+        if self.options.key_drop_shuffle or shuffled_doors:
+            dropshuffle = self.options.enemy_drop_shuffle.current_key if self.options.enemy_drop_shuffle != "none" else "keys"
+            if self.options.potsanity == "cave":
+                pottery = "cavekeys"
+            elif self.options.potsanity == "none":
+                pottery = "keys"
+            else:
+                pottery = self.options.potsanity.current_key
+        else:
+            dropshuffle = self.options.enemy_drop_shuffle.current_key
+            pottery = self.options.potsanity.current_key
+
+        enable_dungeon_counter = shuffled_doors or dropshuffle == "underworld" or pottery in ["dungeon", "lottery"]
+
         self.door_rando_world = DoorRandoWorld(
             1, {1: "vanilla"}, {1: False}, {1: "none"}, {1: False}, {1: self.options.entrance_shuffle.current_key},
             {1: self.options.door_shuffle.current_key}, {1: "noglitches"}, {1: self.options.world_mode.current_key}, {1: "random"},
@@ -366,7 +399,7 @@ class ALttPRWorld(World):
         self.door_rando_world.any_enemy_logic = {
             1: "none" if self.options.enemy_shuffle != "logical" else "allow_all"}
         self.door_rando_world.bigkeyshuffle = {1: "wild" if self.options.big_key_shuffle.value else "none"}
-        self.door_rando_world.bombbag = {1: False}
+        self.door_rando_world.bombbag = {1: self.options.bombless_start.value}
         self.door_rando_world.boots_hint = {1: False}
         self.door_rando_world.boss_shuffle = {1: alttpr_options.boss_shuffle_string_from_option(self.options.boss_shuffle)}
         self.door_rando_world.bow_mode = {1: "progressive"}
@@ -375,8 +408,8 @@ class ALttPRWorld(World):
         self.door_rando_world.crystals_needed_for_ganon = {1: self.options.crystals_needed_for_ganon.value}
         self.door_rando_world.customizer = None
         self.door_rando_world.door_type_mode = {1: self.options.door_type_shuffle.current_key}
-        self.door_rando_world.dropshuffle = {1: "none" if not (self.options.key_drop_shuffle.value or shuffled_doors) else "keys"}
-        self.door_rando_world.dungeon_counters = {1: self.options.dungeon_counters.current_key if not shuffled_doors else "on"}
+        self.door_rando_world.dropshuffle = {1: dropshuffle}
+        self.door_rando_world.dungeon_counters = {1: "on" if enable_dungeon_counter else self.options.dungeon_counters.current_key}
         self.door_rando_world.enemy_shuffle = {
             1: alttpr_options.enemy_shuffle_string_from_option(self.options.enemy_shuffle)}
         self.door_rando_world.experimental = {
@@ -397,7 +430,7 @@ class ALttPRWorld(World):
         self.door_rando_world.owKeepSimilar = {1: False}
         self.door_rando_world.owTerrain = {1: False}
         self.door_rando_world.owWhirlpoolShuffle = {1: False}
-        self.door_rando_world.pottery = {1: "none" if not (self.options.key_drop_shuffle.value or shuffled_doors) else "keys"}
+        self.door_rando_world.pottery = {1: pottery}
         self.door_rando_world.prizeshuffle = {1: "none" if not self.options.prize_shuffle.value else "wild"}
         self.door_rando_world.pseudoboots = {1: self.options.pseudoboots.value}
         self.door_rando_world.rom_seeds = {1: self.random.randint(0, 999999999)}
@@ -590,6 +623,7 @@ class ALttPRWorld(World):
         if "Ocarina" in start_inventory and (self.options.pre_activated_flute or self.options.world_mode == "inverted"):
             self.options.start_inventory.value["Ocarina (Activated)"] = 1
             del self.options.start_inventory.value["Ocarina"]
+
         always_invalid_starting_items = ["Triforce Piece", "Green Clock", "Blue Clock", "Red Clock"]
         always_invalid_starting_items.extend([item for item in Items.progressive_items if item.startswith("Small Key")])
         invalid_items = []

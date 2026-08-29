@@ -1,0 +1,666 @@
+{
+  "Flushed Away - Starting Area": {
+    "level": "Flushed Away",
+    "sublevel": "Flushed Away",
+    "bunnies": {
+      "Flushed Away - Bunny - Above the Sewer Creatures": 80200000
+    },
+    "coins": {
+      "Flushed Away - Coin in Sewage Stream From Starting Area #1": 80300382,
+      "Flushed Away - Coin in Sewage Stream From Starting Area #2": 80300381,
+      "Flushed Away - Coin in Sewage Stream From Starting Area #3": 80300379,
+      "Flushed Away - Coin in Sewage Stream From Starting Area #4": 80300378,
+      "Flushed Away - Coin in Sewage Stream From Starting Area #5": 80300377,
+      "Flushed Away - Coin in Sewage Stream From Starting Area #6": 80300376,
+      "Flushed Away - Coin in Sewage Stream From Starting Area #7": 80300375,
+      "Flushed Away - Coin in Sewage Stream From Starting Area #8": 80300374,
+      "Flushed Away - Coin in Sewage Stream From Starting Area #9": 80300373,
+      "Flushed Away - Coin in Sewage Stream From Starting Area #10": 80300372,
+      "Flushed Away - Coin in Sewage Stream From Starting Area #11": 80300364,
+      "Flushed Away - Coin in Sewage Stream From Starting Area #12": 80300365,
+      "Flushed Away - Coin in Sewage Stream From Starting Area #13": 80300366,
+      "Flushed Away - Coin in Sewage Stream From Starting Area #14": 80300367,
+      "Flushed Away - Coin in Sewage Stream From Starting Area #15": 80300368,
+      "Flushed Away - Coin in Sewage Stream From Starting Area #16": 80300369,
+      "Flushed Away - Coin in Sewage Stream From Starting Area #17": 80300370,
+      "Flushed Away - Coin in Sewage Stream From Starting Area #18": 80300371,
+      "Flushed Away - Coin in Sewage Stream Left of Creature Triangle #1": 80300354,
+      "Flushed Away - Coin in Sewage Stream Left of Creature Triangle #2": 80300356,
+      "Flushed Away - Coin in Sewage Stream Left of Creature Triangle #3": 80300358,
+      "Flushed Away - Coin in Sewage Stream Left of Creature Triangle #4": 80300360,
+      "Flushed Away - Coin in Sewage Stream Left of Creature Triangle #5": 80300362,
+      "Flushed Away - Coin in Sewage Stream Right of Creature Triangle #1": 80300353,
+      "Flushed Away - Coin in Sewage Stream Right of Creature Triangle #2": 80300355,
+      "Flushed Away - Coin in Sewage Stream Right of Creature Triangle #3": 80300357,
+      "Flushed Away - Coin in Sewage Stream Right of Creature Triangle #4": 80300359,
+      "Flushed Away - Coin in Sewage Stream Right of Creature Triangle #5": 80300361,
+      "Flushed Away - Coin in Sewage Stream Right of Gear Pipe #1": 80300307,
+      "Flushed Away - Coin in Sewage Stream Right of Gear Pipe #2": 80300306,
+      "Flushed Away - Coin in Sewage Stream Right of Gear Pipe #3": 80300305,
+      "Flushed Away - Coin in Sewage Stream Right of Gear Pipe #4": 80300310,
+      "Flushed Away - Coin in Sewage Stream Right of Gear Pipe #5": 80300309,
+      "Flushed Away - Coin in Sewage Stream Right of Gear Pipe #6": 80300308,
+      "Flushed Away - Coin in Sewage Stream Right of Gear Pipe #7": 80300313,
+      "Flushed Away - Coin in Sewage Stream Right of Gear Pipe #8": 80300312,
+      "Flushed Away - Coin in Sewage Stream Right of Gear Pipe #9": 80300311,
+      "Flushed Away - Coin in Sewage Stream Right of Gear Pipe #10": 80300316,
+      "Flushed Away - Coin in Sewage Stream Right of Gear Pipe #11": 80300315,
+      "Flushed Away - Coin in Sewage Stream Right of Gear Pipe #12": 80300314,
+      "Flushed Away - Coin in Sewage Stream Right of Gear Pipe #13": 80300319,
+      "Flushed Away - Coin in Sewage Stream Right of Gear Pipe #14": 80300318,
+      "Flushed Away - Coin in Sewage Stream Right of Gear Pipe #15": 80300317,
+      "Flushed Away - Coin in Sewage Stream Left of Diagonal Creatures #1": 80300320,
+      "Flushed Away - Coin in Sewage Stream Left of Diagonal Creatures #2": 80300321,
+      "Flushed Away - Coin in Sewage Stream Left of Diagonal Creatures #3": 80300322,
+      "Flushed Away - Coin in Sewage Stream Left of Diagonal Creatures #4": 80300323,
+      "Flushed Away - Coin in Sewage Stream Left of Diagonal Creatures #5": 80300324,
+      "Flushed Away - Coin in Sewage Stream Leading to Bunny Ramp #1": 80300325,
+      "Flushed Away - Coin in Sewage Stream Leading to Bunny Ramp #2": 80300326,
+      "Flushed Away - Coin in Sewage Stream Leading to Bunny Ramp #3": 80300327,
+      "Flushed Away - Coin in Sewage Stream Leading to Bunny Ramp #4": 80300328,
+      "Flushed Away - Coin in Sewage Stream Leading to Bunny Ramp #5": 80300329,
+      "Flushed Away - Coin in Sewage Stream Leading to Bunny Ramp #6": 80300330,
+      "Flushed Away - Coin in Sewage Stream Leading to Bunny Ramp #7": 80300331,
+      "Flushed Away - Coin in Sewage Stream Leading to Bunny Ramp #8": 80300332,
+      "Flushed Away - Coin in Sewage Stream Leading to Bunny Ramp #9": 80300333
+    },
+    "connections": {
+      "Flushed Away - Path Surrounding Starting Area": "X1/B1/J1",
+      "Flushed Away - Pipe to Upper Starting Area": "X2+B2 | J1 | X3+B1",
+      "Flushed Away - Pipe Above Starting Area": "X2+B1",
+      "Flushed Away - Ledge Above Starting Area": "X2+B1",
+      "Flushed Away - Checkpoint Area": ""
+    },
+    "specialrules": {
+      "Flushed Away - Bunny - Above the Sewer Creatures": "X1/B1/J1"
+    }
+  },
+  "Flushed Away - Checkpoint Area": {
+    "level": "Flushed Away",
+    "sublevel": "Flushed Away",
+    "gears": {
+      "Flushed Away - Gear - In Alligator Room": 80100004,
+      "Flushed Away - Gear - Skeletrone Dance Party": 80100002
+    },
+    "bunnies": {
+      "Flushed Away - Bunny - Behind Waterfall": 80200001
+    },
+    "chests": {
+      "Flushed Away - Chest on Pipe in Alligator Room": 80300196
+    },
+    "coins": {
+      "Flushed Away - Coin in Sewage Path Right of Checkpoint #1": 80300299,
+      "Flushed Away - Coin in Sewage Path Right of Checkpoint #2": 80300298,
+      "Flushed Away - Coin in Sewage Path Right of Checkpoint #3": 80300297,
+      "Flushed Away - Coin in Sewage Path Right of Checkpoint #4": 80300296,
+      "Flushed Away - Coin in Sewage Path Right of Checkpoint #5": 80300295,
+      "Flushed Away - Coin in Sewage Path Right of Checkpoint #6": 80300294,
+      "Flushed Away - Coin in Sewage Path Right of Checkpoint #7": 80300293,
+      "Flushed Away - Coin in Sewage Path Right of Checkpoint #8": 80300292,
+      "Flushed Away - Coin in Sewage Path Right of Checkpoint #9": 80300291,
+      "Flushed Away - Coin in Sewage Path Right of Checkpoint #10": 80300290,
+      "Flushed Away - Coin Before Sewage Ramps #1": 80300288,
+      "Flushed Away - Coin Before Sewage Ramps #2": 80300287,
+      "Flushed Away - Coin in Sewage Path in Front of Checkpoint #1": 80300300,
+      "Flushed Away - Coin in Sewage Path in Front of Checkpoint #2": 80300301,
+      "Flushed Away - Coin in Sewage Path in Front of Checkpoint #3": 80300302,
+      "Flushed Away - Coin in Sewage Path in Front of Checkpoint #4": 80300303,
+      "Flushed Away - Coin in Sewage Path in Front of Checkpoint #5": 80300304,
+      "Flushed Away - Coin on Side Pathway Before Skeletrone Dance Party #1": 80300263,
+      "Flushed Away - Coin on Side Pathway Before Skeletrone Dance Party #2": 80300256,
+      "Flushed Away - Coin on Side Pathway Before Skeletrone Dance Party #3": 80300264,
+      "Flushed Away - Coin on Side Pathway Before Skeletrone Dance Party #4": 80300257,
+      "Flushed Away - Coin on Side Pathway Before Skeletrone Dance Party #5": 80300265,
+      "Flushed Away - Coin on Side Pathway Before Skeletrone Dance Party #6": 80300258,
+      "Flushed Away - Coin on Side Pathway Before Skeletrone Dance Party #7": 80300259,
+      "Flushed Away - Coin on Side Pathway Before Skeletrone Dance Party #8": 80300260,
+      "Flushed Away - Coin on Side Pathway Before Skeletrone Dance Party #9": 80300261,
+      "Flushed Away - Coin on Side Pathway Before Skeletrone Dance Party #10": 80300266,
+      "Flushed Away - Coin on Side Pathway Before Skeletrone Dance Party #11": 80300262,
+      "Flushed Away - Coin on Side Pathway Before Skeletrone Dance Party #12": 80300267,
+      "Flushed Away - Coin on Side Pathway Before Skeletrone Dance Party #13": 80300269,
+      "Flushed Away - Coin on Side Pathway Before Skeletrone Dance Party #14": 80300268,
+      "Flushed Away - Coin on Side Pathway Before Skeletrone Dance Party #15": 80300270,
+      "Flushed Away - Coin in Sewage by Skeletrone Dance Party #1": 80300238,
+      "Flushed Away - Coin in Sewage by Skeletrone Dance Party #2": 80300239,
+      "Flushed Away - Coin in Sewage by Skeletrone Dance Party #3": 80300240,
+      "Flushed Away - Coin in Sewage by Skeletrone Dance Party #4": 80300241,
+      "Flushed Away - Coin in Sewage by Skeletrone Dance Party #5": 80300242,
+      "Flushed Away - Coin in Sewage by Skeletrone Dance Party #6": 80300243,
+      "Flushed Away - Coin in Sewage by Skeletrone Dance Party #7": 80300244,
+      "Flushed Away - Coin in Sewage Path Right After Skeletrone Dance Party #1": 80300248,
+      "Flushed Away - Coin in Sewage Path Right After Skeletrone Dance Party #2": 80300247,
+      "Flushed Away - Coin in Sewage Path Right After Skeletrone Dance Party #3": 80300246,
+      "Flushed Away - Coin in Sewage Path Right After Skeletrone Dance Party #4": 80300245,
+      "Flushed Away - Coin in Sewage Path Right After Skeletrone Dance Party #5": 80300229,
+      "Flushed Away - Coin in Sewage Path Right After Skeletrone Dance Party #6": 80300228,
+      "Flushed Away - Coin in Sewage Path Right After Skeletrone Dance Party #7": 80300227,
+      "Flushed Away - Coin in Sewage Path Right After Skeletrone Dance Party #8": 80300226,
+      "Flushed Away - Coin in Sewage Path Right After Skeletrone Dance Party #9": 80300225,
+      "Flushed Away - Coin in Sewage Path Right After Skeletrone Dance Party #10": 80300112,
+      "Flushed Away - Coin in Sewage Path Right After Skeletrone Dance Party #11": 80300111,
+      "Flushed Away - Coin in Sewage Path Right After Skeletrone Dance Party #12": 80300108,
+      "Flushed Away - Coin in Sewage Path Right After Skeletrone Dance Party #13": 80300107,
+      "Flushed Away - Coin in Sewage Path Right After Skeletrone Dance Party #14": 80300101,
+      "Flushed Away - Coin in Sewage Path Left After Skeletrone Dance Party #1": 80300249,
+      "Flushed Away - Coin in Sewage Path Left After Skeletrone Dance Party #2": 80300250,
+      "Flushed Away - Coin in Sewage Path Left After Skeletrone Dance Party #3": 80300251,
+      "Flushed Away - Coin in Sewage Path Left After Skeletrone Dance Party #4": 80300252,
+      "Flushed Away - Coin in Sewage Path Left After Skeletrone Dance Party #5": 80300253,
+      "Flushed Away - Coin in Sewage Path Left After Skeletrone Dance Party #6": 80300230,
+      "Flushed Away - Coin in Sewage Path Left After Skeletrone Dance Party #7": 80300231,
+      "Flushed Away - Coin in Sewage Path Left After Skeletrone Dance Party #8": 80300232,
+      "Flushed Away - Coin in Sewage Path Left After Skeletrone Dance Party #9": 80300233,
+      "Flushed Away - Coin in Sewage Path Left After Skeletrone Dance Party #10": 80300234,
+      "Flushed Away - Coin in Sewage Path Left After Skeletrone Dance Party #11": 80300189,
+      "Flushed Away - Coin in Sewage Path Left After Skeletrone Dance Party #12": 80300188,
+      "Flushed Away - Coin in Sewage Path Left After Skeletrone Dance Party #13": 80300187,
+      "Flushed Away - Coin in Sewage Path Left After Skeletrone Dance Party #14": 80300186,
+      "Flushed Away - Coin in Sewage Path Left After Skeletrone Dance Party #15": 80300185,
+      "Flushed Away - Coin Near Toilet Hat #1": 80300204,
+      "Flushed Away - Coin Near Toilet Hat #2": 80300203,
+      "Flushed Away - Coin Near Toilet Hat #3": 80300202,
+      "Flushed Away - Coin Near Toilet Hat #4": 80300201,
+      "Flushed Away - Coin Near Toilet Hat #5": 80300200,
+      "Flushed Away - Coin Near Toilet Hat #6": 80300199,
+      "Flushed Away - Coin Near Toilet Hat #7": 80300198,
+      "Flushed Away - Coin in Sewage Before Pillar Gear #1": 80300179,
+      "Flushed Away - Coin in Sewage Before Pillar Gear #2": 80300180,
+      "Flushed Away - Coin in Sewage Before Pillar Gear #3": 80300181,
+      "Flushed Away - Coin in Sewage Before Pillar Gear #4": 80300182,
+      "Flushed Away - Coin in Sewage Before Pillar Gear #5": 80300183,
+      "Flushed Away - Coin in Sewage Left of Pillar Gear #1": 80300131,
+      "Flushed Away - Coin in Sewage Left of Pillar Gear #2": 80300133,
+      "Flushed Away - Coin in Sewage Left of Pillar Gear #3": 80300135,
+      "Flushed Away - Coin in Sewage Left of Pillar Gear #4": 80300137,
+      "Flushed Away - Coin in Sewage Left of Pillar Gear #5": 80300139,
+      "Flushed Away - Coin in Sewage Right of Pillar Gear #1": 80300130,
+      "Flushed Away - Coin in Sewage Right of Pillar Gear #2": 80300132,
+      "Flushed Away - Coin in Sewage Right of Pillar Gear #3": 80300134,
+      "Flushed Away - Coin in Sewage Right of Pillar Gear #4": 80300136,
+      "Flushed Away - Coin in Sewage Right of Pillar Gear #5": 80300138,
+      "Flushed Away - Coin in Sewage After Pillar Gear #1": 80300140,
+      "Flushed Away - Coin in Sewage After Pillar Gear #2": 80300141,
+      "Flushed Away - Coin in Sewage After Pillar Gear #3": 80300142,
+      "Flushed Away - Coin in Sewage Path to Alligator Room #1": 80300218,
+      "Flushed Away - Coin in Sewage Path to Alligator Room #2": 80300217,
+      "Flushed Away - Coin in Sewage Path to Alligator Room #3": 80300216,
+      "Flushed Away - Coin in Sewage Path to Alligator Room #4": 80300215,
+      "Flushed Away - Coin in Sewage Path to Alligator Room #5": 80300214,
+      "Flushed Away - Coin in Sewage Path to Alligator Room #6": 80300213,
+      "Flushed Away - Coin in Sewage Path to Alligator Room #7": 80300212,
+      "Flushed Away - Coin in Sewage Path to Alligator Room #8": 80300211,
+      "Flushed Away - Coin in Sewage Path to Alligator Room #9": 80300210,
+      "Flushed Away - Coin in Sewage Path to Alligator Room #10": 80300209,
+      "Flushed Away - Coin in Sewage Path to Alligator Room #11": 80300190,
+      "Flushed Away - Coin in Sewage Path to Alligator Room #12": 80300191,
+      "Flushed Away - Coin in Sewage Path to Alligator Room #13": 80300192,
+      "Flushed Away - Coin in Sewage Path to Alligator Room #14": 80300193,
+      "Flushed Away - Coin in Sewage Path to Alligator Room #15": 80300194,
+      "Flushed Away - Coin in Sewage Path to Alligator Room #16": 80300154,
+      "Flushed Away - Coin in Sewage Path to Alligator Room #17": 80300153,
+      "Flushed Away - Coin in Sewage Path to Alligator Room #18": 80300152,
+      "Flushed Away - Coin in Sewage Path to Alligator Room #19": 80300151,
+      "Flushed Away - Coin in Sewage Path to Alligator Room #20": 80300150,
+      "Flushed Away - Coin in Sewage Path to Alligator Room #21": 80300145,
+      "Flushed Away - Coin in Sewage Path to Alligator Room #22": 80300146,
+      "Flushed Away - Coin in Sewage Path to Alligator Room #23": 80300147,
+      "Flushed Away - Coin in Sewage Path to Alligator Room #24": 80300148,
+      "Flushed Away - Coin in Sewage Path to Alligator Room #25": 80300149,
+      "Flushed Away - Coin Surrounding Gear in Alligator Room #1": 80300155,
+      "Flushed Away - Coin Surrounding Gear in Alligator Room #2": 80300158,
+      "Flushed Away - Coin Surrounding Gear in Alligator Room #3": 80300161,
+      "Flushed Away - Coin Surrounding Gear in Alligator Room #4": 80300156,
+      "Flushed Away - Coin Surrounding Gear in Alligator Room #5": 80300162,
+      "Flushed Away - Coin Surrounding Gear in Alligator Room #6": 80300157,
+      "Flushed Away - Coin Surrounding Gear in Alligator Room #7": 80300160,
+      "Flushed Away - Coin Surrounding Gear in Alligator Room #8": 80300163,
+      "Flushed Away - Coin in Sewage Path Towards Bunny Waterfall #1": 80300219,
+      "Flushed Away - Coin in Sewage Path Towards Bunny Waterfall #2": 80300220,
+      "Flushed Away - Coin in Sewage Path Towards Bunny Waterfall #3": 80300221,
+      "Flushed Away - Coin in Sewage Path Towards Bunny Waterfall #4": 80300222,
+      "Flushed Away - Coin in Sewage Path Towards Bunny Waterfall #5": 80300223,
+      "Flushed Away - Coin in Sewage Path After Bunny Waterfall #1": 80300119,
+      "Flushed Away - Coin in Sewage Path After Bunny Waterfall #2": 80300116,
+      "Flushed Away - Coin in Sewage Path After Bunny Waterfall #3": 80300115,
+      "Flushed Away - Coin in Sewage Path After Bunny Waterfall #4": 80300113,
+      "Flushed Away - Coin in Sewage Path After Bunny Waterfall #5": 80300114,
+      "Flushed Away - Coin in Sewage Path After Bunny Waterfall #6": 80300117,
+      "Flushed Away - Coin in Sewage Path After Bunny Waterfall #7": 80300118,
+      "Flushed Away - Coin in Sewage Path After Bunny Waterfall #8": 80300120,
+      "Flushed Away - Coin in Sewage Path After Bunny Waterfall #9": 80300121,
+      "Flushed Away - Coin in Sewage Path After Bunny Waterfall #10": 80300122,
+      "Flushed Away - Coin in Sewage Path After Bunny Waterfall #11": 80300123,
+      "Flushed Away - Coin in Sewage Path After Bunny Waterfall #12": 80300124,
+      "Flushed Away - Coin in Sewage Path After Bunny Waterfall #13": 80300125,
+      "Flushed Away - Coin in Sewage Path After Bunny Waterfall #14": 80300126,
+      "Flushed Away - Coin in Sewage Path After Bunny Waterfall #15": 80300128,
+      "Flushed Away - Coin in Sewage Path After Bunny Waterfall #16": 80300127,
+      "Flushed Away - Coin in Sewage Path After Bunny Waterfall #17": 80300106,
+      "Flushed Away - Coin in Sewage Path After Bunny Waterfall #18": 80300105,
+      "Flushed Away - Coin in Sewage Path After Bunny Waterfall #19": 80300104,
+      "Flushed Away - Coin in Sewage Path After Bunny Waterfall #20": 80300103,
+      "Flushed Away - Coin in Sewage Path After Bunny Waterfall #21": 80300102
+    },
+    "checkpoints": {
+      "Flushed Away - Checkpoint": 80900920
+    },
+    "cheeses": {
+      "Flushed Away - Cheese on Checkpoint Platform": 82100000,
+      "Flushed Away - Cheese After Left Sewage Path After Skeletrone Dance Party": 82100006,
+      "Flushed Away - Cheese in Alligator Room": 82100003
+    },
+    "hats": {
+      "Toilet Hat": 80700020,
+      "Bone Fish Hat": 80700021
+    },
+    "connections": {
+      "Flushed Away - Starting Area": "X1 & B1/J1",
+      "Flushed Away - High Ground Near Checkpoint": "J1/B1",
+      "Flushed Away - Sewage Ramps": "B1/J1",
+      "Flushed Away - Below Sewage Jumps": "",
+      "Flushed Away - Central Drain Archway": "",
+      "Flushed Away - Central Drain Waterfall Accessible": "X1",
+      "Flushed Away - Gear Pillar": "J1/B1",
+      "Flushed Away - Hidden Coins": "",
+      "Flushed Away - Out-of-Bounds (EXPERTS ONLY)": "X1+OOB+B1 & J1/X2"
+    },
+    "subwarps": {
+      "Flushed Away - Pipe in Front of Checkpoint": ["Flushed Away - Starting Area", ""],
+      "Flushed Away - Pipe Under Sewage Ramps": ["Flushed Away - Above Central Drain", ""],
+      "Flushed Away - Pit After Skeletrone Dance Party": ["Flushed Away - Central Drain Archway", ""],
+      "Flushed Away - Tunnel After Gear Pillar": ["Flushed Away - Central Drain Archway", ""],
+      "Flushed Away - Pipe in Alligator Room": ["Flushed Away - Central Drain Archway", ""]
+    },
+    "specialrules": {
+      "Flushed Away - Bunny - Behind Waterfall": "X1/B1/J1",
+      "Flushed Away - Gear - Skeletrone Dance Party": "X1+B1 | X3/J1",
+      "Bone Fish Hat": "X1/J1",
+      "Flushed Away - Chest on Pipe in Alligator Room": "X2/J1 | X1+B2"
+    }
+  },
+  "Flushed Away - Path Surrounding Starting Area": {
+    "level": "Flushed Away",
+    "sublevel": "Flushed Away",
+    "coinbags": {
+      "Flushed Away - Coin Bag on Right Side of Entrance Area": 80300417,
+      "Flushed Away - Coin Bag on Left Side of Entrance Area": 80300418
+    },
+    "coins": {
+      "Flushed Away - Coin on Right Side of Entrance Area #1": 80300415,
+      "Flushed Away - Coin on Right Side of Entrance Area #2": 80300413,
+      "Flushed Away - Coin on Right Side of Entrance Area #3": 80300411,
+      "Flushed Away - Coin on Right Side of Entrance Area #4": 80300409,
+      "Flushed Away - Coin on Right Side of Entrance Area #5": 80300407,
+      "Flushed Away - Coin on Right Side of Entrance Area #6": 80300405,
+      "Flushed Away - Coin on Right Side of Entrance Area #7": 80300403,
+      "Flushed Away - Coin on Right Side of Entrance Area #8": 80300401,
+      "Flushed Away - Coin on Right Side of Entrance Area #9": 80300399,
+      "Flushed Away - Coin on Right Side of Entrance Area #10": 80300397,
+      "Flushed Away - Coin on Right Side of Entrance Area #11": 80300395,
+      "Flushed Away - Coin on Right Side of Entrance Area #12": 80300393,
+      "Flushed Away - Coin on Right Side of Entrance Area #13": 80300383,
+      "Flushed Away - Coin on Right Side of Entrance Area #14": 80300384,
+      "Flushed Away - Coin on Right Side of Entrance Area #15": 80300385,
+      "Flushed Away - Coin on Right Side of Entrance Area #16": 80300386,
+      "Flushed Away - Coin on Right Side of Entrance Area #17": 80300387,
+      "Flushed Away - Coin on Left Side of Entrance Area #1": 80300416,
+      "Flushed Away - Coin on Left Side of Entrance Area #2": 80300414,
+      "Flushed Away - Coin on Left Side of Entrance Area #3": 80300412,
+      "Flushed Away - Coin on Left Side of Entrance Area #4": 80300410,
+      "Flushed Away - Coin on Left Side of Entrance Area #5": 80300408,
+      "Flushed Away - Coin on Left Side of Entrance Area #6": 80300406,
+      "Flushed Away - Coin on Left Side of Entrance Area #7": 80300404,
+      "Flushed Away - Coin on Left Side of Entrance Area #8": 80300402,
+      "Flushed Away - Coin on Left Side of Entrance Area #9": 80300400,
+      "Flushed Away - Coin on Left Side of Entrance Area #10": 80300398,
+      "Flushed Away - Coin on Left Side of Entrance Area #11": 80300396,
+      "Flushed Away - Coin on Left Side of Entrance Area #12": 80300394,
+      "Flushed Away - Coin on Left Side of Entrance Area #13": 80300392,
+      "Flushed Away - Coin on Left Side of Entrance Area #14": 80300391,
+      "Flushed Away - Coin on Left Side of Entrance Area #15": 80300390,
+      "Flushed Away - Coin on Left Side of Entrance Area #16": 80300389,
+      "Flushed Away - Coin on Left Side of Entrance Area #17": 80300388
+    },
+    "connections": {
+      "Flushed Away - Pipe Above Starting Area": "X1+B2+J1"
+    }
+  },
+  "Flushed Away - Pipe Above Starting Area": {
+    "level": "Flushed Away",
+    "sublevel": "Flushed Away",
+    "cheeses": {
+      "Flushed Away - Cheese on Pipe Above Entrance Area": 82100001
+    },
+    "connections": {
+      "Flushed Away - Starting Area": "",
+      "Flushed Away - Path Surrounding Starting Area": "",
+      "Flushed Away - Ledge Above Starting Area": "X1+B1 | J1"
+    }
+  },
+  "Flushed Away - Ledge Above Starting Area": {
+    "level": "Flushed Away",
+    "sublevel": "Flushed Away",
+    "gears": {
+      "Flushed Away - Gear - On Ledge Above Entrance Area": 80100001
+    },
+    "coins": {
+      "Flushed Away - Coin on Ledge Above Entrance Area #1": 80300419,
+      "Flushed Away - Coin on Ledge Above Entrance Area #2": 80300420,
+      "Flushed Away - Coin on Ledge Above Entrance Area #3": 80300421,
+      "Flushed Away - Coin on Ledge Above Entrance Area #4": 80300422,
+      "Flushed Away - Coin on Ledge Above Entrance Area #5": 80300423,
+      "Flushed Away - Coin on Ledge Above Entrance Area #6": 80300427,
+      "Flushed Away - Coin on Ledge Above Entrance Area #7": 80300428,
+      "Flushed Away - Coin on Ledge Above Entrance Area #8": 80300429,
+      "Flushed Away - Coin on Ledge Above Entrance Area #9": 80300430,
+      "Flushed Away - Coin on Ledge Above Entrance Area #10": 80300431
+    }
+  },
+  "Flushed Away - Pipe to Upper Starting Area": {
+    "level": "Flushed Away",
+    "sublevel": "Flushed Away",
+    "gears": {
+      "Flushed Away - Gear - Pipe in Starting Sewage Stream": 80100000
+    },
+    "subwarps": {
+      "Flushed Away - Pipe in Entrance Sewage Stream": ["Flushed Away - Pipe Above Starting Area", ""]
+    }
+  },
+  "Flushed Away - High Ground Near Checkpoint": {
+    "level": "Flushed Away",
+    "sublevel": "Flushed Away",
+    "chests": {
+      "Flushed Away - Chest on Roof Near Checkpoint": 80300351
+    },
+    "coinbags": {
+      "Flushed Away - Coin Bag on Roof Near Checkpoint": 80300352
+    },
+    "coins": {
+      "Flushed Away - Coin on Roof Near Checkpoint": 80300347,
+      "Flushed Away - Coin Behind Doggo Near Checkpoint #1": 80300342,
+      "Flushed Away - Coin Behind Doggo Near Checkpoint #2": 80300341,
+      "Flushed Away - Coin Behind Doggo Near Checkpoint #3": 80300340
+    },
+    "specialrules": {
+      "Flushed Away - Chest on Roof Near Checkpoint": "X1/J1",
+      "Flushed Away - Coin Bag on Roof Near Checkpoint": "X1/J1"
+    }
+  },
+  "Flushed Away - Sewage Ramps": {
+    "level": "Flushed Away",
+    "sublevel": "Flushed Away",
+    "coins": {
+      "Flushed Away - Coin on Sewage Ramps #1": 80300273,
+      "Flushed Away - Coin on Sewage Ramps #2": 80300274,
+      "Flushed Away - Coin on Sewage Ramps #3": 80300281,
+      "Flushed Away - Coin on Sewage Ramps #4": 80300282,
+      "Flushed Away - Coin on Sewage Ramps #5": 80300284,
+      "Flushed Away - Coin on Sewage Ramps #6": 80300335
+    },
+    "connections": {
+      "Flushed Away - After Sewage Ramps": "B1 | X3+J1"
+    }
+  },
+  "Flushed Away - After Sewage Ramps": {
+    "level": "Flushed Away",
+    "sublevel": "Flushed Away",
+    "gears": {
+      "Flushed Away - Gear - After Sewage Ramps": 80100005
+    },
+    "coins": {
+      "Flushed Away - Coin After Sewage Ramps #1": 80300283,
+      "Flushed Away - Coin After Sewage Ramps #2": 80300334,
+      "Flushed Away - Coin After Sewage Ramps #3": 80300336,
+      "Flushed Away - Coin After Sewage Ramps #4": 80300345,
+      "Flushed Away - Coin After Sewage Ramps #5": 80300346
+    },
+    "cheeses": {
+      "Flushed Away - Cheese After Sewage Ramps": 82100004
+    }
+  },
+  "Flushed Away - Below Sewage Jumps": {
+    "level": "Flushed Away",
+    "sublevel": "Flushed Away",
+    "coinbags": {
+      "Flushed Away - Coin Bag Below Sewage Ramps": 80300074
+    },
+    "coins": {
+      "Flushed Away - Coin Below Sewage Ramps #1": 80300069,
+      "Flushed Away - Coin Below Sewage Ramps #2": 80300070,
+      "Flushed Away - Coin Below Sewage Ramps #3": 80300071,
+      "Flushed Away - Coin Below Sewage Ramps #4": 80300072,
+      "Flushed Away - Coin Below Sewage Ramps #5": 80300075,
+      "Flushed Away - Coin Below Sewage Ramps #6": 80300077,
+      "Flushed Away - Coin Below Sewage Ramps #7": 80300079,
+      "Flushed Away - Coin Below Sewage Ramps #8": 80300080,
+      "Flushed Away - Coin Below Sewage Ramps #9": 80300081,
+      "Flushed Away - Coin Below Sewage Ramps #10": 80300082,
+      "Flushed Away - Coin Below Sewage Ramps #11": 80300083,
+      "Flushed Away - Coin Below Sewage Ramps #12": 80300084,
+      "Flushed Away - Coin Below Sewage Ramps #13": 80300085,
+      "Flushed Away - Coin Below Sewage Ramps #14": 80300078,
+      "Flushed Away - Coin Below Sewage Ramps #15": 80300076,
+      "Flushed Away - Coin Below Sewage Ramps #16": 80300066,
+      "Flushed Away - Coin Below Sewage Ramps #17": 80300064,
+      "Flushed Away - Coin Below Sewage Ramps #18": 80300059,
+      "Flushed Away - Coin Below Sewage Ramps #19": 80300060,
+      "Flushed Away - Coin Below Sewage Ramps #20": 80300061,
+      "Flushed Away - Coin Below Sewage Ramps #21": 80300062,
+      "Flushed Away - Coin Below Sewage Ramps #22": 80300063,
+      "Flushed Away - Coin Below Sewage Ramps #23": 80300065,
+      "Flushed Away - Coin Below Sewage Ramps #24": 80300067,
+      "Flushed Away - Coin Below Sewage Ramps #25": 80300023,
+      "Flushed Away - Coin Below Sewage Ramps #26": 80300024,
+      "Flushed Away - Coin Below Sewage Ramps #27": 80300025,
+      "Flushed Away - Coin Below Sewage Ramps #28": 80300026,
+      "Flushed Away - Coin Below Sewage Ramps #29": 80300027,
+      "Flushed Away - Coin Below Sewage Ramps #30": 80300028,
+      "Flushed Away - Coin Below Sewage Ramps #31": 80300029,
+      "Flushed Away - Coin Below Sewage Ramps #32": 80300030,
+      "Flushed Away - Coin Below Sewage Ramps #33": 80300031
+    },
+    "connections": {
+      "Flushed Away - Sewage Path From Ramp Room to Central Drain": "",
+      "Flushed Away - Out-of-Bounds (EXPERTS ONLY)": "X3+B1+J1"
+    }
+  },
+  "Flushed Away - Sewage Path From Ramp Room to Central Drain": {
+    "level": "Flushed Away",
+    "sublevel": "Flushed Away",
+    "coins": {
+      "Flushed Away - Coin in Sewage Path From Ramp Room to Central Drain #1": 80300000,
+      "Flushed Away - Coin in Sewage Path From Ramp Room to Central Drain #2": 80300001,
+      "Flushed Away - Coin in Sewage Path From Ramp Room to Central Drain #3": 80300002,
+      "Flushed Away - Coin in Sewage Path From Ramp Room to Central Drain #4": 80300003,
+      "Flushed Away - Coin in Sewage Path From Ramp Room to Central Drain #5": 80300004
+    },
+    "connections": {
+      "Flushed Away - Below Sewage Jumps": "X1 & B1/J1",
+      "Flushed Away - Central Drain": ""
+    }
+  },
+  "Flushed Away - Gear Pillar": {
+    "level": "Flushed Away",
+    "sublevel": "Flushed Away",
+    "gears": {
+      "Flushed Away - Gear - On Pillar": 80100003
+    },
+    "coins": {
+      "Flushed Away - Coin on Pillar Surrounding Gear #1": 80300165,
+      "Flushed Away - Coin on Pillar Surrounding Gear #2": 80300168,
+      "Flushed Away - Coin on Pillar Surrounding Gear #3": 80300167,
+      "Flushed Away - Coin on Pillar Surrounding Gear #4": 80300166,
+      "Flushed Away - Coin on Pillar Surrounding Gear #5": 80300173,
+      "Flushed Away - Coin on Pillar Surrounding Gear #6": 80300172,
+      "Flushed Away - Coin on Pillar Surrounding Gear #7": 80300170,
+      "Flushed Away - Coin on Pillar Surrounding Gear #8": 80300169,
+      "Flushed Away - Coin on Pillar Surrounding Gear #9": 80300176,
+      "Flushed Away - Coin on Pillar Surrounding Gear #10": 80300175,
+      "Flushed Away - Coin on Pillar Surrounding Gear #11": 80300174,
+      "Flushed Away - Coin on Pillar Surrounding Gear #12": 80300177
+    }
+  },
+  "Flushed Away - Central Drain": {
+    "level": "Flushed Away",
+    "sublevel": "Flushed Away",
+    "coins": {
+      "Flushed Away - Coin Behind Central Drain Skeleton Shacks Near Exit Pipe #1": 80300006,
+      "Flushed Away - Coin Behind Central Drain Skeleton Shacks Near Exit Pipe #2": 80300007,
+      "Flushed Away - Coin Behind Central Drain Skeleton Shacks Near Exit Pipe #3": 80300008,
+      "Flushed Away - Coin Behind Central Drain Skeleton Shacks Near Exit Pipe #4": 80300009,
+      "Flushed Away - Coin Behind Central Drain Skeleton Shacks Near Exit Pipe #5": 80300010,
+      "Flushed Away - Coin Behind Central Drain Skeleton Shacks Near Exit Pipe #6": 80300011,
+      "Flushed Away - Coin Behind Central Drain Skeleton Shacks Near Exit Pipe #7": 80300012,
+      "Flushed Away - Coin Behind Central Drain Skeleton Shacks Near Exit Pipe #8": 80300013,
+      "Flushed Away - Coin on Central Drain Skeleton Shack Near Exit Pipe #1": 80300033,
+      "Flushed Away - Coin on Central Drain Skeleton Shack Near Exit Pipe #2": 80300036,
+      "Flushed Away - Coin on Central Drain Skeleton Shack Near Exit Pipe #3": 80300034,
+      "Flushed Away - Coin on Central Drain Skeleton Shack Near Exit Pipe #4": 80300032,
+      "Flushed Away - Coin on Central Drain Skeleton Shack Near Exit Pipe #5": 80300035,
+      "Flushed Away - Coin on Central Drain Skeleton Shack Near Exit Pipe #6": 80300038,
+      "Flushed Away - Coin on Central Drain Skeleton Shack Near Exit Pipe #7": 80300042,
+      "Flushed Away - Coin on Central Drain Skeleton Shack Near Exit Pipe #8": 80300039,
+      "Flushed Away - Coin on Central Drain Skeleton Shack Near Exit Pipe #9": 80300037,
+      "Flushed Away - Coin on Central Drain Skeleton Shack Near Exit Pipe #10": 80300040,
+      "Flushed Away - Coin on Central Drain Skeleton Shack Near Exit Pipe #11": 80300044,
+      "Flushed Away - Coin on Central Drain Skeleton Shack Near Exit Pipe #12": 80300047,
+      "Flushed Away - Coin on Central Drain Skeleton Shack Near Exit Pipe #13": 80300045,
+      "Flushed Away - Coin on Central Drain Skeleton Shack Near Exit Pipe #14": 80300043,
+      "Flushed Away - Coin on Central Drain Skeleton Shack Near Exit Pipe #15": 80300046,
+      "Flushed Away - Coin in Ring Around Timer in Central Drain #1": 80300014,
+      "Flushed Away - Coin in Ring Around Timer in Central Drain #2": 80300017,
+      "Flushed Away - Coin in Ring Around Timer in Central Drain #3": 80300020,
+      "Flushed Away - Coin in Ring Around Timer in Central Drain #4": 80300015,
+      "Flushed Away - Coin in Ring Around Timer in Central Drain #5": 80300021,
+      "Flushed Away - Coin in Ring Around Timer in Central Drain #6": 80300016,
+      "Flushed Away - Coin in Ring Around Timer in Central Drain #7": 80300019,
+      "Flushed Away - Coin in Ring Around Timer in Central Drain #8": 80300022,
+      "Flushed Away - Coin on Central Drain Skeleton Shack Between Shops": 80300041
+    },
+    "cheeses": {
+      "Flushed Away - Cheese Near Central Drain Exit Pipe": 82100005,
+      "Flushed Away - Cheese in Central Drain Sewage": 82100002
+    },
+    "connections": {
+      "Flushed Away - Central Drain High Ground": "B1/J1",
+      "Flushed Away - Central Drain Bunny": "X3+B1 | J1",
+      "Flushed Away - Above Central Drain": "B2"
+    },
+    "subwarps": {
+      "Flushed Away - Central Drain Exit Pipe": ["Flushed Away - Checkpoint Area", ""]
+    },
+    "specialrules": {
+      "Flushed Away - Coin on Central Drain Skeleton Shack Between Shops": "X1/B1/J1"
+    }
+  },
+  "Flushed Away - Central Drain Archway": {
+    "level": "Flushed Away",
+    "sublevel": "Flushed Away",
+    "connections": {
+      "Flushed Away - Central Drain": "",
+      "Flushed Away - Central Drain Archway Accessible": "X1",
+      "Flushed Away - Central Drain Bunny": "X3"
+    }
+  },
+  "Flushed Away - Central Drain Archway Accessible": {
+    "level": "Flushed Away",
+    "sublevel": "Flushed Away",
+    "coins": {
+      "Flushed Away - Coin on Central Drain Skeleton Shack Stairway": 80300049
+    },
+    "connections": {
+      "Flushed Away - Central Drain Waterfall and Archway Accessible": ""
+    }
+  },
+  "Flushed Away - Central Drain Waterfall Accessible": {
+    "level": "Flushed Away",
+    "sublevel": "Flushed Away",
+    "coinbags": {
+      "Flushed Away - Coin Bag on Central Drain Shop Near Waterfall": 80300098,
+      "Flushed Away - Coin Bag on Central Drain Lemonade Stand Near Waterfall": 80300052
+    },
+    "coins": {
+      "Flushed Away - Coin on Central Drain Lemonade Stand Near Waterfall #1": 80300053,
+      "Flushed Away - Coin on Central Drain Lemonade Stand Near Waterfall #2": 80300054,
+      "Flushed Away - Coin on Central Drain Lemonade Stand Near Waterfall #3": 80300055,
+      "Flushed Away - Coin on Central Drain Lemonade Stand Near Waterfall #4": 80300056,
+      "Flushed Away - Coin on Central Drain Lemonade Stand Near Waterfall #5": 80300057
+    },
+    "connections": {
+      "Flushed Away - Central Drain Waterfall and Archway Accessible": ""
+    }
+  },
+  "Flushed Away - Central Drain Waterfall and Archway Accessible": {
+    "level": "Flushed Away",
+    "sublevel": "Flushed Away",
+    "coins": {
+      "Flushed Away - Coin on Central Drain Skeleton Shack Between Waterfalls #1": 80300048,
+      "Flushed Away - Coin on Central Drain Skeleton Shack Between Waterfalls #2": 80300050
+    }
+  },
+  "Flushed Away - Central Drain Bunny": {
+    "level": "Flushed Away",
+    "sublevel": "Flushed Away",
+    "bunnies": {
+      "Flushed Away - Bunny - In Central Drain": 80200002
+    }
+  },
+  "Flushed Away - Central Drain High Ground": {
+    "level": "Flushed Away",
+    "sublevel": "Flushed Away",
+    "chests": {
+      "Flushed Away - Chest on Central Drain Shop Stairway": 80300100
+    },
+    "coinbags": {
+      "Flushed Away - Coin Bag on Central Drain Lemonade Stand Stairway": 80300058,
+      "Flushed Away - Coin Bag on Central Drain Shop Near Exit Pipe": 80300090,
+      "Flushed Away - Coin Bag on Central Drain Exit Pipe #1": 80300087,
+      "Flushed Away - Coin Bag on Central Drain Exit Pipe #2": 80300086
+    },
+    "coins": {
+      "Flushed Away - Coin on Central Drain Shop Near Ramp Room Exit #1": 80300097,
+      "Flushed Away - Coin on Central Drain Shop Near Ramp Room Exit #2": 80300096,
+      "Flushed Away - Coin on Central Drain Shop Near Ramp Room Exit #3": 80300095,
+      "Flushed Away - Coin on Central Drain Shop Near Ramp Room Exit #4": 80300094,
+      "Flushed Away - Coin on Central Drain Shop Near Ramp Room Exit #5": 80300093,
+      "Flushed Away - Coin on Central Drain Shop Near Exit Pipe #1": 80300092,
+      "Flushed Away - Coin on Central Drain Shop Near Exit Pipe #2": 80300091,
+      "Flushed Away - Coin on Central Drain Shop Near Exit Pipe #3": 80300089,
+      "Flushed Away - Coin on Central Drain Shop Near Exit Pipe #4": 80300088
+    },
+    "connections": {
+      "Flushed Away - Central Drain Archway Accessible": "",
+      "Flushed Away - Central Drain Waterfall Accessible": ""
+    }
+  },
+  "Flushed Away - Above Central Drain": {
+    "level": "Flushed Away",
+    "sublevel": "Flushed Away",
+    "gears": {
+      "Flushed Away - Gear - Above Central Drain": 80100006
+    },
+    "connections": {
+      "Flushed Away - Central Drain": "",
+      "Flushed Away - Central Drain Bunny": "X3"
+    }
+  },
+  "Flushed Away - Hidden Coins": {
+    "level": "Flushed Away",
+    "sublevel": "Flushed Away",
+    "coins": {
+      "Flushed Away - Coin Underneath Sewage Leading to Skeletrone Dance Party #1": 80300272,
+      "Flushed Away - Coin Underneath Sewage Leading to Skeletrone Dance Party #2": 80300271,
+      "Flushed Away - Coin Underneath Sewage Leading to Skeletrone Dance Party #3": 80300255,
+      "Flushed Away - Coin Underneath Sewage Leading to Skeletrone Dance Party #4": 80300237,
+      "Flushed Away - Coin Underneath Sewage Leading to Skeletrone Dance Party #5": 80300236
+    }
+  },
+  "Flushed Away - Out-of-Bounds (EXPERTS ONLY)": {
+    "level": "Flushed Away",
+    "sublevel": "Flushed Away",
+    "coins": {
+      "Flushed Away - Coin Far Out-of-Bounds Near Ramps": 80300110
+    }
+  }
+}

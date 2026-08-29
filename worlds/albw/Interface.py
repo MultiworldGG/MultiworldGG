@@ -114,6 +114,9 @@ class N3DSInterface:
             await self._send_packet(RequestType.Write, request_data, 0, retry=False)
             start += self._max_write_size()
 
+    async def read_u8(self, address: int) -> int:
+        return int.from_bytes(await self.read(address, 1), "little")
+
     async def read_u32(self, address: int) -> int:
         return int.from_bytes(await self.read(address, 4), "little")
     

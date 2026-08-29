@@ -396,13 +396,15 @@ class OpenRCT2World(World):
             items_to_remove = 11
             if self.options.exclude_locations:
                 items_to_remove = 10
-            for item in list(self.item_table):  # copy to avoid issues
+            for item in self.random.sample(list(self.item_table),len(self.item_table)):  # copy to avoid issues
                 if item in item_info["useful_items"]:
                     self.item_table.remove(item)
                     items_removed += 1
                     if items_removed == items_to_remove:
                         break
-                    
+            else: # Did you know you can do an else on a for loop to see if it finishes iterating?
+                raise Exception("Insufficient useful items for awards. Please inform Crazycolbster on the Discord and he'll" +
+                " complain about Past Colby")
         # print(self.item_table)
 
         def set_openRCT2_rule(rule_type, selected_item, location_number):
@@ -482,7 +484,6 @@ class OpenRCT2World(World):
         increment = remaining_amount / (item_table_length * (item_table_length + 1) / 2)
         
         # Loop through every ride to make the unlock shop and set logic
-        
         for number, item in enumerate(self.item_table):
             unlock = {"LocationID": number, "Price": 0, "Lives": 0, "RidePrereq": []}
 
@@ -649,6 +650,7 @@ class OpenRCT2World(World):
                           and item not in item_info["non_starters"]]
         eligible_rides = list(dict.fromkeys(eligible_rides))#Removes Duplicates
         self.random.shuffle(eligible_rides)
+        # print("We need this many unique rides: " + str(self.options.required_unique_rides.value))
         if self.options.required_unique_rides.value:
             if len(eligible_rides) < self.options.required_unique_rides.value:
                 logging.warning(
@@ -660,10 +662,12 @@ class OpenRCT2World(World):
                     f" up."
                 )
                 self.unique_rides = eligible_rides[:len(eligible_rides)]
-        print("Here's the eligible rides:")
-        print(eligible_rides)
-        print("Here's what was chosen:")
-        print(self.unique_rides)
+            else:
+                self.unique_rides = eligible_rides[:self.options.required_unique_rides.value]
+        # print("Here's the eligible rides:")
+        # print(eligible_rides)
+        # print("Here's what was chosen:")
+        # print(self.unique_rides)
         for ride in self.unique_rides:
             add_rule(self.multiworld.get_region("Victory", self.player).entrances[0],
                      lambda state, selected_prereq=ride: state.has(selected_prereq, self.player))
@@ -812,5 +816,5 @@ class OpenRCT2World(World):
         if item in item_info["trap_items"]:
             classification = ItemClassification.trap
         # if classification == ItemClassification.useful:
-        #     print(item)
+        #     print("This item is useful: " + item)
         return OpenRCT2Item(item, classification, self.item_name_to_id[item], self.player)

@@ -1,0 +1,1 @@
+{"game": "Yellow Taxi Goes Vroom", "minimum_ap_version": "0.6.7", "world_version": "0.7.0", "authors": ["soopercool101"], "igdb_id": 216805, "license": "MIT", "repo_url": "https://github.com/soopercool101/Archipelago/tree/YTGV", "ai_disclosure": "Hint", "flags": ["supports_deathlink", "supports_ringlink"], "compatible_version": 7, "version": 7}

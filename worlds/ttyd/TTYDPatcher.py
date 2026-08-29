@@ -1,4 +1,3 @@
-import hashlib
 import io
 import os
 import shutil
@@ -45,8 +44,7 @@ def _cleanup_stale_extractions(cache_root: str, keep_dir: str) -> None:
 def _extract_from_apworld(zip_file_path: str, member_filter: str, cache_name: str,
                           required_files: List[str], nested_archive: Optional[str] = None) -> str:
     stat = os.stat(zip_file_path)
-    cache_key = f"{os.path.abspath(zip_file_path)}:{stat.st_size}:{stat.st_mtime_ns}"
-    stamp = hashlib.sha1(cache_key.encode("utf-8")).hexdigest()[:16]
+    stamp = f"{int(stat.st_mtime)}_{stat.st_size}"
     cache_root = os.path.join(tempfile.gettempdir(), cache_name)
     final_dir = os.path.join(cache_root, stamp)
 

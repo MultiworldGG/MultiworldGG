@@ -8,18 +8,33 @@ from Patch import create_rom_file
 from Utils import Version, tuplize_version, user_path
 from settings import get_settings
 from .Hints import sanitize
-from .Items import item_table, APItem
+from .Items import item_table
+from .Locations import location_table
 from .Options import ALBWOptions, create_randomizer_settings
 from .Utils import get_temp_path
-from albwrandomizer import ArchipelagoItem, ArchipelagoInfo, logging_on, randomize_pre_fill, set_custom_hints
+from albwrandomizer import ArchipelagoItem, ArchipelagoInfo, logging_on, randomize_pre_fill, \
+    set_custom_hints, new_archipelago_item
 
 class PatchItemInfo:
     name: str
+    player_name: str
     classification: int
+    location_code: int
 
-    def __init__(self, name: str, classification: int):
+    def __init__(self, name: str, player_name: str, classification: int, location_code: int):
         self.name = name
+        self.player_name = player_name
         self.classification = classification
+        self.location_code = location_code
+
+    def from_json(data: Dict[str, Any], loc_name: str) -> "PatchItemInfo":
+        name = data.get("name", "an Archipelago item")
+        player_name = data.get("player_name", "someone")
+        classification = data.get("classification", 0)
+        location_code = location_table[loc_name].code
+        if location_code is None:
+            location_code = 0
+        return PatchItemInfo(name, player_name, classification, location_code)
 
 class PatchInfo:
     version: str
@@ -31,7 +46,7 @@ class PatchInfo:
     hints: List[str]
     bow_of_light_hint: str
 
-    cur_version: ClassVar[Version] = Version(0, 3, 2)
+    cur_version: ClassVar[Version] = Version(0, 3, 3)
     min_compatible_version: ClassVar[Version] = Version(0, 3, 0)
 
     def __init__(
@@ -87,7 +102,7 @@ def from_json(json: bytes) -> PatchInfo:
         info["player_name"],
         ALBWOptions(**options),
         info["check_map"],
-        {loc: PatchItemInfo(item["name"], item["classification"]) for loc, item in info["items"].items()},
+        {loc: PatchItemInfo.from_json(item, loc) for loc, item in info["items"].items()},
         info["hints"],
         info["bow_of_light_hint"]
     )
@@ -131,14 +146,15 @@ def patch_albw_inner(caller: ALBWProcedurePatch, rom: bytes, patch_name: str) ->
     # Load Archipelago info from the patch info
     archipelago_info = ArchipelagoInfo()
     archipelago_info.name = patch_info.player_name
-    archipelago_info.items = {sanitize(loc_name): ArchipelagoItem(sanitize(item.name), item.classification)
-                                for loc_name, item in patch_info.items.items()}
+    archipelago_info.items = {sanitize(loc_name):
+        ArchipelagoItem(item.name, item.player_name, item.classification, item.location_code)
+        for loc_name, item in patch_info.items.items()}
 
     # Initialize seed info from the patch info
     settings = create_randomizer_settings(patch_info.options)
     seed_info = randomize_pre_fill(patch_info.seed, settings, archipelago_info)
-    check_map = {loc_name: item_table[item_name].progress[0] if item_name != "AP Item" else APItem
-        for loc_name, item_name in patch_info.check_map.items()}
+    check_map = {loc_name: item_table[item_name].progress[0] if item_name != "AP Item" else
+        new_archipelago_item(location_table[loc_name].code) for loc_name, item_name in patch_info.check_map.items()}
     seed_info.build_layout(check_map)
     set_custom_hints(seed_info, patch_info.hints, patch_info.bow_of_light_hint)
 

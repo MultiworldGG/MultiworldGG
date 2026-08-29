@@ -479,10 +479,8 @@ def init_lookups():
                     loc_name = next(loc for loc, datum in PotShuffle.key_drop_data.items()
                                     if datum[1] == super_tile)
                 else:
-                    continue
-                    # TODO: Pottery Lottery
-                    # descriptor = 'Large Block' if pot.flags & PotFlags.Block else f'Pot #{pot_index+1}'
-                    # loc_name = f'{pot.room} {descriptor}'
+                    descriptor = 'Large Block' if pot.flags & PotFlags.Block else f'Pot #{pot_index+1}'
+                    loc_name = f'{pot.room} {descriptor}'
                 location_table_pot_items[loc_name] = (2 * super_tile, 0x8000 >> pot_index)
                 location_id = DoorRandomizerRegions.pot_address(pot_index, super_tile)
                 lookup_name_to_id[loc_name] = location_id
@@ -499,10 +497,8 @@ def init_lookups():
                 loc_name = key_drop_data[(super_tile, index)]
                 location_id = PotShuffle.key_drop_data[loc_name][1][0]
             else:
-                continue
-                # TODO: Enemy drop shuffle
-                # loc_name = f'{sprite.region} Enemy #{index+1}'
-                # location_id = EnemyList.drop_address(index, super_tile)
+                loc_name = f'{sprite.region} Enemy #{index+1}'
+                location_id = EnemyList.drop_address(index, super_tile)
             # if index < index_adj:
             #     logging.info(f'Problem at {hex(super_tile)} {loc_name}')
             location_table_sprite_items[loc_name] = (2 * super_tile, 0x8000 >> (index-index_adj))

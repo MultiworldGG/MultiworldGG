@@ -248,7 +248,7 @@ class PalaceSkip(Toggle):
     display_name = "Palace Skip"
 
 
-class CutsceneSkip(Toggle):
+class CutsceneSkip(DefaultOnToggle):
     """
     Skips some of the longer cutscenes in the game,
     such as the Shadow Queen cutscene, Fahr Outpost Cannon etc.
@@ -377,11 +377,11 @@ class BossScalingNerfs(DefaultOnToggle):
     display_name = "Boss Scaling Nerfs"
 
 
-class NormalMoonSpeed(Toggle):
+class FasterMoonSpeed(Toggle):
     """
-    Mario's walking speed on the moon will be the same as his normal walking speed.
+    Mario's walking speed on the moon will be increased to be the same as his normal walking speed.
     """
-    display_name = "Normal Moon Speed"
+    display_name = "Faster Moon Speed"
 
 
 class PermanentPeekaboo(Toggle):
@@ -398,7 +398,7 @@ class FullRunBar(Toggle):
     display_name = "Full Run Bar"
 
 
-class DisableIntermissions(Toggle):
+class DisableIntermissions(DefaultOnToggle):
     """
     After obtaining a crystal star, mario will stay in the boss' room,
     and the sequence will be updated past the intermission.
@@ -406,12 +406,37 @@ class DisableIntermissions(Toggle):
     display_name = "Disable Intermissions"
 
 
-class FastTravel(Toggle):
+class FastTravel(DefaultOnToggle):
     """
     Enable this to gain the ability to warp to any area you have visited from the map
     screen in the main menu. Press A on the destination to open the warp confirmation dialog.
     """
     display_name = "Fast Travel"
+
+
+class InGameTracker(DefaultOnToggle):
+    """
+    Adds a logic tracker to the journal map.
+    All map nodes are colored by check availability.
+    Pressing X on a node opens a list of that area's locations and their accessibility.
+    """
+    display_name = "In-Game Tracker"
+
+
+class PanelHints(Toggle):
+    """
+    Colors hidden flip panels on the floor by accessibility.
+    This is recommended for beginners who want to learn where flip panels are located.
+    """
+    display_name = "Flip Panel Hints"
+
+
+class MirrorMode(Toggle):
+    """
+    Mirrors the game horizontally.
+    Everything in the overworld and in-battle will be mirrored completely.
+    """
+    display_name = "Mirror Mode"
 
 
 class AlwaysSucceedConditions(Toggle):
@@ -641,6 +666,9 @@ class TTYDOptions(PerGameCommonOptions):
     epilogue_skip: EpilogueSkip
     disable_intermissions: DisableIntermissions
     fast_travel: FastTravel
+    in_game_tracker: InGameTracker
+    panel_hints: PanelHints
+    mirror_mode: MirrorMode
     succeed_conditions: AlwaysSucceedConditions
     open_westside: OpenWestside
     grubba_bribe_direction: GrubbaBribeDirection
@@ -652,7 +680,7 @@ class TTYDOptions(PerGameCommonOptions):
     boss_randomizer: BossRandomizer
     boss_stat_scaling: BossStatScaling
     boss_scaling_nerfs: BossScalingNerfs
-    moon_speed: NormalMoonSpeed
+    moon_speed: FasterMoonSpeed
     permanent_peekaboo: PermanentPeekaboo
     full_run_bar: FullRunBar
     first_attack: ZeroBPFirstAttack

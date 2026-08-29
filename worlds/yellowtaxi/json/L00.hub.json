@@ -1,0 +1,1874 @@
+{
+  "Granny's Island - Starting Area": {
+    "level": "Hub",
+    "sublevel": "Granny's Island",
+    "coins": {
+      "Granny's Island - Coin in Starting Area #1": 300037,
+      "Granny's Island - Coin in Starting Area #2": 300038,
+      "Granny's Island - Coin in Starting Area #3": 300086,
+      "Granny's Island - Coin in Starting Area #4": 300098,
+      "Granny's Island - Coin in Starting Area #5": 300117,
+      "Granny's Island - Coin in Starting Area #6": 300149
+    },
+    "connections": {
+      "Granny's Island - Moat": "X2/OGI/J1/B1"
+    },
+    "subwarps": {
+      "Granny's Island - Morio's Lab Front Door": ["Morio's Lab - Ground Floor", "LabKey"]
+    }
+  },
+  "Granny's Island - Moat": {
+    "level": "Hub",
+    "sublevel": "Granny's Island",
+    "coins": {
+      "Granny's Island - Coin in Moat #1": 300151,
+      "Granny's Island - Coin in Moat #2": 300100,
+      "Granny's Island - Coin in Moat #3": 300088,
+      "Granny's Island - Coin in Moat #4": 300040,
+      "Granny's Island - Coin in Moat #5": 300021,
+      "Granny's Island - Coin in Moat #6": 300023,
+      "Granny's Island - Coin in Moat #7": 300025,
+      "Granny's Island - Coin in Moat #8": 300027,
+      "Granny's Island - Coin in Moat #9": 300029,
+      "Granny's Island - Coin in Moat #10": 300031,
+      "Granny's Island - Coin in Moat #11": 300036,
+      "Granny's Island - Coin in Moat #12": 300035,
+      "Granny's Island - Coin in Moat #13": 300034,
+      "Granny's Island - Coin in Moat #14": 300033,
+      "Granny's Island - Coin in Moat #15": 300032,
+      "Granny's Island - Coin in Moat #16": 300030,
+      "Granny's Island - Coin in Moat #17": 300028,
+      "Granny's Island - Coin in Moat #18": 300026,
+      "Granny's Island - Coin in Moat #19": 300024,
+      "Granny's Island - Coin in Moat #20": 300022,
+      "Granny's Island - Coin in Moat #21": 300020,
+      "Granny's Island - Coin in Moat #22": 300039,
+      "Granny's Island - Coin in Moat #23": 300087,
+      "Granny's Island - Coin in Moat #24": 300099,
+      "Granny's Island - Coin in Moat #25": 300150
+    },
+    "cheeses": {
+      "Granny's Island - Cheese in Moat": 2100004
+    },
+    "connections": {
+      "Granny's Island - Starting Area": "X1/OGI/J1/B1",
+      "Granny's Island - Pipe Area": "J1/B1",
+      "Granny's Island - Main Area": "X3/OGI/J1/B1"
+    },
+    "subwarps": {
+      "Granny's Island - Morio's Lab Back Door": ["Morio's Lab - Ground Floor", "LabKey"]
+    }
+  },
+  "Granny's Island - Main Area": {
+    "level": "Hub",
+    "sublevel": "Granny's Island",
+    "gears": {
+      "Granny's Island - Gear - Underwater Maze": 100013,
+      "Granny's Island - Gear - Escort Morco": 100017,
+      "Granny's Island - Gear - Oil Pump": 100003,
+      "Granny's Island - Gear - Inside Spin Blocks": 100014
+    },
+    "safes": {
+      "Granny's Island - Safe on Ocean Pillar": 300280,
+      "Granny's Island - Safe on Granny's Statue": 300755
+    },
+    "chests": {
+      "Granny's Island - Chest in UFO Crash Site": 300236,
+      "Granny's Island - Chest by Poop House": 300160,
+      "Granny's Island - Chest Across From Pizza Oven": 300268,
+      "Granny's Island - Chest on City Tree": 300577,
+      "Granny's Island - Chest in UFO Crash Site Near City": 300115
+    },
+    "coinbags": {
+      "Granny's Island - Coin Bag on Road #1": 300153,
+      "Granny's Island - Coin Bag on Road #2": 300384,
+      "Granny's Island - Coin Bag Behind City": 300182,
+      "Granny's Island - Coin Bag on Fenced City Cliff #1": 300271,
+      "Granny's Island - Coin Bag on Fenced City Cliff #2": 300272,
+      "Granny's Island - Coin Bag in Construction Site #1": 300105,
+      "Granny's Island - Coin Bag in Construction Site #2": 300110,
+      "Granny's Island - Coin Bag on Roofs Near Hat World #1": 300378,
+      "Granny's Island - Coin Bag on Beachside Cliff": 300291,
+      "Granny's Island - Coin Bag on Pillar Towards Sewer": 300589,
+      "Granny's Island - Coin Bag on Brown Cliffside Cabin": 300548,
+      "Granny's Island - Coin Bag on Green Cliffside Cabin": 300311
+    },
+    "coins": {
+      "Granny's Island - Coin on Road #1": 300154,
+      "Granny's Island - Coin on Road #2": 300156,
+      "Granny's Island - Coin on Road #3": 300157,
+      "Granny's Island - Coin on Road #4": 300158,
+      "Granny's Island - Coin on Road #5": 300159,
+      "Granny's Island - Coin on Road #6": 300165,
+      "Granny's Island - Coin on Road #7": 300164,
+      "Granny's Island - Coin on Road #8": 300163,
+      "Granny's Island - Coin on Road #9": 300162,
+      "Granny's Island - Coin on Road #10": 300161,
+      "Granny's Island - Coin on Road #11": 300166,
+      "Granny's Island - Coin on Road #12": 300167,
+      "Granny's Island - Coin on Road #13": 300168,
+      "Granny's Island - Coin on Road #14": 300169,
+      "Granny's Island - Coin on Road #15": 300170,
+      "Granny's Island - Coin on Road #16": 300172,
+      "Granny's Island - Coin on Road #17": 300173,
+      "Granny's Island - Coin on Road #18": 300174,
+      "Granny's Island - Coin on Road #19": 300175,
+      "Granny's Island - Coin on Road #20": 300176,
+      "Granny's Island - Coin on Road #21": 300177,
+      "Granny's Island - Coin on Road #22": 300178,
+      "Granny's Island - Coin on Road #23": 300391,
+      "Granny's Island - Coin on Road #24": 300390,
+      "Granny's Island - Coin on Road #25": 300389,
+      "Granny's Island - Coin on Road #26": 300388,
+      "Granny's Island - Coin on Road #27": 300387,
+      "Granny's Island - Coin on Road #28": 300386,
+      "Granny's Island - Coin on Road #29": 300385,
+      "Granny's Island - Coin on Mountain Road #1": 300597,
+      "Granny's Island - Coin on Mountain Road #2": 300598,
+      "Granny's Island - Coin on Mountain Road #3": 300611,
+      "Granny's Island - Coin on Mountain Road #4": 300613,
+      "Granny's Island - Coin on Mountain Road #5": 300630,
+      "Granny's Island - Coin in UFO Crash Site #1": 300241,
+      "Granny's Island - Coin in UFO Crash Site #2": 300239,
+      "Granny's Island - Coin in UFO Crash Site #3": 300237,
+      "Granny's Island - Coin in UFO Crash Site #4": 300234,
+      "Granny's Island - Coin in UFO Crash Site #5": 300232,
+      "Granny's Island - Coin in UFO Crash Site #6": 300230,
+      "Granny's Island - Coin in UFO Crash Site #7": 300228,
+      "Granny's Island - Coin in UFO Crash Site #8": 300227,
+      "Granny's Island - Coin in UFO Crash Site #9": 300226,
+      "Granny's Island - Coin in UFO Crash Site #10": 300225,
+      "Granny's Island - Coin in UFO Crash Site #11": 300224,
+      "Granny's Island - Coin in UFO Crash Site #12": 300229,
+      "Granny's Island - Coin in UFO Crash Site #13": 300231,
+      "Granny's Island - Coin in UFO Crash Site #14": 300233,
+      "Granny's Island - Coin in UFO Crash Site #15": 300235,
+      "Granny's Island - Coin in UFO Crash Site #16": 300238,
+      "Granny's Island - Coin in UFO Crash Site #17": 300240,
+      "Granny's Island - Coin in UFO Crash Site #18": 300242,
+      "Granny's Island - Coin in UFO Crash Site #19": 300244,
+      "Granny's Island - Coin in UFO Crash Site #20": 300245,
+      "Granny's Island - Coin in UFO Crash Site #21": 300246,
+      "Granny's Island - Coin in UFO Crash Site #22": 300247,
+      "Granny's Island - Coin in UFO Crash Site #23": 300248,
+      "Granny's Island - Coin in UFO Crash Site #24": 300243,
+      "Granny's Island - Coin Behind City #1": 300185,
+      "Granny's Island - Coin Behind City #2": 300184,
+      "Granny's Island - Coin Behind City #3": 300183,
+      "Granny's Island - Coin Behind City #4": 300181,
+      "Granny's Island - Coin Behind City #5": 300180,
+      "Granny's Island - Coin Behind City #6": 300179,
+      "Granny's Island - Coin Near Oil Pump #1": 300269,
+      "Granny's Island - Coin Near Oil Pump #2": 300299,
+      "Granny's Island - Coin Near Oil Pump #3": 300310,
+      "Granny's Island - Coin Near Oil Pump #4": 300317,
+      "Granny's Island - Coin Near Oil Pump #5": 300379,
+      "Granny's Island - Coin in Underwater Maze #1": 300018,
+      "Granny's Island - Coin in Underwater Maze #2": 300013,
+      "Granny's Island - Coin in Underwater Maze #3": 300011,
+      "Granny's Island - Coin in Underwater Maze #4": 300009,
+      "Granny's Island - Coin in Underwater Maze #5": 300007,
+      "Granny's Island - Coin in Underwater Maze #6": 300006,
+      "Granny's Island - Coin in Underwater Maze #7": 300004,
+      "Granny's Island - Coin in Underwater Maze #8": 300003,
+      "Granny's Island - Coin in Underwater Maze #9": 300002,
+      "Granny's Island - Coin in Underwater Maze #10": 300001,
+      "Granny's Island - Coin in Underwater Maze #11": 300005,
+      "Granny's Island - Coin in Underwater Maze #12": 300008,
+      "Granny's Island - Coin in Underwater Maze #13": 300010,
+      "Granny's Island - Coin in Underwater Maze #14": 300012,
+      "Granny's Island - Coin in Underwater Maze #15": 300014,
+      "Granny's Island - Coin in Underwater Maze #16": 300015,
+      "Granny's Island - Coin in Underwater Maze #17": 300016,
+      "Granny's Island - Coin in Underwater Maze #18": 300017,
+      "Granny's Island - Coin on Pier #1": 300045,
+      "Granny's Island - Coin on Pier #2": 300046,
+      "Granny's Island - Coin on Pier #3": 300047,
+      "Granny's Island - Coin on Pier #4": 300048,
+      "Granny's Island - Coin on Pier #5": 300049,
+      "Granny's Island - Coin in Construction Site #1": 300104,
+      "Granny's Island - Coin in Construction Site #2": 300103,
+      "Granny's Island - Coin in Construction Site #3": 300114,
+      "Granny's Island - Coin in Construction Site #4": 300111,
+      "Granny's Island - Coin in Construction Site #5": 300108,
+      "Granny's Island - Coin in Construction Site #6": 300113,
+      "Granny's Island - Coin in Construction Site #7": 300107,
+      "Granny's Island - Coin in Construction Site #8": 300112,
+      "Granny's Island - Coin in Construction Site #9": 300109,
+      "Granny's Island - Coin in Construction Site #10": 300106,
+      "Granny's Island - Coin on Roofs Near Hat World #1": 300309,
+      "Granny's Island - Coin on Roofs Near Hat World #2": 300308,
+      "Granny's Island - Coin on Roofs Near Hat World #3": 300316,
+      "Granny's Island - Coin on Roofs Near Hat World #4": 300374,
+      "Granny's Island - Coin on Roofs Near Hat World #5": 300373,
+      "Granny's Island - Coin on Roofs Near Hat World #6": 300375,
+      "Granny's Island - Coin on Roofs Near Hat World #7": 300376,
+      "Granny's Island - Coin on Roofs Near Hat World #8": 300377,
+      "Granny's Island - Coin Above Law Firm": 300312,
+      "Granny's Island - Coin Across From Pizza Oven #1": 300171,
+      "Granny's Island - Coin Across From Pizza Oven #2": 300251,
+      "Granny's Island - Coin Across From Pizza Oven #3": 300261,
+      "Granny's Island - Coin Across From Pizza Oven #4": 300262,
+      "Granny's Island - Coin Across From Pizza Oven #5": 300263,
+      "Granny's Island - Coin Across From Pizza Oven #6": 300264,
+      "Granny's Island - Coin Across From Pizza Oven #7": 300265,
+      "Granny's Island - Coin Across From Pizza Oven #8": 300266,
+      "Granny's Island - Coin Across From Pizza Oven #9": 300267,
+      "Granny's Island - Coin on Beach Near Cabins #1": 300209,
+      "Granny's Island - Coin on Beach Near Cabins #2": 300208,
+      "Granny's Island - Coin on Beach Near Cabins #3": 300212,
+      "Granny's Island - Coin on Beach Near Cabins #4": 300211,
+      "Granny's Island - Coin on Beach Near Cabins #5": 300215,
+      "Granny's Island - Coin on Beach Near Cabins #6": 300214,
+      "Granny's Island - Coin on Beach Near Cabins #7": 300218,
+      "Granny's Island - Coin on Beach Near Cabins #8": 300217,
+      "Granny's Island - Coin on Beach Near Cabins #9": 300221,
+      "Granny's Island - Coin on Beach Near Cabins #10": 300220,
+      "Granny's Island - Coin on Beachside Cliff #1": 300295,
+      "Granny's Island - Coin on Beachside Cliff #2": 300294,
+      "Granny's Island - Coin on Beachside Cliff #3": 300293,
+      "Granny's Island - Coin on Beachside Cliff #4": 300292,
+      "Granny's Island - Coin Under Bomb Bridge #1": 300200,
+      "Granny's Island - Coin Under Bomb Bridge #2": 300195,
+      "Granny's Island - Coin Under Bomb Bridge #3": 300190,
+      "Granny's Island - Coin Under Bomb Bridge #4": 300199,
+      "Granny's Island - Coin Under Bomb Bridge #5": 300194,
+      "Granny's Island - Coin Under Bomb Bridge #6": 300189,
+      "Granny's Island - Coin Under Bomb Bridge #7": 300198,
+      "Granny's Island - Coin Under Bomb Bridge #8": 300193,
+      "Granny's Island - Coin Under Bomb Bridge #9": 300188,
+      "Granny's Island - Coin Under Bomb Bridge #10": 300197,
+      "Granny's Island - Coin Under Bomb Bridge #11": 300192,
+      "Granny's Island - Coin Under Bomb Bridge #12": 300187,
+      "Granny's Island - Coin Under Bomb Bridge #13": 300196,
+      "Granny's Island - Coin Under Bomb Bridge #14": 300191,
+      "Granny's Island - Coin Under Bomb Bridge #15": 300186,
+      "Granny's Island - Coin on City Tree #1": 300576,
+      "Granny's Island - Coin on City Tree #2": 300575,
+      "Granny's Island - Coin on City Tree #3": 300579,
+      "Granny's Island - Coin on City Tree #4": 300578,
+      "Granny's Island - Coin Around Big Mountain #1": 300202,
+      "Granny's Island - Coin Around Big Mountain #2": 300203,
+      "Granny's Island - Coin Around Big Mountain #3": 300204,
+      "Granny's Island - Coin Around Big Mountain #4": 300205,
+      "Granny's Island - Coin Around Big Mountain #5": 300206,
+      "Granny's Island - Coin Around Big Mountain #6": 300207,
+      "Granny's Island - Coin Around Big Mountain #7": 300210,
+      "Granny's Island - Coin Around Big Mountain #8": 300213,
+      "Granny's Island - Coin Around Big Mountain #9": 300216,
+      "Granny's Island - Coin Around Big Mountain #10": 300219,
+      "Granny's Island - Coin on Ramp House Towards Sewers #1": 300372,
+      "Granny's Island - Coin on Ramp House Towards Sewers #2": 300371,
+      "Granny's Island - Coin on Ramp House Towards Sewers #3": 300370,
+      "Granny's Island - Coin on Ramp House Towards Sewers #4": 300412,
+      "Granny's Island - Coin on Ramp House Towards Sewers #5": 300459
+    },
+    "checkpoints": {
+      "Granny's Island - Checkpoint on Road": 900300,
+      "Granny's Island - Checkpoint on Pier": 900640
+    },
+    "cheeses": {
+      "Granny's Island - Cheese Near Tonzi Patonzi": 2100002,
+      "Granny's Island - Cheese in Construction Site": 2100005,
+      "Granny's Island - Cheese Near Construction Site": 2100006,
+      "Granny's Island - Cheese Behind City": 2100000,
+      "Granny's Island - Cheese on Pier": 2100003
+    },
+    "connections": {
+      "Granny's Island - Moat": "",
+      "Granny's Island - Broken Pier Shallow": "X1+B1 | J1 | GP",
+      "Granny's Island - Broken Pier Deep": "X1+B2 | X1/B1 & J1 | GP | J2",
+      "Granny's Island - Expert 1 High Ground": "X1/J1/B1/GP",
+      "Granny's Island - Expert 2 High Ground": "X2/J1/B1/GP",
+      "Granny's Island - High Ground": "J1/B1/GP",
+      "Granny's Island - Coins on Top of Rocket": "X1+Rocket+J1 & X3/GP",
+      "Granny's Island - Gear on Top of Rocket": "Rocket+B2 | Rocket+B1 & X1/GP | X3+B2+J1 | X3+B1+GP | X2+Rocket+GP+J1",
+      "Granny's Island - Arch Near Construction Site": "B1 | GP+J1",
+      "Granny's Island - Ocean Pillar": "B1 | X2/GP & OS | X2+J1 & X3/GP | X2+GP",
+      "Granny's Island - First Island Towards Sewer": "B1 | GP+J1+OS | X1+GP | X2+J1",
+      "Granny's Island - Second Island Towards Sewer": "B1 & X2/OS/GP/J1 | X1+GP+OS",
+      "Granny's Island - Island Past Cloro-Phil": "GP | B2 | X1 & B1/J2",
+      "Granny's Island - High Pillar by Lab": "X1/GP/J1 & B1 | NSAR+X1+GP & X2/J1 | X1+GP+J2 | X3+J1",
+      "Granny's Island - Crash Again Island": "X1+B2+GP | X2+B2 & X3/J1 | X2+GP & X3/B1 | X3+J1",
+      "Granny's Island - Crash Again Roof": "X2+GP & X3/B2 | GP+OS & X2/B1",
+      "Granny's Island - Sewer Island": "X1+B2+J2+GP | X2+B2+J1 | X2+B1+GP",
+      "Morio's Lab - Ground Floor Golden Propeller": "X1+NSAR+GP+LabKey",
+      "Law Firm - Ledges": "X1+NSAR+GP",
+      "Ice Cream Truck - Upper Path": "X1+NSAR+GelaToni+GP"
+    },
+    "subwarps": {
+      "Granny's Island - Beach Pipe": ["Granny's Island - Pipe Area", ""],
+      "Granny's Island - Law Firm Roof Entrance": ["Law Firm - Entrance", ""],
+      "Granny's Island - Pizza Oven Entrance": ["Pizza Oven - Entrance", "PizzaKing"],
+      "Granny's Island - Ice Cream Truck Entrance": ["Ice Cream Truck - Lower Path", "GelaToni"],
+      "Granny's Island - Hat World Entrance": ["Granny's Island Hat World", ""]
+    },
+    "warps": {
+      "Granny's Island - Gym Gears Entrance": ["{PORTAL}Gym Gears", "PortalGymGears+GymKey"],
+      "Granny's Island - Poop House": ["{PORTAL}Fecal Matters", "PortalFecalMatters+Doggo"],
+      "Granny's Island - Mosk's Rocket Entrance": ["{PORTAL}Mosk's Rocket", "Rocket & X2/J2/B1/GP | X1+Rocket+J1"]
+    },
+    "specialrules": {
+      "Granny's Island - Safe on Ocean Pillar": "B2 | B1 & X3/GP | X2+J1 & X3/B1",
+      "Granny's Island - Safe on Granny's Statue": "J2 | J1/B1 & X2/GP | X1+B1+J1 | B2 & X1/J1 | X2+GP",
+      "Granny's Island - Coin Bag on Pillar Towards Sewer": "X2/B1/GP",
+      "Granny's Island - Gear - Oil Pump": "SP | X2",
+      "Granny's Island - Gear - Inside Spin Blocks": "X3/SP",
+      "Granny's Island - Coin Bag on Brown Cliffside Cabin": "X1/J1/GP",
+      "Granny's Island - Coin Bag on Green Cliffside Cabin": "X1/J1/GP"
+    }
+  },
+  "Granny's Island - Pipe Area": {
+    "level": "Hub",
+    "sublevel": "Granny's Island",
+    "coins": {
+      "Granny's Island - Coin Near Pipe on Hill by Lab #1": 300346,
+      "Granny's Island - Coin Near Pipe on Hill by Lab #2": 300347,
+      "Granny's Island - Coin Near Pipe on Hill by Lab #3": 300350,
+      "Granny's Island - Coin Near Pipe on Hill by Lab #4": 300354,
+      "Granny's Island - Coin Near Pipe on Hill by Lab #5": 300358,
+      "Granny's Island - Coin Near Pipe on Hill by Lab #6": 300362,
+      "Granny's Island - Coin Near Pipe on Hill by Lab #7": 300365
+    },
+    "connections": {
+      "Granny's Island - Main Area": ""
+    },
+    "subwarps": {
+      "Granny's Island - Hillside Pipe": ["Granny's Island - Main Area", ""]
+    }
+  },
+  "Granny's Island - Broken Pier Shallow": {
+    "level": "Hub",
+    "sublevel": "Granny's Island",
+    "coins": {
+      "Granny's Island - Coin on Broken Pier #1": 300050,
+      "Granny's Island - Coin on Broken Pier #2": 300051,
+      "Granny's Island - Coin on Broken Pier #3": 300052,
+      "Granny's Island - Coin on Broken Pier #4": 300053,
+      "Granny's Island - Coin on Broken Pier #5": 300054,
+      "Granny's Island - Coin on Broken Pier #6": 300055,
+      "Granny's Island - Coin on Broken Pier #7": 300056,
+      "Granny's Island - Coin on Broken Pier #8": 300057,
+      "Granny's Island - Coin on Broken Pier #9": 300058
+    }
+  },
+  "Granny's Island - Broken Pier Deep": {
+    "level": "Hub",
+    "sublevel": "Granny's Island",
+    "gears": {
+      "Granny's Island - Gear - Broken Pier": 100011
+    },
+    "coins": {
+      "Granny's Island - Coin on Broken Pier #10": 300059,
+      "Granny's Island - Coin on Broken Pier #11": 300060,
+      "Granny's Island - Coin on Broken Pier #12": 300061,
+      "Granny's Island - Coin on Broken Pier #13": 300063,
+      "Granny's Island - Coin on Broken Pier #14": 300042,
+      "Granny's Island - Coin on Broken Pier #15": 300041,
+      "Granny's Island - Coin on Broken Pier #16": 300044,
+      "Granny's Island - Coin on Broken Pier #17": 300062
+    }
+  },
+  "Granny's Island - Lab Hill High Ground": {
+    "level": "Hub",
+    "sublevel": "Granny's Island",
+    "coinbags": {
+      "Granny's Island - Coin Bag on Starting Area Walls #1": 300543,
+      "Granny's Island - Coin Bag on Starting Area Walls #2": 300503,
+      "Granny's Island - Coin Bag on Starting Area Walls #3": 300494,
+      "Granny's Island - Coin Bag on Starting Area Walls #4": 300485,
+      "Granny's Island - Coin Bag on Starting Area Walls #5": 300534
+    },
+    "coins": {
+      "Granny's Island - Coin on Hill Near Lab #1": 300363,
+      "Granny's Island - Coin on Hill Near Lab #2": 300359,
+      "Granny's Island - Coin on Hill Near Lab #3": 300364,
+      "Granny's Island - Coin on Hill Near Lab #4": 300360,
+      "Granny's Island - Coin on Hill Near Lab #5": 300355,
+      "Granny's Island - Coin on Hill Near Lab #6": 300361,
+      "Granny's Island - Coin on Hill Near Lab #7": 300356,
+      "Granny's Island - Coin on Hill Near Lab #8": 300351,
+      "Granny's Island - Coin on Hill Near Lab #9": 300357,
+      "Granny's Island - Coin on Hill Near Lab #10": 300352,
+      "Granny's Island - Coin on Hill Near Lab #11": 300348,
+      "Granny's Island - Coin on Hill Near Lab #12": 300353,
+      "Granny's Island - Coin on Hill Near Lab #13": 300349,
+      "Granny's Island - Coin on Starting Area Walls #1": 300539,
+      "Granny's Island - Coin on Starting Area Walls #2": 300540,
+      "Granny's Island - Coin on Starting Area Walls #3": 300541,
+      "Granny's Island - Coin on Starting Area Walls #4": 300542,
+      "Granny's Island - Coin on Starting Area Walls #5": 300533,
+      "Granny's Island - Coin on Starting Area Walls #6": 300531,
+      "Granny's Island - Coin on Starting Area Walls #7": 300529,
+      "Granny's Island - Coin on Starting Area Walls #8": 300527,
+      "Granny's Island - Coin on Starting Area Walls #9": 300525,
+      "Granny's Island - Coin on Starting Area Walls #10": 300523,
+      "Granny's Island - Coin on Starting Area Walls #11": 300521,
+      "Granny's Island - Coin on Starting Area Walls #12": 300519,
+      "Granny's Island - Coin on Starting Area Walls #13": 300517,
+      "Granny's Island - Coin on Starting Area Walls #14": 300515,
+      "Granny's Island - Coin on Starting Area Walls #15": 300513,
+      "Granny's Island - Coin on Starting Area Walls #16": 300511,
+      "Granny's Island - Coin on Starting Area Walls #17": 300509,
+      "Granny's Island - Coin on Starting Area Walls #18": 300507,
+      "Granny's Island - Coin on Starting Area Walls #19": 300505,
+      "Granny's Island - Coin on Starting Area Walls #20": 300502,
+      "Granny's Island - Coin on Starting Area Walls #21": 300501,
+      "Granny's Island - Coin on Starting Area Walls #22": 300500,
+      "Granny's Island - Coin on Starting Area Walls #23": 300499,
+      "Granny's Island - Coin on Starting Area Walls #24": 300498,
+      "Granny's Island - Coin on Starting Area Walls #25": 300497,
+      "Granny's Island - Coin on Starting Area Walls #26": 300496,
+      "Granny's Island - Coin on Starting Area Walls #27": 300495,
+      "Granny's Island - Coin on Starting Area Walls #28": 300493,
+      "Granny's Island - Coin on Starting Area Walls #29": 300492,
+      "Granny's Island - Coin on Starting Area Walls #30": 300491,
+      "Granny's Island - Coin on Starting Area Walls #31": 300490,
+      "Granny's Island - Coin on Starting Area Walls #32": 300489,
+      "Granny's Island - Coin on Starting Area Walls #33": 300488,
+      "Granny's Island - Coin on Starting Area Walls #34": 300487,
+      "Granny's Island - Coin on Starting Area Walls #35": 300486,
+      "Granny's Island - Coin on Starting Area Walls #36": 300504,
+      "Granny's Island - Coin on Starting Area Walls #37": 300506,
+      "Granny's Island - Coin on Starting Area Walls #38": 300508,
+      "Granny's Island - Coin on Starting Area Walls #39": 300510,
+      "Granny's Island - Coin on Starting Area Walls #40": 300512,
+      "Granny's Island - Coin on Starting Area Walls #41": 300514,
+      "Granny's Island - Coin on Starting Area Walls #42": 300516,
+      "Granny's Island - Coin on Starting Area Walls #43": 300518,
+      "Granny's Island - Coin on Starting Area Walls #44": 300520,
+      "Granny's Island - Coin on Starting Area Walls #45": 300522,
+      "Granny's Island - Coin on Starting Area Walls #46": 300524,
+      "Granny's Island - Coin on Starting Area Walls #47": 300526,
+      "Granny's Island - Coin on Starting Area Walls #48": 300528,
+      "Granny's Island - Coin on Starting Area Walls #49": 300530,
+      "Granny's Island - Coin on Starting Area Walls #50": 300532,
+      "Granny's Island - Coin on Starting Area Walls #51": 300535,
+      "Granny's Island - Coin on Starting Area Walls #52": 300536,
+      "Granny's Island - Coin on Starting Area Walls #53": 300537,
+      "Granny's Island - Coin on Starting Area Walls #54": 300538,
+      "Granny's Island - Coin on Cliff Behind Starting Area #1": 300297,
+      "Granny's Island - Coin on Cliff Behind Starting Area #2": 300314,
+      "Granny's Island - Coin on Cliff Behind Starting Area #3": 300257,
+      "Granny's Island - Coin on Cliff Behind Starting Area #4": 300256,
+      "Granny's Island - Coin on Cliff Behind Starting Area #5": 300255,
+      "Granny's Island - Coin on Cliff Behind Starting Area #6": 300313,
+      "Granny's Island - Coin on Cliff Behind Starting Area #7": 300296
+    },
+    "connections": {
+      "Granny's Island - Crash Again Island": "OS",
+      "Granny's Island - Main Area": ""
+    }
+  },
+  "Granny's Island - Expert 1 High Ground": {
+    "level": "Hub",
+    "sublevel": "Granny's Island",
+    "gears": {
+      "Granny's Island - Gear - In Cliff Face": 100008,
+      "Granny's Island - Gear - Granny's Statue": 100005
+    },
+    "chests": {
+      "Granny's Island - Chest on Roofs Behind Granny's Statue": 300396
+    },
+    "coinbags": {
+      "Granny's Island - Coin Bag on Mountain Ramp House": 300749,
+      "Granny's Island - Coin Bag on Roofs Behind Granny's Statue": 300318,
+      "Granny's Island - Coin Bag on Path to Granny's Statue": 300573,
+      "Granny's Island - Coin Bag on Roof in Front of Granny's Statue": 300474,
+      "Granny's Island - Coin Bag on Power Shovel": 300270
+    },
+    "coins": {
+      "Granny's Island - Coin on Roofs Behind Granny's Statue": 300300,
+      "Granny's Island - Coin in Mountain Tunnel #1": 300662,
+      "Granny's Island - Coin in Mountain Tunnel #2": 300661,
+      "Granny's Island - Coin in Mountain Tunnel #3": 300660,
+      "Granny's Island - Coin in Mountain Tunnel #4": 300659,
+      "Granny's Island - Coin in Mountain Tunnel #5": 300658,
+      "Granny's Island - Coin in Mountain Tunnel #6": 300657,
+      "Granny's Island - Coin in Mountain Tunnel #7": 300656,
+      "Granny's Island - Coin After Mountain Tunnel #1": 300701,
+      "Granny's Island - Coin After Mountain Tunnel #2": 300698,
+      "Granny's Island - Coin After Mountain Tunnel #3": 300697,
+      "Granny's Island - Coin After Mountain Tunnel #4": 300682,
+      "Granny's Island - Coin After Mountain Tunnel #5": 300700,
+      "Granny's Island - Coin After Mountain Tunnel #6": 300696,
+      "Granny's Island - Coin After Mountain Tunnel #7": 300681,
+      "Granny's Island - Coin After Mountain Tunnel #8": 300699,
+      "Granny's Island - Coin After Mountain Tunnel #9": 300695,
+      "Granny's Island - Coin After Mountain Tunnel #10": 300708,
+      "Granny's Island - Coin After Mountain Tunnel #11": 300713,
+      "Granny's Island - Coin After Mountain Tunnel #12": 300712,
+      "Granny's Island - Coin After Mountain Tunnel #13": 300711,
+      "Granny's Island - Coin After Mountain Tunnel #14": 300710,
+      "Granny's Island - Coin After Mountain Tunnel #15": 300709,
+      "Granny's Island - Coin on Grassy Beachside Cliff #1": 300610,
+      "Granny's Island - Coin on Grassy Beachside Cliff #2": 300609,
+      "Granny's Island - Coin on Grassy Beachside Cliff #3": 300608,
+      "Granny's Island - Coin on Grassy Beachside Cliff #4": 300607,
+      "Granny's Island - Coin on Grassy Beachside Cliff #5": 300606,
+      "Granny's Island - Coin on Grassy Beachside Cliff #6": 300605,
+      "Granny's Island - Coin on Grassy Beachside Cliff #7": 300612,
+      "Granny's Island - Coin on Grassy Beachside Cliff #8": 300625,
+      "Granny's Island - Coin on Grassy Beachside Cliff #9": 300622,
+      "Granny's Island - Coin on Grassy Beachside Cliff #10": 300619,
+      "Granny's Island - Coin in Cliff Face #1": 300624,
+      "Granny's Island - Coin in Cliff Face #2": 300621,
+      "Granny's Island - Coin in Cliff Face #3": 300620,
+      "Granny's Island - Coin in Cliff Face #4": 300623,
+      "Granny's Island - Coin in Cliff Face #5": 300626,
+      "Granny's Island - Coin in Cliff Face #6": 300628,
+      "Granny's Island - Coin in Cliff Face #7": 300629,
+      "Granny's Island - Coin on Path to Granny's Statue #1": 300465,
+      "Granny's Island - Coin on Path to Granny's Statue #2": 300466,
+      "Granny's Island - Coin on Path to Granny's Statue #3": 300467,
+      "Granny's Island - Coin on Path to Granny's Statue #4": 300469,
+      "Granny's Island - Coin on Path to Granny's Statue #5": 300468,
+      "Granny's Island - Coin on Path to Granny's Statue #6": 300547,
+      "Granny's Island - Coin on Path to Granny's Statue #7": 300574,
+      "Granny's Island - Coin on Roof in Front of Granny's Statue #1": 300462,
+      "Granny's Island - Coin on Roof in Front of Granny's Statue #2": 300463,
+      "Granny's Island - Coin on Roof in Front of Granny's Statue #3": 300473,
+      "Granny's Island - Coin on Roof in Front of Granny's Statue #4": 300464
+    },
+    "cheeses": {
+      "Granny's Island - Cheese on Mountain": 2100001
+    }
+  },
+  "Granny's Island - Expert 2 High Ground": {
+    "level": "Hub",
+    "sublevel": "Granny's Island",
+    "gears": {
+      "Granny's Island - Gear - From MMA Champion": 100018,
+      "Granny's Island - Gear - Beach Cove": 100002,
+      "Granny's Island - Gear - On Roof by Oil Pump": 100009,
+      "Granny's Island - Gear - Gym Gears Roof": 100012
+    },
+    "coinbags": {
+      "Granny's Island - Coin Bag Near MMA Champion": 300704,
+      "Granny's Island - Coin Bag on Roof by Spin Blocks #1": 300394,
+      "Granny's Island - Coin Bag on Roof by Spin Blocks #2": 300395,
+      "Granny's Island - Coin Bag on Roof by Spin Blocks #3": 300397,
+      "Granny's Island - Coin Bag on Roof by Construction Site": 300461,
+      "Granny's Island - Coin Bag on Roof Next to Pizza Oven": 300369,
+      "Granny's Island - Coin Bag on Stone Arch on Beach": 300454
+    },
+    "coins": {
+      "Granny's Island - Coin on Hill By Cloro-Phil #1": 300424,
+      "Granny's Island - Coin on Hill By Cloro-Phil #2": 300423,
+      "Granny's Island - Coin on Hill By Cloro-Phil #3": 300427,
+      "Granny's Island - Coin on Hill By Cloro-Phil #4": 300472,
+      "Granny's Island - Coin on Hill By Cloro-Phil #5": 300471,
+      "Granny's Island - Coin on Hill By Cloro-Phil #6": 300470,
+      "Granny's Island - Coin on Hill By Cloro-Phil #7": 300426,
+      "Granny's Island - Coin Near MMA Champion #1": 300706,
+      "Granny's Island - Coin Near MMA Champion #2": 300705,
+      "Granny's Island - Coin Near MMA Champion #3": 300703,
+      "Granny's Island - Coin Near MMA Champion #4": 300702,
+      "Granny's Island - Coin in Beach Cove #1": 300422,
+      "Granny's Island - Coin in Beach Cove #2": 300421,
+      "Granny's Island - Coin in Beach Cove #3": 300420,
+      "Granny's Island - Coin in Beach Cove #4": 300418,
+      "Granny's Island - Coin in Beach Cove #5": 300417,
+      "Granny's Island - Coin in Beach Cove #6": 300416,
+      "Granny's Island - Coin on Roof by Spin Blocks #1": 300382,
+      "Granny's Island - Coin on Roof by Spin Blocks #2": 300383,
+      "Granny's Island - Coin on Roof Ramp Towards Gym Gears #1": 300381,
+      "Granny's Island - Coin on Roof Ramp Towards Gym Gears #2": 300380,
+      "Granny's Island - Coin on Roof Ramp Towards Gym Gears #3": 300393,
+      "Granny's Island - Coin on Roof Ramp Towards Gym Gears #4": 300413,
+      "Granny's Island - Coin on Roof Ramp Towards Gym Gears #5": 300425,
+      "Granny's Island - Coin on Roof by Oil Pump #1": 300546,
+      "Granny's Island - Coin on Roof by Oil Pump #2": 300545,
+      "Granny's Island - Coin on Roof by Oil Pump #3": 300544,
+      "Granny's Island - Coin on Roof by Construction Site #1": 300414,
+      "Granny's Island - Coin on Roof by Construction Site #2": 300415,
+      "Granny's Island - Coin on Roof by Construction Site #3": 300460,
+      "Granny's Island - Coin on Roof Next to Pizza Oven #1": 300298,
+      "Granny's Island - Coin on Roof Next to Pizza Oven #2": 300307,
+      "Granny's Island - Coin on Roof Next to Pizza Oven #3": 300315,
+      "Granny's Island - Coin on Roof Next to Pizza Oven #4": 300368,
+      "Granny's Island - Coin on Stone Arch on Beach #1": 300453,
+      "Granny's Island - Coin on Stone Arch on Beach #2": 300455,
+      "Granny's Island - Coin on Stone Arch on Beach #3": 300458,
+      "Granny's Island - Coin on Stone Arch on Beach #4": 300457,
+      "Granny's Island - Coin on Stone Arch on Beach #5": 300456,
+      "Granny's Island - Coin Above Pipe on Hill by Lab #1": 300562,
+      "Granny's Island - Coin Above Pipe on Hill by Lab #2": 300565,
+      "Granny's Island - Coin Above Pipe on Hill by Lab #3": 300568,
+      "Granny's Island - Coin Above Pipe on Hill by Lab #4": 300563,
+      "Granny's Island - Coin Above Pipe on Hill by Lab #5": 300566,
+      "Granny's Island - Coin Above Pipe on Hill by Lab #6": 300569,
+      "Granny's Island - Coin Above Pipe on Hill by Lab #7": 300564,
+      "Granny's Island - Coin Above Pipe on Hill by Lab #8": 300567,
+      "Granny's Island - Coin Above Pipe on Hill by Lab #9": 300570
+    },
+    "connections": {
+      "Granny's Island - Lab Hill High Ground": ""
+    }
+  },
+  "Granny's Island - High Ground": {
+    "level": "Hub",
+    "sublevel": "Granny's Island",
+    "chests": {
+      "Granny's Island - Chest on Stone Arch in Water": 300366
+    },
+    "coinbags": {
+      "Granny's Island - Coin Bag on Stone Island": 300276
+    },
+    "coins": {
+      "Granny's Island - Coin on Stone Island #1": 300273,
+      "Granny's Island - Coin on Stone Island #2": 300274,
+      "Granny's Island - Coin on Stone Island #3": 300275,
+      "Granny's Island - Coin on Stone Island #4": 300277,
+      "Granny's Island - Coin on Stone Island #5": 300278,
+      "Granny's Island - Coin on Stone Island #6": 300279,
+      "Granny's Island - Coin on Stone Arch on Top of Mountain #1": 300767,
+      "Granny's Island - Coin on Stone Arch on Top of Mountain #2": 300765,
+      "Granny's Island - Coin on Stone Arch on Top of Mountain #3": 300764,
+      "Granny's Island - Coin on Stone Arch on Top of Mountain #4": 300763,
+      "Granny's Island - Coin on Stone Arch on Top of Mountain #5": 300791,
+      "Granny's Island - Coin on Stone Arch on Top of Mountain #6": 300795,
+      "Granny's Island - Coin on Stone Arch on Top of Mountain #7": 300794,
+      "Granny's Island - Coin on Stone Arch in Water #1": 300367,
+      "Granny's Island - Coin on Stone Arch in Water #2": 300392,
+      "Granny's Island - Coin Near Lighthouse #1": 300779,
+      "Granny's Island - Coin Near Lighthouse #2": 300780,
+      "Granny's Island - Coin Near Lighthouse #3": 300781,
+      "Granny's Island - Coin Near Lighthouse #4": 300782,
+      "Granny's Island - Coin Near Lighthouse #5": 300783,
+      "Granny's Island - Coin Near Lighthouse #6": 300784,
+      "Granny's Island - Coin Near Lighthouse #7": 300785,
+      "Granny's Island - Coin Near Lighthouse #8": 300786,
+      "Granny's Island - Coin Near Lighthouse #9": 300787,
+      "Granny's Island - Coin Near Lighthouse #10": 300788,
+      "Granny's Island - Coin Under Ramp Towards Lighthouse #1": 300768,
+      "Granny's Island - Coin Under Ramp Towards Lighthouse #2": 300769,
+      "Granny's Island - Coin Under Ramp Towards Lighthouse #3": 300770,
+      "Granny's Island - Coin Under Ramp Towards Lighthouse #4": 300771,
+      "Granny's Island - Coin Under Ramp Towards Lighthouse #5": 300772,
+      "Granny's Island - Coin Under Ramp Towards Lighthouse #6": 300773,
+      "Granny's Island - Coin Under Ramp Towards Lighthouse #7": 300774,
+      "Granny's Island - Coin Under Ramp Towards Lighthouse #8": 300775,
+      "Granny's Island - Coin Under Ramp Towards Lighthouse #9": 300776,
+      "Granny's Island - Coin Under Ramp Towards Lighthouse #10": 300777,
+      "Granny's Island - Coin Under Ramp Towards Lighthouse #11": 300778,
+      "Granny's Island - Coin on Ramp Towards Lighthouse #1": 300766,
+      "Granny's Island - Coin on Ramp Towards Lighthouse #2": 300792,
+      "Granny's Island - Coin on Ramp Towards Lighthouse #3": 300796,
+      "Granny's Island - Coin on Ramp Towards Lighthouse #4": 300799,
+      "Granny's Island - Coin on Ramp Towards Lighthouse #5": 300801,
+      "Granny's Island - Coin on Ramp Towards Lighthouse #6": 300802,
+      "Granny's Island - Coin on Ramp Towards Lighthouse #7": 300804
+    },
+    "connections": {
+      "Granny's Island - In the Sky": "X1/J1/GP & B2 | X1+B1+GP | X2+J1+B1 | X3 & B1/J1"
+    }
+  },
+  "Granny's Island - In the Sky": {
+    "level": "Hub",
+    "sublevel": "Granny's Island",
+    "gears": {
+      "Granny's Island - Gear - Lighthouse": 100001,
+      "Granny's Island - Gear - In the Clouds": 100015
+    },
+    "specialrules": {
+      "Granny's Island - Gear - In the Clouds": "B1 & GP/J1 | X2+J1 | X3+B1"
+    }
+  },
+  "Granny's Island - Coins on Top of Rocket": {
+    "level": "Hub",
+    "sublevel": "Granny's Island",
+    "chests": {
+      "Granny's Island - Chest on Top of Rocket": 300798
+    },
+    "coins": {
+      "Granny's Island - Coin on Top of Rocket #1": 300800,
+      "Granny's Island - Coin on Top of Rocket #2": 300803,
+      "Granny's Island - Coin on Top of Rocket #3": 300807,
+      "Granny's Island - Coin on Top of Rocket #4": 300808,
+      "Granny's Island - Coin on Top of Rocket #5": 300834
+    },
+    "connections": {
+      "Granny's Island - Gear on Top of Rocket": "X2+Rocket+J2"
+    }
+  },
+  "Granny's Island - Gear on Top of Rocket": {
+    "level": "Hub",
+    "sublevel": "Granny's Island",
+    "gears": {
+      "Granny's Island - Gear - On Top of Rocket": 100020
+    },
+    "connections": {
+      "Granny's Island - Coins on Top of Rocket": "",
+      "Granny's Island - First Island Towards Sewer": "Rocket+B1",
+      "Granny's Island - Tree on Second Island Towards Sewer": "Rocket+B1+GP"
+    }
+  },
+  "Granny's Island - Arch Near Construction Site": {
+    "level": "Hub",
+    "sublevel": "Granny's Island",
+    "chests": {
+      "Granny's Island - Chest on Arch Near Construction Site": 300596
+    },
+    "coins": {
+      "Granny's Island - Coin on Arch Near Construction Site #1": 300592,
+      "Granny's Island - Coin on Arch Near Construction Site #2": 300593,
+      "Granny's Island - Coin on Arch Near Construction Site #3": 300594,
+      "Granny's Island - Coin on Arch Near Construction Site #4": 300595
+    }
+  },
+  "Granny's Island - Ocean Pillar": {
+    "level": "Hub",
+    "sublevel": "Granny's Island",
+    "gears": {
+      "Granny's Island - Gear - On Ocean Pillar Towards Sewer": 100006
+    },
+    "coins": {
+      "Granny's Island - Coin on Ocean Pillar Towards Sewer #1": 300588,
+      "Granny's Island - Coin on Ocean Pillar Towards Sewer #2": 300587,
+      "Granny's Island - Coin on Ocean Pillar Towards Sewer #3": 300586,
+      "Granny's Island - Coin on Ocean Pillar Towards Sewer #4": 300585
+    }
+  },
+  "Granny's Island - First Island Towards Sewer": {
+    "level": "Hub",
+    "sublevel": "Granny's Island",
+    "coinbags": {
+      "Granny's Island - Coin Bag on First Island Towards Sewers #1": 300409,
+      "Granny's Island - Coin Bag on First Island Towards Sewers #2": 300408
+    },
+    "coins": {
+      "Granny's Island - Coin on First Island Towards Sewers #1": 300411,
+      "Granny's Island - Coin on First Island Towards Sewers #2": 300410,
+      "Granny's Island - Coin on First Island Towards Sewers #3": 300407,
+      "Granny's Island - Coin on First Island Towards Sewers #4": 300406
+    },
+    "connections": {
+      "Granny's Island - Main Area": "J1/B1",
+      "Granny's Island - Second Island Towards Sewer": "OS+GP"
+    }
+  },
+  "Granny's Island - Second Island Towards Sewer": {
+    "level": "Hub",
+    "sublevel": "Granny's Island",
+    "coinbags": {
+      "Granny's Island - Coin Bag on Second Island Towards Sewer": 300092
+    },
+    "coins": {
+      "Granny's Island - Coin on Second Island Towards Sewer #1": 300094,
+      "Granny's Island - Coin on Second Island Towards Sewer #2": 300091,
+      "Granny's Island - Coin on Second Island Towards Sewer #3": 300090,
+      "Granny's Island - Coin on Second Island Towards Sewer #4": 300093
+    },
+    "connections": {
+      "Granny's Island - First Island Towards Sewer": "OS+J1 | B1",
+      "Granny's Island - Tree on Second Island Towards Sewer": "J1 | X1+B1",
+      "Granny's Island - Sewer Island": "OS/EarlySewer"
+    }
+  },
+  "Granny's Island - Tree on Second Island Towards Sewer": {
+    "level": "Hub",
+    "sublevel": "Granny's Island",
+    "chests": {
+      "Granny's Island - Chest on Tree on Second Island Towards Sewer": 300304
+    },
+    "coins": {
+      "Granny's Island - Coin on Tree on Second Island Towards Sewer #1": 300305,
+      "Granny's Island - Coin on Tree on Second Island Towards Sewer #2": 300306,
+      "Granny's Island - Coin on Tree on Second Island Towards Sewer #3": 300303,
+      "Granny's Island - Coin on Tree on Second Island Towards Sewer #4": 300302
+    },
+    "connections": {
+      "Granny's Island - Second Island Towards Sewer": "",
+      "Granny's Island - Sewer Island": "X3+B2 | X3+B1+J1"
+    }
+  },
+  "Granny's Island - Sewer Island": {
+    "level": "Hub",
+    "sublevel": "Granny's Island",
+    "chests": {
+      "Granny's Island - Chest on Sewer Island": 300259
+    },
+    "coins": {
+      "Granny's Island - Coin on Sewer Island #1": 300095,
+      "Granny's Island - Coin on Sewer Island #2": 300102,
+      "Granny's Island - Coin on Sewer Island #3": 300155,
+      "Granny's Island - Coin on Sewer Island #4": 300250,
+      "Granny's Island - Coin on Sewer Island #5": 300260,
+      "Granny's Island - Coin on Sewer Island #6": 300258,
+      "Granny's Island - Coin on Sewer Island #7": 300249,
+      "Granny's Island - Coin on Sewer Island #8": 300152,
+      "Granny's Island - Coin on Sewer Island #9": 300101,
+      "Granny's Island - Coin on Sewer Island #10": 300089
+    },
+    "connections": {
+      "Granny's Island - Second Island Towards Sewer": "OS",
+      "Granny's Island - Sewer Island Upper": "X1/J1/B1"
+    },
+    "warps": {
+      "Granny's Island - Flushed Away Entrance": ["{PORTAL}Flushed Away", "PortalFlushedAway+SewerKey"]
+    }
+  },
+  "Granny's Island - Sewer Island Upper": {
+    "level": "Hub",
+    "sublevel": "Granny's Island"
+  },
+  "Granny's Island - Island Past Cloro-Phil": {
+    "level": "Hub",
+    "sublevel": "Granny's Island",
+    "chests": {
+      "Granny's Island - Chest on Island Past Cloro-Phil": 300281
+    },
+    "coinbags": {
+      "Granny's Island - Coin Bag on Island Past Cloro-Phil": 300288
+    },
+    "coins": {
+      "Granny's Island - Coin on Island Past Cloro-Phil #1": 300287,
+      "Granny's Island - Coin on Island Past Cloro-Phil #2": 300286,
+      "Granny's Island - Coin on Island Past Cloro-Phil #3": 300290,
+      "Granny's Island - Coin on Island Past Cloro-Phil #4": 300289,
+      "Granny's Island - Coin on Island Past Cloro-Phil #5": 300285,
+      "Granny's Island - Coin on Island Past Cloro-Phil #6": 300284,
+      "Granny's Island - Coin on Island Past Cloro-Phil #7": 300282,
+      "Granny's Island - Coin on Island Past Cloro-Phil #8": 300283
+    }
+  },
+  "Granny's Island - High Pillar by Lab": {
+    "level": "Hub",
+    "sublevel": "Granny's Island",
+    "gears": {
+      "Granny's Island - Gear - High Pillar by Lab": 100007
+    },
+    "coins": {
+      "Granny's Island - Coin on High Pillar by Lab #1": 300633,
+      "Granny's Island - Coin on High Pillar by Lab #2": 300638,
+      "Granny's Island - Coin on High Pillar by Lab #3": 300643,
+      "Granny's Island - Coin on High Pillar by Lab #4": 300634,
+      "Granny's Island - Coin on High Pillar by Lab #5": 300639,
+      "Granny's Island - Coin on High Pillar by Lab #6": 300644,
+      "Granny's Island - Coin on High Pillar by Lab #7": 300635,
+      "Granny's Island - Coin on High Pillar by Lab #8": 300640,
+      "Granny's Island - Coin on High Pillar by Lab #9": 300645,
+      "Granny's Island - Coin on High Pillar by Lab #10": 300636,
+      "Granny's Island - Coin on High Pillar by Lab #11": 300641,
+      "Granny's Island - Coin on High Pillar by Lab #12": 300646,
+      "Granny's Island - Coin on High Pillar by Lab #13": 300637,
+      "Granny's Island - Coin on High Pillar by Lab #14": 300642,
+      "Granny's Island - Coin on High Pillar by Lab #15": 300647
+    },
+    "specialrules": {
+      "Granny's Island - Gear - High Pillar by Lab": "X2/J1/GP"
+    }
+  },
+  "Granny's Island - Crash Again Island": {
+    "level": "Hub",
+    "sublevel": "Granny's Island",
+    "connections": {
+      "Granny's Island - Crash Again Roof": "J2 | X2+J1",
+      "Granny's Island - Lab Hill High Ground": "OS",
+      "Granny's Island - Main Area": "X3+B2+J1"
+    },
+    "subwarps": {
+      "Granny's Island - Crash Again Entrance": ["Crash Again - Starting Area", "FGU"]
+    }
+  },
+  "Granny's Island - Crash Again Roof": {
+    "level": "Hub",
+    "sublevel": "Granny's Island"
+  },
+  "Granny's Island Hat World": {
+    "level": "Hub",
+    "sublevel": "Granny's Island Hat World",
+    "hats": {
+      "Top Hat": 700002,
+      "Propeller Cap": 700001,
+      "No Hat": 700000,
+      "Morio Hat": 700003,
+      "Taxi Stack Hat": 700004
+    },
+    "connections": {
+      "Any Hat World": ""
+    },
+    "subwarps": {
+      "Granny's Island Hat World - Exit": ["Granny's Island - Main Area", ""]
+    }
+  },
+  "Law Firm - Entrance": {
+    "level": "Hub",
+    "sublevel": "Law Firm",
+    "connections": {
+      "Law Firm - Ledges": "J1 | X3+B1"
+    },
+    "subwarps": {
+      "Law Firm - Exit": ["Granny's Island - Main Area", ""]
+    }
+  },
+  "Law Firm - Ledges": {
+    "level": "Hub",
+    "sublevel": "Law Firm",
+    "gears": {
+      "Law Firm - Gear": 100023
+    },
+    "coins": {
+      "Law Firm - Coin #1": 300399,
+      "Law Firm - Coin #2": 300400,
+      "Law Firm - Coin #3": 300401,
+      "Law Firm - Coin #4": 300402,
+      "Law Firm - Coin #5": 300403,
+      "Law Firm - Coin #6": 300404,
+      "Law Firm - Coin #7": 300405,
+      "Law Firm - Coin #8": 300452,
+      "Law Firm - Coin #9": 300451,
+      "Law Firm - Coin #10": 300450,
+      "Law Firm - Coin #11": 300449,
+      "Law Firm - Coin #12": 300448,
+      "Law Firm - Coin #13": 300447,
+      "Law Firm - Coin #14": 300446,
+      "Law Firm - Coin #15": 300484,
+      "Law Firm - Coin #16": 300483,
+      "Law Firm - Coin #17": 300482,
+      "Law Firm - Coin #18": 300481,
+      "Law Firm - Coin #19": 300480,
+      "Law Firm - Coin #20": 300479,
+      "Law Firm - Coin #21": 300478,
+      "Law Firm - Coin #22": 300555,
+      "Law Firm - Coin #23": 300556,
+      "Law Firm - Coin #24": 300557,
+      "Law Firm - Coin #25": 300559,
+      "Law Firm - Coin #26": 300560,
+      "Law Firm - Coin #27": 300561
+    }
+  },
+  "Crash Again - Starting Area": {
+    "level": "Hub",
+    "sublevel": "Crash Again",
+    "checkpoints": {
+      "Crash Again - Checkpoint": 900613
+    },
+    "connections": {
+      "Crash Again - End": "X1/PMB & X2/SP | PMJ"
+    },
+    "subwarps": {
+      "Crash Again - Exit": ["Granny's Island - Main Area", ""]
+    }
+  },
+  "Crash Again - End": {
+    "level": "Hub",
+    "sublevel": "Crash Again",
+    "gears": {
+      "Crash Again - Gear": 100010
+    }
+  },
+  "Ice Cream Truck - Lower Path": {
+    "level": "Hub",
+    "sublevel": "Ice Cream Truck",
+    "gears": {
+      "Ice Cream Truck - Gear - Lower Path in Bomb Block": 100022
+    },
+    "coins": {
+      "Ice Cream Truck - Coin on First Island #1": 300075,
+      "Ice Cream Truck - Coin on First Island #2": 300080,
+      "Ice Cream Truck - Coin on First Island #3": 300074,
+      "Ice Cream Truck - Coin on First Island #4": 300079,
+      "Ice Cream Truck - Coin on First Island #5": 300084,
+      "Ice Cream Truck - Coin on First Island #6": 300073,
+      "Ice Cream Truck - Coin on First Island #7": 300078,
+      "Ice Cream Truck - Coin on First Island #8": 300083,
+      "Ice Cream Truck - Coin on First Island #9": 300072,
+      "Ice Cream Truck - Coin on First Island #10": 300077,
+      "Ice Cream Truck - Coin on First Island #11": 300082,
+      "Ice Cream Truck - Coin on First Island #12": 300071,
+      "Ice Cream Truck - Coin on First Island #13": 300076,
+      "Ice Cream Truck - Coin on First Island #14": 300081,
+      "Ice Cream Truck - Coin on Second Island #1": 300132,
+      "Ice Cream Truck - Coin on Second Island #2": 300128,
+      "Ice Cream Truck - Coin on Second Island #3": 300124,
+      "Ice Cream Truck - Coin on Second Island #4": 300131,
+      "Ice Cream Truck - Coin on Second Island #5": 300127,
+      "Ice Cream Truck - Coin on Second Island #6": 300123,
+      "Ice Cream Truck - Coin on Second Island #7": 300130,
+      "Ice Cream Truck - Coin on Second Island #8": 300126,
+      "Ice Cream Truck - Coin on Second Island #9": 300122,
+      "Ice Cream Truck - Coin on Second Island #10": 300129,
+      "Ice Cream Truck - Coin on Second Island #11": 300125,
+      "Ice Cream Truck - Coin on Second Island #12": 300121,
+      "Ice Cream Truck - Coin Circling Lower Gear #1": 300134,
+      "Ice Cream Truck - Coin Circling Lower Gear #2": 300135,
+      "Ice Cream Truck - Coin Circling Lower Gear #3": 300137,
+      "Ice Cream Truck - Coin Circling Lower Gear #4": 300139,
+      "Ice Cream Truck - Coin Circling Lower Gear #5": 300141,
+      "Ice Cream Truck - Coin Circling Lower Gear #6": 300143,
+      "Ice Cream Truck - Coin Circling Lower Gear #7": 300145,
+      "Ice Cream Truck - Coin Circling Lower Gear #8": 300148,
+      "Ice Cream Truck - Coin Circling Lower Gear #9": 300147,
+      "Ice Cream Truck - Coin Circling Lower Gear #10": 300146,
+      "Ice Cream Truck - Coin Circling Lower Gear #11": 300144,
+      "Ice Cream Truck - Coin Circling Lower Gear #12": 300142,
+      "Ice Cream Truck - Coin Circling Lower Gear #13": 300140,
+      "Ice Cream Truck - Coin Circling Lower Gear #14": 300138,
+      "Ice Cream Truck - Coin Circling Lower Gear #15": 300136,
+      "Ice Cream Truck - Coin Circling Lower Gear #16": 300133
+    },
+    "checkpoints": {
+      "Ice Cream Truck - Checkpoint": 901440
+    },
+    "connections": {
+      "Ice Cream Truck - Upper Path": "X2/B1/J2 | X1+J1"
+    },
+    "subwarps": {
+      "Ice Cream Truck - Exit": ["Granny's Island - Main Area", ""]
+    },
+    "specialrules": {
+      "Ice Cream Truck - Gear - Lower Path in Bomb Block": "X1/J1 | {Ice Cream Truck - Upper Path}"
+    }
+  },
+  "Ice Cream Truck - Upper Path": {
+    "level": "Hub",
+    "sublevel": "Ice Cream Truck",
+    "gears": {
+      "Ice Cream Truck - Gear - Upper Path": 100021
+    },
+    "coins": {
+      "Ice Cream Truck - Coin on Upper Grassy Area #1": 300330,
+      "Ice Cream Truck - Coin on Upper Grassy Area #2": 300326,
+      "Ice Cream Truck - Coin on Upper Grassy Area #3": 300332,
+      "Ice Cream Truck - Coin on Upper Grassy Area #4": 300329,
+      "Ice Cream Truck - Coin on Upper Grassy Area #5": 300325,
+      "Ice Cream Truck - Coin on Upper Grassy Area #6": 300322,
+      "Ice Cream Truck - Coin on Upper Grassy Area #7": 300331,
+      "Ice Cream Truck - Coin on Upper Grassy Area #8": 300328,
+      "Ice Cream Truck - Coin on Upper Grassy Area #9": 300324,
+      "Ice Cream Truck - Coin on Upper Grassy Area #10": 300321,
+      "Ice Cream Truck - Coin on Upper Grassy Area #11": 300327,
+      "Ice Cream Truck - Coin on Upper Grassy Area #12": 300323,
+      "Ice Cream Truck - Coin Circling Upper Gear #1": 300338,
+      "Ice Cream Truck - Coin Circling Upper Gear #2": 300336,
+      "Ice Cream Truck - Coin Circling Upper Gear #3": 300333,
+      "Ice Cream Truck - Coin Circling Upper Gear #4": 300334,
+      "Ice Cream Truck - Coin Circling Upper Gear #5": 300335,
+      "Ice Cream Truck - Coin Circling Upper Gear #6": 300337,
+      "Ice Cream Truck - Coin Circling Upper Gear #7": 300340,
+      "Ice Cream Truck - Coin Circling Upper Gear #8": 300342,
+      "Ice Cream Truck - Coin Circling Upper Gear #9": 300345,
+      "Ice Cream Truck - Coin Circling Upper Gear #10": 300344,
+      "Ice Cream Truck - Coin Circling Upper Gear #11": 300343,
+      "Ice Cream Truck - Coin Circling Upper Gear #12": 300341
+    }
+  },
+  "Pizza Oven - Entrance": {
+    "level": "Hub",
+    "sublevel": "Pizza Oven",
+    "gears": {
+      "Pizza Oven - Gear": 100004
+    },
+    "connections": {
+      "Pizza Oven - Pillar": "X1/J1 & B2"
+    },
+    "subwarps": {
+      "Pizza Oven - Exit": ["Granny's Island - Main Area", ""]
+    },
+    "specialrules": {
+      "Pizza Oven - Gear": "B1 & X1/J1 | X2+NSAR+GP+J1 | X3+J1"
+    }
+  },
+  "Pizza Oven - Pillar": {
+    "level": "Hub",
+    "sublevel": "Pizza Oven",
+    "chests": {
+      "Pizza Oven - Chest on Top of Pillar": 300737
+    },
+    "coinbags": {
+      "Pizza Oven - Coin Bag on Top of Pillar #1": 300734,
+      "Pizza Oven - Coin Bag on Top of Pillar #2": 300740
+    },
+    "coins": {
+      "Pizza Oven - Coin on Top of Pillar #1": 300739,
+      "Pizza Oven - Coin on Top of Pillar #2": 300738,
+      "Pizza Oven - Coin on Top of Pillar #3": 300741,
+      "Pizza Oven - Coin on Top of Pillar #4": 300733,
+      "Pizza Oven - Coin on Top of Pillar #5": 300736,
+      "Pizza Oven - Coin on Top of Pillar #6": 300735
+    }
+  },
+  "Morio's Lab - Ground Floor": {
+    "level": "Hub",
+    "sublevel": "Morio's Lab",
+    "gears": {
+      "Morio's Lab - Gear - From Morio": 100000,
+      "Morio's Lab - Gear - Entrance Alcove": 100026,
+      "Morio's Lab - Gear - Fall off Ramp": 100025
+    },
+    "coins": {
+      "Morio's Lab - Coin Near Entrance #1": 300064,
+      "Morio's Lab - Coin Near Entrance #2": 300096,
+      "Morio's Lab - Coin Near Entrance #3": 300097,
+      "Morio's Lab - Coin Near Entrance #4": 300116,
+      "Morio's Lab - Coin Near Entrance #5": 300119,
+      "Morio's Lab - Coin Near Entrance #6": 300120,
+      "Morio's Lab - Coin Near Entrance #7": 300253,
+      "Morio's Lab - Coin Near Entrance #8": 300252,
+      "Morio's Lab - Coin Near Entrance #9": 300301,
+      "Morio's Lab - Coin Near Entrance #10": 300320,
+      "Morio's Lab - Coin Near Entrance #11": 300398,
+      "Morio's Lab - Coin Near Entrance #12": 300445,
+      "Morio's Lab - Coin Near Entrance #13": 300444,
+      "Morio's Lab - Coin Near Entrance #14": 300443,
+      "Morio's Lab - Coin Near Entrance #15": 300442,
+      "Morio's Lab - Coin Near Entrance #16": 300441,
+      "Morio's Lab - Coin Near Entrance #17": 300440,
+      "Morio's Lab - Coin Near Entrance #18": 300439
+    },
+    "connections": {
+      "Morio's Lab - Ground Floor Orange Blocks": "B2",
+      "Morio's Lab - Ground Floor Second Wrench": "B1/J2",
+      "Morio's Lab - Second Floor": "J1/B1",
+      "Morio's Lab - Fifth Floor Crash Test Area": "NSOS+B2+J2+FGU | X1+B2+FGU & X2/J1"
+    },
+    "subwarps": {
+      "Morio's Lab - Front Door": ["Granny's Island - Starting Area", "LabKey"],
+      "Morio's Lab - Back Door": ["Granny's Island - Moat", "LabKey"],
+      "Morio's Lab - Wardrobe Entrance": ["Morio's Wardrobe", "WardrobeKey"]
+    },
+    "warps": {
+      "Morio's Lab - Morio's Home Portal": ["{PORTAL}Morio's Home", "PortalMorioHome"],
+      "Morio's Lab - Bombeach Portal": ["{PORTAL}Bombeach", "PortalBombeach"]
+    }
+  },
+  "Morio's Wardrobe": {
+    "level": "Hub",
+    "sublevel": "Morio's Wardrobe",
+    "coins": {
+      "Morio's Wardrobe - Coin #1": 300069,
+      "Morio's Wardrobe - Coin #2": 300068,
+      "Morio's Wardrobe - Coin #3": 300067,
+      "Morio's Wardrobe - Coin #4": 300066,
+      "Morio's Wardrobe - Coin #5": 300065
+    },
+    "subwarps": {
+      "Morio's Wardrobe - Exit": ["Morio's Lab - Ground Floor", ""]
+    }
+  },
+  "Morio's Lab - Ground Floor First Wrench": {
+    "level": "Hub",
+    "sublevel": "Morio's Lab",
+    "coins": {
+      "Morio's Lab - Coin on Ground Floor Wrench #1": 300603,
+      "Morio's Lab - Coin on Ground Floor Wrench #2": 300602,
+      "Morio's Lab - Coin on Ground Floor Wrench #3": 300601,
+      "Morio's Lab - Coin on Ground Floor Wrench #4": 300600,
+      "Morio's Lab - Coin on Ground Floor Wrench #5": 300599
+    },
+    "connections": {
+      "Morio's Lab - Ground Floor Second Wrench": "J1",
+      "Morio's Lab - Ground Floor": ""
+    }
+  },
+  "Morio's Lab - Ground Floor Second Wrench": {
+    "level": "Hub",
+    "sublevel": "Morio's Lab",
+    "coins": {
+      "Morio's Lab - Coin on Ground Floor Wrench #6": 300618,
+      "Morio's Lab - Coin on Ground Floor Wrench #7": 300617,
+      "Morio's Lab - Coin on Ground Floor Wrench #8": 300616,
+      "Morio's Lab - Coin on Ground Floor Wrench #9": 300615,
+      "Morio's Lab - Coin on Ground Floor Wrench #10": 300614
+    },
+    "connections": {
+      "Morio's Lab - Ground Floor First Wrench": "",
+      "Morio's Lab - Ground Floor Bolts": "J1",
+      "Morio's Lab - Ground Floor Orange Blocks": "J1+OS | J2"
+    }
+  },
+  "Morio's Lab - Ground Floor Lowest Bolt": {
+    "level": "Hub",
+    "sublevel": "Morio's Lab",
+    "coins": {
+      "Morio's Lab - Coin on Bolts Above Ground Floor #1": 300632
+    },
+    "connections": {
+      "Morio's Lab - Ground Floor Second Wrench": "",
+      "Morio's Lab - Ground Floor Orange Blocks": "X1+B1",
+      "Morio's Lab - Ground Floor Bolts": "X1+B1"
+    }
+  },
+  "Morio's Lab - Ground Floor Bolts": {
+    "level": "Hub",
+    "sublevel": "Morio's Lab",
+    "coinbags": {
+      "Morio's Lab - Coin Bag in Nut Above Ground Floor #1": 300663,
+      "Morio's Lab - Coin Bag in Nut Above Ground Floor #2": 300648,
+      "Morio's Lab - Coin Bag in Nut Above Ground Floor #3": 300631
+    },
+    "coins": {
+      "Morio's Lab - Coin on Bolts Above Ground Floor #2": 300649
+    },
+    "connections": {
+      "Morio's Lab - Ground Floor Lowest Bolt": "",
+      "Morio's Lab - Bunny Ledge": "J1 | X2+B1",
+      "Morio's Lab - Path to Morio's Room": "X1+J2",
+      "Morio's Lab - Fifth Floor Crash Test Area": "X1+B1+FGU & X2/J1",
+      "Morio's Lab - Alcove Above Arcade Panik": "J1/B1",
+      "Morio's Lab - Second Floor Access to Shortcut Pipe": "X3+B1 | X2+J1"
+    }
+  },
+  "Morio's Lab - Alcove Above Arcade Panik": {
+    "level": "Hub",
+    "sublevel": "Morio's Lab",
+    "gears": {
+      "Morio's Lab - Gear - Alcove Above Arcade Panik Portal": 100027
+    },
+    "connections": {
+      "Morio's Lab - Third Floor": "X2+B1+OOB"
+    }
+  },
+  "Morio's Lab - Ground Floor Orange Blocks": {
+    "level": "Hub",
+    "sublevel": "Morio's Lab",
+    "connections": {
+      "Morio's Lab - Fifth Floor Crash Test Area": "OS+J1+FGU | X2+OS+B1+FGU"
+    }
+  },
+  "Morio's Lab - Bunny Ledge": {
+    "level": "Hub",
+    "sublevel": "Morio's Lab",
+    "bunnies": {
+      "Morio's Lab - Bunny - Ledge Above Ground Floor": 200000
+    },
+    "connections": {
+      "Morio's Lab - Ground Floor Orange Blocks": "X1+J1",
+      "Morio's Lab - Fifth Floor Crash Test Area": "X3+J1",
+      "Morio's Lab - Out-of-Bounds (EXPERTS ONLY)": "SCOOB",
+      "Morio's Lab - Fourth Floor": "X3+OOB+B1",
+      "Morio's Lab - Final Floor Bunny Shortcut Lower": "X3+J1"
+    }
+  },
+  "Morio's Lab - Second Floor": {
+    "level": "Hub",
+    "sublevel": "Morio's Lab",
+    "coins": {
+      "Morio's Lab - Coin on Second Floor #1": 300433,
+      "Morio's Lab - Coin on Second Floor #2": 300435,
+      "Morio's Lab - Coin on Second Floor #3": 300436,
+      "Morio's Lab - Coin on Second Floor #4": 300437,
+      "Morio's Lab - Coin on Second Floor #5": 300438
+    },
+    "connections": {
+      "Morio's Lab - Path to Morio's Room": "B1 | X2+J1",
+      "Morio's Lab - Ground Floor": "",
+      "Morio's Lab - Second Floor Access to Shortcut Pipe": "X2+B1+J1 | X1+B2+J1 | X1+B1+J2",
+      "Morio's Lab - Second Floor After Demo Wall": "FGU",
+      "Morio's Lab - Psycho Taxi Arcade Machine Area": "FGU | X1+OOB & X3/B1"
+    },
+    "warps": {
+      "Morio's Lab - Arcade Panik Portal": ["{PORTAL}Arcade Panik", "PortalArcadePanik"]
+    }
+  },
+  "Morio's Lab - Psycho Taxi Arcade Machine Area": {
+    "level": "Hub",
+    "sublevel": "Morio's Lab",
+    "connections": {
+      "Morio's Lab - Second Floor": "FGU | X1+OOB+B1"
+    },
+    "warps": {
+      "Morio's Lab - Psycho Taxi Arcade Machine": ["{PORTAL}Psycho Taxi", "PsychoTaxi"]
+    }
+  },
+  "Morio's Lab - Second Floor Above Demo Wall": {
+    "level": "Hub",
+    "sublevel": "Morio's Lab",
+    "connections": {
+      "Morio's Lab - Second Floor After Demo Wall": ""
+    }
+  },
+  "Morio's Lab - Second Floor After Demo Wall": {
+    "level": "Hub",
+    "sublevel": "Morio's Lab",
+    "coins": {
+      "Morio's Lab - Coin on Second Floor After Pizza Time Portal #1": 300434,
+      "Morio's Lab - Coin on Second Floor After Pizza Time Portal #2": 300432,
+      "Morio's Lab - Coin on Second Floor After Pizza Time Portal #3": 300431
+    },
+    "connections": {
+      "Morio's Lab - Second Floor": "FGU",
+      "Morio's Lab - Second Floor True Demo Wall": ""
+    },
+    "warps": {
+      "Morio's Lab - Pizza Time Portal": ["{PORTAL}Pizza Time", "PortalPizzaTime"]
+    },
+    "specialrules": {
+      "Morio's Lab - Coin on Second Floor After Pizza Time Portal #3": "X1/FGU"
+    }
+  },
+  "Morio's Lab - Second Floor True Demo Wall": {
+    "level": "Hub",
+    "sublevel": "Morio's Lab",
+    "connections": {
+      "Morio's Lab - Second Floor Inside True Demo Wall": "FGU"
+    }
+  },
+  "Morio's Lab - Second Floor Inside True Demo Wall": {
+    "level": "Hub",
+    "sublevel": "Morio's Lab",
+    "coinbags": {
+      "Morio's Lab - Coin Bag on Second Floor": 300428
+    },
+    "coins": {
+      "Morio's Lab - Coin on Second Floor After Pizza Time Portal #4": 300430,
+      "Morio's Lab - Coin on Second Floor After Pizza Time Portal #5": 300429
+    },
+    "connections": {
+      "Morio's Lab - Second Floor After Demo Wall": "",
+      "Morio's Lab - Second Floor After True Demo Wall": "",
+      "Morio's Lab - Third Floor Wrenches Lower": "X2+B1"
+    }
+  },
+  "Morio's Lab - Second Floor After True Demo Wall": {
+    "level": "Hub",
+    "sublevel": "Morio's Lab",
+    "coinbags": {
+      "Morio's Lab - Coin Bag on Second to Third Floor Stairway #1": 300476,
+      "Morio's Lab - Coin Bag on Second to Third Floor Stairway #2": 300550
+    },
+    "coins": {
+      "Morio's Lab - Coin on Second to Third Floor Stairway #1": 300475,
+      "Morio's Lab - Coin on Second to Third Floor Stairway #2": 300477,
+      "Morio's Lab - Coin on Second to Third Floor Stairway #3": 300549,
+      "Morio's Lab - Coin on Second to Third Floor Stairway #4": 300551
+    },
+    "connections": {
+      "Morio's Lab - Second Floor True Demo Wall": "",
+      "Morio's Lab - Third Floor": "X2/J1/B1"
+    }
+  },
+  "Morio's Lab - Second Floor Falling From Shortcut Pipe": {
+    "level": "Hub",
+    "sublevel": "Morio's Lab",
+    "connections": {
+      "Morio's Lab - Second Floor": "",
+      "Morio's Lab - Second Floor Access to Shortcut Pipe": "X1+J1"
+    }
+  },
+  "Morio's Lab - Second Floor Access to Shortcut Pipe": {
+    "level": "Hub",
+    "sublevel": "Morio's Lab",
+    "subwarps": {
+      "Morio's Lab - Second Floor Shortcut Pipe": ["Morio's Lab - Fifth Floor Inside Shortcut Pipe", ""]
+    }
+  },
+  "Morio's Lab - Path to Morio's Room": {
+    "level": "Hub",
+    "sublevel": "Morio's Lab",
+    "coinbags": {
+      "Morio's Lab - Coin Bag on Corner Ledge Towards Morio's Room": 300675
+    },
+    "coins": {
+      "Morio's Lab - Coin on Ledge Under Superboost PICI #1": 300552,
+      "Morio's Lab - Coin on Ledge Under Superboost PICI #2": 300553,
+      "Morio's Lab - Coin on Ledge Under Superboost PICI #3": 300554,
+      "Morio's Lab - Coin on Ledge Near Superboost PICI #1": 300693,
+      "Morio's Lab - Coin on Ledge Near Superboost PICI #2": 300692,
+      "Morio's Lab - Coin on Ledge Near Superboost PICI #3": 300691,
+      "Morio's Lab - Coin on Ledge Near Superboost PICI #4": 300690,
+      "Morio's Lab - Coin on Ledge Near Superboost PICI #5": 300689,
+      "Morio's Lab - Coin on Corner Ledge Towards Morio's Room #1": 300669,
+      "Morio's Lab - Coin on Corner Ledge Towards Morio's Room #2": 300670,
+      "Morio's Lab - Coin on Corner Ledge Towards Morio's Room #3": 300671,
+      "Morio's Lab - Coin on Corner Ledge Towards Morio's Room #4": 300673,
+      "Morio's Lab - Coin on Corner Ledge Towards Morio's Room #5": 300672,
+      "Morio's Lab - Coin on Corner Ledge Towards Morio's Room #6": 300676,
+      "Morio's Lab - Coin on Corner Ledge Towards Morio's Room #7": 300674,
+      "Morio's Lab - Coin on Corner Ledge Towards Morio's Room #8": 300679,
+      "Morio's Lab - Coin on Corner Ledge Towards Morio's Room #9": 300678,
+      "Morio's Lab - Coin on Corner Ledge Towards Morio's Room #10": 300677,
+      "Morio's Lab - Coin on Corner Ledge Towards Morio's Room #11": 300680,
+      "Morio's Lab - Coin on Corner Ledge Towards Morio's Room #12": 300694
+    },
+    "connections": {
+      "Morio's Lab - Outside Morio's Room": "B1 | X3+J1",
+      "Morio's Lab - Ground Floor Bolts": "B1/J1",
+      "Morio's Lab - Third Floor Wrenches Lower": "FGU+B2",
+      "Morio's Lab - Third Floor Wrenches Middle": "FGU+B2",
+      "Morio's Lab - Third Floor Wrenches Upper": "FGU+B2",
+      "Morio's Lab - Second Floor Above Demo Wall": "B2 | X3+J1",
+      "Morio's Lab - Second Floor After Demo Wall": "J2 | X1 & B1/J1"
+    }
+  },
+  "Morio's Lab - Outside Morio's Room": {
+    "level": "Hub",
+    "sublevel": "Morio's Lab",
+    "coins": {
+      "Morio's Lab - Coin Near Morio's Room #1": 300747,
+      "Morio's Lab - Coin Near Morio's Room #2": 300746,
+      "Morio's Lab - Coin Near Morio's Room #3": 300745,
+      "Morio's Lab - Coin Near Morio's Room #4": 300744,
+      "Morio's Lab - Coin Near Morio's Room #5": 300743
+    },
+    "connections": {
+      "Morio's Lab - Ground Floor Second Wrench": "",
+      "Morio's Lab - Inside Morio's Room": "NHS+MorioHat | HS+MorioHat & {Morio's Wardrobe}"
+    }
+  },
+  "Morio's Lab - Inside Morio's Room": {
+    "level": "Hub",
+    "sublevel": "Morio's Lab",
+    "connections": {
+      "Morio's Lab - Inside Morio's Room Jump": "J1 | X2+B1"
+    }
+  },
+  "Morio's Lab - Inside Morio's Room Jump": {
+    "level": "Hub",
+    "sublevel": "Morio's Lab",
+    "gears": {
+      "Morio's Lab - Gear - Morio's Room": 100016
+    },
+    "coinbags": {
+      "Morio's Lab - Coin Bag in Morio's Room #1": 300754,
+      "Morio's Lab - Coin Bag in Morio's Room #2": 300752
+    },
+    "coins": {
+      "Morio's Lab - Coin in Morio's Room #1": 300748,
+      "Morio's Lab - Coin in Morio's Room #2": 300751,
+      "Morio's Lab - Coin in Morio's Room #3": 300753
+    }
+  },
+  "Morio's Lab - Third Floor": {
+    "level": "Hub",
+    "sublevel": "Morio's Lab",
+    "chests": {
+      "Morio's Lab - Chest on Second to Third Floor Stairway": 300581
+    },
+    "coins": {
+      "Morio's Lab - Coin on Second to Third Floor Stairway #5": 300580,
+      "Morio's Lab - Coin on Second to Third Floor Stairway #6": 300582
+    },
+    "checkpoints": {
+      "Morio's Lab - Checkpoint Before Spikes": 900080
+    },
+    "connections": {
+      "Morio's Lab - Third Floor Wrenches Lower": "J1",
+      "Morio's Lab - Fourth Floor": "Spike+B1 | X2+Spike+J1 | X3+J1",
+      "Morio's Lab - Second Floor After True Demo Wall": ""
+    },
+    "warps": {
+      "Morio's Lab - Tosla's Offices Portal": ["{PORTAL}Tosla's Offices", "PortalToslaOffices"],
+      "Morio's Lab - Baby Steps! TV": ["{PORTAL}Baby Steps!", "TT1"]
+    }
+  },
+  "Morio's Lab - Third Floor Wrenches Lower": {
+    "level": "Hub",
+    "sublevel": "Morio's Lab",
+    "coins": {
+      "Morio's Lab - Coin on Third Floor Wrenches #1": 300650,
+      "Morio's Lab - Coin on Third Floor Wrenches #2": 300651,
+      "Morio's Lab - Coin on Third Floor Wrenches #3": 300652,
+      "Morio's Lab - Coin on Third Floor Wrenches #4": 300653,
+      "Morio's Lab - Coin on Third Floor Wrenches #5": 300654
+    },
+    "connections": {
+      "Morio's Lab - Third Floor Wrenches Middle": "FGU+J1 | X2+FGU+B1",
+      "Morio's Lab - Third Floor Gear Wrench": "J2 | X2+J1",
+      "Morio's Lab - Third Floor": ""
+    }
+  },
+  "Morio's Lab - Third Floor Wrenches Middle": {
+    "level": "Hub",
+    "sublevel": "Morio's Lab",
+    "coins": {
+      "Morio's Lab - Coin on Third Floor Wrenches #6": 300664,
+      "Morio's Lab - Coin on Third Floor Wrenches #7": 300666,
+      "Morio's Lab - Coin on Third Floor Wrenches #8": 300668,
+      "Morio's Lab - Coin on Third Floor Wrenches #9": 300667,
+      "Morio's Lab - Coin on Third Floor Wrenches #10": 300665
+    },
+    "connections": {
+      "Morio's Lab - Third Floor Wrenches Upper": "J1 | X2+B1"
+    }
+  },
+  "Morio's Lab - Third Floor Wrenches Upper In True Demo Wall": {
+    "level": "Hub",
+    "sublevel": "Morio's Lab",
+    "coins": {
+      "Morio's Lab - Coin on Third Floor Wrenches #11": 300685,
+      "Morio's Lab - Coin on Third Floor Wrenches #12": 300687,
+      "Morio's Lab - Coin on Third Floor Wrenches #13": 300686,
+      "Morio's Lab - Coin on Third Floor Wrenches #14": 300684
+    }
+  },
+  "Morio's Lab - Third Floor Wrenches Upper": {
+    "level": "Hub",
+    "sublevel": "Morio's Lab",
+    "coins": {
+      "Morio's Lab - Coin on Third Floor Wrenches #15": 300683
+    },
+    "connections": {
+      "Morio's Lab - Third Floor Gear Wrench": "J1",
+      "Morio's Lab - Third Floor Wrenches Upper In True Demo Wall": "FGU"
+    }
+  },
+  "Morio's Lab - Third Floor Gear Wrench": {
+    "level": "Hub",
+    "sublevel": "Morio's Lab",
+    "gears": {
+      "Morio's Lab - Gear - Third Floor Wrenches": 100024
+    },
+    "connections": {
+      "Morio's Lab - Third Floor Wrenches Upper": "J1"
+    }
+  },
+  "Morio's Lab - Fourth Floor": {
+    "level": "Hub",
+    "sublevel": "Morio's Lab",
+    "connections": {
+      "Morio's Lab - Fourth Floor Spiky Bunny Alcove": "X3/Spike & J1",
+      "Morio's Lab - Fifth Floor Crash Test Area": "B1/J1",
+      "Morio's Lab - Ledge Above Maurizio's City Portal": "J1",
+      "Morio's Lab - Third Floor": "Spike",
+      "Morio's Lab - Fourth Floor Spiky Cliffs": "X3/Spike & J1 | X1+Spike+B2 | X2+Spike+B1 | X2+B2+J2"
+    },
+    "warps": {
+      "Morio's Lab - Getting Gud! TV": ["{PORTAL}Getting Gud!", "TT2"],
+      "Morio's Lab - Maurizio's City Portal": ["{PORTAL}Maurizio's City", "PortalMauriziosCity"]
+    }
+  },
+  "Morio's Lab - Fourth Floor Spiky Cliffs": {
+    "level": "Hub",
+    "sublevel": "Morio's Lab",
+    "gears": {
+      "Morio's Lab - Gear - On Spiky Cliffs": 100019
+    }
+  },
+  "Morio's Lab - Fourth Floor Spiky Bunny Alcove": {
+    "level": "Hub",
+    "sublevel": "Morio's Lab",
+    "bunnies": {
+      "Morio's Lab - Bunny - In Spiky Alcove": 200001
+    },
+    "coinbags": {
+      "Morio's Lab - Coin Bag in Spiky Alcove": 300789
+    }
+  },
+  "Morio's Lab - Ledge Above Maurizio's City Portal": {
+    "level": "Hub",
+    "sublevel": "Morio's Lab",
+    "coinbags": {
+      "Morio's Lab - Coin Bag Above Maurizio's City Portal": 300793
+    }
+  },
+  "Morio's Lab - Fifth Floor Crash Test Area": {
+    "level": "Hub",
+    "sublevel": "Morio's Lab",
+    "coinbags": {
+      "Morio's Lab - Coin Bag in Orange Block Shortcut Tunnel": 300721
+    },
+    "coins": {
+      "Morio's Lab - Coin Near Crash Test Portal #1": 300761,
+      "Morio's Lab - Coin Near Crash Test Portal #2": 300760,
+      "Morio's Lab - Coin Near Crash Test Portal #3": 300759,
+      "Morio's Lab - Coin Near Crash Test Portal #4": 300758,
+      "Morio's Lab - Coin Near Crash Test Portal #5": 300757,
+      "Morio's Lab - Coin in Orange Block Shortcut Tunnel #1": 300716,
+      "Morio's Lab - Coin in Orange Block Shortcut Tunnel #2": 300717,
+      "Morio's Lab - Coin in Orange Block Shortcut Tunnel #3": 300718,
+      "Morio's Lab - Coin in Orange Block Shortcut Tunnel #4": 300719,
+      "Morio's Lab - Coin in Orange Block Shortcut Tunnel #5": 300720,
+      "Morio's Lab - Coin in Orange Block Shortcut Tunnel #6": 300722,
+      "Morio's Lab - Coin in Orange Block Shortcut Tunnel #7": 300723,
+      "Morio's Lab - Coin in Orange Block Shortcut Tunnel #8": 300724,
+      "Morio's Lab - Coin in Orange Block Shortcut Tunnel #9": 300725,
+      "Morio's Lab - Coin in Orange Block Shortcut Tunnel #10": 300726,
+      "Morio's Lab - Coin in Orange Block Shortcut Tunnel #11": 300727,
+      "Morio's Lab - Coin in Orange Block Shortcut Tunnel #12": 300728,
+      "Morio's Lab - Coin in Orange Block Shortcut Tunnel #13": 300729,
+      "Morio's Lab - Coin in Orange Block Shortcut Tunnel #14": 300730,
+      "Morio's Lab - Coin in Orange Block Shortcut Tunnel #15": 300731
+    },
+    "connections": {
+      "Morio's Lab - Fifth Floor Morio's Mind Area": "OS/J2 | X2+B1 | X3+J1",
+      "Morio's Lab - Ground Floor Bolts": "B1/J1",
+      "Morio's Lab - Fourth Floor": "",
+      "Morio's Lab - Second Floor": "FGU",
+      "Morio's Lab - Ground Floor Lowest Bolt": "FGU",
+      "Morio's Lab - Ground Floor Orange Blocks": "FGU",
+      "Morio's Lab - Ground Floor Second Wrench": "FGU | X3+B1"
+    },
+    "warps": {
+      "Morio's Lab - Crash Test Industries Portal": ["{PORTAL}Crash Test Industries", "PortalCrashTestIndustries"]
+    }
+  },
+  "Morio's Lab - Fifth Floor Morio's Mind Area": {
+    "level": "Hub",
+    "sublevel": "Morio's Lab",
+    "connections": {
+      "Morio's Lab - Fifth Floor Ruined Observatory Area": "Password | X3+OOB+B1",
+      "Morio's Lab - Dream Machine": "FGU",
+      "Morio's Lab - Fifth Floor Crash Test Area": ""
+    },
+    "warps": {
+      "Morio's Lab - Pro Tricks! TV": ["{PORTAL}Pro Tricks!", "TT3"]
+    }
+  },
+  "Morio's Lab - Dream Machine": {
+    "level": "Hub",
+    "sublevel": "Morio's Lab"
+  },
+  "Morio's Lab - Fifth Floor Ruined Observatory Area": {
+    "level": "Hub",
+    "sublevel": "Morio's Lab",
+    "connections": {
+      "Morio's Lab - Fifth Floor Golden Propeller": "J1+GP",
+      "Morio's Lab - Fifth Floor Inside Shortcut Pipe": "J1+Password",
+      "Morio's Lab - Ledge Above Ruined Observatory Portal": "B2 | X1/J1 & B1 | J2 | X1+J1",
+      "Morio's Lab - Fifth Floor Morio's Mind Area": "Password"
+    }
+  },
+  "Morio's Lab - Fifth Floor Golden Propeller": {
+    "level": "Hub",
+    "sublevel": "Morio's Lab",
+    "connections": {
+      "Morio's Lab - Ledge Below Tosla HQ Portal": "",
+      "Morio's Lab - Fifth Floor High Pillars": "",
+      "Morio's Lab - Final Floor": "",
+      "Morio's Lab - Middle Floors 3 Golden Propellers": "Password",
+      "Morio's Lab - Fifth Floor Inside Shortcut Pipe": "Password",
+      "Morio's Lab - Third Floor": "X3+NSAR+OOB+Password",
+      "Morio's Lab - Final Floor Bunny Shortcut Upper": "X1+B1 & X3/Password"
+    }
+  },
+  "Morio's Lab - Middle Floors 3 Golden Propellers": {
+    "level": "Hub",
+    "sublevel": "Morio's Lab",
+    "connections": {
+      "Morio's Lab - Path to Morio's Room": "FGU",
+      "Morio's Lab - Outside Morio's Room": "FGU",
+      "Morio's Lab - Inside Morio's Room Jump": "NHS+FGU+MorioHat | HS+FGU+MorioHat & {Morio's Wardrobe}",
+      "Morio's Lab - Third Floor Wrenches Lower": "FGU/Spike",
+      "Morio's Lab - Third Floor Wrenches Middle": "FGU",
+      "Morio's Lab - Third Floor Wrenches Upper": "Spike",
+      "Morio's Lab - Third Floor Gear Wrench": "Spike",
+      "Morio's Lab - Ground Floor Bolts": "FGU",
+      "Morio's Lab - Alcove Above Arcade Panik": "FGU",
+      "Morio's Lab - Ground Floor Golden Propeller": "FGU",
+      "Morio's Lab - Middle Floors 2 Golden Propellers": ""
+    }
+  },
+  "Morio's Lab - Middle Floors 2 Golden Propellers": {
+    "level": "Hub",
+    "sublevel": "Morio's Lab",
+    "connections": {
+      "Morio's Lab - Fourth Floor Spiky Bunny Alcove": "X3/Spike",
+      "Morio's Lab - Fourth Floor Spiky Cliffs": "Spike | X2+B1",
+      "Morio's Lab - Fifth Floor Golden Propeller": "Password",
+      "Morio's Lab - Ledge Above Maurizio's City Portal": ""
+    }
+  },
+  "Morio's Lab - Fifth Floor Inside Shortcut Pipe": {
+    "level": "Hub",
+    "sublevel": "Morio's Lab",
+    "connections": {
+      "Morio's Lab - Fifth Floor Ruined Observatory Area": "Password"
+    },
+    "subwarps": {
+      "Morio's Lab - Fifth Floor Shortcut Pipe": ["Morio's Lab - Second Floor Falling From Shortcut Pipe", ""]
+    }
+  },
+  "Morio's Lab - Ledge Above Ruined Observatory Portal": {
+    "level": "Hub",
+    "sublevel": "Morio's Lab",
+    "coinbags": {
+      "Morio's Lab - Coin Bag on Ledge Above Ruined Observatory Portal": 300812
+    },
+    "coins": {
+      "Morio's Lab - Coin on Ledge Above Ruined Observatory Portal #1": 300833,
+      "Morio's Lab - Coin on Ledge Above Ruined Observatory Portal #2": 300832,
+      "Morio's Lab - Coin on Ledge Above Ruined Observatory Portal #3": 300831,
+      "Morio's Lab - Coin on Ledge Above Ruined Observatory Portal #4": 300830,
+      "Morio's Lab - Coin on Ledge Above Ruined Observatory Portal #5": 300829,
+      "Morio's Lab - Coin on Ledge Above Ruined Observatory Portal #6": 300828,
+      "Morio's Lab - Coin on Ledge Above Ruined Observatory Portal #7": 300827,
+      "Morio's Lab - Coin on Ledge Above Ruined Observatory Portal #8": 300826,
+      "Morio's Lab - Coin on Ledge Above Ruined Observatory Portal #9": 300825,
+      "Morio's Lab - Coin on Ledge Above Ruined Observatory Portal #10": 300824,
+      "Morio's Lab - Coin on Ledge Above Ruined Observatory Portal #11": 300823,
+      "Morio's Lab - Coin on Ledge Above Ruined Observatory Portal #12": 300822,
+      "Morio's Lab - Coin on Ledge Above Ruined Observatory Portal #13": 300821,
+      "Morio's Lab - Coin on Ledge Above Ruined Observatory Portal #14": 300820,
+      "Morio's Lab - Coin on Ledge Above Ruined Observatory Portal #15": 300816,
+      "Morio's Lab - Coin on Pillar Near Ledge Above Ruined Observatory Portal #1": 300819,
+      "Morio's Lab - Coin on Pillar Near Ledge Above Ruined Observatory Portal #2": 300815,
+      "Morio's Lab - Coin on Pillar Near Ledge Above Ruined Observatory Portal #3": 300811,
+      "Morio's Lab - Coin on Pillar Near Ledge Above Ruined Observatory Portal #4": 300818,
+      "Morio's Lab - Coin on Pillar Near Ledge Above Ruined Observatory Portal #5": 300814,
+      "Morio's Lab - Coin on Pillar Near Ledge Above Ruined Observatory Portal #6": 300810,
+      "Morio's Lab - Coin on Pillar Near Ledge Above Ruined Observatory Portal #7": 300817,
+      "Morio's Lab - Coin on Pillar Near Ledge Above Ruined Observatory Portal #8": 300813,
+      "Morio's Lab - Coin on Pillar Near Ledge Above Ruined Observatory Portal #9": 300809
+    },
+    "connections": {
+      "Morio's Lab - Ledge Below Tosla HQ Portal": "J1 | X3+B1",
+      "Morio's Lab - Fifth Floor Low Pillars": "J1 | X1+B1",
+      "Morio's Lab - Final Floor Bunny Shortcut Upper": "X3+B1",
+      "Morio's Lab - Fifth Floor Ruined Observatory Area": ""
+    }
+  },
+  "Morio's Lab - Ledge Below Tosla HQ Portal": {
+    "level": "Hub",
+    "sublevel": "Morio's Lab",
+    "coinbags": {
+      "Morio's Lab - Coin Bag on Ledge Below Tosla HQ Portal #1": 300851,
+      "Morio's Lab - Coin Bag on Ledge Below Tosla HQ Portal #2": 300852,
+      "Morio's Lab - Coin Bag on Ledge Below Tosla HQ Portal #3": 300853
+    },
+    "connections": {
+      "Morio's Lab - Final Floor": "J2 | X1+J1 | X3+B1",
+      "Morio's Lab - Ledge Above Ruined Observatory Portal": ""
+    }
+  },
+  "Morio's Lab - Fifth Floor Low Pillars": {
+    "level": "Hub",
+    "sublevel": "Morio's Lab",
+    "chests": {
+      "Morio's Lab - Chest on Medium Pillar Above Ruined Observatory Portal": 300842
+    },
+    "coins": {
+      "Morio's Lab - Coin on Medium Pillar Above Ruined Observatory Portal #1": 300840,
+      "Morio's Lab - Coin on Medium Pillar Above Ruined Observatory Portal #2": 300843,
+      "Morio's Lab - Coin on Medium Pillar Above Ruined Observatory Portal #3": 300841,
+      "Morio's Lab - Coin on Medium Pillar Above Ruined Observatory Portal #4": 300844
+    }
+  },
+  "Morio's Lab - Fifth Floor High Pillars": {
+    "level": "Hub",
+    "sublevel": "Morio's Lab",
+    "coins": {
+      "Morio's Lab - Coin on High Pillar Above Ruined Observatory Portal #1": 300855,
+      "Morio's Lab - Coin on High Pillar Above Ruined Observatory Portal #2": 300858,
+      "Morio's Lab - Coin on High Pillar Above Ruined Observatory Portal #3": 300857,
+      "Morio's Lab - Coin on High Pillar Above Ruined Observatory Portal #4": 300856,
+      "Morio's Lab - Coin on High Pillar Above Ruined Observatory Portal #5": 300859,
+      "Morio's Lab - Coin on Pillar Attached to Wall Above Ruined Observatory Portal #1": 300835,
+      "Morio's Lab - Coin on Pillar Attached to Wall Above Ruined Observatory Portal #2": 300838,
+      "Morio's Lab - Coin on Pillar Attached to Wall Above Ruined Observatory Portal #3": 300839,
+      "Morio's Lab - Coin on Pillar Attached to Wall Above Ruined Observatory Portal #4": 300836
+    },
+    "connections": {
+      "Morio's Lab - Fifth Floor Golden Propeller": "GP"
+    }
+  },
+  "Morio's Lab - Final Floor": {
+    "level": "Hub",
+    "sublevel": "Morio's Lab",
+    "connections": {
+      "Morio's Lab - Fifth Floor High Pillars": "J1 | X1+B1",
+      "Morio's Lab - Final Floor Pipes": "J1",
+      "Morio's Lab - Final Floor Catwalk": "J2 | J1+X1",
+      "Morio's Lab - Ledge Below Tosla HQ Portal": ""
+    }
+  },
+  "Morio's Lab - Final Floor Pipes": {
+    "level": "Hub",
+    "sublevel": "Morio's Lab",
+    "chests": {
+      "Morio's Lab - Chest on Pipes on Final Floor #1": 300862,
+      "Morio's Lab - Chest on Pipes on Final Floor #2": 300863
+    },
+    "coinbags": {
+      "Morio's Lab - Coin Bag on Pipes on Final Floor #1": 300860,
+      "Morio's Lab - Coin Bag on Pipes on Final Floor #2": 300861
+    },
+    "connections": {
+      "Morio's Lab - Final Floor Bunny Shortcut Upper": ""
+    }
+  },
+  "Morio's Lab - Final Floor Bunny Shortcut Upper": {
+    "level": "Hub",
+    "sublevel": "Morio's Lab",
+    "bunnies": {
+      "Morio's Lab - Bunny - Shortcut From Final Floor": 200002
+    },
+    "connections": {
+      "Morio's Lab - Final Floor": "",
+      "Morio's Lab - Final Floor Bunny Shortcut Lower": "",
+      "Morio's Lab - Fifth Floor Low Pillars": ""
+    }
+  },
+  "Morio's Lab - Final Floor Bunny Shortcut Lower": {
+    "level": "Hub",
+    "sublevel": "Morio's Lab",
+    "coins": {
+      "Morio's Lab - Coin in Shortcut From Final Floor #1": 300845,
+      "Morio's Lab - Coin in Shortcut From Final Floor #2": 300846,
+      "Morio's Lab - Coin in Shortcut From Final Floor #3": 300847,
+      "Morio's Lab - Coin in Shortcut From Final Floor #4": 300848,
+      "Morio's Lab - Coin in Shortcut From Final Floor #5": 300849
+    },
+    "connections": {
+      "Morio's Lab - Final Floor Bunny Shortcut Upper": "X3+J1",
+      "Morio's Lab - Ground Floor First Wrench": "FGU",
+      "Morio's Lab - Bunny Ledge": "FGU",
+      "Morio's Lab - Ground Floor Orange Blocks": "FGU",
+      "Morio's Lab - Outside Morio's Room": "FGU+J1",
+      "Morio's Lab - Out-of-Bounds (EXPERTS ONLY)": "SCOOB"
+    }
+  },
+  "Morio's Lab - Final Floor Catwalk": {
+    "level": "Hub",
+    "sublevel": "Morio's Lab",
+    "coinbags": {
+      "Morio's Lab - Coin Bag on Catwalk Above Tosla HQ Portal #1": 300870,
+      "Morio's Lab - Coin Bag on Catwalk Above Tosla HQ Portal #2": 300871,
+      "Morio's Lab - Coin Bag on Catwalk Above Tosla HQ Portal #3": 300872
+    },
+    "coins": {
+      "Morio's Lab - Coin on Catwalk Above Tosla HQ Portal #1": 300867,
+      "Morio's Lab - Coin on Catwalk Above Tosla HQ Portal #2": 300868,
+      "Morio's Lab - Coin on Catwalk Above Tosla HQ Portal #3": 300869,
+      "Morio's Lab - Coin on Catwalk Above Tosla HQ Portal #4": 300873,
+      "Morio's Lab - Coin on Catwalk Above Tosla HQ Portal #5": 300874,
+      "Morio's Lab - Coin on Catwalk Above Tosla HQ Portal #6": 300875
+    }
+  },
+  "Morio's Lab - Out-of-Bounds (EXPERTS ONLY)": {
+    "level": "Hub",
+    "sublevel": "Morio's Lab",
+    "connections": {
+      "Morio's Wardrobe": "X2 & X3/B1 & J1",
+      "Morio's Lab - Ground Floor Second Wrench": "",
+      "Morio's Lab - Outside Morio's Room": "",
+      "Morio's Lab - Inside Morio's Room": "",
+      "Morio's Lab - Third Floor": "",
+      "Morio's Lab - Third Floor Wrenches Lower": "",
+      "Morio's Lab - Third Floor Gear Wrench": "",
+      "Morio's Lab - Fourth Floor": "",
+      "Morio's Lab - Fourth Floor Spiky Cliffs": "",
+      "Morio's Lab - Fifth Floor Ruined Observatory Area": "",
+      "Morio's Lab - Fifth Floor Low Pillars": "",
+      "Morio's Lab - Final Floor Bunny Shortcut Lower": ""
+    }
+  },
+  "Morio's Lab - Ground Floor Golden Propeller": {
+    "level": "Hub",
+    "sublevel": "Morio's Lab",
+    "connections": {
+      "Morio's Lab - Ground Floor Second Wrench": "",
+      "Morio's Lab - Ground Floor Lowest Bolt": "",
+      "Morio's Lab - Second Floor": "",
+      "Morio's Lab - Ground Floor Bolts": "X1/B1",
+      "Morio's Lab - Path to Morio's Room": "X1",
+      "Morio's Lab - Bunny Ledge": "X1 & X3/B1",
+      "Morio's Lab - Second Floor Above Demo Wall": "X1 & B1/J2",
+      "Morio's Lab - Third Floor": "FGU",
+      "Morio's Lab - Third Floor Wrenches Lower": "X2/B1 & FGU",
+      "Morio's Lab - Third Floor Wrenches Middle": "X2/B1 & FGU",
+      "Morio's Lab - Third Floor Wrenches Upper": "X2/B1 & FGU",
+      "Morio's Lab - Third Floor Gear Wrench": "X2/B1 & FGU",
+      "Morio's Lab - Second Floor Access to Shortcut Pipe": "X1",
+      "Morio's Lab - Fifth Floor Crash Test Area": "X3+OS+FGU",
+      "Morio's Lab - Middle Floors 3 Golden Propellers": "FGU+B1+Spike",
+      "Morio's Lab - Inside Morio's Room Jump": "NHS+MorioHat+B1 | HS+MorioHat+B1 & {Morio's Wardrobe}",
+      "Morio's Lab - Outside Morio's Room": "X2",
+      "Morio's Lab - Ground Floor Orange Blocks": "X2",
+      "Morio's Lab - Alcove Above Arcade Panik": "X2",
+      "Morio's Lab - Middle Floors 2 Golden Propellers": "X2+FGU+B1"
+    }
+  }
+}

@@ -1169,7 +1169,7 @@
     "locations": [],
     "events": [],
     "exits": {
-      "REGION_ROUTE12/WEST": "Route 11 Exit (East)"
+      "REGION_ROUTE12/WEST": "Route 11 East Exit"
     },
     "warps": {
       "MAP_ROUTE11:2/MAP_ROUTE11_EAST_ENTRANCE_1F:1": "Route 11 Gate East Entrance"

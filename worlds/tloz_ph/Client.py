@@ -1,5 +1,4 @@
-import dataclasses
-from dataclasses import dataclass
+
 from random import randint
 
 from .DSZeldaClient.DSZeldaClient import *
@@ -217,6 +216,7 @@ class PhantomHourglassClient(DSZeldaClient):
         self.paired_object_watches: dict[str, "PairedObjects"] = {}
         self.boss_door_addr: Address | None = None
         self.stage_flags = STAGE_FLAGS
+        self.was_in_cutscene: bool = False
 
 
     async def check_game_version(self, ctx: "BizHawkClientContext") -> bool:
@@ -1044,36 +1044,37 @@ class PhantomHourglassClient(DSZeldaClient):
         return game_clear
 
     async def process_deathlink(self, ctx: "BizHawkClientContext", is_dead, stage, read_result):
-        if (not read_result.get(PHAddr.drawing_sea_route, False) and read_result[PHAddr.in_cutscene]
+        if not (not read_result.get(PHAddr.drawing_sea_route, False) and read_result[PHAddr.in_cutscene]
                 and self.current_scene not in [0x1701]):
-            if ctx.last_death_link > self.last_deathlink and not is_dead:
-                # A death was received from another player, make our player die as well
-                await self.health_address.overwrite(ctx, 0)
+            return
+        if ctx.last_death_link > self.last_deathlink and not is_dead:
+            # A death was received from another player, make our player die as well
+            await self.health_address.overwrite(ctx, 0)
 
-                self.is_expecting_received_death = True
+            self.is_expecting_received_death = True
+            self.last_deathlink = ctx.last_death_link
+
+        if not self.was_alive_last_frame and not is_dead:
+            # We revived from any kind of death
+            self.was_alive_last_frame = True
+        elif self.was_alive_last_frame and is_dead:
+            # Our player just died...
+            if stage not in [0, 3]:
+                health_pointer = await PHAddr.gPlayer.read(ctx)
+                if self.last_health_pointer != health_pointer:
+                    printl(f"Deathlink triggered with wrong health pointer. Updating main read list")
+                    await self.update_main_read_list(ctx, stage, True)
+                    return
+
+            self.was_alive_last_frame = False
+            printl(f"health address: {self.health_address}")
+            if self.is_expecting_received_death:
+                # ...because of a received deathlink, so let's not make a circular chain of deaths please
+                self.is_expecting_received_death = False
+            else:
+                # ...because of their own incompetence, so let's make their mates pay for that
+                await ctx.send_death(ctx.player_names[ctx.slot] + " may have disappointed the Ocean King.")
                 self.last_deathlink = ctx.last_death_link
-
-            if not self.was_alive_last_frame and not is_dead:
-                # We revived from any kind of death
-                self.was_alive_last_frame = True
-            elif self.was_alive_last_frame and is_dead:
-                # Our player just died...
-                if stage not in [0, 3]:
-                    health_pointer = await PHAddr.gPlayer.read(ctx)
-                    if self.last_health_pointer != health_pointer:
-                        printl(f"Deathlink triggered with wrong health pointer. Updating main read list")
-                        await self.update_main_read_list(ctx, stage, True)
-                        return
-
-                self.was_alive_last_frame = False
-                printl(f"health address: {self.health_address}")
-                if self.is_expecting_received_death:
-                    # ...because of a received deathlink, so let's not make a circular chain of deaths please
-                    self.is_expecting_received_death = False
-                else:
-                    # ...because of their own incompetence, so let's make their mates pay for that
-                    await ctx.send_death(ctx.player_names[ctx.slot] + " may have disappointed the Ocean King.")
-                    self.last_deathlink = ctx.last_death_link
 
     def add_special_er_data(self, ctx, er_map, scene, detect_data: "PHTransition", exit_data: "PHTransition"):
         # all lowered water scenes on ruins need to account for funny scene detections
@@ -1965,7 +1966,7 @@ class PhantomHourglassClient(DSZeldaClient):
             # Always remove for previously checked locations
             if model_resets.get(model, ""):
                 printl(f"\tResetting model: {model_resets[model]}")
-                if "gift_addr" in location:
+                if "address" in location:
                     self.delay_reset += 1  # Add delay reset to make sure removal handling runs properly
                 await super()._set_vanilla_item(ctx, location, model_resets.get(model))
             return
@@ -1973,7 +1974,14 @@ class PhantomHourglassClient(DSZeldaClient):
 
     async def process_in_game(self, ctx: "BizHawkClientContext", read_result: dict):
         if read_result[PHAddr.in_cutscene] != 0xD8:
+            if not self.was_in_cutscene:
+                printl(f"In Cutscene!")
+                self.was_in_cutscene = True
             return
+        if self.was_in_cutscene:
+            printl(f"Not In Cutscene!")
+            self.was_in_cutscene = False
+            await self.update_main_read_list(ctx, self.current_stage)
         await super().process_in_game(ctx, read_result)
 
     async def force_spawn_swordfish(self, ctx):

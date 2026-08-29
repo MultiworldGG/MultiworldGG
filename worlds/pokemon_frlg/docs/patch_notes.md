@@ -1,3 +1,12 @@
+# 1.1.2
+## Bug Fixes
+* Fixed an issue where strength wasn't required to enter Route 12 from Route 11 when `route_12_boulders` was on
+
+# 1.1.1
+## Bug Fixes
+* Fixed an issue where the Itemfinder was not required for hidden items regardless of the `itemfinder_required` setting
+* Fixed an issue where UT would consider hidden items and dark caves as in logic when they weren't
+
 # 1.1.0
 ## Game Updates
 * Using Teleport on the field will return you to the interior of the last Pokémon Center you visited if Pokémon Centers are shuffled 

@@ -1,0 +1,868 @@
+{
+  "Pizza Time - Starting Area": {
+    "level": "Pizza Time",
+    "sublevel": "Pizza Time",
+    "chests": {
+      "Pizza Time - Chest on Roof on First Main Island": 20300144
+    },
+    "coinbags": {
+      "Pizza Time - Coin Bag Near House on Top of First Hill": 20300277,
+      "Pizza Time - Coin Bag Behind House on First Main Island": 20300095,
+      "Pizza Time - Coin Bag on Plateau Behind Tonino's Pizza": 20300465,
+      "Pizza Time - Coin Bag Near Bunny Arch": 20300200
+    },
+    "coins": {
+      "Pizza Time - Coin on Road at Start #1": 20300075,
+      "Pizza Time - Coin on Road at Start #2": 20300074,
+      "Pizza Time - Coin on Road at Start #3": 20300073,
+      "Pizza Time - Coin on Road at Start #4": 20300072,
+      "Pizza Time - Coin on Road at Start #5": 20300071,
+      "Pizza Time - Coin on Path Behind Hat World #1": 20300069,
+      "Pizza Time - Coin on Path Behind Hat World #2": 20300067,
+      "Pizza Time - Coin on Path Behind Hat World #3": 20300065,
+      "Pizza Time - Coin on Path Behind Hat World #4": 20300064,
+      "Pizza Time - Coin on Path Behind Hat World #5": 20300063,
+      "Pizza Time - Coin on Path Behind Plateau on First Main Island #1": 20300057,
+      "Pizza Time - Coin on Path Behind Plateau on First Main Island #2": 20300055,
+      "Pizza Time - Coin on Path Behind Plateau on First Main Island #3": 20300054,
+      "Pizza Time - Coin on Path Behind Plateau on First Main Island #4": 20300053,
+      "Pizza Time - Coin on Path Behind Plateau on First Main Island #5": 20300052,
+      "Pizza Time - Coin on Path Behind Plateau on First Main Island #6": 20300051,
+      "Pizza Time - Coin on Path Behind Plateau on First Main Island #7": 20300050,
+      "Pizza Time - Coin on Path Behind Plateau on First Main Island #8": 20300044,
+      "Pizza Time - Coin on Path Behind Plateau on First Main Island #9": 20300043,
+      "Pizza Time - Coin on Path Behind Plateau on First Main Island #10": 20300041,
+      "Pizza Time - Coin on Path Behind Plateau on First Main Island #11": 20300037,
+      "Pizza Time - Coin on Path Behind Plateau on First Main Island #12": 20300031,
+      "Pizza Time - Coin on Road After Hat World #1": 20300070,
+      "Pizza Time - Coin on Road After Hat World #2": 20300068,
+      "Pizza Time - Coin on Road After Hat World #3": 20300066,
+      "Pizza Time - Coin on Roof Near First Oil Pump #1": 20300059,
+      "Pizza Time - Coin on Roof Near First Oil Pump #2": 20300076,
+      "Pizza Time - Coin on Roof Near First Oil Pump #3": 20300089,
+      "Pizza Time - Coin on Road After First Oil Pump #1": 20300062,
+      "Pizza Time - Coin on Road After First Oil Pump #2": 20300061,
+      "Pizza Time - Coin on Road After First Oil Pump #3": 20300060,
+      "Pizza Time - Coin on Road After First Oil Pump #4": 20300058,
+      "Pizza Time - Coin on Road After First Oil Pump #5": 20300056,
+      "Pizza Time - Coin on Road Before First Hill #1": 20300045,
+      "Pizza Time - Coin on Road Before First Hill #2": 20300046,
+      "Pizza Time - Coin on Road Before First Hill #3": 20300047,
+      "Pizza Time - Coin on Road Before First Hill #4": 20300048,
+      "Pizza Time - Coin on Road Before First Hill #5": 20300049,
+      "Pizza Time - Coin Near House on Top of First Hill #1": 20300279,
+      "Pizza Time - Coin Near House on Top of First Hill #2": 20300278,
+      "Pizza Time - Coin on Road Before First Checkpoint #1": 20300276,
+      "Pizza Time - Coin on Road Before First Checkpoint #2": 20300275,
+      "Pizza Time - Coin on Road Before First Checkpoint #3": 20300274,
+      "Pizza Time - Coin on Road Before First Checkpoint #4": 20300273,
+      "Pizza Time - Coin on Road Before First Checkpoint #5": 20300272,
+      "Pizza Time - Coin on Road After First Checkpoint #1": 20300266,
+      "Pizza Time - Coin on Road After First Checkpoint #2": 20300263,
+      "Pizza Time - Coin on Road After First Checkpoint #3": 20300260,
+      "Pizza Time - Coin on Road After First Checkpoint #4": 20300258,
+      "Pizza Time - Coin on Road After First Checkpoint #5": 20300256,
+      "Pizza Time - Coin Surrounding Timer Before Orange Block Bridge #1": 20300232,
+      "Pizza Time - Coin Surrounding Timer Before Orange Block Bridge #2": 20300229,
+      "Pizza Time - Coin Surrounding Timer Before Orange Block Bridge #3": 20300233,
+      "Pizza Time - Coin Surrounding Timer Before Orange Block Bridge #4": 20300224,
+      "Pizza Time - Coin Surrounding Timer Before Orange Block Bridge #5": 20300231,
+      "Pizza Time - Coin Surrounding Timer Before Orange Block Bridge #6": 20300225,
+      "Pizza Time - Coin on Road Near Second Oil Pump #1": 20300238,
+      "Pizza Time - Coin on Road Near Second Oil Pump #2": 20300237,
+      "Pizza Time - Coin on Road Near Second Oil Pump #3": 20300236,
+      "Pizza Time - Coin on Road Near Second Oil Pump #4": 20300235,
+      "Pizza Time - Coin on Road Near Second Oil Pump #5": 20300234,
+      "Pizza Time - Coin on Road Before 600° Oven #1": 20300254,
+      "Pizza Time - Coin on Road Before 600° Oven #2": 20300257,
+      "Pizza Time - Coin on Road Before 600° Oven #3": 20300259,
+      "Pizza Time - Coin on Road Before 600° Oven #4": 20300262,
+      "Pizza Time - Coin on Road Before 600° Oven #5": 20300265,
+      "Pizza Time - Coin on Road Before 600° Oven #6": 20300268,
+      "Pizza Time - Coin on Road Before 600° Oven #7": 20300270,
+      "Pizza Time - Coin Leading to 600° Oven #1": 20300271,
+      "Pizza Time - Coin Leading to 600° Oven #2": 20300269,
+      "Pizza Time - Coin Leading to 600° Oven #3": 20300267,
+      "Pizza Time - Coin Leading to 600° Oven #4": 20300264,
+      "Pizza Time - Coin Leading to 600° Oven #5": 20300261,
+      "Pizza Time - Coin on Road Before Third Oil Pump #1": 20300391,
+      "Pizza Time - Coin on Road Before Third Oil Pump #2": 20300387,
+      "Pizza Time - Coin on Road Before Third Oil Pump #3": 20300382,
+      "Pizza Time - Coin on Road Before Third Oil Pump #4": 20300378,
+      "Pizza Time - Coin on Road Before Third Oil Pump #5": 20300375,
+      "Pizza Time - Coin on Road After Third Oil Pump #1": 20300368,
+      "Pizza Time - Coin on Road After Third Oil Pump #2": 20300367,
+      "Pizza Time - Coin on Road After Third Oil Pump #3": 20300366,
+      "Pizza Time - Coin on Road After Third Oil Pump #4": 20300365,
+      "Pizza Time - Coin on Road After Third Oil Pump #5": 20300364,
+      "Pizza Time - Coin on Road Before Tiered Hill #1": 20300352,
+      "Pizza Time - Coin on Road Before Tiered Hill #2": 20300353,
+      "Pizza Time - Coin on Road Before Tiered Hill #3": 20300354,
+      "Pizza Time - Coin on Road Before Tiered Hill #4": 20300355,
+      "Pizza Time - Coin on Road Before Tiered Hill #5": 20300356,
+      "Pizza Time - Coin on Side of Road on Tiered Hill #1": 20300428,
+      "Pizza Time - Coin on Side of Road on Tiered Hill #2": 20300429,
+      "Pizza Time - Coin on Side of Road on Tiered Hill #3": 20300430,
+      "Pizza Time - Coin on Side of Road on Tiered Hill #4": 20300431,
+      "Pizza Time - Coin on Side of Road on Tiered Hill #5": 20300432,
+      "Pizza Time - Coin on Road on Boost Pad Before Final Roundabout #1": 20300555,
+      "Pizza Time - Coin on Road on Boost Pad Before Final Roundabout #2": 20300554,
+      "Pizza Time - Coin on Road on Boost Pad Before Final Roundabout #3": 20300553,
+      "Pizza Time - Coin on Road on Boost Pad Before Final Roundabout #4": 20300552,
+      "Pizza Time - Coin on Road on Boost Pad Before Final Roundabout #5": 20300551,
+      "Pizza Time - Coin on Road Near Fourth Oil Pump #1": 20300545,
+      "Pizza Time - Coin on Road Near Fourth Oil Pump #2": 20300544,
+      "Pizza Time - Coin on Road Near Fourth Oil Pump #3": 20300543,
+      "Pizza Time - Coin on Road Near Fourth Oil Pump #4": 20300542,
+      "Pizza Time - Coin on Road Near Fourth Oil Pump #5": 20300541,
+      "Pizza Time - Coin on Road Under Bunny Arch #1": 20300196,
+      "Pizza Time - Coin on Road Under Bunny Arch #2": 20300195,
+      "Pizza Time - Coin on Road Under Bunny Arch #3": 20300194,
+      "Pizza Time - Coin on Road Under Bunny Arch #4": 20300193,
+      "Pizza Time - Coin on Road Under Bunny Arch #5": 20300192,
+      "Pizza Time - Coin Behind Second Oil Pump #1": 20300245,
+      "Pizza Time - Coin Behind Second Oil Pump #2": 20300248,
+      "Pizza Time - Coin Behind Second Oil Pump #3": 20300251,
+      "Pizza Time - Coin Behind Second Oil Pump #4": 20300252,
+      "Pizza Time - Coin Behind Second Oil Pump #5": 20300253,
+      "Pizza Time - Coin Near Pizza Possum Grafitti #1": 20300025,
+      "Pizza Time - Coin Near Pizza Possum Grafitti #2": 20300024,
+      "Pizza Time - Coin on Roof Before 600° Oven": 20300335,
+      "Pizza Time - Coin Behind 600° Oven #1": 20300249,
+      "Pizza Time - Coin Behind 600° Oven #2": 20300250,
+      "Pizza Time - Coin Behind 600° Oven #3": 20300246,
+      "Pizza Time - Coin Behind 600° Oven #4": 20300247,
+      "Pizza Time - Coin Behind 600° Oven #5": 20300243,
+      "Pizza Time - Coin Behind 600° Oven #6": 20300244,
+      "Pizza Time - Coin Behind 600° Oven #7": 20300241,
+      "Pizza Time - Coin Behind 600° Oven #8": 20300242,
+      "Pizza Time - Coin Behind 600° Oven #9": 20300239,
+      "Pizza Time - Coin Behind 600° Oven #10": 20300240,
+      "Pizza Time - Coin Near Dumpsters Near Second Checkpoint #1": 20300405,
+      "Pizza Time - Coin Near Dumpsters Near Second Checkpoint #2": 20300404,
+      "Pizza Time - Coin Near Dumpsters Near Second Checkpoint #3": 20300403,
+      "Pizza Time - Coin Near Dumpsters Near Second Checkpoint #4": 20300402,
+      "Pizza Time - Coin Near Dumpsters Near Second Checkpoint #5": 20300401,
+      "Pizza Time - Coin Near Dumpsters Near Second Checkpoint #6": 20300400,
+      "Pizza Time - Coin Near Dumpsters Near Second Checkpoint #7": 20300399,
+      "Pizza Time - Coin Near Dumpsters Near Second Checkpoint #8": 20300398,
+      "Pizza Time - Coin Near Dumpsters Near Second Checkpoint #9": 20300397,
+      "Pizza Time - Coin Near Dumpsters Near Second Checkpoint #10": 20300395,
+      "Pizza Time - Coin Near Dumpsters Near Second Checkpoint #11": 20300394,
+      "Pizza Time - Coin Behind House on First Main Island #1": 20300090,
+      "Pizza Time - Coin Behind House on First Main Island #2": 20300091,
+      "Pizza Time - Coin Behind House on First Main Island #3": 20300092,
+      "Pizza Time - Coin Behind House on First Main Island #4": 20300093,
+      "Pizza Time - Coin Behind House on First Main Island #5": 20300094,
+      "Pizza Time - Coin in Triangle Behind Plateau Near Start #1": 20300042,
+      "Pizza Time - Coin in Triangle Behind Plateau Near Start #2": 20300038,
+      "Pizza Time - Coin in Triangle Behind Plateau Near Start #3": 20300039,
+      "Pizza Time - Coin in Triangle Behind Plateau Near Start #4": 20300040,
+      "Pizza Time - Coin in Triangle Behind Plateau Near Start #5": 20300032,
+      "Pizza Time - Coin in Triangle Behind Plateau Near Start #6": 20300033,
+      "Pizza Time - Coin in Triangle Behind Plateau Near Start #7": 20300034,
+      "Pizza Time - Coin in Triangle Behind Plateau Near Start #8": 20300035,
+      "Pizza Time - Coin in Triangle Behind Plateau Near Start #9": 20300036,
+      "Pizza Time - Coin Near Second Main Island Ocean Road #1": 20300078,
+      "Pizza Time - Coin Near Second Main Island Ocean Road #2": 20300080,
+      "Pizza Time - Coin Near Second Main Island Ocean Road #3": 20300082,
+      "Pizza Time - Coin Near Second Main Island Ocean Road #4": 20300084,
+      "Pizza Time - Coin on Second Main Island Ocean Road #1": 20300077,
+      "Pizza Time - Coin on Second Main Island Ocean Road #2": 20300079,
+      "Pizza Time - Coin on Second Main Island Ocean Road #3": 20300081,
+      "Pizza Time - Coin on Second Main Island Ocean Road #4": 20300083,
+      "Pizza Time - Coin on Second Main Island Ocean Road #5": 20300085,
+      "Pizza Time - Coin on Second Main Island Ocean Road #6": 20300087,
+      "Pizza Time - Coin on Second Main Island Ocean Road #7": 20300088,
+      "Pizza Time - Coin on Second Main Island Ocean Road #8": 20300026,
+      "Pizza Time - Coin on Second Main Island Ocean Road #9": 20300027,
+      "Pizza Time - Coin on Second Main Island Ocean Road #10": 20300028,
+      "Pizza Time - Coin on Second Main Island Ocean Road #11": 20300029,
+      "Pizza Time - Coin on Second Main Island Ocean Road #12": 20300030,
+      "Pizza Time - Coin in Center of Final Roundabout #1": 20300532,
+      "Pizza Time - Coin in Center of Final Roundabout #2": 20300533,
+      "Pizza Time - Coin in Center of Final Roundabout #3": 20300534,
+      "Pizza Time - Coin in Center of Final Roundabout #4": 20300528,
+      "Pizza Time - Coin in Center of Final Roundabout #5": 20300530,
+      "Pizza Time - Coin in Center of Final Roundabout #6": 20300524,
+      "Pizza Time - Coin in Center of Final Roundabout #7": 20300525,
+      "Pizza Time - Coin in Center of Final Roundabout #8": 20300526,
+      "Pizza Time - Coin Near Pizza King #1": 20300519,
+      "Pizza Time - Coin Near Pizza King #2": 20300514,
+      "Pizza Time - Coin Near Pizza King #3": 20300509,
+      "Pizza Time - Coin Near Pizza King #4": 20300518,
+      "Pizza Time - Coin Near Pizza King #5": 20300513,
+      "Pizza Time - Coin Near Pizza King #6": 20300508,
+      "Pizza Time - Coin Near Pizza King #7": 20300517,
+      "Pizza Time - Coin Near Pizza King #8": 20300512,
+      "Pizza Time - Coin Near Pizza King #9": 20300507,
+      "Pizza Time - Coin Near Pizza King #10": 20300516,
+      "Pizza Time - Coin Near Pizza King #11": 20300511,
+      "Pizza Time - Coin Near Pizza King #12": 20300506,
+      "Pizza Time - Coin Near Pizza King #13": 20300515,
+      "Pizza Time - Coin Near Pizza King #14": 20300510,
+      "Pizza Time - Coin Near Pizza King #15": 20300505,
+      "Pizza Time - Coin on the Pizza King's Path #1": 20300499,
+      "Pizza Time - Coin on the Pizza King's Path #2": 20300498,
+      "Pizza Time - Coin on the Pizza King's Path #3": 20300497,
+      "Pizza Time - Coin on the Pizza King's Path #4": 20300496,
+      "Pizza Time - Coin on the Pizza King's Path #5": 20300495,
+      "Pizza Time - Coin on the Pizza King's Path #6": 20300494,
+      "Pizza Time - Coin on the Pizza King's Path #7": 20300493,
+      "Pizza Time - Coin Behind Houses Right of Final Roundabout #1": 20300540,
+      "Pizza Time - Coin Behind Houses Right of Final Roundabout #2": 20300539,
+      "Pizza Time - Coin Behind Houses Right of Final Roundabout #3": 20300538,
+      "Pizza Time - Coin Behind Houses Right of Final Roundabout #4": 20300537,
+      "Pizza Time - Coin Behind Houses Right of Final Roundabout #5": 20300536,
+      "Pizza Time - Coin Behind Houses Right of Final Roundabout #6": 20300531,
+      "Pizza Time - Coin Behind Houses Right of Final Roundabout #7": 20300527,
+      "Pizza Time - Coin Behind Houses Right of Final Roundabout #8": 20300523,
+      "Pizza Time - Coin Behind Houses Right of Final Roundabout #9": 20300522,
+      "Pizza Time - Coin Behind Houses Right of Final Roundabout #10": 20300521,
+      "Pizza Time - Coin Behind Tonino's Pizza #1": 20300388,
+      "Pizza Time - Coin Behind Tonino's Pizza #2": 20300383,
+      "Pizza Time - Coin Behind Tonino's Pizza #3": 20300389,
+      "Pizza Time - Coin Behind Tonino's Pizza #4": 20300384,
+      "Pizza Time - Coin Behind Tonino's Pizza #5": 20300390,
+      "Pizza Time - Coin Behind Tonino's Pizza #6": 20300379,
+      "Pizza Time - Coin Behind Tonino's Pizza #7": 20300385,
+      "Pizza Time - Coin Behind Tonino's Pizza #8": 20300380,
+      "Pizza Time - Coin Behind Tonino's Pizza #9": 20300386,
+      "Pizza Time - Coin Behind Tonino's Pizza #10": 20300376,
+      "Pizza Time - Coin Behind Tonino's Pizza #11": 20300381,
+      "Pizza Time - Coin Behind Tonino's Pizza #12": 20300377,
+      "Pizza Time - Coin Behind Tonino's Pizza #13": 20300374,
+      "Pizza Time - Coin Behind Tonino's Pizza #14": 20300372,
+      "Pizza Time - Coin Behind Tonino's Pizza #15": 20300371,
+      "Pizza Time - Coin Behind Tonino's Pizza #16": 20300370,
+      "Pizza Time - Coin Behind Tonino's Pizza #17": 20300369,
+      "Pizza Time - Coin Behind Houses Left Before Final Roundabout #1": 20300549,
+      "Pizza Time - Coin Behind Houses Left Before Final Roundabout #2": 20300548,
+      "Pizza Time - Coin Behind Houses Left Before Final Roundabout #3": 20300547,
+      "Pizza Time - Coin on Plateau Behind Tonino's Pizza #1": 20300472,
+      "Pizza Time - Coin on Plateau Behind Tonino's Pizza #2": 20300471,
+      "Pizza Time - Coin on Plateau Behind Tonino's Pizza #3": 20300470,
+      "Pizza Time - Coin on Plateau Behind Tonino's Pizza #4": 20300469,
+      "Pizza Time - Coin on Plateau Behind Tonino's Pizza #5": 20300468,
+      "Pizza Time - Coin on Plateau Behind Tonino's Pizza #6": 20300467,
+      "Pizza Time - Coin on Plateau Behind Tonino's Pizza #7": 20300466,
+      "Pizza Time - Coin on Plateau Behind Tonino's Pizza #8": 20300464,
+      "Pizza Time - Coin on Plateau Behind Tonino's Pizza #9": 20300463,
+      "Pizza Time - Coin on Plateau Behind Tonino's Pizza #10": 20300462,
+      "Pizza Time - Coin on Plateau Behind Tonino's Pizza #11": 20300461,
+      "Pizza Time - Coin on Plateau Behind Tonino's Pizza #12": 20300460,
+      "Pizza Time - Coin on Plateau Behind Tonino's Pizza #13": 20300459,
+      "Pizza Time - Coin on Plateau Behind Tonino's Pizza #14": 20300458,
+      "Pizza Time - Coin on Plateau Behind Tonino's Pizza #15": 20300446,
+      "Pizza Time - Coin on Plateau Behind Tonino's Pizza #16": 20300445,
+      "Pizza Time - Coin on Plateau Behind Tonino's Pizza #17": 20300444,
+      "Pizza Time - Coin on Plateau Behind Tonino's Pizza #18": 20300439,
+      "Pizza Time - Coin on Plateau Behind Tonino's Pizza #19": 20300440,
+      "Pizza Time - Coin on Plateau Behind Tonino's Pizza #20": 20300441,
+      "Pizza Time - Coin on Plateau Behind Tonino's Pizza #21": 20300442,
+      "Pizza Time - Coin on Plateau Behind Tonino's Pizza #22": 20300443,
+      "Pizza Time - Coin on Roof Next to Tonino's Pizza #1": 20300481,
+      "Pizza Time - Coin on Roof Next to Tonino's Pizza #2": 20300483,
+      "Pizza Time - Coin on Roof Next to Tonino's Pizza #3": 20300482,
+      "Pizza Time - Coin on Roof Next to Tonino's Pizza #4": 20300480,
+      "Pizza Time - Coin on Roof Right Before Final Roundabout #1": 20300585,
+      "Pizza Time - Coin on Roof Right Before Final Roundabout #2": 20300584,
+      "Pizza Time - Coin on Roof Right Before Final Roundabout #3": 20300588,
+      "Pizza Time - Coin on Roof Right Before Final Roundabout #4": 20300593,
+      "Pizza Time - Coin Behind Second Island Mountain #1": 20300191,
+      "Pizza Time - Coin Behind Second Island Mountain #2": 20300190,
+      "Pizza Time - Coin Behind Second Island Mountain #3": 20300189,
+      "Pizza Time - Coin Behind Second Island Mountain #4": 20300188,
+      "Pizza Time - Coin Behind Second Island Mountain #5": 20300187,
+      "Pizza Time - Coin Behind Second Island Mountain #6": 20300186,
+      "Pizza Time - Coin Behind Second Island Mountain #7": 20300185,
+      "Pizza Time - Coin Behind Second Island Mountain #8": 20300180,
+      "Pizza Time - Coin Behind Second Island Mountain #9": 20300175,
+      "Pizza Time - Coin Behind Second Island Mountain #10": 20300184,
+      "Pizza Time - Coin Behind Second Island Mountain #11": 20300179,
+      "Pizza Time - Coin Behind Second Island Mountain #12": 20300174,
+      "Pizza Time - Coin Behind Second Island Mountain #13": 20300183,
+      "Pizza Time - Coin Behind Second Island Mountain #14": 20300178,
+      "Pizza Time - Coin Behind Second Island Mountain #15": 20300173,
+      "Pizza Time - Coin Behind Second Island Mountain #16": 20300182,
+      "Pizza Time - Coin Behind Second Island Mountain #17": 20300177,
+      "Pizza Time - Coin Behind Second Island Mountain #18": 20300172,
+      "Pizza Time - Coin Behind Second Island Mountain #19": 20300181,
+      "Pizza Time - Coin Behind Second Island Mountain #20": 20300176,
+      "Pizza Time - Coin Behind Second Island Mountain #21": 20300171
+    },
+    "checkpoints": {
+      "Pizza Time - Checkpoint on First Bridge": 20900090,
+      "Pizza Time - Checkpoint Above 600° Oven": 20900500,
+      "Pizza Time - Checkpoint on Final Roundabout": 20900520
+    },
+    "cheeses": {
+      "Pizza Time - Cheese Near Hat World": 22100005,
+      "Pizza Time - Cheese on Top of First Hill": 22100003,
+      "Pizza Time - Cheese Near 600° Oven": 22100000,
+      "Pizza Time - Cheese on Road Under Bunny Arch": 22100006,
+      "Pizza Time - Cheese Behind Tonino's Pizza": 22100002,
+      "Pizza Time - Cheese Near Final Roundabout": 22100001
+    },
+    "connections": {
+      "Pizza Time - Oil Pumps": "SP",
+      "Pizza Time - House on First Island": "X3/J1/B1",
+      "Pizza Time - Spires Near Start": "B1 & X2/J1 | X2+J1",
+      "Pizza Time - Accessible Ledges": "X1/J1/B1",
+      "Pizza Time - Less Accessible Ledges": "X2/J1/B1",
+      "Pizza Time - Orange Block Bridge": "OS",
+      "Pizza Time - Ledge Left of Final Roundabout": "X1+NHPR | X2/J1/B1",
+      "Pizza Time - Second Main Island Mountain Lower": "X3/J1/B1",
+      "Pizza Time - High Ground": "J1/B1",
+      "Pizza Time - Bunny Island Upper": "NOS+B2+J2 | X1+J2 | X2+J1",
+      "Pizza Time - Floating Orange Island": "B2 & X1/OS | B1+J1+OS | NOS+B2+J1 | X2+B1 & NOS/X3"
+    },
+    "subwarps": {
+      "Pizza Time - Hat World Entrance": ["Pizza Time Hat World", ""],
+      "Pizza Time - 400° Oven": ["400°", ""],
+      "Pizza Time - 600° Oven": ["600°", ""],
+      "Pizza Time - 900° Oven": ["900°", ""],
+      "Pizza Time - Sewer Entrance": ["Pizza Time Sewers", "X1/B1/J1"]
+    },
+    "warps": {
+      "Pizza Time - Morio's Lab Portal Near Hat World": ["{RETURNPORTAL}", ""],
+      "Pizza Time - Morio's Lab Portal Near Pizza King": ["{RETURNPORTAL}", ""]
+    }
+  },
+  "Pizza Time - Oil Pumps": {
+    "level": "Pizza Time",
+    "sublevel": "Pizza Time",
+    "gears": {
+      "Pizza Time - Gear - First Oil Pump": 20100006,
+      "Pizza Time - Gear - Second Oil Pump": 20100005,
+      "Pizza Time - Gear - Third Oil Pump": 20100004,
+      "Pizza Time - Gear - Fourth Oil Pump": 20100003
+    }
+  },
+  "Pizza Time - House on First Island": {
+    "level": "Pizza Time",
+    "sublevel": "Pizza Time",
+    "gears": {
+      "Pizza Time - Gear - On House on First Main Island": 20100012
+    },
+    "coinbags": {
+      "Pizza Time - Coin Bag on Gear House on First Main Island": 20300161
+    },
+    "coins": {
+      "Pizza Time - Coin on Gear House on First Main Island #1": 20300160,
+      "Pizza Time - Coin on Gear House on First Main Island #2": 20300159,
+      "Pizza Time - Coin on Gear House on First Main Island #3": 20300158,
+      "Pizza Time - Coin on Gear House on First Main Island #4": 20300162,
+      "Pizza Time - Coin on Gear House on First Main Island #5": 20300282,
+      "Pizza Time - Coin on Gear House on First Main Island #6": 20300281
+    }
+  },
+  "Pizza Time - Accessible Ledges": {
+    "level": "Pizza Time",
+    "sublevel": "Pizza Time",
+    "gears": {
+      "Pizza Time - Gear - In Ocean Cove": 20100001
+    },
+    "coins": {
+      "Pizza Time - Coin on Ocean Ledges Below Orange Block Bridge #1": 20300023,
+      "Pizza Time - Coin on Ocean Ledges Below Orange Block Bridge #2": 20300022,
+      "Pizza Time - Coin on Ocean Ledges Below Orange Block Bridge #3": 20300021,
+      "Pizza Time - Coin on Ocean Ledges Below Orange Block Bridge #4": 20300020,
+      "Pizza Time - Coin on Ocean Ledges Below Orange Block Bridge #5": 20300019,
+      "Pizza Time - Coin on Ocean Ledges Below Orange Block Bridge #6": 20300009,
+      "Pizza Time - Coin on Ocean Ledges Below Orange Block Bridge #7": 20300008,
+      "Pizza Time - Coin on Ocean Ledges Below Orange Block Bridge #8": 20300007,
+      "Pizza Time - Coin on Ocean Ledges Below Orange Block Bridge #9": 20300006,
+      "Pizza Time - Coin on Ocean Ledges Below Orange Block Bridge #10": 20300005,
+      "Pizza Time - Coin on Ocean Ledges Below Orange Block Bridge #11": 20300003,
+      "Pizza Time - Coin on Ocean Ledges Below Orange Block Bridge #12": 20300004,
+      "Pizza Time - Coin on Ocean Ledges Below Orange Block Bridge #13": 20300002,
+      "Pizza Time - Coin on Ocean Ledges Below Orange Block Bridge #14": 20300000,
+      "Pizza Time - Coin on Ocean Ledges Below Orange Block Bridge #15": 20300001,
+      "Pizza Time - Coin in Ocean Cove #1": 20300011,
+      "Pizza Time - Coin in Ocean Cove #2": 20300013,
+      "Pizza Time - Coin in Ocean Cove #3": 20300018,
+      "Pizza Time - Coin in Ocean Cove #4": 20300017,
+      "Pizza Time - Coin in Ocean Cove #5": 20300016,
+      "Pizza Time - Coin in Ocean Cove #6": 20300015,
+      "Pizza Time - Coin in Ocean Cove #7": 20300012,
+      "Pizza Time - Coin in Ocean Cove #8": 20300010,
+      "Pizza Time - Coin on Cliff Path Behind Third Main Island #1": 20300114,
+      "Pizza Time - Coin on Cliff Path Behind Third Main Island #2": 20300113,
+      "Pizza Time - Coin on Cliff Path Behind Third Main Island #3": 20300112,
+      "Pizza Time - Coin on Cliff Path Behind Third Main Island #4": 20300111,
+      "Pizza Time - Coin on Cliff Path Behind Third Main Island #5": 20300110,
+      "Pizza Time - Coin on Cliff Path Behind Third Main Island #6": 20300109,
+      "Pizza Time - Coin on Cliff Path Behind Third Main Island #7": 20300108,
+      "Pizza Time - Coin on Cliff Path Behind Third Main Island #8": 20300107,
+      "Pizza Time - Coin on Cliff Path Behind Third Main Island #9": 20300106,
+      "Pizza Time - Coin on Cliff Path Behind Third Main Island #10": 20300105,
+      "Pizza Time - Coin on Cliff Path Behind Third Main Island #11": 20300104,
+      "Pizza Time - Coin on Cliff Path Behind Third Main Island #12": 20300103,
+      "Pizza Time - Coin on Cliff Path Behind Third Main Island #13": 20300102,
+      "Pizza Time - Coin on Cliff Path Behind Third Main Island #14": 20300101,
+      "Pizza Time - Coin on Cliff Path Behind Third Main Island #15": 20300100,
+      "Pizza Time - Coin on Cliff Path Behind Third Main Island #16": 20300157,
+      "Pizza Time - Coin on Cliff Path Behind Third Main Island #17": 20300156,
+      "Pizza Time - Coin on the Pizza King's Path #8": 20300421,
+      "Pizza Time - Coin on the Pizza King's Path #9": 20300420,
+      "Pizza Time - Coin on the Pizza King's Path #10": 20300419,
+      "Pizza Time - Coin on the Pizza King's Path #11": 20300418,
+      "Pizza Time - Coin on the Pizza King's Path #12": 20300417,
+      "Pizza Time - Coin Near Mario's Pizza on the Pizza King's Path #1": 20300487,
+      "Pizza Time - Coin Near Mario's Pizza on the Pizza King's Path #2": 20300488,
+      "Pizza Time - Coin Near Mario's Pizza on the Pizza King's Path #3": 20300556,
+      "Pizza Time - Coin Near Mario's Pizza on the Pizza King's Path #4": 20300558,
+      "Pizza Time - Coin Surrounding Pizza Slice Near Mario's Pizza #1": 20300562,
+      "Pizza Time - Coin Surrounding Pizza Slice Near Mario's Pizza #2": 20300559,
+      "Pizza Time - Coin Surrounding Pizza Slice Near Mario's Pizza #3": 20300563,
+      "Pizza Time - Coin Surrounding Pizza Slice Near Mario's Pizza #4": 20300567,
+      "Pizza Time - Coin Surrounding Pizza Slice Near Mario's Pizza #5": 20300560,
+      "Pizza Time - Coin Surrounding Pizza Slice Near Mario's Pizza #6": 20300568,
+      "Pizza Time - Coin Surrounding Pizza Slice Near Mario's Pizza #7": 20300561,
+      "Pizza Time - Coin Surrounding Pizza Slice Near Mario's Pizza #8": 20300565,
+      "Pizza Time - Coin Surrounding Pizza Slice Near Mario's Pizza #9": 20300569,
+      "Pizza Time - Coin Surrounding Pizza Slice Near Mario's Pizza #10": 20300566
+    }
+  },
+  "Pizza Time - Less Accessible Ledges": {
+    "level": "Pizza Time",
+    "sublevel": "Pizza Time",
+    "coinbags": {
+      "Pizza Time - Coin Bag on Ledge on Fourth Main Island #1": 20300426,
+      "Pizza Time - Coin Bag on Ledge on Fourth Main Island #2": 20300424
+    },
+    "coins": {
+      "Pizza Time - Coin on Ledge on Fourth Main Island #1": 20300438,
+      "Pizza Time - Coin on Ledge on Fourth Main Island #2": 20300437,
+      "Pizza Time - Coin on Ledge on Fourth Main Island #3": 20300436,
+      "Pizza Time - Coin on Ledge on Fourth Main Island #4": 20300435,
+      "Pizza Time - Coin on Ledge on Fourth Main Island #5": 20300434,
+      "Pizza Time - Coin on Ledge on Fourth Main Island #6": 20300422,
+      "Pizza Time - Coin on Ledge on Fourth Main Island #7": 20300423,
+      "Pizza Time - Coin on Ledge on Fourth Main Island #8": 20300425,
+      "Pizza Time - Coin on Ledge on Fourth Main Island #9": 20300427,
+      "Pizza Time - Coin on Pizza Island Near Fourth Main Island #1": 20300298,
+      "Pizza Time - Coin on Pizza Island Near Fourth Main Island #2": 20300301,
+      "Pizza Time - Coin on Pizza Island Near Fourth Main Island #3": 20300299,
+      "Pizza Time - Coin on Pizza Island Near Fourth Main Island #4": 20300295,
+      "Pizza Time - Coin on Pizza Island Near Fourth Main Island #5": 20300300,
+      "Pizza Time - Coin on Pizza Island Near Fourth Main Island #6": 20300296,
+      "Pizza Time - Coin on Pizza Island Near Fourth Main Island #7": 20300293,
+      "Pizza Time - Coin on Pizza Island Near Fourth Main Island #8": 20300297,
+      "Pizza Time - Coin on Pizza Island Near Fourth Main Island #9": 20300294,
+      "Pizza Time - Coin on Cliff Path on Fourth Main Island #1": 20300166,
+      "Pizza Time - Coin on Cliff Path on Fourth Main Island #2": 20300167,
+      "Pizza Time - Coin on Cliff Path on Fourth Main Island #3": 20300168,
+      "Pizza Time - Coin on Cliff Path on Fourth Main Island #4": 20300169,
+      "Pizza Time - Coin on Cliff Path on Fourth Main Island #5": 20300170,
+      "Pizza Time - Coin on Cliff Path on Fifth Main Island #1": 20300287,
+      "Pizza Time - Coin on Cliff Path on Fifth Main Island #2": 20300288,
+      "Pizza Time - Coin on Cliff Path on Fifth Main Island #3": 20300289,
+      "Pizza Time - Coin on Cliff Path on Fifth Main Island #4": 20300290,
+      "Pizza Time - Coin on Cliff Path on Fifth Main Island #5": 20300291,
+      "Pizza Time - Coin on Cliff on Final Main Island #1": 20300331,
+      "Pizza Time - Coin on Cliff on Final Main Island #2": 20300333
+    }
+  },
+  "Pizza Time - Ledge Left of Final Roundabout": {
+    "level": "Pizza Time",
+    "sublevel": "Pizza Time",
+    "gears": {
+      "Pizza Time - Gear - On Gem-Shaped Island Left of Final Main Island": 20100002
+    },
+    "chests": {
+      "Pizza Time - Chest on Ledge Left of Final Roundabout": 20300570
+    },
+    "coins": {
+      "Pizza Time - Coin on Ledge Left of Final Roundabout #1": 20300577,
+      "Pizza Time - Coin on Ledge Left of Final Roundabout #2": 20300576,
+      "Pizza Time - Coin on Ledge Left of Final Roundabout #3": 20300575,
+      "Pizza Time - Coin on Ledge Left of Final Roundabout #4": 20300574,
+      "Pizza Time - Coin on Ledge Left of Final Roundabout #5": 20300573,
+      "Pizza Time - Coin on Ledge Left of Final Roundabout #6": 20300572,
+      "Pizza Time - Coin on Ledge Left of Final Roundabout #7": 20300571,
+      "Pizza Time - Coin on Cliff Path on Final Main Island #1": 20300165,
+      "Pizza Time - Coin on Cliff Path on Final Main Island #2": 20300164,
+      "Pizza Time - Coin on Cliff Path on Final Main Island #3": 20300163,
+      "Pizza Time - Coin on Cliff Path on Final Main Island #4": 20300285,
+      "Pizza Time - Coin on Cliff Path on Final Main Island #5": 20300284,
+      "Pizza Time - Coin on Gem-Shaped Island Left of Final Main Island #1": 20300151,
+      "Pizza Time - Coin on Gem-Shaped Island Left of Final Main Island #2": 20300150,
+      "Pizza Time - Coin on Gem-Shaped Island Left of Final Main Island #3": 20300149,
+      "Pizza Time - Coin on Gem-Shaped Island Left of Final Main Island #4": 20300147,
+      "Pizza Time - Coin on Gem-Shaped Island Left of Final Main Island #5": 20300146,
+      "Pizza Time - Coin on Gem-Shaped Island Left of Final Main Island #6": 20300145
+    }
+  },
+  "Pizza Time - High Ground": {
+    "level": "Pizza Time",
+    "sublevel": "Pizza Time",
+    "gears": {
+      "Pizza Time - Gear - Column on Plateau on First Main Island": 20100013,
+      "Pizza Time - Gear - On 400° Oven": 20100014,
+      "Pizza Time - Gear - On 600° Oven": 20100008
+    },
+    "bunnies": {
+      "Pizza Time - Bunny - Above Final Roundabout": 20200002
+    },
+    "chests": {
+      "Pizza Time - Chest on House on Top of First Hill": 20300351,
+      "Pizza Time - Chest on 900° Oven": 20300618
+    },
+    "coinbags": {
+      "Pizza Time - Coin Bag on Spire on Top of First Hill": 20300413,
+      "Pizza Time - Coin Bag on House Near Bunny Arch": 20300349,
+      "Pizza Time - Coin Bag on House Near Morco's Pizza": 20300396,
+      "Pizza Time - Coin Bag on Roof Left Before Final Roundabout": 20300586,
+      "Pizza Time - Coin Bag on Roof Left in Final Roundabout": 20300589,
+      "Pizza Time - Coin Bag on Roof Right in Final Roundabout": 20300590,
+      "Pizza Time - Coin Bag on Roof Before 600° Oven": 20300393
+    },
+    "coins": {
+      "Pizza Time - Coin Next to Ramp on Plateau on First Main Island #1": 20300124,
+      "Pizza Time - Coin Next to Ramp on Plateau on First Main Island #2": 20300119,
+      "Pizza Time - Coin Next to Ramp on Plateau on First Main Island #3": 20300123,
+      "Pizza Time - Coin Next to Ramp on Plateau on First Main Island #4": 20300118,
+      "Pizza Time - Coin Next to Ramp on Plateau on First Main Island #5": 20300122,
+      "Pizza Time - Coin Next to Ramp on Plateau on First Main Island #6": 20300117,
+      "Pizza Time - Coin Next to Ramp on Plateau on First Main Island #7": 20300121,
+      "Pizza Time - Coin Next to Ramp on Plateau on First Main Island #8": 20300116,
+      "Pizza Time - Coin Next to Ramp on Plateau on First Main Island #9": 20300120,
+      "Pizza Time - Coin Next to Ramp on Plateau on First Main Island #10": 20300115,
+      "Pizza Time - Coin Behind Ramp on Plateau on First Main Island #1": 20300136,
+      "Pizza Time - Coin Behind Ramp on Plateau on First Main Island #2": 20300132,
+      "Pizza Time - Coin Behind Ramp on Plateau on First Main Island #3": 20300128,
+      "Pizza Time - Coin Behind Ramp on Plateau on First Main Island #4": 20300135,
+      "Pizza Time - Coin Behind Ramp on Plateau on First Main Island #5": 20300127,
+      "Pizza Time - Coin Behind Ramp on Plateau on First Main Island #6": 20300134,
+      "Pizza Time - Coin Behind Ramp on Plateau on First Main Island #7": 20300126,
+      "Pizza Time - Coin Behind Ramp on Plateau on First Main Island #8": 20300133,
+      "Pizza Time - Coin Behind Ramp on Plateau on First Main Island #9": 20300129,
+      "Pizza Time - Coin Behind Ramp on Plateau on First Main Island #10": 20300125,
+      "Pizza Time - Coin on Highest Column on Plateau on First Main Island #1": 20300343,
+      "Pizza Time - Coin on Highest Column on Plateau on First Main Island #2": 20300340,
+      "Pizza Time - Coin on Highest Column on Plateau on First Main Island #3": 20300346,
+      "Pizza Time - Coin on Highest Column on Plateau on First Main Island #4": 20300342,
+      "Pizza Time - Coin on Highest Column on Plateau on First Main Island #5": 20300339,
+      "Pizza Time - Coin on Highest Column on Plateau on First Main Island #6": 20300348,
+      "Pizza Time - Coin on Highest Column on Plateau on First Main Island #7": 20300345,
+      "Pizza Time - Coin on Highest Column on Plateau on First Main Island #8": 20300341,
+      "Pizza Time - Coin on Highest Column on Plateau on First Main Island #9": 20300347,
+      "Pizza Time - Coin on Highest Column on Plateau on First Main Island #10": 20300344,
+      "Pizza Time - Coin on Middle Column on Plateau on First Main Island #1": 20300323,
+      "Pizza Time - Coin on Middle Column on Plateau on First Main Island #2": 20300326,
+      "Pizza Time - Coin on Middle Column on Plateau on First Main Island #3": 20300322,
+      "Pizza Time - Coin on Middle Column on Plateau on First Main Island #4": 20300325,
+      "Pizza Time - Coin on Middle Column on Plateau on First Main Island #5": 20300328,
+      "Pizza Time - Coin on Middle Column on Plateau on First Main Island #6": 20300324,
+      "Pizza Time - Coin on Middle Column on Plateau on First Main Island #7": 20300327,
+      "Pizza Time - Coin on House Near Bunny Arch #1": 20300305,
+      "Pizza Time - Coin on House Near Bunny Arch #2": 20300306,
+      "Pizza Time - Coin on House Near Bunny Arch #3": 20300329,
+      "Pizza Time - Coin on House Near Bunny Arch #4": 20300334,
+      "Pizza Time - Coin on Mario's Pizza #1": 20300608,
+      "Pizza Time - Coin on Mario's Pizza #2": 20300615,
+      "Pizza Time - Coin Behind Mountain on the Pizza King's Path #1": 20300490,
+      "Pizza Time - Coin Behind Mountain on the Pizza King's Path #2": 20300491,
+      "Pizza Time - Coin Behind Mountain on the Pizza King's Path #3": 20300492,
+      "Pizza Time - Coin Behind Mountain on the Pizza King's Path #4": 20300501,
+      "Pizza Time - Coin Behind Mountain on the Pizza King's Path #5": 20300502,
+      "Pizza Time - Coin Behind Mountain on the Pizza King's Path #6": 20300503,
+      "Pizza Time - Coin on Island Between First and Third Main Islands #1": 20300309,
+      "Pizza Time - Coin on Island Between First and Third Main Islands #2": 20300312,
+      "Pizza Time - Coin on Island Between First and Third Main Islands #3": 20300308,
+      "Pizza Time - Coin on Island Between First and Third Main Islands #4": 20300311,
+      "Pizza Time - Coin on Island Between First and Third Main Islands #5": 20300316,
+      "Pizza Time - Coin on Island Between First and Third Main Islands #6": 20300310,
+      "Pizza Time - Coin on Island Between First and Third Main Islands #7": 20300315,
+      "Pizza Time - Coin on Island Between First and Third Main Islands #8": 20300314,
+      "Pizza Time - Coin on Island Between First and Third Main Islands #9": 20300319,
+      "Pizza Time - Coin on Island Between First and Third Main Islands #10": 20300313,
+      "Pizza Time - Coin on Island Between First and Third Main Islands #11": 20300318,
+      "Pizza Time - Coin on Island Between First and Third Main Islands #12": 20300321,
+      "Pizza Time - Coin on Island Between First and Third Main Islands #13": 20300317,
+      "Pizza Time - Coin on Island Between First and Third Main Islands #14": 20300320,
+      "Pizza Time - Coin on Island Between Second and Final Main Islands #1": 20300362,
+      "Pizza Time - Coin on Island Between Second and Final Main Islands #2": 20300359,
+      "Pizza Time - Coin on Island Between Second and Final Main Islands #3": 20300363,
+      "Pizza Time - Coin on Island Between Second and Final Main Islands #4": 20300360,
+      "Pizza Time - Coin on Island Between Second and Final Main Islands #5": 20300357,
+      "Pizza Time - Coin on Island Between Second and Final Main Islands #6": 20300361,
+      "Pizza Time - Coin on Island Between Second and Final Main Islands #7": 20300358
+    },
+    "cheeses": {
+      "Pizza Time - Cheese on Plateau on First Main Island": 22100004
+    },
+    "connections": {
+      "Pizza Time - Pizza King's Quest": "X1/B1",
+      "Pizza Time - Bunny Island Lower": "X2+B1"
+    }
+  },
+  "Pizza Time - Second Main Island Mountain Lower": {
+    "level": "Pizza Time",
+    "sublevel": "Pizza Time",
+    "bunnies": {
+      "Pizza Time - Bunny - Under Arch on Second Main Island": 20200001
+    },
+    "coinbags": {
+      "Pizza Time - Coin Bag on Morco's Pizza Roof": 20300412
+    },
+    "coins": {
+      "Pizza Time - Coin on Morco's Pizza Roof #1": 20300330,
+      "Pizza Time - Coin on Morco's Pizza Roof #2": 20300336,
+      "Pizza Time - Coin on Morco's Pizza Roof #3": 20300337,
+      "Pizza Time - Coin on Morco's Pizza Roof #4": 20300338,
+      "Pizza Time - Coin on Morco's Pizza Roof #5": 20300350,
+      "Pizza Time - Coin on Morco's Pizza Roof #6": 20300392,
+      "Pizza Time - Coin on Bunny Arch #1": 20300581,
+      "Pizza Time - Coin on Bunny Arch #2": 20300582,
+      "Pizza Time - Coin on Bunny Arch #3": 20300583,
+      "Pizza Time - Coin on Second Main Island Mountain #1": 20300448,
+      "Pizza Time - Coin on Second Main Island Mountain #2": 20300453,
+      "Pizza Time - Coin on Second Main Island Mountain #3": 20300449,
+      "Pizza Time - Coin on Second Main Island Mountain #4": 20300454,
+      "Pizza Time - Coin on Second Main Island Mountain #5": 20300450,
+      "Pizza Time - Coin on Second Main Island Mountain #6": 20300455,
+      "Pizza Time - Coin on Second Main Island Mountain #7": 20300451,
+      "Pizza Time - Coin on Second Main Island Mountain #8": 20300456,
+      "Pizza Time - Coin on Second Main Island Mountain #9": 20300452,
+      "Pizza Time - Coin on Second Main Island Mountain #10": 20300457
+    },
+    "connections": {
+      "Pizza Time - Second Main Island Mountain Upper": "B1 | X1+J1"
+    }
+  },
+  "Pizza Time - Second Main Island Mountain Upper": {
+    "level": "Pizza Time",
+    "sublevel": "Pizza Time",
+    "gears": {
+      "Pizza Time - Gear - On Second Main Island Mountain": 20100000
+    },
+    "coinbags": {
+      "Pizza Time - Coin Bag on Second Main Island Mountain": 20300613
+    },
+    "coins": {
+      "Pizza Time - Coin Surrounding Coin Bag on Second Main Island Mountain #1": 20300609,
+      "Pizza Time - Coin Surrounding Coin Bag on Second Main Island Mountain #2": 20300610,
+      "Pizza Time - Coin Surrounding Coin Bag on Second Main Island Mountain #3": 20300611,
+      "Pizza Time - Coin Surrounding Coin Bag on Second Main Island Mountain #4": 20300612,
+      "Pizza Time - Coin Surrounding Coin Bag on Second Main Island Mountain #5": 20300614,
+      "Pizza Time - Coin Surrounding Coin Bag on Second Main Island Mountain #6": 20300620,
+      "Pizza Time - Coin Surrounding Coin Bag on Second Main Island Mountain #7": 20300621,
+      "Pizza Time - Coin Surrounding Coin Bag on Second Main Island Mountain #8": 20300622,
+      "Pizza Time - Coin Near Gear on Second Main Island Mountain #1": 20300627,
+      "Pizza Time - Coin Near Gear on Second Main Island Mountain #2": 20300632,
+      "Pizza Time - Coin Near Gear on Second Main Island Mountain #3": 20300637,
+      "Pizza Time - Coin Near Gear on Second Main Island Mountain #4": 20300640,
+      "Pizza Time - Coin Near Gear on Second Main Island Mountain #5": 20300624,
+      "Pizza Time - Coin Near Gear on Second Main Island Mountain #6": 20300628,
+      "Pizza Time - Coin Near Gear on Second Main Island Mountain #7": 20300633,
+      "Pizza Time - Coin Near Gear on Second Main Island Mountain #8": 20300638,
+      "Pizza Time - Coin Near Gear on Second Main Island Mountain #9": 20300641,
+      "Pizza Time - Coin Near Gear on Second Main Island Mountain #10": 20300625,
+      "Pizza Time - Coin Near Gear on Second Main Island Mountain #11": 20300629,
+      "Pizza Time - Coin Near Gear on Second Main Island Mountain #12": 20300634,
+      "Pizza Time - Coin Near Gear on Second Main Island Mountain #13": 20300639,
+      "Pizza Time - Coin Near Gear on Second Main Island Mountain #14": 20300626,
+      "Pizza Time - Coin Near Gear on Second Main Island Mountain #15": 20300635,
+      "Pizza Time - Coin Near Gear on Second Main Island Mountain #16": 20300631,
+      "Pizza Time - Coin Near Gear on Second Main Island Mountain #17": 20300636
+    },
+    "connections": {
+      "Pizza Time - Island After Orange Block Bridge": "NOS/X1 & B2 & X1/J1 | X2+B1 & X3/J1 | X3+J1",
+      "Pizza Time - Orange Block Bridge": "X3 & B1/J1"
+    }
+  },
+  "Pizza Time - Bunny Island Upper": {
+    "level": "Pizza Time",
+    "sublevel": "Pizza Time",
+    "chests": {
+      "Pizza Time - Chest on Bunny Island": 20300476
+    },
+    "coins": {
+      "Pizza Time - Coin on Bunny Island #1": 20300479,
+      "Pizza Time - Coin on Bunny Island #2": 20300478,
+      "Pizza Time - Coin on Bunny Island #3": 20300477,
+      "Pizza Time - Coin on Bunny Island #4": 20300475,
+      "Pizza Time - Coin on Bunny Island #5": 20300474,
+      "Pizza Time - Coin on Bunny Island #6": 20300473
+    },
+    "connections": {
+      "Pizza Time - Bunny Island Lower": ""
+    }
+  },
+  "Pizza Time - Bunny Island Lower": {
+    "level": "Pizza Time",
+    "sublevel": "Pizza Time",
+    "bunnies": {
+      "Pizza Time - Bunny - On Tall Island Between First and Third Main Islands": 20200000
+    }
+  },
+  "Pizza Time - Floating Orange Island": {
+    "level": "Pizza Time",
+    "sublevel": "Pizza Time",
+    "safes": {
+      "Pizza Time - Safe on Floating Orange Block Island": 20300600
+    },
+    "coins": {
+      "Pizza Time - Coin on Floating Orange Block Island #1": 20300602,
+      "Pizza Time - Coin on Floating Orange Block Island #2": 20300605,
+      "Pizza Time - Coin on Floating Orange Block Island #3": 20300601,
+      "Pizza Time - Coin on Floating Orange Block Island #4": 20300597,
+      "Pizza Time - Coin on Floating Orange Block Island #5": 20300606,
+      "Pizza Time - Coin on Floating Orange Block Island #6": 20300604,
+      "Pizza Time - Coin on Floating Orange Block Island #7": 20300596,
+      "Pizza Time - Coin on Floating Orange Block Island #8": 20300594,
+      "Pizza Time - Coin on Floating Orange Block Island #9": 20300603,
+      "Pizza Time - Coin on Floating Orange Block Island #10": 20300599,
+      "Pizza Time - Coin on Floating Orange Block Island #11": 20300595,
+      "Pizza Time - Coin on Floating Orange Block Island #12": 20300598
+    },
+    "connections": {
+      "Pizza Time - Bunny Island Upper": "OS+B1"
+    }
+  },
+  "Pizza Time - Spires Near Start": {
+    "level": "Pizza Time",
+    "sublevel": "Pizza Time",
+    "safes": {
+      "Pizza Time - Safe on Spire Near Start": 20300140
+    },
+    "chests": {
+      "Pizza Time - Chest on Spire Near Start": 20300409
+    },
+    "coinbags": {
+      "Pizza Time - Coin Bag on Spire Near Start": 20300557
+    },
+    "coins": {
+      "Pizza Time - Coin Surrounding Chest on Spire Near Start #1": 20300408,
+      "Pizza Time - Coin Surrounding Chest on Spire Near Start #2": 20300407,
+      "Pizza Time - Coin Surrounding Chest on Spire Near Start #3": 20300411,
+      "Pizza Time - Coin Surrounding Chest on Spire Near Start #4": 20300410,
+      "Pizza Time - Coin Surrounding Safe on Spire Near Start #1": 20300142,
+      "Pizza Time - Coin Surrounding Safe on Spire Near Start #2": 20300139,
+      "Pizza Time - Coin Surrounding Safe on Spire Near Start #3": 20300143,
+      "Pizza Time - Coin Surrounding Safe on Spire Near Start #4": 20300137,
+      "Pizza Time - Coin Surrounding Safe on Spire Near Start #5": 20300141,
+      "Pizza Time - Coin Surrounding Safe on Spire Near Start #6": 20300138
+    }
+  },
+  "Pizza Time - Pizza King's Quest": {
+    "level": "Pizza Time",
+    "sublevel": "Pizza Time",
+    "gears": {
+      "Pizza Time - Gear - From Pizza King": 20100007
+    }
+  },
+  "Pizza Time - Orange Block Bridge": {
+    "level": "Pizza Time",
+    "sublevel": "Pizza Time",
+    "coins": {
+      "Pizza Time - Coin on Orange Block Bridge #1": 20300203,
+      "Pizza Time - Coin on Orange Block Bridge #2": 20300204,
+      "Pizza Time - Coin on Orange Block Bridge #3": 20300205,
+      "Pizza Time - Coin on Orange Block Bridge #4": 20300206,
+      "Pizza Time - Coin on Orange Block Bridge #5": 20300207,
+      "Pizza Time - Coin on Orange Block Bridge #6": 20300208,
+      "Pizza Time - Coin on Orange Block Bridge #7": 20300209,
+      "Pizza Time - Coin on Orange Block Bridge #8": 20300210,
+      "Pizza Time - Coin on Orange Block Bridge #9": 20300211,
+      "Pizza Time - Coin on Orange Block Bridge #10": 20300212,
+      "Pizza Time - Coin on Orange Block Bridge #11": 20300214,
+      "Pizza Time - Coin on Orange Block Bridge #12": 20300215,
+      "Pizza Time - Coin on Orange Block Bridge #13": 20300216,
+      "Pizza Time - Coin on Orange Block Bridge #14": 20300217,
+      "Pizza Time - Coin on Orange Block Bridge #15": 20300218
+    },
+    "connections": {
+      "Pizza Time - Island After Orange Block Bridge": "OS"
+    }
+  },
+  "Pizza Time - Island After Orange Block Bridge": {
+    "level": "Pizza Time",
+    "sublevel": "Pizza Time",
+    "gears": {
+      "Pizza Time - Gear - On Island After Orange Block Bridge": 20100015
+    },
+    "coinbags": {
+      "Pizza Time - Coin Bag on Island After Orange Block Bridge #1": 20300219,
+      "Pizza Time - Coin Bag on Island After Orange Block Bridge #2": 20300198,
+      "Pizza Time - Coin Bag on Island After Orange Block Bridge #3": 20300227,
+      "Pizza Time - Coin Bag on Island After Orange Block Bridge #4": 20300221
+    },
+    "coins": {
+      "Pizza Time - Coin on Island After Orange Block Bridge #1": 20300201,
+      "Pizza Time - Coin on Island After Orange Block Bridge #2": 20300222,
+      "Pizza Time - Coin on Island After Orange Block Bridge #3": 20300197,
+      "Pizza Time - Coin on Island After Orange Block Bridge #4": 20300226,
+      "Pizza Time - Coin on Island After Orange Block Bridge #5": 20300199,
+      "Pizza Time - Coin on Island After Orange Block Bridge #6": 20300228,
+      "Pizza Time - Coin on Island After Orange Block Bridge #7": 20300202,
+      "Pizza Time - Coin on Island After Orange Block Bridge #8": 20300223
+    }
+  },
+  "Pizza Time Hat World": {
+    "level": "Pizza Time",
+    "sublevel": "Pizza Time Hat World",
+    "hats": {
+      "Top Hat": 20700002,
+      "Propeller Cap": 20700001,
+      "No Hat": 20700000,
+      "Chef Hat": 20700007,
+      "Spaghetti Hat": 20700008
+    },
+    "connections": {
+      "Any Hat World": ""
+    },
+    "subwarps": {
+      "Pizza Time Hat World - Exit": ["Pizza Time - Starting Area", ""]
+    }
+  },
+  "400°": {
+    "level": "Pizza Time",
+    "sublevel": "400°",
+    "gears": {
+      "400° - Gear": 20100009
+    },
+    "subwarps": {
+      "400° - Exit": ["Pizza Time - Starting Area", ""]
+    },
+    "specialrules": {
+      "400° - Gear": "B1/J1"
+    }
+  },
+  "600°": {
+    "level": "Pizza Time",
+    "sublevel": "600°",
+    "gears": {
+      "600° - Gear": 20100010
+    },
+    "subwarps": {
+      "600° - Exit": ["Pizza Time - Starting Area", ""]
+    },
+    "specialrules": {
+      "600° - Gear": "B1/J1"
+    }
+  },
+  "900°": {
+    "level": "Pizza Time",
+    "sublevel": "900°",
+    "gears": {
+      "900° - Gear": 20100011
+    },
+    "subwarps": {
+      "900° - Exit": ["Pizza Time - Starting Area", ""]
+    },
+    "specialrules": {
+      "900° - Gear": "B1 | X2+J1"
+    }
+  },
+  "Pizza Time Sewers": {
+    "level": "Pizza Time",
+    "sublevel": "Pizza Time Sewers",
+    "subwarps": {
+      "Pizza Time Sewer - Exit": ["Pizza Time - Starting Area", ""]
+    }
+  }
+}

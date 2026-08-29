@@ -1,0 +1,240 @@
+{
+  "Fecal Matters - Starting Area": {
+    "level": "Fecal Matters",
+    "sublevel": "Fecal Matters",
+    "coins": {
+      "Fecal Matters - Coin in Row Between Roundabout and Entrance #1": 70300003,
+      "Fecal Matters - Coin in Row Between Roundabout and Entrance #2": 70300004,
+      "Fecal Matters - Coin in Row Between Roundabout and Entrance #3": 70300005,
+      "Fecal Matters - Coin in Row Between Roundabout and Entrance #4": 70300006,
+      "Fecal Matters - Coin in Row Between Roundabout and Entrance #5": 70300007,
+      "Fecal Matters - Coin in Row Between Roundabout and Entrance #6": 70300008,
+      "Fecal Matters - Coin in Row Between Roundabout and Entrance #7": 70300009,
+      "Fecal Matters - Coin in Row From Roundabout Towards Village Island #1": 70300016,
+      "Fecal Matters - Coin in Row From Roundabout Towards Village Island #2": 70300015,
+      "Fecal Matters - Coin in Row From Roundabout Towards Village Island #3": 70300014,
+      "Fecal Matters - Coin in Row From Roundabout Towards Village Island #4": 70300013,
+      "Fecal Matters - Coin in Row From Roundabout Towards Village Island #5": 70300012,
+      "Fecal Matters - Coin in Row From Roundabout Towards Mountain #1": 70300022,
+      "Fecal Matters - Coin in Row From Roundabout Towards Mountain #2": 70300024,
+      "Fecal Matters - Coin in Row From Roundabout Towards Mountain #3": 70300026,
+      "Fecal Matters - Coin in Row From Roundabout Towards Mountain #4": 70300028,
+      "Fecal Matters - Coin in Row From Roundabout Towards Mountain #5": 70300030,
+      "Fecal Matters - Coin in Row From Roundabout Towards Cul-de-sac #1": 70300017,
+      "Fecal Matters - Coin in Row From Roundabout Towards Cul-de-sac #2": 70300018,
+      "Fecal Matters - Coin in Row From Roundabout Towards Cul-de-sac #3": 70300019,
+      "Fecal Matters - Coin in Row From Roundabout Towards Cul-de-sac #4": 70300020,
+      "Fecal Matters - Coin in Row From Roundabout Towards Cul-de-sac #5": 70300021,
+      "Fecal Matters - Coin on Road Towards Cul-de-sac #1": 70300023,
+      "Fecal Matters - Coin on Road Towards Cul-de-sac #2": 70300025,
+      "Fecal Matters - Coin on Road Towards Cul-de-sac #3": 70300027,
+      "Fecal Matters - Coin on Road Towards Cul-de-sac #4": 70300029,
+      "Fecal Matters - Coin on Road Towards Cul-de-sac #5": 70300031,
+      "Fecal Matters - Coin on Road Towards Cul-de-sac #6": 70300032,
+      "Fecal Matters - Coin on Road Towards Cul-de-sac #7": 70300033,
+      "Fecal Matters - Coin on Road Towards Cul-de-sac #8": 70300034,
+      "Fecal Matters - Coin on Road Towards Cul-de-sac #9": 70300035,
+      "Fecal Matters - Coin on Road Towards Cul-de-sac #10": 70300036,
+      "Fecal Matters - Coin on Road Towards Cul-de-sac #11": 70300037,
+      "Fecal Matters - Coin on Road Towards Cul-de-sac #12": 70300038,
+      "Fecal Matters - Coin on Road Towards Cul-de-sac #13": 70300039,
+      "Fecal Matters - Coin on Road Towards Cul-de-sac #14": 70300040,
+      "Fecal Matters - Coin on Road Towards Cul-de-sac #15": 70300041,
+      "Fecal Matters - Coin on Road Towards Cul-de-sac #16": 70300042,
+      "Fecal Matters - Coin on Road Towards Cul-de-sac #17": 70300043,
+      "Fecal Matters - Coin on Road Towards Cul-de-sac #18": 70300044,
+      "Fecal Matters - Coin on Road Towards Cul-de-sac #19": 70300045
+    },
+    "cheeses": {
+      "Fecal Matters - Cheese by Roundabout": 72100005,
+      "Fecal Matters - Cheese by Cul-de-sac": 72100000
+    },
+    "connections": {
+      "Fecal Matters - Roundabout Hill Tier 1": "J1/B1 | X1+NHPR",
+      "Fecal Matters - Roundabout Hill Tier 3": "J1/B2 | X2+B1",
+      "Fecal Matters - Boost or Jump": "J1/B1"
+    },
+    "warps": {
+      "Fecal Matters - Granny's Island Portal in Roundabout": ["{RETURNPORTAL}", ""]
+    }
+  },
+  "Fecal Matters - Roundabout Hill Tier 1": {
+    "level": "Fecal Matters",
+    "sublevel": "Fecal Matters",
+    "coins": {
+      "Fecal Matters - Coin on Hill Above Roundabout #1": 70300046,
+      "Fecal Matters - Coin on Hill Above Roundabout #2": 70300047,
+      "Fecal Matters - Coin on Hill Above Roundabout #3": 70300049,
+      "Fecal Matters - Coin on Hill Above Roundabout #4": 70300048,
+      "Fecal Matters - Coin on Hill Above Roundabout #5": 70300050,
+      "Fecal Matters - Coin on Hill Above Roundabout #6": 70300052,
+      "Fecal Matters - Coin on Hill Above Roundabout #7": 70300051,
+      "Fecal Matters - Coin on Hill Above Roundabout #8": 70300053
+    }
+  },
+  "Fecal Matters - Roundabout Hill Tier 3": {
+    "level": "Fecal Matters",
+    "sublevel": "Fecal Matters",
+    "gears": {
+      "Fecal Matters - Gear - Escort Bulldog Doggo on Roundabout Hill": 70100008
+    },
+    "bunnies": {
+      "Fecal Matters - Bunny - Above Roundabout": 70200000
+    },
+    "specialrules": {
+      "Fecal Matters - Gear - Escort Bulldog Doggo on Roundabout Hill": "{Fecal Matters - Boost or Backflip}"
+    }
+  },
+  "Fecal Matters - Boost or Jump": {
+    "level": "Fecal Matters",
+    "sublevel": "Fecal Matters",
+    "gears": {
+      "Fecal Matters - Gear - Ledge Above Cul-de-sac": 70100003
+    },
+    "chests": {
+      "Fecal Matters - Chest on Ramp Over Main Road": 70300057
+    },
+    "coinbags": {
+      "Fecal Matters - Coin Bag on Island Overlooking Main Road": 70300126
+    },
+    "coins": {
+      "Fecal Matters - Coin on Hill Above Roundabout #9": 70300064,
+      "Fecal Matters - Coin on Hill Above Roundabout #10": 70300063,
+      "Fecal Matters - Coin on Hill Above Roundabout #11": 70300062,
+      "Fecal Matters - Coin on Ledge Above Cul-de-sac #1": 70300079,
+      "Fecal Matters - Coin on Ledge Above Cul-de-sac #2": 70300078,
+      "Fecal Matters - Coin on Ledge Above Cul-de-sac #3": 70300077,
+      "Fecal Matters - Coin on Ledge Above Cul-de-sac #4": 70300076,
+      "Fecal Matters - Coin on Ledge Above Cul-de-sac #5": 70300074,
+      "Fecal Matters - Coin on Ledge Above Cul-de-sac #6": 70300073,
+      "Fecal Matters - Coin on Ledge Above Cul-de-sac #7": 70300072,
+      "Fecal Matters - Coin on Ledge Above Cul-de-sac #8": 70300071,
+      "Fecal Matters - Coin on Ramp Over Main Road #1": 70300054,
+      "Fecal Matters - Coin on Ramp Over Main Road #2": 70300056,
+      "Fecal Matters - Coin on Ramp Over Main Road #3": 70300058,
+      "Fecal Matters - Coin on Ramp Over Main Road #4": 70300055,
+      "Fecal Matters - Coin on Ramp Over Main Road #5": 70300059,
+      "Fecal Matters - Coin on Island Overlooking Main Road #1": 70300088,
+      "Fecal Matters - Coin on Island Overlooking Main Road #2": 70300091,
+      "Fecal Matters - Coin on Island Overlooking Main Road #3": 70300094,
+      "Fecal Matters - Coin on Island Overlooking Main Road #4": 70300086,
+      "Fecal Matters - Coin on Island Overlooking Main Road #5": 70300089,
+      "Fecal Matters - Coin on Island Overlooking Main Road #6": 70300092,
+      "Fecal Matters - Coin on Island Overlooking Main Road #7": 70300095,
+      "Fecal Matters - Coin on Island Overlooking Main Road #8": 70300099,
+      "Fecal Matters - Coin on Island Overlooking Main Road #9": 70300087,
+      "Fecal Matters - Coin on Island Overlooking Main Road #10": 70300090,
+      "Fecal Matters - Coin on Island Overlooking Main Road #11": 70300093,
+      "Fecal Matters - Coin on Island Overlooking Main Road #12": 70300100,
+      "Fecal Matters - Coin on Island Overlooking Main Road #13": 70300104,
+      "Fecal Matters - Coin on Island Overlooking Main Road #14": 70300096,
+      "Fecal Matters - Coin on Island Overlooking Main Road #15": 70300101,
+      "Fecal Matters - Coin on Island Overlooking Main Road #16": 70300105,
+      "Fecal Matters - Coin on Island Overlooking Main Road #17": 70300097,
+      "Fecal Matters - Coin on Island Overlooking Main Road #18": 70300102,
+      "Fecal Matters - Coin on Island Overlooking Main Road #19": 70300106,
+      "Fecal Matters - Coin on Island Overlooking Main Road #20": 70300098,
+      "Fecal Matters - Coin on Island Overlooking Main Road #21": 70300103,
+      "Fecal Matters - Coin on Island Overlooking Main Road #22": 70300128,
+      "Fecal Matters - Coin on Island Overlooking Main Road #23": 70300125,
+      "Fecal Matters - Coin on Island Overlooking Main Road #24": 70300129,
+      "Fecal Matters - Coin on Island Overlooking Main Road #25": 70300123,
+      "Fecal Matters - Coin on Island Overlooking Main Road #26": 70300130,
+      "Fecal Matters - Coin on Island Overlooking Main Road #27": 70300124,
+      "Fecal Matters - Coin on Island Overlooking Main Road #28": 70300127
+    },
+    "cheeses": {
+      "Fecal Matters - Cheese in Tunnel on Ramp Over Main Road": 72100003
+    },
+    "connections": {
+      "Fecal Matters - Boost or Backflip": "X1/J2/B1"
+    }
+  },
+  "Fecal Matters - Boost or Backflip": {
+    "level": "Fecal Matters",
+    "sublevel": "Fecal Matters",
+    "gears": {
+      "Fecal Matters - Gear - Center of Village Island": 70100006,
+      "Fecal Matters - Gear - Escort Bulldog Doggo on Village Island": 70100007,
+      "Fecal Matters - Gear - Fire Hydrant on Mountain": 70100004,
+      "Fecal Matters - Gear - Talk to Skeletrone": 70100001,
+      "Fecal Matters - Gear - House on Top of Mountain": 70100005,
+      "Fecal Matters - Gear - Homing Beacons": 70100002
+    },
+    "coins": {
+      "Fecal Matters - Coin Near Dog Bowl Hat #1": 70300084,
+      "Fecal Matters - Coin Near Dog Bowl Hat #2": 70300083,
+      "Fecal Matters - Coin Near Dog Bowl Hat #3": 70300082,
+      "Fecal Matters - Coin Near Dog Bowl Hat #4": 70300081,
+      "Fecal Matters - Coin Near Poop Hat #1": 70300066,
+      "Fecal Matters - Coin Near Poop Hat #2": 70300067,
+      "Fecal Matters - Coin Near Poop Hat #3": 70300069,
+      "Fecal Matters - Coin Near Poop Hat #4": 70300068,
+      "Fecal Matters - Coin Near Poop Hat #5": 70300070
+    },
+    "cheeses": {
+      "Fecal Matters - Cheese on Village Island": 72100004,
+      "Fecal Matters - Cheese on Mountain": 72100002,
+      "Fecal Matters - Cheese on Island": 72100001
+    },
+    "hats": {
+      "Dog Bowl Hat": 70700019,
+      "Poop Hat": 70700018
+    },
+    "connections": {
+      "Fecal Matters - Highest Ground": "J1 | X1+B1"
+    }
+  },
+  "Fecal Matters - Highest Ground": {
+    "level": "Fecal Matters",
+    "sublevel": "Fecal Matters",
+    "gears": {
+      "Fecal Matters - Gear - On Narrow Cliff": 70100000
+    },
+    "bunnies": {
+      "Fecal Matters - Bunny - On Top of Mountain": 70200002,
+      "Fecal Matters - Bunny - Off Cliff": 70200001
+    },
+    "coinbags": {
+      "Fecal Matters - Coin Bag on Top of Mountain by Bunny #1": 70300143,
+      "Fecal Matters - Coin Bag on Top of Mountain by Bunny #2": 70300151
+    },
+    "coins": {
+      "Fecal Matters - Coin on Top of Mountain Above Orange Switch Block #1": 70300134,
+      "Fecal Matters - Coin on Top of Mountain Above Orange Switch Block #2": 70300135,
+      "Fecal Matters - Coin on Top of Mountain Above Orange Switch Block #3": 70300137,
+      "Fecal Matters - Coin on Top of Mountain Above Orange Switch Block #4": 70300145,
+      "Fecal Matters - Coin on Top of Mountain Above Orange Switch Block #5": 70300153,
+      "Fecal Matters - Coin on Top of Mountain Above Orange Switch Block #6": 70300157,
+      "Fecal Matters - Coin on Top of Mountain Above Orange Switch Block #7": 70300159,
+      "Fecal Matters - Coin on Top of Mountain Above Orange Switch Block #8": 70300160,
+      "Fecal Matters - Coin on Top of Mountain by Bunny #1": 70300136,
+      "Fecal Matters - Coin on Top of Mountain by Bunny #2": 70300140,
+      "Fecal Matters - Coin on Top of Mountain by Bunny #3": 70300139,
+      "Fecal Matters - Coin on Top of Mountain by Bunny #4": 70300138,
+      "Fecal Matters - Coin on Top of Mountain by Bunny #5": 70300144,
+      "Fecal Matters - Coin on Top of Mountain by Bunny #6": 70300142,
+      "Fecal Matters - Coin on Top of Mountain by Bunny #7": 70300148,
+      "Fecal Matters - Coin on Top of Mountain by Bunny #8": 70300146,
+      "Fecal Matters - Coin on Top of Mountain by Bunny #9": 70300152,
+      "Fecal Matters - Coin on Top of Mountain by Bunny #10": 70300150,
+      "Fecal Matters - Coin on Top of Mountain by Bunny #11": 70300156,
+      "Fecal Matters - Coin on Top of Mountain by Bunny #12": 70300155,
+      "Fecal Matters - Coin on Top of Mountain by Bunny #13": 70300154,
+      "Fecal Matters - Coin on Top of Mountain by Bunny #14": 70300158,
+      "Fecal Matters - Coin on Narrow Cliff #1": 70300122,
+      "Fecal Matters - Coin on Narrow Cliff #2": 70300121,
+      "Fecal Matters - Coin on Narrow Cliff #3": 70300120,
+      "Fecal Matters - Coin on Narrow Cliff #4": 70300119,
+      "Fecal Matters - Coin on Narrow Cliff #5": 70300118,
+      "Fecal Matters - Coin on Narrow Cliff #6": 70300117,
+      "Fecal Matters - Coin on Narrow Cliff #7": 70300116,
+      "Fecal Matters - Coin on Narrow Cliff #8": 70300115,
+      "Fecal Matters - Coin on Narrow Cliff #9": 70300114,
+      "Fecal Matters - Coin on Narrow Cliff #10": 70300113,
+      "Fecal Matters - Coin on Narrow Cliff #11": 70300112,
+      "Fecal Matters - Coin on Narrow Cliff #12": 70300111,
+      "Fecal Matters - Coin on Narrow Cliff #13": 70300110
+    }
+  }
+}

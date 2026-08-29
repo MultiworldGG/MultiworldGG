@@ -14,17 +14,18 @@ Place the TTYD apworld in the `custom_worlds` folder of your Archipelago install
 
 ## Dolphin Configuration
 
-# Note
-
-The MultiworldGG client will automatically configure Dolphin for you, but if you want to do it manually, here are the settings you need to change.
-
 ## Settings
 
 - In Game Config > General, make sure Enable Dual Core is unchecked
 - In Game Config > Graphics, set your Backend to either OpenGL or Vulkan (Direct3D can often cause errors that may lead to crashes)
 - In Game Config > Advanced, make sure that Enable Emulated CPU Clock Override is unchecked
+
+# Note
+
+The MultiworldGG client will automatically configure Dolphin for you, you do not need to set these manually. But if you want to do it manually, here are the settings you need to change.
+
 - In Game Config > Advanced, check 'Enable Emulated Memory Size Override' and set 'MEM1' to 64 MB. This is required for the mod's expanded memory usage. The MultiworldGG client enables this for you automatically every time it launches.
-- In Game Config > Advanced, make sure Enable MMU is checked. This is required, the game will not boot correctly without it. The Archipelago client enables this for you automatically every time it launches.
+- In Game Config > Advanced, make sure Enable MMU is checked. This is required, the game will not boot correctly without it. The MultiworldGG client enables this for you automatically every time it launches.
 
 ## Configuring your YAML file
 
@@ -47,7 +48,7 @@ and double check that everything was done correctly.
 ## Obtain your GC patch file
 
 ### Generating a game
-If you are playing by yourself, then all you need to do is place your `.yaml` file that you customized into the `Players` folder in archipelago. 
+If you are playing by yourself, then all you need to do is place your `.yaml` file that you customized into the `Players` folder in MultiworldGG. 
 Note: It does not go in the `Templates` folder.
 
 If you are playing with multiple people, then all of the players `.yaml` files will go in the same folder.

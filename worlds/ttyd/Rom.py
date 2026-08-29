@@ -54,8 +54,11 @@ class TTYDPatchExtension(APPatchExtension):
         # ISOs patched by older apworlds. 1 = received-item index at 0x803DB890
         # (older builds used 0x803DB860, which overlapped trouble GSW vars).
         # 2 = seed name at 0x210 stored XOR'd with SEED_OBFUSCATION_KEY.
+        # 3 = received-item mailbox entries carry feed/classification bits
+        # (rom id bits 0-8, sender-name ring slot bits 9-12, announce bit 13,
+        # AP classification bits 14-15; names ring at RAM 0x80004700).
         caller.patcher.dol.data.seek(0x1F8)
-        caller.patcher.dol.data.write((2).to_bytes(4, "big"))
+        caller.patcher.dol.data.write((3).to_bytes(4, "big"))
         caller.patcher.dol.data.seek(0x1FF)
         caller.patcher.dol.data.write(name_length.to_bytes(1, "big"))
         caller.patcher.dol.data.seek(0x200)
@@ -171,6 +174,12 @@ class TTYDPatchExtension(APPatchExtension):
         # yaml option; flip the options_dict value to control it per generation)
         caller.patcher.dol.data.seek(0x28C)
         caller.patcher.dol.data.write(seed_options.get("rta_timer", 1).to_bytes(1, "big"))
+        caller.patcher.dol.data.seek(0x28D)
+        caller.patcher.dol.data.write(seed_options.get("in_game_tracker", 1).to_bytes(1, "big"))
+        caller.patcher.dol.data.seek(0x28E)
+        caller.patcher.dol.data.write(seed_options.get("mirror_mode", 0).to_bytes(1, "big"))
+        caller.patcher.dol.data.seek(0x28F)
+        caller.patcher.dol.data.write(seed_options.get("panel_hints", 0).to_bytes(1, "big"))
         caller.patcher.dol.data.seek(0x260)
         caller.patcher.dol.data.write(seed_options.get("yoshi_name", "Yoshi").encode("utf-8")[0:8] + b"\x00")
         caller.patcher.dol.data.seek(0xEB6B6)
@@ -253,8 +262,14 @@ class TTYDPatchExtension(APPatchExtension):
         caller.patcher.iso.add_new_file("files/mod/custom2.rel", io.BytesIO(pkgutil.get_data(__name__, f"data/custom2.rel")))
         caller.patcher.iso.add_new_file("files/mod/enemies.bin", io.BytesIO(caller.get_file("enemies.bin")))
         caller.patcher.iso.add_new_file("files/mod/bosses.bin", io.BytesIO(caller.get_file("bosses.bin")))
-        caller.patcher.iso.add_new_file("files/msg/US/mod.txt", io.BytesIO(pkgutil.get_data(__name__, f"data/mod.txt")))
-        caller.patcher.iso.add_new_file("files/msg/US/desc.txt", io.BytesIO(caller.get_file("desc.txt")))
+        caller.patcher.iso.add_new_file("files/mod/tracker.bin", io.BytesIO(caller.get_file("tracker.bin")))
+        def pad32(data: bytes) -> bytes:
+            # msgLoad reads these off disc with 32-byte DVD granularity.
+            return data + b'\x00' * (-len(data) % 32)
+
+        caller.patcher.iso.add_new_file("files/msg/US/mod.txt",
+                                        io.BytesIO(pad32(pkgutil.get_data(__name__, f"data/mod.txt"))))
+        caller.patcher.iso.add_new_file("files/msg/US/desc.txt", io.BytesIO(pad32(caller.get_file("desc.txt"))))
 
 
 
@@ -282,6 +297,14 @@ class TTYDPatchExtension(APPatchExtension):
         new_bin_file = io.BytesIO(patched_bin_data)
         caller.patcher.iso.changed_files["files/icon.tpl"] = new_icon_file
         caller.patcher.iso.changed_files["files/icon.bin"] = new_bin_file
+
+        # win.tpl: append tracker map-marker recolors (193 blink-red, 194 node-red,
+        # 195 blink-green, 196 node-green). The mod's mapGX patches index these.
+        win_patch = pkgutil.get_data(__name__, f"data/win.bsdiff4")
+        win_file = caller.patcher.iso.read_file_data("files/w/us/win.tpl")
+        win_file.seek(0)
+        patched_win_data = bsdiff4.patch(win_file.read(), win_patch)
+        caller.patcher.iso.changed_files["files/w/us/win.tpl"] = io.BytesIO(patched_win_data)
 
 
     @staticmethod
@@ -343,7 +366,10 @@ class TTYDPatchExtension(APPatchExtension):
             data = locationName_to_data.get(location_name, None)
             if data is None or not data.offset:
                 continue
-            rom_id = items_by_id[item_id].rom_id
+            item_data = items_by_id.get(item_id)
+            if item_data is None:
+                continue
+            rom_id = item_data.rom_id
             if data.rel == Rels.dol:
                 if "Dazzle" in location_name or "Battle Trunks" in location_name or ": Cook " in location_name:
                     caller.patcher.dol.data.seek(data.offset[0])
@@ -427,6 +453,9 @@ def write_files(world: "TTYDWorld", patch: TTYDProcedurePatch) -> None:
         "required_chapters": world.required_chapters,
         "tattlesanity": world.options.tattlesanity.value,
         "fast_travel": world.options.fast_travel.value,
+        "in_game_tracker": world.options.in_game_tracker.value,
+        "panel_hints": world.options.panel_hints.value,
+        "mirror_mode": world.options.mirror_mode.value,
         "succeed_conditions": world.options.succeed_conditions.value,
         "cutscene_skip": world.options.cutscene_skip.value,
         "experience_multiplier": world.options.experience_multiplier.value,
@@ -488,9 +517,11 @@ def write_files(world: "TTYDWorld", patch: TTYDProcedurePatch) -> None:
         for eid in ids:
             boss_buffer.write(struct.pack("B", eid))
 
-    max_desc_size = 0x1000
+    # Grow in 0x1000 steps: fixed-size padding went negative past 0x1000 and
+    # silently wrote the file unaligned (msgLoad/DVDRead needs 32-byte lengths).
     desc_data = buffer.getvalue()
-    patch.write_file("desc.txt", desc_data + b'\x00' * (max_desc_size - len(desc_data)))
+    padded_size = max(0x1000, -(-len(desc_data) // 0x1000) * 0x1000)
+    patch.write_file("desc.txt", desc_data + b'\x00' * (padded_size - len(desc_data)))
 
     # The mod loads these with DVDRead, whose length is rounded up to the 32-byte
     # DVD granularity. Unpadded (bosses.bin is ~50 bytes) the read runs past the
@@ -501,9 +532,22 @@ def write_files(world: "TTYDWorld", patch: TTYDProcedurePatch) -> None:
 
     patch.write_file("options.json", json.dumps(options_dict).encode("UTF-8"))
     patch.write_file(f"locations.json", json.dumps(locations_to_dict(world.multiworld.get_locations(world.player))).encode("UTF-8"))
-    patch.write_file("fallback_locations.json", json.dumps(world.rom_fallback_locations).encode("UTF-8"))
+    # Every disabled location falls back to its vanilla item in the ROM;
+    # explicit rom_fallback_locations entries take precedence.
+    fallback_locations = dict(world.rom_fallback_locations)
+    for location_name in world.disabled_locations:
+        if location_name in fallback_locations:
+            continue
+        data = locationName_to_data.get(location_name)
+        if data is None or not data.offset or not data.vanilla_item:
+            continue
+        fallback_locations[location_name] = data.vanilla_item
+    patch.write_file("fallback_locations.json", json.dumps(fallback_locations).encode("UTF-8"))
     patch.write_file("enemies.bin", pad_dvd(enemy_buffer.getvalue()))
     patch.write_file("bosses.bin", pad_dvd(boss_buffer.getvalue()))
+
+    from .Tracker import build_tracker_bin
+    patch.write_file("tracker.bin", pad_dvd(build_tracker_bin(world)))
 
 def classification_to_color(classification: ItemClassification = ItemClassification.filler) -> str:
     if classification & ItemClassification.progression:

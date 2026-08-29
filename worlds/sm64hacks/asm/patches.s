@@ -28,19 +28,31 @@ _1up:
     NOP
 _heaveho:;jump table would probably be better but i cba to do that
     ADDIU T3, R0, 0x006A
-    BNE S0, T3, _spin
+    BNE S0, T3, _bomb
     NOP
     SW R0, 0(T1)
     LI A0, 0x80361158;mario
     LW A0, 0(A0)
     ADDIU A1, R0, 0x007A ;star model. heaveho model doesnt always exist so this is a good patchwork solution to that problem
-    LI A2, 0x13001548 ;1-up bhv
+    LI A2, 0x13001548 ;heaveho bhv
     JAL 0x8029EDCC;spawn_object
     NOP
     LA T1, _heavehoaddr
     SW V0, 0(T1)
     B _end
     NOP
+_bomb:
+    ADDIU T3, R0, 0x006C
+    BNE S0, T3, _spin
+    NOP
+    SW R0, 0(T1)
+    LI A0, 0x80361158;mario
+    LW A0, 0(A0)
+    ADDIU A1, R0, 0x00BC ;bobomb model
+    LI A2, 0x13003174 ;bobomb bhv
+    JAL 0x8029EDCC;spawn_object
+    NOP
+    B _end
 _spin:
     LA T1, _spinaddr
     LW T2, 0(T1)
@@ -95,15 +107,15 @@ _return_traps:
     JR RA
     NOP
 _spinaddr:
-    NOP
+    .word 0
 _staraddr:
-    NOP
+    .word 0
 _flag:
-    NOP
+    .word 0
 _greendemon:
-    NOP
+    .word 0
 _heavehoaddr:
-    NOP
+    .word 0
 .endarea
 .close
 
@@ -123,7 +135,7 @@ _end_choir:
     JR RA
     NOP
 _choiraddr:
-    NOP
+    .word 0
 .endarea
 .close
 
@@ -334,10 +346,137 @@ _gpend:
     JR RA
     NOP
 _jumps_allowed: 
-    NOP
+    .word 0
 
 .endarea
 .close
+
+.create "powerpoint_patch", 0x80200600
+.area 0x500
+_ppaddr:
+    ADDIU SP, SP, -0x18
+    SW RA, 0x0014(SP)
+    SW A0, 0x0010(SP)
+    SW A1, 0x000C(SP)
+    SW A2, 0x0008(SP)
+    SW S0, 0x0004(SP)
+    LW S0, _frames
+_ppstart:
+    LW A0, 0x0010(SP)
+    LW A1, 0x000C(SP)
+    LW A2, 0x0004(SP)
+    BEQZ S0, _ppend
+    NOP
+    JAL 0x80322800
+    ADDIU S0, S0, -1
+    BNEZ S0, _ppstart
+    NOP
+_ppend:
+    LW S0, 0x0004(SP)
+    LW RA, 0x0014(SP)
+    ADDIU SP, SP, 0x18
+    JR RA
+    NOP
+_healthstart:
+    LW T5, _health
+    ADDIU T5, T5, 1
+    SLT AT, T0, T5
+    BNEZ AT, _healthend
+    NOP
+    ADDIU T5, T5, -1
+    LW T4, 0x0028(SP)
+    ADDU T2, R0, T5
+    SH T2, 0x00AE(T4)
+_healthend:
+    JR RA
+    NOP
+_captimer:
+    LA T1, _vctimer
+    ADDU T1, T0, T1
+    LH T1, 0(T1)
+    SH T1, 0x28(SP)
+    JR RA
+    NOP
+_wallkick_frames:
+    LW T2, 0x0018(SP)
+    LW T7, 0x0018(SP) ;i cba to make 2 seperate things and this is called in 2 seperate places
+    LH T0, _wkframes
+    ADDU T1, T0, R0 ;same as above
+    JR RA
+    NOP
+_wkframes:
+    .halfword 5
+_vctimer:
+    .halfword 0x258
+_mctimer:
+    .halfword 0x258
+_wctimer:
+    .halfword 0x708 
+_100coins:
+    .word 100 ; will be overridden immediately
+_health:
+    .word 0x880
+_frames:
+    .word 1
+.endarea
+.close
+
+.create "100c_patch", 0x8024DB9C ;in the middle of the interact_coin function so no space
+.area 0x2C
+    LW T4, _100coins
+    LH T3, 0x00A8(T6)
+    LW T2, 0x0180(T9)
+    SUBU T5, T3, T2
+    SLT AT, T5, T4
+    SLT T4, T3, T4
+    NOR T4, T4, R0
+    AND AT, T4, AT
+    BEQZ AT, 0x8024DBD0
+    NOP
+.endarea
+.close
+
+.create "vc_patch", 0x8024FBF0
+.area 0x8
+    JAL _captimer
+    ADDIU T0, R0, 0
+.endarea
+.close
+
+.create "mc_patch", 0x8024FC08
+.area 0x8
+    JAL _captimer
+    ADDIU T0, R0, 2
+.endarea
+.close
+
+.create "wc_patch", 0x8024FC20
+.area 0x8
+    JAL _captimer
+    ADDIU T0, R0, 4
+.endarea
+.close
+
+.create "wallkick_frame_patch", 0x8026DA4C ;also 0x8026DAB4
+.area 0x8
+    JAL _wallkick_frames
+    NOP
+.endarea
+.close
+
+.create "powerpoint_hook", 0x8024810C
+.area 0x4
+    JAL _ppaddr
+.endarea
+.close
+
+.create "health_hook", 0x80254224
+.area 0x18, 0x0
+    JAL _healthstart
+    NOP
+.endarea
+.close
+
 
 .create "burning_patch", 0x8024EC1C
 .area 0x8
@@ -452,8 +591,6 @@ _most_significant_bit:
     NOP
 .endarea
 .close
-
-
 
 ; set_mario_action deets:
 ; A0: mariostate

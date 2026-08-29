@@ -21,15 +21,13 @@ class EnemyAggro(CemuChoice):
     """Increase or decrease the enemy aggression"""
     display_name = "Enemy Aggro"
     option_none = 0
-    option_hell_never_deaggro = 1
-    option_increase_range_x2 = 2
-    option_decrease_range_2 = 3
-    option_decrease_range_4 = 4
+    option_doubled_range = 2
+    option_half_range = 3
+    option_quarter_range = 4
     cemu_pack = "BattleEscapeDistance"
     cemu_option = "Active Preset"
     cemu_selection_names = [
         "off",
-        "Hell: Enemies will never de-aggro",
         "Increase Range x2",
         "Decrease Range / 2",
         "Decrease Range / 4",
@@ -38,7 +36,7 @@ class EnemyAggro(CemuChoice):
 
 class EnemyStats(CemuChoice):
     """Adjust the stats of the enemies"""
-    display_name = "Damage Divisor"
+    display_name = "Enemy Stats"
     option_none = 0
     option_25_percent = 1
     option_50_percent = 2
@@ -46,8 +44,6 @@ class EnemyStats(CemuChoice):
     option_125_percent = 4
     option_150_percent = 5
     option_200_percent = 6
-    option_hell_300_percent = 7
-    option_impossible_1000_percent = 8
     cemu_pack = "BattleEnemyStats"
     cemu_option = "Active preset"
     cemu_selection_names = [
@@ -58,31 +54,6 @@ class EnemyStats(CemuChoice):
         "Set at 125%",
         "Set at 150%",
         "Set at 200%",
-        "Hell: Set at 300%",
-        "Impossible: Set at 1000%",
-    ]
-
-
-class DamageDivisor(CemuChoice):
-    """Divide your teams damage output. Note: Displayed damage values stay the same regardless"""
-    display_name = "Damage Divisor"
-    option_none = 0
-    option_2 = 1
-    option_3 = 2
-    option_5 = 3
-    option_10 = 4
-    option_50 = 5
-    option_100 = 6
-    cemu_pack = "BattleDamageModGround2"
-    cemu_option = "Damage Divisor"
-    cemu_selection_names = [
-        "off",
-        "Damage / 2",
-        "Damage / 3",
-        "Damage / 5",
-        "Damage / 10",
-        "Damage / 50",
-        "Damage / 100",
     ]
 
 
@@ -90,22 +61,59 @@ class DamageMultiplicator(CemuChoice):
     """Multiply your teams damage output. Note: Displayed damage values stay the same regardless"""
     display_name = "Damage Multiplier"
     option_none = 0
-    option_x2 = 1
-    option_x3 = 2
-    option_x5 = 3
-    option_x10 = 4
-    option_x25 = 5
-    option_x100 = 6
+    option_25_percent = 1
+    option_33_percent = 2
+    option_50_percent = 3
+    option_200_percent = 4
+    option_300_percent = 5
+    option_500_percent = 6
     cemu_pack = "BattleDamageModGround"
     cemu_option = "Active preset"
     cemu_selection_names = [
         "off",
+        "Damage / 4",
+        "Damage / 3",
+        "Damage / 2",
         "Damage x2",
         "Damage x3",
         "Damage x5",
-        "Damage x10",
-        "Damage x25",
-        "Damage x100",
+    ]
+
+
+class BattleTensionPoints(CemuChoice):
+    """Quality of Life to not start with full TP"""
+    display_name = "TP Refill"
+    option_off = 0
+    option_on_boot = 1
+    option_on_boot_and_death_and_teleport = 2
+    default = 2
+    cemu_pack = "BattleTensionPoints"
+    cemu_option = "Quality of Life TP on Boot"
+    cemu_selection_names = [
+        "Off",
+        "Max TP on boot",
+        "Max TP Every time you skip travel or die",
+    ]
+
+
+class BattleTensionPointsLink(CemuChoice):
+    """Link your HP and TP together. Transforms the gameplay significantly"""
+    display_name = "HP/TP Connection"
+    option_off = 0
+    option_bound = 1
+    option_identical = 2
+    option_bound_inversely = 3
+    option_only_on_loss = 4
+    option_only_on_gain = 5
+    cemu_pack = "BattleTensionPoints"
+    cemu_option = "Change Gameplay: Bind HP and TP"
+    cemu_selection_names = [
+        "Off",
+        "HP &amp; TP are bound Asynchronously",
+        "HP &amp; TP are bound Synchronously (always the same)",
+        "HP &amp; TP are bound Asynchronously (Negative Correlation)",
+        "Only binds if losing HP or TP",
+        "Only binds if gaining HP or TP",
     ]
 
 
@@ -115,33 +123,12 @@ class QteAuto(CemuChoice):
     option_none = 0
     option_excellent = 1
     option_good = 2
-    option_fail = 3
     cemu_pack = "BattleQteSoulVoices"
     cemu_option = "Active preset"
     cemu_selection_names = [
         "off",
         "Force Excellent",
         "Force Good",
-        "Force Fail / Disable Soul Voices",
-    ]
-
-
-class QteSpeed(CemuChoice):
-    """Sets the speed for every Quicktime-Event manually"""
-    display_name = "Quicktime-Event Speed"
-    option_none = 0
-    option_slow = 1
-    option_mid = 2
-    option_fast = 3
-    option_faster = 4
-    cemu_pack = "BattleQteSpeed"
-    cemu_option = "Active preset"
-    cemu_selection_names = [
-        "off",
-        "Slow",
-        "Mid",
-        "Fast",
-        "Faster",
     ]
 
 
@@ -150,7 +137,22 @@ class QteSkell(CemuChoice):
     display_name = "Skell Recovery"
     option_off = 0
     option_on = 1
+    default = 1
     cemu_pack = "BattleQteDollLost"
+    cemu_option = ""
+    cemu_selection_names = [
+        "off",
+        "on"
+    ]
+
+
+class CharacterEquipAnyWeapon(CemuChoice):
+    """Allows you to equip any equipment regardless of requirements"""
+    display_name = "Equipment Useage"
+    option_off = 0
+    option_on = 1
+    default = 0
+    cemu_pack = "CharacterEquipAnyWeapon"
     cemu_option = ""
     cemu_selection_names = [
         "off",
@@ -163,13 +165,11 @@ class CollectionRange(CemuChoice):
     display_name = "Collection Range"
     option_none = 0
     option_big = 1
-    option_bigger = 2
     cemu_pack = "CollectiblesCatchRange"
     cemu_option = "Active preset"
     cemu_selection_names = [
         "off",
         "Big Range",
-        "Bigger Range",
     ]
 
 
@@ -202,17 +202,16 @@ class ArmorTraitsUpgrades(CemuChoice):
 
 
 class LvPointsModifier(CemuChoice):
-    """Modifies the level experience gain and disables 9999 exp cap"""
+    """Modifies the level experience gain and disables 9999 exp cap. Only active if you disabled
+     Include Character Level"""
     display_name = "Lv-Points Modifier"
     option_none = 0
-    option_1 = 1
-    option_2 = 2
-    option_3 = 3
-    option_5 = 4
-    option_10 = 5
-    option_50 = 6
-    option_100 = 7
-    option_1000 = 8
+    option_x1 = 1
+    option_x2 = 2
+    option_x3 = 3
+    option_x5 = 4
+    option_x10 = 5
+    default = option_x5
     cemu_pack = "ExpInnerExpPointsX"
     cemu_option = "Active preset"
     cemu_selection_names = [
@@ -222,23 +221,18 @@ class LvPointsModifier(CemuChoice):
         "x3",
         "x5",
         "x10",
-        "x50",
-        "x100",
-        "x1000",
     ]
 
 
 class BattlePointsModifier(CemuChoice):
-    """Modifies the battle experience gain"""
+    """Modifies the battle experience gain to upgrade your arts and skills"""
     display_name = "Battle-Points Modifier"
     option_none = 0
-    option_2 = 1
-    option_3 = 2
-    option_5 = 3
-    option_10 = 4
-    option_50 = 5
-    option_100 = 6
-    option_1000 = 7
+    option_x2 = 1
+    option_x3 = 2
+    option_x5 = 3
+    option_x10 = 4
+    default = option_x5
     cemu_pack = "ExpBattlePointsX"
     cemu_option = "Active preset"
     cemu_selection_names = [
@@ -247,43 +241,40 @@ class BattlePointsModifier(CemuChoice):
         "Quantity x3",
         "Quantity x5",
         "Quantity x10",
-        "Quantity x50",
-        "Quantity x100",
-        "Quantity x1000",
     ]
 
 
-class BladePointsModifier(CemuChoice):
-    """Modifies the BLADE experience gain"""
-    display_name = "BLADE-Points Modifier"
-    option_none = 0
-    option_2 = 1
-    option_3 = 2
-    option_5 = 3
-    option_10 = 4
-    option_50 = 5
-    cemu_pack = "ExpBladePointsS"
-    cemu_option = "Active preset"
-    cemu_selection_names = [
-        "off",
-        "x2",
-        "x3",
-        "x5",
-        "x10",
-        "x50",
-    ]
+# Remove for now because it can complete blade lvl basics from chapter 3 exp
+# class BladePointsModifier(CemuChoice):
+#     """Modifies the BLADE experience gain. Mostly irrelevant apart from Off the Record Quests"""
+#     display_name = "BLADE-Points Modifier"
+#     option_none = 0
+#     option_2 = 1
+#     option_3 = 2
+#     option_5 = 3
+#     option_10 = 4
+#     default = option_5
+#     cemu_pack = "ExpBladePointsS"
+#     cemu_option = "Active preset"
+#     cemu_selection_names = [
+#         "off",
+#         "x2",
+#         "x3",
+#         "x5",
+#         "x10",
+#     ]
 
 
 class FrontierNavMiraniumFrequency(CemuChoice):
     """Alters the frequency of the Frontier-Nav Miranium bonuses"""
     display_name = "Froniter-Nav Miranium Frequency"
     option_none = 0
-    option_1 = 1
-    option_2 = 2
-    option_5 = 3
-    option_10 = 4
-    option_15 = 5
-    option_20 = 6
+    option_minute = 1
+    option_2_minutes = 2
+    option_5_minutes = 3
+    option_10_minutes = 4
+    option_15_minutes = 5
+    option_20_minutes = 6
     cemu_pack = "FrontierNavProbeMiraniumFrequency"
     cemu_option = "Active preset"
     cemu_selection_names = [
@@ -301,12 +292,10 @@ class FrontierNavMiraniumQuantity(CemuChoice):
     """Alters the quantity of the Frontier-Nav Miranium bonuses"""
     display_name = "Froniter-Nav Miranium Quantity"
     option_none = 0
-    option_2 = 1
-    option_3 = 2
-    option_5 = 3
-    option_10 = 4
-    option_50 = 5
-    option_100 = 6
+    option_x2 = 1
+    option_x3 = 2
+    option_x5 = 3
+    option_x10 = 4
     cemu_pack = "FrontierNavProbeMiraniumQuantity"
     cemu_option = "Miranium quantity"
     cemu_selection_names = [
@@ -315,8 +304,6 @@ class FrontierNavMiraniumQuantity(CemuChoice):
         "Miranium x3",
         "Miranium x5",
         "Miranium x10",
-        "Miranium x50",
-        "Miranium x100",
     ]
 
 
@@ -324,11 +311,11 @@ class FrontierNavMoneyFrequency(CemuChoice):
     """Alters the frequency of the Frontier-Nav Money bonuses"""
     display_name = "Froniter-Nav Miranium Frequency"
     option_none = 0
-    option_1 = 1
-    option_2 = 2
-    option_5 = 3
-    option_7 = 4
-    option_10 = 5
+    option_minute = 1
+    option_2_minutes = 2
+    option_5_minutes = 3
+    option_7_minutes = 4
+    option_10_minutes = 5
     cemu_pack = "FrontierNavProbeMoneyFrequency"
     cemu_option = "Active preset"
     cemu_selection_names = [
@@ -345,13 +332,10 @@ class FrontierNavMoneyQuantity(CemuChoice):
     """Alters the quantity of the Frontier-Nav Money bonuses"""
     display_name = "Froniter-Nav Miranium Quantity"
     option_none = 0
-    option_2 = 1
-    option_3 = 2
-    option_5 = 3
-    option_10 = 4
-    option_50 = 5
-    option_100 = 6
-    option_1000 = 7
+    option_x2 = 1
+    option_x3 = 2
+    option_x5 = 3
+    option_x10 = 4
     cemu_pack = "FrontierNavProbeMoneyQuantity"
     cemu_option = "Active preset"
     cemu_selection_names = [
@@ -360,9 +344,6 @@ class FrontierNavMoneyQuantity(CemuChoice):
         "x3",
         "x5",
         "x10",
-        "x50",
-        "x100",
-        "x1000",
     ]
 
 
@@ -370,9 +351,9 @@ class FrontierNavResourcesFrequency(CemuChoice):
     """Alters the frequency of the Frontier-Nav Resource bonuses"""
     display_name = "Froniter-Nav Miranium Frequency"
     option_none = 0
-    option_1 = 1
-    option_2 = 2
-    option_5 = 3
+    option_minute = 1
+    option_2_minutes = 2
+    option_5_minutes = 3
     cemu_pack = "FrontierNavProbeResourcesFrequency"
     cemu_option = "Active preset"
     cemu_selection_names = [
@@ -387,12 +368,10 @@ class FrontierNavResourcesQuantity(CemuChoice):
     """Alters the quantity of the Frontier-Nav Resource bonuses"""
     display_name = "Froniter-Nav Miranium Quantity"
     option_none = 0
-    option_2 = 1
-    option_3 = 2
-    option_5 = 3
-    option_10 = 4
-    option_50 = 5
-    option_100 = 6
+    option_x2 = 1
+    option_x3 = 2
+    option_x5 = 3
+    option_x10 = 4
     cemu_pack = "FrontierNavProbeResourcesQuantity"
     cemu_option = "Active preset"
     cemu_selection_names = [
@@ -401,8 +380,6 @@ class FrontierNavResourcesQuantity(CemuChoice):
         "x3",
         "x5",
         "x10",
-        "x50",
-        "x100",
     ]
 
 
@@ -419,23 +396,8 @@ class FrontierNavNoMiraniumCap(CemuChoice):
     ]
 
 
-class EquipAlternateRatio(CemuChoice):
-    """In vanilla, equipment traits have a percent chance to be selected, some of them have 90 or 100%
-    , while others have 10%. This mod changes that: everything above 80% is capped at 80%
-    , and everything else is set to 20%"""
-    display_name = "Treasure Alternate Ratio"
-    option_off = 0
-    option_on = 1
-    cemu_pack = "LootEquipmentsAlternateRandomAffix"
-    cemu_option = ""
-    cemu_selection_names = [
-        "off",
-        "on"
-    ]
-
-
 class EquipChestCount(CemuChoice):
-    """Alters the guranteed item count in treasure chests"""
+    """Alters the guranteed equipment count in treasure chests. Only use if you removed gear from the item pool"""
     display_name = "Treasure Chest Count"
     option_none = 0
     option_1 = 1
@@ -452,7 +414,8 @@ class EquipChestCount(CemuChoice):
 
 
 class EquipQuality(CemuChoice):
-    """Alters the guranteed equipment trait count"""
+    """Alters the guranteed equipment trait count. Only use if you removed gear from the item pool.
+     Linked with Augment Slots so always set both"""
     display_name = "Treasure Traits"
     option_none = 0
     option_0_traits = 1
@@ -471,7 +434,8 @@ class EquipQuality(CemuChoice):
 
 
 class EquipSlots(CemuChoice):
-    """Alters the guranteed equipment augments slots count"""
+    """Alters the guranteed equipment augments slots count. Only use if you removed gear from the item pool.
+     Linked with EquipQuality so always set both"""
     display_name = "Augment Slots"
     option_none = 0
     option_0 = 1
@@ -489,21 +453,6 @@ class EquipSlots(CemuChoice):
     ]
 
 
-class BrokenEquip(CemuChoice):
-    """Alters chance to get broken equipment"""
-    display_name = "Broken Treasure"
-    option_none = 0
-    option_never = 1
-    option_always = 2
-    cemu_pack = "LootEquipmentsIgnoreBroken"
-    cemu_option = "Active preset"
-    cemu_selection_names = [
-        "off",
-        "Never get broken equipment",
-        "Always get broken equipment",
-    ]
-
-
 class MaterialsDropRatio(CemuChoice):
     """Alters the materials drop ratio"""
     display_name = "Treasure Drop Ratio"
@@ -513,6 +462,7 @@ class MaterialsDropRatio(CemuChoice):
     option_drop_50_percent = 3
     option_drop_30_percent = 4
     option_drop_0_percent = 5
+    default = option_drop_50_percent
     cemu_pack = "LootMaterialsDrop"
     cemu_option = "Active preset"
     cemu_selection_names = [
@@ -526,13 +476,13 @@ class MaterialsDropRatio(CemuChoice):
 
 
 class TreasureQuality(CemuChoice):
-    """Forces a specific quality"""
+    """Forces a specific quality, if you would get no loot"""
     display_name = "Treasure Quality"
     option_none = 0
     option_gold_quality = 1
     option_silver_quality = 2
     option_bronze_quality = 3
-    option_no_treasure = 4
+    default = option_bronze_quality
     cemu_pack = "LootTreasureQuality"
     cemu_option = "Active preset"
     cemu_selection_names = [
@@ -540,7 +490,6 @@ class TreasureQuality(CemuChoice):
         "Gold quality",
         "Silver quality",
         "Bronze quality",
-        "No treasure",
     ]
 
 
@@ -549,29 +498,17 @@ class MoonJumpWidth(CemuChoice):
     display_name = "Moon Jump Width"
     option_none = 0
     option_distance_150_percent = 1
-    option_distance_160_percent = 2
-    option_distance_170_percent = 3
-    option_distance_180_percent = 4
-    option_distance_190_percent = 5
-    option_distance_200_percent = 6
-    option_distance_250_percent = 7
-    option_distance_300_percent = 8
-    option_distance_500_percent = 9
-    option_cheat_1000_percent = 10
+    option_distance_170_percent = 2
+    option_distance_200_percent = 3
+    option_distance_250_percent = 4
     cemu_pack = "PhysicsJumpToTheMoon"
     cemu_option = "Horizontal Velocity (distance reached)"
     cemu_selection_names = [
         "Distance x1.0 (default)",
         "Distance x1.5",
-        "Distance x1.6",
         "Distance x1.7",
-        "Distance x1.8",
-        "Distance x1.9",
         "Distance x2.0",
         "Distance x2.5",
-        "Distance x3.0",
-        "Distance x5.0",
-        "CHEAT x100.0",
     ]
 
 
@@ -580,54 +517,15 @@ class MoonJumpHeight(CemuChoice):
     display_name = "Moon Jump Height"
     option_none = 0
     option_height_105_percent = 1
-    option_height_106_percent = 2
-    option_height_107_percent = 3
-    option_height_108_percent = 4
-    option_height_109_percent = 5
-    option_height_110_percent = 6
-    option_height_120_percent = 7
-    option_height_130_percent = 8
-    option_height_140_percent = 9
-    option_height_150_percent = 10
-    option_height_2500_percent = 11
+    option_height_107_percent = 2
+    option_height_110_percent = 3
     cemu_pack = "PhysicsJumpToTheMoon"
     cemu_option = "Vertical Velocity (height)"
     cemu_selection_names = [
         "Height x1.0 (default)",
         "Height x1.05",
-        "Height x1.06",
         "Height x1.07",
-        "Height x1.08",
-        "Height x1.09",
         "Height x1.10",
-        "Height x1.20",
-        "Height x1.30",
-        "Height x1.40",
-        "Height x1.50",
-        "CHEAT x25.0",
-    ]
-
-
-class MoonJumpType(CemuChoice):
-    """Alters the landing type after the jump"""
-    display_name = "Moon Jump Type"
-    option_short_land = 0
-    option_step_forward = 1
-    option_normal_land = 2
-    option_role = 3
-    option_full_stop = 4
-    option_half_stop = 5
-    option_never_land_softlocks = 6
-    cemu_pack = "PhysicsJumpToTheMoon"
-    cemu_option = "Landing type"
-    cemu_selection_names = [
-        "Short land (4)",
-        "Step foreward (6)",
-        "Normal land (5)",
-        "Role (3)",
-        "Full stop (2)",
-        "Half stop (1)",
-        "Never land (0) SOFT LOCKS",
     ]
 
 
@@ -639,7 +537,7 @@ class RunForrestRun(CemuChoice):
     option_speed_150_percent = 2
     option_speed_200_percent = 3
     option_speed_300_percent = 4
-    option_cheat_2000_percent = 5
+    default = 3
     cemu_pack = "PhysicsRunForrestRun"
     cemu_option = "Active preset"
     cemu_selection_names = [
@@ -648,7 +546,6 @@ class RunForrestRun(CemuChoice):
         "Speed x1.5",
         "Speed x2",
         "Speed x3",
-        "CHEAT x20",
     ]
 
 
@@ -665,9 +562,9 @@ class IncludeEnemyBookLocations(DefaultOnToggle):
 
 class EnemyBookThreshold(CemuChoice):
     """Sets the required kills to unlock a enemy location. White dot in enemy book appears at 3 for normal enemies.
-    Uniques are fixed at 1"""
+    Uniques are fixed at 1. Increase to 3 for a more authentic experience"""
     display_name = "Enemy Book Threshold"
-    default = 3
+    default = 1
     option_discovery = 0
     option_1 = 1
     option_2 = 2
@@ -846,11 +743,17 @@ class LogicLevelSteps(NamedRange):
 
 
 class LogicLevelOvercap(Range):
-    """Adds the specified number of level logic items to increase the chance of progressing"""
+    """Adds the specified number of level logic items to increase the chance of progressing.
+     Lower to 0 for a more authentic experience"""
     display_name = "Logic Level Overcap"
-    default = 0
+    default = 10
     range_start = 0
     range_end = 20
+
+
+class EarlyChapter4Logic(DefaultOnToggle):
+    """Forces FNet and Blade License to appear before Lvl 16"""
+    display_name = "Early Chapter 4 Logic"
 
 
 class DrifterRangedWeaponType(CemuChoice):
@@ -900,7 +803,7 @@ class DrifterMeleeWeaponType(CemuChoice):
 class CombatStartingItems(Range):
     """Start with the number of specified useful arts/skills/classes"""
     display_name = "Combat Starting Items"
-    default = 0
+    default = 15
     range_start = 0
     range_end = 252
 
@@ -967,6 +870,7 @@ class XenobladeXOptions(PerGameCommonOptions):
     # Logic
     logic_level_steps: LogicLevelSteps
     logic_level_overcap: LogicLevelOvercap
+    early_chapter4_logic: EarlyChapter4Logic
 
     # Customisation
     drifter_ranged_weapon_type: DrifterRangedWeaponType
@@ -976,17 +880,18 @@ class XenobladeXOptions(PerGameCommonOptions):
     # Graphic packs
     enemy_aggro: EnemyAggro
     enemy_stats: EnemyStats
-    damage_divisor: DamageDivisor
     damage_multiplicator: DamageMultiplicator
+    battle_tension_points: BattleTensionPoints
+    battle_tension_points_link: BattleTensionPointsLink
     qte_auto: QteAuto
-    qte_speed: QteSpeed
     qte_skell: QteSkell
+    character_equip_any_weapon: CharacterEquipAnyWeapon
     collection_range: CollectionRange
     armor_slot_upgrades: ArmorSlotUpgrades
     armor_traits_upgrades: ArmorTraitsUpgrades
     lv_points_modifier: LvPointsModifier
     battle_points_modifier: BattlePointsModifier
-    blade_points_modifier: BladePointsModifier
+    # blade_points_modifier: BladePointsModifier
     frontier_nav_miranium_frequency: FrontierNavMiraniumFrequency
     frontier_nav_miranium_quantity: FrontierNavMiraniumQuantity
     frontier_nav_money_frequency: FrontierNavMoneyFrequency
@@ -994,16 +899,13 @@ class XenobladeXOptions(PerGameCommonOptions):
     frontier_nav_resources_frequency: FrontierNavResourcesFrequency
     frontier_nav_resources_quantity: FrontierNavResourcesQuantity
     frontier_nav_no_miranium_cap: FrontierNavNoMiraniumCap
-    equip_alternate_ratio: EquipAlternateRatio
     equip_chest_count: EquipChestCount
     equip_quality: EquipQuality
     equip_slots: EquipSlots
-    broken_equip: BrokenEquip
     materials_drop_ratio: MaterialsDropRatio
     treasure_quality: TreasureQuality
     moon_jump_width: MoonJumpWidth
     moon_jump_height: MoonJumpHeight
-    moon_jump_type: MoonJumpType
     run_forrest_run: RunForrestRun
 
     # Removed
@@ -1044,6 +946,7 @@ option_groups: list[OptionGroup] = [
     OptionGroup("Logic", [
         LogicLevelSteps,
         LogicLevelOvercap,
+        EarlyChapter4Logic,
     ]),
     OptionGroup("Customisation", [
         DrifterRangedWeaponType,
@@ -1053,17 +956,18 @@ option_groups: list[OptionGroup] = [
     OptionGroup("Graphic packs", [
         EnemyAggro,
         EnemyStats,
-        DamageDivisor,
         DamageMultiplicator,
+        BattleTensionPoints,
+        BattleTensionPointsLink,
         QteAuto,
-        QteSpeed,
         QteSkell,
+        CharacterEquipAnyWeapon,
         CollectionRange,
         ArmorSlotUpgrades,
         ArmorTraitsUpgrades,
         LvPointsModifier,
         BattlePointsModifier,
-        BladePointsModifier,
+        # BladePointsModifier,
         FrontierNavMiraniumFrequency,
         FrontierNavMiraniumQuantity,
         FrontierNavMoneyFrequency,
@@ -1071,16 +975,13 @@ option_groups: list[OptionGroup] = [
         FrontierNavResourcesFrequency,
         FrontierNavResourcesQuantity,
         FrontierNavNoMiraniumCap,
-        EquipAlternateRatio,
         EquipChestCount,
         EquipQuality,
         EquipSlots,
-        BrokenEquip,
         MaterialsDropRatio,
         TreasureQuality,
         MoonJumpWidth,
         MoonJumpHeight,
-        MoonJumpType,
         RunForrestRun,
     ])
 ]

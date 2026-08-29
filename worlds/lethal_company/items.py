@@ -121,10 +121,13 @@ def generate_items(imported_data) -> Tuple[List[LCItem], SlotItemData]:
     ]
 
     for item in imported_data.get("store"):
-        items.append(LCItem(slot_item_data, item, shop_item=True))
+        if "shovel" in item.casefold() or "jetpack" in item.casefold() or "ladder" in item.casefold():
+            items.append(LCItem(slot_item_data, item, shop_item=True))
+        else:
+            items.append(LCItem(slot_item_data, item, classification=ItemClassification.useful, shop_item=True))
 
     for item in imported_data.get("vehicles"):
-        items.append(LCItem(slot_item_data, item, shop_item=True))
+        items.append(LCItem(slot_item_data, item, classification=ItemClassification.useful, shop_item=True))
 
     for moon in imported_data.get("moons"):
         items.append(LCItem(slot_item_data, moon, environment=True))

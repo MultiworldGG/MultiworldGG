@@ -20,12 +20,14 @@ class ItemType(Enum):
     Vane = 9
     NiceUpgrade = 10
     SuperUpgrade = 11
+    KeyRing = 12
 
 Normal = ItemType.Normal
 Ravio = ItemType.Ravio
 Compass = ItemType.Compass
 BigKey = ItemType.BigKey
 SmallKey = ItemType.SmallKey
+KeyRing = ItemType.KeyRing
 Junk = ItemType.Junk
 Prize = ItemType.Prize
 Shop = ItemType.Shop
@@ -38,6 +40,7 @@ useful = ItemClassification.useful
 progression = ItemClassification.progression
 progression_skip_balancing = ItemClassification.progression_skip_balancing
 progression_deprioritized = ItemClassification.progression_deprioritized_skip_balancing
+trap = ItemClassification.trap
 
 class ItemData:
     code: Optional[int]
@@ -74,7 +77,7 @@ class ItemData:
         return self.name == other.name
     
     def is_dungeon_item(self, options: ALBWOptions) -> bool:
-        if self.itemtype == SmallKey:
+        if self.itemtype == SmallKey or self.itemtype == KeyRing:
             return options.small_keys == SmallKeys.option_own_dungeons
         if self.itemtype == BigKey:
             return options.big_keys == BigKeys.option_own_dungeons
@@ -307,84 +310,80 @@ class Items:
     KeyHyruleSanctuary = ItemData(44, "Small Key (Hyrule Sanctuary)", SmallKey, progression, [
         new_item(RItem.HyruleSanctuaryKey),
     ])
+    KeyRingHyruleSanctuary = ItemData(90, "Key Ring (Hyrule Sanctuary)", KeyRing, progression, [
+        new_item(RItem.HyruleSanctuaryKeyRing),
+    ])
     KeyLoruleSanctuary = ItemData(45, "Small Key (Lorule Sanctuary)", SmallKey, progression, [
         new_item(RItem.LoruleSanctuaryKey),
     ])
-    CompassEastern = ItemData(46, "Compass (Eastern Palace)", Compass, filler, [new_item(RItem.EasternCompass)])
-    BigKeyEastern = ItemData(47, "Big Key (Eastern Palace)", BigKey, progression, [
-        new_item(RItem.EasternKeyBig),
+    KeyRingLoruleSanctuary = ItemData(91, "Key Ring (Lorule Sanctuary)", KeyRing, progression, [
+        new_item(RItem.LoruleSanctuaryKeyRing),
     ])
+    CompassEastern = ItemData(46, "Compass (Eastern Palace)", Compass, filler, [new_item(RItem.EasternCompass)])
+    BigKeyEastern = ItemData(47, "Big Key (Eastern Palace)", BigKey, progression, [new_item(RItem.EasternKeyBig)])
     KeyEastern = ItemData(48, "Small Key (Eastern Palace)", SmallKey, progression, [
         new_item(RItem.EasternKeySmall01),
         new_item(RItem.EasternKeySmall02),
     ], 2)
+    KeyRingEastern = ItemData(92, "Key Ring (Eastern Palace)", KeyRing, progression, [new_item(RItem.EasternKeyRing)])
     CompassGales = ItemData(49, "Compass (House of Gales)", Compass, filler, [new_item(RItem.GalesCompass)])
-    BigKeyGales = ItemData(50, "Big Key (House of Gales)", BigKey, progression, [
-        new_item(RItem.GalesKeyBig),
-    ])
+    BigKeyGales = ItemData(50, "Big Key (House of Gales)", BigKey, progression, [new_item(RItem.GalesKeyBig)])
     KeyGales = ItemData(51, "Small Key (House of Gales)", SmallKey, progression, [
         new_item(RItem.GalesKeySmall01),
         new_item(RItem.GalesKeySmall02),
         new_item(RItem.GalesKeySmall03),
         new_item(RItem.GalesKeySmall04),
     ], 4)
+    KeyRingGales = ItemData(93, "Key Ring (House of Gales)", KeyRing, progression, [new_item(RItem.GalesKeyRing)])
     CompassHera = ItemData(52, "Compass (Tower of Hera)", Compass, filler, [new_item(RItem.HeraCompass)])
-    BigKeyHera = ItemData(53, "Big Key (Tower of Hera)", BigKey, progression, [
-        new_item(RItem.HeraKeyBig),
-    ])
+    BigKeyHera = ItemData(53, "Big Key (Tower of Hera)", BigKey, progression, [new_item(RItem.HeraKeyBig)])
     KeyHera = ItemData(54, "Small Key (Tower of Hera)", SmallKey, progression, [
         new_item(RItem.HeraKeySmall01),
         new_item(RItem.HeraKeySmall02),
     ], 2)
+    KeyRingHera = ItemData(94, "Key Ring (Tower of Hera)", KeyRing, progression, [new_item(RItem.HeraKeyRing)])
     CompassDark = ItemData(55, "Compass (Dark Palace)", Compass, filler, [new_item(RItem.DarkCompass)])
-    BigKeyDark = ItemData(56, "Big Key (Dark Palace)", BigKey, progression, [
-        new_item(RItem.DarkKeyBig),
-    ])
+    BigKeyDark = ItemData(56, "Big Key (Dark Palace)", BigKey, progression, [new_item(RItem.DarkKeyBig)])
     KeyDark = ItemData(57, "Small Key (Dark Palace)", SmallKey, progression, [
         new_item(RItem.DarkKeySmall01),
         new_item(RItem.DarkKeySmall02),
         new_item(RItem.DarkKeySmall03),
         new_item(RItem.DarkKeySmall04),
     ], 4)
+    KeyRingDark = ItemData(95, "Key Ring (Dark Palace)", KeyRing, progression, [new_item(RItem.DarkKeyRing)])
     CompassSwamp = ItemData(58, "Compass (Swamp Palace)", Compass, filler, [new_item(RItem.SwampCompass)])
-    BigKeySwamp = ItemData(59, "Big Key (Swamp Palace)", BigKey, progression, [
-        new_item(RItem.SwampKeyBig),
-    ])
+    BigKeySwamp = ItemData(59, "Big Key (Swamp Palace)", BigKey, progression, [new_item(RItem.SwampKeyBig)])
     KeySwamp = ItemData(60, "Small Key (Swamp Palace)", SmallKey, progression, [
         new_item(RItem.SwampKeySmall01),
         new_item(RItem.SwampKeySmall02),
         new_item(RItem.SwampKeySmall03),
         new_item(RItem.SwampKeySmall04),
     ], 4)
+    KeyRingSwamp = ItemData(96, "Key Ring (Swamp Palace)", KeyRing, progression, [new_item(RItem.SwampKeyRing)])
     CompassSkull = ItemData(61, "Compass (Skull Woods)", Compass, filler, [new_item(RItem.SkullCompass)])
-    BigKeySkull = ItemData(62, "Big Key (Skull Woods)", BigKey, progression, [
-        new_item(RItem.SkullKeyBig),
-    ])
+    BigKeySkull = ItemData(62, "Big Key (Skull Woods)", BigKey, progression, [new_item(RItem.SkullKeyBig)])
     KeySkull = ItemData(63, "Small Key (Skull Woods)", SmallKey, progression, [
         new_item(RItem.SkullKeySmall01),
         new_item(RItem.SkullKeySmall02),
         new_item(RItem.SkullKeySmall03),
     ], 3)
+    KeyRingSkull = ItemData(97, "Key Ring (Skull Woods)", KeyRing, progression, [new_item(RItem.SkullKeyRing)])
     CompassThieves = ItemData(64, "Compass (Thieves' Hideout)", Compass, filler, [new_item(RItem.ThievesCompass)])
-    BigKeyThieves = ItemData(65, "Big Key (Thieves' Hideout)", BigKey, progression, [
-        new_item(RItem.ThievesKeyBig),
-    ])
+    BigKeyThieves = ItemData(65, "Big Key (Thieves' Hideout)", BigKey, progression, [new_item(RItem.ThievesKeyBig)])
     KeyThieves = ItemData(66, "Small Key (Thieves' Hideout)", SmallKey, progression, [
         new_item(RItem.ThievesKeySmall),
     ])
+    KeyRingThieves = ItemData(98, "Key Ring (Thieves' Hideout)", KeyRing, progression, [new_item(RItem.ThievesKeyRing)])
     CompassIce = ItemData(67, "Compass (Ice Ruins)", Compass, filler, [new_item(RItem.IceCompass)])
-    BigKeyIce = ItemData(68, "Big Key (Ice Ruins)", BigKey, progression, [
-        new_item(RItem.IceKeyBig),
-    ])
+    BigKeyIce = ItemData(68, "Big Key (Ice Ruins)", BigKey, progression, [new_item(RItem.IceKeyBig)])
     KeyIce = ItemData(69, "Small Key (Ice Ruins)", SmallKey, progression, [
         new_item(RItem.IceKeySmall01),
         new_item(RItem.IceKeySmall02),
         new_item(RItem.IceKeySmall03),
     ], 3)
+    KeyRingIce = ItemData(99, "Key Ring (Ice Ruins)", KeyRing, progression, [new_item(RItem.IceKeyRing)])
     CompassDesert = ItemData(70, "Compass (Desert Palace)", Compass, filler, [new_item(RItem.DesertCompass)])
-    BigKeyDesert = ItemData(71, "Big Key (Desert Palace)", BigKey, progression, [
-        new_item(RItem.DesertKeyBig),
-    ])
+    BigKeyDesert = ItemData(71, "Big Key (Desert Palace)", BigKey, progression, [new_item(RItem.DesertKeyBig)])
     KeyDesert = ItemData(72, "Small Key (Desert Palace)", SmallKey, progression, [
         new_item(RItem.DesertKeySmall01),
         new_item(RItem.DesertKeySmall02),
@@ -392,15 +391,15 @@ class Items:
         new_item(RItem.DesertKeySmall04),
         new_item(RItem.DesertKeySmall05),
     ], 5)
+    KeyRingDesert = ItemData(100, "Key Ring (Desert Palace)", KeyRing, progression, [new_item(RItem.DesertKeyRing)])
     CompassTurtle = ItemData(73, "Compass (Turtle Rock)", Compass, filler, [new_item(RItem.TurtleCompass)])
-    BigKeyTurtle = ItemData(74, "Big Key (Turtle Rock)", BigKey, progression, [
-        new_item(RItem.TurtleKeyBig),
-    ])
+    BigKeyTurtle = ItemData(74, "Big Key (Turtle Rock)", BigKey, progression, [new_item(RItem.TurtleKeyBig)])
     KeyTurtle = ItemData(75, "Small Key (Turtle Rock)", SmallKey, progression, [
         new_item(RItem.TurtleKeySmall01),
         new_item(RItem.TurtleKeySmall02),
         new_item(RItem.TurtleKeySmall03),
     ], 3)
+    KeyRingTurtle = ItemData(101, "Key Ring (Turtle Rock)", KeyRing, progression, [new_item(RItem.TurtleKeyRing)])
     CompassCastle = ItemData(76, "Compass (Lorule Castle)", Compass, filler, [new_item(RItem.LoruleCastleCompass)])
     KeyCastle = ItemData(77, "Small Key (Lorule Castle)", SmallKey, progression, [
         new_item(RItem.LoruleCastleKeySmall01),
@@ -409,6 +408,7 @@ class Items:
         new_item(RItem.LoruleCastleKeySmall04),
         new_item(RItem.LoruleCastleKeySmall05),
     ], 5)
+    KeyRingCastle = ItemData(102, "Key Ring (Lorule Castle)", KeyRing, progression, [new_item(RItem.LoruleCastleKeyRing)])
     Merge = ItemData(78, "Progressive Merge", Normal, progression | useful, [
         new_item(RItem.Merge01),
         new_item(RItem.Merge02),
@@ -424,6 +424,7 @@ class Items:
     UpgradeBow = ItemData(87, "Bow Upgrade", NiceUpgrade, progression, [new_item(RItem.UpgradeBow)])
     UpgradeLamp = ItemData(88, "Lamp Upgrade", SuperUpgrade, progression, [new_item(RItem.UpgradeLamp)])
     UpgradeNet = ItemData(89, "Bug Net Upgrade", SuperUpgrade, progression, [new_item(RItem.UpgradeNet)])
+    BeeTrap = ItemData(103, "BEEEEEEEES", Normal, trap, [new_item(RItem.BeeTrap)], 0)
     PendantOfPower = ItemData(None, "Pendant of Power", Prize, progression, [new_item(RItem.PendantOfPower)])
     PendantOfWisdom = ItemData(None, "Pendant of Wisdom", Prize, progression, [new_item(RItem.PendantOfWisdom)])
     PendantOfCourage = ItemData(None, "Pendant of Courage", Prize, progression, [new_item(RItem.PendantOfCourage)])
@@ -548,5 +549,3 @@ convenient_lorule_vanes: List[ItemData] = [
     Items.ThievesTownWV,
     Items.VacantHouseWV,
 ]
-
-APItem = new_item(RItem.LetterInABottle)

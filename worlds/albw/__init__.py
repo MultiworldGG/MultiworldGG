@@ -63,7 +63,8 @@ class ALBWSettings(Group):
     
     class ModPath(UserFolderPath):
         """Optional: path to mods folder (either "<path-to-azahar-folder>/load/mods" or "<path-to-sd-card>/luma/titles")
-        Setting this to a non-empty value will cause the patcher to automatically install the mod."""
+        Setting this to a non-empty value will cause the patcher to automatically install the mod.
+        Do not use single backslashes in the path, use either forward slashes '/' or double backslashes '\\\\'."""
         description = "Mods Folder"
         required = False
 
@@ -110,12 +111,9 @@ class ALBWWorld(World):
         return ALBWLocation(self.player, name, loc_id, region)
     
     def get_filler_item_name(self):
-        filler_items = []
-        for item in all_items:
-            if item.itemtype == ItemType.Junk:
-                for _ in range(item.count):
-                    filler_items.append(item.name)
-        return self.random.choice(filler_items)
+        # if self.random.randrange(100) < self.options.bee_trap_percentage:
+        #     return Items.BeeTrap.name
+        return self.random.choice(self.filler_items)
     
     def generate_early(self) -> None:
         if self.options.nice_items == NiceItems.option_vanilla and self.options.shuffle_maiamai_rewards:
@@ -206,6 +204,12 @@ class ALBWWorld(World):
                     self.seed_info.can_traverse(source_region_name, target_region_name, self._convert_state(state)))
     
     def create_items(self) -> None:
+        self.filler_items = []
+        for item in all_items:
+            if item.itemtype == ItemType.Junk:
+                for _ in range(item.count):
+                    self.filler_items.append(item.name)
+        
         self.itempool = []
         self.pre_fill_items = []
         if self.options.assured_weapon:
@@ -236,6 +240,9 @@ class ALBWWorld(World):
     def set_rules(self) -> None:
         self.multiworld.completion_condition[self.player] = lambda state: state.has("Triforce", self.player)
     
+    def get_pre_fill_items(self) -> List[Item]:
+        return self.pre_fill_items
+
     def pre_fill(self) -> None:
         # randomize dungeon prizes
         if self.options.randomize_dungeon_prizes:
@@ -281,17 +288,26 @@ class ALBWWorld(World):
             "shuffle_maiamai_rewards",
             "maiamai_limit",
             "hint_ghosts",
+            "small_keys",
+            "big_keys",
+            "key_rings",
         )
         slot_data["seed"] = self.seed
         slot_data["crack_map"] = self.seed_info.get_crack_map_json()
         slot_data["vane_map"] = self.seed_info.get_vane_map_json()
+        slot_data["prize_map"] = self._get_prize_map()
         return slot_data
 
     def generate_output(self, output_directory: str) -> None:
         # Create patch info object
         check_map = self._build_check_map()
-        items = {loc.name: PatchItemInfo(sanitize(loc.item.name), loc.item.classification.as_flag())
-                        for loc in self.multiworld.get_locations(self.player)}
+        items = {loc.name: PatchItemInfo(
+                sanitize(loc.item.name),
+                sanitize(self.multiworld.get_player_name(loc.item.player)),
+                loc.item.classification.as_flag(),
+                location_table[loc.name].code
+            ) for loc in self.multiworld.get_locations(self.player)
+            if location_table[loc.name].code is not None}
         hints = generate_hints(self.multiworld, self.player, self.options, self.random)
         bow_of_light_hint = generate_bow_of_light_hint(self.multiworld, self.player)
         patch_info = PatchInfo(PatchInfo.cur_version.as_simple_string(), self.seed, self.player_name,
@@ -374,7 +390,11 @@ class ALBWWorld(World):
             return 0
         if item == Items.Maiamai and not self.options.maiamai_mayhem:
             return 0
-        if item.itemtype == ItemType.SmallKey and self.options.small_keys == SmallKeys.option_remove:
+        if item.itemtype == ItemType.SmallKey and self.options.key_rings:
+            return 0
+        if item.itemtype == ItemType.KeyRing and not self.options.key_rings:
+            return 0
+        if item.itemtype in [ItemType.SmallKey, ItemType.KeyRing] and self.options.small_keys == SmallKeys.option_remove:
             return 0
         if item.itemtype == ItemType.BigKey and self.options.big_keys == BigKeys.option_remove:
             return 0
@@ -432,3 +452,7 @@ class ALBWWorld(World):
         if self.options.lamp_and_net_as_weapons:
             weapons.extend([Items.Lamp, Items.Net])
         return self.random.choice(weapons)
+
+    def _get_prize_map(self) -> Dict[str, str]:
+        prize_location_names = [loc.name for loc in all_locations if loc.loctype == LocationType.Prize]
+        return {loc_name: self.multiworld.get_location(loc_name, self.player).item.name for loc_name in prize_location_names}

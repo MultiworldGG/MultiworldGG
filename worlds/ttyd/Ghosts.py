@@ -5,7 +5,9 @@ from typing import Any, Dict, List, Optional
 from CommonClient import logger
 
 GHOST_MAGIC  = 0x47484F53
-VERSION      = 1
+# Must match mod::ghosts::kVersion (GhostPeers.h); the mod rejects the whole
+# peer block on any mismatch.
+VERSION      = 2
 
 APSETTINGS_ADDR             = 0x80003220
 APSETTINGS_GHOST_STATE_PTR  = APSETTINGS_ADDR + 0x3C  # mod::ghosts::GhostState *
@@ -156,8 +158,7 @@ PEER_PRESENCE_TIMEOUT_S = 4.0
 
 def stamp_peer(peer: dict) -> None:
     """Mark `peer` as freshly observed. Called from ingest paths and
-    from any local synthesizer that writes into ctx._ghost_peers
-    (e.g. the /ghost_test loopback)."""
+    from any local synthesizer that writes into ctx._ghost_peers."""
     if isinstance(peer, dict):
         peer["_last_seen"] = time.monotonic()
 

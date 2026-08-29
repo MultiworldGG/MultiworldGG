@@ -50,7 +50,7 @@ class RefunctWorld(World):
     
     item_name_groups = item_groups
 
-    ap_world_version = "1.5.0"        
+    ap_world_version = "1.5.1"        
         
     def get_filler_item_name(self) -> str:
         return ":)"
@@ -276,10 +276,12 @@ class RefunctWorld(World):
                         locs_force_filler.append(loc)
             # Funny Bridge Game Minigame and Clique don't need locked flowers since they have so few checks.
             if "Custom Minigame" in self.minigames:
-                for _ in range(num_unlocks):
-                    items_to_add.append("Custom Minigame")
-                for _ in range(37 - num_unlocks):
-                    items_to_add.append("Flower")
+                location_names = [i.name for i in self.multiworld.get_locations(self.player) if "Custom Minigame" in i.name]
+                location_names_el = self.multiworld.random.sample(location_names, 27)
+                for loc in location_names_el:
+                    if "Flower" in items_to_add:
+                        items_to_add.remove("Flower")
+                        locs_force_filler.append(loc)
                 
         for loc in locs_force_filler:
             items_to_add.append("Flower")                        

@@ -1,0 +1,29 @@
+{
+  "Baby Steps! - Starting Area": {
+    "level": "Baby Steps!",
+    "sublevel": "Baby Steps!",
+    "connections": {
+      "Baby Steps! - Main Area": "X1/J1/B1"
+    }
+  },
+  "Baby Steps! - Main Area": {
+    "level": "Baby Steps!",
+    "sublevel": "Baby Steps!",
+    "gears": {
+      "Baby Steps! - Gear - Center": 170100000,
+      "Baby Steps! - Gear - Above Boost Ramp": 170100003,
+      "Baby Steps! - Gear - Lower Corner": 170100004,
+      "Baby Steps! - Gear - Upper Corner": 170100002
+    },
+    "connections": {
+      "Baby Steps! - Pillar": "B1/J2 | X1+J1"
+    }
+  },
+  "Baby Steps! - Pillar": {
+    "level": "Baby Steps!",
+    "sublevel": "Baby Steps!",
+    "gears": {
+      "Baby Steps! - Gear - Pillar": 170100001
+    }
+  }
+}

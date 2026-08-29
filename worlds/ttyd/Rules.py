@@ -304,7 +304,7 @@ BOSS_ARENA_INFO: dict[str, tuple[typing.Optional[int], list[str]]] = {
     "btlgrp_las_las_29_black_peach_2": (None, ["Tattle: Shadow Queen", "Tattle: Beldam", "Tattle: Marilyn",
                                                "Tattle: Vivian"]),
     "btlgrp_mri_mri_mb":               (78780232, ["Tattle: Magnus von Grapple"]),
-    "btlgrp_muj_muj_kanbu":            (78780511, ["Tattle: Lord Crump", "Tattle: Koopatrol", "Tattle: Magikoopa"]),
+    "btlgrp_muj_muj_kanbu":            (78780511, ["Tattle: Lord Crump"]),
     "btlgrp_muj_muj_cortez":           (78780511, ["Tattle: Cortez"]),
     "btlgrp_rsh_rsh_06_01_off_1":      (78780554, ["Tattle: Smorg"]),
     "btlgrp_tik_tik_gesso":            (78780133, ["Tattle: Blooper"]),
@@ -333,6 +333,8 @@ def get_random_enemy_tattle_rules_dict(world: "TTYDWorld") -> dict[str, list[int
             boss_keys.update(arena_keys)
         group_source = {tuple(sorted(b.enemy_ids)): b.name for b in parse_json_bosses()}
         for arena in world.bosses:
+            if world.options.disable_intermissions and arena.name == "btlgrp_muj_muj_kanbu":
+                continue
             source_name = group_source.get(tuple(sorted(arena.enemy_ids)))
             if source_name is None:
                 continue

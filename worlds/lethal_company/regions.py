@@ -36,8 +36,7 @@ def create_regions(options: LCOptions, world: "LethalCompanyWorld"):
                                  rule=lambda state: (state.has("Company Credit", player,
                                                                count=world.required_credit_count)))
     else:
-        company_building.connect(victory, rule=lambda state: (state.has_all(world.slot_item_data.shop_items, player)
-                                                              and state.has_all(world.slot_item_data.moons, player)))
+        company_building.connect(victory, rule=lambda state: (state.has_all(world.slot_item_data.moons, player)))
 
     menu.connect(ship, rule=lambda state: True)
     ship.connect(starting_moon, rule=lambda state: True)

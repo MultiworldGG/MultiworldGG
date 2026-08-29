@@ -6424,7 +6424,7 @@
     ],
     "vanilla_item": 77772006,
     "tags": [
-      "rogueport",
+      "sewers",
       "dazzle"
     ]
   },
@@ -6437,7 +6437,7 @@
     ],
     "vanilla_item": 77772029,
     "tags": [
-      "rogueport",
+      "sewers",
       "dazzle"
     ]
   },
@@ -6450,7 +6450,7 @@
     ],
     "vanilla_item": 77772148,
     "tags": [
-      "rogueport",
+      "sewers",
       "dazzle"
     ]
   },
@@ -6463,7 +6463,7 @@
     ],
     "vanilla_item": 77772083,
     "tags": [
-      "rogueport",
+      "sewers",
       "dazzle"
     ]
   },
@@ -6476,7 +6476,7 @@
     ],
     "vanilla_item": 77772084,
     "tags": [
-      "rogueport",
+      "sewers",
       "dazzle"
     ]
   },
@@ -6489,7 +6489,7 @@
     ],
     "vanilla_item": 77772085,
     "tags": [
-      "rogueport",
+      "sewers",
       "dazzle"
     ]
   },
@@ -6502,7 +6502,7 @@
     ],
     "vanilla_item": 77772100,
     "tags": [
-      "rogueport",
+      "sewers",
       "dazzle"
     ]
   },
@@ -6515,7 +6515,7 @@
     ],
     "vanilla_item": 77772087,
     "tags": [
-      "rogueport",
+      "sewers",
       "dazzle"
     ]
   },
@@ -6528,7 +6528,7 @@
     ],
     "vanilla_item": 77772061,
     "tags": [
-      "rogueport",
+      "sewers",
       "dazzle"
     ]
   },
@@ -6541,7 +6541,7 @@
     ],
     "vanilla_item": 77772134,
     "tags": [
-      "rogueport",
+      "sewers",
       "dazzle"
     ]
   },
@@ -6554,7 +6554,7 @@
     ],
     "vanilla_item": 77772152,
     "tags": [
-      "rogueport",
+      "sewers",
       "dazzle"
     ]
   },
@@ -6567,7 +6567,7 @@
     ],
     "vanilla_item": 77772062,
     "tags": [
-      "rogueport",
+      "sewers",
       "dazzle"
     ]
   },
@@ -6580,7 +6580,7 @@
     ],
     "vanilla_item": 77772063,
     "tags": [
-      "rogueport",
+      "sewers",
       "dazzle"
     ]
   },
@@ -6593,7 +6593,7 @@
     ],
     "vanilla_item": 77772142,
     "tags": [
-      "rogueport",
+      "sewers",
       "dazzle"
     ]
   },
@@ -6606,7 +6606,7 @@
     ],
     "vanilla_item": 77772143,
     "tags": [
-      "rogueport",
+      "sewers",
       "dazzle"
     ]
   },
@@ -7445,7 +7445,7 @@
     ]
   },
   {
-    "name": "Rogueport Westside: Cook Shroom Fry",
+    "name": "Rogueport Center: Cook Shroom Fry",
     "id": 78781048,
     "rel": "dol",
     "offsets": [
@@ -7458,7 +7458,7 @@
     ]
   },
   {
-    "name": "Rogueport Westside: Cook Shroom Roast",
+    "name": "Rogueport Center: Cook Shroom Roast",
     "id": 78781049,
     "rel": "dol",
     "offsets": [
@@ -7471,7 +7471,7 @@
     ]
   },
   {
-    "name": "Rogueport Westside: Cook Shroom Steak",
+    "name": "Rogueport Center: Cook Shroom Steak",
     "id": 78781050,
     "rel": "dol",
     "offsets": [
@@ -7484,7 +7484,7 @@
     ]
   },
   {
-    "name": "Rogueport Westside: Cook Mistake",
+    "name": "Rogueport Center: Cook Mistake",
     "id": 78781051,
     "rel": "dol",
     "offsets": [
@@ -7497,7 +7497,7 @@
     ]
   },
   {
-    "name": "Rogueport Westside: Cook Honey Shroom",
+    "name": "Rogueport Center: Cook Honey Shroom",
     "id": 78781052,
     "rel": "dol",
     "offsets": [
@@ -7510,7 +7510,7 @@
     ]
   },
   {
-    "name": "Rogueport Westside: Cook Maple Shroom",
+    "name": "Rogueport Center: Cook Maple Shroom",
     "id": 78781053,
     "rel": "dol",
     "offsets": [
@@ -7523,7 +7523,7 @@
     ]
   },
   {
-    "name": "Rogueport Westside: Cook Jelly Shroom",
+    "name": "Rogueport Center: Cook Jelly Shroom",
     "id": 78781054,
     "rel": "dol",
     "offsets": [
@@ -7536,7 +7536,7 @@
     ]
   },
   {
-    "name": "Rogueport Westside: Cook Honey Super",
+    "name": "Rogueport Center: Cook Honey Super",
     "id": 78781055,
     "rel": "dol",
     "offsets": [
@@ -7549,7 +7549,7 @@
     ]
   },
   {
-    "name": "Rogueport Westside: Cook Maple Super",
+    "name": "Rogueport Center: Cook Maple Super",
     "id": 78781056,
     "rel": "dol",
     "offsets": [
@@ -7562,7 +7562,7 @@
     ]
   },
   {
-    "name": "Rogueport Westside: Cook Jelly Super",
+    "name": "Rogueport Center: Cook Jelly Super",
     "id": 78781057,
     "rel": "dol",
     "offsets": [
@@ -7575,7 +7575,7 @@
     ]
   },
   {
-    "name": "Rogueport Westside: Cook Honey Ultra",
+    "name": "Rogueport Center: Cook Honey Ultra",
     "id": 78781058,
     "rel": "dol",
     "offsets": [
@@ -7588,7 +7588,7 @@
     ]
   },
   {
-    "name": "Rogueport Westside: Cook Maple Ultra",
+    "name": "Rogueport Center: Cook Maple Ultra",
     "id": 78781059,
     "rel": "dol",
     "offsets": [
@@ -7601,7 +7601,7 @@
     ]
   },
   {
-    "name": "Rogueport Westside: Cook Jelly Ultra",
+    "name": "Rogueport Center: Cook Jelly Ultra",
     "id": 78781060,
     "rel": "dol",
     "offsets": [
@@ -7614,7 +7614,7 @@
     ]
   },
   {
-    "name": "Rogueport Westside: Cook Spicy Soup",
+    "name": "Rogueport Center: Cook Spicy Soup",
     "id": 78781061,
     "rel": "dol",
     "offsets": [
@@ -7627,7 +7627,7 @@
     ]
   },
   {
-    "name": "Rogueport Westside: Cook Zess Dinner",
+    "name": "Rogueport Center: Cook Zess Dinner",
     "id": 78781062,
     "rel": "dol",
     "offsets": [
@@ -7640,7 +7640,7 @@
     ]
   },
   {
-    "name": "Rogueport Westside: Cook Zess Special",
+    "name": "Rogueport Center: Cook Zess Special",
     "id": 78781063,
     "rel": "dol",
     "offsets": [
@@ -7653,7 +7653,7 @@
     ]
   },
   {
-    "name": "Rogueport Westside: Cook Zess Deluxe",
+    "name": "Rogueport Center: Cook Zess Deluxe",
     "id": 78781064,
     "rel": "dol",
     "offsets": [
@@ -7666,7 +7666,7 @@
     ]
   },
   {
-    "name": "Rogueport Westside: Cook Zess Dynamite",
+    "name": "Rogueport Center: Cook Zess Dynamite",
     "id": 78781065,
     "rel": "dol",
     "offsets": [
@@ -7679,7 +7679,7 @@
     ]
   },
   {
-    "name": "Rogueport Westside: Cook Zess Tea",
+    "name": "Rogueport Center: Cook Zess Tea",
     "id": 78781066,
     "rel": "dol",
     "offsets": [
@@ -7692,7 +7692,7 @@
     ]
   },
   {
-    "name": "Rogueport Westside: Cook Space Food",
+    "name": "Rogueport Center: Cook Space Food",
     "id": 78781067,
     "rel": "dol",
     "offsets": [
@@ -7705,7 +7705,7 @@
     ]
   },
   {
-    "name": "Rogueport Westside: Cook Icicle Pop",
+    "name": "Rogueport Center: Cook Icicle Pop",
     "id": 78781068,
     "rel": "dol",
     "offsets": [
@@ -7718,7 +7718,7 @@
     ]
   },
   {
-    "name": "Rogueport Westside: Cook Zess Frappe",
+    "name": "Rogueport Center: Cook Zess Frappe",
     "id": 78781069,
     "rel": "dol",
     "offsets": [
@@ -7731,7 +7731,7 @@
     ]
   },
   {
-    "name": "Rogueport Westside: Cook Snow Bunny",
+    "name": "Rogueport Center: Cook Snow Bunny",
     "id": 78781070,
     "rel": "dol",
     "offsets": [
@@ -7744,7 +7744,7 @@
     ]
   },
   {
-    "name": "Rogueport Westside: Cook Coconut Bomb",
+    "name": "Rogueport Center: Cook Coconut Bomb",
     "id": 78781071,
     "rel": "dol",
     "offsets": [
@@ -7757,7 +7757,7 @@
     ]
   },
   {
-    "name": "Rogueport Westside: Cook Courage Meal",
+    "name": "Rogueport Center: Cook Courage Meal",
     "id": 78781072,
     "rel": "dol",
     "offsets": [
@@ -7770,7 +7770,7 @@
     ]
   },
   {
-    "name": "Rogueport Westside: Cook Shroom Cake",
+    "name": "Rogueport Center: Cook Shroom Cake",
     "id": 78781073,
     "rel": "dol",
     "offsets": [
@@ -7783,7 +7783,7 @@
     ]
   },
   {
-    "name": "Rogueport Westside: Cook Shroom Crepe",
+    "name": "Rogueport Center: Cook Shroom Crepe",
     "id": 78781074,
     "rel": "dol",
     "offsets": [
@@ -7796,7 +7796,7 @@
     ]
   },
   {
-    "name": "Rogueport Westside: Cook Mousse Cake",
+    "name": "Rogueport Center: Cook Mousse Cake",
     "id": 78781075,
     "rel": "dol",
     "offsets": [
@@ -7809,7 +7809,7 @@
     ]
   },
   {
-    "name": "Rogueport Westside: Cook Fried Egg",
+    "name": "Rogueport Center: Cook Fried Egg",
     "id": 78781076,
     "rel": "dol",
     "offsets": [
@@ -7822,7 +7822,7 @@
     ]
   },
   {
-    "name": "Rogueport Westside: Cook Fruit Parfait",
+    "name": "Rogueport Center: Cook Fruit Parfait",
     "id": 78781077,
     "rel": "dol",
     "offsets": [
@@ -7835,7 +7835,7 @@
     ]
   },
   {
-    "name": "Rogueport Westside: Cook Egg Bomb",
+    "name": "Rogueport Center: Cook Egg Bomb",
     "id": 78781078,
     "rel": "dol",
     "offsets": [
@@ -7848,7 +7848,7 @@
     ]
   },
   {
-    "name": "Rogueport Westside: Cook Ink Pasta",
+    "name": "Rogueport Center: Cook Ink Pasta",
     "id": 78781079,
     "rel": "dol",
     "offsets": [
@@ -7861,7 +7861,7 @@
     ]
   },
   {
-    "name": "Rogueport Westside: Cook Spaghetti",
+    "name": "Rogueport Center: Cook Spaghetti",
     "id": 78781080,
     "rel": "dol",
     "offsets": [
@@ -7874,7 +7874,7 @@
     ]
   },
   {
-    "name": "Rogueport Westside: Cook Shroom Broth",
+    "name": "Rogueport Center: Cook Shroom Broth",
     "id": 78781081,
     "rel": "dol",
     "offsets": [
@@ -7887,7 +7887,7 @@
     ]
   },
   {
-    "name": "Rogueport Westside: Cook Poison Shroom",
+    "name": "Rogueport Center: Cook Poison Shroom",
     "id": 78781082,
     "rel": "dol",
     "offsets": [
@@ -7900,7 +7900,7 @@
     ]
   },
   {
-    "name": "Rogueport Westside: Cook Choco Cake",
+    "name": "Rogueport Center: Cook Choco Cake",
     "id": 78781083,
     "rel": "dol",
     "offsets": [
@@ -7913,7 +7913,7 @@
     ]
   },
   {
-    "name": "Rogueport Westside: Cook Mango Delight",
+    "name": "Rogueport Center: Cook Mango Delight",
     "id": 78781084,
     "rel": "dol",
     "offsets": [
@@ -7926,7 +7926,7 @@
     ]
   },
   {
-    "name": "Rogueport Westside: Cook Love Pudding",
+    "name": "Rogueport Center: Cook Love Pudding",
     "id": 78781085,
     "rel": "dol",
     "offsets": [
@@ -7939,7 +7939,7 @@
     ]
   },
   {
-    "name": "Rogueport Westside: Cook Meteor Meal",
+    "name": "Rogueport Center: Cook Meteor Meal",
     "id": 78781086,
     "rel": "dol",
     "offsets": [
@@ -7952,7 +7952,7 @@
     ]
   },
   {
-    "name": "Rogueport Westside: Cook Trial Stew",
+    "name": "Rogueport Center: Cook Trial Stew",
     "id": 78781087,
     "rel": "dol",
     "offsets": [
@@ -7965,7 +7965,7 @@
     ]
   },
   {
-    "name": "Rogueport Westside: Cook Couple's Cake",
+    "name": "Rogueport Center: Cook Couple's Cake",
     "id": 78781088,
     "rel": "dol",
     "offsets": [
@@ -7978,7 +7978,7 @@
     ]
   },
   {
-    "name": "Rogueport Westside: Cook Inky Sauce",
+    "name": "Rogueport Center: Cook Inky Sauce",
     "id": 78781089,
     "rel": "dol",
     "offsets": [
@@ -7991,7 +7991,7 @@
     ]
   },
   {
-    "name": "Rogueport Westside: Cook Omelette Meal",
+    "name": "Rogueport Center: Cook Omelette Meal",
     "id": 78781090,
     "rel": "dol",
     "offsets": [
@@ -8004,7 +8004,7 @@
     ]
   },
   {
-    "name": "Rogueport Westside: Cook Koopa Tea",
+    "name": "Rogueport Center: Cook Koopa Tea",
     "id": 78781091,
     "rel": "dol",
     "offsets": [
@@ -8017,7 +8017,7 @@
     ]
   },
   {
-    "name": "Rogueport Westside: Cook Koopasta",
+    "name": "Rogueport Center: Cook Koopasta",
     "id": 78781092,
     "rel": "dol",
     "offsets": [
@@ -8030,7 +8030,7 @@
     ]
   },
   {
-    "name": "Rogueport Westside: Cook Spicy Pasta",
+    "name": "Rogueport Center: Cook Spicy Pasta",
     "id": 78781093,
     "rel": "dol",
     "offsets": [
@@ -8043,7 +8043,7 @@
     ]
   },
   {
-    "name": "Rogueport Westside: Cook Heartful Cake",
+    "name": "Rogueport Center: Cook Heartful Cake",
     "id": 78781094,
     "rel": "dol",
     "offsets": [
@@ -8056,7 +8056,7 @@
     ]
   },
   {
-    "name": "Rogueport Westside: Cook Peach Tart",
+    "name": "Rogueport Center: Cook Peach Tart",
     "id": 78781095,
     "rel": "dol",
     "offsets": [
@@ -8069,7 +8069,7 @@
     ]
   },
   {
-    "name": "Rogueport Westside: Cook Electro Pop",
+    "name": "Rogueport Center: Cook Electro Pop",
     "id": 78781096,
     "rel": "dol",
     "offsets": [
@@ -8082,7 +8082,7 @@
     ]
   },
   {
-    "name": "Rogueport Westside: Cook Fire Pop",
+    "name": "Rogueport Center: Cook Fire Pop",
     "id": 78781097,
     "rel": "dol",
     "offsets": [
@@ -8095,7 +8095,7 @@
     ]
   },
   {
-    "name": "Rogueport Westside: Cook Honey Candy",
+    "name": "Rogueport Center: Cook Honey Candy",
     "id": 78781098,
     "rel": "dol",
     "offsets": [
@@ -8108,7 +8108,7 @@
     ]
   },
   {
-    "name": "Rogueport Westside: Cook Coco Candy",
+    "name": "Rogueport Center: Cook Coco Candy",
     "id": 78781099,
     "rel": "dol",
     "offsets": [
@@ -8121,7 +8121,7 @@
     ]
   },
   {
-    "name": "Rogueport Westside: Cook Jelly Candy",
+    "name": "Rogueport Center: Cook Jelly Candy",
     "id": 78781100,
     "rel": "dol",
     "offsets": [
@@ -8134,7 +8134,7 @@
     ]
   },
   {
-    "name": "Rogueport Westside: Cook Zess Cookie",
+    "name": "Rogueport Center: Cook Zess Cookie",
     "id": 78781101,
     "rel": "dol",
     "offsets": [
@@ -8147,7 +8147,7 @@
     ]
   },
   {
-    "name": "Rogueport Westside: Cook Healthy Salad",
+    "name": "Rogueport Center: Cook Healthy Salad",
     "id": 78781102,
     "rel": "dol",
     "offsets": [
@@ -8160,7 +8160,7 @@
     ]
   },
   {
-    "name": "Rogueport Westside: Cook Koopa Bun",
+    "name": "Rogueport Center: Cook Koopa Bun",
     "id": 78781103,
     "rel": "dol",
     "offsets": [
@@ -8173,7 +8173,7 @@
     ]
   },
   {
-    "name": "Rogueport Westside: Cook Fresh Juice",
+    "name": "Rogueport Center: Cook Fresh Juice",
     "id": 78781104,
     "rel": "dol",
     "offsets": [

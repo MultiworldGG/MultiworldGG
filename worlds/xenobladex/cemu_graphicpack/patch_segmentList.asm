@@ -20,7 +20,7 @@ _postSegmentList:
 	li r9,0
 	stw r9,12(r31)
 	b _segmentList_L2
-_segmentList_L6:
+_segmentList_L7:
 	lwz r9,8(r31)
 	lwz r9,7960(r9)
 	stw r9,24(r31)
@@ -30,7 +30,7 @@ _segmentList_L6:
 	li r9,0
 	stw r9,20(r31)
 	b _segmentList_L3
-_segmentList_L5:
+_segmentList_L6:
 	lwz r9,16(r31)
 	addi r9,r9,8
 	lwz r9,0(r9)
@@ -43,6 +43,21 @@ _segmentList_L5:
 	lwz r9,16(r31)
 	lwz r9,12(r9)
 	stw r9,32(r31)
+	li r9,1
+	stw r9,36(r31)
+	lwz r10,36(r31)
+	lwz r9,28(r31)
+	cmpw cr0,r10,r9
+	ble cr0,_segmentList_L4
+	lwz r9,16(r31)
+	addi r9,r9,8
+	lwz r9,0(r9)
+	srawi r9,r9,16
+	lwz r5,36(r31)
+	mr r4,r9
+	li r3,2
+	bl setLocal
+_segmentList_L4:
 	lwz r10,52(r31)
 	lwz r8,12(r31)
 	lwz r7,28(r31)
@@ -68,12 +83,12 @@ _after_segmentList_1__sprintf_s:
 	lwz r10,44(r31)
 	lwz r9,48(r31)
 	cmplw cr0,r10,r9
-	ble cr0,_segmentList_L4
+	ble cr0,_segmentList_L5
 	lwz r3,40(r31)
 	bl _postCurl
 	lwz r9,40(r31)
 	stw r9,44(r31)
-_segmentList_L4:
+_segmentList_L5:
 	lwz r9,16(r31)
 	addi r9,r9,28
 	stw r9,16(r31)
@@ -84,7 +99,7 @@ _segmentList_L3:
 	lwz r10,20(r31)
 	lwz r9,24(r31)
 	cmpw cr0,r10,r9
-	blt cr0,_segmentList_L5
+	blt cr0,_segmentList_L6
 	lwz r9,8(r31)
 	addi r9,r9,8156
 	stw r9,8(r31)
@@ -94,7 +109,7 @@ _segmentList_L3:
 _segmentList_L2:
 	lwz r9,12(r31)
 	cmpwi cr0,r9,20
-	ble cr0,_segmentList_L6
+	ble cr0,_segmentList_L7
 	lwz r9,44(r31)
 	mr r3,r9
 	addi r11,r31,64

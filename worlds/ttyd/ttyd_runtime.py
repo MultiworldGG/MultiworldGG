@@ -693,6 +693,10 @@ def _vlink_on_bounce(ctx, data: dict) -> None:
     s = _vlink_state(ctx)
     if cid == s["cid"]:
         return
+    # A bounce carrying our own slot is always a self-echo (stale cid after a
+    # reconnect, or a duplicate client on the slot); never render ourselves.
+    if slot == getattr(ctx, "slot", None):
+        return
     if kind == Ghosts.VLINK_PART:
         s["peers"].pop(cid, None)
         s["known"].discard(cid)
@@ -764,32 +768,6 @@ def _vlink_playback(ctx, now: float) -> None:
     ctx._ghost_peers = out
 
 
-GHOST_TEST_CID = 0x7E57
-GHOST_TEST_OFFSET = 100.0
-
-
-def _inject_ghost_test(ctx, state: dict, team_id: int) -> None:
-    if not getattr(ctx, "_ghost_test", False) or state is None:
-        return
-    entry = _vlink_discrete(ctx, state, team_id, _read_self_active_loops(ctx), [])
-    entry["map"] = state.get("map", "")
-    entry["x"] = float(state.get("x", 0.0)) + GHOST_TEST_OFFSET
-    entry["y"] = float(state.get("y", 0.0))
-    entry["z"] = float(state.get("z", 0.0))
-    entry["rot_y"] = float(state.get("rot_y", 0.0))
-    entry["rot_x"] = float(state.get("rot_x", 0.0))
-    entry["rot_z"] = float(state.get("rot_z", 0.0))
-    entry["team_id"] = int(team_id)
-    if not entry.get("slot_name"):
-        entry["slot_name"] = "TEST"
-    Ghosts.stamp_peer(entry)
-    peers = getattr(ctx, "_ghost_peers", None)
-    if peers is None:
-        peers = {}
-        ctx._ghost_peers = peers
-    peers[Ghosts.ghost_key(team_id, ctx.slot or 0, GHOST_TEST_CID)] = entry
-
-
 async def ttyd_ghost_sync_task(ctx):
     while not ctx.exit_event.is_set():
         await asyncio.sleep(GHOST_RENDER_INTERVAL_S)
@@ -856,7 +834,6 @@ async def ttyd_ghost_sync_task(ctx):
                         logger.exception("vlink move error")
 
         _vlink_playback(ctx, now)
-        _inject_ghost_test(ctx, state, team_id)
 
         try:
             _write_peer_block(ctx)

@@ -1,5 +1,5 @@
 from .Options import SM64HackOptions
-from .Data import Data, star_like, sm64hack_items
+from .Data import Data, star_like, sm64hack_items, sr8courseorder, sr8extraorder
 from BaseClasses import CollectionState
 import re
 
@@ -86,10 +86,7 @@ def evaluate_postfix_requirements(postfix: list[str], requirements: list[bool]) 
             stack.append(requirements[int(token)])
     return stack.pop()
 
-def simplify_postfix_requirements(postfix: list[str], requirements: list[bool | str], data:Data) -> bool:
-    for requirement in requirements:
-        if not isinstance(requirement, bool):
-            break
+def simplify_postfix_requirements(postfix: list[str], requirements: list[bool | str], data:Data, requirement_string) -> bool:
     stack = []
     for token in postfix:
         if token == '&': #would use match case if > 2 operators
@@ -130,9 +127,11 @@ def simplify_postfix_requirements(postfix: list[str], requirements: list[bool | 
     returnval = stack.pop()
     if isinstance(returnval, list) or isinstance(returnval, str):
         if isinstance(returnval, list):
-            data.required_items |= set(combine(returnval))
+            req = set(combine(returnval))
         else:
-            data.required_items |= {returnval}
+            req = {returnval}
+        req -= {"level", "stars", "jump"} #these are just dummy values for things that are always progressive
+        data.required_items |= req
         returnval = True
     
     return returnval
@@ -162,15 +161,15 @@ def check_if_location_exists(requirement_string: str, options: SM64HackOptions, 
         elif requirement.startswith("|?"):
             boolean_array.append(not check_if_option_enabled(requirement[2:-1], options))
         elif requirement.startswith("|#"):
-            boolean_array.append(True)
+            boolean_array.append("level")
         else:
             if requirement.startswith("|Stars") or requirement.startswith("|BlueStars") or requirement.startswith("|TotalStars") or requirement.startswith("|Actspecific"):
-                boolean_array.append(True) #stars usually dont depend on options
+                boolean_array.append("stars") #stars usually dont depend on options
             elif (requirement[1:-1].endswith("Jump") and requirement[1:-1] != "Long Jump") or ((requirement[1:-1] in sm64hack_items[76:86]) and not options.move_randomization): 
-                boolean_array.append(True)
+                boolean_array.append("jump")
             else:
                 boolean_array.append(requirement[1:-1])
-    return simplify_postfix_requirements(result, boolean_array, data)
+    return simplify_postfix_requirements(result, boolean_array, data, requirement_string)
 
 def has_star_count(state: CollectionState, player: int, star_count: int) -> bool:
     return (state.count_from_list(star_like, player) + state.count("Star Bundle", player) * 2) >= star_count
@@ -195,8 +194,26 @@ def check_requirement_string(state: CollectionState,
                              ) -> bool:
     if entrancedata is not None and options.level_tickets:
         for level in entrancedata:
-            if not state.has(f"{level} Ticket", player) and not data.locations[level].get("Overworld"):
-                return False
+            if "touhou" in options.hack_specific_options and (level in sr8courseorder or level in sr8extraorder):
+                if level in sr8courseorder:
+                    count = sr8courseorder.index(level)
+                    if not state.has("Next Stage", player, count + 1):
+                        return False
+                else:
+                    count = sr8extraorder.index(level)
+                    if not state.has("Extra Stage", player, count + 1):
+                        return False
+            else:
+                if options.level_tickets == 1 and level.startswith("Course"):
+                    count = int(level[7:])
+                    if not state.has("Progressive Main Course", player, count) and not data.locations[level].get("Overworld"):
+                        return False
+                elif options.level_tickets == 1 and level.startswith("Bowser"):
+                    count = int(level[7:])
+                    if not state.has("Progressive Bowser Course", player, count) and not data.locations[level].get("Overworld"):
+                        return False
+                elif not state.has(f"{level} Ticket", player) and not data.locations[level].get("Overworld"):
+                    return False
 
     macros = data.locations["Other"]["Macros"]
     result = parse_requirement_string_to_postfix(requirement_string, macros)

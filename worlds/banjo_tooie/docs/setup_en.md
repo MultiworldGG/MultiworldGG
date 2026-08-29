@@ -61,6 +61,7 @@ Our implementation also supports the Everdrive 3.0 and X7. (USB Support).
     - For Everdrive 3.0, the OS version needs to be 3.06 to be compatible
     - The Nintendo 64 Expansion Pak is required
     - Grab the latest release of the Everdrive connector from https://github.com/jjjj12212/AP_Banjo-Tooie/releases
+    - The Everdrive-64 Pro may not be compatible (the X7 is compatible and tested)
 -   A Banjo-Tooie ROM (USA ONLY)
 
 ## Playing on BizHawk
@@ -115,3 +116,6 @@ try running the command `/writesettings` to force your slot data into the game.
 - Run the patched Banjo-Tooie Rom on the everdrive
 - Connect the MultiworldGG client with the server. (The banjo_tooie_connector window should say, "Connection Established")
 - To connect the client to the multiserver, simply put  `<address>:<port>`  on the textfield on top and press `connect` (if the server uses password, then it will prompt after connection)
+- If you are getting a missing DLL error on Windows, try the following:
+    - go to: C:\Users\*Your Windows User*\AppData  (or %APPDATA%)  then into \Local\Temp\FTDI-Driver\amd64 and copy ftd2xx64.dll
+    - Paste it inside the folder that has the banjo_tooie_everdrive_connector.exe and rename ftd2xx64.dll to ftd2xx.dll.

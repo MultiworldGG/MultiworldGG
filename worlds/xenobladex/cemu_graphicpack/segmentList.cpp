@@ -16,6 +16,7 @@ extern int* segmentBasePtr;
 char _formatSegmentText[] = "SG Id=%03x Fg=%01x AId=%02x:";
 
 int getLocal(int count, int position);
+void setLocal(int width, int position, int value);
 
 
 // Use  https://xenoblade.github.io/xbx/bdat/common_local_us/SEG_NormalList.html to match the ids
@@ -29,6 +30,12 @@ char* _postSegmentList(char* stringStartPtr, char* stringCurrentPtr, char* strin
         for(int nodeIdx = 0; nodeIdx < nodeCount; nodeIdx++){
             int flag = getLocal(2 /* maybe 1*/, segmentOffset[2] >> 0x10);
             int segmentId = segmentOffset[3];
+
+            // Set default segment flag to 1 that you can click on them on the touchscreen
+            int minimumFlag = 1;
+            if (minimumFlag > flag)
+                setLocal(2, segmentOffset[2] >> 0x10, minimumFlag);
+
             stringCurrentPtr += __sprintf_s(stringCurrentPtr, maxEntrySize, _formatSegmentText, segmentId, flag, areaId);
 
             // Reset buffer

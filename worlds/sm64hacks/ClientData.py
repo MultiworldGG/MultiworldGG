@@ -265,3 +265,24 @@ wingCapTimerPtr= 0x24FC22
 
 wallkickFramePtr = 0x26DA52
 wallkickFramePtr2 = 0x26DABA
+
+powerpointPatchPtr = 0x200600
+powerpointHookPtr = 0x24810C
+healthHookPtr = 0x254224
+
+coincountPatchPtr = 0x24DB9C
+vcPatchPtr = 0x24FBF0
+mcPatchPtr = 0x24FC08
+wcPatchPtr = 0x24FC20
+wallkickFramePatchPtr1 = 0x26DA4C
+wallkickFramePatchPtr2 = 0x26DAB4
+
+dont_kill_actions = {
+    "00001302", #stargrab
+    "00001303", #stargrab
+    "00001307", #stargrab
+    "00001904", #stargrab
+    "00001320", #pulling door
+    "00001321", #pulling door
+    "00001300"  #disappeared
+}

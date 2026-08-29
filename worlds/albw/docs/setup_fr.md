@@ -18,7 +18,7 @@
 
 3. Dans l'emulateur, sélectionner `Fichier > Ouvrier dossier <nom de l'émulateur>` (ou `File > Open <émulateur> Folder` en anglais). Créer un dossier `load` dans le dossier de l'émulateur et un dossier `mods` dans le dossier `load`.
 4. **Pour les utilisateurs de Azahar uniquement**: Sélectionner `Émulation > Configuration` (ou `Emulation > Configure` en anglais). Puis sélectionner l'onglet `Debug` et tout en bas cochez (si c'est pas dajà fait) l'option `Activer le serveur RPC` (ou `Enable RPC Server` en anglais).
-5. (Optionel) Pour que le mod soit automatiquement installé, exécuter le launcher et selectionner `Open host.yaml`. Sous `albw_settings`, mettre `mod_path` à `"<chemin-vers-le-dossier-azahar>/load/mods"`.
+5. (Optionel) Pour que le mod soit automatiquement installé, exécuter le launcher et selectionner `Open host.yaml`. Sous `albw_settings`, mettre `mod_path` à `"<chemin-vers-le-dossier-azahar>/load/mods"`. Si vous êtes sur Windows, faîtes bien attention à remplacer tous les `\` par des `/` dans le chemin.
 
 ## Setup (3DS)
 
@@ -29,7 +29,7 @@
     3. Appuyer sur Start ou sélectionner `Sauvegarder et quitter` (ou `Save and exit` en anglais).
 5. Appuyer sur L+DPadBas+Select pour ouvrir le menu Rosalina, et s'assurer que `Chargeur de plugin` (ou `Plugin loader` en anglais) est sur `[Activé]` (ou `[Enabled]` en anglais).
 6. Télécharger le fichier [plugin.3gx](https://github.com/LittleCube-hax/albw-ap-plugin/releases/latest) et le copier dans `/luma/plugins/00040000000EC300/` sur votre carte SD.
-7. (Optionel) Pour que le mod soit automatiquement installé, exécuter le launcher et selectionner `Open host.yaml`. Sous `albw_settings`, mettre `mod_path` à `"<chemin-vers-la-carte-sd>/luma/titles"`.
+7. (Optionel) Pour que le mod soit automatiquement installé, exécuter le launcher et selectionner `Open host.yaml`. Sous `albw_settings`, mettre `mod_path` à `"<chemin-vers-la-carte-sd>/luma/titles"`. Si vous êtes sur Windows, faîtes bien attention à remplacer tous les `\` par des `/` dans le chemin.
 
 
 ## Générer une partie

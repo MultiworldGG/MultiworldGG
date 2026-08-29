@@ -855,59 +855,44 @@ location_gsw_info = {
 }
 
 INGREDIENT_UNLOCK_FLAGS = {
-    126: 6460,  # Gold Bar
-    127: 6461,  # Gold Bar x3
-    128: 6462,  # Thunder Bolt
-    129: 6463,  # Thunder Rage
-    130: 6464,  # Shooting Star
-    131: 6465,  # Ice Storm
-    132: 6466,  # Fire Flower
-    133: 6467,  # Earth Quake
-    134: 6468,  # Boo's Sheet
-    135: 6469,  # Volt Shroom
-    136: 6470,  # Repel Cape
-    137: 6471,  # Ruin Powder
-    138: 6472,  # Sleepy Sheep
-    142: 6473,  # Power Punch
-    143: 6474,  # Courage Shell
-    146: 6475,  # Mini Mr. Mini
-    147: 6476,  # Mr. Softener
-    148: 6477,  # Mushroom
-    149: 6478,  # Super Shroom
-    150: 6479,  # Ultra Shroom
-    151: 6480,  # Life Shroom
-    152: 6481,  # Dried Shroom
-    153: 6482,  # Tasty Tonic
-    154: 6483,  # Honey Syrup
-    155: 6484,  # Maple Syrup
-    156: 6485,  # Jammin' Jelly
-    157: 6486,  # Slow Shroom
-    158: 6487,  # Gradual Syrup
-    159: 6488,  # Hot Dog
-    161: 6489,  # Point Swap
-    165: 6490,  # Whacka Bump
-    166: 6491,  # Coconut
-    167: 6492,  # Dried Bouquet
-    168: 6493,  # Mystic Egg
-    169: 6494,  # Golden Leaf
-    170: 6495,  # Keel Mango
-    171: 6496,  # Fresh Pasta
-    172: 6497,  # Cake Mix
-    173: 6498,  # Hot Sauce
-    174: 6499,  # Turtley Leaf
-    175: 6500,  # Horsetail
-    176: 6501,  # Peachy Peach
-    177: 6502,  # Spite Pouch
-    179: 6503,  # Shroom Fry
-    192: 6504,  # Spicy Soup
-    193: 6505,  # Zess Dinner
-    201: 6506,  # Snow Bunny
-    202: 6507,  # Coconut Bomb
-    209: 6508,  # Egg Bomb
-    213: 6509,  # Poison Shroom
-    215: 6510,  # Mango Delight
-    219: 6511,  # Couple's Cake
-    220: 6512,  # Inky Sauce
+    # Mirrors kIngredientIds in the mod: index order defines GSWF(6460+k).
+    130: 6460,  # Shooting Star
+    131: 6461,  # Ice Storm
+    132: 6462,  # Fire Flower
+    135: 6463,  # Volt Shroom
+    137: 6464,  # Ruin Powder
+    143: 6465,  # Courage Shell
+    148: 6466,  # Mushroom
+    149: 6467,  # Super Shroom
+    150: 6468,  # Ultra Shroom
+    151: 6469,  # Life Shroom
+    153: 6470,  # Tasty Tonic
+    154: 6471,  # Honey Syrup
+    155: 6472,  # Maple Syrup
+    156: 6473,  # Jammin' Jelly
+    157: 6474,  # Slow Shroom
+    161: 6475,  # Point Swap
+    165: 6476,  # Whacka Bump
+    166: 6477,  # Coconut
+    167: 6478,  # Dried Bouquet
+    168: 6479,  # Mystic Egg
+    169: 6480,  # Golden Leaf
+    170: 6481,  # Keel Mango
+    171: 6482,  # Fresh Pasta
+    172: 6483,  # Cake Mix
+    173: 6484,  # Hot Sauce
+    174: 6485,  # Turtley Leaf
+    176: 6486,  # Peachy Peach
+    179: 6487,  # Shroom Fry
+    192: 6488,  # Spicy Soup
+    193: 6489,  # Zess Dinner
+    201: 6490,  # Snow Bunny
+    202: 6491,  # Coconut Bomb
+    209: 6492,  # Egg Bomb
+    213: 6493,  # Poison Shroom
+    215: 6494,  # Mango Delight
+    219: 6495,  # Couple's Cake
+    220: 6496,  # Inky Sauce
 }
 
 item_prices = {

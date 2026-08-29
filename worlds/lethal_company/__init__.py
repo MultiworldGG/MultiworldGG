@@ -62,7 +62,11 @@ class LethalCompanyWeb(WebWorld):
             options.DayDecreaseWeight,
             options.BrackenTrapWeight,
             options.HauntTrapWeight
-        ], True)
+        ], True),
+        OptionGroup("Protocols", [
+            options.DeathLink,
+            options.DeathLinkScrapLoss
+        ])
     ]
     tutorials = [Tutorial(
         "Multiworld Setup Guide",
@@ -194,7 +198,8 @@ class LethalCompanyWorld(World):
         calculate_credits(self)
 
         slot_data = {
-            "deathLink": self.options.death_link.value
+            "deathLink": self.options.death_link.value,
+            "deathLinkScrapLossPercent": self.options.death_link_percent_scrap_lost.value
         }
 
         for option in dir(self.options):

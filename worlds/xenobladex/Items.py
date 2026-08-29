@@ -101,7 +101,12 @@ def create_optional_items(world: "XenobladeXWorld", count: int) -> list[Xenoblad
     # depending on how many slots are left in the location pool
     optional_items: list[Itm] = []
 
-    optionals_data = {prefix: len(category) for prefix, category in xenobladeXOptionalItems.items()
+    # filter only non required items
+    non_required_optional_items = {
+        prefix: [itm for itm in category if not itm.required]
+        for prefix, category in xenobladeXOptionalItems.items()
+    }
+    optionals_data = {prefix: len(category) for prefix, category in non_required_optional_items.items()
                       if prefix and getattr(world.options, prefix.lower()).value}
     optionals_length: int = sum(optionals_data.values())
     missing_item_count: int = min(count, optionals_length)
@@ -137,8 +142,8 @@ def create_optional_items(world: "XenobladeXWorld", count: int) -> list[Xenoblad
             else:
                 for prefix, count in optionals_counter.items():
                     # Cap count to list size, should have no effect in almost all cases except for SKWPN on reroll
-                    count = min(count, len(xenobladeXOptionalItems[prefix]))
-                    optional_items += world.random.sample(xenobladeXOptionalItems[prefix], count)
+                    count = min(count, len(non_required_optional_items[prefix]))
+                    optional_items += world.random.sample(non_required_optional_items[prefix], count)
                 break
     return [world.create_item(itm.get_item()) for itm in optional_items]
 

@@ -46,6 +46,9 @@ def randomize_bosses(world: "TTYDWorld") -> None:
     else:
         raise ValueError(f"Invalid boss randomizer option: {option}")
 
+    if world.options.disable_intermissions:
+        pool = [b for b in pool if b.name != "btlgrp_muj_muj_kanbu"]
+
     # Whole-group shuffle only: move each group's loadout intact, matching by size.
     groups = [b.enemy_ids[:] for b in pool]
     world.random.shuffle(groups)

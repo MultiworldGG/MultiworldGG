@@ -111,8 +111,66 @@ sm64hack_items: Tuple[str, ...] = (
     "Temporary Vanish Cap",
     "Cap Timer Extension",
     "+1 Wallkick Frame",
-    "Steve"
+    "Steve",
+    "Progressive Main Course",
+    "Progressive Bowser Course",
+    "+1 Life", #sr8 memes
+    "+1 Bomb",
+    "Lower Difficulty",
+    "Mario A - Italian Plumber",
+    "Next Stage",
+    "Extra Stage",
+    "+1 Power Point",
+    "-1 Life",
+    "Aya Speed"
 )
+
+sr8traps: Tuple[str, ...] = (
+    "+1 Bomb",
+    "+1 Power Point",
+    "-1 Life",
+    "Aya Speed",
+    "Mario Choir",
+    "Heave-Ho Trap",
+    "Squish Trap",
+    "Spin Trap",
+    "Tempo Trap"
+)
+
+sr8filler: Tuple[str, ...] = (
+    "+1 Life",
+    "Coin"
+)
+
+sr8courseorder: Tuple[str, ...] = (
+    "Course 2",
+    "Course 3",
+    "Course 4",
+    "Secret 2",
+    "Course 5",
+    "Course 6",
+    "Bowser 1",
+    "Course 7",
+    "Course 8",
+    "Course 9",
+    "Bowser 3",
+    "Course 10",
+    "Course 11",
+    "Bowser 2",
+    "Course 12",
+    "Course 13",
+    "Wing Cap",
+    "Course 14",
+    "Course 15",
+    "Secret 3"
+)
+
+sr8extraorder: Tuple[str, ...] = (
+    "Secret 1",
+    "Vanish Cap",
+    "Metal Cap"
+)
+
 keys: Set[str] = {
     "Key 1",
     "Key 2"
@@ -152,7 +210,9 @@ tickets: Set[str] = {
     "Metal Cap Cannon",
     "Wing Cap Cannon",
     "Vanish Cap Cannon",
-    "Overworld Cannon"
+    "Overworld Cannon",
+    "Progressive Main Course",
+    "Progressive Bowser Course"
 }
 fullmoves: Set[str] = {
     "Progressive Jump",

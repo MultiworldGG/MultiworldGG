@@ -114,6 +114,11 @@ class Compasses(Choice):
     option_anywhere = 1
     option_startwith = 2
 
+class KeyRings(Toggle):
+    """Replace all the small keys for a dungeon with a single Key Ring for that dungeon that opens all the locked doors."""
+    """These are placed either in their own dungeons or anywhere in the multiworld, depending on the small_keys setting."""
+    display_name = "Key Rings"
+
 class LampAndNetAsWeapons(Toggle):
     """Treat the base Lamp and Net as damage-dealing weapons?
     - The red base Lamp and Net each deal 1/2 the damage of the Forgotten Sword (i.e. they're VERY BAD weapons).
@@ -240,6 +245,14 @@ class PurplePotionBottles(Toggle):
     """Fills all Empty Bottles with a free Purple Potion."""
     display_name = "Purple Potion Bottles"
 
+# class BeeTrapPercentage(Range):
+#     """Choose the percentage of junk items (green, blue, and red rupees, and monster parts)
+#     to be replaced by bee traps."""
+#     display_name = "Bee Trap Percentage"
+#     range_start = 0
+#     range_end = 100
+#     default = 0
+
 @dataclass
 class ALBWOptions(PerGameCommonOptions):
     death_link: DeathLink
@@ -255,6 +268,7 @@ class ALBWOptions(PerGameCommonOptions):
     small_keys: SmallKeys
     big_keys: BigKeys
     compasses: Compasses
+    key_rings: KeyRings
     lamp_and_net_as_weapons: LampAndNetAsWeapons
     no_progression_enemies: NoProgressionEnemies
     assured_weapon: AssuredWeapon
@@ -273,6 +287,7 @@ class ALBWOptions(PerGameCommonOptions):
     chest_size_matches_contents: ChestSizeMatchesContents
     treacherous_tower_floors: TreacherousTowerFloors
     purple_potion_bottles: PurplePotionBottles
+    # bee_trap_percentage: BeeTrapPercentage
     start_inventory_from_pool: StartInventoryPool
 
     @classmethod

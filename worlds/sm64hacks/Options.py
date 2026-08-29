@@ -225,14 +225,26 @@ class TurnOffTraps(OptionSet):
 class SignRandomization(Toggle):
     """There is 1 check per level (not per sign) for reading a sign inside it. If you are generating a solo game and it fails, the logic might be too restrictive; enabling this will ease up the logic a bit since there is usually a sign right next to the start"""
 
-class LevelTickets(Toggle):
-    """Generate level tickets for each level, excluding the overworlds and usually course 1. There is logic to account for the scenario of going through a different level to access a level."""
+class LevelTickets(Choice):
+    """Generate level tickets for each level, usually excluding the overworlds. There is logic to account for the scenario of going through a different level to access a level. Some JSONs do not support this feature.
+    
+    Off - Level Tickets will not exist
+
+    Progressive - Level tickets will block off levels, and the tickets for main courses and bowser courses will be progressively unlocked in sequential order
+
+    Nonprogressive - Level tickets will block off levels, and each level has a seperate and unique ticket."""
+    display_name = "Level Tickets"
+    option_off = 0
+    option_progressive = 1
+    option_nonprogressive = 2
 
 class MoveRandomization(Toggle):
     """Moves are now items and you will need them in order to use mario's moveset. 
     The moves randomized are 3 progressive jumps (single, double, triple), long jumps, backflips, sideflips, wallkicks, dives, ground pounding, kicking, punching, slidekicking, and riding a shell
     You will always start with a random choice of either one of the 3 jumps, long jumps, backflips, or sideflips, since otherwise you can easily run into generation issues. 
-    If you put one of those in your starting items, however, you will always start with it."""
+    If you put one of those in your starting items, however, you will always start with it.
+    
+    Some JSONs do not support this feature."""
 
 class ForceMoveRandomization(Toggle):
     """Moves will be randomized even if the hack you are playing does not have logic for it. Use at your own risk, depending on the hack and your starting jump option it can very likely lead to impossible seeds"""

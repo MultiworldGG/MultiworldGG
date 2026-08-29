@@ -56,7 +56,6 @@ If you're good enough at the combat to want harder-than-vanilla fights, it's wor
 [N00byKing's NineSolsTracker mod](https://thunderstore.io/c/nine-sols/p/N00byKing/NineSolsTracker/) may help with finding items and chests in-game, but it doesn't know the randomizer logic.
 
 Players have also reported the following mods work perfectly fine with the randomizer:
-- CustomSols
 - HPNumbers
 - PromisedEigong
 - YiXPNumber

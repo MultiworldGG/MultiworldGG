@@ -3400,7 +3400,14 @@
     ]
   },
   "Petalburg Westside: Bub-ulber's Trouble Reward": {
-    "can_reach": "Glitzville Arena: Gold Star"
+    "and": [
+        {
+            "can_reach": "Glitzville Arena: Gold Star"
+        },
+        {
+            "has": "Contact Lens"
+        }
+    ]
   },
   "Rogueport Center: Ms. Mowz's Trouble Reward": {
     "and": [
@@ -3601,7 +3608,7 @@
       }
     ]
   },
-  "Rogueport Westside: Cook Shroom Fry": {
+  "Rogueport Center: Cook Shroom Fry": {
     "and": [
       {
         "has": "Contact Lens"
@@ -3611,7 +3618,7 @@
       }
     ]
   },
-  "Rogueport Westside: Cook Shroom Roast": {
+  "Rogueport Center: Cook Shroom Roast": {
     "and": [
       {
         "has": "Contact Lens"
@@ -3621,7 +3628,7 @@
       }
     ]
   },
-  "Rogueport Westside: Cook Shroom Steak": {
+  "Rogueport Center: Cook Shroom Steak": {
     "and": [
       {
         "has": "Contact Lens"
@@ -3631,7 +3638,7 @@
       }
     ]
   },
-  "Rogueport Westside: Cook Mistake": {
+  "Rogueport Center: Cook Mistake": {
     "and": [
       {
         "has": "Contact Lens"
@@ -3641,7 +3648,7 @@
       }
     ]
   },
-  "Rogueport Westside: Cook Honey Shroom": {
+  "Rogueport Center: Cook Honey Shroom": {
     "and": [
       {
         "has": "Contact Lens"
@@ -3660,7 +3667,7 @@
       }
     ]
   },
-  "Rogueport Westside: Cook Maple Shroom": {
+  "Rogueport Center: Cook Maple Shroom": {
     "and": [
       {
         "has": "Contact Lens"
@@ -3679,7 +3686,7 @@
       }
     ]
   },
-  "Rogueport Westside: Cook Jelly Shroom": {
+  "Rogueport Center: Cook Jelly Shroom": {
     "and": [
       {
         "has": "Contact Lens"
@@ -3698,7 +3705,7 @@
       }
     ]
   },
-  "Rogueport Westside: Cook Honey Super": {
+  "Rogueport Center: Cook Honey Super": {
     "and": [
       {
         "has": "Contact Lens"
@@ -3717,7 +3724,7 @@
       }
     ]
   },
-  "Rogueport Westside: Cook Maple Super": {
+  "Rogueport Center: Cook Maple Super": {
     "and": [
       {
         "has": "Contact Lens"
@@ -3736,7 +3743,7 @@
       }
     ]
   },
-  "Rogueport Westside: Cook Jelly Super": {
+  "Rogueport Center: Cook Jelly Super": {
     "and": [
       {
         "has": "Contact Lens"
@@ -3755,7 +3762,7 @@
       }
     ]
   },
-  "Rogueport Westside: Cook Honey Ultra": {
+  "Rogueport Center: Cook Honey Ultra": {
     "and": [
       {
         "has": "Contact Lens"
@@ -3774,7 +3781,7 @@
       }
     ]
   },
-  "Rogueport Westside: Cook Maple Ultra": {
+  "Rogueport Center: Cook Maple Ultra": {
     "and": [
       {
         "has": "Contact Lens"
@@ -3793,7 +3800,7 @@
       }
     ]
   },
-  "Rogueport Westside: Cook Jelly Ultra": {
+  "Rogueport Center: Cook Jelly Ultra": {
     "and": [
       {
         "has": "Contact Lens"
@@ -3812,7 +3819,7 @@
       }
     ]
   },
-  "Rogueport Westside: Cook Spicy Soup": {
+  "Rogueport Center: Cook Spicy Soup": {
     "and": [
       {
         "has": "Contact Lens"
@@ -3822,7 +3829,7 @@
       }
     ]
   },
-  "Rogueport Westside: Cook Zess Dinner": {
+  "Rogueport Center: Cook Zess Dinner": {
     "and": [
       {
         "has": "Contact Lens"
@@ -3841,7 +3848,7 @@
       }
     ]
   },
-  "Rogueport Westside: Cook Zess Special": {
+  "Rogueport Center: Cook Zess Special": {
     "and": [
       {
         "has": "Contact Lens"
@@ -3857,7 +3864,7 @@
       }
     ]
   },
-  "Rogueport Westside: Cook Zess Deluxe": {
+  "Rogueport Center: Cook Zess Deluxe": {
     "and": [
       {
         "has": "Contact Lens"
@@ -3876,7 +3883,7 @@
       }
     ]
   },
-  "Rogueport Westside: Cook Zess Dynamite": {
+  "Rogueport Center: Cook Zess Dynamite": {
     "and": [
       {
         "has": "Contact Lens"
@@ -3895,7 +3902,7 @@
       }
     ]
   },
-  "Rogueport Westside: Cook Zess Tea": {
+  "Rogueport Center: Cook Zess Tea": {
     "and": [
       {
         "has": "Contact Lens"
@@ -3905,7 +3912,7 @@
       }
     ]
   },
-  "Rogueport Westside: Cook Space Food": {
+  "Rogueport Center: Cook Space Food": {
     "and": [
       {
         "has": "Contact Lens"
@@ -3924,7 +3931,7 @@
       }
     ]
   },
-  "Rogueport Westside: Cook Icicle Pop": {
+  "Rogueport Center: Cook Icicle Pop": {
     "and": [
       {
         "has": "Contact Lens"
@@ -3943,7 +3950,7 @@
       }
     ]
   },
-  "Rogueport Westside: Cook Zess Frappe": {
+  "Rogueport Center: Cook Zess Frappe": {
     "and": [
       {
         "has": "Contact Lens"
@@ -3962,7 +3969,7 @@
       }
     ]
   },
-  "Rogueport Westside: Cook Snow Bunny": {
+  "Rogueport Center: Cook Snow Bunny": {
     "and": [
       {
         "has": "Contact Lens"
@@ -3981,7 +3988,7 @@
       }
     ]
   },
-  "Rogueport Westside: Cook Coconut Bomb": {
+  "Rogueport Center: Cook Coconut Bomb": {
     "and": [
       {
         "has": "Contact Lens"
@@ -4000,7 +4007,7 @@
       }
     ]
   },
-  "Rogueport Westside: Cook Courage Meal": {
+  "Rogueport Center: Cook Courage Meal": {
     "and": [
       {
         "has": "Contact Lens"
@@ -4019,7 +4026,7 @@
       }
     ]
   },
-  "Rogueport Westside: Cook Shroom Cake": {
+  "Rogueport Center: Cook Shroom Cake": {
     "and": [
       {
         "has": "Contact Lens"
@@ -4038,7 +4045,7 @@
       }
     ]
   },
-  "Rogueport Westside: Cook Shroom Crepe": {
+  "Rogueport Center: Cook Shroom Crepe": {
     "and": [
       {
         "has": "Contact Lens"
@@ -4057,7 +4064,7 @@
       }
     ]
   },
-  "Rogueport Westside: Cook Mousse Cake": {
+  "Rogueport Center: Cook Mousse Cake": {
     "and": [
       {
         "has": "Contact Lens"
@@ -4067,7 +4074,7 @@
       }
     ]
   },
-  "Rogueport Westside: Cook Fried Egg": {
+  "Rogueport Center: Cook Fried Egg": {
     "and": [
       {
         "has": "Contact Lens"
@@ -4077,7 +4084,7 @@
       }
     ]
   },
-  "Rogueport Westside: Cook Fruit Parfait": {
+  "Rogueport Center: Cook Fruit Parfait": {
     "and": [
       {
         "has": "Contact Lens"
@@ -4096,7 +4103,7 @@
       }
     ]
   },
-  "Rogueport Westside: Cook Egg Bomb": {
+  "Rogueport Center: Cook Egg Bomb": {
     "and": [
       {
         "has": "Contact Lens"
@@ -4115,7 +4122,7 @@
       }
     ]
   },
-  "Rogueport Westside: Cook Ink Pasta": {
+  "Rogueport Center: Cook Ink Pasta": {
     "and": [
       {
         "has": "Contact Lens"
@@ -4134,7 +4141,7 @@
       }
     ]
   },
-  "Rogueport Westside: Cook Spaghetti": {
+  "Rogueport Center: Cook Spaghetti": {
     "and": [
       {
         "has": "Contact Lens"
@@ -4144,7 +4151,7 @@
       }
     ]
   },
-  "Rogueport Westside: Cook Shroom Broth": {
+  "Rogueport Center: Cook Shroom Broth": {
     "and": [
       {
         "has": "Contact Lens"
@@ -4163,7 +4170,7 @@
       }
     ]
   },
-  "Rogueport Westside: Cook Poison Shroom": {
+  "Rogueport Center: Cook Poison Shroom": {
     "and": [
       {
         "has": "Contact Lens"
@@ -4182,7 +4189,7 @@
       }
     ]
   },
-  "Rogueport Westside: Cook Choco Cake": {
+  "Rogueport Center: Cook Choco Cake": {
     "and": [
       {
         "has": "Contact Lens"
@@ -4201,7 +4208,7 @@
       }
     ]
   },
-  "Rogueport Westside: Cook Mango Delight": {
+  "Rogueport Center: Cook Mango Delight": {
     "and": [
       {
         "has": "Contact Lens"
@@ -4220,7 +4227,7 @@
       }
     ]
   },
-  "Rogueport Westside: Cook Love Pudding": {
+  "Rogueport Center: Cook Love Pudding": {
     "and": [
       {
         "has": "Contact Lens"
@@ -4239,7 +4246,7 @@
       }
     ]
   },
-  "Rogueport Westside: Cook Meteor Meal": {
+  "Rogueport Center: Cook Meteor Meal": {
     "and": [
       {
         "has": "Contact Lens"
@@ -4258,7 +4265,7 @@
       }
     ]
   },
-  "Rogueport Westside: Cook Trial Stew": {
+  "Rogueport Center: Cook Trial Stew": {
     "and": [
       {
         "has": "Contact Lens"
@@ -4277,7 +4284,7 @@
       }
     ]
   },
-  "Rogueport Westside: Cook Couple's Cake": {
+  "Rogueport Center: Cook Couple's Cake": {
     "and": [
       {
         "has": "Contact Lens"
@@ -4296,7 +4303,7 @@
       }
     ]
   },
-  "Rogueport Westside: Cook Inky Sauce": {
+  "Rogueport Center: Cook Inky Sauce": {
     "and": [
       {
         "has": "Contact Lens"
@@ -4315,7 +4322,7 @@
       }
     ]
   },
-  "Rogueport Westside: Cook Omelette Meal": {
+  "Rogueport Center: Cook Omelette Meal": {
     "and": [
       {
         "has": "Contact Lens"
@@ -4334,7 +4341,7 @@
       }
     ]
   },
-  "Rogueport Westside: Cook Koopa Tea": {
+  "Rogueport Center: Cook Koopa Tea": {
     "and": [
       {
         "has": "Contact Lens"
@@ -4344,7 +4351,7 @@
       }
     ]
   },
-  "Rogueport Westside: Cook Koopasta": {
+  "Rogueport Center: Cook Koopasta": {
     "and": [
       {
         "has": "Contact Lens"
@@ -4363,7 +4370,7 @@
       }
     ]
   },
-  "Rogueport Westside: Cook Spicy Pasta": {
+  "Rogueport Center: Cook Spicy Pasta": {
     "and": [
       {
         "has": "Contact Lens"
@@ -4382,7 +4389,7 @@
       }
     ]
   },
-  "Rogueport Westside: Cook Heartful Cake": {
+  "Rogueport Center: Cook Heartful Cake": {
     "and": [
       {
         "has": "Contact Lens"
@@ -4401,7 +4408,7 @@
       }
     ]
   },
-  "Rogueport Westside: Cook Peach Tart": {
+  "Rogueport Center: Cook Peach Tart": {
     "and": [
       {
         "has": "Contact Lens"
@@ -4420,7 +4427,7 @@
       }
     ]
   },
-  "Rogueport Westside: Cook Electro Pop": {
+  "Rogueport Center: Cook Electro Pop": {
     "and": [
       {
         "has": "Contact Lens"
@@ -4439,7 +4446,7 @@
       }
     ]
   },
-  "Rogueport Westside: Cook Fire Pop": {
+  "Rogueport Center: Cook Fire Pop": {
     "and": [
       {
         "has": "Contact Lens"
@@ -4458,7 +4465,7 @@
       }
     ]
   },
-  "Rogueport Westside: Cook Honey Candy": {
+  "Rogueport Center: Cook Honey Candy": {
     "and": [
       {
         "has": "Contact Lens"
@@ -4477,7 +4484,7 @@
       }
     ]
   },
-  "Rogueport Westside: Cook Coco Candy": {
+  "Rogueport Center: Cook Coco Candy": {
     "and": [
       {
         "has": "Contact Lens"
@@ -4496,7 +4503,7 @@
       }
     ]
   },
-  "Rogueport Westside: Cook Jelly Candy": {
+  "Rogueport Center: Cook Jelly Candy": {
     "and": [
       {
         "has": "Contact Lens"
@@ -4515,7 +4522,7 @@
       }
     ]
   },
-  "Rogueport Westside: Cook Zess Cookie": {
+  "Rogueport Center: Cook Zess Cookie": {
     "and": [
       {
         "has": "Contact Lens"
@@ -4534,7 +4541,7 @@
       }
     ]
   },
-  "Rogueport Westside: Cook Healthy Salad": {
+  "Rogueport Center: Cook Healthy Salad": {
     "and": [
       {
         "has": "Contact Lens"
@@ -4553,7 +4560,7 @@
       }
     ]
   },
-  "Rogueport Westside: Cook Koopa Bun": {
+  "Rogueport Center: Cook Koopa Bun": {
     "and": [
       {
         "has": "Contact Lens"
@@ -4572,7 +4579,7 @@
       }
     ]
   },
-  "Rogueport Westside: Cook Fresh Juice": {
+  "Rogueport Center: Cook Fresh Juice": {
     "and": [
       {
         "has": "Contact Lens"

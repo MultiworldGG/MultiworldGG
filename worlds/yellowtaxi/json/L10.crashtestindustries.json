@@ -1,0 +1,839 @@
+{
+  "Crash Test Industries - Starting Area": {
+    "level": "Crash Test Industries",
+    "sublevel": "Crash Test Industries",
+    "coinbags": {
+      "Crash Test Industries - Coin Bag Behind Start": 100300124
+    },
+    "coins": {
+      "Crash Test Industries - Coin Behind Start #1": 100300108,
+      "Crash Test Industries - Coin Behind Start #2": 100300111,
+      "Crash Test Industries - Coin Behind Start #3": 100300125,
+      "Crash Test Industries - Coin Behind Start #4": 100300123,
+      "Crash Test Industries - Coin Behind Start #5": 100300110,
+      "Crash Test Industries - Coin Behind Start #6": 100300107
+    },
+    "cheeses": {
+      "Crash Test Industries - Cheese by Hat World": 102100004
+    },
+    "connections": {
+      "Crash Test Industries - Pipes Above Starting Area": "PMB/PMJ",
+      "Crash Test Industries - Ledge Below Starting Area": "X2/PMJ",
+      "Crash Test Industries - Hat World Hat": "PMJ",
+      "Crash Test Industries - Pipes Left of First Conveyor Belt": "X1+NHPR | X2/PMJ",
+      "Crash Test Industries - After First Conveyor Belt": "SP/OS/PMJ | X1+PMB"
+    },
+    "subwarps": {
+      "Crash Test Industries - Hat World Entrance": ["Crash Test Industries Hat World", ""]
+    }
+  },
+  "Crash Test Industries - Pipes Above Starting Area": {
+    "level": "Crash Test Industries",
+    "sublevel": "Crash Test Industries",
+    "gears": {
+      "Crash Test Industries - Gear - On Pipe Above Starting Area": 100100007
+    },
+    "coins": {
+      "Crash Test Industries - Coin on Pipe Above Starting Area #1": 100300166,
+      "Crash Test Industries - Coin on Pipe Above Starting Area #2": 100300165,
+      "Crash Test Industries - Coin on Pipe Above Starting Area #3": 100300164,
+      "Crash Test Industries - Coin on Pipe Above Starting Area #4": 100300163
+    },
+    "connections": {
+      "Crash Test Industries - Ledge Below Starting Area": "",
+      "Crash Test Industries - Pipes Left of First Conveyor Belt": ""
+    }
+  },
+  "Crash Test Industries - Ledge Below Starting Area": {
+    "level": "Crash Test Industries",
+    "sublevel": "Crash Test Industries",
+    "gears": {
+      "Crash Test Industries - Gear - Ledge Below Starting Area": 100100014
+    },
+    "chests": {
+      "Crash Test Industries - Chest on Ledge Below Starting Area": 100300007
+    },
+    "coinbags": {
+      "Crash Test Industries - Coin Bag on Ledge Below Starting Area #1": 100300018,
+      "Crash Test Industries - Coin Bag on Ledge Below Starting Area #2": 100300008
+    },
+    "coins": {
+      "Crash Test Industries - Coin on Ledge Below Starting Area #1": 100300017,
+      "Crash Test Industries - Coin on Ledge Below Starting Area #2": 100300016,
+      "Crash Test Industries - Coin on Ledge Below Starting Area #3": 100300015,
+      "Crash Test Industries - Coin on Ledge Below Starting Area #4": 100300014,
+      "Crash Test Industries - Coin on Ledge Below Starting Area #5": 100300013,
+      "Crash Test Industries - Coin on Ledge Below Starting Area #6": 100300012,
+      "Crash Test Industries - Coin on Ledge Below Starting Area #7": 100300011,
+      "Crash Test Industries - Coin on Ledge Below Starting Area #8": 100300010,
+      "Crash Test Industries - Coin on Ledge Below Starting Area #9": 100300009,
+      "Crash Test Industries - Coin on Ledge Below Starting Area #10": 100300006,
+      "Crash Test Industries - Coin on Ledge Below Starting Area #11": 100300005,
+      "Crash Test Industries - Coin on Ledge Below Starting Area #12": 100300004,
+      "Crash Test Industries - Coin on Ledge Below Starting Area #13": 100300003,
+      "Crash Test Industries - Coin on Ledge Below Starting Area #14": 100300002
+    },
+    "moriotrons": {
+      "Crash Test Industries - Mori-O-Tron on Ledge Below Starting Area": "Crash Test Industries - After First Conveyor Belt"
+    }
+  },
+  "Crash Test Industries - Hat World Hat": {
+    "level": "Crash Test Industries",
+    "sublevel": "Crash Test Industries",
+    "safes": {
+      "Crash Test Industries - Safe on Hat World Hat": 100300230
+    },
+    "coinbags": {
+      "Crash Test Industries - Coin Bag on Hat World Hat #1": 100300227,
+      "Crash Test Industries - Coin Bag on Hat World Hat #2": 100300231,
+      "Crash Test Industries - Coin Bag on Hat World Hat #3": 100300229,
+      "Crash Test Industries - Coin Bag on Hat World Hat #4": 100300233
+    },
+    "coins": {
+      "Crash Test Industries - Coin on Hat World Hat #1": 100300228,
+      "Crash Test Industries - Coin on Hat World Hat #2": 100300226,
+      "Crash Test Industries - Coin on Hat World Hat #3": 100300234,
+      "Crash Test Industries - Coin on Hat World Hat #4": 100300232
+    }
+  },
+  "Crash Test Industries - Pipes Left of First Conveyor Belt": {
+    "level": "Crash Test Industries",
+    "sublevel": "Crash Test Industries",
+    "chests": {
+      "Crash Test Industries - Chest on Pipe Left of First Conveyor Belt #1": 100300115,
+      "Crash Test Industries - Chest on Pipe Left of First Conveyor Belt #2": 100300114,
+      "Crash Test Industries - Chest on Pipe Left of First Conveyor Belt #3": 100300119,
+      "Crash Test Industries - Chest on Pipe Left of First Conveyor Belt #4": 100300118
+    },
+    "coins": {
+      "Crash Test Industries - Coin on Pipe Left of First Conveyor Belt #1": 100300113,
+      "Crash Test Industries - Coin on Pipe Left of First Conveyor Belt #2": 100300112,
+      "Crash Test Industries - Coin on Pipe Left of First Conveyor Belt #3": 100300117,
+      "Crash Test Industries - Coin on Pipe Left of First Conveyor Belt #4": 100300116,
+      "Crash Test Industries - Coin on Pipe Left of First Conveyor Belt #5": 100300121,
+      "Crash Test Industries - Coin on Pipe Left of First Conveyor Belt #6": 100300120
+    },
+    "connections": {
+      "Crash Test Industries - Ledge Below Starting Area": "",
+      "Crash Test Industries - After First Conveyor Belt": "",
+      "Crash Test Industries - Left Before Second Conveyor Belt": "X1+PMB"
+    }
+  },
+  "Crash Test Industries - After First Conveyor Belt": {
+    "level": "Crash Test Industries",
+    "sublevel": "Crash Test Industries",
+    "checkpoints": {
+      "Crash Test Industries - Checkpoint After First Conveyor Belt": 100900108
+    },
+    "connections": {
+      "Crash Test Industries - Starting Area": "",
+      "Crash Test Industries - After Second Conveyor Belt": "X2/SP & X1/OS/PMB | PMJ",
+      "Crash Test Industries - Left Before Second Conveyor Belt": "X2/SP & OS | PMJ",
+      "Crash Test Industries - Pipe Arches Right of Second Conveyor Belt": "X2/SP & PMB"
+    }
+  },
+  "Crash Test Industries - Left Before Second Conveyor Belt": {
+    "level": "Crash Test Industries",
+    "sublevel": "Crash Test Industries",
+    "cheeses": {
+      "Crash Test Industries - Cheese Left Before Second Conveyor Belt": 102100005
+    },
+    "connections": {
+      "Crash Test Industries - High Ground Left Before Second Conveyor Belt": "X1/OS & PMJ | PMB"
+    }
+  },
+  "Crash Test Industries - High Ground Left Before Second Conveyor Belt": {
+    "level": "Crash Test Industries",
+    "sublevel": "Crash Test Industries",
+    "gears": {
+      "Crash Test Industries - Gear - Platform Left of Second Conveyor Belt": 100100000
+    },
+    "coins": {
+      "Crash Test Industries - Coin on Platform Left of Second Conveyor Belt #1": 100300149,
+      "Crash Test Industries - Coin on Platform Left of Second Conveyor Belt #2": 100300150,
+      "Crash Test Industries - Coin on Platform Left of Second Conveyor Belt #3": 100300151,
+      "Crash Test Industries - Coin on Wall Pipes Left of Second Conveyor Belt #1": 100300173,
+      "Crash Test Industries - Coin on Wall Pipes Left of Second Conveyor Belt #2": 100300172,
+      "Crash Test Industries - Coin on Wall Pipes Left of Second Conveyor Belt #3": 100300171,
+      "Crash Test Industries - Coin on Wall Pipes Left of Second Conveyor Belt #4": 100300170,
+      "Crash Test Industries - Coin on Wall Pipes Left of Second Conveyor Belt #5": 100300169,
+      "Crash Test Industries - Coin on Wall Pipes Left of Second Conveyor Belt #6": 100300168,
+      "Crash Test Industries - Coin on Wall Pipes Left of Second Conveyor Belt #7": 100300167,
+      "Crash Test Industries - Coin on Wall Pipes Left of First Conveyor Belt #1": 100300148,
+      "Crash Test Industries - Coin on Wall Pipes Left of First Conveyor Belt #2": 100300147,
+      "Crash Test Industries - Coin on Wall Pipes Left of First Conveyor Belt #3": 100300146,
+      "Crash Test Industries - Coin on Wall Pipes Left of First Conveyor Belt #4": 100300145,
+      "Crash Test Industries - Coin on Wall Pipes Left of First Conveyor Belt #5": 100300144,
+      "Crash Test Industries - Coin on Wall Pipes Left of First Conveyor Belt #6": 100300143
+    },
+    "connections": {
+      "Crash Test Industries - Ledge Below Starting Area": ""
+    }
+  },
+  "Crash Test Industries - Pipe Arches Right of Second Conveyor Belt": {
+    "level": "Crash Test Industries",
+    "sublevel": "Crash Test Industries",
+    "gears": {
+      "Crash Test Industries - Gear - Pipe Arches Right of Second Conveyor Belt": 100100009
+    },
+    "coins": {
+      "Crash Test Industries - Coin on Lower Pipe Arch Right of Second Conveyor Belt #1": 100300236,
+      "Crash Test Industries - Coin on Lower Pipe Arch Right of Second Conveyor Belt #2": 100300237,
+      "Crash Test Industries - Coin on Lower Pipe Arch Right of Second Conveyor Belt #3": 100300273,
+      "Crash Test Industries - Coin on Lower Pipe Arch Right of Second Conveyor Belt #4": 100300274,
+      "Crash Test Industries - Coin on Lower Pipe Arch Right of Second Conveyor Belt #5": 100300275,
+      "Crash Test Industries - Coin on Lower Pipe Arch Right of Second Conveyor Belt #6": 100300276,
+      "Crash Test Industries - Coin on Lower Pipe Arch Right of Second Conveyor Belt #7": 100300277,
+      "Crash Test Industries - Coin on Lower Pipe Arch Right of Second Conveyor Belt #8": 100300278,
+      "Crash Test Industries - Coin on Middle Pipe Arch Right of Second Conveyor Belt #1": 100300295,
+      "Crash Test Industries - Coin on Middle Pipe Arch Right of Second Conveyor Belt #2": 100300296,
+      "Crash Test Industries - Coin on Middle Pipe Arch Right of Second Conveyor Belt #3": 100300297,
+      "Crash Test Industries - Coin on Middle Pipe Arch Right of Second Conveyor Belt #4": 100300298,
+      "Crash Test Industries - Coin on Middle Pipe Arch Right of Second Conveyor Belt #5": 100300299,
+      "Crash Test Industries - Coin on Highest Pipe Arch Right of Second Conveyor Belt #1": 100300350,
+      "Crash Test Industries - Coin on Highest Pipe Arch Right of Second Conveyor Belt #2": 100300351,
+      "Crash Test Industries - Coin on Highest Pipe Arch Right of Second Conveyor Belt #3": 100300352,
+      "Crash Test Industries - Coin on Highest Pipe Arch Right of Second Conveyor Belt #4": 100300353,
+      "Crash Test Industries - Coin on Highest Pipe Arch Right of Second Conveyor Belt #5": 100300354,
+      "Crash Test Industries - Coin on Highest Pipe Arch Right of Second Conveyor Belt #6": 100300355
+    },
+    "connections": {
+      "Crash Test Industries - Path Along Wall Right of Second Conveyor Belt": ""
+    }
+  },
+  "Crash Test Industries - After Second Conveyor Belt": {
+    "level": "Crash Test Industries",
+    "sublevel": "Crash Test Industries",
+    "gears": {
+      "Crash Test Industries - Gear - On Archway After Second Conveyor Belt": 100100001
+    },
+    "checkpoints": {
+      "Crash Test Industries - Checkpoint After Second Conveyor Belt": 100900272
+    },
+    "cheeses": {
+      "Crash Test Industries - Cheese Before Third Conveyor Belt": 102100001
+    },
+    "connections": {
+      "Crash Test Industries - After First Conveyor Belt": "",
+      "Crash Test Industries - Platforms Above Second Checkpoint Area": "PMJ/PMB",
+      "Crash Test Industries - After Third Conveyor Belt": "X2/SP & X1/PMB | PMJ",
+      "Crash Test Industries - Orange Bridge Left of Third Conveyor Belt": "OS & X2/PMJ/PMB",
+      "Crash Test Industries - Pipe Arches Right of Second Conveyor Belt": "X1 & PMB/PMJ"
+    }
+  },
+  "Crash Test Industries - Platforms Above Second Checkpoint Area": {
+    "level": "Crash Test Industries",
+    "sublevel": "Crash Test Industries",
+    "coinbags": {
+      "Crash Test Industries - Coin Bag on Platform Left of Archway After Second Conveyor Belt": 100300300
+    },
+    "coins": {
+      "Crash Test Industries - Coin on Platform Left of Archway After Second Conveyor Belt #1": 100300204,
+      "Crash Test Industries - Coin on Platform Left of Archway After Second Conveyor Belt #2": 100300205,
+      "Crash Test Industries - Coin on Platform Left of Archway After Second Conveyor Belt #3": 100300206,
+      "Crash Test Industries - Coin on Platform Left of Archway After Second Conveyor Belt #4": 100300207,
+      "Crash Test Industries - Coin on Platform Left of Archway After Second Conveyor Belt #5": 100300208,
+      "Crash Test Industries - Coin on Platform Left of Archway After Second Conveyor Belt #6": 100300209,
+      "Crash Test Industries - Coin on Platform Left of Archway After Second Conveyor Belt #7": 100300210,
+      "Crash Test Industries - Coin on Platform Left of Archway After Second Conveyor Belt #8": 100300211,
+      "Crash Test Industries - Coin on Platform Left of Archway After Second Conveyor Belt #9": 100300212,
+      "Crash Test Industries - Coin on Platform Left of Archway After Second Conveyor Belt #10": 100300213,
+      "Crash Test Industries - Coin on Platform Left of Archway After Second Conveyor Belt #11": 100300214,
+      "Crash Test Industries - Coin on Platform Left of Archway After Second Conveyor Belt #12": 100300215,
+      "Crash Test Industries - Coin on Platform Left of Archway After Second Conveyor Belt #13": 100300216,
+      "Crash Test Industries - Coin on Platform Left of Archway After Second Conveyor Belt #14": 100300217,
+      "Crash Test Industries - Coin on Platform Left of Archway After Second Conveyor Belt #15": 100300218,
+      "Crash Test Industries - Coin on Platform Left of Archway After Second Conveyor Belt #16": 100300219,
+      "Crash Test Industries - Coin on Platform Left of Archway After Second Conveyor Belt #17": 100300220,
+      "Crash Test Industries - Coin on Platform Left of Archway After Second Conveyor Belt #18": 100300221,
+      "Crash Test Industries - Coin on Platform Left of Archway After Second Conveyor Belt #19": 100300222,
+      "Crash Test Industries - Coin on Platform Left of Archway After Second Conveyor Belt #20": 100300223,
+      "Crash Test Industries - Coin on Platform Left of Archway After Second Conveyor Belt #21": 100300224,
+      "Crash Test Industries - Coin on Platform Left of Archway After Second Conveyor Belt #22": 100300238,
+      "Crash Test Industries - Coin on Platform Left of Archway After Second Conveyor Belt #23": 100300263,
+      "Crash Test Industries - Coin on Platform Left of Archway After Second Conveyor Belt #24": 100300279,
+      "Crash Test Industries - Coin on Platform Left of Archway After Second Conveyor Belt #25": 100300283,
+      "Crash Test Industries - Coin on Platform Right of Archway After Second Conveyor Belt #1": 100300202,
+      "Crash Test Industries - Coin on Platform Right of Archway After Second Conveyor Belt #2": 100300201,
+      "Crash Test Industries - Coin on Platform Right of Archway After Second Conveyor Belt #3": 100300200,
+      "Crash Test Industries - Coin on Platform Right of Archway After Second Conveyor Belt #4": 100300199,
+      "Crash Test Industries - Coin on Platform Right of Archway After Second Conveyor Belt #5": 100300198,
+      "Crash Test Industries - Coin on Platform Right of Archway After Second Conveyor Belt #6": 100300197,
+      "Crash Test Industries - Coin on Platform Right of Archway After Second Conveyor Belt #7": 100300196,
+      "Crash Test Industries - Coin on Platform Right of Archway After Second Conveyor Belt #8": 100300195,
+      "Crash Test Industries - Coin on Platform Right of Archway After Second Conveyor Belt #9": 100300194,
+      "Crash Test Industries - Coin on Platform Right of Archway After Second Conveyor Belt #10": 100300193,
+      "Crash Test Industries - Coin on Platform Right of Archway After Second Conveyor Belt #11": 100300192,
+      "Crash Test Industries - Coin on Platform Right of Archway After Second Conveyor Belt #12": 100300191,
+      "Crash Test Industries - Coin on Platform Right of Archway After Second Conveyor Belt #13": 100300190,
+      "Crash Test Industries - Coin on Platform Right of Archway After Second Conveyor Belt #14": 100300189,
+      "Crash Test Industries - Coin on Platform Right of Archway After Second Conveyor Belt #15": 100300188,
+      "Crash Test Industries - Coin on Platform Right of Archway After Second Conveyor Belt #16": 100300187,
+      "Crash Test Industries - Coin on Platform Right of Archway After Second Conveyor Belt #17": 100300186,
+      "Crash Test Industries - Coin on Platform Right of Archway After Second Conveyor Belt #18": 100300185
+    },
+    "connections": {
+      "Crash Test Industries - Higher Platforms Above Second Checkpoint Area": "PMB | X3+PMJ",
+      "Crash Test Industries - Path Along Wall Right of Second Conveyor Belt": "OS"
+    }
+  },
+  "Crash Test Industries - Path Along Wall Right of Second Conveyor Belt": {
+    "level": "Crash Test Industries",
+    "sublevel": "Crash Test Industries",
+    "chests": {
+      "Crash Test Industries - Chest on Path Above First Checkpoint Area": 100300294
+    },
+    "coinbags": {
+      "Crash Test Industries - Coin Bag on Wall Conveyor Belt Right of Second Conveyor Belt": 100300179,
+      "Crash Test Industries - Coin Bag on Path Above First Checkpoint Area": 100300293
+    },
+    "coins": {
+      "Crash Test Industries - Coin on Wall Conveyor Belt Right of Second Conveyor Belt #1": 100300184,
+      "Crash Test Industries - Coin on Wall Conveyor Belt Right of Second Conveyor Belt #2": 100300183,
+      "Crash Test Industries - Coin on Wall Conveyor Belt Right of Second Conveyor Belt #3": 100300182,
+      "Crash Test Industries - Coin on Wall Conveyor Belt Right of Second Conveyor Belt #4": 100300181,
+      "Crash Test Industries - Coin on Wall Conveyor Belt Right of Second Conveyor Belt #5": 100300180,
+      "Crash Test Industries - Coin on Wall Conveyor Belt Right of Second Conveyor Belt #6": 100300178,
+      "Crash Test Industries - Coin on Wall Conveyor Belt Right of Second Conveyor Belt #7": 100300177,
+      "Crash Test Industries - Coin on Wall Conveyor Belt Right of Second Conveyor Belt #8": 100300176,
+      "Crash Test Industries - Coin on Wall Conveyor Belt Right of Second Conveyor Belt #9": 100300175,
+      "Crash Test Industries - Coin on Wall Conveyor Belt Right of Second Conveyor Belt #10": 100300174,
+      "Crash Test Industries - Coin on Path Above First Checkpoint Area #1": 100300286,
+      "Crash Test Industries - Coin on Path Above First Checkpoint Area #2": 100300287,
+      "Crash Test Industries - Coin on Path Above First Checkpoint Area #3": 100300288,
+      "Crash Test Industries - Coin on Path Above First Checkpoint Area #4": 100300289,
+      "Crash Test Industries - Coin on Path Above First Checkpoint Area #5": 100300290,
+      "Crash Test Industries - Coin on Path Above First Checkpoint Area #6": 100300291,
+      "Crash Test Industries - Coin on Path Above First Checkpoint Area #7": 100300292,
+      "Crash Test Industries - Coin Between Paths Above First Checkpoint Area #1": 100300306,
+      "Crash Test Industries - Coin Between Paths Above First Checkpoint Area #2": 100300314,
+      "Crash Test Industries - Coin Between Paths Above First Checkpoint Area #3": 100300349,
+      "Crash Test Industries - Coin in Air Along Right Wall Towards Starting Area #1": 100300285,
+      "Crash Test Industries - Coin in Air Along Right Wall Towards Starting Area #2": 100300302,
+      "Crash Test Industries - Coin in Air Along Right Wall Towards Starting Area #3": 100300305,
+      "Crash Test Industries - Coin in Air Along Right Wall Towards Starting Area #4": 100300313
+    },
+    "connections": {
+      "Crash Test Industries - Path Above Second Conveyor Belt": "PMB | X1+PMJ",
+      "Crash Test Industries - High Ducts Right of Starting Area": "PMB | X3+PMJ"
+    }
+  },
+  "Crash Test Industries - Path Above Second Conveyor Belt": {
+    "level": "Crash Test Industries",
+    "sublevel": "Crash Test Industries",
+    "gears": {
+      "Crash Test Industries - Gear - Above Second Conveyor Belt": 100100002
+    },
+    "coins": {
+      "Crash Test Industries - Coin on Pathway Above Second Conveyor Belt #1": 100300318,
+      "Crash Test Industries - Coin on Pathway Above Second Conveyor Belt #2": 100300319,
+      "Crash Test Industries - Coin on Pathway Above Second Conveyor Belt #3": 100300320,
+      "Crash Test Industries - Coin on Pathway Above Second Conveyor Belt #4": 100300321,
+      "Crash Test Industries - Coin on Pathway Above Second Conveyor Belt #5": 100300322,
+      "Crash Test Industries - Coin on Pathway Above Second Conveyor Belt #6": 100300323,
+      "Crash Test Industries - Coin on Pathway Above Second Conveyor Belt #7": 100300324,
+      "Crash Test Industries - Coin on Pathway Above Second Conveyor Belt #8": 100300325,
+      "Crash Test Industries - Coin on Pathway Above Second Conveyor Belt #9": 100300326,
+      "Crash Test Industries - Coin on Pathway Above Second Conveyor Belt #10": 100300327,
+      "Crash Test Industries - Coin on Pathway Above Second Conveyor Belt #11": 100300328,
+      "Crash Test Industries - Coin on Pathway Above Second Conveyor Belt #12": 100300329,
+      "Crash Test Industries - Coin on Pathway Above Second Conveyor Belt #13": 100300330,
+      "Crash Test Industries - Coin on Pathway Above Second Conveyor Belt #14": 100300331,
+      "Crash Test Industries - Coin on Pathway Above Second Conveyor Belt #15": 100300332,
+      "Crash Test Industries - Coin on Pathway Above Second Conveyor Belt #16": 100300333,
+      "Crash Test Industries - Coin on Pathway Above Second Conveyor Belt #17": 100300334,
+      "Crash Test Industries - Coin on Pathway Above Second Conveyor Belt #18": 100300335,
+      "Crash Test Industries - Coin on Pathway Above Second Conveyor Belt #19": 100300336,
+      "Crash Test Industries - Coin on Pathway Above Second Conveyor Belt #20": 100300337,
+      "Crash Test Industries - Coin on Pathway Above Second Conveyor Belt #21": 100300338,
+      "Crash Test Industries - Coin on Pathway Above Second Conveyor Belt #22": 100300339,
+      "Crash Test Industries - Coin on Pathway Above Second Conveyor Belt #23": 100300340,
+      "Crash Test Industries - Coin on Pathway Above Second Conveyor Belt #24": 100300341,
+      "Crash Test Industries - Coin on Pathway Above Second Conveyor Belt #25": 100300342,
+      "Crash Test Industries - Coin on Pathway Above Second Conveyor Belt #26": 100300343,
+      "Crash Test Industries - Coin on Pathway Above Second Conveyor Belt #27": 100300344,
+      "Crash Test Industries - Coin on Pathway Above Second Conveyor Belt #28": 100300345,
+      "Crash Test Industries - Coin on Pathway Above Second Conveyor Belt #29": 100300346
+    }
+  },
+  "Crash Test Industries - High Ducts Right of Starting Area": {
+    "level": "Crash Test Industries",
+    "sublevel": "Crash Test Industries",
+    "gears": {
+      "Crash Test Industries - Gear - Highest Pipes Right of Starting Area": 100100008
+    },
+    "bunnies": {
+      "Crash Test Industries - Bunny - High Ducts Right of Starting Area": 100200000
+    },
+    "coinbags": {
+      "Crash Test Industries - Coin Bag on Highest Pipes Right of Starting Area #1": 100300435,
+      "Crash Test Industries - Coin Bag on Highest Pipes Right of Starting Area #2": 100300433
+    },
+    "coins": {
+      "Crash Test Industries - Coin on First High Duct Right of Starting Area #1": 100300362,
+      "Crash Test Industries - Coin on First High Duct Right of Starting Area #2": 100300361,
+      "Crash Test Industries - Coin on First High Duct Right of Starting Area #3": 100300360,
+      "Crash Test Industries - Coin on First High Duct Right of Starting Area #4": 100300359,
+      "Crash Test Industries - Coin on Second High Duct Right of Starting Area #1": 100300404,
+      "Crash Test Industries - Coin on Second High Duct Right of Starting Area #2": 100300403,
+      "Crash Test Industries - Coin on Second High Duct Right of Starting Area #3": 100300402,
+      "Crash Test Industries - Coin on Second High Duct Right of Starting Area #4": 100300401,
+      "Crash Test Industries - Coin on Second High Duct Right of Starting Area #5": 100300400,
+      "Crash Test Industries - Coin on Second High Duct Right of Starting Area #6": 100300399,
+      "Crash Test Industries - Coin on Second High Duct Right of Starting Area #7": 100300398,
+      "Crash Test Industries - Coin on Second High Duct Right of Starting Area #8": 100300397,
+      "Crash Test Industries - Coin on Second High Duct Right of Starting Area #9": 100300396,
+      "Crash Test Industries - Coin on Second High Duct Right of Starting Area #10": 100300395
+    },
+    "connections": {
+      "Crash Test Industries - Hat World Hat": ""
+    }
+  },
+  "Crash Test Industries - Higher Platforms Above Second Checkpoint Area": {
+    "level": "Crash Test Industries",
+    "sublevel": "Crash Test Industries",
+    "gears": {
+      "Crash Test Industries - Gear - Platform High Above Third Conveyor Belt": 100100003
+    },
+    "chests": {
+      "Crash Test Industries - Chest on Platform High Above Third Conveyor Belt": 100300393
+    },
+    "coins": {
+      "Crash Test Industries - Coin on Platform High Above Third Conveyor Belt #1": 100300317,
+      "Crash Test Industries - Coin on Platform High Above Third Conveyor Belt #2": 100300316,
+      "Crash Test Industries - Coin on Platform High Above Third Conveyor Belt #3": 100300315,
+      "Crash Test Industries - Coin on Platform High Above Third Conveyor Belt #4": 100300357,
+      "Crash Test Industries - Coin on Platform High Above Third Conveyor Belt #5": 100300363,
+      "Crash Test Industries - Coin on Platform High Above Third Conveyor Belt #6": 100300370
+    }
+  },
+  "Crash Test Industries - Orange Bridge Left of Third Conveyor Belt": {
+    "level": "Crash Test Industries",
+    "sublevel": "Crash Test Industries",
+    "chests": {
+      "Crash Test Industries - Chest on Orange Block Bridge Left of Third Conveyor Belt": 100300134
+    },
+    "coins": {
+      "Crash Test Industries - Coin on Orange Block Bridge Left of Third Conveyor Belt #1": 100300127,
+      "Crash Test Industries - Coin on Orange Block Bridge Left of Third Conveyor Belt #2": 100300128,
+      "Crash Test Industries - Coin on Orange Block Bridge Left of Third Conveyor Belt #3": 100300129,
+      "Crash Test Industries - Coin on Orange Block Bridge Left of Third Conveyor Belt #4": 100300130,
+      "Crash Test Industries - Coin on Orange Block Bridge Left of Third Conveyor Belt #5": 100300131,
+      "Crash Test Industries - Coin on Orange Block Bridge Left of Third Conveyor Belt #6": 100300132,
+      "Crash Test Industries - Coin on Orange Block Bridge Left of Third Conveyor Belt #7": 100300133,
+      "Crash Test Industries - Coin on Orange Block Bridge Left of Third Conveyor Belt #8": 100300135,
+      "Crash Test Industries - Coin on Orange Block Bridge Left of Third Conveyor Belt #9": 100300136,
+      "Crash Test Industries - Coin on Orange Block Bridge Left of Third Conveyor Belt #10": 100300137,
+      "Crash Test Industries - Coin on Orange Block Bridge Left of Third Conveyor Belt #11": 100300138,
+      "Crash Test Industries - Coin on Orange Block Bridge Left of Third Conveyor Belt #12": 100300139,
+      "Crash Test Industries - Coin on Orange Block Bridge Left of Third Conveyor Belt #13": 100300140,
+      "Crash Test Industries - Coin on Orange Block Bridge Left of Third Conveyor Belt #14": 100300141
+    },
+    "connections": {
+      "Crash Test Industries - After Second Conveyor Belt": "OS",
+      "Crash Test Industries - After Third Conveyor Belt": "OS"
+    }
+  },
+  "Crash Test Industries - After Third Conveyor Belt": {
+    "level": "Crash Test Industries",
+    "sublevel": "Crash Test Industries",
+    "coins": {
+      "Crash Test Industries - Coin on Ramp Left After Orange Block Bridge Left of Third Conveyor Belt #1": 100300142,
+      "Crash Test Industries - Coin on Ramp Left After Orange Block Bridge Left of Third Conveyor Belt #2": 100300126,
+      "Crash Test Industries - Coin on Ramp Left After Orange Block Bridge Left of Third Conveyor Belt #3": 100300122,
+      "Crash Test Industries - Coin on Ramp Left After Orange Block Bridge Left of Third Conveyor Belt #4": 100300109,
+      "Crash Test Industries - Coin on Ramp Left After Orange Block Bridge Left of Third Conveyor Belt #5": 100300024
+    },
+    "checkpoints": {
+      "Crash Test Industries - Left Checkpoint After Third Conveyor Belt": 100900557,
+      "Crash Test Industries - Right Checkpoint After Third Conveyor Belt": 100900513
+    },
+    "connections": {
+      "Crash Test Industries - After Second Conveyor Belt": "",
+      "Crash Test Industries - High Ground Left of Third Conveyor Belt": "PMB | X1+PMJ",
+      "Crash Test Industries - Spiral Pipe Right of Third Conveyor Belt": "X1/PMJ",
+      "Crash Test Industries - Orange Bridge Left of Third Conveyor Belt": "OS",
+      "Crash Test Industries - Platform Right After Third Conveyor Belt": "OS",
+      "Crash Test Industries - Orange Switch Platform": "X2/SP & X1/PMB | PMJ"
+    }
+  },
+  "Crash Test Industries - High Ground Left of Third Conveyor Belt": {
+    "level": "Crash Test Industries",
+    "sublevel": "Crash Test Industries",
+    "gears": {
+      "Crash Test Industries - Gear - Path Segment Left of Third Conveyor Belt": 100100004
+    },
+    "bunnies": {
+      "Crash Test Industries - Bunny - Hidden Between Ducts Left of Third Conveyor Belt": 100200001
+    },
+    "coins": {
+      "Crash Test Industries - Coin on Path Segment Left of Third Conveyor Belt #1": 100300225,
+      "Crash Test Industries - Coin on Path Segment Left of Third Conveyor Belt #2": 100300235,
+      "Crash Test Industries - Coin on Path Segment Left of Third Conveyor Belt #3": 100300259,
+      "Crash Test Industries - Coin on Path Segment Left of Third Conveyor Belt #4": 100300255,
+      "Crash Test Industries - Coin on Path Segment Left of Third Conveyor Belt #5": 100300251,
+      "Crash Test Industries - Coin on Path Segment Left of Third Conveyor Belt #6": 100300247,
+      "Crash Test Industries - Coin on Path Segment Left of Third Conveyor Belt #7": 100300245,
+      "Crash Test Industries - Coin on Path Segment Left of Third Conveyor Belt #8": 100300243,
+      "Crash Test Industries - Coin on Path Segment Left of Third Conveyor Belt #9": 100300239,
+      "Crash Test Industries - Coin on Path Segment Left of Third Conveyor Belt #10": 100300240,
+      "Crash Test Industries - Coin on Path Segment Left of Third Conveyor Belt #11": 100300241,
+      "Crash Test Industries - Coin on Path Segment Left of Third Conveyor Belt #12": 100300242,
+      "Crash Test Industries - Coin on Path Segment Left of Third Conveyor Belt #13": 100300244,
+      "Crash Test Industries - Coin on Path Segment Left of Third Conveyor Belt #14": 100300246,
+      "Crash Test Industries - Coin on Path Segment Left of Third Conveyor Belt #15": 100300248,
+      "Crash Test Industries - Coin on Path Segment Left of Third Conveyor Belt #16": 100300252,
+      "Crash Test Industries - Coin on Path Segment Left of Third Conveyor Belt #17": 100300256,
+      "Crash Test Industries - Coin on Duct Left of Third Conveyor Belt #1": 100300280,
+      "Crash Test Industries - Coin on Duct Left of Third Conveyor Belt #2": 100300281,
+      "Crash Test Industries - Coin on Duct Left of Third Conveyor Belt #3": 100300282,
+      "Crash Test Industries - Coin on Duct Left of Third Conveyor Belt #4": 100300284,
+      "Crash Test Industries - Coin on Duct Left of Third Conveyor Belt #5": 100300301,
+      "Crash Test Industries - Coin on Duct Left of Third Conveyor Belt #6": 100300303,
+      "Crash Test Industries - Coin on Duct Left of Third Conveyor Belt #7": 100300312,
+      "Crash Test Industries - Coin on Duct Left of Third Conveyor Belt #8": 100300348,
+      "Crash Test Industries - Coin on Duct Left of Third Conveyor Belt #9": 100300358
+    },
+    "connections": {
+      "Crash Test Industries - Higher Ground Left of Third Conveyor Belt": "PMB | X3+PMJ"
+    }
+  },
+  "Crash Test Industries - Higher Ground Left of Third Conveyor Belt": {
+    "level": "Crash Test Industries",
+    "sublevel": "Crash Test Industries",
+    "gears": {
+      "Crash Test Industries - Gear - Inside Duct Enclosure Left of Third Conveyor Belt": 100100010
+    },
+    "coinbags": {
+      "Crash Test Industries - Coin Bag Inside Duct Enclosure Left of Third Conveyor Belt #1": 100300411,
+      "Crash Test Industries - Coin Bag Inside Duct Enclosure Left of Third Conveyor Belt #2": 100300409
+    },
+    "coins": {
+      "Crash Test Industries - Coin on Uppermost Duct Left of Third Conveyor Belt #1": 100300419,
+      "Crash Test Industries - Coin on Uppermost Duct Left of Third Conveyor Belt #2": 100300418,
+      "Crash Test Industries - Coin on Uppermost Duct Left of Third Conveyor Belt #3": 100300417,
+      "Crash Test Industries - Coin on Uppermost Duct Left of Third Conveyor Belt #4": 100300416,
+      "Crash Test Industries - Coin on Uppermost Duct Left of Third Conveyor Belt #5": 100300415,
+      "Crash Test Industries - Coin on Uppermost Duct Left of Third Conveyor Belt #6": 100300414,
+      "Crash Test Industries - Coin on Uppermost Duct Left of Third Conveyor Belt #7": 100300413,
+      "Crash Test Industries - Coin Inside Duct Enclosure Left of Third Conveyor Belt #1": 100300412,
+      "Crash Test Industries - Coin Inside Duct Enclosure Left of Third Conveyor Belt #2": 100300408
+    }
+  },
+  "Crash Test Industries - Platform Right After Third Conveyor Belt": {
+    "level": "Crash Test Industries",
+    "sublevel": "Crash Test Industries",
+    "coins": {
+      "Crash Test Industries - Coin on First Platform Right After Third Conveyor Belt #1": 100300032,
+      "Crash Test Industries - Coin on First Platform Right After Third Conveyor Belt #2": 100300028,
+      "Crash Test Industries - Coin on First Platform Right After Third Conveyor Belt #3": 100300031,
+      "Crash Test Industries - Coin on First Platform Right After Third Conveyor Belt #4": 100300027,
+      "Crash Test Industries - Coin on First Platform Right After Third Conveyor Belt #5": 100300030,
+      "Crash Test Industries - Coin on First Platform Right After Third Conveyor Belt #6": 100300026,
+      "Crash Test Industries - Coin on First Platform Right After Third Conveyor Belt #7": 100300029,
+      "Crash Test Industries - Coin on First Platform Right After Third Conveyor Belt #8": 100300025
+    },
+    "connections": {
+      "Crash Test Industries - Spiral Pipe Right of Third Conveyor Belt": "PMB"
+    }
+  },
+  "Crash Test Industries - Spiral Pipe Right of Third Conveyor Belt": {
+    "level": "Crash Test Industries",
+    "sublevel": "Crash Test Industries",
+    "gears": {
+      "Crash Test Industries - Gear - Spiral Pipe Right of Third Conveyor Belt": 100100011
+    },
+    "coinbags": {
+      "Crash Test Industries - Coin Bag on Spiral Pipe Right of Third Conveyor Belt": 100300153
+    },
+    "coins": {
+      "Crash Test Industries - Coin on Second Platform Right After Third Conveyor Belt #1": 100300261,
+      "Crash Test Industries - Coin on Second Platform Right After Third Conveyor Belt #2": 100300262,
+      "Crash Test Industries - Coin on Second Platform Right After Third Conveyor Belt #3": 100300257,
+      "Crash Test Industries - Coin on Second Platform Right After Third Conveyor Belt #4": 100300258,
+      "Crash Test Industries - Coin on Second Platform Right After Third Conveyor Belt #5": 100300253,
+      "Crash Test Industries - Coin on Second Platform Right After Third Conveyor Belt #6": 100300254,
+      "Crash Test Industries - Coin on Second Platform Right After Third Conveyor Belt #7": 100300249,
+      "Crash Test Industries - Coin on Second Platform Right After Third Conveyor Belt #8": 100300250,
+      "Crash Test Industries - Coin on Spiral Pipe Right of Third Conveyor Belt #1": 100300019,
+      "Crash Test Industries - Coin on Spiral Pipe Right of Third Conveyor Belt #2": 100300020,
+      "Crash Test Industries - Coin on Spiral Pipe Right of Third Conveyor Belt #3": 100300021,
+      "Crash Test Industries - Coin on Spiral Pipe Right of Third Conveyor Belt #4": 100300022,
+      "Crash Test Industries - Coin on Spiral Pipe Right of Third Conveyor Belt #5": 100300023,
+      "Crash Test Industries - Coin on Spiral Pipe Right of Third Conveyor Belt #6": 100300161,
+      "Crash Test Industries - Coin on Spiral Pipe Right of Third Conveyor Belt #7": 100300160,
+      "Crash Test Industries - Coin on Spiral Pipe Right of Third Conveyor Belt #8": 100300159,
+      "Crash Test Industries - Coin on Spiral Pipe Right of Third Conveyor Belt #9": 100300158,
+      "Crash Test Industries - Coin on Spiral Pipe Right of Third Conveyor Belt #10": 100300157,
+      "Crash Test Industries - Coin on Spiral Pipe Right of Third Conveyor Belt #11": 100300156,
+      "Crash Test Industries - Coin on Spiral Pipe Right of Third Conveyor Belt #12": 100300155,
+      "Crash Test Industries - Coin on Spiral Pipe Right of Third Conveyor Belt #13": 100300154,
+      "Crash Test Industries - Coin on Spiral Pipe Right of Third Conveyor Belt #14": 100300264,
+      "Crash Test Industries - Coin on Spiral Pipe Right of Third Conveyor Belt #15": 100300265,
+      "Crash Test Industries - Coin on Spiral Pipe Right of Third Conveyor Belt #16": 100300266,
+      "Crash Test Industries - Coin on Spiral Pipe Right of Third Conveyor Belt #17": 100300267,
+      "Crash Test Industries - Coin on Spiral Pipe Right of Third Conveyor Belt #18": 100300268,
+      "Crash Test Industries - Coin on Spiral Pipe Right of Third Conveyor Belt #19": 100300269,
+      "Crash Test Industries - Coin on Spiral Pipe Right of Third Conveyor Belt #20": 100300270,
+      "Crash Test Industries - Coin on Spiral Pipe Right of Third Conveyor Belt #21": 100300271,
+      "Crash Test Industries - Coin on Spiral Pipe Right of Third Conveyor Belt #22": 100300272,
+      "Crash Test Industries - Coin on Spiral Pipe Right of Third Conveyor Belt #23": 100300369,
+      "Crash Test Industries - Coin on Spiral Pipe Right of Third Conveyor Belt #24": 100300368,
+      "Crash Test Industries - Coin on Spiral Pipe Right of Third Conveyor Belt #25": 100300367,
+      "Crash Test Industries - Coin on Spiral Pipe Right of Third Conveyor Belt #26": 100300366,
+      "Crash Test Industries - Coin on Spiral Pipe Right of Third Conveyor Belt #27": 100300365
+    },
+    "connections": {
+      "Crash Test Industries - Platform Right After Third Conveyor Belt": "",
+      "Crash Test Industries - Third Platform Right After Third Conveyor Belt": "PMB | X1+PMJ"
+    }
+  },
+  "Crash Test Industries - Third Platform Right After Third Conveyor Belt": {
+    "level": "Crash Test Industries",
+    "sublevel": "Crash Test Industries",
+    "coins": {
+      "Crash Test Industries - Coin on Third Platform Right After Third Conveyor Belt #1": 100300307,
+      "Crash Test Industries - Coin on Third Platform Right After Third Conveyor Belt #2": 100300308,
+      "Crash Test Industries - Coin on Third Platform Right After Third Conveyor Belt #3": 100300309,
+      "Crash Test Industries - Coin on Third Platform Right After Third Conveyor Belt #4": 100300310,
+      "Crash Test Industries - Coin on Third Platform Right After Third Conveyor Belt #5": 100300311
+    },
+    "connections": {
+      "Crash Test Industries - Uppermost Platforms After Third Conveyor Belt": "PMB | X3+PMJ"
+    }
+  },
+  "Crash Test Industries - Uppermost Platforms After Third Conveyor Belt": {
+    "level": "Crash Test Industries",
+    "sublevel": "Crash Test Industries",
+    "gears": {
+      "Crash Test Industries - Gear - Platform Path Right After Third Conveyor Belt": 100100006,
+      "Crash Test Industries - Gear - On Pipe Platform Above Final Conveyor Belt": 100100013
+    },
+    "bunnies": {
+      "Crash Test Industries - Bunny - On Ducts Above Final Conveyor Belt": 100200002
+    },
+    "coinbags": {
+      "Crash Test Industries - Coin Bag on Second Small Conveyor Belt Above Upper Checkpoint Platform": 100300442,
+      "Crash Test Industries - Coin Bag on Third Small Conveyor Belt Above Upper Checkpoint Platform": 100300439
+    },
+    "coins": {
+      "Crash Test Industries - Coin on Fourth Platform Right After Third Conveyor Belt #1": 100300405,
+      "Crash Test Industries - Coin on Fourth Platform Right After Third Conveyor Belt #2": 100300406,
+      "Crash Test Industries - Coin on Fourth Platform Right After Third Conveyor Belt #3": 100300407,
+      "Crash Test Industries - Coin on Fourth Platform Right After Third Conveyor Belt #4": 100300420,
+      "Crash Test Industries - Coin on Fourth Platform Right After Third Conveyor Belt #5": 100300423,
+      "Crash Test Industries - Coin on Fourth Platform Right After Third Conveyor Belt #6": 100300431,
+      "Crash Test Industries - Coin on First Small Conveyor Belt Above Upper Checkpoint Platform #1": 100300443,
+      "Crash Test Industries - Coin on First Small Conveyor Belt Above Upper Checkpoint Platform #2": 100300444,
+      "Crash Test Industries - Coin on First Small Conveyor Belt Above Upper Checkpoint Platform #3": 100300445,
+      "Crash Test Industries - Coin on Second Small Conveyor Belt Above Upper Checkpoint Platform #1": 100300440,
+      "Crash Test Industries - Coin on Second Small Conveyor Belt Above Upper Checkpoint Platform #2": 100300441,
+      "Crash Test Industries - Coin on Third Small Conveyor Belt Above Upper Checkpoint Platform #1": 100300437,
+      "Crash Test Industries - Coin on Third Small Conveyor Belt Above Upper Checkpoint Platform #2": 100300438,
+      "Crash Test Industries - Coin on Ducts Above Final Conveyor Belt #1": 100300424,
+      "Crash Test Industries - Coin on Ducts Above Final Conveyor Belt #2": 100300425,
+      "Crash Test Industries - Coin on Ducts Above Final Conveyor Belt #3": 100300426,
+      "Crash Test Industries - Coin on Ducts Above Final Conveyor Belt #4": 100300427,
+      "Crash Test Industries - Coin on Ducts Above Final Conveyor Belt #5": 100300428,
+      "Crash Test Industries - Coin on Ducts Above Final Conveyor Belt #6": 100300429,
+      "Crash Test Industries - Coin on Pipe Platform Above Final Conveyor Belt #1": 100300381,
+      "Crash Test Industries - Coin on Pipe Platform Above Final Conveyor Belt #2": 100300380,
+      "Crash Test Industries - Coin on Pipe Platform Above Final Conveyor Belt #3": 100300379,
+      "Crash Test Industries - Coin on Pipe Platform Above Final Conveyor Belt #4": 100300378,
+      "Crash Test Industries - Coin on Pipe Platform Above Final Conveyor Belt #5": 100300377,
+      "Crash Test Industries - Coin on Pipe Platform Above Final Conveyor Belt #6": 100300376,
+      "Crash Test Industries - Coin on Pipe Platform Above Final Conveyor Belt #7": 100300375,
+      "Crash Test Industries - Coin on Pipe Platform Above Final Conveyor Belt #8": 100300374,
+      "Crash Test Industries - Coin on Pipe Platform Above Final Conveyor Belt #9": 100300373,
+      "Crash Test Industries - Coin on Pipe Platform Above Final Conveyor Belt #10": 100300372,
+      "Crash Test Industries - Coin on Pipe Platform Above Final Conveyor Belt #11": 100300371,
+      "Crash Test Industries - Coin on Pipe Platform Above Final Conveyor Belt #12": 100300391,
+      "Crash Test Industries - Coin on Pipe Platform Above Final Conveyor Belt #13": 100300390,
+      "Crash Test Industries - Coin on Pipe Platform Above Final Conveyor Belt #14": 100300389,
+      "Crash Test Industries - Coin on Pipe Platform Above Final Conveyor Belt #15": 100300388,
+      "Crash Test Industries - Coin on Pipe Platform Above Final Conveyor Belt #16": 100300387,
+      "Crash Test Industries - Coin on Pipe Platform Above Final Conveyor Belt #17": 100300386,
+      "Crash Test Industries - Coin on Pipe Platform Above Final Conveyor Belt #18": 100300385,
+      "Crash Test Industries - Coin on Pipe Platform Above Final Conveyor Belt #19": 100300384,
+      "Crash Test Industries - Coin on Pipe Platform Above Final Conveyor Belt #20": 100300383,
+      "Crash Test Industries - Coin on Pipe Platform Above Final Conveyor Belt #21": 100300382
+    },
+    "checkpoints": {
+      "Crash Test Industries - Checkpoint on Fourth Platform Right After Third Conveyor Belt": 100900358
+    },
+    "connections": {
+      "Crash Test Industries - Hidden Coins Above Final Conveyor Belt": "",
+      "Crash Test Industries - Final Area": "X1+PMB+PMJ"
+    }
+  },
+  "Crash Test Industries - Hidden Coins Above Final Conveyor Belt": {
+    "level": "Crash Test Industries",
+    "sublevel": "Crash Test Industries",
+    "coins": {
+      "Crash Test Industries - Coin Under Thin Conveyor Belt Above Final Conveyor Belt #1": 100300421,
+      "Crash Test Industries - Coin Under Thin Conveyor Belt Above Final Conveyor Belt #2": 100300422
+    }
+  },
+  "Crash Test Industries - Orange Switch Platform": {
+    "level": "Crash Test Industries",
+    "sublevel": "Crash Test Industries",
+    "connections": {
+      "Crash Test Industries - After Third Conveyor Belt": "",
+      "Crash Test Industries - Final Orange Block Bridge": "OS",
+      "Crash Test Industries - Final Area": "X3+PMJ | X2+PMB"
+    },
+    "specialrules": {
+      "Crash Test Industries - Orange Switch": "X2/PMB/PMJ"
+    }
+  },
+  "Crash Test Industries - Final Orange Block Bridge": {
+    "level": "Crash Test Industries",
+    "sublevel": "Crash Test Industries",
+    "coins": {
+      "Crash Test Industries - Coin on Final Orange Bridge #1": 100300033,
+      "Crash Test Industries - Coin on Final Orange Bridge #2": 100300034,
+      "Crash Test Industries - Coin on Final Orange Bridge #3": 100300035,
+      "Crash Test Industries - Coin on Final Orange Bridge #4": 100300036,
+      "Crash Test Industries - Coin on Final Orange Bridge #5": 100300037,
+      "Crash Test Industries - Coin on Final Orange Bridge #6": 100300038,
+      "Crash Test Industries - Coin on Final Orange Bridge #7": 100300039,
+      "Crash Test Industries - Coin on Final Orange Bridge #8": 100300040,
+      "Crash Test Industries - Coin on Final Orange Bridge #9": 100300049,
+      "Crash Test Industries - Coin on Final Orange Bridge #10": 100300050,
+      "Crash Test Industries - Coin on Final Orange Bridge #11": 100300051
+    },
+    "connections": {
+      "Crash Test Industries - Orange Switch Platform": "OS",
+      "Crash Test Industries - Final Area": "OS"
+    }
+  },
+  "Crash Test Industries - Final Area": {
+    "level": "Crash Test Industries",
+    "sublevel": "Crash Test Industries",
+    "gears": {
+      "Crash Test Industries - Gear - From Ocra Taxi Goes Smooch": 100100005
+    },
+    "coins": {
+      "Crash Test Industries - Coin Leading to Pipe-Zone Pipe #1": 100300048,
+      "Crash Test Industries - Coin Leading to Pipe-Zone Pipe #2": 100300047,
+      "Crash Test Industries - Coin Leading to Pipe-Zone Pipe #3": 100300046,
+      "Crash Test Industries - Coin Leading to Pipe-Zone Pipe #4": 100300045,
+      "Crash Test Industries - Coin Leading to Pipe-Zone Pipe #5": 100300044,
+      "Crash Test Industries - Coin Leading to Pipe-Zone Pipe #6": 100300043,
+      "Crash Test Industries - Coin Leading to Pipe-Zone Pipe #7": 100300042,
+      "Crash Test Industries - Coin Leading to Pipe-Zone Pipe #8": 100300041
+    },
+    "cheeses": {
+      "Crash Test Industries - Cheese Near Pipe-Zone Pipe": 102100002
+    },
+    "connections": {
+      "Crash Test Industries - Final Orange Block Bridge": "OS",
+      "Pipe-Zone - Starting Area": "X3+PMJ"
+    },
+    "subwarps": {
+      "Crash Test Industries - Pipe Zone Pipe": ["Pipe-Zone - Starting Area", ""]
+    },
+    "moriotrons": {
+      "Crash Test Industries - Mori-O-Tron in Final Area": "Crash Test Industries - After Third Conveyor Belt"
+    }
+  },
+  "Crash Test Industries Hat World": {
+    "level": "Crash Test Industries",
+    "sublevel": "Crash Test Industries Hat World",
+    "hats": {
+      "Top Hat": 100700002,
+      "Propeller Cap": 100700001,
+      "No Hat": 100700000,
+      "Buzzsaw Hat": 100700026,
+      "Crusher Hat": 100700027
+    },
+    "connections": {
+      "Any Hat World": ""
+    },
+    "subwarps": {
+      "Crash Test Industries Hat World - Exit": ["Crash Test Industries - Starting Area", ""]
+    }
+  },
+  "Pipe-Zone - Starting Area": {
+    "level": "Crash Test Industries",
+    "sublevel": "Pipe-Zone",
+    "checkpoints": {
+      "Pipe-Zone - Checkpoint": 100900988
+    },
+    "connections": {
+      "Pipe-Zone - Final Area": "X1/SP"
+    },
+    "subwarps": {
+      "Pipe-Zone - Exit Pipe": ["Crash Test Industries - Final Area", ""]
+    }
+  },
+  "Pipe-Zone - Final Area": {
+    "level": "Crash Test Industries",
+    "sublevel": "Pipe-Zone",
+    "gears": {
+      "Pipe-Zone - Gear": 100100012
+    },
+    "coinbags": {
+      "Pipe-Zone - Coin Bag at End of Conveyor Belt #1": 100300064,
+      "Pipe-Zone - Coin Bag at End of Conveyor Belt #2": 100300062,
+      "Pipe-Zone - Coin Bag at End of Conveyor Belt #3": 100300060,
+      "Pipe-Zone - Coin Bag at End of Conveyor Belt #4": 100300070,
+      "Pipe-Zone - Coin Bag at End of Conveyor Belt #5": 100300068,
+      "Pipe-Zone - Coin Bag at End of Conveyor Belt #6": 100300077,
+      "Pipe-Zone - Coin Bag at End of Conveyor Belt #7": 100300074,
+      "Pipe-Zone - Coin Bag at End of Conveyor Belt #8": 100300084,
+      "Pipe-Zone - Coin Bag at End of Conveyor Belt #9": 100300081,
+      "Pipe-Zone - Coin Bag at End of Conveyor Belt #10": 100300090,
+      "Pipe-Zone - Coin Bag at End of Conveyor Belt #11": 100300088,
+      "Pipe-Zone - Coin Bag at End of Conveyor Belt #12": 100300098,
+      "Pipe-Zone - Coin Bag at End of Conveyor Belt #13": 100300096,
+      "Pipe-Zone - Coin Bag at End of Conveyor Belt #14": 100300094
+    },
+    "coins": {
+      "Pipe-Zone - Coin at End of Conveyor Belt #1": 100300058,
+      "Pipe-Zone - Coin at End of Conveyor Belt #2": 100300057,
+      "Pipe-Zone - Coin at End of Conveyor Belt #3": 100300056,
+      "Pipe-Zone - Coin at End of Conveyor Belt #4": 100300055,
+      "Pipe-Zone - Coin at End of Conveyor Belt #5": 100300054,
+      "Pipe-Zone - Coin at End of Conveyor Belt #6": 100300053,
+      "Pipe-Zone - Coin at End of Conveyor Belt #7": 100300052,
+      "Pipe-Zone - Coin at End of Conveyor Belt #8": 100300065,
+      "Pipe-Zone - Coin at End of Conveyor Belt #9": 100300063,
+      "Pipe-Zone - Coin at End of Conveyor Belt #10": 100300061,
+      "Pipe-Zone - Coin at End of Conveyor Belt #11": 100300059,
+      "Pipe-Zone - Coin at End of Conveyor Belt #12": 100300072,
+      "Pipe-Zone - Coin at End of Conveyor Belt #13": 100300071,
+      "Pipe-Zone - Coin at End of Conveyor Belt #14": 100300069,
+      "Pipe-Zone - Coin at End of Conveyor Belt #15": 100300067,
+      "Pipe-Zone - Coin at End of Conveyor Belt #16": 100300066,
+      "Pipe-Zone - Coin at End of Conveyor Belt #17": 100300078,
+      "Pipe-Zone - Coin at End of Conveyor Belt #18": 100300076,
+      "Pipe-Zone - Coin at End of Conveyor Belt #19": 100300075,
+      "Pipe-Zone - Coin at End of Conveyor Belt #20": 100300073,
+      "Pipe-Zone - Coin at End of Conveyor Belt #21": 100300085,
+      "Pipe-Zone - Coin at End of Conveyor Belt #22": 100300083,
+      "Pipe-Zone - Coin at End of Conveyor Belt #23": 100300082,
+      "Pipe-Zone - Coin at End of Conveyor Belt #24": 100300080,
+      "Pipe-Zone - Coin at End of Conveyor Belt #25": 100300092,
+      "Pipe-Zone - Coin at End of Conveyor Belt #26": 100300091,
+      "Pipe-Zone - Coin at End of Conveyor Belt #27": 100300089,
+      "Pipe-Zone - Coin at End of Conveyor Belt #28": 100300087,
+      "Pipe-Zone - Coin at End of Conveyor Belt #29": 100300086,
+      "Pipe-Zone - Coin at End of Conveyor Belt #30": 100300099,
+      "Pipe-Zone - Coin at End of Conveyor Belt #31": 100300097,
+      "Pipe-Zone - Coin at End of Conveyor Belt #32": 100300095,
+      "Pipe-Zone - Coin at End of Conveyor Belt #33": 100300093,
+      "Pipe-Zone - Coin at End of Conveyor Belt #34": 100300106,
+      "Pipe-Zone - Coin at End of Conveyor Belt #35": 100300105,
+      "Pipe-Zone - Coin at End of Conveyor Belt #36": 100300104,
+      "Pipe-Zone - Coin at End of Conveyor Belt #37": 100300103,
+      "Pipe-Zone - Coin at End of Conveyor Belt #38": 100300102,
+      "Pipe-Zone - Coin at End of Conveyor Belt #39": 100300101,
+      "Pipe-Zone - Coin at End of Conveyor Belt #40": 100300100
+    },
+    "cheeses": {
+      "Pipe-Zone - Cheese on Left at End of Conveyor Belt": 102100000,
+      "Pipe-Zone - Cheese on Right at End of Conveyor Belt": 102100003
+    }
+  }
+}

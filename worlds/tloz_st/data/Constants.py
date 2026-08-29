@@ -319,7 +319,7 @@ STAGES = {
     0x46: "Take 'em all on Forest theme",
     0x47: "Take 'em all on Snow theme",
     0x48: "Take 'em all on Ocean theme",
-    0x49: "Take 'em all on Fire theme",
+    0x49: "Take 'em all on Fire theme", # 4904 is dark link
     0x4A: "Take 'em all on Sand theme",
     0x4B: "TEAO Stagnox",
     0x4C: "TEAO Fraaz",

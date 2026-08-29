@@ -284,7 +284,7 @@ class SpiritTracksClient(DSZeldaClient):
         self.processed_locations: set = set()
         self.saved_train_parts: list[int] = []
 
-        self.key_door_watches: list["Address"] = []
+        self.key_door_watches: dict["Address", str] = {}
         self.boss_door_addr = None
         self.reload_map_objects: int = 0
         self.was_in_clog: bool = False
@@ -986,12 +986,12 @@ class SpiritTracksClient(DSZeldaClient):
             for a, v in reads.items():
                 if 8 > v > 2:
                     await write_multiple(ctx, [a, Address.from_pointer(a+27*4, 1)], [7, 0xff])
-                    self.key_door_watches.remove(a)
+                    self.key_door_watches.pop(a)
                     if self.current_stage == 0x13:
                         await self.save_tos_keycount(ctx)
                     break
-                if v == 8:
-                    self.key_door_watches.remove(a)
+                if v == 8 and self.key_door_watches[a] == "key":
+                    self.key_door_watches.pop(a)
 
     # Misc item handling
 
@@ -2325,11 +2325,15 @@ class SpiritTracksClient(DSZeldaClient):
                 continue
 
             if identifiers.get(i) in ["Blue Door", "Key Door", "Arena Door", "Bell Door", "Gem Door"]:
+                if identifiers.get(i) == "Arena Door" and self.current_scene in [0x4904, 0x3f01]:
+                    continue  # These doors can softlock
                 write_list.append(Address.from_pointer(addr + 33*4 + 2, size=1).get_inner_write_list(0))  # closing
                 write_list.append(Address.from_pointer(addr + 34*4 + 2, size=1).get_inner_write_list(0))  # opening
 
                 if identifiers.get(i) == "Key Door":
-                    self.key_door_watches.append(Address.from_pointer(addr + 22, 1))
+                    self.key_door_watches[Address.from_pointer(addr + 22, 1)] = "key"
+                if identifiers.get(i) == "Arena Door":
+                    self.key_door_watches[Address.from_pointer(addr + 22, 1)] = "arena"
 
                 # if self.current_scene == 0x4206 and all([LOCATIONS_DATA[l]['id'] in ctx.checked_locations for l in [
                 #         "Lost at Sea Final Challenge SE Chest", "Lost at Sea Final Challenge NE Chest",

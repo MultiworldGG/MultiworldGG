@@ -77,7 +77,7 @@ class BanjoTooieWeb(WebWorld):
         ["Beebaleen"])
     setup_fr = Tutorial(
         "Setup Banjo-Tooie",
-        """A guide to setting up Archipelago Banjo-Tooie on your computer.""",
+        """A guide to setting up MultiworldGG Banjo-Tooie on your computer.""",
         "French",
         "setup_fr.md",
         "setup/fr",

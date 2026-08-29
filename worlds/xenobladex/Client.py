@@ -144,16 +144,25 @@ class XenobladeXHttpServer(HTTPServer):
             return item_game_type + doll_augments_type_data[augment_idx]
         return item_game_type
 
+    def _upload_gear(self, item_game_type: int, item_game_id: int, seed_name: Optional[str],
+                     item_name: str) -> None:
+        gear = self.generate_gear(item_name, seed_name)
+        item_game_type = self.adjust_item_type(item_game_type, item_game_id)
+        if gear:
+            self.items += f"G Tp={item_game_type:08x} Id={item_game_id:08x} A1={gear.affix_1:08x} " \
+                            f"A2={gear.affix_2:08x} A3={gear.affix_3:08x} Sc={gear.slots:08x}\n"
+        else:
+            if item_game_type == 0x9 and item_name in doll_frame_ids:
+                item_game_id = doll_frame_ids[item_name]
+            self.items += f"I Tp={item_game_type:08x} Id={item_game_id:08x}\n"
+
     # Example: Invoke-WebRequest http://localhost:45872/items -Method POST -Body "I Tp=00000007 Id=00000039`n"
     def upload_item(self, item_game_type: int, item_game_id: int, seed_name: Optional[str],
-                    item_name: str, player_name: str, item_game_level: int = 1,
-                    logic_level_steps: int = 0) -> None:
+                    prefix: str, item_name: str, player_name: str, item_game_level: int = 1,
+                    uploaded_level: int = 0, logic_level_steps: int = 0) -> None:
         if self.upload_count > self.upload_limit:
             return
         self.upload_count += 1
-
-        if not item_name.startswith("DEBUG"):
-            self.upload_message(f"From {player_name}", item_name)
 
         if item_game_type == 0:
             if item_name == "Level":
@@ -162,15 +171,7 @@ class XenobladeXHttpServer(HTTPServer):
                 item_game_level = get_upper_real_level_from_logic_count(item_game_level, logic_level_steps)
             self.items += f"K Id={item_game_id:08x} Fg={item_game_level:08x}\n"
         elif item_game_type < 0x20:
-            gear = self.generate_gear(item_name, seed_name)
-            item_game_type = self.adjust_item_type(item_game_type, item_game_id)
-            if gear:
-                self.items += f"G Tp={item_game_type:08x} Id={item_game_id:08x} A1={gear.affix_1:08x} " \
-                              f"A2={gear.affix_2:08x} A3={gear.affix_3:08x} Sc={gear.slots:08x}\n"
-            else:
-                if item_game_type == 0x9 and item_name in doll_frame_ids:
-                    item_game_id = doll_frame_ids[item_name]
-                self.items += f"I Tp={item_game_type:08x} Id={item_game_id:08x}\n"
+            self._upload_gear(item_game_type, item_game_id, seed_name, item_name)
         elif item_game_type < 0x21:
             self.items += f"A Id={item_game_id:08x} Lv={1:08x}\n"
         elif item_game_type < 0x22:
@@ -178,9 +179,14 @@ class XenobladeXHttpServer(HTTPServer):
         elif item_game_type < 0x23:
             self.items += f"F Id={item_game_id:08x} Lv={item_game_level * 10:08x}\n"
         elif item_game_type < 0x24:
-            self.items += f"D Id={item_game_id:08x} Lv={item_game_level + 1:08x}\n"
+            if item_game_level > 4 and not uploaded_level < 4:
+                return
+            self.items += f"D Id={item_game_id:08x} Lv={min(item_game_level, 4) + 1:08x}\n"
         elif item_game_type < 0x25:
             self.items += f"C Id={item_game_id:08x} Lv={10:08x}\n"
+
+        if not item_name.startswith("DEBUG"):
+            self.upload_message(f"{prefix} from {player_name}", item_name)
 
         logger.debug(f"Upload Item: {item_name} Id: {item_game_id} Type: {item_game_type}")
 
@@ -198,7 +204,7 @@ class XenobladeXHttpServer(HTTPServer):
         self.messages += [self._generate_message(heading, body)]
 
     def _sanitize_message(self, message: str) -> str:
-        return re.sub(r"[^\w \-_]", "", message)
+        return re.sub(r"[\r\n]", "", message)
 
     def _generate_message(self, heading: str, body: str) -> str:
         return f"M {self._sanitize_message(heading)}\r{(self._sanitize_message(body))[:60]}\n"
@@ -227,7 +233,7 @@ class XenobladeXHttpServer(HTTPServer):
     def download_items(self, logic_level_steps: int) -> list[GameItem]:
         items: list[GameItem] = []
 
-        self._match_line(items, 0, r'^KY Id=([1-9a-fA-F]{1}) Fg=([0-9a-fA-F]{2})\n')
+        self._match_line(items, 0, r'^KY Id=([1-9a-fA-F]{1}) Fg=([0-9a-fA-F]{2})\n', has_lvl=True)
         self._match_line(items, 0, r'^KY Id=([eE]{1}) Fg=([0-9a-fA-F]{2})\n', has_lvl=True,
                          lvl_change=lambda lvl: get_logic_level_count(lvl, logic_level_steps))
         self._match_line(items, None, r'^IT Id=([0-9a-fA-F]{3}) Tp=([0-9a-fA-F]{2})(?:\n| S1Id)')
@@ -235,7 +241,7 @@ class XenobladeXHttpServer(HTTPServer):
         self._match_line(items, 0x1d, r'^IT Id=([0-9a-fA-F]{3}) Tp=1[dD] Cn=([0-9a-fA-F]{3})', has_lvl=True)
         equip_regex = r'^EQ CId=[0-9a-fA-F]{3} Id=([0-9a-fA-F]{3}) Ix=([0-9a-fA-F]{1})'
         self._match_line(items, 0x6, equip_regex, min=0, max=1)
-        self._match_line(items, 0x1, equip_regex, min=2, max=6)
+        self._match_line(items, 0x1, equip_regex, min=2, max=11)
         doll_regex = r'^DL GIx=[0-9a-fA-F]{2} Id=([0-9a-fA-F]{3}) Ix=([0-9a-fA-F]{1})'
         self._match_line(items, 0xf, doll_regex, min=0, max=0x9)
         self._match_line(items, 0x9, doll_regex, min=0xa, max=0xa)
@@ -413,6 +419,9 @@ class XenobladeXContext(CommonContext):
     def archipelago_item_to_name(self, archipelago_item_id: int) -> str:
         return re.sub(r"^[A-Z]*?: ", "", XenobladeXWorld.item_id_to_name[archipelago_item_id])
 
+    def archipelago_item_to_prefix(self, archipelago_item_id: int) -> str:
+        return XenobladeXWorld.item_id_to_name[archipelago_item_id].split(":")[0]
+
     def archipelago_item_to_game_item(self, archipelago_item_id: int) -> GameItem:
         game_item_type_offset = max([id for id in game_type_item_to_offset.values()
                                      if id < archipelago_item_id - XenobladeXWorld.base_id])
@@ -445,10 +454,11 @@ class XenobladeXContext(CommonContext):
             if level <= uploaded_level:
                 continue
             game_item = self.archipelago_item_to_game_item(item)
+            prefix = self.archipelago_item_to_prefix(item)
             item_name = self.archipelago_item_to_name(item)
             self.http_server.upload_item(game_item.type, game_item.id, self.seed_name,
-                                         item_name, player_item_names[item], level,
-                                         self.logic_level_steps)
+                                         prefix, item_name, player_item_names[item], level,
+                                         uploaded_level, self.logic_level_steps)
             if item_name == "Victory":
                 await self.send_msgs([{"cmd": "StatusUpdate", "status": ClientStatus.CLIENT_GOAL}])
 

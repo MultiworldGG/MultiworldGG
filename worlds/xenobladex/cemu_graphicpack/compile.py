@@ -67,6 +67,8 @@ for filename in (os.path.splitext(file)[0] for file in os.listdir() if file.ends
     content = re.sub(r"\.zero\s*(\d)", _generateInitializer, content)
     # Replace invalid Labels
     content = re.sub(r"[.](LC?[0-9]+)", f"_{filename}_\\1", content)
+    # Remove global label
+    content = re.sub(r"\t\.global .*\n", "", content)
     # Remove all function brackets
     content = re.sub(r"[(](?!r?[1-3]?[0-9]).*?[)]", "", content)
     # Add register prefix to all easy numbers

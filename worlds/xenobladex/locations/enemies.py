@@ -19,23 +19,23 @@ Data("Ga Jiarg - Chp 9: Story", rules=["Lvl 34"], depends=["Chapter 9"]),
 Data("Ga Buidhe - Chp 9: Story", rules=["Lvl 33"], depends=["Chapter 9"]),
 Data("Vasara - Chp 9: Story", rules=["Lvl 35"], depends=["Chapter 9"]),
 Data("Deva Caladar - Chp 9: Story", rules=["Lvl 34"], depends=["Chapter 9"]),
-Data("Caladar - Chp 9: Story", rules=["Lvl 30"], depends=["Chapter 9"]),
+Data("Caladar - Chp 9: Story", rules=["Lvl 30"], depends=["Chapter 9"], valid=False),  # does not register in enemy index
 Data("Zu Pharg - Chp 10: Story", rules=["Lvl 39"], depends=["Chapter 10"]),
 Data("Prog Ares - Chp 11: Story", rules=["Lvl 45"], depends=["Chapter 11"]),
 Data("Vita - Chp 12: Story", rules=["Lvl 50"], depends=["Chapter 12"]),
-Data("Shield Satellis - Chp 12: Story", rules=["Lvl 50"], depends=["Chapter 12"]),
-Data("Strike Satellis - Chp 12: Story", rules=["Lvl 47"], depends=["Chapter 12"]),
-Data("Link Satellis - Chp 12: Story", rules=["Lvl 46"], depends=["Chapter 12"]),
-Data("Enhancer Satellis - Chp 12: Story", rules=["Lvl 48"], depends=["Chapter 12"]),
-Data("Pursuit Satellis Alpha - Chp 12: Story", rules=["Lvl 47"], depends=["Chapter 12"]),
-Data("Pursuit Satellis Beta - Chp 12: Story", rules=["Lvl 47"], depends=["Chapter 12"]),
-Data("Pursuit Satellis Gamma - Chp 12: Story", rules=["Lvl 47"], depends=["Chapter 12"]),
+Data("Shield Satellis - Chp 12: Story", rules=["Lvl 50"], depends=["Chapter 12"], valid=False),  # does not register in enemy index
+Data("Strike Satellis - Chp 12: Story", rules=["Lvl 47"], depends=["Chapter 12"], valid=False),  # does not register in enemy index
+Data("Link Satellis - Chp 12: Story", rules=["Lvl 46"], depends=["Chapter 12"], valid=False),  # does not register in enemy index
+Data("Enhancer Satellis - Chp 12: Story", rules=["Lvl 48"], depends=["Chapter 12"], valid=False),  # does not register in enemy index
+Data("Pursuit Satellis Alpha - Chp 12: Story", rules=["Lvl 47"], depends=["Chapter 12"], valid=False),  # does not register in enemy index
+Data("Pursuit Satellis Beta - Chp 12: Story", rules=["Lvl 47"], depends=["Chapter 12"], valid=False),  # does not register in enemy index
+Data("Pursuit Satellis Gamma - Chp 12: Story", rules=["Lvl 47"], depends=["Chapter 12"], valid=False),  # does not register in enemy index
 Data("Soldier Chimera - Chp 12: Story", rules=["Lvl 41"], depends=["Chapter 12"]),
 Data("Lao Boss - Chp 12: Story", rules=["Lvl 50"], depends=["Chapter 12"], required=True),
-Data("Queen Chimera - Chp 12: Story", rules=["Lvl 50"], depends=["Chapter 12"]),
-Data("Minor Chimera - Chp 12: Story", rules=["Lvl 48"], depends=["Chapter 12"]),
-Data("Mezzo Chimera - Chp 12: Story", rules=["Lvl 49"], depends=["Chapter 12"]),
-Data("Major Chimera - Chp 12: Story", rules=["Lvl 49"], depends=["Chapter 12"]),
+Data("Queen Chimera - Chp 12: Story", rules=["Lvl 50"], depends=["Chapter 12"], valid=False),  # does not register in enemy index
+Data("Minor Chimera - Chp 12: Story", rules=["Lvl 48"], depends=["Chapter 12"], valid=False),  # does not register in enemy index
+Data("Mezzo Chimera - Chp 12: Story", rules=["Lvl 49"], depends=["Chapter 12"], valid=False),  # does not register in enemy index
+Data("Major Chimera - Chp 12: Story", rules=["Lvl 49"], depends=["Chapter 12"], valid=False),  # does not register in enemy index
 Data("Nardacyon, the Shadowless - Prim: Bedrock Hold - Chp 12", rules=["Lvl 96"], depends=["Chapter 12"]),
 Data("Lugalbanda, the Wanderer-King - Noct: Vitriol Cesspool - Chp 12", rules=["Lvl 88"], depends=["Chapter 12"]),
 Data("Vortice, the Deific Blast - Caul: MountMgando - Brimstone Rain", rules=["Skell License", "Lvl 61"]),  # TAJ to aggro
@@ -141,7 +141,7 @@ Data("Guardian Pugilith - Sylv: Badr Basin", rules=["Lvl 41"]),
 Data("EN090503_NAME_F00_11", valid=False, rules=["Lvl 51"]),
 Data("High-Output Pugilith - Sylv: Badr Stronghold", rules=["Lvl 47"]),
 Data("EN090503_NAME_F00_12", valid=False, rules=["Lvl 51"]),
-Data("Talon Raptor Galdr", valid=False, rules=["Lvl 41"]), # Location just says Cauldros, skipping for now
+Data("Talon Raptor Galdr", valid=False, rules=["Lvl 41"]), # unused
 Data("Talon Eagle Galdr - Caul: O'rrh Sim Castle Ruins", rules=["Lvl 47"]),
 Data("Armed Recon Galdr - Caul: West Cauldros Waters", rules=["Lvl 65"]),
 Data("EN090503_NAME_F00_13", valid=False, rules=["Lvl 51"]),

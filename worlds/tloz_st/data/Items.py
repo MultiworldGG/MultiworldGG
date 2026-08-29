@@ -20,9 +20,9 @@ ITEMS_DATA: dict[str, dict[str, Any]] = {
 
     "Sword (Progressive)": {
         'classification': ItemClassification.progression,
-        'progressive': [[STAddr.items_2, 0x02], [STAddr.items_2, 0x04]],
+        'progressive': [[STAddr.items_2, 0x02], [STAddr.items_2, 0x06]],
         'item_groups': ["Swords", "Progressive Items", "Equipment"],
-        "set_bit": [[STAddr.items_2, 0x02]],
+        # "set_bit": [[STAddr.items_2, 0x02]],
 
         "model": "Sword",
         "id": 1,

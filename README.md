@@ -176,6 +176,7 @@ Currently, the following games are supported:
 * Shivers
 * Skul The Hero Slayer
 * Slay the Spire
+* Slime Rancher
 * Sly Cooper and the Thievius Raccoonus
 * Sonic Adventure 2: Battle
 * Sonic Adventure DX
@@ -238,6 +239,7 @@ Currently, the following games are supported:
 * Wordipelago
 * Xenoblade X
 * Yacht Dice
+* Yellow Taxi Goes Vroom
 * Yoshi's Island
 * Yu-Gi-Oh! Dungeon Dice Monsters
 * Yu-Gi-Oh! Forbidden Memories

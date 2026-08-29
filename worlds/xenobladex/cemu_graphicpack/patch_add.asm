@@ -354,7 +354,7 @@ _add_L22:
 	lwz r4,16(r31)
 	li r3,1
 	bl setLocal
-	b _add_L41
+	b _add_L42
 _add_L27:
 	lwz r9,56(r31)
 	cmpwi cr0,r9,2
@@ -363,7 +363,7 @@ _add_L27:
 	lwz r4,20(r31)
 	li r3,1
 	bl setLocal
-	b _add_L41
+	b _add_L42
 _add_L29:
 	lwz r9,56(r31)
 	cmpwi cr0,r9,3
@@ -372,7 +372,7 @@ _add_L29:
 	lwz r4,24(r31)
 	li r3,1
 	bl setLocal
-	b _add_L41
+	b _add_L42
 _add_L30:
 	lwz r9,56(r31)
 	cmpwi cr0,r9,4
@@ -384,7 +384,7 @@ _add_L30:
 	mr r4,r9
 	mr r3,r10
 	bl changeScenarioFlag
-	b _add_L41
+	b _add_L42
 _add_L31:
 	lwz r9,56(r31)
 	cmpwi cr0,r9,5
@@ -401,25 +401,48 @@ _add_L31:
 	mr r4,r9
 	li r3,2
 	bl setLocal
-	b _add_L41
+	lwz r9,60(r31)
+	cmpwi cr0,r9,1
+	ble cr0,_add_L33
+	li r5,1
+	li r4,24
+	li r3,29
+	bl _addItem
+	li r5,1
+	lwz r4,16(r31)
+	li r3,1
+	bl setLocal
+_add_L33:
+	lwz r9,60(r31)
+	cmpwi cr0,r9,2
+	ble cr0,_add_L42
+	li r5,1
+	li r4,25
+	li r3,29
+	bl _addItem
+	li r5,1
+	lwz r4,20(r31)
+	li r3,1
+	bl setLocal
+	b _add_L42
 _add_L32:
 	lwz r9,56(r31)
 	cmpwi cr0,r9,14
-	bne cr0,_add_L41
+	bne cr0,_add_L42
 	lis r9,characterLevel@ha
 	lwz r9,characterLevel@l(r9)
 	cmpwi cr0,r9,0
-	beq cr0,_add_L41
+	beq cr0,_add_L42
 	lwz r9,60(r31)
 	cmpwi cr0,r9,60
-	ble cr0,_add_L33
+	ble cr0,_add_L34
 	li r9,60
 	stw r9,60(r31)
-_add_L33:
+_add_L34:
 	li r9,0
 	stw r9,8(r31)
-	b _add_L34
-_add_L35:
+	b _add_L35
+_add_L36:
 	lwz r9,60(r31)
 	mr r30,r9
 	lwz r3,8(r31)
@@ -430,14 +453,14 @@ _add_L35:
 	lwz r9,8(r31)
 	addi r9,r9,1
 	stw r9,8(r31)
-_add_L34:
+_add_L35:
 	lwz r9,8(r31)
 	cmpwi cr0,r9,18
-	ble cr0,_add_L35
+	ble cr0,_add_L36
 	li r9,0
 	stw r9,12(r31)
-	b _add_L36
-_add_L40:
+	b _add_L37
+_add_L41:
 	li r9,0
 	stw r9,52(r31)
 	addi r9,r31,52
@@ -458,7 +481,7 @@ _add_L40:
 	lwz r9,36(r31)
 	lwz r9,0(r9)
 	cmpwi cr0,r9,0
-	beq cr0,_add_L42
+	beq cr0,_add_L43
 	lwz r9,36(r31)
 	lwz r9,0(r9)
 	mr r3,r9
@@ -468,18 +491,18 @@ _add_L40:
 	lwz r4,60(r31)
 	lwz r3,40(r31)
 	bl setLv
-	b _add_L39
-_add_L42:
+	b _add_L40
+_add_L43:
 	nop
-_add_L39:
+_add_L40:
 	lwz r9,12(r31)
 	addi r9,r9,1
 	stw r9,12(r31)
-_add_L36:
+_add_L37:
 	lwz r9,12(r31)
 	cmpwi cr0,r9,3
-	ble cr0,_add_L40
-_add_L41:
+	ble cr0,_add_L41
+_add_L42:
 	nop
 	addi r11,r31,80
 	lwz r0,4(r11)

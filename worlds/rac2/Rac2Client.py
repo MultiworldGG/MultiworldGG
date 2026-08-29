@@ -575,7 +575,7 @@ async def patch_and_run_game(aprac2_file: str):
         version = Rac2ProcedurePatch.get_game_version_from_iso(output_path)
         crc = get_pcsx2_crc(output_path)
         if version and crc:
-            file_name = f"{version}_{crc:X}.ini"
+            file_name = f"{version}_{crc:08X}.ini"
             file_path = os.path.join(os.path.dirname(game_ini_path), file_name)
 
             # Always create or refresh a CRC-based ini copy

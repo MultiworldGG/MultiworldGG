@@ -5245,6 +5245,43 @@
         ],
         "release_date": null
     },
+    "Slime Rancher": {
+        "igdb_id": "16287",
+        "world_name": "Slime Rancher",
+        "igdb_name": "Slime Rancher",
+        "us_rating": [],
+        "player_perspectives": [
+            "First person"
+        ],
+        "genres": [
+            "Shooter",
+            "Simulator",
+            "Strategy",
+            "Adventure",
+            "Indie"
+        ],
+        "themes": [
+            "Action",
+            "Science fiction",
+            "Open world"
+        ],
+        "keywords": [
+            "exploration",
+            "female protagonist",
+            "steam",
+            "cute",
+            "pre-release public testing",
+            "xbox one x enhanced",
+            "games with gold",
+            "the game awards 2017",
+            "best debut indie game: nominee - 2017 (the game awards)",
+            "the game awards - nominee",
+            "4k ultra hd",
+            "farming simulator",
+            "the game awards - best debut indie game - nominee"
+        ],
+        "release_date": 2017
+    },
     "Sly Cooper and the Thievius Raccoonus": {
         "igdb_id": "304144",
         "world_name": "Sly Cooper and the Thievius Raccoonus",
@@ -6963,6 +7000,32 @@
             "multiworld only"
         ],
         "release_date": null
+    },
+    "Yellow Taxi Goes Vroom": {
+        "igdb_id": "216805",
+        "world_name": "Yellow Taxi Goes Vroom",
+        "igdb_name": "Yellow Taxi Goes Vroom",
+        "us_rating": [],
+        "player_perspectives": [
+            "Third person"
+        ],
+        "genres": [
+            "Platform",
+            "Racing",
+            "Adventure",
+            "Indie",
+            "Arcade"
+        ],
+        "themes": [
+            "Action",
+            "Comedy"
+        ],
+        "keywords": [
+            "collectathon",
+            "taxi",
+            "moai"
+        ],
+        "release_date": 2024
     },
     "Yoshi's Island": {
         "igdb_id": "1073",

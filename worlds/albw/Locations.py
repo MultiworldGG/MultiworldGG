@@ -587,19 +587,19 @@ class Dungeon(NamedTuple):
     textcolor: int
 
 dungeon_table: List[Dungeon] = [
-    Dungeon("Hyrule Sanctuary", hyrule_sanctuary_locations, [Items.KeyHyruleSanctuary], 7),
-    Dungeon("Lorule Sanctuary", lorule_sanctuary_locations, [Items.KeyLoruleSanctuary], 7),
-    Dungeon("Eastern Palace", eastern_locations, [Items.KeyEastern, Items.BigKeyEastern, Items.CompassEastern], 5),
-    Dungeon("House of Gales", gales_locations, [Items.KeyGales, Items.BigKeyGales, Items.CompassGales], 6),
-    Dungeon("Tower of Hera", hera_locations, [Items.KeyHera, Items.BigKeyHera, Items.CompassHera], 10),
-    Dungeon("Dark Palace", dark_locations, [Items.KeyDark, Items.BigKeyDark, Items.CompassDark], 5),
-    Dungeon("Swamp Palace", swamp_locations, [Items.KeySwamp, Items.BigKeySwamp, Items.CompassSwamp], 3),
-    Dungeon("Skull Woods", skull_locations, [Items.KeySkull, Items.BigKeySkull, Items.CompassSkull], 6),
-    Dungeon("Thieves' Hideout", thieves_locations, [Items.KeyThieves, Items.BigKeyThieves, Items.CompassThieves], 3),
-    Dungeon("Ice Ruins", ice_locations, [Items.KeyIce, Items.BigKeyIce, Items.CompassIce], 10),
-    Dungeon("Desert Palace", desert_locations, [Items.KeyDesert, Items.BigKeyDesert, Items.CompassDesert], 9),
-    Dungeon("Turtle Rock", turtle_locations, [Items.KeyTurtle, Items.BigKeyTurtle, Items.CompassTurtle], 8),
-    Dungeon("Lorule Castle", lorule_castle_locations, [Items.KeyCastle, Items.CompassCastle], 8)
+    Dungeon("Hyrule Sanctuary", hyrule_sanctuary_locations, [Items.KeyHyruleSanctuary, Items.KeyRingHyruleSanctuary], 7),
+    Dungeon("Lorule Sanctuary", lorule_sanctuary_locations, [Items.KeyLoruleSanctuary, Items.KeyRingLoruleSanctuary], 7),
+    Dungeon("Eastern Palace", eastern_locations, [Items.KeyEastern, Items.BigKeyEastern, Items.CompassEastern, Items.KeyRingEastern], 5),
+    Dungeon("House of Gales", gales_locations, [Items.KeyGales, Items.BigKeyGales, Items.CompassGales, Items.KeyRingGales], 6),
+    Dungeon("Tower of Hera", hera_locations, [Items.KeyHera, Items.BigKeyHera, Items.CompassHera, Items.KeyRingHera], 10),
+    Dungeon("Dark Palace", dark_locations, [Items.KeyDark, Items.BigKeyDark, Items.CompassDark, Items.KeyRingDark], 5),
+    Dungeon("Swamp Palace", swamp_locations, [Items.KeySwamp, Items.BigKeySwamp, Items.CompassSwamp, Items.KeyRingSwamp], 3),
+    Dungeon("Skull Woods", skull_locations, [Items.KeySkull, Items.BigKeySkull, Items.CompassSkull, Items.KeyRingSkull], 6),
+    Dungeon("Thieves' Hideout", thieves_locations, [Items.KeyThieves, Items.BigKeyThieves, Items.CompassThieves, Items.KeyRingThieves], 3),
+    Dungeon("Ice Ruins", ice_locations, [Items.KeyIce, Items.BigKeyIce, Items.CompassIce, Items.KeyRingIce], 10),
+    Dungeon("Desert Palace", desert_locations, [Items.KeyDesert, Items.BigKeyDesert, Items.CompassDesert, Items.KeyRingDesert], 9),
+    Dungeon("Turtle Rock", turtle_locations, [Items.KeyTurtle, Items.BigKeyTurtle, Items.CompassTurtle, Items.KeyRingTurtle], 8),
+    Dungeon("Lorule Castle", lorule_castle_locations, [Items.KeyCastle, Items.CompassCastle, Items.KeyRingCastle], 8)
 ]
 
 # Locations that cannot have dungeon items because they are outside the dungeon they are associated with

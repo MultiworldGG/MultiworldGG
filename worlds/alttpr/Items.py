@@ -3,7 +3,7 @@ from __future__ import annotations
 import logging
 from typing import List, TYPE_CHECKING
 
-from BaseClasses import Item, ItemClassification
+from BaseClasses import Item, ItemClassification, Location
 
 from .ALttPDoorRandomizer.BaseClasses import LocationType
 from .ALttPDoorRandomizer.Items import ItemFactory, item_table
@@ -123,7 +123,9 @@ progressive_items = [
     "Big Key (Misery Mire)",
     "Big Key (Turtle Rock)",
     "Big Key (Ganons Tower)",
+    "Blue Boomerang",
     "Blue Pendant",
+    "Bomb Upgrade (+10)",
     "Bombos",
     "Book of Mudora",
     "Bottle",
@@ -164,6 +166,7 @@ progressive_items = [
     "Progressive Shield",
     "Progressive Sword",
     "Quake",
+    "Red Boomerang",
     "Red Pendant",
     "Shovel",
     "Small Key (Escape)",
@@ -185,13 +188,11 @@ progressive_items = [
 
 useful_items = [
     "Arrow Upgrade (+5)",
-    "Blue Boomerang",
     "Blue Potion",
     "Bomb Upgrade (+5)",
     "Boss Heart Container",
     "Green Potion",
     "Progressive Mail",
-    "Red Boomerang",
     "Red Potion",
     "Rupees (300)",
     "Sanctuary Heart Container",
@@ -199,12 +200,15 @@ useful_items = [
 ]
 
 filler_items = [
+    "Arrows (5)",
     "Arrows (10)",
     "Bee",
+    "Big Magic",
     "Blue Shield",
     "Bombs (3)",
     "Bombs (10)",
     "Bug Catching Net",
+    "Chicken",
     "Compass (Escape)",
     "Compass (Eastern Palace)",
     "Compass (Desert Palace)",
@@ -218,6 +222,7 @@ filler_items = [
     "Compass (Misery Mire)",
     "Compass (Turtle Rock)",
     "Compass (Ganons Tower)",
+    "Fairy",
     "Map (Escape)",
     "Map (Eastern Palace)",
     "Map (Desert Palace)",
@@ -231,6 +236,7 @@ filler_items = [
     "Map (Misery Mire)",
     "Map (Turtle Rock)",
     "Map (Ganons Tower)",
+    "Nothing",
     "Piece of Heart",
     "Red Clock",  # Placeholder for filler AP items
     "Red Shield",
@@ -240,7 +246,9 @@ filler_items = [
     "Rupees (50)",
     "Rupees (100)",
     "Single Arrow",
+    "Single Bomb",
     "Small Heart",
+    "Small Magic",
 ]
 
 
@@ -314,7 +322,8 @@ def create_all_items(world: ALttPRWorld) -> None:
     # Remove bomb and arrow capacity upgrades from the item pool for shopsanity. They will be added
     # to a random shop in the pre_fill() stage of generation.
     if world.options.shopsanity:
-        for upgrade in [item for item in dr_itempool if "Arrow Upgrade" in item.name or "Bomb Upgrade" in item.name]:
+        upgrades = [item for item in dr_itempool if "Arrow Upgrade" in item.name or (not world.options.bombless_start and "Bomb Upgrade" in item.name)]
+        for upgrade in upgrades:
             dr_itempool.remove(upgrade)
 
     # Itempool will not include dungeon items unless keysanity is enabled.
@@ -431,6 +440,7 @@ def place_pre_fill_items(world: ALttPRWorld) -> None:
 
         # Set the arrow and bomb capacity upgrades to be in a shop.
         # The randomizer does this by moving items around after placing everything, which isn't an option for us.
+        # The bomb upgrade will not exist if starting without bombs.
         world.random.shuffle(shop_locations)
         upgrades = [item for item in world.door_rando_world.itempool if item.name == "Arrow Upgrade (+5)" or item.name == "Bomb Upgrade (+5)"]
         for upgrade in upgrades:
@@ -451,3 +461,84 @@ def place_escape_key(possible_locations: List[str], world: ALttPRWorld, key_size
 
     # Should never reach this
     raise Exception("ALttPR: Could not place escape small key, no empty locations found.")
+
+
+
+def place_junk_items_in_pots(progitempool: List[Item], usefulitempool: List[Item], filleritempool: List[Item], fill_locations: List[Location], world) -> None:
+    # There is a technical limit of 256 multiworld items under pots
+    local_pot_item_names = [
+        "Big Magic",
+        "Blue Shield",
+        "Chicken",
+        "Fairy",
+        "Red Shield",
+        "Rupee (1)",
+        "Rupees (5)",
+        "Single Bomb",
+        "Small Heart",
+        "Small Magic",
+        "Triforce Piece",
+    ]
+
+    # These items look wonky anywhere other than under a pot
+    priority_pot_items = [
+        "Arrows (5)",
+        "Nothing",
+    ]
+
+    local_pot_items = ([item for item in filleritempool if item.player == world.player and item.name in local_pot_item_names])
+    num_filler_items = len(local_pot_items)
+    local_pot_items.extend([item for item in progitempool if item.player == world.player and item.name in local_pot_item_names])
+    local_pot_items.sort()
+    world.random.shuffle(local_pot_items)
+    local_pot_items.extend([item for item in filleritempool if item.name in priority_pot_items])
+    local_pot_items.reverse()  # Prioritize Nothing and Arrows (5) in pots
+    local_pot_items = [item for item in local_pot_items if item.name not in world.options.non_local_items]
+    pot_locations = [location for location in fill_locations if location.player == world.player and "Pot" in location.name]
+    num_filler_items_placed = 0
+
+    if len(pot_locations) > 256:
+        pot_locations.sort()
+        world.random.shuffle(pot_locations)
+        local_pot_locations = pot_locations[256:]
+        assert len(local_pot_items) >= len(local_pot_locations), "Not enough local junk items to place in pots"
+
+        # TODO: A smarter algorithm could distribute items better, so that e.g. two Zelda players with lottery
+        # would always have 256 pots filled with the other player's items
+        for i in range(0, len(local_pot_locations)):
+            item = local_pot_items[i]
+            location = local_pot_locations[i]
+            location.place_locked_item(item)
+            fill_locations.remove(location)
+            if item.name == "Triforce Piece":
+                # All items with the same name are considered equal, so it can't differentiate between
+                # a Triforce Piece placed in a location vs. one not placed yet. Removing the wrong Triforce Piece
+                # screws up the item pool.
+                for i in range(0, len(progitempool)):
+                    if progitempool[i] == item and progitempool[i].location:
+                        progitempool.pop(i)
+                        break
+            else:
+                filleritempool.remove(item)
+                num_filler_items_placed = num_filler_items_placed + 1
+
+    local_fill_percent = world.options.local_fill_percent
+    if local_fill_percent > 0:
+        num_filler_items_to_place = num_filler_items * (local_fill_percent / 100)
+        junk_items = ([item for item in filleritempool if item.player == world.player and
+                       (item.name in local_pot_item_names or item.name in priority_pot_items) and
+                       item.name not in world.options.non_local_items])
+        junk_items.sort()
+        world.random.shuffle(junk_items)
+
+        locations = [location for location in fill_locations if location.player == world.player]
+        locations.sort()
+        world.random.shuffle(locations)
+
+        while num_filler_items_to_place > num_filler_items_placed and junk_items and locations:
+            item = junk_items.pop(0)
+            location = locations.pop(0)
+            location.place_locked_item(item)
+            filleritempool.remove(item)
+            fill_locations.remove(location)
+            num_filler_items_placed = num_filler_items_placed + 1

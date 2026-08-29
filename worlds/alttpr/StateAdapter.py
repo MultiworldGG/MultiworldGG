@@ -198,14 +198,16 @@ class StateAdapter:
         if self.world.doorShuffle[1] == "vanilla":
             # This will be the simple version for non-door rando. In general, if you can reach
             # blue blocks you can also reach a crystal switch.
-            # TODO: Bomb bag also breaks this assumption for back of Mire
             extra_condition = True
             if region.name.startswith("Swamp "):
                 extra_condition = self.has_item("Small Key (Swamp Palace)", 6)
             elif region.name in ["Ice Backwards Room", "Ice Crystal Left", "Ice Crystal Right"]:
                 extra_condition = self.has_item("Small Key (Ice Palace)", 6)
-            elif region.name.startswith("Mire") and region.name != "Mire Crystal Mid":  # If not in the back of Mire
-                extra_condition = self.has_item("Small Key (Misery Mire)", 3)
+            elif region.name.startswith("Mire"):
+                if region.name == "Mire Crystal Mid":
+                    extra_condition = self.can_use_bombs(player)
+                else: # If not in the back of Mire
+                    extra_condition = self.has_item("Small Key (Misery Mire)", 3)
 
             return self.can_hit_crystal(player) and extra_condition
         else:
@@ -238,8 +240,7 @@ class StateAdapter:
 
 
     def can_use_bombs(self, player) -> bool:
-        # TODO: Bomb bag
-        return True
+        return (not self.world.bombbag[1] or self.has_item('Bomb Upgrade (+10)') or self.has_item('Bomb Upgrade (+5)', 2)) and (self.can_farm_bombs(player))
 
 
     def everything(self, player, all_except=0) -> bool:

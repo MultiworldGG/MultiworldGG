@@ -17,6 +17,13 @@ moduleMatches = 0xF882D5CF, 0x30B6E091, 0x218F6E07 ; 1.0.1E, 1.0.2U, 1.0.0E
 IsReady = 0x021ccdec
 0x024bf00c = bl _IsReadyAdjusted
 
+# disable lock party from affinity quests
+0x02296518 = nop
+0x02290ca4 = nop
+
+# max out fuel for doll with one refill
+0x025ce838 = nop
+
 # division points disable until KEY Blade license
 0x02847ef8 = bl _isUnlock
 0x02847fbc = bl _isUnlock
@@ -72,6 +79,8 @@ addNum = 0x02779870
 0x022958f4 = bl _addRewardItemEquipment
 # filter treasure box rewards
 0x022d8d50 = bl _addRewardItemEquipment
+# disable itembox full message for the above
+0x022d8dc4 = nop
 # filter mission event rewards
 # important items
 0x027a3f28 = bl _addNumAdjusted 
@@ -101,10 +110,6 @@ addItem = 0x02365934
 0x0238e138 = nop
 
 0x02814cf4 = b _prepareBladeTerminal # in loadEnd::ScriptManager
-
-# reconfigure rentalCharTerminal to LShop
-0x028eacc8 = bl _prepareRentalCharTerminal
-beginScript = 0x028cb70c # ::Gimmick::GimmickMapObj
 
 # overwrite setLocal for blade flag
 0x0228f018 = bl _setLocal
@@ -158,6 +163,15 @@ shopTerminalScenarioFlagPtr = 0x20343634
 0x02a32720 = nop # skell weapon
 0x02a32748 = nop # skell armor
 
+# disable items from collepedia
+0x02a0acf4 = nop
+
+# miranium get not decreased after lshop upgrade
+0x02a40ecc = nop
+
+# extend system log duration
+0x02c04440 = li r9, 0xff
+
 openHudTelop = 0x02c91f3c # ::MenuTask
 chkLv = 0x02af8e7c # ::menu::MenuDollGarage
 #endif
@@ -206,6 +220,15 @@ shopTerminalScenarioFlagPtr = 0x20343634-0xB821D
 0x02a32710 = nop # skell weapon
 0x02a32738 = nop # skell armor
 
+# disable items from collepedia
+0x02a0ace4 = nop
+
+# miranium get not decreased after lshop upgrade
+0x02a40ebc = nop
+
+# extend system log duration
+0x02c04430 = li r9, 0xff
+
 openHudTelop = 0x02c91edc # ::MenuTask
 chkLv = 0x02af8e6c # ::menu::MenuDollGarage
 #endif
@@ -245,8 +268,6 @@ int* getItem(int* ptr, int enemies, int boxes, int items);
 int getItemNum(int* ptr, int enemies, int boxes);
 
 int getFlagVal(int* bdatPtr, const char* flagName, int id, const char* columnName);
-
-int beginScript(int** scriptPtr);
 
 
 int _IsPermit(){
@@ -433,21 +454,6 @@ void _prepareBladeTerminal(){
 		if(_hasPreciousItem(24 + 5 - 1)) shopTerminalScenarioFlagPtr = 0;
 		else shopTerminalScenarioFlagPtr = 0x7fffff;
 	}
-}
-
-int _prepareRentalCharTerminal(int** scriptPtr){
-	int* fldConsoleParamPtr = scriptPtr[0x29];
-	if(__strcmp((char*)fldConsoleParamPtr,"fld_console.sb")) return beginScript(scriptPtr);
-	int fldConsoleScriptId = fldConsoleParamPtr[9];
-	if(fldConsoleScriptId == 2){
-		if(_hasPreciousItem(24 + 5 - 1)) return beginScript(scriptPtr + 0x98);
-		else {
-			openHudTelop(menuBasePtr, 52);
-			return 0; // does not matter
-		}
-	} 
-	if(fldConsoleScriptId == 0xb) return beginScript(scriptPtr - 0x98);
-	return beginScript(scriptPtr);
 }
 
 // Do not call this function directly, but rather call the first label

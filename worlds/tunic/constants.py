@@ -88,11 +88,11 @@ class EnemySouls(StrEnum):
 
 
 # "Quarry - [East] Bombable Wall" is excluded from this list since it has slightly different rules
-bomb_walls: dict[str, list[str]] = {
-    "East Forest - Bombable Wall": [EnemySouls.blobs, EnemySouls.rudelings],
-    "Eastern Vault Fortress - [East Wing] Bombable Wall": [EnemySouls.custodians],
-    "Overworld - [Central] Bombable Wall": [EnemySouls.blobs, EnemySouls.hedgehogs],
-    "Overworld - [Southwest] Bombable Wall Near Fountain": [EnemySouls.rudelings, EnemySouls.hedgehogs],
-    "Quarry - [West] Upper Area Bombable Wall": [EnemySouls.scavengers],
-    "Ruined Atoll - [Northwest] Bombable Wall": [EnemySouls.frogs],
+bomb_walls: dict[str, tuple[str]] = {
+    "East Forest - Bombable Wall": (EnemySouls.blobs, EnemySouls.rudelings),
+    "Eastern Vault Fortress - [East Wing] Bombable Wall": (EnemySouls.custodians,),
+    "Overworld - [Central] Bombable Wall": (EnemySouls.blobs, EnemySouls.hedgehogs),
+    "Overworld - [Southwest] Bombable Wall Near Fountain": (EnemySouls.rudelings, EnemySouls.hedgehogs),
+    "Quarry - [West] Upper Area Bombable Wall": (EnemySouls.scavengers,),
+    "Ruined Atoll - [Northwest] Bombable Wall": (EnemySouls.frogs,)
 }

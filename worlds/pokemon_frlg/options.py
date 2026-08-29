@@ -400,7 +400,7 @@ class KantoTrainersanity(NamedRange):
 
     Trainers are no longer missable. Each trainer will add a random filler item into the pool.
     """
-    display_name = " Kanto Trainersanity"
+    display_name = "Kanto Trainersanity"
     default = 0
     range_start = 0
     range_end = 357

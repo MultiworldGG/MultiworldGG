@@ -110,9 +110,13 @@ class SM64HackWorld(World):
                             \nPlease reimport the JSON into the website (https://dnvic.com/ArchipelagoGenerator), and export in order to use it with the current version")
         if self.progressive_keys == 3:
             self.progressive_keys = self.data.locations["Other"]["Settings"]["prog_key"]
+
+        if "touhou" in self.options.hack_specific_options:
+            self.data.locations["Course 1"]["Overworld"] = True #you start with stage 1
+            self.options.start_inventory.value |= {"Mario A - Italian Plumber":1}
         
         self.options.progressive_keys.value = self.progressive_keys
-        self.options.level_tickets.value &= self.data.locations["Other"]["Settings"].get("Entrances") not in {None, False} #only add tickets if the json supports it
+        self.options.level_tickets.value = 0 if self.data.locations["Other"]["Settings"].get("Entrances") in {None, False} else self.options.level_tickets.value #only add tickets if the json supports it
         self.options.move_randomization.value &= (self.data.locations["Other"]["Settings"].get("Moves") not in {None, False} or self.options.force_move_randomization) #only add moves if the json supports it or if you are reckless
         if self.options.move_randomization:
             match self.options.starting_jump:
@@ -135,9 +139,18 @@ class SM64HackWorld(World):
         if self.options.starting_tickets != 0 and self.options.level_tickets:
             courses = [course for course in self.data.locations if not self.data.locations[course].get("Overworld") and course in self.data.progression_courses]
             num_starting_courses = round((self.options.starting_tickets / 100) * len(courses))
-            course_ticket_dict = {}
+            course_ticket_dict = {"Progressive Main Course": 0, "Progressive Bowser Course": 0, "Next Stage": 0, "Extra Stage": 0}
             for course in self.random.sample(courses, num_starting_courses):
-                course_ticket_dict[f"{course} Ticket"] = 1
+                if course.startswith("Course") and self.options.level_tickets == 1:
+                    course_ticket_dict["Progressive Main Course"] += 1
+                elif course.startswith("Bowser") and self.options.level_tickets == 1:
+                    course_ticket_dict["Progressive Bowser Course"] += 1
+                elif course in sr8courseorder and "touhou" in self.options.hack_specific_options:
+                    course_ticket_dict["Next Stage"] += 1
+                elif course in sr8extraorder and "touhou" in self.options.hack_specific_options:
+                    course_ticket_dict["Extra Stage"] += 1
+                else:
+                    course_ticket_dict[f"{course} Ticket"] = 1
             self.options.start_inventory_from_pool.value |= course_ticket_dict
                     
         existing_location_names = location_names_that_exist(self.data, self.options)
@@ -155,7 +168,7 @@ class SM64HackWorld(World):
 
 
     def create_item(self, item: str, item_link = True) -> SM64HackItem:
-        if item_link and item not in traps and item not in junk and item not in useful: #item link is dumb and i need to make all potentially progressive item_link items some sort of progression
+        if item_link and item not in traps and item not in junk and item not in useful and item not in sr8traps and item not in ("+1 Life", "Lower Difficulty"): #item link is dumb and i need to make all potentially progressive item_link items some sort of progression
             classification = ItemClassification.progression
             if item == "Power Star" or item == "Star Bundle" or item == "Blue Star" or item == "Blue Star Bundle":
                 classification = ItemClassification.progression_deprioritized_skip_balancing
@@ -175,11 +188,13 @@ class SM64HackWorld(World):
             
             elif item == "Blue Star" or item == "Blue Star Bundle":
                 classification = ItemClassification.progression_deprioritized_skip_balancing
-            elif item in traps:
+            elif item == "+1 Bomb":
+                classification = ItemClassification.useful | ItemClassification.trap #bobombs can often be useful but they also explode you
+            elif item in traps or item in sr8traps:
                 classification = ItemClassification.trap
-            elif item in junk:
+            elif item in junk or item == "+1 Life":
                 classification = ItemClassification.filler
-            elif item in useful:
+            elif item in useful or item == "Lower Difficulty":
                 alwaysuseful = True
                 classification = ItemClassification.useful
             elif item == "Steve":
@@ -188,7 +203,7 @@ class SM64HackWorld(World):
             elif item.endswith("Star"): # cannon stars in sr6.25
                 classification = ItemClassification.progression
                 self.stars_created += 1
-            elif item.endswith("Ticket"):
+            elif item.endswith("Ticket") or item in ("Progressive Main Course", "Progressive Bowser Course", "Next Stage", "Extra Stage"):
                 classification = ItemClassification.progression #non-progressive tickets just dont exist
             else:
                 classification = ItemClassification.progression if item_is_important(item, self.data) else ItemClassification.useful
@@ -212,9 +227,15 @@ class SM64HackWorld(World):
         if itemtype < useful_percent * 100:
             return self.random.choice(useful)
         if itemtype < (useful_percent + trap_percent) * 100:
-            enabledtraps = set(traps) - self.options.turn_off_traps.value
+            if "touhou" in self.options.hack_specific_options:
+                enabledtraps = set(sr8traps) - self.options.turn_off_traps.value
+            else:
+                enabledtraps = set(traps) - self.options.turn_off_traps.value
             return self.random.choice(list(enabledtraps))
-        return self.random.choice(junk)
+        if "touhou" in self.options.hack_specific_options:
+            return self.random.choice(sr8filler)
+        else:
+            return self.random.choice(junk)
         
 
     def create_items(self) -> None:
@@ -257,10 +278,27 @@ class SM64HackWorld(World):
                 
             if self.options.level_tickets:
                 if not self.data.locations[course].get("Overworld") and course in self.data.progression_courses:
-                    self.multiworld.itempool += [self.create_item(f"{course} Ticket", False)]
+                    if "touhou" in self.options.hack_specific_options:
+                        if course not in ("Slide", "Secret 1", "Metal Cap", "Vanish Cap"):
+                            self.multiworld.itempool += [self.create_item("Next Stage", False)]
+                        elif course in ("Metal Cap", "Vanish Cap", "Secret 1"):
+                            self.multiworld.itempool += [self.create_item("Extra Stage", False)]
+                        else:
+                            self.multiworld.itempool += [self.create_item(f"{course} Ticket", False)]
+                    else:
+                        if self.options.level_tickets == 1 and course.startswith("Course"):
+                            self.multiworld.itempool += [self.create_item("Progressive Main Course", False)]
+                        elif self.options.level_tickets == 1 and course.startswith("Bowser"):
+                            self.multiworld.itempool += [self.create_item("Progressive Bowser Course", False)]
+                        else:
+                            self.multiworld.itempool += [self.create_item(f"{course} Ticket", False)]
                     num_locations -= 1
                 else:
                     self.no_ticket_courses |= set([course])
+
+        if "touhou" in self.options.hack_specific_options:
+            self.multiworld.itempool += [self.create_item("Lower Difficulty", False) for _ in range(3)]
+            num_locations -= 3
 
         if self.progressive_keys > 0:
             for Key in range(2):
@@ -592,7 +630,7 @@ class SM64HackWorld(World):
             "sr3.5": "sr3.5" in self.data.locations["Other"]["Settings"],
             "decadeslater": decadeslater,
             "version": self.data.locations["Other"]["Settings"].get("Version"),
-            "tickets": self.options.level_tickets.value == True,
+            "tickets": self.options.level_tickets.value > 0,
             "moves": self.options.move_randomization.value == True,
             "NoTicketCourses": self.no_ticket_courses
         }

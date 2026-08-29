@@ -89,7 +89,7 @@ class TriforceHuntGoal(Range):
     """How many Triforce Pieces are required to beat the game when the goal is set to Triforce Hunt or Ganon Hunt"""
     display_name = "Triforce Hunt Goal"
     range_start = 1
-    range_end = 50  # TODO: What should the max number of triforce pieces be?
+    range_end = 850
     default = 20
 
 
@@ -97,7 +97,7 @@ class TriforceHuntTotal(Range):
     """How many Triforce Pieces are in the item pool when the goal is set to Triforce Hunt or Ganon Hunt"""
     display_name = "Triforce Hunt Total"
     range_start = 1
-    range_end = 50
+    range_end = 850
     default = 30
 
 
@@ -122,9 +122,10 @@ class BigKeyShuffle(Toggle):
 
 
 class KeyDropShuffle(Toggle):
-    """Shuffle keys that are dropped by enemies or hidden under pots."""
+    """Shuffle keys that are dropped by enemies or hidden under pots, regardless of potsanity or enemy drop settings."""
     display_name = "Key Drop Shuffle"
     default = False
+    visibility = Visibility.none
 
 
 class EntranceShuffle(Choice):
@@ -247,6 +248,12 @@ def boss_shuffle_string_from_option(option):
         raise Exception(f"Invalid option {option} for boss_shuffle")
 
 
+class BomblessStart(Toggle):
+    """Start without the ability to use bombs. Two bomb capacity upgrades are added to the item pool and will give the ability to use bombs."""
+    display_name = "Bombless Start"
+    default = False
+
+
 class Shopsanity(Toggle):
     """All shops contain randomized items, including Potion Shop and Capacity Upgrade Fairy. Adds 32 items to the item pool.
     Each type of potion can be purchased at a random shop."""
@@ -258,6 +265,44 @@ class PrizeShuffle(Toggle):
     """Adds Pendants and Crystals to the itempool."""
     display_name = "Prize Shuffle"
     default = False
+
+
+class Potsanity(Choice):
+    """Pots contain randomized items. Any pots that haven't been checked will have their color changed, and dungeon counters
+    are forced on with dungeon or lottery settings. A max of 256 multiworld items can be under pots.
+    - None - No pots are in the pool, like normal randomizer
+    - Key Pots - The pots that have keys are in the pool
+    - Cave Pots - The pots that are not found in dungeons are in the pool (includes Spike Cave large block)
+    - Cave + Keys Pots - Both non-dungeon pots and pots that used to have keys
+    - Dungeon Pots - The pots that are in dungeons
+    - Lottery - All pots and large blocks are in the pool"""
+    display_name = "Pot Shuffle"
+    option_none = 0
+    option_keys = 1
+    option_cave = 2
+    option_cavekeys = 3
+    option_dungeon = 4
+    option_lottery = 5
+    default = "none"
+
+
+class EnemyDropShuffle(Choice):
+    """Enemies drop randomized items. With all underworld (caves + dungeons) enemies randomized, a blue square will be shown
+    in the top-left corner if there is a undefeated enemy in the same supertile (usually in the current or adjacent room), and
+    dungeon counters are forced on. A starting sword is recommended for underworld enemy drop shuffle."""
+    display_name = "Enemy Drop Shuffle"
+    option_none = 0
+    option_keys = 1
+    option_underworld = 2
+    default = "none"
+
+
+class LocalFillPercent(Range):
+    """Force a percentage of extra filler items from pot and enemy drop shuffle into your own world."""
+    display_name = "Local Fill Percent"
+    range_start = 0
+    range_end = 100
+    default = 0
 
 
 class FluteShuffle(Choice):
@@ -306,6 +351,15 @@ class DungeonCounters(Choice):
     option_pickup = 1
     option_off = 2
     default = "pickup"
+
+
+class TrapAppearance(Choice):
+    """How Trap items will appear in-game."""
+    display_name = "Trap Appearance"
+    option_major_only = 0
+    option_junk_only = 1
+    option_anything = 2
+    default = "major_only"
 
 
 class Sprite(FreeText):
@@ -439,13 +493,18 @@ class ALttPROptions(PerGameCommonOptions):
     door_type_shuffle: DoorTypeShuffle
     enemy_shuffle: EnemyShuffle
     boss_shuffle: BossShuffle
+    bombless_start: BomblessStart
     shopsanity: Shopsanity
     prize_shuffle: PrizeShuffle
     flute_shuffle: FluteShuffle
+    potsanity: Potsanity
+    enemy_drop_shuffle: EnemyDropShuffle
+    local_fill_percent: LocalFillPercent
     pre_activated_flute: PreActivatedFlute
     pseudoboots: Pseudoboots
     mirror_scroll: MirrorScroll
     dungeon_counters: DungeonCounters
+    trap_appearance: TrapAppearance
     sprite: Sprite
     heart_beep_rate: HeartBeepRate
     heart_color: HeartColor
@@ -480,8 +539,12 @@ alttpr_option_groups: list[OptionGroup] = [
             SmallKeyShuffle,
             BigKeyShuffle,
             KeyDropShuffle,
-            Shopsanity,
+            BomblessStart,
             PrizeShuffle,
+            Shopsanity,
+            Potsanity,
+            EnemyDropShuffle,
+            LocalFillPercent,
         ],
     ),
     OptionGroup(
@@ -517,6 +580,7 @@ alttpr_option_groups: list[OptionGroup] = [
             MirrorScroll,
             PreActivatedFlute,
             DungeonCounters,
+            TrapAppearance,
             Sprite,
             HeartBeepRate,
             HeartColor,
