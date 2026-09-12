@@ -120,6 +120,8 @@ from kivymd.uix.progressindicator import MDLinearProgressIndicator
 from kivymd.uix.scrollview import MDScrollView
 from kivymd.uix.tooltip import MDTooltip, MDTooltipPlain
 
+from kivymd.uix.behaviors import HoverBehavior as MDHoverBehavior
+
 fade_in_animation = Animation(opacity=0, duration=0) + Animation(opacity=1, duration=0.25)
 
 from NetUtils import JSONtoTextParser, JSONMessagePart, SlotType, HintStatus, get_item_classification_label
@@ -254,52 +256,23 @@ def on_release(self: MDButton, *args):
 MDButton.on_release = on_release
 
 
-# I was surprised to find this didn't already exist in kivy :(
-class HoverBehavior(object):
-    """originally from https://stackoverflow.com/a/605348110"""
+class HoverBehavior(MDHoverBehavior):
     hovered = BooleanProperty(False)
-    border_point = ObjectProperty(None, allownone=True)
-
     def __init__(self, **kwargs):
         self.register_event_type("on_enter")
         self.register_event_type("on_leave")
         Window.bind(mouse_pos=self.on_mouse_pos)
-        Window.bind(on_cursor_leave=self.on_cursor_leave)
+        self.bind(hover_visible=lambda instance, value: setattr(self, 'hovered', value))
         super(HoverBehavior, self).__init__(**kwargs)
 
-    def _find_top_widget(self, widget, pos):
-        if hasattr(widget, "children"):
-            for child in widget.children:
-                res = self._find_top_widget(child, pos)
-                if res is not None:
-                    return res
-        if hasattr(widget, "collide_point") and hasattr(widget, "to_widget"):
-            if widget.collide_point(*widget.to_widget(*pos)):
-                return widget
-        return None
+    def on_mouse_pos(self, *args):
+        self.on_mouse_update(*args)
 
-    def set_hovered(self, state, pos):
-        if self.hovered == state:
-            return
-        self.hovered = state
-        self.border_point = pos
-        if state:
-            self.dispatch("on_enter")
-        else:
-            self.dispatch("on_leave")
+    def on_enter(self):
+        self.dispatch("on_enter")
 
-    def on_mouse_pos(self, window, pos):
-        root_window = self.get_root_window()
-        if not root_window:
-            return  # Abort if not displayed
-
-        hovered_widget = self._find_top_widget(root_window, pos)
-        self.set_hovered(hovered_widget is self, pos)
-
-    def on_cursor_leave(self, *args):
-        # if the mouse left the window, it is obviously no longer inside the hover label.
-        self.set_hovered(False, None)
-
+    def on_leave(self):
+        self.dispatch("on_leave")
 
 Factory.register("HoverBehavior", HoverBehavior)
 
