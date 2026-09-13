@@ -11,6 +11,7 @@ from urllib.request import urlopen
 from BaseClasses import CollectionState, Entrance, Item, ItemClassification, Location, MultiWorld, Tutorial
 from Options import OptionError
 import settings
+from Utils import user_path
 from worlds.AutoWorld import LogicMixin, WebWorld, World
 from worlds.Files import APProcedurePatch
 from worlds.alttpr import Sprites
@@ -575,8 +576,7 @@ class ALttPRWorld(World):
             logger.error(f"Invalid sprite option {self.options.sprite.value}. No custom sprite will be applied.")
             return None
 
-        world_dir = os.path.dirname(self.zip_path) if self.zip_path else os.path.join(os.path.dirname(self.__file__), "..")
-        sprite_dir = os.path.join(world_dir, "..", "data", "sprites", "alttp", "remote")
+        sprite_dir = user_path("data", "sprites", "alttp", "remote")
         if not os.path.exists(sprite_dir):
             logger.warning(f"Sprite directory {sprite_dir} does not exist. No custom sprite will be applied.")
             return None
