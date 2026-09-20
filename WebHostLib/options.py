@@ -48,6 +48,25 @@ def get_option_counter_keys(option: type[Options.OptionCounter]) -> list[str]:
     return list(dict.fromkeys(keys))
 
 
+def get_option_list_schema(option: type[Options.OptionList]) -> dict | None:
+    """Infer a scalar element type from a homogeneous, non-empty OptionList default."""
+    default = getattr(option, "default", ())
+    if not isinstance(default, (list, tuple, set, frozenset)) or not default:
+        return None
+
+    element_types = {type(value) for value in default}
+    if len(element_types) != 1:
+        return None
+
+    element_type = element_types.pop()
+    return {
+        bool: {"type": "boolean"},
+        int: {"type": "integer"},
+        float: {"type": "number"},
+        str: {"type": "string"},
+    }.get(element_type)
+
+
 def _get_scalar_schema_descriptor(schema_rule) -> dict | None:
     if isinstance(schema_rule, Schema):
         return _get_scalar_schema_descriptor(schema_rule._schema)
@@ -193,6 +212,7 @@ def render_options_page(template: str, world_name: str, is_complex: bool = False
         issubclass=issubclass,
         Options=Options,
         option_counter_keys=get_option_counter_keys,
+        option_list_schema=get_option_list_schema,
         option_dict_schema=get_option_dict_schema,
         theme=get_world_theme(world_name),
     )
@@ -436,7 +456,26 @@ def _parse_player_options_form(game: str) -> tuple[str, dict, bool]:
                 options[key_parts[-1][:-6]] = val
             del options[key]
 
-    options.update(free_lists)
+    if free_lists:
+        world = AutoWorldRegister.world_types[game]
+        for option_name, values in free_lists.items():
+            option = world.options_dataclass.type_hints.get(option_name)
+            value_schema = get_option_list_schema(option) \
+                if option and issubclass(option, Options.OptionList) else None
+            if value_schema is None:
+                raise ValueError(f"Unsupported free-form list option: {option_name}")
+            value_type = value_schema["type"]
+            if value_type == "integer":
+                options[option_name] = [int(value) for value in values]
+            elif value_type == "number":
+                options[option_name] = [float(value) for value in values]
+            elif value_type == "boolean":
+                normalized_values = [value.lower() for value in values]
+                if any(value not in {"true", "false"} for value in normalized_values):
+                    raise ValueError(f"Invalid boolean value for {option_name}")
+                options[option_name] = [value == "true" for value in normalized_values]
+            else:
+                options[option_name] = values
 
     for option_name, rows in free_counters.items():
         counter = options[option_name] = {}

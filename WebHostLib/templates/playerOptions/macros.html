@@ -158,24 +158,39 @@
     </div>
 {% endmacro %}
 
-{% macro FreeOptionList(option_name, option) %}
+{% macro FreeOptionList(option_name, option, value_schema) %}
     {{ OptionTitle(option_name, option) }}
     <div
             class="option-container free-form-option free-option-list"
             data-option-name="{{ option_name }}"
+            data-value-type="{{ value_schema['type'] }}"
             data-defaults='{{ option.default|list|tojson }}'
     >
         <input type="hidden" name="{{ option_name }}||free-list-marker" value="1" />
         <div class="free-form-rows">
             {% for value in option.default %}
                 <div class="option-entry free-form-row">
+                    {% if value_schema['type'] == 'boolean' %}
+                    <select
+                            class="free-form-list-value"
+                            id="{{ option_name }}-free-list-{{ loop.index0 }}"
+                            name="{{ option_name }}||free-list"
+                            aria-label="{{ option_name }} value"
+                    >
+                        <option value="true" {{ 'selected' if value is sameas true }}>True</option>
+                        <option value="false" {{ 'selected' if value is sameas false }}>False</option>
+                    </select>
+                    {% else %}
                     <input
-                            type="text"
+                            type="{{ 'number' if value_schema['type'] in ['integer', 'number'] else 'text' }}"
+                            class="free-form-list-value"
                             id="{{ option_name }}-free-list-{{ loop.index0 }}"
                             name="{{ option_name }}||free-list"
                             value="{{ value }}"
+                            {% if value_schema['type'] == 'number' %}step="any"{% endif %}
                             aria-label="{{ option_name }} value"
                     />
+                    {% endif %}
                     <button type="button" class="free-form-move-up js-required" aria-label="Move value up" title="Move up">&#8593;</button>
                     <button type="button" class="free-form-move-down js-required" aria-label="Move value down" title="Move down">&#8595;</button>
                     <button type="button" class="free-form-remove js-required" aria-label="Remove value" title="Remove">&times;</button>
@@ -183,7 +198,20 @@
             {% endfor %}
         </div>
         <div class="free-form-add-row js-required">
-            <input type="text" class="free-form-new-value" placeholder="Value" aria-label="New value" />
+            {% if value_schema['type'] == 'boolean' %}
+            <select class="free-form-new-value" aria-label="New value">
+                <option value="true">True</option>
+                <option value="false">False</option>
+            </select>
+            {% else %}
+            <input
+                    type="{{ 'number' if value_schema['type'] in ['integer', 'number'] else 'text' }}"
+                    class="free-form-new-value"
+                    {% if value_schema['type'] == 'number' %}step="any"{% endif %}
+                    placeholder="Value"
+                    aria-label="New value"
+            />
+            {% endif %}
             <button type="button" class="free-form-add">Add</button>
         </div>
     </div>
@@ -549,7 +577,12 @@
         {{ OptionList(option_name, option) }}
 
     {% elif issubclass(option, Options.OptionList) %}
-        {{ FreeOptionList(option_name, option) }}
+        {% set list_schema = option_list_schema(option) %}
+        {% if list_schema %}
+            {{ FreeOptionList(option_name, option, list_schema) }}
+        {% else %}
+            {{ ManualConfigOption(option_name, option) }}
+        {% endif %}
 
     {% elif issubclass(option, Options.OptionDict) %}
         {% set dict_schema = option_dict_schema(option) %}

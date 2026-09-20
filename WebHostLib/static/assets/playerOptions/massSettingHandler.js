@@ -259,6 +259,7 @@
   function initFreeOptionLists() {
     document.querySelectorAll(".free-option-list").forEach((container) => {
       const optionName = container.dataset.optionName;
+      const valueType = container.dataset.valueType;
       const rowsContainer = container.querySelector(".free-form-rows");
       const newValueInput = container.querySelector(".free-form-new-value");
       const addButton = container.querySelector(".free-form-add");
@@ -268,10 +269,24 @@
         const row = document.createElement("div");
         row.className = "option-entry free-form-row";
 
-        const input = document.createElement("input");
-        input.type = "text";
+        const input = document.createElement(valueType === "boolean" ? "select" : "input");
+        input.className = "free-form-list-value";
+        if (valueType === "boolean") {
+          ["true", "false"].forEach((booleanValue) => {
+            const option = document.createElement("option");
+            option.value = booleanValue;
+            option.textContent = booleanValue === "true" ? "True" : "False";
+            input.appendChild(option);
+          });
+          input.value = String(value).toLowerCase();
+        } else {
+          input.type = valueType === "integer" || valueType === "number" ? "number" : "text";
+          if (valueType === "number") {
+            input.step = "any";
+          }
+          input.value = String(value);
+        }
         input.name = `${optionName}||free-list`;
-        input.value = String(value);
         input.id = `${optionName}-free-list-${nextRowId++}`;
         input.setAttribute("aria-label", `${optionName} value`);
 
@@ -329,7 +344,7 @@
           return;
         }
         addRow(newValueInput.value, true);
-        newValueInput.value = "";
+        newValueInput.value = valueType === "boolean" ? "true" : "";
         newValueInput.focus();
       }
 
@@ -343,7 +358,7 @@
       rowsContainer.addEventListener("input", markPresetCustom);
 
       container.getValues = () => Array.from(
-        rowsContainer.querySelectorAll('input[type="text"]')
+        rowsContainer.querySelectorAll(".free-form-list-value")
       ).map((input) => input.value).filter((value) => value !== "");
 
       container.restoreValues = (values) => {
