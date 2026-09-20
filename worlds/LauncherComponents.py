@@ -24,7 +24,7 @@ except ImportError:
 _LAUNCHER_CACHE_PATH = user_path("data", "world_launcher_cache.json.gz")
 _DEFAULT_ICON_PATH = local_path("data", "icon.png")
 _LAUNCHER_ICON_CACHE_DIR = os.path.join(tempfile.gettempdir(), "mwgg_launcher_icons")
-_LAUNCHER_CACHE_SCHEMA = 2
+_LAUNCHER_CACHE_SCHEMA = 3
 
 _COMPONENT_ORIGIN_ATTRIBUTE = "_mwgg_component_origin"
 _COMPONENT_ORIGIN_BUILTIN = "builtin"
@@ -265,7 +265,7 @@ def _install_apworld(apworld_src: str = "") -> Optional[tuple[pathlib.Path, path
     new_components = list(components[components_before:])
     for component in new_components:
         setattr(component, _COMPONENT_ORIGIN_ATTRIBUTE, _COMPONENT_ORIGIN_WORLD)
-    _merge_installed_world_components_into_cache(new_components)
+    _merge_installed_world_components_into_cache(new_components, world_source.path)
     worlds.rebuild_world_caches()
 
     return apworld_path, target
@@ -496,22 +496,23 @@ def _load_launcher_cache(check_freshness: bool = True) -> dict[str, Any] | None:
         logging.warning(f"Failed to read launcher cache from {_LAUNCHER_CACHE_PATH}: {exc}")
         return None
 
+    if not isinstance(payload, dict):
+        return None
+
     serialized_components = payload.get("components")
     cached_icon_paths = payload.get("icon_paths")
     if not isinstance(serialized_components, list) or not isinstance(cached_icon_paths, dict):
         return None
 
     if payload.get("schema") != _LAUNCHER_CACHE_SCHEMA:
-        if check_freshness:
-            logging.debug("Launcher cache schema changed, ignoring.")
-            return None
-        payload["schema"] = _LAUNCHER_CACHE_SCHEMA
+        logging.debug("Launcher cache schema changed, ignoring.")
+        return None
 
+    cached_sources = payload.get("world_source_fingerprints")
+    if not isinstance(cached_sources, list):
+        logging.debug("Launcher cache has no world source fingerprints, ignoring.")
+        return None
     if check_freshness:
-        cached_sources = payload.get("world_source_fingerprints")
-        if not isinstance(cached_sources, list):
-            logging.debug("Launcher cache has no world source fingerprints, ignoring.")
-            return None
         if cached_sources != _current_world_source_fingerprints():
             logging.debug("Launcher cache is stale (world sources changed), ignoring.")
             return None
@@ -758,8 +759,24 @@ def _write_cache_payload(payload: dict[str, Any]) -> None:
                 pass
 
 
+def invalidate_launcher_cache() -> None:
+    """Ensure the next launcher startup retries loading worlds."""
+    try:
+        os.unlink(_LAUNCHER_CACHE_PATH)
+    except FileNotFoundError:
+        pass
+    except OSError as exc:
+        logging.warning("Failed to invalidate launcher cache at %s: %s", _LAUNCHER_CACHE_PATH, exc)
+
+
 def write_launcher_cache() -> None:
     worlds_module = sys.modules.get("worlds")
+    if getattr(worlds_module, "failed_world_loads", None):
+        invalidate_launcher_cache()
+        return
+    if not getattr(worlds_module, "_worlds_loaded", False):
+        return
+
     world_source_paths = sorted(
         ws.path for ws in getattr(worlds_module, "world_sources", [])
     )
@@ -782,9 +799,11 @@ def write_launcher_cache() -> None:
     })
 
 
-def _merge_installed_world_components_into_cache(new_components: list[Component]) -> None:
-    """Merge newly installed world's components into the existing launcher cache."""
-    if not new_components:
+def _merge_installed_world_components_into_cache(new_components: list[Component], world_source_path: str) -> None:
+    """Extend a complete cache only when the installed world is the sole source change."""
+    worlds_module = sys.modules.get("worlds")
+    if getattr(worlds_module, "failed_world_loads", None):
+        invalidate_launcher_cache()
         return
 
     new_entries = {
@@ -792,17 +811,21 @@ def _merge_installed_world_components_into_cache(new_components: list[Component]
         for c in new_components
     }
 
-    # Skip freshness check — we're updating the cache after adding a new source.
+    # Validate the old sources separately, since this install added a new source.
     payload = _load_launcher_cache(check_freshness=False)
     if payload is None:
-        payload = {"components": [], "icon_paths": {}}
+        return
+
+    current_sources = _current_world_source_fingerprints()
+    previous_sources = [source for source in current_sources if source["path"] != world_source_path]
+    if payload["world_source_fingerprints"] != previous_sources:
+        return
 
     merged_components: dict[tuple, dict[str, Any]] = {}
     for entry in payload["components"]:
         merged_components[_component_identity_from_cache(entry)] = entry
     merged_components.update(new_entries)
 
-    worlds_module = sys.modules.get("worlds")
     world_source_paths = sorted(
         ws.path for ws in getattr(worlds_module, "world_sources", [])
     )
@@ -818,7 +841,7 @@ def _merge_installed_world_components_into_cache(new_components: list[Component]
         "components": list(merged_components.values()),
         "icon_paths": merged_icon_paths,
         "world_sources": world_source_paths,
-        "world_source_fingerprints": _current_world_source_fingerprints(),
+        "world_source_fingerprints": current_sources,
     })
 
 

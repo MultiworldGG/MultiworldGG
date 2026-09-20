@@ -302,10 +302,16 @@ def launch(exe: Sequence[str], in_terminal: bool = False) -> bool:
 
 
 def restart_launcher() -> None:
-    launcher_exe = get_exe("Launcher")
-    if not launcher_exe:
-        raise FileNotFoundError("Unable to resolve executable for Launcher")
-    subprocess.Popen(launcher_exe)
+    appimage = os.environ.get("APPIMAGE") if is_linux and is_frozen() else None
+    if appimage:
+        # Start a new mount before the original launcher releases its AppImage.
+        # AppRun will set the library path for the new mount.
+        subprocess.Popen([appimage], env=env_cleared_lib_path(), start_new_session=True)
+    else:
+        launcher_exe = get_exe("Launcher")
+        if not launcher_exe:
+            raise FileNotFoundError("Unable to resolve executable for Launcher")
+        subprocess.Popen(launcher_exe)
 
     from kivy.app import App
     app = App.get_running_app()

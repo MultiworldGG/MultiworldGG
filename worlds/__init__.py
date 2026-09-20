@@ -323,13 +323,13 @@ def ensure_worlds_loaded(write_launcher_cache: bool = True) -> None:
             if apworlds:
                 _load_apworlds(apworlds)
             _build_network_data_packages()
-            write_launcher_cache_if_missing(write_launcher_cache)
 
             _worlds_loaded = True
         finally:
             _set_current_loading_world(None)
             _worlds_loading = False
             _worlds_load_owner_thread_id = None
+            write_launcher_cache_if_missing(write_launcher_cache)
 
 
 def __getattr__(name: str):

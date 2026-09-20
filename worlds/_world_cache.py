@@ -24,13 +24,17 @@ def has_launcher_cache() -> bool:
 
 
 def write_launcher_cache_if_missing(write_launcher_cache: bool = True) -> None:
-    """Write launcher cache after world loading when requested and no valid cache exists."""
-    if not write_launcher_cache or has_launcher_cache():
+    """Cache a completed load, or invalidate cached data after a failed load."""
+    if not write_launcher_cache:
         return
 
     try:
+        import worlds
         from worlds import LauncherComponents
-        LauncherComponents.write_launcher_cache()
+        if not worlds._worlds_loaded or worlds.failed_world_loads:
+            LauncherComponents.invalidate_launcher_cache()
+        elif not has_launcher_cache():
+            LauncherComponents.write_launcher_cache()
     except Exception as exc:
         logging.warning(f"Failed to write launcher cache: {exc}")
 
