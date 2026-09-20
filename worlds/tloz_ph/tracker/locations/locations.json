@@ -65,8 +65,18 @@
   {
     "name": "Beedle's Ship",
     "sections": [
+      {"name": "Beedle Shop Wisdom Gem"},
+      {"name": "Beedle Shop Bomb Bag"},
+      { "name": "Beedle Shop Top Ship Part" },
+      { "name": "Beedle Shop Red Potion" },
+      { "name": "Beedle Shop Purple Potion" },
+      { "name": "Beedle Shop Bottom Ship Part" },
+      { "name": "Beedle Shop Treasure" },
       {
         "name": "Beedle Membership Bronze"
+      },
+      {
+        "name": "Beedle Membership Silver"
       },
       {
         "name": "Beedle Membership Gold"
@@ -75,29 +85,44 @@
         "name": "Beedle Membership Platinum"
       },
       {
-        "name": "Beedle Membership Silver"
-      },
-      {
         "name": "Beedle Membership VIP"
-      },
-      {
-        "name": "Beedle Shop Bomb Bag"
-      },
-      {
-        "name": "Beedle Shop Wisdom Gem"
-      },
-      {
-        "name": "Masked Beedle Courage Gem"
-      },
-      {
-        "name": "Masked Beedle Heart Container"
       }
+
     ],
     "map_locations": [
       {
         "map": "Check Overview",
         "x": 472,
         "y": 421
+      },
+            {
+        "map": "Sea Overview",
+        "x": 472,
+        "y": 421
+      }
+    ]
+  },
+    {
+    "name": "Masked Beedle's Ship",
+    "sections": [
+      {"name": "Masked Beedle Courage Gem"},
+      {"name": "Masked Beedle Heart Container"},
+      { "name": "Masked Beedle Top Ship Part" },
+      { "name": "Masked Beedle Red Potion" },
+      { "name": "Masked Beedle Yellow Potion" },
+      { "name": "Masked Beedle Bottom Ship Part" },
+      { "name": "Masked Beedle Treasure" }
+    ],
+    "map_locations": [
+      {
+        "map": "Check Overview",
+        "x": 472,
+        "y": 437
+      },
+      {
+        "map": "Sea Overview",
+        "x": 472,
+        "y": 437
       }
     ]
   },
@@ -266,18 +291,15 @@
       {
         "name": "Goron Island SW Yellow Chu Item"
       },
-      {
-        "name": "Island Shop Bombchu Bag"
-      },
-      {
-        "name": "Island Shop Heart Container"
-      },
-      {
-        "name": "Island Shop Power Gem"
-      },
-      {
-        "name": "Island Shop Quiver"
-      }
+    { "name": "Island Shop Power Gem" },
+    { "name": "Island Shop Quiver" },
+    { "name": "Island Shop Bombchu Bag" },
+    { "name": "Island Shop Heart Container" },
+          { "name": "Goron Shop Arrow Refill" },
+          { "name": "Goron Shop Bombchu Refill" },
+          { "name": "Goron Shop Yellow Potion" },
+          { "name": "Goron Shop Shield" },
+    { "name": "Goron Shop Purple Potion" }
     ],
     "map_locations": [
       {
@@ -632,18 +654,15 @@
       {
         "name": "Sword Cave Chest"
       },
-      {
-        "name": "Island Shop Bombchu Bag"
-      },
-      {
-        "name": "Island Shop Heart Container"
-      },
-      {
-        "name": "Island Shop Power Gem"
-      },
-      {
-        "name": "Island Shop Quiver"
-      }
+    { "name": "Island Shop Power Gem" },
+    { "name": "Island Shop Quiver" },
+    { "name": "Island Shop Bombchu Bag" },
+    { "name": "Island Shop Heart Container" },
+          { "name": "Mercay Shop Treasure" },
+          { "name": "Mercay Shop Bomb Refill" },
+          { "name": "Mercay Shop Red Potion" },
+          { "name": "Mercay Shop Shield" },
+    { "name": "Mercay Shop Purple Potion" }
     ],
     "map_locations": [
       {
@@ -698,18 +717,15 @@
       {
         "name": "Molida Island South Romanos Tree Dig"
       },
-      {
-        "name": "Island Shop Bombchu Bag"
-      },
-      {
-        "name": "Island Shop Heart Container"
-      },
-      {
-        "name": "Island Shop Power Gem"
-      },
-      {
-        "name": "Island Shop Quiver"
-      }
+    { "name": "Island Shop Power Gem" },
+    { "name": "Island Shop Quiver" },
+    { "name": "Island Shop Bombchu Bag" },
+    { "name": "Island Shop Heart Container" },
+          { "name": "Molida Shop Arrow Refill" },
+          { "name": "Molida Shop Bomb Refill" },
+          { "name": "Molida Shop Red Potion" },
+          { "name": "Molida Shop Shield" },
+    { "name": "Molida Shop Purple Potion" }
     ],
     "map_locations": [
       {
@@ -1620,144 +1636,25 @@
   {
     "name": "Temple of the Ocean King",
     "sections": [
-      {
-        "name": "TotOK 1F Empty Chest"
-      },
-      {
-        "name": "TotOK 1F Linebeck Key"
-      },
-      {
-        "name": "TotOK 1F Sea Chart Chest"
-      },
-      {
-        "name": "TotOK B1 Phantom Chest"
-      },
-      {
-        "name": "TotOK B1 Shoot Eye Chest"
-      },
-      {
-        "name": "TotOK B1 Small Key"
-      },
-      {
-        "name": "TotOK B10 Hammer Switch Chest"
-      },
-      {
-        "name": "TotOK B10 Phantom Chest"
-      },
-      {
-        "name": "TotOK B10 Phantom Eye Chest"
-      },
-      {
-        "name": "TotOK B10 Small Key"
-      },
-      {
-        "name": "TotOK B11 Phantom Chest"
-      },
-      {
-        "name": "TotOK B11 Phantom Eye Chest"
-      },
-      {
-        "name": "TotOK B12 Hammer Chest"
-      },
-      {
-        "name": "TotOK B12 Kill Everything Chest"
-      },
-      {
-        "name": "TotOK B12 NW Chest"
-      },
-      {
-        "name": "TotOK B12 NE Chest"
-      },
-      {
-        "name": "TotOK B12 Phantom Chest"
-      },
-      {
-        "name": "TotOK B13 Sea Chart Chest"
-      },
-      {
-        "name": "TotOK B2 Bombchu Chest"
-      },
-      {
-        "name": "TotOK B2 Phantom Chest"
-      },
-      {
-        "name": "TotOK B2 Small Key"
-      },
-      {
-        "name": "TotOK B3 Bow Chest"
-      },
-      {
-        "name": "TotOK B3 NW Chest"
-      },
-      {
-        "name": "TotOK B3.5 Sea Chart Chest"
-      },
-      {
-        "name": "TotOK B3 Phantom Chest"
-      },
-      {
-        "name": "TotOK B3 SE Chest"
-      },
-      {
-        "name": "TotOK B3 Small Key"
-      },
-      {
-        "name": "TotOK B3 SW Chest"
-      },
-      {
-        "name": "TotOK B4 Phantom Chest"
-      },
-      {
-        "name": "TotOK B4 Phantom Eye Chest"
-      },
-      {
-        "name": "TotOK B4 Small Key"
-      },
-      {
-        "name": "TotOK B5 Alt Path Chest"
-      },
-      {
-        "name": "TotOK B5 Chest"
-      },
-      {
-        "name": "TotOK B6 Bow Chest"
-      },
-      {
-        "name": "TotOK B6 Courage Crest"
-      },
-      {
-        "name": "TotOK B6 Phantom Chest"
-      },
-      {
-        "name": "TotOK B7 North Chest"
-      },
-      {
-        "name": "TotOK B7 Peg Chest"
-      },
-      {
-        "name": "TotOK B7 Phantom Chest"
-      },
-      {
-        "name": "TotOK B8 2 Crystals Chest"
-      },
-      {
-        "name": "TotOK B8 Phantom Chest"
-      },
-      {
-        "name": "TotOK B9 NW Chest"
-      },
-      {
-        "name": "TotOK B9 Phantom Chest"
-      },
-      {
-        "name": "TotOK B9 Wizzrobe Chest"
-      },
-      {
-        "name": "TotOK B9.5 Sea Chart Chest"
-      },
-      {
-        "name": "TotOK Lobby Phantom Hourglass"
-      }
+      { "name": "TotOK Lobby Phantom Hourglass" },
+      { "name": "TotOK 1F Empty Chest" }, { "name": "TotOK 1F Linebeck Key" }, { "name": "TotOK 1F Sea Chart Chest" },
+      { "name": "TotOK B1 Phantom Chest" }, { "name": "TotOK B1 Shoot Eye Chest" }, { "name": "TotOK B1 Small Key" },
+      { "name": "TotOK B2 Bombchu Chest" }, { "name": "TotOK B2 Phantom Chest" }, { "name": "TotOK B2 Small Key" },
+      { "name": "TotOK B3 Bow Chest" }, { "name": "TotOK B3 NW Chest" }, { "name": "TotOK B3 Phantom Chest" }, { "name": "TotOK B3 SE Chest" }, { "name": "TotOK B3 SW Chest" }, { "name": "TotOK B3 Small Key" },
+      { "name": "TotOK B3.5 Sea Chart Chest" },
+      { "name": "TotOK B4 Phantom Chest" }, { "name": "TotOK B4 Phantom Eye Chest" }, { "name": "TotOK B4 Small Key" },
+      { "name": "TotOK B5 Alt Path Chest" }, { "name": "TotOK B5 Chest" },
+      { "name": "TotOK B6 Bow Chest" }, { "name": "TotOK B6 Phantom Chest" },
+      { "name": "TotOK B6 Courage Crest" },
+      { "name": "TotOK B7 North Chest" }, { "name": "TotOK B7 Peg Chest" }, { "name": "TotOK B7 Phantom Chest" },
+      { "name": "TotOK B8 2 Crystals Chest" }, { "name": "TotOK B8 Phantom Chest" },
+      { "name": "TotOK B9 NW Chest" }, { "name": "TotOK B9 Square Crystal" },{ "name": "TotOK B9 Phantom Chest" }, { "name": "TotOK B9 Wizzrobe Chest" },
+      { "name": "TotOK B9.5 Sea Chart Chest" },
+      { "name": "TotOK B10 Hammer Switch Chest" }, { "name": "TotOK B10 Phantom Chest" }, { "name": "TotOK B10 Phantom Eye Chest" }, { "name": "TotOK B10 Small Key" },
+      { "name": "TotOK B11 Phantom Chest" }, { "name": "TotOK B11 Phantom Eye Chest" },
+      { "name": "TotOK B12 NW Chest" }, { "name": "TotOK B12 NE Chest" }, { "name": "TotOK B12 Warp Phantom Force Gem" }, { "name": "TotOK B12 Hammer Chest" }, { "name": "TotOK B12 Kill Everything Chest" }, { "name": "TotOK B12 Phantom Chest" },
+      { "name": "TotOK B13 Sea Chart Chest" },
+      { "name": "TotOK Flooded Chamber Left Chest" }, { "name": "TotOK Flooded Chamber Right Chest" }
     ],
     "map_locations": [
       {
@@ -1854,6 +1751,21 @@
       }
     ]
   },
+    {
+    "name": "Zauz's Island Events",
+    "sections": [
+      {
+        "name": "GOAL: Zauz"
+      }
+    ],
+    "map_locations": [
+      {
+        "map": "Check Overview",
+        "x": 258,
+        "y": 28
+      }
+    ]
+  },
   {
     "name": "Events - Goron Island",
     "sections": [
@@ -1940,9 +1852,6 @@
     "sections": [
       {
         "name": "GOAL: Bellumbeck"
-      },
-      {
-        "name": "GOAL"
       }
     ],
     "map_locations": [

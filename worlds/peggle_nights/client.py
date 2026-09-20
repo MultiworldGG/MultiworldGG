@@ -61,6 +61,11 @@ class PeggleNightsContext(Context):
     can_display_process_found_message: bool
     can_display_process_not_found_message: bool
 
+    tracker_loaded: bool
+
+    locations_in_logic: List[str]
+    locations_out_of_logic: List[str]
+
     def __init__(self, server_address: Optional[str], password: Optional[str]) -> None:
         super().__init__(server_address, password)
 
@@ -74,6 +79,22 @@ class PeggleNightsContext(Context):
 
         self.can_display_process_found_message = True
         self.can_display_process_not_found_message = True
+
+        self.tracker_loaded = tracker_loaded
+
+        self.locations_in_logic = list()
+        self.locations_out_of_logic = list()
+
+        if self.tracker_loaded:
+            def update_locations_in_logic(locations_in_logic: List[str]):
+                self.locations_in_logic = locations_in_logic
+
+            self.update_callback = update_locations_in_logic
+
+            def update_locations_out_of_logic(locations_out_of_logic: List[str]):
+                self.locations_out_of_logic = locations_out_of_logic
+
+            self.glitches_callback = update_locations_out_of_logic
 
     def make_gui(self):
         from .client_gui.client_gui import bootstrap_client_gui
@@ -159,9 +180,9 @@ class PeggleNightsContext(Context):
                 PeggleNightsLevels(level_name) for level_name in _args["slot_data"]["selected_levels"]
             ]
 
-            self.game_controller.selected_starter_level = PeggleNightsLevels(
-                _args["slot_data"]["selected_starter_level"]
-            )
+            self.game_controller.selected_starter_levels = [
+                PeggleNightsLevels(level_name) for level_name in _args["slot_data"]["selected_starter_levels"]
+            ]
 
             if _args["slot_data"].get("selected_goal_level") is not None:
                 self.game_controller.selected_goal_level = PeggleNightsLevels(_args["slot_data"]["selected_goal_level"])
@@ -227,6 +248,8 @@ class PeggleNightsContext(Context):
                 if self.game_controller.is_process_running():
                     if self.can_display_process_found_message:
                         CommonClient.logger.info("Peggle Nights process found!")
+                        CommonClient.logger.info("Setting up hooks and patches...")
+                        CommonClient.logger.info("If this client is closed, Peggle Nights will need to be restarted")
 
                         self.can_display_process_found_message = False
                         self.can_display_process_not_found_message = True

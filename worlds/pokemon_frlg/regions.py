@@ -541,16 +541,14 @@ def create_regions(world: "PokemonFRLGWorld") -> Dict[str, Region]:
             elif world.options.randomize_fly_destinations == RandomizeFlyDestinations.option_completely_random:
                 fly_destinations = fly_destination_random.copy()
             maps_already_chosen = set()
-            maps_already_plando = set()
-            for name in world.options.fly_destination_plando.value.values():
-                fly_data = fly_plando_maps[name]
-                maps_already_plando.add(fly_data.map)
-            for exit in regions["Sky"].exits:
+            sky_exits = sorted(regions["Sky"].exits,
+                               key=lambda e: e.name in world.options.fly_destination_plando.value.keys(),
+                               reverse=True)
+            for exit in sky_exits:
                 use_plando = False
                 fly_data = None
                 allowed_fly_destinations = [fly for fly in fly_destinations[exit.name]
                                             if fly.map not in maps_already_chosen
-                                            and fly.map not in maps_already_plando
                                             and fly.region in regions.keys()]
                 if exit.name in world.options.fly_destination_plando.value.keys():
                     fly_plando = fly_plando_maps[world.options.fly_destination_plando.value[exit.name]]

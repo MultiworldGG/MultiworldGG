@@ -21,9 +21,7 @@ Uncanny Cat Golf is a silly golf game about shooting a cat into a golf hole, whi
 
 ## Where is the options page?
 
-
-The [player options page for this game](../player-options) contains all the options you need to configure and export a
-config file.
+The options yaml can be made via the Options Creator in the Archipelago launcher. It requires Archipelago v0.6.7 or higher to run.
 
 ## Does this support Universal Tracker?
 

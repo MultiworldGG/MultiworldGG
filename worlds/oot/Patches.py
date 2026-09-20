@@ -1920,6 +1920,20 @@ def patch_rom(world, rom):
         if world.shuffle_silver_rupees != 'remove':
             rom.write_byte(rom.sym('CFG_DUNGEON_INFO_SILVER_RUPEES'), 1)
 
+        # Match the permanent switch flags used by the silver rupee item effects.
+        if world.dungeon_mq['Dodongos Cavern']:
+            rom.write_byte(0x1F12190 + 15, 0x9F)  # MQ staircase transition door: switch 0x1F.
+        if world.dungeon_mq['Spirit Temple']:
+            rom.write_byte(0x2B08CE4 + 13, 0x1F)  # MQ lobby chest: switch 0x1F.
+
+        # Prevent Shadow Temple ReDeads from sharing silver rupee switch flags.
+        if world.dungeon_mq['Shadow Temple']:
+            rom.write_byte(0x280CDDE, 0)
+            rom.write_byte(0x280CDEE, 0)
+        else:
+            rom.write_byte(0x280905E, 0)
+            rom.write_byte(0x280906E, 0)
+
     update_message_by_id(messages, 0x908B, "All right. You don't have to play\x01if you don't want to.\x0B\x02", 0x00)
     if world.shuffle_tcgkeys != 'vanilla':
         if world.shuffle_tcgkeys == 'remove':
@@ -2754,7 +2768,7 @@ def get_doors_to_unlock(rom, world):
         if world.shuffle_smallkeys == 'remove':
             if actor_id == 0x0009 and door_type == 0x02:
                 return [0x00D4 + scene * 0x1C + 0x04 + flag_byte, flag_bits]
-            if actor_id == 0x002E and door_type == 0x0B:
+            if actor_id == 0x002E and door_type == 0x0B and scene != 0x10:
                 return [0x00D4 + scene * 0x1C + 0x04 + flag_byte, flag_bits]
 
         # Return Boss Doors that should be unlocked

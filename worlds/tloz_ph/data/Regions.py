@@ -64,7 +64,24 @@ REGIONS = [
     "Island Shop Quiver",
     "Island Shop Heart Container",
 
+    "Mercay Shop Buy",
+    "Goron Shop Buy",
+    "Molida Shop Buy",
+
+    "Molida Shop Bombs",
+    "Molida Shop Arrows",
+    "Goron Shop Arrows",
+    "Goron Shop Chus",
+    "Goron Shop Arrows",
+    "Mercay Shop Bombs",
+
+    "Mercay Shop Shield",
+    "Goron Shop Shield",
+    "Molida Shop Shield",
+
     "Beedle",
+    "Beedle Shop",
+
     "Beedle Gem",
     "Beedle Bomb Bag",
     "Masked Ship HC",
@@ -129,6 +146,7 @@ REGIONS = [
 
     "TotOK B9",
     "TotOK B9 Phantom",
+    "TotOK B9 Crystal",
     "TotOK B9 Wizzrobes",
     "TotOK B9 Corner Chest",
     "TotOK B9.5",
@@ -147,17 +165,19 @@ REGIONS = [
     "TotOK B12 NW Chest",
     "TotOK B12 NE Chest",
     "TotOK B12 Phantom",
+    "TotOK B12 Gem",
     "TotOK B12 Ghost",
     "TotOK B12 Hammer",
 
     "TotOK B13",
     "TotOK B13 Chest",
 
+    "TotOK B14 South",
     "TotOK B14",
     "Bellum",
     "Ghost Ship Fight",
     "Bellumbeck",
-    "Beat Bellumbeck",
+    "Defeat Bellumbeck",
 
     # SW Ocean
     "SW Ocean East",
@@ -195,6 +215,7 @@ REGIONS = [
     "Eddo Event",
     "Bomb Flower Cave South",
     "Bomb Flower Cave North",
+    "Eddo's Cannon",
     "Eddo Salvage Arm",
     "Cannon Island Dig",
     "Cannon Bomb Garden Dig",
@@ -688,21 +709,7 @@ REGIONS = [
 
 
 if __name__ == "__main__":
-    action = "print_regions"
-    if action == "print_regions":
-        for r in REGIONS:
-            print(r)
-
-    elif action == "compare_logic":
-        for reg1, reg2, two_way, *args in overworld_logic:
-            if reg1 not in REGIONS:
-                print(reg1)
-                raise IndexError(f"Missing \"{reg1}\"")
-            if reg2 not in REGIONS:
-                print(reg2)
-                raise IndexError(f"Missing \"{reg2}\"")
-
-        # print(f"\t\t[\"{reg1}\", \"{reg2}\", {two_way}, {arg_fix(args)}],")
+    pass
 
 
 

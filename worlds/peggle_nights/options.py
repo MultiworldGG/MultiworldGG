@@ -138,7 +138,7 @@ class LevelCount(Range):
 
     display_name = "Level Count"
 
-    range_start = 5
+    range_start = 15
     range_end = 70
 
     default = 20
@@ -233,7 +233,6 @@ class UsefulItemWeights(OptionDict):
     display_name = "Useful Item Weights"
 
     default = {
-        "Fever Meter Permanent Bonus": 1,
         "Full Clear Discount": 1,
         "Score Multiplier": 1,
         "Target Score Discount": 1,

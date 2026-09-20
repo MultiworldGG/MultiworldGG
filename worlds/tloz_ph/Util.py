@@ -1,8 +1,11 @@
 from typing import Dict
+
+from .DSZeldaClient.LocationClass import DSLocation
 from .data import LOCATIONS_DATA, DYNAMIC_FLAGS
 from .data.Items import ITEMS
 from .data.Hints import HINT_DATA
 from .data.Entrances import ENTRANCES
+from .DSZeldaClient.subclasses import compare_slot_data
 
 def build_entrance_id_to_data():
     entrances = {}
@@ -19,34 +22,23 @@ def build_hint_scene_to_watches() -> dict[int, list[str]]:
     return hint_room_to_watches
 
 
-def build_location_room_to_watches() -> Dict[int, dict[str, dict]]:
-    location_room_to_watches: Dict[int, dict[str, dict]] = {}
+def build_location_room_to_watches() -> Dict[int, dict[str, DSLocation]]:
+    location_room_to_watches: Dict[int, dict[str, DSLocation]] = {}
     for loc_name, location in LOCATIONS_DATA.items():
-        room_id = location["stage_id"] * 0x100 + location["floor_id"]
-        location_room_to_watches.setdefault(room_id, {})
-        location_room_to_watches[room_id][loc_name] = location
+        if location.scenes:
+            for scene in location.scenes:
+                location_room_to_watches.setdefault(scene, {})
+                location_room_to_watches[scene][loc_name] = location
 
-        # Add location to multiple rooms
-        if "additional_rooms" in location:
-            for room in location["additional_rooms"]:
-                location_room_to_watches.setdefault(room, {})
-                location_room_to_watches[room][loc_name] = location
     return location_room_to_watches
 
 
 def build_scene_to_dynamic_flag(ctx) -> Dict[int, list[dict]]:
     scene_to_dynamic_flag: Dict[int, list[dict]] = {}
-    def check_slot_data(d):
-        for option, value, *args in d.get("has_slot_data", []):
-            value = value if isinstance(value, list) else [value]
-            print(f"\t{d['name']}: {option} {value}")
-            if ctx.slot_data.get(option) not in value:
-                return False
-        return True
 
     for flag_name, data in DYNAMIC_FLAGS.items():
         data["name"] = flag_name
-        if not check_slot_data(data):
+        if not compare_slot_data(ctx, data):
             continue
 
         for scene in data.get("on_scenes", []):
@@ -79,3 +71,15 @@ def build_item_id_to_name_dict() -> Dict[int, str]:
         item_id_to_name[index] = item_name
     return item_id_to_name
 
+# better title case that .title(), for keeping dungeon names in title case
+def title2(s: str):
+    res = ""
+    words = s.split(' ')
+    res += words[0].title()
+    for word in words[1:-1]:
+        if word.lower() in ['of', "the", "and", "or", "in", "a", "an", "to", "but", "for", "so", "by", "in", "at"]:
+            res += " " + word.lower()
+        else:
+            res += " " + word.title()
+    res += " " + words[-1].title()
+    return res

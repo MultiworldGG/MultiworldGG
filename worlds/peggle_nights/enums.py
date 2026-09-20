@@ -13,7 +13,7 @@ class PeggleNightsAPItems(enum.Enum):
     DENTED_PEG = "Dented Peg"
     HOLLOW_PEG = "Hollow Peg"
     OOL = "OOL"
-    PROGRESSIVE_FEVER_METER = "Progressive Fever Meter Threshold"
+    # PROGRESSIVE_FEVER_METER = "Progressive Fever Meter Threshold"
     PROGRESSIVE_STARTING_BALL_INCREASE = "Progressive Starting Ball Increase"
     RUSTY_PEG = "Rusty Peg"
     CHARACTER_UNLOCK_BJORN = "Master Unlock: Bjorn"
@@ -50,6 +50,7 @@ class PeggleNightsAPTags(enum.Enum):
     BEATS_DRIVING_LOCATION = "9-2 Beats Driving Location"
     BJORN_IDENTITY_ITEM = "1-5 Bjorn Identity Item"
     BJORN_IDENTITY_LOCATION = "1-5 Bjorn Identity Location"
+    BJORN_ITEM = "Bjorn Item"
     BLOOMIN_ITEM = "14-2 Bloomin' Item"
     BLOOMIN_LOCATION = "14-2 Bloomin' Location"
     BLUE_SLOUGH_ITEM = "13-5 Blue Slough Item"
@@ -63,6 +64,7 @@ class PeggleNightsAPTags(enum.Enum):
     CALL_FOR_HELP_ITEM = "1-2 Call For Help Item"
     CALL_FOR_HELP_LOCATION = "1-2 Call For Help Location"
     CHARACTER_UNLOCK_ITEM = "Character Unlock Item"
+    CLAUDE_ITEM = "Claude Item"
     CRIMEWAVE_ITEM = "1-1 Crimewave Item"
     CRIMEWAVE_LOCATION = "1-1 Crimewave Location"
     DEATH_DEFYING_ITEM = "4-5 Death Defying Item"
@@ -99,10 +101,12 @@ class PeggleNightsAPTags(enum.Enum):
     I_LOVE_CARATS_LOCATION = "9-4 I Love Carats Location"
     JELLY_JEOPARDY_ITEM = "11-1 Jelly Jeopardy Item"
     JELLY_JEOPARDY_LOCATION = "11-1 Jelly Jeopardy Location"
+    JIMMY_LIGHTNING_ITEM = "Jimmy Lightning Item"
     JUMP_THE_SQUID_ITEM = "4-4 Jump The Squid Item"
     JUMP_THE_SQUID_LOCATION = "4-4 Jump The Squid Location"
     JUST_DESSERTS_ITEM = "1-4 Just Desserts Item"
     JUST_DESSERTS_LOCATION = "1-4 Just Desserts Location"
+    KAT_TUT_ITEM = "Kat Tut Item"
     LAST_BALL_ITEM = "5-3 Last Ball Item"
     LAST_BALL_LOCATION = "5-3 Last Ball Location"
     LETTING_OFF_STEAM_ITEM = "8-5 Letting Off Steam Item"
@@ -111,10 +115,13 @@ class PeggleNightsAPTags(enum.Enum):
     LEVEL_UNLOCK_ITEM = "Level Unlock Item"
     LOLLY_DROP_ITEM = "14-1 Lolly Drop Item"
     LOLLY_DROP_LOCATION = "14-1 Lolly Drop Location"
+    LORD_CINDERBOTTOM_ITEM = "Lord Cinderbottom Item"
     MAGIC_HOUR_ITEM = "14-3 Magic Hour Item"
     MAGIC_HOUR_LOCATION = "14-3 Magic Hour Location"
     MANY_MINARETS_ITEM = "7-3 Many Minarets Item"
     MANY_MINARETS_LOCATION = "7-3 Many Minarets Location"
+    MARINA_ITEM = "Marina Item"
+    MASTER_HU_ITEM = "Master Hu Item"
     ME_YOWWWW_ITEM = "4-3 Me-Yowwww! Item"
     ME_YOWWWW_LOCATION = "4-3 Me-Yowwww! Location"
     NOOOOO_ITEM = "3-3 Nooooo!!! Item"
@@ -138,9 +145,13 @@ class PeggleNightsAPTags(enum.Enum):
     PLANTS_V_ZOMBIES_LOCATION = "13-1 Plants v. Zombies Location"
     POLLUTION_PICNIC_ITEM = "6-1 Pollution Picnic Item"
     POLLUTION_PICNIC_LOCATION = "6-1 Pollution Picnic Location"
-    PROGRESSIVE_ITEM = "Progressive Item"
+    PROGRESSIVE_GREEN_PEGS_ITEM = "Progressive Green Pegs Item"
+    PROGRESSIVE_ORANGE_PEGS_ITEM = "Progressive Orange Pegs Item"
+    PROGRESSIVE_STARTING_BALL_INCREASE_ITEM = "Progressive Starting Ball Increase Item"
+    PURPLE_PEG_ITEM = "Purple Peg Item"
     PSYCLONE_ITEM = "12-1 Psyclone Item"
     PSYCLONE_LOCATION = "12-1 Psyclone Location"
+    RENFIELD_ITEM = "Renfield Item"
     SCARY_NIGHT_ITEM = "3-1 Scary Night Item"
     SCARY_NIGHT_LOCATION = "3-1 Scary Night Location"
     SCORE_LOCATION = "Score Location"
@@ -152,6 +163,7 @@ class PeggleNightsAPTags(enum.Enum):
     SMARTINESS_LOCATION = "2-5 Smartiness Location"
     SPAINT_ITEM = "13-3 Spaint! Item"
     SPAINT_LOCATION = "13-3 Spaint! Location"
+    SPLORK_ITEM = "Splork Item"
     STEPPIN_OUT_ITEM = "8-3 Steppin' Out Item"
     STEPPIN_OUT_LOCATION = "8-3 Steppin' Out Location"
     STEP_RIGHT_UP_ITEM = "4-1 Step Right Up Item"
@@ -169,6 +181,7 @@ class PeggleNightsAPTags(enum.Enum):
     TOMB_OF_DOOM_LOCATION = "9-3 Tomb Of Doom Location"
     TO_THE_LIMIT_ITEM = "13-4 To The Limit Item"
     TO_THE_LIMIT_LOCATION = "13-4 To The Limit Location"
+    TULA_ITEM = "Tula Item"
     TULIP_LEAVES_ITEM = "14-4 Tulip Leaves Item"
     TULIP_LEAVES_LOCATION = "14-4 Tulip Leaves Location"
     TURN_IT_TO_ZEN_ITEM = "10-2 Turn It To Zen Item"
@@ -180,6 +193,7 @@ class PeggleNightsAPTags(enum.Enum):
     VAST_VISITOR_LOCATION = "6-2 Vast Visitor Location"
     WALL_FLOWER_ITEM = "7-5 Wall Flower Item"
     WALL_FLOWER_LOCATION = "7-5 Wall Flower Location"
+    WARREN_ITEM = "Warren Item"
     WATER_WHIRLED_ITEM = "11-4 Water Whirled Item"
     WATER_WHIRLED_LOCATION = "11-4 Water Whirled Location"
     WATER_WINGS_ITEM = "8-2 Water Wings Item"
@@ -197,7 +211,6 @@ class PeggleNightsAPTags(enum.Enum):
 
 
 class PeggleNightsAPUsefulItems(enum.Enum):
-    FEVER_METER_BONUS = "Fever Meter Permanent Bonus"
     FULL_CLEAR_DISCOUNT = "Full Clear Discount"
     SCORE_MULTIPLIER = "Score Multiplier"
     TARGET_SCORE_DISCOUNT = "Target Score Discount"
@@ -308,4 +321,15 @@ class PeggleNightsLevelStates(enum.Enum):
     BEFORE_SHOT = 1
     SHOT_ACTIVE = 2
     AFTER_SHOT = 3
-    CHARACTER_SELECT = 9
+    MASTER_SELECTION = 9
+
+
+class PeggleNightsPegColors(enum.Enum):
+    BLUE = 1
+    ORANGE = 2
+    PURPLE = 3
+    GREEN = 4
+    BLUE_LIT = 5
+    ORANGE_LIT = 6
+    PURPLE_LIT = 7
+    GREEN_LIT = 8

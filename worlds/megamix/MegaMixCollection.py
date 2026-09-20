@@ -14,6 +14,9 @@ logger = logging.getLogger(__name__)
 class MegaMixCollections:
     """Contains all the data of MegaMix, loaded from songData.json"""
 
+    #  1-29: McGuffins, Filler
+    # 30-99: Traps.
+    #  100+: Love is War [1], etc.
     LEEK_NAME: str = "Leek"
     LEEK_CODE: int = 1
 
@@ -23,16 +26,18 @@ class MegaMixCollections:
     PROG_HP_NAME: str = "Progressive HP"
     PROG_HP_CODE: int = 3
 
+    trap_items: dict[str, int] = {
+        "Hidden Trap": 30,
+        "Sudden Trap": 31,
+        # "High Speed Trap": 32,
+        "Slow Trap": 33,
+        "Stutter Trap": 34,
+        "Icon Trap": 35,
+        "PSP Trap": 36,
+    }
+
     song_items: dict[str, SongData] = {}
     song_locations: dict[str, int] = {}
-
-    # IDs 3-9 available. 10 is "Love is War [1]".
-    trap_items: dict[str, int] = {
-        "Hidden Trap": 4,
-        "Sudden Trap": 5,
-        # "High Speed Trap": 6,
-        "Icon Trap": 9,
-    }
 
     def __init__(self) -> None:
         self.item_names_to_id = ChainMap({self.LEEK_NAME: self.LEEK_CODE}, {self.FILLER_NAME: self.FILLER_CODE},
@@ -65,19 +70,19 @@ class MegaMixCollections:
                             continue
 
                         song_name = format_song_name(song[0], song_id)
-                        item_id = (song_id * 10)
+                        item_id = (song_id * 100)
 
                         if song_name in self.song_items:
                             logger.debug(f"{song_name} previously mapped to base ID, skipping")
                             continue
 
-                        # Remap up to 4 ID conflicts using the 8 free slots (2-9) between item/loc IDs.
+                        # Remap up to 49 ID conflicts using the free slots (2~99) between item/loc IDs.
                         if song_id in seen_mod_song_ids:
                             if song_id in self.mod_remaps and song_name in self.mod_remaps[song_id]:
                                 logger.debug(f"{song_name} already remapped to {self.mod_remaps[song_id][song_name]}")
                                 continue
 
-                            resolve = {i for i in range(item_id + 2, item_id + 10)}
+                            resolve = {i for i in range(item_id + 2, item_id + 100)}
                             resolve -= seen_mod_item_ids
                             new_slots = sorted(resolve)[0:2]
 

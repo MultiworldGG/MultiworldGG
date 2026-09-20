@@ -34,7 +34,7 @@ def ut_set_maps(world: "PokemonFRLGWorld") -> None:
     else:
         world.tracker_world["map_page_maps"].append("maps/maps_paths_vanilla.json")
     if world.options.route_9_roadblock == Route9Roadblock.option_rock_smash:
-        world.tracker_world["map_page_maps"].append("maps/maps_route_9_modified.json")
+        world.tracker_world["map_page_maps"].append("maps/maps_route_9_rock.json")
     else:
         world.tracker_world["map_page_maps"].append("maps/maps_route_9_vanilla.json")
     if extra_key_items and route_10_waterfall:
@@ -42,7 +42,7 @@ def ut_set_maps(world: "PokemonFRLGWorld") -> None:
     elif extra_key_items:
         world.tracker_world["map_page_maps"].append("maps/maps_route_10_extra_items.json")
     elif route_10_waterfall:
-        world.tracker_world["map_page_maps"].append("maps/maps_route_10_modified.json")
+        world.tracker_world["map_page_maps"].append("maps/maps_route_10_waterfall.json")
     else:
         world.tracker_world["map_page_maps"].append("maps/maps_route_10_vanilla.json")
     if route_12_boulders and route_12_rocks:
@@ -50,11 +50,11 @@ def ut_set_maps(world: "PokemonFRLGWorld") -> None:
     elif route_12_boulders:
         world.tracker_world["map_page_maps"].append("maps/maps_route_12_boulders.json")
     elif route_12_rocks:
-        world.tracker_world["map_page_maps"].append("maps/maps_route_12_modified.json")
+        world.tracker_world["map_page_maps"].append("maps/maps_route_12_rocks.json")
     else:
         world.tracker_world["map_page_maps"].append("maps/maps_route_12_vanilla.json")
     if world.options.route_16_rock:
-        world.tracker_world["map_page_maps"].append("maps/maps_route_16_modified.json")
+        world.tracker_world["map_page_maps"].append("maps/maps_route_16_rock.json")
     else:
         world.tracker_world["map_page_maps"].append("maps/maps_route_16_vanilla.json")
     if route_23_trees and route_23_waterfall:
@@ -62,7 +62,7 @@ def ut_set_maps(world: "PokemonFRLGWorld") -> None:
     elif route_23_trees:
         world.tracker_world["map_page_maps"].append("maps/maps_route_23_trees.json")
     elif route_23_waterfall:
-        world.tracker_world["map_page_maps"].append("maps/maps_route_23_modified.json")
+        world.tracker_world["map_page_maps"].append("maps/maps_route_23_waterfall.json")
     else:
         world.tracker_world["map_page_maps"].append("maps/maps_route_23_vanilla.json")
     if world.options.victory_road_rocks:

@@ -137,15 +137,15 @@ ALL_CHARACTERS = tuple(c for group in CHARACTER_GROUPS.values() for c in group.c
 TOTAL_NUM_CHARACTERS = len(ALL_CHARACTERS)
 """The total number of character across the base game and all DLC."""
 
-MAX_REQUIRED_RUN_WINS = TOTAL_NUM_CHARACTERS
+MAX_REQUIRED_RUN_WINS = 25
 
-MAX_NORMAL_CRATE_DROPS = 50
-MAX_LEGENDARY_CRATE_DROPS = 50
+MAX_NORMAL_CRATE_DROPS = 25
+MAX_LEGENDARY_CRATE_DROPS = 10
 
-# THe maximum number of groups is the maximum number of crates, otherwise we'd have
+# The maximum number of groups is the maximum number wins required, otherwise we'd have
 # groups which could never be filled.
-MAX_NORMAL_CRATE_DROP_GROUPS = MAX_NORMAL_CRATE_DROPS
-MAX_LEGENDARY_CRATE_DROP_GROUPS = MAX_LEGENDARY_CRATE_DROPS
+MAX_NORMAL_CRATE_DROP_GROUPS = min(MAX_REQUIRED_RUN_WINS, MAX_NORMAL_CRATE_DROPS)
+MAX_LEGENDARY_CRATE_DROP_GROUPS = min(MAX_REQUIRED_RUN_WINS, MAX_LEGENDARY_CRATE_DROPS)
 
 # Weights to use when generating Brotato items using the "default item weights" option. These weights are intended to
 # match the rarity of each tier in the vanilla game. The distribution is not explicitly defined in the game, but we can
@@ -173,3 +173,6 @@ SHOP_ITEM_LOCATION_TEMPLATE = "{tier} Shop Item {num}"
 CRATE_DROP_GROUP_REGION_TEMPLATE = "Loot Crate Group {num}"
 LEGENDARY_CRATE_DROP_GROUP_REGION_TEMPLATE = "Legendary Loot Crate Group {num}"
 CHARACTER_REGION_TEMPLATE = "In-Game ({char})"
+
+# Item name string templates
+PROGRESSIVE_WAVE_CAP_ITEM_TEMPLATE = "Progressive Wave Cap ({char})"

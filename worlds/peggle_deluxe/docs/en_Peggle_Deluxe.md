@@ -43,4 +43,4 @@ The Peggle Deluxe randomizer takes the pachinko-inspired game and layers a progr
 
 **Universal Tracker**
 
-The APWorld is fully compatible with Universal Tracker. It is a YAML-free implementation (i.e. you don't need to have the YAML used to generate in your Players directory). If Universal Tracker is installed, the client will automatically embed the Tracker tab.
+The APWorld is fully compatible with Universal Tracker. It is a YAML-free implementation (i.e. you don't need to have the YAML used to generate in your Players directory). If Universal Tracker is installed, the client will automatically embed the Tracker tab and will also enhance some of its views with in / out of logic data.

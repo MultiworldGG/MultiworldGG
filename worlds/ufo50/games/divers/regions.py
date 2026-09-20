@@ -1,0 +1,32 @@
+from typing import TYPE_CHECKING
+
+from BaseClasses import Region
+
+from .locations import create_locations
+from .rules import create_rules
+
+if TYPE_CHECKING:
+    from ... import UFO50World
+
+
+regions: list[str] = [
+    "Menu",
+    "Shallows",
+    "Ruins",
+    "Depths",
+    "Boss"
+]
+
+
+# this function is required, and its only argument can be the world class
+# it must return the regions that it created
+# it is recommended that you prepend each region name with the game it is from to avoid overlap
+def create_regions_and_rules(world: "UFO50World") -> dict[str, Region]:
+    divers_regions: dict[str, Region] = {}
+    for region_name in regions:
+        divers_regions[region_name] = Region(f"Divers - {region_name}", world.player, world.multiworld)
+
+    create_locations(world, divers_regions)
+    create_rules(world, divers_regions)
+
+    return divers_regions

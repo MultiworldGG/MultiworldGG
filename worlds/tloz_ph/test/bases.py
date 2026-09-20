@@ -121,16 +121,16 @@ options_full_er = {
         "zauz_required_metals": 10,
         "metal_hunt_required": 20,
         "metal_hunt_total": 25,
-        "ph_time_logic": "beginner",
+        "ph_time_logic": "easy",
         "ph_starting_time": 120,
         "ph_time_increment": 60,
         "randomize_beedle_membership": "no_beedle_points",
         # Entrance types
         "shuffle_dungeon_entrances": "shuffle",
         "shuffle_ports": "simple_mixed_pool",
-        "shuffle_caves": "no_shuffle",
-        "shuffle_houses": "no_shuffle",
-        # "shuffle_overworld_transitions": "shuffle_on_own_island",
+        "shuffle_caves": "shuffle",
+        "shuffle_houses": "simple_mixed_pool",
+        "shuffle_overworld_transitions": "simple_mixed_pool",
         "shuffle_bosses": "simple_mixed_pool",
         # entrance options
         "entrance_directionality": "preserve_all",
@@ -157,6 +157,61 @@ options_excluded_crystals = {"dungeons_required": 8,
             ]
                }
 
+options_keys = {
+    "keysanity": "anywhere",
+    "keyrings": "no_keyrings",
+    "randomize_boss_keys": "in_own_dungeon",
+    "boss_keyrings": True,
+    "randomize_pedestal_items": "vanilla",
+    "pedestal_item_options": "open_per_dungeon",
+
+    "ph_time_logic": "no_logic",
+    "ph_starting_time": 20,
+    "ph_time_increment": 7,
+
+    "goal_requirements": "defeat_bosses",
+    "bellum_access": "spawn_phantoms_on_b13",
+
+    "dungeons_required": 8,
+    "require_specific_bosses": True,
+    "totok_in_dungeon_pool": False,
+    "ghost_ship_in_dungeon_pool": "rescue_tetra",
+    "shuffle_bosses": "shuffle",
+
+    "additional_metal_names": "custom",
+
+
+    "randomize_minigames": "randomize_with_hints",
+    "open_post_dungeons": True,
+    "exclude_non_required_dungeons": "remove",
+
+    "spirit_gem_packs": 1,
+    "boss_reward_pool": "spirits_and_metals",
+    "spirit_type": "single_spirits",
+    "progressive_items": True,
+
+    "randomize_salvage": "randomize_with_hints",
+    "salvage_count": 1,
+
+    "ship_items": "whole_mismatched",
+    "starting_ship": "mismatched",
+
+    "shopsanity": {"All"},
+    "randomize_masked_beedle": False,
+    # "remove_locations": {"Temple of the Ocean King"}
+    "plando_dungeon_pool": ["Temple of Courage", "tow", "gs", "gt"],
+    "plando_items": [
+        {
+            "locations": [
+                "Crayk Boss Reward"
+            ],
+            "items": {
+                "Big Green Rupee (100)": 1
+            }
+        }
+    ]
+}
+
 class TestPHGeneration(WorldTestBase):
     game = "The Legend of Zelda - Phantom Hourglass"
-    options = options_metal_bug
+    options = options_keys

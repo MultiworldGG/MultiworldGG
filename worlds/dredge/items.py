@@ -15,7 +15,7 @@ class DREDGEItem(Item):
     game: str = "DREDGE"
 
 
-CATCH_TOOL_GROUPS = {"Rod", "Net", "Crab Pot"}
+CATCH_TOOL_GROUPS = {"Rod", "Net", "Crab Pot", "Consumable"}
 EXCLUDED_CATCH_TOOLS = {"Tendon Rod", "Viscera Crane"}
 
 ToolIndexKey = tuple[str, str]  # (catch_type, tool_group, expansion)
@@ -87,16 +87,26 @@ def create_all_items(world: DREDGEWorld) -> None:
 
     progression_classes = {ItemClassification.progression, ItemClassification.progression_skip_balancing}
     for item, data in item_table.items():
-        if data.classification not in progression_classes or data.item_group == "Research":
+        if (data.classification not in progression_classes
+                or data.item_group == "Research"
+                or data.expansion == "Unused"):
             continue
 
-        for index in range(data.classification):
-            if data.expansion == "Base":
-                item_pool.append(world.create_item(item))
-            elif world.options.include_pale_reach_dlc and data.expansion == "PaleReach":
-                item_pool.append(world.create_item(item))
-            elif world.options.include_iron_rig_dlc and data.expansion == "IronRig":
-                item_pool.append(world.create_item(item))
+        if item.startswith("Starting Gear"):
+            continue
+
+        if not world.options.add_fishing_licenses and data.item_group == "Virtual License":
+            continue
+
+        if not world.options.add_passage_items and data.item_group == "Virtual Passage Item":
+            continue
+
+        if data.expansion == "Base":
+            item_pool.append(world.create_item(item))
+        elif world.options.include_pale_reach_dlc and data.expansion == "PaleReach":
+            item_pool.append(world.create_item(item))
+        elif world.options.include_iron_rig_dlc and data.expansion == "IronRig":
+            item_pool.append(world.create_item(item))
 
     num_base_hull_upgrades = 2
     for _ in range(num_base_hull_upgrades):
@@ -143,3 +153,8 @@ def build_catch_tool_index() -> ToolIndex:
     return {k: tuple(v) for k, v in idx.items()}
 
 CATCH_TOOL_INDEX: ToolIndex = build_catch_tool_index()
+
+
+def add_precollected_items(world: DREDGEWorld) -> None:
+    world.multiworld.push_precollected(world.create_item("Starting Gear - Basic Fishing Pole"))
+    world.multiworld.push_precollected(world.create_item("Starting Gear - Peculiar Engine"))

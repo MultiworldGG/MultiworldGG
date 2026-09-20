@@ -87,6 +87,9 @@ class PeggleDeluxeLevelInformationLayout(BoxLayout):
     peg_combo_label: Label
     pegs_cleared: Label
 
+    level_locations_in_logic_label: Label
+    level_locations_out_of_logic_label: Label
+
     last_seen_level: Optional[PeggleDeluxeLevels]
     last_seen_master: Optional[PeggleDeluxeCharacters]
 
@@ -168,8 +171,9 @@ class PeggleDeluxeLevelInformationLayout(BoxLayout):
         level_information_layout: BoxLayout = BoxLayout(
             orientation="horizontal",
             size_hint_y=None,
-            height="140dp",
+            height="163dp",
             spacing="8dp",
+            padding=[0, 0, 0, 15]
         )
 
         level_information_layout.bind(minimum_height=level_information_layout.setter("height"))
@@ -195,7 +199,7 @@ class PeggleDeluxeLevelInformationLayout(BoxLayout):
         level_information_text_layout: BoxLayout = BoxLayout(
             orientation="vertical",
             size_hint_y=None,
-            height="140dp",
+            height="148dp",
             spacing="5dp",
         )
 
@@ -220,9 +224,10 @@ class PeggleDeluxeLevelInformationLayout(BoxLayout):
             markup=True,
             size_hint_y=None,
             font_size="12dp",
-            height="14dp",
+            height="29dp",
             halign="left",
             valign="middle",
+            padding=[0, 0, 0, 15]
         )
 
         self.level_information_subtitle.bind(size=lambda label, size: setattr(label, "text_size", size))
@@ -379,6 +384,25 @@ class PeggleDeluxeLevelInformationLayout(BoxLayout):
 
         self.add_widget(level_information_layout)
 
+        in_level_information_layout: BoxLayout = BoxLayout(
+            orientation="horizontal",
+            size_hint_y=None,
+            spacing="8dp",
+            padding=[0, 0, 0, 10]
+        )
+
+        in_level_information_layout.bind(minimum_height=in_level_information_layout.setter("height"))
+
+        statistics_layout: BoxLayout = BoxLayout(
+            orientation="vertical",
+            size_hint_x=1,
+            size_hint_y=None,
+            pos_hint={"top": 1},
+            spacing="6dp",
+        )
+
+        statistics_layout.bind(minimum_height=statistics_layout.setter("height"))
+
         score_label: Label
         shot_score_label: Label
         orange_peg_combo_label: Label
@@ -397,7 +421,7 @@ class PeggleDeluxeLevelInformationLayout(BoxLayout):
 
         self.score_label.bind(size=lambda label, size: setattr(label, "text_size", size))
 
-        self.add_widget(self.score_label)
+        statistics_layout.add_widget(self.score_label)
 
         self.shot_score_label = Label(
             text="[b]Shot Score:[/b] 0  [color=888888]0[/color]",
@@ -411,7 +435,7 @@ class PeggleDeluxeLevelInformationLayout(BoxLayout):
 
         self.shot_score_label.bind(size=lambda label, size: setattr(label, "text_size", size))
 
-        self.add_widget(self.shot_score_label)
+        statistics_layout.add_widget(self.shot_score_label)
 
         self.orange_peg_combo_label = Label(
             text="[b]Orange Peg Combo:[/b] 0",
@@ -425,7 +449,7 @@ class PeggleDeluxeLevelInformationLayout(BoxLayout):
 
         self.orange_peg_combo_label.bind(size=lambda label, size: setattr(label, "text_size", size))
 
-        self.add_widget(self.orange_peg_combo_label)
+        statistics_layout.add_widget(self.orange_peg_combo_label)
 
         self.peg_combo_label = Label(
             text="[b]Peg Combo:[/b] 0",
@@ -439,7 +463,7 @@ class PeggleDeluxeLevelInformationLayout(BoxLayout):
 
         self.peg_combo_label.bind(size=lambda label, size: setattr(label, "text_size", size))
 
-        self.add_widget(self.peg_combo_label)
+        statistics_layout.add_widget(self.peg_combo_label)
 
         self.pegs_cleared = Label(
             text="[b]Pegs Cleared:[/b] 0",
@@ -453,7 +477,95 @@ class PeggleDeluxeLevelInformationLayout(BoxLayout):
 
         self.pegs_cleared.bind(size=lambda label, size: setattr(label, "text_size", size))
 
-        self.add_widget(self.pegs_cleared)
+        statistics_layout.add_widget(self.pegs_cleared)
+
+        in_level_information_layout.add_widget(statistics_layout)
+
+        locations_in_logic_layout: BoxLayout = BoxLayout(
+            orientation="vertical",
+            size_hint_x=1,
+            size_hint_y=None,
+            pos_hint={"top": 1},
+            spacing="6dp",
+        )
+
+        locations_in_logic_layout.bind(minimum_height=locations_in_logic_layout.setter("height"))
+
+        locations_in_logic_label = Label(
+            text="[b]In Logic Locations[/b]",
+            markup=True,
+            size_hint_y=None,
+            font_size="16dp",
+            height="20dp",
+            halign="left",
+            valign="middle",
+        )
+
+        locations_in_logic_label.bind(size=lambda label, size: setattr(label, "text_size", size))
+
+        locations_in_logic_layout.add_widget(locations_in_logic_label)
+
+        self.level_locations_in_logic_label = Label(
+            text="No locations accessible in logic",
+            markup=True,
+            size_hint_y=None,
+            font_size="13dp",
+            height="16dp",
+            halign="left",
+            valign="middle",
+        )
+
+        self.level_locations_in_logic_label.bind(texture_size=lambda label, texture_size: setattr(label, "height", texture_size[1]))
+        self.level_locations_in_logic_label.bind(width=lambda label, width: setattr(label, "text_size", (width, None)))
+
+        locations_in_logic_layout.add_widget(self.level_locations_in_logic_label)
+
+        if self.ctx.tracker_loaded:
+            in_level_information_layout.add_widget(locations_in_logic_layout)
+
+        locations_out_of_logic_layout: BoxLayout = BoxLayout(
+            orientation="vertical",
+            size_hint_x=1,
+            size_hint_y=None,
+            pos_hint={"top": 1},
+            spacing="6dp",
+        )
+
+        locations_out_of_logic_layout.bind(minimum_height=locations_out_of_logic_layout.setter("height"))
+
+        locations_out_of_logic_label = Label(
+            text="[b]Out of Logic Locations[/b]",
+            markup=True,
+            size_hint_y=None,
+            font_size="16dp",
+            height="20dp",
+            halign="left",
+            valign="middle",
+        )
+
+        locations_out_of_logic_label.bind(size=lambda label, size: setattr(label, "text_size", size))
+
+        locations_out_of_logic_layout.add_widget(locations_out_of_logic_label)
+
+        self.level_locations_out_of_logic_label = Label(
+            text="No locations accessible out of logic",
+            markup=True,
+            size_hint_y=None,
+            font_size="13dp",
+            height="16dp",
+            halign="left",
+            valign="middle",
+        )
+
+        self.level_locations_out_of_logic_label.bind(texture_size=lambda label, texture_size: setattr(label, "height", texture_size[1]))
+        self.level_locations_out_of_logic_label.bind(width=lambda label, width: setattr(label, "text_size", (width, None)))
+
+        locations_out_of_logic_layout.add_widget(self.level_locations_out_of_logic_label)
+
+        if self.ctx.tracker_loaded:
+            in_level_information_layout.add_widget(locations_out_of_logic_layout)
+
+        self.add_widget(in_level_information_layout)
 
         self.last_seen_level = None
         self.last_seen_master = None
@@ -538,6 +650,9 @@ class PeggleDeluxeLevelInformationLayout(BoxLayout):
                 self.orange_peg_combo_label.text = "[b]Orange Peg Combo:[/b] 0"
                 self.peg_combo_label.text = "[b]Peg Combo:[/b] 0"
                 self.pegs_cleared.text = "[b]Pegs Cleared:[/b] 0"
+
+                self.level_locations_in_logic_label.text = "[color=888888]No locations accessible in logic[/color]"
+                self.level_locations_out_of_logic_label.text = "[color=888888]No locations accessible out of logic[/color]"
 
                 self.last_seen_level = None
                 self.last_seen_master = None
@@ -669,6 +784,45 @@ class PeggleDeluxeLevelInformationLayout(BoxLayout):
 
                             pegs_cleared: int = game_state.pegs_cleared
                             self.pegs_cleared.text = f"[b]Pegs Cleared:[/b] {pegs_cleared}"
+
+                            # Locations In / Out of Logic
+                            if self.ctx.tracker_loaded:
+                                level_shorthand: str = game_state.current_level.value.split(" ")[0]
+
+                                locations_in_logic: List[str] = list()
+
+                                if len(self.ctx.locations_in_logic):
+                                    location_name: str
+                                    for location_name in sorted(self.ctx.locations_in_logic):
+                                        if not location_name.startswith(level_shorthand):
+                                            continue
+
+                                        locations_in_logic.append(f"[color=00FA9A]{location_name.split(' - ')[-1]}[/color]")
+
+                                    if len(locations_in_logic):
+                                        self.level_locations_in_logic_label.text = "\n".join(locations_in_logic)
+                                    else:
+                                        self.level_locations_in_logic_label.text = "[color=888888]No locations accessible in logic[/color]"
+                                else:
+                                    self.level_locations_in_logic_label.text = "[color=888888]No locations accessible in logic[/color]"
+
+                                locations_out_of_logic: List[str] = list()
+
+                                if len(self.ctx.locations_out_of_logic):
+                                    location_name: str
+                                    for location_name in sorted(self.ctx.locations_out_of_logic):
+                                        if not location_name.startswith(level_shorthand):
+                                            continue
+
+                                        locations_out_of_logic.append(f"[color=FFD300]{location_name.split(' - ')[-1]}[/color]")
+
+                                    if len(locations_out_of_logic):
+                                        self.level_locations_out_of_logic_label.text = "\n".join(locations_out_of_logic)
+                                    else:
+                                        self.level_locations_out_of_logic_label.text = "[color=888888]No locations accessible out of logic[/color]"
+                                else:
+                                    self.level_locations_out_of_logic_label.text = "[color=888888]No locations accessible out of logic[/color]"
+
                         else:
                             self.target_score_low_label.text = "Low: [color=00FA9A]XXX,XXX[/color]"
                             self.target_score_mid_label.text = "Mid: [color=00FA9A]XXX,XXX[/color]"
@@ -683,6 +837,9 @@ class PeggleDeluxeLevelInformationLayout(BoxLayout):
                             self.orange_peg_combo_label.text = "[b]Orange Peg Combo:[/b] 0"
                             self.peg_combo_label.text = "[b]Peg Combo:[/b] 0"
                             self.pegs_cleared.text = "[b]Pegs Cleared:[/b] 0"
+
+                            self.level_locations_in_logic_label.text = "[color=888888]No locations accessible in logic[/color]"
+                            self.level_locations_out_of_logic_label.text = "[color=888888]No locations accessible out of logic[/color]"
                     else:
                         self.level_information_subtitle.text = f"[b]This level is not included this seed.[/b]"
 
@@ -699,6 +856,9 @@ class PeggleDeluxeLevelInformationLayout(BoxLayout):
                         self.orange_peg_combo_label.text = "[b]Orange Peg Combo:[/b] 0"
                         self.peg_combo_label.text = "[b]Peg Combo:[/b] 0"
                         self.pegs_cleared.text = "[b]Pegs Cleared:[/b] 0"
+
+                        self.level_locations_in_logic_label.text = "[color=888888]No locations accessible in logic[/color]"
+                        self.level_locations_out_of_logic_label.text = "[color=888888]No locations accessible out of logic[/color]"
         else:
             self.level_information_level_image.texture = None
             self.level_information_level_image.opacity = 0.1
@@ -722,6 +882,9 @@ class PeggleDeluxeLevelInformationLayout(BoxLayout):
             self.orange_peg_combo_label.text = "[b]Orange Peg Combo:[/b] 0"
             self.peg_combo_label.text = "[b]Peg Combo:[/b] 0"
             self.pegs_cleared.text = "[b]Pegs Cleared:[/b] 0"
+
+            self.level_locations_in_logic_label.text = "[color=888888]No locations accessible in logic[/color]"
+            self.level_locations_out_of_logic_label.text = "[color=888888]No locations accessible out of logic[/color]"
 
 
 class PeggleDeluxeMastersLayout(BoxLayout):
@@ -769,7 +932,7 @@ class PeggleDeluxeMastersLayout(BoxLayout):
 
         grid_layout: GridLayout = GridLayout(
             cols=6,
-            spacing=8,
+            spacing=12,
             padding=0,
             size_hint_y=None,
         )
@@ -861,7 +1024,10 @@ class PeggleDeluxeLevelsLayout(BoxLayout):
     ctx: PeggleDeluxeContext
 
     level_label: Label
+
     level_images: List[Image]
+    level_in_logic_labels: List[Label]
+    level_out_of_logic_labels: List[Label]
 
     level_data: Dict[PeggleDeluxeLevels, Dict[str, Any]]
 
@@ -887,6 +1053,8 @@ class PeggleDeluxeLevelsLayout(BoxLayout):
         self.add_widget(self.level_label)
 
         self.level_images = list()
+        self.level_in_logic_labels = list()
+        self.level_out_of_logic_labels = list()
 
         self.level_data = dict()
 
@@ -912,7 +1080,7 @@ class PeggleDeluxeLevelsLayout(BoxLayout):
 
         grid_layout: GridLayout = GridLayout(
             cols=6,
-            spacing=8,
+            spacing=12,
             padding=0,
             size_hint_y=None,
         )
@@ -922,6 +1090,22 @@ class PeggleDeluxeLevelsLayout(BoxLayout):
         level: PeggleDeluxeLevels
         data: Dict[str, Any]
         for level, data in self.level_data.items():
+            height: int = 96
+
+            if self.ctx.tracker_loaded:
+                height = 140
+
+            level_layout: BoxLayout = BoxLayout(
+                orientation="vertical",
+                size_hint_x=None,
+                size_hint_y=None,
+                width="96dp",
+                height=f"{height}dp",
+                spacing="4dp",
+            )
+
+            level_layout.bind(minimum_height=level_layout.setter("height"))
+
             image_bytes: bytes = pkgutil.get_data(client_gui.__name__, data["image_path"])
             image: CoreImage = CoreImage(io.BytesIO(image_bytes), ext="png")
 
@@ -949,7 +1133,54 @@ class PeggleDeluxeLevelsLayout(BoxLayout):
                 level_image.bind(pos=_update_goal_decoration, size=_update_goal_decoration)
 
             self.level_images.append(level_image)
-            grid_layout.add_widget(level_image)
+
+            level_layout.add_widget(level_image)
+
+            in_logic_text: str = "In Logic: [color=00FA9A]1[/color]"
+
+            if data["is_goal"]:
+                in_logic_text = ""
+
+            in_logic_label: Label = Label(
+                text=in_logic_text,
+                markup=True,
+                font_size="12dp",
+                size_hint_y=None,
+                height="16dp",
+                halign="left",
+                valign="middle",
+            )
+
+            in_logic_label.bind(size=lambda label, size: setattr(label, "text_size", size))
+
+            self.level_in_logic_labels.append(in_logic_label)
+
+            if self.ctx.tracker_loaded:
+                level_layout.add_widget(in_logic_label)
+
+            out_of_logic_text: str = "Out of Logic: [color=FFD300]1[/color]"
+
+            if data["is_goal"]:
+                out_of_logic_text = ""
+
+            out_of_logic_label: Label = Label(
+                text=out_of_logic_text,
+                markup=True,
+                font_size="12dp",
+                size_hint_y=None,
+                height="16dp",
+                halign="left",
+                valign="middle",
+            )
+
+            out_of_logic_label.bind(size=lambda label, size: setattr(label, "text_size", size))
+
+            self.level_out_of_logic_labels.append(out_of_logic_label)
+
+            if self.ctx.tracker_loaded:
+                level_layout.add_widget(out_of_logic_label)
+
+            grid_layout.add_widget(level_layout)
 
         self.add_widget(grid_layout)
 
@@ -966,6 +1197,28 @@ class PeggleDeluxeLevelsLayout(BoxLayout):
 
                 received_items[item_name] += 1
 
+        in_logic_location_counts_by_level_shorthand: Dict[str, int] = dict()
+        out_of_logic_location_counts_by_level_shorthand: Dict[str, int] = dict()
+
+        if self.ctx.tracker_loaded:
+            location_name: str
+            for location_name in self.ctx.locations_in_logic:
+                level_shorthand: str = location_name.split(" ")[0]
+
+                if level_shorthand not in in_logic_location_counts_by_level_shorthand:
+                    in_logic_location_counts_by_level_shorthand[level_shorthand] = 0
+
+                in_logic_location_counts_by_level_shorthand[level_shorthand] += 1
+
+            location_name: str
+            for location_name in self.ctx.locations_out_of_logic:
+                level_shorthand: str = location_name.split(" ")[0]
+
+                if level_shorthand not in out_of_logic_location_counts_by_level_shorthand:
+                    out_of_logic_location_counts_by_level_shorthand[level_shorthand] = 0
+
+                out_of_logic_location_counts_by_level_shorthand[level_shorthand] += 1
+
         level: PeggleDeluxeLevels
         data: Dict[str, Any]
         for i, (level, data) in enumerate(self.level_data.items()):
@@ -981,6 +1234,29 @@ class PeggleDeluxeLevelsLayout(BoxLayout):
                     is_unlocked = True
 
             self.level_images[i].opacity = 1.0 if is_unlocked else 0.4
+
+            if self.ctx.tracker_loaded:
+                if data["is_goal"]:
+                    continue
+
+                level_shorthand: str = level.value.split(" ")[0]
+
+                if is_unlocked:
+                    in_logic_count: int = in_logic_location_counts_by_level_shorthand.get(level_shorthand, 0)
+                    out_of_logic_count: int = out_of_logic_location_counts_by_level_shorthand.get(level_shorthand, 0)
+
+                    if in_logic_count > 0:
+                        self.level_in_logic_labels[i].text = f"In Logic: [color=00FA9A]{in_logic_count}[/color]"
+                    else:
+                        self.level_in_logic_labels[i].text = f"In Logic: [color=888888]0[/color]"
+
+                    if out_of_logic_count > 0:
+                        self.level_out_of_logic_labels[i].text = f"Out of Logic: [color=FFD300]{out_of_logic_count}[/color]"
+                    else:
+                        self.level_out_of_logic_labels[i].text = f"Out of Logic: [color=888888]0[/color]"
+                else:
+                    self.level_in_logic_labels[i].text = f"[color=888888]In Logic: 0[/color]"
+                    self.level_out_of_logic_labels[i].text = f"[color=888888]Out of Logic: 0[/color]"
 
 
 class PeggleDeluxeContent(ScrollView):

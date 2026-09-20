@@ -58,7 +58,7 @@ class DSRItem(Item):
         return {item_data.name: (base_id + item_data.dsr_code if item_data.dsr_code is not None else None) for item_data in _all_items}
 
 key_item_names = {
-    "Covenant of Artorias","Orange Charred Ring", "Skull Lantern", "Sunlight Maggot"
+    "Covenant of Artorias", "Darkmoon Seance Ring", "Orange Charred Ring", "Skull Lantern", "Sunlight Maggot"
 }
 
 _all_items_base = [    
@@ -365,7 +365,7 @@ _all_items_base = [
     ("Humanity x2", 2116, DSRItemCategory.CONSUMABLE),
     ("Transient Curse x4", 2117, DSRItemCategory.CONSUMABLE),
     ("Gold Pine Resin x6", 2118, DSRItemCategory.CONSUMABLE),
-    ("Humanity x13", 2119, DSRItemCategory.CONSUMABLE),
+    ("Humanity x13", 2119, DSRItemCategory.USEFUL_CONSUMABLE),
     ("Purging Stone x5", 2120, DSRItemCategory.CONSUMABLE),
     ("Ring of Sacrifice x10", 2121, DSRItemCategory.USEFUL_CONSUMABLE),
     ("Humanity x4", 2122, DSRItemCategory.USEFUL_CONSUMABLE),
@@ -804,7 +804,7 @@ _all_items_base = [
     ("Priscilla's Dagger", 8004, DSRItemCategory.WEAPON, DSRWeaponType.Melee, DSRUpgradeType.Unique),
     ("Shortsword", 8005, DSRItemCategory.WEAPON, DSRWeaponType.Melee, DSRUpgradeType.Infusable),
     ("Longsword", 8006, DSRItemCategory.WEAPON, DSRWeaponType.Melee, DSRUpgradeType.Infusable),
-    ("BroadSword", 8007, DSRItemCategory.WEAPON, DSRWeaponType.Melee, DSRUpgradeType.Infusable),
+    ("Broadsword", 8007, DSRItemCategory.WEAPON, DSRWeaponType.Melee, DSRUpgradeType.Infusable),
     ("Broken Straight Sword", 8008, DSRItemCategory.WEAPON, DSRWeaponType.Melee, DSRUpgradeType.Infusable),
     ("Balder Side Sword", 8009, DSRItemCategory.WEAPON, DSRWeaponType.Melee, DSRUpgradeType.Infusable),
     ("Crystal Straight Sword", 8010, DSRItemCategory.WEAPON, DSRWeaponType.Melee, DSRUpgradeType.NotUpgradable),
@@ -1019,6 +1019,7 @@ _all_items_base = [
     ("Door Filler", 9900, DSRItemCategory.FILLER),
     ("Fogwall Filler", 9901, DSRItemCategory.FILLER),
     ("Nothing", 9902, DSRItemCategory.NOTHING),
+    ("Filler", 9903, DSRItemCategory.FILLER),
 
     ("Lag Trap", 10000, DSRItemCategory.TRAP),
 ]

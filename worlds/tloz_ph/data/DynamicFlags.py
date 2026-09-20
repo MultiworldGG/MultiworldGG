@@ -251,11 +251,12 @@ DYNAMIC_FLAGS = {
         "set_if_true": [(PHAddr.fairies_0, 0x80)],
     },
     "Always reset spirit island": {
-        "on_scenes": [0x1701],
-        "reset_flags": ["RESET Spirit of power 0", "RESET Spirit of power 1", "RESET Spirit of power 2",
-                        "RESET Spirit of wisdom 0", "RESET Spirit of wisdom 1", "RESET Spirit of wisdom 2",
-                        "RESET Spirit of courage 0", "RESET Spirit of courage 1", "RESET Spirit of courage 2",
-                        "RESET Spirit of Wisdom boss flag", "RESET Spirit of Courage boss flag"]
+        "on_scenes": [0x1701],  # Canceled!
+        "reset_flags": ["RESET Spirit of Wisdom boss flag", "RESET Spirit of Courage boss flag",
+            # "RESET Spirit of power 0", "RESET Spirit of power 1", "RESET Spirit of power 2",
+            #             "RESET Spirit of wisdom 0", "RESET Spirit of wisdom 1", "RESET Spirit of wisdom 2",
+            #             "RESET Spirit of courage 0", "RESET Spirit of courage 1", "RESET Spirit of courage 2",
+                        ]
     },
     "RESET Spirit of power 0": {
         # "on_scenes": [0x1700],
@@ -311,9 +312,46 @@ DYNAMIC_FLAGS = {
         "set_if_true": [(PHAddr.adv_flags_3, 0x40)],
         "reset_flags": ["RESET Spirit of Wisdom boss flag"]
     },
+    "Spirit of Wisdom boss flag singles": {
+        "on_scenes": [0x1701],
+        "has_items": [("Spirit of Wisdom", 1)],
+        "set_if_true": [(PHAddr.adv_flags_3, 0x40)],
+        "reset_flags": ["RESET Spirit of Wisdom boss flag"]
+    },
+    "Spirit of Wisdom boss flag prog spirits": {
+        "on_scenes": [0x1701],
+        "has_items": [("Spirit (Progressive)", 2)],
+        "set_if_true": [(PHAddr.adv_flags_3, 0x40)],
+        "reset_flags": ["RESET Spirit of Wisdom boss flag"]
+    },
     "Spirit of Courage boss flag": {
         "on_scenes": [0x1701],
         "has_items": [("Spirit of Courage (Progressive)", 1)],
+        "set_if_true": [(PHAddr.adv_flags_3, 0xC0)],
+        "reset_flags": ["RESET Spirit of Wisdom boss flag", "RESET Spirit of Courage boss flag"]
+    },
+    "Spirit of Wisdom no boss flag": {
+        "on_scenes": [0x1701],
+        "has_items": [("Spirit of Wisdom (Progressive)", 0), ("Spirit of Wisdom", 0),
+                      ("Spirit (Progressive)", 2, "not")],
+        "unset_if_true": [(PHAddr.adv_flags_3, 0x40)],
+        "reset_flags": ["RESET Spirit of Wisdom boss flag"]
+    },
+    "Spirit of Courage no boss flag": {
+        "on_scenes": [0x1701],
+        "has_items": [("Spirit of Courage (Progressive)", 0), ("Spirit of Courage", 0), ("Spirit (Progressive)", 3, "not")],
+        "unset_if_true": [(PHAddr.adv_flags_3, 0x80)],
+        "reset_flags": ["RESET Spirit of Wisdom boss flag", "RESET Spirit of Courage boss flag"]
+    },
+    "Spirit of Courage boss flag single": {
+        "on_scenes": [0x1701],
+        "has_items": [("Spirit of Courage", 1)],
+        "set_if_true": [(PHAddr.adv_flags_3, 0xC0)],
+        "reset_flags": ["RESET Spirit of Wisdom boss flag", "RESET Spirit of Courage boss flag"]
+    },
+    "Spirit of Courage boss flag prog spirits": {
+        "on_scenes": [0x1701],
+        "has_items": [("Spirit (Progressive)", 3)],
         "set_if_true": [(PHAddr.adv_flags_3, 0xC0)],
         "reset_flags": ["RESET Spirit of Wisdom boss flag", "RESET Spirit of Courage boss flag"]
     },
@@ -423,30 +461,31 @@ DYNAMIC_FLAGS = {
         "unset_if_true": [(PHAddr.adv_flags_2, 0x40)]
     },
     # Endgame
+    "Spawn Phantoms in Totok B13 Progressive": {
+        "on_scenes": [0x2511],
+        "has_items": [("Sword (Progressive)", 2)],
+        "has_slot_data": [("bellum_access", [1, 2, 3])],
+        "set_if_true": [(PHAddr.adv_flags_22, 0x40)],
+        "reset_flags": ["RESET Spawn Phantoms in Totok B13"]
+    },
     "Spawn Phantoms in Totok B13": {
         "on_scenes": [0x2511],
-        "has_items": [("Sword (Progressive)", 2)],
-        "has_slot_data": [["bellum_access", 1]],
+        "has_items": [("Oshus' Sword", 1), ("Phantom Sword", 1)],
+        "has_slot_data": [("bellum_access", [1, 2, 3])],
         "set_if_true": [(PHAddr.adv_flags_22, 0x40)],
         "reset_flags": ["RESET Spawn Phantoms in Totok B13"]
     },
-    "Spawn Phantoms in Totok B13 2": {
+    "Spawn Phantoms in Totok B13 door option progressive": {
         "on_scenes": [0x2511],
         "has_items": [("Sword (Progressive)", 2)],
-        "has_slot_data": [["bellum_access", 2]],
-        "set_if_true": [(PHAddr.adv_flags_22, 0x40)],
-        "reset_flags": ["RESET Spawn Phantoms in Totok B13"]
-    },
-    "Spawn Phantoms in Totok B13 3": {
-        "on_scenes": [0x2511],
-        "has_items": [("Sword (Progressive)", 2)],
-        "has_slot_data": [["bellum_access", 3]],
+        "goal_requirement": True,
+        "has_slot_data": [["bellum_access", 0]],
         "set_if_true": [(PHAddr.adv_flags_22, 0x40)],
         "reset_flags": ["RESET Spawn Phantoms in Totok B13"]
     },
     "Spawn Phantoms in Totok B13 door option": {
         "on_scenes": [0x2511],
-        "has_items": [("Sword (Progressive)", 2)],
+        "has_items": [("Oshus' Sword", 1), ("Phantom Sword", 1)],
         "goal_requirement": True,
         "has_slot_data": [["bellum_access", 0]],
         "set_if_true": [(PHAddr.adv_flags_22, 0x40)],
@@ -477,10 +516,19 @@ DYNAMIC_FLAGS = {
         "has_slot_data": [["bellum_access", 2]],
         "has_locations": ["TotOK Lobby Phantom Hourglass"]
     },
-    "Spawn phantom wreckage": {
+    "Spawn phantom wreckage progressive": {
         "on_scenes": [0x0],
         "goal_requirement": True,
-        "has_items": [("Sword (Progressive)", 2), ("Spirit of Courage (Progressive)", 1)],
+        "has_items": [("Sword (Progressive)", 2)],
+        "any_has_items": [("Spirit (Progressive)", 3), ("Spirit of Courage (Progressive)", 1), ("Spirit of Courage", 1)],
+        "set_if_true": [(PHAddr.adv_flags_31, 0x1)],
+        "has_slot_data": [["bellum_access", 3]],
+    },
+    "Spawn phantom wreckage non-progressive": {
+        "on_scenes": [0x0],
+        "goal_requirement": True,
+        "has_items": [("Oshus' Sword", 1), ("Phantom Sword", 1)],
+        "any_has_items": [("Spirit (Progressive)", 3), ("Spirit of Courage (Progressive)", 1), ("Spirit of Courage", 1)],
         "set_if_true": [(PHAddr.adv_flags_31, 0x1)],
         "has_slot_data": [["bellum_access", 3]],
     },
@@ -551,16 +599,44 @@ DYNAMIC_FLAGS = {
     "mercay Safety Shipyard": {
         "on_scenes": [0xB03],
         "has_locations": ["Blaaz Boss Reward"],
+        "has_slot_data": [("open_post_dungeons", 0)],
+        "set_if_true": [(PHAddr.adv_flags_3, 0x20)]
+    },
+    "mercay shipyard post dungeon": {
+        "on_scenes": [0xB03],
+        "has_slot_data": [("open_post_dungeons", 1)],
         "set_if_true": [(PHAddr.adv_flags_3, 0x20)]
     },
     # Fog
-    "No fog add fog if spirits": {
+    "No fog add fog if spirits progressive single": {
         "on_scenes": [0x01],
         "not_last_scenes": [0x2903],
         "not_on_entrance": [5],
         "has_items": [("Spirit of Power (Progressive)", 1),
                       ("Spirit of Wisdom (Progressive)", 1),
                       ("Spirit of Courage (Progressive)", 1)],
+        "not_has_locations": ["Ghost Ship Rescue Tetra"],
+        "has_slot_data": [("fog_settings", 0)],
+        "unset_if_true": [(PHAddr.flags_clear_fog, 0x80)],
+        "set_if_true": [(PHAddr.flags_fog_done, 0x10)]
+    },
+    "No fog add fog if spirits normal": {
+        "on_scenes": [0x01],
+        "not_last_scenes": [0x2903],
+        "not_on_entrance": [5],
+        "has_items": [("Spirit of Power", 1),
+                      ("Spirit of Wisdom", 1),
+                      ("Spirit of Courage", 1)],
+        "not_has_locations": ["Ghost Ship Rescue Tetra"],
+        "has_slot_data": [("fog_settings", 0)],
+        "unset_if_true": [(PHAddr.flags_clear_fog, 0x80)],
+        "set_if_true": [(PHAddr.flags_fog_done, 0x10)]
+    },
+    "No fog add fog if spirits progressive spirit": {
+        "on_scenes": [0x01],
+        "not_last_scenes": [0x2903],
+        "not_on_entrance": [5],
+        "has_items": [("Spirit (Progressive)", 3)],
         "not_has_locations": ["Ghost Ship Rescue Tetra"],
         "has_slot_data": [("fog_settings", 0)],
         "unset_if_true": [(PHAddr.flags_clear_fog, 0x80)],
@@ -579,6 +655,24 @@ DYNAMIC_FLAGS = {
         "has_items": [("Spirit of Power (Progressive)", 1),
                       ("Spirit of Wisdom (Progressive)", 1),
                       ("Spirit of Courage (Progressive)", 1)],
+        "not_has_locations": ["Ghost Ship Rescue Tetra"],
+        "set_if_true": [(PHAddr.flags_fog_spirits, 0x10)],
+    },
+    "Spawn Spirits in fog singles": {
+        "on_scenes": [0x1],
+        "not_last_scenes": [0x2903],
+        "not_on_entrance": [5],
+        "has_items": [("Spirit of Power", 1),
+                      ("Spirit of Wisdom", 1),
+                      ("Spirit of Courage", 1)],
+        "not_has_locations": ["Ghost Ship Rescue Tetra"],
+        "set_if_true": [(PHAddr.flags_fog_spirits, 0x10)],
+    },
+    "Spawn Spirits in fog prog spirits": {
+        "on_scenes": [0x1],
+        "not_last_scenes": [0x2903],
+        "not_on_entrance": [5],
+        "has_items": [("Spirit (Progressive)", 3)],
         "not_has_locations": ["Ghost Ship Rescue Tetra"],
         "set_if_true": [(PHAddr.flags_fog_spirits, 0x10)],
     },
@@ -696,18 +790,18 @@ DYNAMIC_FLAGS = {
         "on_scenes": [0x2600, 0xC00],
         "set_if_true": [(PHAddr.flags_fog_spirits, 0x10)]
     },
-    "Remove Spirit flag": {
-        "on_scenes": [0x0],
-        "has_slot_data": [["fog_settings", 0]],
-        "not_has_locations": ["Ghost Ship Rescue Tetra"],
-        "unset_if_true": [(PHAddr.flags_fog_spirits, 0x10)]
-    },
-    "Remove Spirit flag 2": {
-        "on_scenes": [0x0],
-        "has_slot_data": [["fog_settings", 1]],
-        "not_has_locations": ["Ghost Ship Rescue Tetra"],
-        "unset_if_true": [(PHAddr.flags_fog_spirits, 0x10)]
-    },
+    # "Remove Spirit flag": {
+    #     "on_scenes": [0x0],
+    #     "has_slot_data": [["fog_settings", 0]],
+    #     "not_has_locations": ["Ghost Ship Rescue Tetra"],
+    #     "unset_if_true": [(PHAddr.flags_fog_spirits, 0x10)]
+    # },
+    # "Remove Spirit flag 2": {
+    #     "on_scenes": [0x0],
+    #     "has_slot_data": [["fog_settings", 1]],
+    #     "not_has_locations": ["Ghost Ship Rescue Tetra"],
+    #     "unset_if_true": [(PHAddr.flags_fog_spirits, 0x10)]
+    # },
     # Goron Chief
     "Beat goron temple goron chief": {
         "on_scenes": [0x100A],
@@ -719,6 +813,15 @@ DYNAMIC_FLAGS = {
         "on_scenes": [0x100A],
         "not_has_locations": ["Goron Chief Post Dungeon Item"],
         "has_locations": ["Dongorongo Boss Reward", "Goron Chief Goron Quiz"],
+        "has_slot_data": [("open_post_dungeons", 0)],
+        "set_if_true": [(PHAddr.flags_metals, 0x40), (PHAddr.adv_flags_18, 0x8)],
+        "reset_flags": ["RESET remove Crimzonine", "RESET goron chief gongoron"]
+    },
+    "Beat goron temple goron chief open posts": {
+        "on_scenes": [0x100A],
+        "not_has_locations": ["Goron Chief Post Dungeon Item"],
+        "has_locations": ["Goron Chief Goron Quiz"],
+        "has_slot_data": [("open_post_dungeons", 1)],
         "set_if_true": [(PHAddr.flags_metals, 0x40), (PHAddr.adv_flags_18, 0x8)],
         "reset_flags": ["RESET remove Crimzonine", "RESET goron chief gongoron"]
     },
@@ -748,7 +851,18 @@ DYNAMIC_FLAGS = {
     "Play goron game on dee ess after temple": {
         "on_scenes": [0x1B00],
         "has_locations": ["Dongorongo Boss Reward"],
+        "has_slot_data": [("open_post_dungeons", 0)],
         "set_if_true": [(PHAddr.adv_flags_27, 0x20)]
+    },
+    "Play goron game on dee ess open post dungeons": {
+        "on_scenes": [0x1B00],
+        "has_slot_data": [("open_post_dungeons", 1)],
+        "set_if_true": [(PHAddr.adv_flags_27, 0x20)],
+        "reset_flags": ["RESET goron game"]
+    },
+    "RESET goron game": {
+        "not_has_locations": ["Dongorongo Boss Reward"],
+        "unset_if_true": [(PHAddr.adv_flags_27, 0x20)],
     },
 
     # Harrow Island
@@ -854,13 +968,20 @@ DYNAMIC_FLAGS = {
         "on_scenes": [0x2, 0x3],
         "not_has_locations": ["Ocean Miniblin Pirate Ambush Item"],
         "has_locations": ["Ghost Ship Rescue Tetra"],
+        "has_slot_data": [("open_post_dungeons", 0)],
+        "set_if_true": [(PHAddr.flags_fog_spirits, 0x10), (PHAddr.flags_clear_fog, 0x80), (PHAddr.flags_fog_done, 0x10)]
+    },
+    "spawn big pirate ship open posts": {
+        "on_scenes": [0x2, 0x3],
+        "not_has_locations": ["Ocean Miniblin Pirate Ambush Item"],
+        "has_slot_data": [("open_post_dungeons", 1)],
         "set_if_true": [(PHAddr.flags_fog_spirits, 0x10), (PHAddr.flags_clear_fog, 0x80), (PHAddr.flags_fog_done, 0x10)]
     },
     "despawn big pirate ship": {
         "on_scenes": [0x2, 0x3],
         "not_has_locations": ["Ghost Ship Rescue Tetra"],
+        "has_slot_data": [("open_post_dungeons", 0)],
         "unset_if_true": [(PHAddr.flags_fog_spirits, 0x10), (PHAddr.flags_clear_fog, 0x80), (PHAddr.flags_fog_done, 0x10)]
-
     },
 
     # Zauz
@@ -881,11 +1002,18 @@ DYNAMIC_FLAGS = {
     "Zauz remove triforce crest": {
         "on_scenes": [0x160A],
         "not_has_locations": ["Ghost Ship Rescue Tetra"],
+        "has_slot_data": [("open_post_dungeons", 0)],
         "unset_if_true": [(PHAddr.flags_fog_done, 0x10), (PHAddr.adv_flags_4, 2), (PHAddr.flags_clear_fog, 0x80)]
     },
     "Zauz add triforce crest": {
         "on_scenes": [0x160A],
         "has_locations": ["Ghost Ship Rescue Tetra"],
+        "has_slot_data": [("open_post_dungeons", 0)],
+        "set_if_true": [(PHAddr.flags_fog_done, 0x10), (PHAddr.adv_flags_4, 2), (PHAddr.flags_clear_fog, 0x80)],
+    },
+    "Zauz add triforce crest open post dungeon": {
+        "on_scenes": [0x160A],
+        "has_slot_data": [("open_post_dungeons", 1)],
         "set_if_true": [(PHAddr.flags_fog_done, 0x10), (PHAddr.adv_flags_4, 2), (PHAddr.flags_clear_fog, 0x80)],
     },
     "RESET Zauz remove triforce crest": {
@@ -930,7 +1058,8 @@ DYNAMIC_FLAGS = {
     },
     "Pirate ambush set spirit flag": {
         "on_scenes": [0x400],
-        "set_if_true": [(PHAddr.flags_fog_spirits, 0x10)]
+        "set_if_true": [(PHAddr.flags_fog_spirits, 0x10)],
+        "unset_if_true": [(PHAddr.adv_flags_48, 0x40)]
     },
     "RESET Remove Jolene": {
         # "on_scenes": [0xC00],
@@ -1027,24 +1156,21 @@ DYNAMIC_FLAGS = {
         "set_if_true": [(PHAddr.adv_flags_22, 0x20)]
     },
     "RESET Block phantom sword crafting": {
-        # "on_scenes": [0xB00],
-        "has_items": [("Sword (Progressive)", 2)],
+        "any_has_items": [("Sword (Progressive)", 2), ("Phantom Sword", 1)],
         "set_if_true": [(PHAddr.inventory_5, 0x20)]
     },
     "Oshus not have phantom sword": {
-        # "on_scenes": [0xB00],
-        "has_items": [("Sword (Progressive)", 2, "not_has")],
+        "has_items": [("Sword (Progressive)", 2, "not"), ("Phantom Sword", 0)],
         "unset_if_true": [(PHAddr.inventory_5, 0x20)],
     },
     "Oshus have phantom sword": {
         "on_scenes": [0xB0A],
-        "has_items": [("Sword (Progressive)", 2)],
+        "any_has_items": [("Sword (Progressive)", 2), ("Phantom Sword", 1)],
         "not_has_locations": ["Oshus Phantom Sword"],
         "unset_if_true": [(PHAddr.inventory_5, 0x20)]
     },
     "RESET Oshus have phantom sword": {
-        # "on_scenes": [0xB00],
-        "has_items": [("Sword (Progressive)", 2)],
+        "any_has_items": [("Sword (Progressive)", 2), ("Phantom Sword", 1)],
         "set_if_true": [(PHAddr.inventory_5, 0x20)]
     },
     "Block Oshus Gem": {
@@ -1053,7 +1179,6 @@ DYNAMIC_FLAGS = {
         "unset_if_true": [(PHAddr.adv_flags_36, 0x4), (PHAddr.adv_flags_1, 0x2)]
     },
     "RESET Block Oshus Gem": {
-        # "on_scenes": [0xB00],
         "has_locations": ["TotOK Lobby Phantom Hourglass"],
         "set_if_true": [(PHAddr.adv_flags_36, 0x4)],
         "unset_if_true": [(PHAddr.adv_flags_22, 0x2)]
@@ -1090,19 +1215,21 @@ DYNAMIC_FLAGS = {
         "on_scenes": [0x700],
         "not_has_locations": ["Prince of Red Lions Trade Quest Item"],
         "unset_if_true": [(PHAddr.flags_trade_quest, 0x98), (PHAddr.inventory_6, 0x20)],
-        "reset_flags": ["RESET Swordsmans Scroll", "RESET Guard Notebook", "RESET Kaleidoscope", "RESET Wood Heart"]
-    },
-    "Nyave Trade Quest": {
-        "on_scenes": [0xA00],
-        "not_has_locations": ["Nyave Trade Quest Item"],
-        "unset_if_true": [(PHAddr.flags_trade_quest, 0x80), (PHAddr.inventory_6, 0x20)],
-        "reset_flags": ["RESET Swordsmans Scroll", "RESET Wood Heart"]
+        "reset_flags": ["RESET Swordsmans Scroll", "RESET Guard Notebook", "RESET Kaleidoscope",
+                        "RESET Wood Heart", "RESET Remove Kaleidoscope", "RESET Remove Guard Notebook"]
     },
     "Hoiger Trade Quest": {
         "on_scenes": [0x900],
         "not_has_locations": ["Hoiger Howgendoogen Trade Quest Item"],
         "unset_if_true": [(PHAddr.flags_trade_quest, 0x90), (PHAddr.inventory_6, 0x20)],
-        "reset_flags": ["RESET Swordsmans Scroll", "RESET Guard Notebook", "RESET Wood Heart"]
+        "reset_flags": ["RESET Swordsmans Scroll", "RESET Guard Notebook", "RESET Wood Heart",
+                        "RESET Remove Kaleidoscope", "RESET Remove Guard Notebook"]
+    },
+    "Nyave Trade Quest": {
+        "on_scenes": [0xA00],
+        "not_has_locations": ["Nyave Trade Quest Item"],
+        "unset_if_true": [(PHAddr.flags_trade_quest, 0x80), (PHAddr.inventory_6, 0x20)],
+        "reset_flags": ["RESET Swordsmans Scroll", "RESET Wood Heart", "RESET Remove Kaleidoscope"]
     },
     "Wayfarer Trade Quest": {
         "on_scenes": [0x800],
@@ -1123,27 +1250,31 @@ DYNAMIC_FLAGS = {
     #     "check_bits": [(0x1B5592, 0x8)],
     # },
     "RESET Swordsmans Scroll": {
-        # "on_scenes": [0x0, 0x1, 0x2, 0x3],
         "has_items": [("Swordsman's Scroll", 1)],
         "set_if_true": [(PHAddr.inventory_6, 0x20)]
     },
     "RESET Wood Heart": {
-        # "on_scenes": [0x0, 0x1, 0x2, 0x3],
         "has_items": [("Wood Heart", 1)],
         "not_has_locations": ["Wayfarer Trade Quest Chest"],
         "set_if_true": [(PHAddr.flags_trade_quest, 0x80)]
     },
     "RESET Guard Notebook": {
-        # "on_scenes": [0x0, 0x1, 0x2, 0x3],
         "has_items": [("Guard Notebook", 1)],
         "not_has_locations": ["Nyave Trade Quest Item"],
         "set_if_true": [(PHAddr.flags_trade_quest, 0x10)]
     },
+    "RESET Remove Guard Notebook": {
+        "has_items": [("Guard Notebook", 0)],
+        "unset_if_true": [(PHAddr.flags_trade_quest, 0x10)]
+    },
     "RESET Kaleidoscope": {
-        # "on_scenes": [0x1, 0x2, 0x3],
         "has_items": [("Kaleidoscope", 1)],
         "not_has_locations": ["Hoiger Howgendoogen Trade Quest Item"],
         "set_if_true": [(PHAddr.flags_trade_quest, 0x8)]
+    },
+    "RESET Remove Kaleidoscope": {
+        "has_items": [("Kaleidoscope", 0)],
+        "unset_if_true": [(PHAddr.flags_trade_quest, 0x8)]
     },
     # Ghost Ship HC
     "Ghost Ship HC": {
@@ -1286,11 +1417,6 @@ DYNAMIC_FLAGS = {
         "has_items": [("Fish: Legendary Neptoona", 1)],
         "set_if_true": [(PHAddr.neptoona_count, 0x1)]
     },
-    "Safety give sword cause silly": {
-        "on_scenes": [0, 1, 2, 3, 0xB03],
-        "has_items": [("Sword (Progressive)", 1)],
-        "set_if_true": [(PHAddr.inventory_1, 1)]
-    },
     # Salvage
     "Salvage has no hitbox until you get cannon...": {
         "on_scenes": [0x300, 0xB0D],
@@ -1394,11 +1520,18 @@ DYNAMIC_FLAGS = {
     "Astrid after fire temple": {
         "on_scenes": [0xD0A],
         "has_locations": ["Blaaz Boss Reward"],
+        "has_slot_data": [("open_post_dungeons", 0)],
+        "set_if_true": [(PHAddr.flags_bosses_0, 0x20)]
+    },
+    "Astrid open post dungeon": {
+        "on_scenes": [0xD0A],
+        "has_slot_data": [("open_post_dungeons", 1)],
         "set_if_true": [(PHAddr.flags_bosses_0, 0x20)]
     },
     "Astrid before fire temple": {
         "on_scenes": [0xD0A],
         "not_has_locations": ["Blaaz Boss Reward"],
+        "has_slot_data": [("open_post_dungeons", 0)],
         "unset_if_true": [(PHAddr.flags_bosses_0, 0x20)]
     },
     "Ember respawn blaaz": {
@@ -1412,6 +1545,12 @@ DYNAMIC_FLAGS = {
         "not_has_locations": ["Crayk Boss Reward"],
         "on_entrance": [0],
         "unset_if_true": [(PHAddr.flags_bosses_0, 0x80)],
+    },
+    "Molida respawn archery post dungeon": {
+        "on_scenes": [0xC0B],
+        "has_slot_data": [("open_post_dungeons", 1)],
+        "any_has_items": [("Bow", 1), ("Bow (Progressive)", 1)],
+        "set_if_true": [(PHAddr.flags_bosses_0, 0x80)],
     },
     # Regal necklace backup removal
     "Regal necklace backup removal dummy": {
@@ -1476,9 +1615,249 @@ DYNAMIC_FLAGS = {
         "update_stage_flags": SKIP_OCEAN_FIGHTS_FLAGS
     },
     "Spawn gs b3 reapling": {
-        "on_scenes": [0x4102],
-        "has_slot_data": [("logic", 0, "not")],
+        "on_scenes": [0x2902],
+        "has_slot_data": [("logic", [1, 2])],
         "update_stage_flags": SPAWN_B3_REAPLING_FLAGS
+    },
+
+    # Shopsanity
+    "Island Shops skip uniques": {
+        "on_scenes": [0xb11, 0xc03, 0x1014],
+        "has_slot_data": [("shopsanity", "uniques", "not")],
+        "set_if_true": [(PHAddr.flags_shops, 0x9a)]
+    },
+    "Beedle Shops skip uniques": {
+        "on_scenes": [0x500],
+        "has_slot_data": [("shopsanity", "uniques", "not")],
+        "set_if_true": [(PHAddr.flags_shops, 0x25), (PHAddr.adv_flags_14, 0x2)]
+    },
+    "No Masked Beedle": {
+        "on_scenes": [0x500],
+        "has_slot_data": [("randomize_masked_beedle", 0)],
+        "set_if_true": [(PHAddr.flags_shops, 0x1), (PHAddr.adv_flags_14, 0x2)]
+    },
+    "Island Shops no restocks": {
+        "on_scenes": [0xb11, 0xc03, 0x1014],
+        "has_slot_data": [("shopsanity", "restocks", "not"), ("shopsanity", "uniques")],
+        "set_if_true": [(PHAddr.flags_shops, 0x98)]
+    },
+
+    "Mercay Shop Shield 1": {
+        "on_scenes": [0xB11],
+        "not_has_locations": ["Mercay Shop Shield"],
+        "has_slot_data": [("shopsanity", "shields")],
+        "unset_if_true": [(PHAddr.inventory_1, 2)]
+    },
+    "Mercay Shop Shield 2": {
+        "on_scenes": [0xB11],
+        "has_locations": ["Mercay Shop Shield"],
+        "has_slot_data": [("shield_in_pool", 0), ("shopsanity", "potions")],
+        "set_if_true": [(PHAddr.inventory_1, 2)]
+    },
+    "Island Shop Shield 3": {
+        "on_scenes": [0xB11, 0xC0E, 0x1014],
+        "has_slot_data": [("shield_in_pool", 0), ("shopsanity", "potions"), ("shopsanity", "shields", "not")],
+        "set_if_true": [(PHAddr.inventory_1, 2)]
+    },
+    "Island Shop Shield 4": {
+        "on_scenes": [0xB11, 0xC0E, 0x1014],
+        "has_items": [("Shield", 0)],
+        "has_slot_data": [("shield_in_pool", 1)],
+        "unset_if_true": [(PHAddr.inventory_1, 2)]
+    },
+    "Mercay Shop Shield 5": {
+        "on_scenes": [0xB11],
+        "has_items": [("Shield", 1)],
+        "has_locations": ["Mercay Shop Shield"],
+        "has_slot_data": [("shield_in_pool", 1)],
+        "set_if_true": [(PHAddr.inventory_1, 2)]
+    },
+    "Island Shop Shield 6": {
+        "on_scenes": [0xB11, 0xC0E, 0x1014],
+        "has_items": [("Shield", 1)],
+        "has_slot_data": [("shield_in_pool", 1), ("shopsanity", "shields", "not")],
+        "set_if_true": [(PHAddr.inventory_1, 2)]
+    },
+    "Moldia Shop Shield 1": {
+        "on_scenes": [0xC0E],
+        "not_has_locations": ["Molida Shop Shield"],
+        "has_slot_data": [("shopsanity", "shields")],
+        "unset_if_true": [(PHAddr.inventory_1, 2)]
+    },
+    "Moldia Shop Shield 2": {
+        "on_scenes": [0xC0E],
+        "has_locations": ["Molida Shop Shield"],
+        "has_slot_data": [("shield_in_pool", 0), ("shopsanity", "potions")],
+        "set_if_true": [(PHAddr.inventory_1, 2)]
+    },
+    "Moldia Shop Shield 5": {
+        "on_scenes": [0xC0E],
+        "has_items": [("Shield", 1)],
+        "has_locations": ["Molida Shop Shield"],
+        "has_slot_data": [("shield_in_pool", 1)],
+        "set_if_true": [(PHAddr.inventory_1, 2)]
+    },
+    "Goron Shop Shield 1": {
+        "on_scenes": [0x1014],
+        "not_has_locations": ["Goron Shop Shield"],
+        "has_slot_data": [("shopsanity", "shields")],
+        "unset_if_true": [(PHAddr.inventory_1, 2)]
+    },
+    "Goron Shop Shield 2": {
+        "on_scenes": [0x1014],
+        "has_locations": ["Goron Shop Shield"],
+        "has_slot_data": [("shield_in_pool", 0), ("shopsanity", "potions")],
+        "set_if_true": [(PHAddr.inventory_1, 2)]
+    },
+    "Goron Shop Shield 5": {
+        "on_scenes": [0x1014],
+        "has_items": [("Shield", 1)],
+        "has_locations": ["Goron Shop Shield"],
+        "has_slot_data": [("shield_in_pool", 1)],
+        "set_if_true": [(PHAddr.inventory_1, 2)]
+    },
+    "Island Shop Reset Shields": {
+        "on_scenes": [0xB11, 0xC0E, 0x1014],
+        "reset_flags": ["RESET no shields", "RESET has shield", "RESET want shield"]
+    },
+    "RESET no shields": {
+        "has_slot_data": [("shield_in_pool", 0)],
+        "unset_if_true": [(PHAddr.inventory_1, 2)]
+    },
+    "RESET has shield": {
+        "has_items": [("Shield", 1)],
+        "has_slot_data": [("shield_in_pool", 1)],
+        "set_if_true": [(PHAddr.inventory_1, 2)]
+    },
+    "RESET want shield": {
+        "has_items": [("Shield", 0)],
+        "has_slot_data": [("shield_in_pool", 1)],
+        "unset_if_true": [(PHAddr.inventory_1, 2)]
+    },
+
+    # Event backups
+    "Event backup ruins lower water": {
+        "on_scenes": [0x2400, 0x1100, 0x1101, 0x1102, 0x1103, 0x1201, 0x1202, 0x1203, 0x1204],
+        "has_traversed_entrances": ["EVENT: Bremeur's Temple Lower Water"],
+        "set_if_true": [(PHAddr.lower_water, 0x4)]
+    },
+    "Event backup wood heart": {
+        "on_scenes": [0x1400],
+        "has_traversed_entrances": ["EVENT: SS Wayfarer Give Wood Heart"],
+        "set_if_true": [(PHAddr.adv_flags_22, 0x8)]
+    },
+    "Event backup goron spike switch": {
+        "on_scenes": [0x1001],
+        "has_traversed_entrances": ["EVENT: Goron NE Spike Switch"],
+        "update_stage_flags": [0, 0x4]
+    },
+    # "Event backup mid wall": {
+    #     "on_scenes": [0x1001],
+    #     "has_traversed_entrances": ["EVENT: Goron NE Middle Bomb Wall"],
+    #     "set_if_true": [(PHAddr.goron_bomb_blocks, 8)]
+    # },
+    # "Event backup south wall": {
+    #     "on_scenes": [0x1001],
+    #     "has_traversed_entrances": ["EVENT: Goron NE South Bomb Wall"],
+    #     "set_if_true": [(PHAddr.goron_bomb_blocks, 1)]
+    # },
+    "Event backup goron se bridge": {
+        "on_scenes": [0x1003, 0x100a],
+        "has_traversed_entrances": ["EVENT: Goron SE Shout to Bridge Goron"],
+        "set_if_true": [(PHAddr.adv_flags_35, 2)],
+        "update_stage_flags": [0, 0x80]
+    },
+    "Event backup goron chus": {
+        "on_scenes": [0x1002, 0x100a],
+        "has_traversed_entrances": ["EVENT: Goron SW Kill Yellow Chus"],
+        "set_if_true": [(PHAddr.adv_flags_34, 0x20)]
+    },
+    "Event backup eddo's door": {
+        "on_scenes": [0x130B, 0x130A],
+        "has_traversed_entrances": ["EVENT: Open Eddo's Door"],
+        "set_if_true": [(PHAddr.adv_flags_6, 0x2)]
+    },
+    "Event backup gust windmills": {
+        "on_scenes": [0xe01],
+        "has_traversed_entrances": ["EVENT: Gust Windmills"],
+        "update_stage_flags": [0x20]
+    },
+
+    "Event backup goron nw bridge": {
+        "on_scenes": [0x1000],
+        "has_traversed_entrances": ["EVENT: Goron NW Bridge Shortcut"],
+        "update_stage_flags": [0x2]
+    },
+    "Event backup goron nw spikes": {
+        "on_scenes": [0x1000],
+        "has_traversed_entrances": ["EVENT: Goron NW Like Like Spikes"],
+        "update_stage_flags": [0x20]
+    },
+    "Event backup freedle island bridge": {
+        "on_scenes": [0xB02],
+        "has_traversed_entrances": ["EVENT: Mercay NE Freedle Island Bridge"],
+        "update_stage_flags": [0, 0x1]
+    },
+    "Event backup ruins se bridge": {
+        "on_scenes": [0x1203, 0x1103],
+        "has_traversed_entrances": ["EVENT: Ruins SE Bridge Shortcut"],
+        "update_stage_flags": [0, 0x80]
+    },
+    "Event backup frost se spikes": {
+        "on_scenes": [0xF03],
+        "has_traversed_entrances": ["EVENT: Frost SE Ice Spikes"],
+        "update_stage_flags": [0, 0, 0x10]
+    },
+    "Event backup uncharted bridge": {
+        "on_scenes": [0x1A00],
+        "has_traversed_entrances": ["EVENT: Uncharted Island Bridge"],
+        "set_if_true": [(PHAddr.adv_flags_38, 0x10)]
+    },
+    "Event backup molida temple door": {
+        "on_scenes": [0xc01],
+        "has_traversed_entrances": ["EVENT: Molida North Open Temple Door"],
+        "update_stage_flags": [0x40]
+    },
+    # "Event backup cannon bomb blocks": {
+    #     "on_scenes": [0x1300],
+    #     "has_traversed_entrances": ["EVENT: Cannon Island Eddo's Bomb Blocks"],
+    #     "set_if_true": [(PHAddr.cannon_bomb_blocks, 0x1)]
+    # },
+    "Event backup sun lake bomb blocks": {
+        "on_scenes": [0xC0A],
+        "has_traversed_entrances": ["EVENT: Sun Lake Cave Bomb Blocks"],
+        "set_if_true": [(PHAddr.molida_bomb_blocks, 0x1)]
+    },
+
+    "Event backup tof warp": {
+        "on_scenes": [0x1c03, 0x1c00],
+        "has_traversed_entrances": ["EVENT: Temple of Fire Blue Warp"],
+        "update_stage_flags": [0, 0x80]
+    },
+    "Event backup tow warp": {
+        "on_scenes": [0x1d04, 0x1d00],
+        "has_traversed_entrances": ["EVENT: Temple of Wind Blue Warp"],
+        "set_if_true": [(PHAddr.tow_warp, 0x1)]
+    },
+    "Event backup toc warp": {
+        "on_scenes": [0x1e03, 0x1e00],
+        "has_traversed_entrances": ["EVENT: Temple of Courage Blue Warp"],
+        "update_stage_flags": [1]
+    },
+    "Event backup gt warp": {
+        "on_scenes": [0x2004, 0x2000],
+        "has_traversed_entrances": ["EVENT: Goron Temple Blue Warp"],
+        "update_stage_flags": [0, 0, 0, 0x80]
+    },
+    "Event backup toi warp": {
+        "on_scenes": [0x1f02, 0x1f00],
+        "has_traversed_entrances": ["EVENT: Temple of Ice Blue Warp"],
+        "set_if_true": [(PHAddr.toi_warp, 0x1)]
+    },
+    "Event backup mt warp": {
+        "on_scenes": [0x2105, 0x2100],
+        "has_traversed_entrances": ["EVENT: Mutoh's Temple Blue Warp"],
+        "update_stage_flags": [0, 0x10]
     },
 }
 

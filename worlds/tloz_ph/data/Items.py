@@ -69,11 +69,13 @@ ITEMS_DATA = {
         "model": 0x3,
         "ghost_model": True,
         "model_reset": True,
+        "blocked_scenes": [0xb0A],
         "item_groups": ["Equipment", "Swords", "Upgrades"]
     },
     "Shield": {
         "classification": ItemClassification.progression,
         "address": PHAddr.inventory_1,
+        "set_bit": [(PHAddr.shield_count, 1)],
         "value": 0x2,
         "id": 4,
         "model": 0x4,
@@ -98,11 +100,44 @@ ITEMS_DATA = {
         "id": 6,
         "inventory_id": 4,
         "tags": ["progressive_overwrite"],
+        "variant": ["Bomb Bag", "Bomb Bag Upgrade"],
         "model": 0x29,
         "vanilla_model": [0x29, 0x7],
         "ghost_model": True,
         "model_reset": True,
+        # "block_ammo": [0xb11],
         "item_groups": ["Equipment", "Tools", "Bombs", "Items With Ammo", "Bomb Bag", "Upgrades"]
+    },
+    "Bomb Bag": {
+        'classification': ItemClassification.progression,
+        "address": PHAddr.inventory_1,
+        "value": 0x10,
+        "give_ammo": [10],
+        "inventory_id": 4,
+        # "block_ammo": [0xb11],
+        "ammo_address": PHAddr.bomb_count,
+        'item_groups': ["Equipment", "Tools", "Bombs", "Items With Ammo", "Bomb Bag"],
+        "variant_prog": ["Bombs (Progressive)", "Bomb Bag", "Bomb Bag Upgrade"],  # prog, base, upgrade
+
+        "model": 0x29,
+        "ghost_model": True,
+        "model_reset": True,
+        "id": 233,
+    },
+    "Bomb Bag Upgrade": {
+        'classification': ItemClassification.progression,
+        "progressive": [(PHAddr.bomb_upgrades, 0x1), (PHAddr.bomb_upgrades, 0x2)],
+        "give_ammo": [20, 30],
+        # "block_ammo": [0xb11],
+        "ammo_address": PHAddr.bomb_count,
+        "tags": ["progressive_overwrite"],
+        'item_groups': ["Equipment", "Tools", "Bombs", "Items With Ammo", "Bomb Bag", "Upgrades"],
+        "variant_prog": ["Bombs (Progressive)", "Bomb Bag", "Bomb Bag Upgrade"],  # prog, base, upgrade
+
+        "model": 0x29,
+        "ghost_model": True,
+        "model_reset": True,
+        "id": 234,
     },
     "Bombchus (Progressive)": {
         "classification": ItemClassification.progression,
@@ -111,6 +146,7 @@ ITEMS_DATA = {
         "ammo_address": PHAddr.chu_count,
         "tags": ["progressive_overwrite"],
         "set_bit": [(PHAddr.inventory_1, 0x80)],
+        "variant": ["Bombchu Bag", "Bombchu Bag Upgrade"],
         "id": 7,
         "inventory_id": 7,
         "model": 0x2a,
@@ -119,12 +155,42 @@ ITEMS_DATA = {
         "model_reset": True,
         "item_groups": ["Equipment", "Tools", "Bombchus", "Items With Ammo", "Bombchu Bag", "Upgrades"]
     },
+    "Bombchu Bag": {
+        'classification': ItemClassification.progression,
+        "address": PHAddr.inventory_1,
+        "value": 0x80,
+        "give_ammo": [10],
+        "inventory_id": 7,
+        "ammo_address": PHAddr.chu_count,
+        'item_groups': ["Equipment", "Tools", "Bombs", "Items With Ammo", "Bombchu Bag"],
+        "variant_prog": ["Bombchus (Progressive)", "Bombchu Bag", "Bombchu Bag Upgrade"],  # prog, base, upgrade
+
+        "model": 0x2a,
+        "ghost_model": True,
+        "model_reset": True,
+        "id": 235,
+    },
+    "Bombchu Bag Upgrade": {
+        'classification': ItemClassification.useful,
+        "progressive": [(PHAddr.chu_upgrades, 0x1), (PHAddr.chu_upgrades, 0x2)],
+        "give_ammo": [20, 30],
+        "ammo_address": PHAddr.chu_count,
+        "tags": ["progressive_overwrite"],
+        'item_groups': ["Equipment", "Tools", "Bombs", "Items With Ammo", "Bombchu Bag", "Upgrades"],
+        "variant_prog": ["Bombchus (Progressive)", "Bombchu Bag", "Bombchu Bag Upgrade"],  # prog, base, upgrade
+
+        "model": 0x2a,
+        "ghost_model": True,
+        "model_reset": True,
+        "id": 236,
+    },
     "Bow (Progressive)": {
         "classification": ItemClassification.progression,
         "progressive": [(PHAddr.inventory_1, 0x20), (PHAddr.quiver_upgrades, 0x1), (PHAddr.quiver_upgrades, 0x2)],
         "give_ammo": [0x14, 0x1e, 0x32],
         "ammo_address": PHAddr.arrow_count,
         "tags": ["progressive_overwrite"],
+        "variant": ["Bow", "Quiver Upgrade"],
         "set_bit": [(PHAddr.inventory_1, 0x20)],
         "id": 8,
         "inventory_id": 5,
@@ -133,6 +199,35 @@ ITEMS_DATA = {
         "ghost_model": True,
         "model_reset": True,
         "item_groups": ["Equipment", "Tools", "Bows", "Items With Ammo", "Quiver", "Upgrades"]
+    },
+    "Bow": {
+        'classification': ItemClassification.progression,
+        "address": PHAddr.inventory_1,
+        "value": 0x20,
+        "give_ammo": [20],
+        "inventory_id": 5,
+        "ammo_address": PHAddr.arrow_count,
+        'item_groups': ["Equipment", "Tools", "Bows", "Items With Ammo"],
+        "variant_prog": ["Bow (Progressive)", "Bow", "Quiver Upgrade"],  # prog, base, upgrade
+
+        "model": 0x8,
+        "ghost_model": True,
+        "model_reset": True,
+        "id": 231,
+    },
+    "Quiver Upgrade": {
+        'classification': ItemClassification.useful,
+        "progressive": [(PHAddr.quiver_upgrades, 0x1), (PHAddr.quiver_upgrades, 0x2)],
+        "give_ammo": [30, 50],
+        "ammo_address": PHAddr.arrow_count,
+        "tags": ["progressive_overwrite"],
+        'item_groups': ["Equipment", "Tools", "Bows", "Items With Ammo", "Quiver", "Upgrades"],
+        "variant_prog": ["Bow (Progressive)", "Bow", "Quiver Upgrade"],  # prog, base, upgrade
+
+        "model": 0x28,
+        "ghost_model": True,
+        "model_reset": True,
+        "id": 232,
     },
     "Grappling Hook": {
         "classification": ItemClassification.progression,
@@ -166,10 +261,53 @@ ITEMS_DATA = {
     },
 
     # Spirits
+    "Spirit (Progressive)": {
+        "classification": ItemClassification.progression,
+        "progressive": [(PHAddr.fairies_0, 0x20), (PHAddr.fairies_0, 0x40), (PHAddr.fairies_0, 0x10)],
+        "id": 244,
+        "model": 0x6,
+        "model_reset": True,
+        "ghost_model": True,
+        "item_groups": ["Spirits"],
+    },
+    "Spirit Upgrade": {
+        "classification": ItemClassification.progression,
+        "progressive": [(PHAddr.fairies, 0x380), (PHAddr.fairies_1, 0x1c)],
+        "id": 245,
+        "model": 0x6,
+        "model_reset": True,
+        "ghost_model": True,
+        "blocked_scenes": [0x1701],
+        "item_groups": ["Spirits", "Upgrades"],
+    },
     "Spirit of Power (Progressive)": {
         "classification": ItemClassification.progression,
         "progressive": [(PHAddr.fairies_0, 0x20), (PHAddr.fairies_1, 0x1), (PHAddr.fairies_1, 0x8)],
+        "set_bit": [(PHAddr.fairies_0, 0x20)],
+        "variant": ["Spirit of Power", "Power Upgrade"],
+        "extra_variants": {"Spirit (Progressive)": 1},
+        "extra_variants_upgrades": ["Power Upgrade", "Spirit Upgrade"],
         "id": 12,
+        "model": 0x2d,
+        "model_reset": True,
+        "ghost_model": True,
+        "blocked_scenes": [0x1701],
+        "item_groups": ["Spirit of Power", "Spirits", "SoP", "Upgrades"],
+    },
+    "Spirit of Power": {
+        "classification": ItemClassification.progression,
+        "address": PHAddr.fairies_0,
+        "value": 0x20,
+        "id": 238,
+        "model": 0x2d,
+        "model_reset": True,
+        "ghost_model": True,
+        "item_groups": ["Spirit of Power", "Spirits", "SoP"],
+    },
+    "Power Upgrade": {
+        "classification": ItemClassification.progression,
+        "progressive": [(PHAddr.fairies_1, 0x1), (PHAddr.fairies_1, 0x8)],
+        "id": 241,
         "model": 0x2d,
         "model_reset": True,
         "ghost_model": True,
@@ -181,6 +319,30 @@ ITEMS_DATA = {
         "progressive": [(PHAddr.fairies_0, 0x40), (PHAddr.fairies_1, 0x2), (PHAddr.fairies_1, 0x10)],
         "id": 13,
         "model": 0x2e,
+        "set_bit": [(PHAddr.fairies_0, 0x40)],
+        "variant": ["Spirit of Wisdom", "Wisdom Upgrade"],
+        "extra_variants": {"Spirit (Progressive)": 2},
+        "extra_variants_upgrades": ["Wisdom Upgrade", "Spirit Upgrade"],
+        "model_reset": True,
+        "ghost_model": True,
+        "blocked_scenes": [0x1701],
+        "item_groups": ["Spirit of Wisdom", "Spirits", "SoW", "Upgrades"],
+    },
+    "Spirit of Wisdom": {
+        "classification": ItemClassification.progression,
+        "address": PHAddr.fairies_0,
+        "value": 0x40,
+        "id": 239,
+        "model": 0x2e,
+        "model_reset": True,
+        "ghost_model": True,
+        "item_groups": ["Spirit of Wisdom", "Spirits", "SoW"],
+    },
+    "Wisdom Upgrade": {
+        "classification": ItemClassification.progression,
+        "progressive": [(PHAddr.fairies_1, 0x2), (PHAddr.fairies_1, 0x10)],
+        "id": 242,
+        "model": 0x2e,
         "model_reset": True,
         "ghost_model": True,
         "blocked_scenes": [0x1701],
@@ -189,7 +351,31 @@ ITEMS_DATA = {
     "Spirit of Courage (Progressive)": {
         "classification": ItemClassification.progression,
         "progressive": [(PHAddr.fairies_0, 0x10), (PHAddr.fairies_0, 0x80), (PHAddr.fairies_1, 0x4)],
+        "variant": ["Spirit of Courage", "Courage Upgrade"],
+        "extra_variants": {"Spirit (Progressive)": 3},
+        "set_bit": [(PHAddr.fairies_0, 0x10)],  # doesn't work, but can't set in in prog[1] cause of spirit island resets
+        "extra_variants_upgrades": ["Courage Upgrade", "Spirit Upgrade"],
         "id": 14,
+        "model": 0x2F,
+        "model_reset": True,
+        "ghost_model": True,
+        "blocked_scenes": [0x1701],
+        "item_groups": ["Spirit of Courage", "Spirits", "SoC", "Upgrades"],
+    },
+    "Spirit of Courage": {
+        "classification": ItemClassification.progression,
+        "address": PHAddr.fairies_0,
+        "value": 0x10,
+        "id": 240,
+        "model": 0x2F,
+        "model_reset": True,
+        "ghost_model": True,
+        "item_groups": ["Spirit of Courage", "Spirits", "SoC"],
+    },
+    "Courage Upgrade": {
+        "classification": ItemClassification.progression,
+        "progressive": [(PHAddr.fairies_0, 0x80), (PHAddr.fairies_1, 0x4)],
+        "id": 243,
         "model": 0x2F,
         "model_reset": True,
         "ghost_model": True,
@@ -214,7 +400,7 @@ ITEMS_DATA = {
         "size": 2,
         "id": 16,
         "model": 0xa,
-        "item_groups": ["Upgrades", "HC", "Hearts"],
+        "item_groups": ["Upgrades", "HC", "Hearts", "Time Logic", "Sand Items"],
     },
     "Phantom Hourglass": {
         "classification": ItemClassification.progression,
@@ -226,7 +412,7 @@ ITEMS_DATA = {
         "model": 0x78,
         "ghost_model": True,
         "model_reset": "Sand of Hours (Small)",
-        "item_groups": ["Upgrades", "PH", "Hourglass", "Sand", "Time"],
+        "item_groups": ["Upgrades", "PH", "Hourglass", "Time", "Sand Items"],
     },
     "Sand of Hours (Boss)": {
         "classification": DEPRIORITIZED_SKIP_BALANCING_FALLBACK,
@@ -237,7 +423,7 @@ ITEMS_DATA = {
         "id": 18,
         "model": 0x78,
         "ghost_model": True,
-        "item_groups": ["Upgrades", "Sand", "Time", "Technical Items"],
+        "item_groups": ["Upgrades", "Time", "Technical Items", "Sand Items"],
     },
     "Sand of Hours (Small)": {
         "classification": DEPRIORITIZED_SKIP_BALANCING_FALLBACK,
@@ -248,7 +434,7 @@ ITEMS_DATA = {
         "id": 19,
         "model": 0x78,
         "ghost_model": True,
-        "item_groups": ["Upgrades", "Sand", "Time", "Technical Items"],
+        "item_groups": ["Upgrades", "Time", "Technical Items", "Sand Items"],
     },
     "Sand of Hours": {
         "classification": DEPRIORITIZED_FALLBACK,
@@ -260,7 +446,7 @@ ITEMS_DATA = {
         "model": 0x78,
         "ghost_model": True,
         "model_reset": "Sand of Hours (Small)",
-        "item_groups": ["Upgrades", "Sand", "Time"],
+        "item_groups": ["Upgrades", "Time", "Sand Items"],
     },
     "Swordsman's Scroll": {
         "classification": ItemClassification.useful,
@@ -291,6 +477,14 @@ ITEMS_DATA = {
         "ghost_model": True,
         "blocked_scenes": [0x130B],
         "item_groups": ["Ship Items", "Salvage"],
+    },
+    "Fishing Rod (Progressive)": {
+        "classification": ItemClassification.progression,
+        "progressive": [(PHAddr.inventory_6, 0x1), (PHAddr.inventory_6, 0x80), (PHAddr.adv_flags_43, 0x10)],
+        "id": 237,
+        "model": 0x24,
+        "ghost_model": True,
+        "item_groups": ["Ship Items", "Fishing Items"],
     },
     "Fishing Rod": {
         "classification": ItemClassification.progression,
@@ -399,6 +593,7 @@ ITEMS_DATA = {
         "tags": ["monotone_incremental"],
         "id": 32,
         "model": 0x2D,
+        "variants": ["Power Gem Pack"],
         "item_groups": ["Spirit Gems", "Single Spirit Gems", "Power Gems"],
     },
     "Wisdom Gem": {
@@ -408,6 +603,7 @@ ITEMS_DATA = {
         "tags": ["monotone_incremental"],
         "id": 33,
         "model": 0x2E,
+        "variants": ["Wisdom Gem Pack"],
         "item_groups": ["Spirit Gems", "Single Spirit Gems", "Wisdom Gems"],
     },
     "Courage Gem": {
@@ -417,6 +613,7 @@ ITEMS_DATA = {
         "tags": ["monotone_incremental"],
         "id": 34,
         "model": 0x2F,
+        "variants": ["Courage Gem Pack"],
         "item_groups": ["Spirit Gems", "Single Spirit Gems", "Courage Gems"],
     },
     "Power Gem Pack": {
@@ -462,7 +659,7 @@ ITEMS_DATA = {
         "size": 2,
         "id": 38,
         "model": 0x2,
-        "item_groups": ["Rupees", "Small Rupees", "Green Rupee"],
+        "item_groups": ["Rupees", "Small Rupees", "Green Rupee", "Rupee Items"],
     },
     "Blue Rupee (5)": {
         "classification": ItemClassification.filler,
@@ -472,7 +669,7 @@ ITEMS_DATA = {
         "size": 2,
         "id": 39,
         "model": 0x18,
-        "item_groups": ["Rupees", "Small Rupees", "Blue Rupee"],
+        "item_groups": ["Rupees", "Small Rupees", "Blue Rupee", "Rupee Items"],
     },
     "Red Rupee (20)": {
         "classification": ItemClassification.filler,
@@ -482,7 +679,7 @@ ITEMS_DATA = {
         "size": 2,
         "id": 40,
         "model": 0x19,
-        "item_groups": ["Rupees", "Small Rupees", "Red Rupee"],
+        "item_groups": ["Rupees", "Small Rupees", "Red Rupee", "Rupee Items"],
     },
     "Big Green Rupee (100)": {
         "classification": DEPRIORITIZED_SKIP_BALANCING_FALLBACK,
@@ -492,7 +689,7 @@ ITEMS_DATA = {
         "size": 2,
         "id": 41,
         "model": 0x9,
-        "item_groups": ["Rupees", "Big Rupees", "Big Green Rupee"],
+        "item_groups": ["Rupees", "Big Rupees", "Big Green Rupee", "Rupee Items"],
     },
     "Big Red Rupee (200)": {
         "classification": DEPRIORITIZED_SKIP_BALANCING_FALLBACK,
@@ -502,37 +699,37 @@ ITEMS_DATA = {
         "size": 2,
         "id": 42,
         "model": 0x1a,
-        "item_groups": ["Rupees", "Big Rupees", "Big Red Rupee"],
+        "item_groups": ["Rupees", "Big Rupees", "Big Red Rupee", "Rupee Items"],
     },
     "Gold Rupee (300)": {
         "classification": DEPRIORITIZED_SKIP_BALANCING_FALLBACK,
         "address": PHAddr.rupee_count,
-        "value": 0x12c,
+        "value": 300,
         "tags": ["incremental", "backup_filler"],
         "size": 2,
         "id": 43,
         "model": 0x1b,
-        "item_groups": ["Rupees", "Big Rupees", "Big Gold Rupee", "Gold Rupee"],
+        "item_groups": ["Rupees", "Big Rupees", "Big Gold Rupee", "Gold Rupee", "Rupee Items"],
     },
     "Rupoor (-10)": {
         "classification": ItemClassification.trap,
         "address": PHAddr.rupee_count,
-        "value": -0xa,
+        "value": -10,
         "tags": ["incremental"],
         "size": 2,
         "id": 44,
         "model": 0x81,
-        "item_groups": ["Rupees", "Rupoors", "Rupoor"],
+        "item_groups": ["Rupees", "Rupoors", "Rupoor", "Rupee Items"],
     },
     "Big Rupoor (-50)": {
         "classification": ItemClassification.trap,
         "address": PHAddr.rupee_count,
-        "value": -0x32,
+        "value": -50,
         "tags": ["incremental"],
         "size": 2,
         "id": 45,
         "model": 0x82,
-        "item_groups": ["Rupees", "Rupoors", "Big Rupoor"],
+        "item_groups": ["Rupees", "Rupoors", "Big Rupoor", "Rupee Items"],
     },
     "Pre-Alpha Rupee (5000)": {
         "classification": ItemClassification.progression,
@@ -541,7 +738,7 @@ ITEMS_DATA = {
         "tags": ["incremental"],
         "size": 2,
         "id": 46,
-        "item_groups": ["Rupees", "Big Rupees","Technical Items"],
+        "item_groups": ["Rupees", "Big Rupees","Technical Items", "Rupee Items"],
     },
     "Treasure": {
         "classification": ItemClassification.filler,
@@ -560,7 +757,7 @@ ITEMS_DATA = {
     "Potion": {
         "classification": ItemClassification.filler,
         "id": 49,
-        "item_groups": ["Technical Items", "Potions"],
+        "item_groups": ["Technical Items"],
     },
     "Red Potion": {
         "classification": ItemClassification.filler,
@@ -597,10 +794,12 @@ ITEMS_DATA = {
         "classification": ItemClassification.filler,
         "give_ammo": [0xa, 0x14, 0x1e],
         "address": PHAddr.bomb_count,
+        "value": 10,
         "refill": "Bombs (Progressive)",
         "id": 54,
         "model": 0x7,
         "model_reset": True,
+        # "block_ammo": [0xb11],
         "item_groups": ["Ammo Refills"],
     },
     "Refill: Arrows": {
@@ -1035,7 +1234,7 @@ ITEMS_DATA = {
         "model_reset": True,
         "vanilla_model": 0x1,
         "ghost_model": True,
-        "item_groups": ["Small Keys", "TotOK Keys", "Small Key TotOK"],
+        "item_groups": ["Small Keys", "TotOK Keys", "Small Key TotOK", "Time Logic"],
     },
     "Small Key (Temple of Fire)": {
         "classification": ItemClassification.progression,
@@ -1801,7 +2000,7 @@ ITEMS_DATA = {
         "id": 167,
         "model": 0x39,
         "ghost_model": True,
-        "item_groups": ["Beedle Points"],
+        "item_groups": ["Beedle Points", "Beedle Point Items"],
     },
     "Beedle Points (20)": {
         "classification": ItemClassification.progression,
@@ -1811,7 +2010,7 @@ ITEMS_DATA = {
         "id": 191,
         "model": 0x39,
         "ghost_model": True,
-        "item_groups": ["Beedle Points"],
+        "item_groups": ["Beedle Points", "Beedle Point Items"],
     },
     "Beedle Points (50)": {
         "classification": ItemClassification.progression,
@@ -1821,7 +2020,7 @@ ITEMS_DATA = {
         "id": 192,
         "model": 0x39,
         "ghost_model": True,
-        "item_groups": ["Beedle Points"],
+        "item_groups": ["Beedle Points", "Beedle Point Items"],
     },
 
     # Frogs
@@ -1890,10 +2089,11 @@ ITEMS_DATA = {
     "Ship: SS Linebeck": {
         "classification": ItemClassification.filler,
         "id": 174,
+        "ship": 0x0,
         "model": 0x25,
         "ghost_model": True,
         "model_reset": True,
-        # "item_groups": ["Ships"],
+        "item_groups": ["Ships", "Whole Ships"],
     },
     "Ship: Bright Ship": {
         "classification": ItemClassification.useful,
@@ -1903,7 +2103,7 @@ ITEMS_DATA = {
         "model": 0x25,
         "ghost_model": True,
         "model_reset": True,
-        "item_groups": ["Ships"],
+        "item_groups": ["Ships", "Whole Ships"],
     },
     "Ship: Iron Ship": {
         "classification": ItemClassification.useful,
@@ -1913,7 +2113,7 @@ ITEMS_DATA = {
         "model": 0x25,
         "ghost_model": True,
         "model_reset": True,
-        "item_groups": ["Ships"],
+        "item_groups": ["Ships", "Whole Ships"],
     },
     "Ship: Stone Ship": {
         "classification": ItemClassification.useful,
@@ -1923,7 +2123,7 @@ ITEMS_DATA = {
         "model": 0x25,
         "ghost_model": True,
         "model_reset": True,
-        "item_groups": ["Ships"],
+        "item_groups": ["Ships", "Whole Ships"],
     },
     "Ship: Vintage Ship": {
         "classification": ItemClassification.useful,
@@ -1933,7 +2133,7 @@ ITEMS_DATA = {
         "model": 0x25,
         "ghost_model": True,
         "model_reset": True,
-        "item_groups": ["Ships"],
+        "item_groups": ["Ships", "Whole Ships"],
     },
     "Ship: Demon Ship": {
         "classification": ItemClassification.useful,
@@ -1943,7 +2143,7 @@ ITEMS_DATA = {
         "model": 0x25,
         "ghost_model": True,
         "model_reset": True,
-        "item_groups": ["Ships"],
+        "item_groups": ["Ships", "Whole Ships"],
     },
     "Ship: Tropical Ship": {
         "classification": ItemClassification.useful,
@@ -1953,7 +2153,7 @@ ITEMS_DATA = {
         "model": 0x25,
         "ghost_model": True,
         "model_reset": True,
-        "item_groups": ["Ships"],
+        "item_groups": ["Ships", "Whole Ships"],
     },
     "Ship: Dignified Ship": {
         "classification": ItemClassification.useful,
@@ -1963,7 +2163,7 @@ ITEMS_DATA = {
         "model": 0x25,
         "ghost_model": True,
         "model_reset": True,
-        "item_groups": ["Ships"],
+        "item_groups": ["Ships", "Whole Ships"],
     },
     "Ship: Golden Ship": {
         "classification": ItemClassification.useful,
@@ -1972,7 +2172,29 @@ ITEMS_DATA = {
         "id": 182,
         "model": 0x7B,
         "ghost_model": True,
-        "item_groups": ["Ships"],
+        "item_groups": ["Ships", "Whole Ships"],
+    },
+    "Ship: Mismatched": {
+        "classification": ItemClassification.useful,
+        "tags": ["backup_filler"],
+        "ship": "mismatched",
+        "id": 246,
+        "value": 8,
+        "model": 0x25,
+        "ghost_model": True,
+        "model_reset": True,
+        "item_groups": ["Ships", "Mismatched Ship"],
+    },
+    "Ship (Progressive)": {
+        "classification": ItemClassification.useful,
+        "tags": ["backup_filler"],
+        "ship": "progressive",
+        "id": 247,
+        "value": 8,
+        "model": 0x25,
+        "ghost_model": True,
+        "model_reset": True,
+        "item_groups": ["Ships", "Progressive Ship"],
     },
 
     # Fish
@@ -1987,7 +2209,7 @@ ITEMS_DATA = {
         "ghost_model": True,
         "model_reset": True,
         "blocked_scenes": [0x200],
-        "item_groups": ["Fish"],
+        "item_groups": ["Fish", "Normal Fish"],
     },
     "Fish: Toona": {
         "classification": ItemClassification.filler,
@@ -2000,7 +2222,7 @@ ITEMS_DATA = {
         "ghost_model": True,
         "model_reset": True,
         "blocked_scenes": [0x200],
-        "item_groups": ["Fish"],
+        "item_groups": ["Fish", "Normal Fish"],
     },
     "Fish: Loovar": {
         "classification": ItemClassification.progression_skip_balancing,
@@ -2013,7 +2235,7 @@ ITEMS_DATA = {
         "ghost_model": True,
         "model_reset": True,
         "blocked_scenes": [0x200],
-        "item_groups": ["Fish"],
+        "item_groups": ["Fish", "Normal Fish"],
     },
     "Fish: Rusty Swordfish": {
         "classification": ItemClassification.progression_skip_balancing,
@@ -2026,7 +2248,7 @@ ITEMS_DATA = {
         "ghost_model": True,
         "model_reset": True,
         "blocked_scenes": [0x200],
-        "item_groups": ["Fish"],
+        "item_groups": ["Fish", "Normal Fish"],
     },
     "Fish: Legendary Neptoona": {
         "classification": ItemClassification.progression_skip_balancing,
@@ -2039,7 +2261,7 @@ ITEMS_DATA = {
         "ghost_model": True,
         "model_reset": True,
         "blocked_scenes": [0x200],
-        "item_groups": ["Fish"],
+        "item_groups": ["Fish", "Normal Fish"],
     },
     "Fish: Stowfish": {
         "classification": ItemClassification.progression_skip_balancing,
@@ -2227,6 +2449,92 @@ ITEMS_DATA = {
         "model": 0x1,
         "model_reset": True,
         "item_groups": ["Technical Items"],
+    },
+
+    # Keyrings
+    "Keyring (Temple of the Ocean King)": {
+        "classification": ItemClassification.progression,
+        "id": 223,
+        "model": 0x1,
+        "value": 7,
+        "dungeon": 0x25,
+        "model_reset": True,
+        "ghost_model": True,
+        "item_groups": ["Keyrings", "TotOK Keys", "Small Key TotOK",
+                        "TotOK Keyring", "Time Logic"],
+    },
+    "Keyring (Temple of Fire)": {
+        "classification": ItemClassification.progression,
+        "id": 224,
+        "model": 0x1,
+        "value": 3,
+        "dungeon": 0x1c,
+        "model_reset": True,
+        "ghost_model": True,
+        "item_groups": ["Keyrings", "Fire Temple Keys", "Small Key ToF",
+                        "Fire Temple Keyring"],
+    },
+    "Keyring (Temple of Wind)": {
+        "classification": ItemClassification.progression,
+        "id": 225,
+        "model": 0x1,
+        "value": 1,
+        "dungeon": 0x1d,
+        "model_reset": True,
+        "ghost_model": True,
+        "item_groups": ["Keyrings", "Wind Temple Keys", "Small Key ToW",
+                        "Wind Temple Keyring"],
+    },
+    "Keyring (Temple of Courage)": {
+        "classification": ItemClassification.progression,
+        "id": 226,
+        "model": 0x1,
+        "value": 3,
+        "dungeon": 0x1e,
+        "model_reset": True,
+        "ghost_model": True,
+        "item_groups": ["Keyrings", "Courage Temple Keys", "Small Key ToC",
+                        "Courage Temple Keyring"],
+    },
+    "Keyring (Temple of Ice)": {
+        "classification": ItemClassification.progression,
+        "id": 227,
+        "model": 0x1,
+        "value": 3,
+        "dungeon": 0x1f,
+        "model_reset": True,
+        "ghost_model": True,
+        "item_groups": ["Keyrings", "Ice Temple Keys", "Small Key ToI",
+                        "Ice Temple Keyring"],
+    },
+    "Keyring (Mutoh's Temple)": {
+        "classification": ItemClassification.progression,
+        "id": 228,
+        "model": 0x1,
+        "value": 2,
+        "dungeon": 0x21,
+        "model_reset": True,
+        "ghost_model": True,
+        "item_groups": ["Keyrings", "Mutoh's Temple Keys", "Small Key MT",
+                        "Mutoh's Temple Keyring"],
+    },
+    "Keyring (Mountain Passage)": {
+        "classification": ItemClassification.progression,
+        "id": 229,
+        "model": 0x1,
+        "value": 3,
+        "model_reset": True,
+        "ghost_model": True,
+        "item_groups": ["Keyrings", "Mountain Passage Keys", "Small Key MP",
+                        "Mountain Passage Keyring"],
+        "dungeon": 0x27,
+    },
+    "Time-Based Reward": {
+        "classification": ItemClassification.filler,
+        "id": 230,
+        "model": 0x87,
+        "item_groups": ["Technical Items"],
+        "dummy": True,
     }
 }
 
@@ -2245,11 +2553,16 @@ ITEM_GROUPS["Global Pedestal Items"] |= ITEM_GROUPS["Global Crystal Items"]
 ITEM_GROUPS["Regular Pedestal Items"] = ITEM_GROUPS["Regular Crystal Items"] | ITEM_GROUPS["Unique Force Gems"]
 ITEM_GROUPS["Shape Crystals"] = ITEM_GROUPS["Unique Crystal Items"] | ITEM_GROUPS["Regular Crystal Items"] | ITEM_GROUPS["Global Crystal Items"]
 ITEM_GROUPS["Pedestal Items"] = ITEM_GROUPS["Shape Crystals"] | ITEM_GROUPS["Force Gem Items"]
+ITEM_GROUPS["TotOK Pedestals"] = {i for g in ["totok_round_8", "totok_round_9", "totok_tri_8", "totok_tri_9", "totok_sq_w", "totok_sq_e", "Force Gem Items"]
+                                  for i in ITEM_GROUPS[g]}
 
 ITEM_GROUPS["Throwable Keys"] = ITEM_GROUPS["Boss Keys"] | ITEM_GROUPS["Pedestal Items"]
-ITEM_GROUPS["Keys"] = ITEM_GROUPS["Collection Screen Keys"] | ITEM_GROUPS["Small Keys"] | ITEM_GROUPS["Throwable Keys"] | ITEM_GROUPS["Crests"]
+ITEM_GROUPS["Keys"] = ITEM_GROUPS["Collection Screen Keys"] | ITEM_GROUPS["Small Keys"] | ITEM_GROUPS["Throwable Keys"] | ITEM_GROUPS["Crests"] | ITEM_GROUPS["Keyrings"]
 
 ITEM_GROUPS["Treasure Maps"] |= set(TREASURE_MAPS)
+
+ITEM_GROUPS["Time Logic"] |= ITEM_GROUPS["Equipment"] | ITEM_GROUPS["Sand Items"] | ITEM_GROUPS["TotOK Pedestals"] | ITEM_GROUPS["Spirits"]
+ITEM_GROUPS["Point Logic"] = ITEM_GROUPS["Beedle Point Items"] | ITEM_GROUPS["Rupee Items"] | ITEM_GROUPS["Treasure Items"]
 
 ITEMS: dict[str, "PHItem"] = dict()
 item_id_to_name_dict: dict[int, str] = dict()

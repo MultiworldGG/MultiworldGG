@@ -7,14 +7,18 @@
 
 ## What is the goal of Mega Mix in MultiworldGG?
 
-The goal of Mega Mix is to collect a number of **Leeks**. Once you've collected enough Leeks, the goal song will be unlocked. Completing the goal song will complete your seed.
+There are two goal conditions to select from:
+- Leeks: Collect an amount of Leeks from the multiworld.
+- Percentage: Complete an amount of checks in your game. 
+
+Reaching the goal condition unlocks the Goal Song. Beating the Goal Song completes your seed.
 
 ## What is required to play the game in MultiworldGG?
 
 Only the base game is required in order to play this game.
 DLC can be toggled in your player settings.
 
-The mod provides a standalone client so an AP/MWGG installation is not required.
+The game mod provides a client to connect to a room.
 
 ## Randomizer Tips
 - Songs can be cleared on any available difficulty.

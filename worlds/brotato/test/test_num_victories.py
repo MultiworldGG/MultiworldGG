@@ -12,9 +12,9 @@ class TestBrotatoNumVictoriesOption(BrotatoTestBase):
 
         We also check the output slot data to make sure the change, if made, propagates to it as well.
         """
-        expected_final_num_victories_value = 25  # Arbitrary value that's less than the number of characters
-        include_characters = BASE_GAME_CHARACTERS.characters
-        num_victories_option_value = 35
+        expected_final_num_victories_value = 10  # Arbitrary value that's less than the number of characters
+        include_characters = BASE_GAME_CHARACTERS.characters[:10]
+        num_victories_option_value = 25
 
         options = {
             "num_victories": num_victories_option_value,

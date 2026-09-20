@@ -23,8 +23,9 @@ def build_loot_crate_groups(num_crates: int, num_groups: int, num_victories: int
     num_groups_actual = min(num_groups, num_victories)
 
     crates_allocated = 0
-    wins_to_unlock_group = 0
-    num_wins_to_unlock_group = max(num_victories // num_groups_actual, 1)
+    # Track wins as float to better space out required wins for each group. We'll make it an int later.
+    wins_to_unlock_group = 0.0
+    num_wins_to_unlock_group = max(num_victories / num_groups_actual, 1)
     crates_per_group, extra_crates = divmod(num_crates, num_groups_actual)
     loot_crate_groups: list[BrotatoLootCrateGroup] = []
 
@@ -48,7 +49,8 @@ def build_loot_crate_groups(num_crates: int, num_groups: int, num_victories: int
                 BrotatoLootCrateGroup(
                     index=group_count,
                     num_crates=crates_in_group,
-                    wins_to_unlock=wins_to_unlock_group,
+                    # int(float) always rounds down.
+                    wins_to_unlock=int(wins_to_unlock_group),
                 )
             )
             # Set this for the next group now. This is the easiest way to ensure group 1 requires 0 victories.

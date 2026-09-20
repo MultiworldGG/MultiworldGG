@@ -6,6 +6,20 @@ from ..enums import PeggleNightsCharacters, PeggleNightsLevels
 base_scores: List[int] = [30000, 100000, 250000]
 
 
+character_select_index_to_characters: Dict[int, PeggleNightsCharacters] = {
+    0: PeggleNightsCharacters.BJORN,
+    1: PeggleNightsCharacters.JIMMY_LIGHTNING,
+    2: PeggleNightsCharacters.RENFIELD,
+    3: PeggleNightsCharacters.KAT_TUT,
+    4: PeggleNightsCharacters.SPLORK,
+    5: PeggleNightsCharacters.CLAUDE,
+    6: PeggleNightsCharacters.TULA,
+    7: PeggleNightsCharacters.LORD_CINDERBOTTOM,
+    8: PeggleNightsCharacters.WARREN,
+    9: PeggleNightsCharacters.MASTER_HU,
+    10: PeggleNightsCharacters.MARINA,
+}
+
 id_to_characters: Dict[int, PeggleNightsCharacters] = {
     0: PeggleNightsCharacters.BJORN,
     1: PeggleNightsCharacters.JIMMY_LIGHTNING,

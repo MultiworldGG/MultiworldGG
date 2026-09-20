@@ -51,6 +51,39 @@ async def write_multiple(ctx, addresses: Iterable["Address"], values: Iterable[i
     # print(f"Writing: {hex_f(writes)}")
     await bizhawk.write(ctx.bizhawk_ctx, writes)
 
+def compare_slot_data(ctx, data):
+    if "has_slot_data" in data:
+        for a in data["has_slot_data"]:
+            if isinstance(a, str):
+                slot, value, args = a, [1], []
+            else:
+                slot, value, *args = a
+
+            slot_value = ctx.slot_data.get(slot, None)
+            # printl(f"\t\tTesting slot {slot_value} {type(slot_value)} {value}")
+            if type(value) is list:
+                if slot_value not in value:
+                    return False
+            elif isinstance(slot_value, list):
+                if args and args[0] == "not":
+                    if value in slot_value:
+                        return False
+                else:
+                    if value not in slot_value:
+                        return False
+            else:
+                if slot_value != value:
+                    return False
+
+    if "any_slot_data" in data:
+        for slot, value, *args in data["any_slot_data"]:
+            slot = ctx.slot_data.get(slot, None)
+            value = value if isinstance(value, list) else [value]
+            if slot not in value:
+                return True
+        return False
+
+    return True
 
 # Get address from pointer
 async def get_address_from_heap(ctx, pointer, offset=0, size=4) -> "Address":
@@ -182,18 +215,28 @@ class Address:
             value = split_bits(value, self.size)
         prev = split_bits(await self.read(ctx, silent=silent), self.size)
         # print(f"Setting bits {self} {prev} {value} {[p | v for p, v in zip(prev, value)]}")
-        return await self.overwrite(ctx, [p | v for p, v in zip(prev, value)], silent=silent, offset=offset)
+        new_write = [p | v for p, v in zip(prev, value)]
+        if new_write == prev:
+            if not silent:
+                printl(f"\tcanceled set_bit for {self} -> {hex_f(value)}, no change")
+            return None
+        if not silent:
+            printl(f"\tSetting bits {self} <- {hex_f(new_write)}, old {hex_f(prev)}")
+        return await self.overwrite(ctx, new_write, silent=silent, offset=offset)
 
     async def unset_bits(self, ctx, value: int or list, silent=False, offset=0):
         if isinstance(value, int):
             value = split_bits(value, self.size)
         prev = split_bits(await Address.from_pointer(self + offset, self.size).read(ctx, silent=silent), self.size)
         # print(f"Setting bits {self} {prev} {value} {[p | v for p, v in zip(prev, value)]}")
+        new_write = [p & (~v) for p, v in zip(prev, value)]
+        if new_write == prev:
+            return None
         return await self.overwrite(ctx, [p & (~v) for p, v in zip(prev, value)], silent=silent, offset=offset)
 
 
-    def __repr__(self, region="eu"):
-        return f"Address Object {hex_f(self.get_address(region))} {self.name}"
+    def __repr__(self):
+        return f"Address Object {hex_f(self.get_address())} {self.name}"
 
     def __str__(self):
         name = f"{self.name}: " if self.name else ""
@@ -337,7 +380,6 @@ class DSTransition:
         self.vanilla_reciprocal: DSTransition | None = None  # Paired location
 
         self.copy_number = 0
-
 
     def get_scene(self):
         if self.room:

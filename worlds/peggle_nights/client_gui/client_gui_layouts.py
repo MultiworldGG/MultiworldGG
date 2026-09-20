@@ -21,6 +21,7 @@ from ..client import PeggleNightsContext
 from ..data.mapping_data import character_to_ids, level_to_stage_levels
 
 from ..enums import (
+    PeggleNightsAPGoals,
     PeggleNightsAPItems,
     PeggleNightsAPUsefulItems,
     PeggleNightsCharacters,
@@ -63,15 +64,9 @@ class PeggleNightsLevelInformationLayout(BoxLayout):
     game_state_manager: GameStateManager
 
     information_label: Label
+
     shadow_pegs_label: Label
-
-    progressive_starting_balls_all: int
-    progressive_starting_balls_half: int
-
-    level_clears_available_label: Label
-    target_scores_mid_available_label: Label
-    target_scores_high_available_label: Label
-    full_clears_available_label: Label
+    goal_label: Label
 
     level_information_level_image: Image
     level_information_master_image: Image
@@ -82,7 +77,6 @@ class PeggleNightsLevelInformationLayout(BoxLayout):
     target_score_mid_label: Label
     target_score_high_label: Label
 
-    item_fever_meter_permanent_bonus_label: Label
     item_full_clear_discount_label: Label
     item_score_multiplier_label: Label
     item_target_score_discount_label: Label
@@ -92,6 +86,9 @@ class PeggleNightsLevelInformationLayout(BoxLayout):
     orange_peg_combo_label: Label
     peg_combo_label: Label
     pegs_cleared: Label
+
+    level_locations_in_logic_label: Label
+    level_locations_out_of_logic_label: Label
 
     last_seen_level: Optional[PeggleNightsLevels]
     last_seen_master: Optional[PeggleNightsCharacters]
@@ -120,6 +117,16 @@ class PeggleNightsLevelInformationLayout(BoxLayout):
 
         self.add_widget(self.information_label)
 
+        goal_header_layout: BoxLayout = BoxLayout(
+            orientation="horizontal",
+            size_hint_y=None,
+            height="74dp",
+            spacing="8dp",
+            padding=[0, 0, 0, 10]
+        )
+
+        goal_header_layout.bind(minimum_height=goal_header_layout.setter("height"))
+
         # Shadow Pegs
         self.shadow_pegs_label: Label = Label(
             text=(
@@ -129,106 +136,44 @@ class PeggleNightsLevelInformationLayout(BoxLayout):
                 f"([color=888888]{self.ctx.game_controller.option_shadow_pegs_total} total[/color])"
             ),
             markup=True,
-            size_hint_y=None,
-            height="40dp",
-            halign="left",
-            valign="middle",
-        )
-
-        self.shadow_pegs_label.bind(size=lambda label, size: setattr(label, "text_size", size))
-
-        self.add_widget(self.shadow_pegs_label)
-
-        # Logic Thresholds
-        self.progressive_starting_balls_all = self.ctx.game_controller.option_maximum_starting_ball_count - 5
-        self.progressive_starting_balls_half = round((self.ctx.game_controller.option_maximum_starting_ball_count - 5) / 2)
-
-        logic_thresholds_layout: BoxLayout = BoxLayout(
-            orientation="horizontal",
-            size_hint_y=None,
-            height="80dp",
-            spacing="8dp",
-        )
-
-        # Target Scores (Mid) Available
-        self.target_scores_mid_available_label: Label = Label(
-            text=(
-                f"[b]Scores (Mid) Available[/b]\n"
-                f"[color=00FA9A]0[/color] / [color=00FA9A]2[/color] Prog. Fever Meters\n"
-                f"[color=00FA9A]0[/color] / [color=00FA9A]{self.progressive_starting_balls_half}[/color] Prog. Start. Balls"
-            ),
-            markup=True,
-            size_hint_y=None,
-            height="80dp",
-            halign="left",
-            valign="middle",
-        )
-
-        self.target_scores_mid_available_label.bind(size=lambda label, size: setattr(label, "text_size", size))
-
-        logic_thresholds_layout.add_widget(self.target_scores_mid_available_label)
-
-        # Target Scores (High) Available
-        self.target_scores_high_available_label: Label = Label(
-            text=(
-                f"[b]Scores (High) Available[/b]\n"
-                f"[color=00FA9A]0[/color] / [color=00FA9A]4[/color] Prog. Fever Meters\n"
-                f"[color=00FA9A]0[/color] / [color=00FA9A]{self.progressive_starting_balls_all}[/color] Prog. Start. Balls"
-            ),
-            markup=True,
-            size_hint_y=None,
-            height="80dp",
-            halign="left",
-            valign="middle",
-        )
-
-        self.target_scores_high_available_label.bind(size=lambda label, size: setattr(label, "text_size", size))
-
-        logic_thresholds_layout.add_widget(self.target_scores_high_available_label)
-
-        # Level Clears Available
-        self.level_clears_available_label: Label = Label(
-            text=(
-                f"[b]Level Clears Available[/b]\n"
-                f"[color=00FA9A]0[/color] / [color=00FA9A]4[/color] Prog. Fever Meters"
-            ),
-            markup=True,
+            size_hint_x=40,
             size_hint_y=None,
             height="60dp",
             halign="left",
             valign="middle",
         )
 
-        self.level_clears_available_label.bind(size=lambda label, size: setattr(label, "text_size", size))
+        self.shadow_pegs_label.bind(size=lambda label, size: setattr(label, "text_size", size))
 
-        logic_thresholds_layout.add_widget(self.level_clears_available_label)
+        goal_header_layout.add_widget(self.shadow_pegs_label)
 
-        # Full Clears Available
-        if self.ctx.game_controller.option_include_full_clears:
-            self.full_clears_available_label: Label = Label(
-                text=(
-                    f"[b]Full Clears Available[/b]\n"
-                    f"[color=00FA9A]0[/color] / [color=00FA9A]{self.progressive_starting_balls_all}[/color] Prog. Start. Balls"
-                ),
-                markup=True,
-                size_hint_y=None,
-                height="60dp",
-                halign="left",
-                valign="middle",
-            )
+        # Goal
+        self.goal_label: Label = Label(
+            text=(
+                f"[b]Goal[/b]\n"
+                f"Retrieve the Shadow Pegs and Complete 11-5!"
+            ),
+            markup=True,
+            size_hint_x=60,
+            size_hint_y=None,
+            height="60dp",
+            halign="left",
+            valign="middle",
+        )
 
-            self.full_clears_available_label.bind(size=lambda label, size: setattr(label, "text_size", size))
+        self.goal_label.bind(size=lambda label, size: setattr(label, "text_size", size))
 
-            logic_thresholds_layout.add_widget(self.full_clears_available_label)
+        goal_header_layout.add_widget(self.goal_label)
 
-        self.add_widget(logic_thresholds_layout)
+        self.add_widget(goal_header_layout)
 
         # Level Information
         level_information_layout: BoxLayout = BoxLayout(
             orientation="horizontal",
             size_hint_y=None,
-            height="140dp",
+            height="163dp",
             spacing="8dp",
+            padding=[0, 0, 0, 15]
         )
 
         level_information_layout.bind(minimum_height=level_information_layout.setter("height"))
@@ -254,7 +199,7 @@ class PeggleNightsLevelInformationLayout(BoxLayout):
         level_information_text_layout: BoxLayout = BoxLayout(
             orientation="vertical",
             size_hint_y=None,
-            height="140dp",
+            height="148dp",
             spacing="5dp",
         )
 
@@ -279,9 +224,10 @@ class PeggleNightsLevelInformationLayout(BoxLayout):
             markup=True,
             size_hint_y=None,
             font_size="12dp",
-            height="14dp",
+            height="29dp",
             halign="left",
             valign="middle",
+            padding=[0, 0, 0, 15]
         )
 
         self.level_information_subtitle.bind(size=lambda label, size: setattr(label, "text_size", size))
@@ -387,20 +333,6 @@ class PeggleNightsLevelInformationLayout(BoxLayout):
 
         level_information_items_layout.add_widget(items_label)
 
-        self.item_fever_meter_permanent_bonus_label = Label(
-            text="Fever Meter Permanent Bonus: [color=00FA9A]Xx[/color]",
-            markup=True,
-            size_hint_y=None,
-            font_size="12dp",
-            height="14dp",
-            halign="left",
-            valign="middle",
-        )
-
-        self.item_fever_meter_permanent_bonus_label.bind(size=lambda label, size: setattr(label, "text_size", size))
-
-        level_information_items_layout.add_widget(self.item_fever_meter_permanent_bonus_label)
-
         self.item_full_clear_discount_label = Label(
             text="Full Clear Discount: [color=00FA9A]Xx[/color]",
             markup=True,
@@ -452,6 +384,25 @@ class PeggleNightsLevelInformationLayout(BoxLayout):
 
         self.add_widget(level_information_layout)
 
+        in_level_information_layout: BoxLayout = BoxLayout(
+            orientation="horizontal",
+            size_hint_y=None,
+            spacing="8dp",
+            padding=[0, 0, 0, 10]
+        )
+
+        in_level_information_layout.bind(minimum_height=in_level_information_layout.setter("height"))
+
+        statistics_layout: BoxLayout = BoxLayout(
+            orientation="vertical",
+            size_hint_x=1,
+            size_hint_y=None,
+            pos_hint={"top": 1},
+            spacing="6dp",
+        )
+
+        statistics_layout.bind(minimum_height=statistics_layout.setter("height"))
+
         score_label: Label
         shot_score_label: Label
         orange_peg_combo_label: Label
@@ -470,7 +421,7 @@ class PeggleNightsLevelInformationLayout(BoxLayout):
 
         self.score_label.bind(size=lambda label, size: setattr(label, "text_size", size))
 
-        self.add_widget(self.score_label)
+        statistics_layout.add_widget(self.score_label)
 
         self.shot_score_label = Label(
             text="[b]Shot Score:[/b] 0  [color=888888]0[/color]",
@@ -484,7 +435,7 @@ class PeggleNightsLevelInformationLayout(BoxLayout):
 
         self.shot_score_label.bind(size=lambda label, size: setattr(label, "text_size", size))
 
-        self.add_widget(self.shot_score_label)
+        statistics_layout.add_widget(self.shot_score_label)
 
         self.orange_peg_combo_label = Label(
             text="[b]Orange Peg Combo:[/b] 0",
@@ -498,7 +449,7 @@ class PeggleNightsLevelInformationLayout(BoxLayout):
 
         self.orange_peg_combo_label.bind(size=lambda label, size: setattr(label, "text_size", size))
 
-        self.add_widget(self.orange_peg_combo_label)
+        statistics_layout.add_widget(self.orange_peg_combo_label)
 
         self.peg_combo_label = Label(
             text="[b]Peg Combo:[/b] 0",
@@ -512,7 +463,7 @@ class PeggleNightsLevelInformationLayout(BoxLayout):
 
         self.peg_combo_label.bind(size=lambda label, size: setattr(label, "text_size", size))
 
-        self.add_widget(self.peg_combo_label)
+        statistics_layout.add_widget(self.peg_combo_label)
 
         self.pegs_cleared = Label(
             text="[b]Pegs Cleared:[/b] 0",
@@ -526,7 +477,95 @@ class PeggleNightsLevelInformationLayout(BoxLayout):
 
         self.pegs_cleared.bind(size=lambda label, size: setattr(label, "text_size", size))
 
-        self.add_widget(self.pegs_cleared)
+        statistics_layout.add_widget(self.pegs_cleared)
+
+        in_level_information_layout.add_widget(statistics_layout)
+
+        locations_in_logic_layout: BoxLayout = BoxLayout(
+            orientation="vertical",
+            size_hint_x=1,
+            size_hint_y=None,
+            pos_hint={"top": 1},
+            spacing="6dp",
+        )
+
+        locations_in_logic_layout.bind(minimum_height=locations_in_logic_layout.setter("height"))
+
+        locations_in_logic_label = Label(
+            text="[b]In Logic Locations[/b]",
+            markup=True,
+            size_hint_y=None,
+            font_size="16dp",
+            height="20dp",
+            halign="left",
+            valign="middle",
+        )
+
+        locations_in_logic_label.bind(size=lambda label, size: setattr(label, "text_size", size))
+
+        locations_in_logic_layout.add_widget(locations_in_logic_label)
+
+        self.level_locations_in_logic_label = Label(
+            text="No locations accessible in logic",
+            markup=True,
+            size_hint_y=None,
+            font_size="13dp",
+            height="16dp",
+            halign="left",
+            valign="middle",
+        )
+
+        self.level_locations_in_logic_label.bind(texture_size=lambda label, texture_size: setattr(label, "height", texture_size[1]))
+        self.level_locations_in_logic_label.bind(width=lambda label, width: setattr(label, "text_size", (width, None)))
+
+        locations_in_logic_layout.add_widget(self.level_locations_in_logic_label)
+
+        if self.ctx.tracker_loaded:
+            in_level_information_layout.add_widget(locations_in_logic_layout)
+
+        locations_out_of_logic_layout: BoxLayout = BoxLayout(
+            orientation="vertical",
+            size_hint_x=1,
+            size_hint_y=None,
+            pos_hint={"top": 1},
+            spacing="6dp",
+        )
+
+        locations_out_of_logic_layout.bind(minimum_height=locations_out_of_logic_layout.setter("height"))
+
+        locations_out_of_logic_label = Label(
+            text="[b]Out of Logic Locations[/b]",
+            markup=True,
+            size_hint_y=None,
+            font_size="16dp",
+            height="20dp",
+            halign="left",
+            valign="middle",
+        )
+
+        locations_out_of_logic_label.bind(size=lambda label, size: setattr(label, "text_size", size))
+
+        locations_out_of_logic_layout.add_widget(locations_out_of_logic_label)
+
+        self.level_locations_out_of_logic_label = Label(
+            text="No locations accessible out of logic",
+            markup=True,
+            size_hint_y=None,
+            font_size="13dp",
+            height="16dp",
+            halign="left",
+            valign="middle",
+        )
+
+        self.level_locations_out_of_logic_label.bind(texture_size=lambda label, texture_size: setattr(label, "height", texture_size[1]))
+        self.level_locations_out_of_logic_label.bind(width=lambda label, width: setattr(label, "text_size", (width, None)))
+
+        locations_out_of_logic_layout.add_widget(self.level_locations_out_of_logic_label)
+
+        if self.ctx.tracker_loaded:
+            in_level_information_layout.add_widget(locations_out_of_logic_layout)
+
+        self.add_widget(in_level_information_layout)
 
         self.last_seen_level = None
         self.last_seen_master = None
@@ -574,30 +613,16 @@ class PeggleNightsLevelInformationLayout(BoxLayout):
             f"([color=888888]{self.ctx.game_controller.option_shadow_pegs_total} total[/color])"
         )
 
-        fever_meters_obtained: int = received_items.get(PeggleNightsAPItems.PROGRESSIVE_FEVER_METER.value, 0)
-        balls_obtained: int = received_items.get(PeggleNightsAPItems.PROGRESSIVE_STARTING_BALL_INCREASE.value, 0)
-
-        self.target_scores_mid_available_label.text = (
-            f"[b]Scores (Mid) Available[/b]\n"
-            f"[color=00FA9A]{fever_meters_obtained}[/color] / [color=00FA9A]2[/color] Prog. Fever Meters\n"
-            f"[color=00FA9A]{balls_obtained}[/color] / [color=00FA9A]{self.progressive_starting_balls_half}[/color] Prog. Start. Balls"
-        )
-
-        self.target_scores_high_available_label.text = (
-            f"[b]Scores (High) Available[/b]\n"
-            f"[color=00FA9A]{fever_meters_obtained}[/color] / [color=00FA9A]4[/color] Prog. Fever Meters\n"
-            f"[color=00FA9A]{balls_obtained}[/color] / [color=00FA9A]{self.progressive_starting_balls_all}[/color] Prog. Start. Balls"
-        )
-
-        self.level_clears_available_label.text = (
-            f"[b]Level Clears Available[/b]\n"
-            f"[color=00FA9A]{fever_meters_obtained}[/color] / [color=00FA9A]4[/color] Prog. Fever Meters"
-        )
-
-        if self.ctx.game_controller.option_include_full_clears:
-            self.full_clears_available_label.text = (
-                f"[b]Full Clears Available[/b]\n"
-                f"[color=00FA9A]{balls_obtained}[/color] / [color=00FA9A]{self.progressive_starting_balls_all}[/color] Prog. Start. Balls"
+        # Goal
+        if self.ctx.game_controller.option_goal == PeggleNightsAPGoals.SHADOW_PEGS_FINAL_LEVEL:
+            self.goal_label.text = (
+                "[b]Goal[/b]\n"
+                f"Retrieve the Shadow Pegs and Clear {self.ctx.game_controller.selected_goal_level.value.split(" ")[0]}!"
+            )
+        elif self.ctx.game_controller.option_goal == PeggleNightsAPGoals.SHADOW_PEG_HUNT:
+            self.goal_label.text = (
+                "[b]Goal[/b]\n"
+                f"Retrieve the Shadow Pegs!"
             )
 
         # Level
@@ -612,20 +637,22 @@ class PeggleNightsLevelInformationLayout(BoxLayout):
                 self.level_information_title.text = f"[b]Begin Playing a Quick Play Level...[/b]"
                 self.level_information_subtitle.text = f"[b]This level is not included this seed.[/b]"
 
-                self.target_score_low_label.text = "Low: [color=00FA9A]XXX,XXX[/color]"
-                self.target_score_mid_label.text = "Mid: [color=00FA9A]XXX,XXX[/color]"
-                self.target_score_high_label.text = "High: [color=00FA9A]XXX,XXX[/color]"
+                self.target_score_low_label.text = "Low: [color=888888]XXX,XXX[/color]"
+                self.target_score_mid_label.text = "Mid: [color=888888]XXX,XXX[/color]"
+                self.target_score_high_label.text = "High: [color=888888]XXX,XXX[/color]"
 
-                self.item_fever_meter_permanent_bonus_label.text = "Fever Meter Permanent Bonus: [color=00FA9A]Xx[/color]"
-                self.item_full_clear_discount_label.text = "Full Clear Discount: [color=00FA9A]Xx[/color]"
-                self.item_score_multiplier_label.text = "Score Multiplier: [color=00FA9A]Xx[/color]"
-                self.item_target_score_discount_label.text = "Target Score Discount: [color=00FA9A]Xx[/color]"
+                self.item_full_clear_discount_label.text = "Full Clear Discount: [color=888888]Xx[/color]"
+                self.item_score_multiplier_label.text = "Score Multiplier: [color=888888]Xx[/color]"
+                self.item_target_score_discount_label.text = "Target Score Discount: [color=888888]Xx[/color]"
 
                 self.score_label.text = "[b]Score:[/b] 0  [color=888888]0[/color]"
                 self.shot_score_label.text = "[b]Shot Score:[/b] 0  [color=888888]0[/color]"
                 self.orange_peg_combo_label.text = "[b]Orange Peg Combo:[/b] 0"
                 self.peg_combo_label.text = "[b]Peg Combo:[/b] 0"
                 self.pegs_cleared.text = "[b]Pegs Cleared:[/b] 0"
+
+                self.level_locations_in_logic_label.text = "[color=888888]No locations accessible in logic[/color]"
+                self.level_locations_out_of_logic_label.text = "[color=888888]No locations accessible out of logic[/color]"
 
                 self.last_seen_level = None
                 self.last_seen_master = None
@@ -634,15 +661,9 @@ class PeggleNightsLevelInformationLayout(BoxLayout):
                     level_unlock: str = f"Level Unlock: {game_state.current_level.value}"
                     master_unlock: str = f"Master Unlock: {game_state.current_character.value}"
 
-                    item_fever_meter_permanent_bonus: str = f"{PeggleNightsAPUsefulItems.FEVER_METER_BONUS.value}: {game_state.current_level.value}"
                     item_full_clear_discount: str = f"{PeggleNightsAPUsefulItems.FULL_CLEAR_DISCOUNT.value}: {game_state.current_level.value}"
                     item_score_multiplier: str = f"{PeggleNightsAPUsefulItems.SCORE_MULTIPLIER.value}: {game_state.current_level.value}"
                     item_target_score_discount: str = f"{PeggleNightsAPUsefulItems.TARGET_SCORE_DISCOUNT.value}: {game_state.current_level.value}"
-
-                    fever_meter_permanent_bonus_count: int = 0
-
-                    if item_fever_meter_permanent_bonus in received_items:
-                        fever_meter_permanent_bonus_count = received_items[item_fever_meter_permanent_bonus]
 
                     full_clear_discount_count: int = 0
 
@@ -677,14 +698,10 @@ class PeggleNightsLevelInformationLayout(BoxLayout):
                     is_level_unlocked: bool = False
                     is_master_unlocked: bool = False
 
-                    progressive_fever_meter_obtained: int = received_items.get(PeggleNightsAPItems.PROGRESSIVE_FEVER_METER.value, 0)
-
                     if level_unlock in received_items and received_items[level_unlock] > 0:
-                        if is_goal:
-                            if shadow_pegs_obtained >= self.ctx.game_controller.option_shadow_pegs_required:
-                                if progressive_fever_meter_obtained >= 4:
-                                    is_level_unlocked = True
-                        else:
+                        is_level_unlocked = True
+                    elif is_goal:
+                        if shadow_pegs_obtained >= self.ctx.game_controller.option_shadow_pegs_required:
                             is_level_unlocked = True
 
                     if master_unlock in received_items and received_items[master_unlock] > 0:
@@ -743,12 +760,11 @@ class PeggleNightsLevelInformationLayout(BoxLayout):
                                 self.target_score_mid_label.text = f"Mid: [color=00FA9A]{target_score_mid:,}[/color]  [color=888888][size=11]{round(self.ctx.game_controller.target_score_ratios[game_state.current_level], 2)}x Base + Items[/size][/color]".replace(" 0", " XXX,XXX").replace(": [color=00FA9A]0", ": [color=00FA9A]XXX,XXX")
                                 self.target_score_high_label.text = f"High: [color=00FA9A]{target_score_high:,}[/color]  [color=888888][size=11]{round(self.ctx.game_controller.target_score_ratios[game_state.current_level], 2)}x Base + Items[/size][/color]".replace(" 0", " XXX,XXX").replace(": [color=00FA9A]0", ": [color=00FA9A]XXX,XXX")
                             else:
-                                self.target_score_low_label.text = "Low: [color=00FA9A]XXX,XXX[/color]"
-                                self.target_score_mid_label.text = "Mid: [color=00FA9A]XXX,XXX[/color]"
-                                self.target_score_high_label.text = "High: [color=00FA9A]XXX,XXX[/color]"
+                                self.target_score_low_label.text = "Low: [color=888888]XXX,XXX[/color]"
+                                self.target_score_mid_label.text = "Mid: [color=888888]XXX,XXX[/color]"
+                                self.target_score_high_label.text = "High: [color=888888]XXX,XXX[/color]"
 
                             # Useful Items
-                            self.item_fever_meter_permanent_bonus_label.text = f"Fever Meter Permanent Bonus: [color=00FA9A]{fever_meter_permanent_bonus_count}x[/color]"
                             self.item_full_clear_discount_label.text = f"Full Clear Discount: [color=00FA9A]{full_clear_discount_count}x[/color]"
                             self.item_score_multiplier_label.text = f"Score Multiplier: [color=00FA9A]{score_multiplier_count}x[/color]"
                             self.item_target_score_discount_label.text = f"Target Score Discount: [color=00FA9A]{target_score_discount_count}x[/color]"
@@ -768,12 +784,49 @@ class PeggleNightsLevelInformationLayout(BoxLayout):
 
                             pegs_cleared: int = game_state.pegs_cleared
                             self.pegs_cleared.text = f"[b]Pegs Cleared:[/b] {pegs_cleared}"
+
+                            # Locations In / Out of Logic
+                            if self.ctx.tracker_loaded:
+                                level_shorthand: str = game_state.current_level.value.split(" ")[0]
+
+                                locations_in_logic: List[str] = list()
+
+                                if len(self.ctx.locations_in_logic):
+                                    location_name: str
+                                    for location_name in sorted(self.ctx.locations_in_logic):
+                                        if not location_name.startswith(level_shorthand):
+                                            continue
+
+                                        locations_in_logic.append(f"[color=00FA9A]{location_name.split(' - ')[-1]}[/color]")
+
+                                    if len(locations_in_logic):
+                                        self.level_locations_in_logic_label.text = "\n".join(locations_in_logic)
+                                    else:
+                                        self.level_locations_in_logic_label.text = "[color=888888]No locations accessible in logic[/color]"
+                                else:
+                                    self.level_locations_in_logic_label.text = "[color=888888]No locations accessible in logic[/color]"
+
+                                locations_out_of_logic: List[str] = list()
+
+                                if len(self.ctx.locations_out_of_logic):
+                                    location_name: str
+                                    for location_name in sorted(self.ctx.locations_out_of_logic):
+                                        if not location_name.startswith(level_shorthand):
+                                            continue
+
+                                        locations_out_of_logic.append(f"[color=FFD300]{location_name.split(' - ')[-1]}[/color]")
+
+                                    if len(locations_out_of_logic):
+                                        self.level_locations_out_of_logic_label.text = "\n".join(locations_out_of_logic)
+                                    else:
+                                        self.level_locations_out_of_logic_label.text = "[color=888888]No locations accessible out of logic[/color]"
+                                else:
+                                    self.level_locations_out_of_logic_label.text = "[color=888888]No locations accessible out of logic[/color]"
                         else:
                             self.target_score_low_label.text = "Low: [color=00FA9A]XXX,XXX[/color]"
                             self.target_score_mid_label.text = "Mid: [color=00FA9A]XXX,XXX[/color]"
                             self.target_score_high_label.text = "High: [color=00FA9A]XXX,XXX[/color]"
 
-                            self.item_fever_meter_permanent_bonus_label.text = f"Fever Meter Permanent Bonus: [color=00FA9A]Xx[/color]"
                             self.item_full_clear_discount_label.text = f"Full Clear Discount: [color=00FA9A]Xx[/color]"
                             self.item_score_multiplier_label.text = f"Score Multiplier: [color=00FA9A]Xx[/color]"
                             self.item_target_score_discount_label.text = f"Target Score Discount: [color=00FA9A]Xx[/color]"
@@ -783,23 +836,28 @@ class PeggleNightsLevelInformationLayout(BoxLayout):
                             self.orange_peg_combo_label.text = "[b]Orange Peg Combo:[/b] 0"
                             self.peg_combo_label.text = "[b]Peg Combo:[/b] 0"
                             self.pegs_cleared.text = "[b]Pegs Cleared:[/b] 0"
+
+                            self.level_locations_in_logic_label.text = "[color=888888]No locations accessible in logic[/color]"
+                            self.level_locations_out_of_logic_label.text = "[color=888888]No locations accessible out of logic[/color]"
                     else:
                         self.level_information_subtitle.text = f"[b]This level is not included this seed.[/b]"
 
-                        self.target_score_low_label.text = "Low: [color=00FA9A]XXX,XXX[/color]"
-                        self.target_score_mid_label.text = "Mid: [color=00FA9A]XXX,XXX[/color]"
-                        self.target_score_high_label.text = "High: [color=00FA9A]XXX,XXX[/color]"
+                        self.target_score_low_label.text = "Low: [color=888888]XXX,XXX[/color]"
+                        self.target_score_mid_label.text = "Mid: [color=888888]XXX,XXX[/color]"
+                        self.target_score_high_label.text = "High: [color=888888]XXX,XXX[/color]"
 
-                        self.item_fever_meter_permanent_bonus_label.text = f"Fever Meter Permanent Bonus: [color=00FA9A]Xx[/color]"
-                        self.item_full_clear_discount_label.text = f"Full Clear Discount: [color=00FA9A]Xx[/color]"
-                        self.item_score_multiplier_label.text = f"Score Multiplier: [color=00FA9A]Xx[/color]"
-                        self.item_target_score_discount_label.text = f"Target Score Discount: [color=00FA9A]Xx[/color]"
+                        self.item_full_clear_discount_label.text = f"Full Clear Discount: [color=888888]Xx[/color]"
+                        self.item_score_multiplier_label.text = f"Score Multiplier: [color=888888]Xx[/color]"
+                        self.item_target_score_discount_label.text = f"Target Score Discount: [color=888888]Xx[/color]"
 
                         self.score_label.text = "[b]Score:[/b] 0  [color=888888]0[/color]"
                         self.shot_score_label.text = "[b]Shot Score:[/b] 0  [color=888888]0[/color]"
                         self.orange_peg_combo_label.text = "[b]Orange Peg Combo:[/b] 0"
                         self.peg_combo_label.text = "[b]Peg Combo:[/b] 0"
                         self.pegs_cleared.text = "[b]Pegs Cleared:[/b] 0"
+
+                        self.level_locations_in_logic_label.text = "[color=888888]No locations accessible in logic[/color]"
+                        self.level_locations_out_of_logic_label.text = "[color=888888]No locations accessible out of logic[/color]"
         else:
             self.level_information_level_image.texture = None
             self.level_information_level_image.opacity = 0.1
@@ -810,14 +868,13 @@ class PeggleNightsLevelInformationLayout(BoxLayout):
             self.level_information_title.text = f"[b]Begin Playing a Quick Play Level...[/b]"
             self.level_information_subtitle.text = f"[b]This level is not included this seed.[/b]"
 
-            self.target_score_low_label.text = "Low: [color=00FA9A]XXX,XXX[/color]"
-            self.target_score_mid_label.text = "Mid: [color=00FA9A]XXX,XXX[/color]"
-            self.target_score_high_label.text = "High: [color=00FA9A]XXX,XXX[/color]"
+            self.target_score_low_label.text = "Low: [color=888888]XXX,XXX[/color]"
+            self.target_score_mid_label.text = "Mid: [color=888888]XXX,XXX[/color]"
+            self.target_score_high_label.text = "High: [color=888888]XXX,XXX[/color]"
 
-            self.item_fever_meter_permanent_bonus_label.text = f"Fever Meter Permanent Bonus: [color=00FA9A]Xx[/color]"
-            self.item_full_clear_discount_label.text = f"Full Clear Discount: [color=00FA9A]Xx[/color]"
-            self.item_score_multiplier_label.text = f"Score Multiplier: [color=00FA9A]Xx[/color]"
-            self.item_target_score_discount_label.text = f"Target Score Discount: [color=00FA9A]Xx[/color]"
+            self.item_full_clear_discount_label.text = f"Full Clear Discount: [color=888888]Xx[/color]"
+            self.item_score_multiplier_label.text = f"Score Multiplier: [color=888888]Xx[/color]"
+            self.item_target_score_discount_label.text = f"Target Score Discount: [color=888888]Xx[/color]"
 
             self.score_label.text = "[b]Score:[/b] 0  [color=888888]0[/color]"
             self.shot_score_label.text = "[b]Shot Score:[/b] 0  [color=888888]0[/color]"
@@ -825,12 +882,17 @@ class PeggleNightsLevelInformationLayout(BoxLayout):
             self.peg_combo_label.text = "[b]Peg Combo:[/b] 0"
             self.pegs_cleared.text = "[b]Pegs Cleared:[/b] 0"
 
+            self.level_locations_in_logic_label.text = "[color=888888]No locations accessible in logic[/color]"
+            self.level_locations_out_of_logic_label.text = "[color=888888]No locations accessible out of logic[/color]"
+
 
 class PeggleNightsMastersLayout(BoxLayout):
     ctx: PeggleNightsContext
 
     master_label: Label
+
     master_images: List[Image]
+    master_labels: List[Label]
 
     master_data: Dict[PeggleNightsCharacters, Dict[str, Any]]
 
@@ -856,6 +918,7 @@ class PeggleNightsMastersLayout(BoxLayout):
         self.add_widget(self.master_label)
 
         self.master_images = list()
+        self.master_labels = list()
 
         self.master_data = dict()
 
@@ -868,7 +931,7 @@ class PeggleNightsMastersLayout(BoxLayout):
 
         grid_layout: GridLayout = GridLayout(
             cols=6,
-            spacing=8,
+            spacing=12,
             padding=0,
             size_hint_y=None,
         )
@@ -878,6 +941,17 @@ class PeggleNightsMastersLayout(BoxLayout):
         master: PeggleNightsCharacters
         data: Dict[str, Any]
         for master, data in self.master_data.items():
+            master_layout: BoxLayout = BoxLayout(
+                orientation="vertical",
+                size_hint_x=None,
+                size_hint_y=None,
+                width="96dp",
+                height="120dp",
+                spacing="4dp",
+            )
+
+            master_layout.bind(minimum_height=master_layout.setter("height"))
+
             image_bytes: bytes = pkgutil.get_data(client_gui.__name__, data["image_path"])
             image: CoreImage = CoreImage(io.BytesIO(image_bytes), ext="png")
 
@@ -890,7 +964,26 @@ class PeggleNightsMastersLayout(BoxLayout):
             )
 
             self.master_images.append(master_image)
-            grid_layout.add_widget(master_image)
+
+            master_layout.add_widget(master_image)
+
+            master_label: Label = Label(
+                text="Green Pegs: [color=00FA9A]1[/color]",
+                markup=True,
+                font_size="14dp",
+                size_hint_y=None,
+                height="20dp",
+                halign="left",
+                valign="middle",
+            )
+
+            master_label.bind(size=lambda label, size: setattr(label, "text_size", size))
+
+            self.master_labels.append(master_label)
+
+            master_layout.add_widget(master_label)
+
+            grid_layout.add_widget(master_layout)
 
         self.add_widget(grid_layout)
 
@@ -917,12 +1010,23 @@ class PeggleNightsMastersLayout(BoxLayout):
 
             self.master_images[i].opacity = 1.0 if is_unlocked else 0.4
 
+            green_pegs_item: str = f"Progressive Green Pegs: {master.value}"
+            green_pegs_item_count: int = received_items.get(green_pegs_item, 0) + 1
+
+            if is_unlocked:
+                self.master_labels[i].text = f"Green Pegs: [color=00FA9A]{green_pegs_item_count}[/color]"
+            else:
+                self.master_labels[i].text = f"[color=888888]Green Pegs: {green_pegs_item_count}[/color]"
+
 
 class PeggleNightsLevelsLayout(BoxLayout):
     ctx: PeggleNightsContext
 
     level_label: Label
+
     level_images: List[Image]
+    level_in_logic_labels: List[Label]
+    level_out_of_logic_labels: List[Label]
 
     level_data: Dict[PeggleNightsLevels, Dict[str, Any]]
 
@@ -948,6 +1052,8 @@ class PeggleNightsLevelsLayout(BoxLayout):
         self.add_widget(self.level_label)
 
         self.level_images = list()
+        self.level_in_logic_labels = list()
+        self.level_out_of_logic_labels = list()
 
         self.level_data = dict()
 
@@ -973,7 +1079,7 @@ class PeggleNightsLevelsLayout(BoxLayout):
 
         grid_layout: GridLayout = GridLayout(
             cols=6,
-            spacing=8,
+            spacing=12,
             padding=0,
             size_hint_y=None,
         )
@@ -983,6 +1089,22 @@ class PeggleNightsLevelsLayout(BoxLayout):
         level: PeggleNightsLevels
         data: Dict[str, Any]
         for level, data in self.level_data.items():
+            height: int = 96
+
+            if self.ctx.tracker_loaded:
+                height = 140
+
+            level_layout: BoxLayout = BoxLayout(
+                orientation="vertical",
+                size_hint_x=None,
+                size_hint_y=None,
+                width="96dp",
+                height=f"{height}dp",
+                spacing="4dp",
+            )
+
+            level_layout.bind(minimum_height=level_layout.setter("height"))
+
             image_bytes: bytes = pkgutil.get_data(client_gui.__name__, data["image_path"])
             image: CoreImage = CoreImage(io.BytesIO(image_bytes), ext="png")
 
@@ -1010,7 +1132,54 @@ class PeggleNightsLevelsLayout(BoxLayout):
                 level_image.bind(pos=_update_goal_decoration, size=_update_goal_decoration)
 
             self.level_images.append(level_image)
-            grid_layout.add_widget(level_image)
+
+            level_layout.add_widget(level_image)
+
+            in_logic_text: str = "In Logic: [color=00FA9A]1[/color]"
+
+            if data["is_goal"]:
+                in_logic_text = ""
+
+            in_logic_label: Label = Label(
+                text=in_logic_text,
+                markup=True,
+                font_size="12dp",
+                size_hint_y=None,
+                height="16dp",
+                halign="left",
+                valign="middle",
+            )
+
+            in_logic_label.bind(size=lambda label, size: setattr(label, "text_size", size))
+
+            self.level_in_logic_labels.append(in_logic_label)
+
+            if self.ctx.tracker_loaded:
+                level_layout.add_widget(in_logic_label)
+
+            out_of_logic_text: str = "Out of Logic: [color=FFD300]1[/color]"
+
+            if data["is_goal"]:
+                out_of_logic_text = ""
+
+            out_of_logic_label: Label = Label(
+                text=out_of_logic_text,
+                markup=True,
+                font_size="12dp",
+                size_hint_y=None,
+                height="16dp",
+                halign="left",
+                valign="middle",
+            )
+
+            out_of_logic_label.bind(size=lambda label, size: setattr(label, "text_size", size))
+
+            self.level_out_of_logic_labels.append(out_of_logic_label)
+
+            if self.ctx.tracker_loaded:
+                level_layout.add_widget(out_of_logic_label)
+
+            grid_layout.add_widget(level_layout)
 
         self.add_widget(grid_layout)
 
@@ -1027,25 +1196,66 @@ class PeggleNightsLevelsLayout(BoxLayout):
 
                 received_items[item_name] += 1
 
+        in_logic_location_counts_by_level_shorthand: Dict[str, int] = dict()
+        out_of_logic_location_counts_by_level_shorthand: Dict[str, int] = dict()
+
+        if self.ctx.tracker_loaded:
+            location_name: str
+            for location_name in self.ctx.locations_in_logic:
+                level_shorthand: str = location_name.split(" ")[0]
+
+                if level_shorthand not in in_logic_location_counts_by_level_shorthand:
+                    in_logic_location_counts_by_level_shorthand[level_shorthand] = 0
+
+                in_logic_location_counts_by_level_shorthand[level_shorthand] += 1
+
+            location_name: str
+            for location_name in self.ctx.locations_out_of_logic:
+                level_shorthand: str = location_name.split(" ")[0]
+
+                if level_shorthand not in out_of_logic_location_counts_by_level_shorthand:
+                    out_of_logic_location_counts_by_level_shorthand[level_shorthand] = 0
+
+                out_of_logic_location_counts_by_level_shorthand[level_shorthand] += 1
+
         level: PeggleNightsLevels
         data: Dict[str, Any]
         for i, (level, data) in enumerate(self.level_data.items()):
             is_unlocked: bool = False
 
             if data["unlock_item"] in received_items and received_items[data["unlock_item"]] > 0:
-                if data["is_goal"]:
-                    shadow_pegs_required: int = self.ctx.game_controller.option_shadow_pegs_required
+                is_unlocked = True
+            elif data["is_goal"]:
+                shadow_pegs_required: int = self.ctx.game_controller.option_shadow_pegs_required
+                shadow_pegs_obtained: int = received_items.get(PeggleNightsAPItems.SHADOW_PEG.value, 0)
 
-                    shadow_pegs_obtained: int = received_items.get(PeggleNightsAPItems.SHADOW_PEG.value, 0)
-                    progressive_fever_meter_obtained: int = received_items.get(PeggleNightsAPItems.PROGRESSIVE_FEVER_METER.value, 0)
-
-                    if shadow_pegs_obtained >= shadow_pegs_required:
-                        if progressive_fever_meter_obtained >= 4:
-                            is_unlocked = True
-                else:
+                if shadow_pegs_obtained >= shadow_pegs_required:
                     is_unlocked = True
 
             self.level_images[i].opacity = 1.0 if is_unlocked else 0.4
+
+            if self.ctx.tracker_loaded:
+                if data["is_goal"]:
+                    continue
+
+                level_shorthand: str = level.value.split(" ")[0]
+
+                if is_unlocked:
+                    in_logic_count: int = in_logic_location_counts_by_level_shorthand.get(level_shorthand, 0)
+                    out_of_logic_count: int = out_of_logic_location_counts_by_level_shorthand.get(level_shorthand, 0)
+
+                    if in_logic_count > 0:
+                        self.level_in_logic_labels[i].text = f"In Logic: [color=00FA9A]{in_logic_count}[/color]"
+                    else:
+                        self.level_in_logic_labels[i].text = f"In Logic: [color=888888]0[/color]"
+
+                    if out_of_logic_count > 0:
+                        self.level_out_of_logic_labels[i].text = f"Out of Logic: [color=FFD300]{out_of_logic_count}[/color]"
+                    else:
+                        self.level_out_of_logic_labels[i].text = f"Out of Logic: [color=888888]0[/color]"
+                else:
+                    self.level_in_logic_labels[i].text = f"[color=888888]In Logic: 0[/color]"
+                    self.level_out_of_logic_labels[i].text = f"[color=888888]Out of Logic: 0[/color]"
 
 
 class PeggleNightsContent(ScrollView):

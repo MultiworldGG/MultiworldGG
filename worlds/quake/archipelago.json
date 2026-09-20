@@ -1,7 +1,9 @@
 {
-    "game": "Quake 1",
-    "version": 7,
-    "compatible_version": 7,
-    "world_version": "1.2.2",
-    "authors": ["Rando"]
+  "game": "Quake 1",
+  "world_version": "1.2.3",
+  "authors": [
+    "Rando"
+  ],
+  "version": 7,
+  "compatible_version": 7
 }

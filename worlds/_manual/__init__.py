@@ -5,12 +5,12 @@ import webbrowser
 
 import Utils
 from worlds.generic.Rules import forbid_items_for_player
-from worlds.LauncherComponents import Component, SuffixIdentifier, components, Type, launch_subprocess, icon_paths
+from worlds.LauncherComponents import Component, SuffixIdentifier, components, Type, launch, icon_paths
 
-from .Data import item_table, location_table, event_table, region_table, category_table
-from .Game import game_name, filler_item_name, starting_items
+from .Data import item_table, location_table, event_table, category_table
+from .Game import game_name, filler_item_name, starting_items, unused_goals_are_locations
 from .Meta import world_description, world_webworld
-from .Locations import location_id_to_name, location_name_to_id, location_name_to_location, location_name_groups, victory_names, event_name_to_event
+from .Locations import location_id_to_name, location_name_to_id, location_name_to_location, location_name_groups, victory_names, event_name_to_event, event_name_groups
 from .Items import item_id_to_name, item_name_to_id, item_name_to_item, item_name_groups
 from .DataValidation import runGenerationDataValidation, runPreFillDataValidation
 
@@ -21,16 +21,16 @@ from .Options import manual_options_data
 from .Helpers import is_item_enabled, get_option_value, remove_specific_item, resolve_yaml_option, format_state_prog_items_key, convert_string_to_itemclassification, ProgItemsCat
 from .container import APManualFile
 
-from BaseClasses import CollectionState, ItemClassification, Item
+from BaseClasses import CollectionState, ItemClassification, Item, Location
 from Options import PerGameCommonOptions
 from worlds.AutoWorld import World
 
 from .hooks.World import \
     hook_get_filler_item_name, before_create_regions, after_create_regions, \
-    before_create_items_all, before_create_items_starting, before_create_items_filler, after_create_items, \
+    before_create_items_all, before_create_items_place_items, before_create_items_starting, before_create_items_filler, after_create_items, \
     before_create_item, after_create_item, \
     before_set_rules, after_set_rules, \
-    before_generate_basic, after_generate_basic, \
+    before_generate_basic, \
     before_fill_slot_data, after_fill_slot_data, before_write_spoiler, \
     before_extend_hint_information, after_extend_hint_information, \
     after_collect_item, after_remove_item, before_generate_early, hook_interpret_slot_data
@@ -69,12 +69,29 @@ class ManualWorld(World):
     victory_names = victory_names
 
     event_name_to_event = event_name_to_event
+    event_name_groups = event_name_groups
+    item_and_event_name_groups: dict[str, set[str]] = dict(item_name_groups)
+    for name, category in event_name_groups.items():
+        if name in item_and_event_name_groups.keys():
+            item_and_event_name_groups[name] = item_name_groups[name].union(category)
+        else:
+            item_and_event_name_groups[name] = category
 
     # UT (the universal-est of trackers) can now generate without a YAML
     ut_can_gen_without_yaml = True
+    origin_region_name = "Manual"
 
     def get_filler_item_name(self) -> str:
-        return hook_get_filler_item_name(self, self.multiworld, self.player) or self.filler_item_name
+        hook_result = hook_get_filler_item_name(self, self.multiworld, self.player)
+        if hook_result and isinstance(hook_result, str):
+            return hook_result
+        elif hook_result and isinstance(hook_result, list):
+            return self.random.choice(hook_result)
+        elif isinstance(filler_item_name, str):
+            return self.filler_item_name
+        else:
+            random_filler_name = self.random.choice(filler_item_name)
+            return random_filler_name
 
     def interpret_slot_data(self, slot_data: dict[str, Any]) -> dict[str, Any]:
         #this is called by tools like UT
@@ -90,6 +107,11 @@ class ManualWorld(World):
 
     def generate_early(self) -> None:
         before_generate_early(self, self.multiworld, self.player)
+        for item in item_table:
+            if item.get("local"):
+                if item.get("name") not in self.options.local_items.value:
+                    self.options.local_items.value.add(item["name"])
+
         if hasattr(self.multiworld, "re_gen_passthrough"):
             slot_data = self.multiworld.re_gen_passthrough.get(self.game, {})
             if slot_data:
@@ -107,8 +129,9 @@ class ManualWorld(World):
         location_game_complete = self.multiworld.get_location(victory_names[get_option_value(self.multiworld, self.player, 'goal')], self.player)
         location_game_complete.address = None
 
-        for unused_goal in [self.multiworld.get_location(name, self.player) for name in victory_names if name != location_game_complete.name]:
-            unused_goal.parent_region.locations.remove(unused_goal)
+        if not unused_goals_are_locations:
+            for unused_goal in [self.multiworld.get_location(name, self.player) for name in victory_names if name != location_game_complete.name]:
+                unused_goal.parent_region.locations.remove(unused_goal)
 
         location_game_complete.place_locked_item(
             ManualItem("__Victory__", ItemClassification.progression, None, player=self.player))
@@ -124,7 +147,11 @@ class ManualWorld(World):
         items_config: dict[str, int|dict[ItemClassification | str | int, int]] = {}
         for name in configured_item_names.values():
             if name == "__Victory__": continue
-            if name == filler_item_name: continue # intentionally using the Game.py filler_item_name here because it's a non-Items item
+            # intentionally using the Game.py filler_item_name here because it can be a non-Items item
+            if isinstance(filler_item_name, str):
+                if name == filler_item_name: continue
+            elif isinstance(filler_item_name, list):
+                if name in filler_item_name: continue
 
             item = self.item_name_to_item[name]
             item_count = int(item.get("count", 1))
@@ -184,10 +211,6 @@ class ManualWorld(World):
                 else:
                     raise Exception(f"Item {name}'s 'early' has an invalid value of '{item['early']}'. \nA boolean or an integer was expected.")
 
-            if item.get("local"): # All local
-                if name not in self.options.local_items.value:
-                    self.options.local_items.value.add(name)
-
             if item.get("local_early"): # Some or all local and early
                 if isinstance(item["local_early"],int) or (isinstance(item["local_early"],str) and item["local_early"].isnumeric()):
                     self.multiworld.local_early_items[self.player][name] = int(item["local_early"])
@@ -198,7 +221,81 @@ class ManualWorld(World):
                 else:
                     raise Exception(f"Item {name}'s 'local_early' has an invalid value of '{item['local_early']}'. \nA boolean or an integer was expected.")
 
+        # Handle item forbidding/placement
+        pool = before_create_items_place_items(pool, self, self.multiworld, self.player)
+        locations_with_forbid: list[Location] = []
+        locations_with_placements: list[Location] = []
+        for location in self.multiworld.get_unfilled_locations(player=self.player):
+            manual_location = self.location_name_to_location.get(location.name, {})
+            if manual_location.get("place_item") or manual_location.get("place_item_category"):
+                locations_with_placements.append(location)
+            elif manual_location.get("dont_place_item") or manual_location.get("dont_place_item_category"):
+                locations_with_forbid.append(location)
 
+        # Handle specific item forbidding using forbid_items_for_player
+        for location in locations_with_forbid:
+            manual_location = self.location_name_to_location.get(location.name, {})
+            forbidden_item_names: set[str] = set()
+
+            if manual_location.get("dont_place_item"):
+                forbidden_item_names |= set(manual_location["dont_place_item"])
+
+            if manual_location.get("dont_place_item_category"):
+                for cat in manual_location["dont_place_item_category"]:
+                    forbidden_item_names |= self.item_name_groups.get(cat, set())
+
+            if forbidden_item_names:
+                forbid_items_for_player(location, set(forbidden_item_names), self.player)
+
+        # Handle specific item placements using place_locked_item
+        for location in locations_with_placements:
+            manual_location = self.location_name_to_location.get(location.name, {})
+            eligible_items = []
+            eligible_item_names: set[str] = set()
+            forbidden_item_names: set[str] = set()
+            place_messages = []
+            forbid_messages = []
+
+            #First we get possible items names
+            if manual_location.get("place_item"):
+                eligible_item_names |= set(manual_location["place_item"])
+                place_messages.append('", "'.join(manual_location["place_item"]))
+
+            if manual_location.get("place_item_category"):
+                for cat in manual_location["place_item_category"]:
+                    eligible_item_names |= self.item_name_groups.get(cat, set())
+                place_messages.append('", "'.join(manual_location["place_item_category"]) + " category(ies)")
+
+            # Second we check for forbidden items names
+            if manual_location.get("dont_place_item"):
+                forbidden_item_names |= set(manual_location["dont_place_item"])
+                forbid_messages.append('", "'.join(manual_location["dont_place_item"]) + ' items')
+
+            if manual_location.get("dont_place_item_category"):
+                for cat in manual_location["dont_place_item_category"]:
+                    forbidden_item_names |= self.item_name_groups.get(cat, set())
+                forbid_messages.append('", "'.join(manual_location["dont_place_item_category"]) + ' category(ies)')
+
+            # If we forbid some names, check for those in the possible names and remove them
+            if forbidden_item_names:
+                eligible_item_names = {name for name in eligible_item_names if name not in forbidden_item_names}
+
+            if eligible_item_names:
+                eligible_items = [item for item in pool if item.name in eligible_item_names]
+
+            if len(eligible_items) == 0:
+                nl = "\n"
+                if forbidden_item_names:
+                    raise Exception(f'Could not find a suitable item to place at "{manual_location["name"]}".\n    No items that match "{f"{nl}     or ".join(place_messages)}"\n    Maybe because of forbidden "{f"{nl}     or ".join(forbid_messages)}"')
+                raise Exception(f'Could not find a suitable item to place at "{manual_location["name"]}". \n    No items that match "{f"{nl}     or ".join(place_messages)}"')
+
+            item_to_place = self.random.choice(eligible_items)
+            location.place_locked_item(item_to_place)
+
+            # remove the item we're about to place from the pool so it isn't placed twice
+            remove_specific_item(pool, item_to_place)
+
+        # Handle game.json's starting_items
         pool = before_create_items_starting(pool, self, self.multiworld, self.player)
 
         items_started: list[Item] = []
@@ -245,21 +342,25 @@ class ManualWorld(World):
         pool = after_create_items(pool, self, self.multiworld, self.player)
 
         # need to put all of the items in the pool so we can have a full state for placement
-        # then will remove specific item placements below from the overall pool
         self.multiworld.itempool += pool
 
-        # Filter Precollected items for those not in logic aka created by start_inventory(_from_pool)
+        # Preparing to count the items:
         precollected_items = list(self.multiworld.precollected_items[self.player])
 
         # UT doesn't precollect the exceptions so this can be skipped
-        if not hasattr(self.multiworld, "generation_is_fake"):
+        if not getattr(self.multiworld, "generation_is_fake", False):
+            # Filter Precollected items for those not in logic aka created by start_inventory(_from_pool)
             precollected_exceptions = self.options.start_inventory.value + self.options.start_inventory_from_pool.value # type: ignore
             for item, count in precollected_exceptions.items():
                 items_iter = iter([i for i in precollected_items if i.name == item])
                 for _ in range(count):
                     precollected_items.remove(next(items_iter))
+        # Placed items:
+        placed_pool: list[Item] = []
+        for location in self.multiworld.get_filled_locations(self.player):
+            placed_pool.append(location.item)
 
-        real_pool = pool + precollected_items
+        real_pool = pool + precollected_items + placed_pool
         self.item_counts[self.player] = self.get_item_counts(pool=real_pool)
         self.item_counts_progression[self.player] = self.get_item_counts(pool=real_pool, only_progression=True)
 
@@ -335,77 +436,10 @@ class ManualWorld(World):
     def generate_basic(self):
         before_generate_basic(self, self.multiworld, self.player)
 
-        # Handle item forbidding
-        manual_locations_with_forbid = {location['name']: location for location in location_name_to_location.values() if "dont_place_item" in location or "dont_place_item_category" in location}
-        locations_with_forbid = [l for l in self.multiworld.get_unfilled_locations(player=self.player) if l.name in manual_locations_with_forbid.keys()]
-        for location in locations_with_forbid:
-            manual_location = manual_locations_with_forbid[location.name]
-            forbidden_item_names = []
-
-            if manual_location.get("dont_place_item"):
-                forbidden_item_names.extend([i["name"] for i in item_name_to_item.values() if i["name"] in manual_location["dont_place_item"]])
-
-            if manual_location.get("dont_place_item_category"):
-                forbidden_item_names.extend([i["name"] for i in item_name_to_item.values() if "category" in i and set(i["category"]).intersection(manual_location["dont_place_item_category"])])
-
-            if forbidden_item_names:
-                forbid_items_for_player(location, set(forbidden_item_names), self.player)
-
-        # Handle specific item placements using fill_restrictive
-        manual_locations_with_placements = {location['name']: location for location in location_name_to_location.values() if "place_item" in location or "place_item_category" in location}
-        locations_with_placements = [l for l in self.multiworld.get_unfilled_locations(player=self.player) if l.name in manual_locations_with_placements.keys()]
-        for location in locations_with_placements:
-            manual_location = manual_locations_with_placements[location.name]
-            eligible_items = []
-            eligible_item_names = []
-            forbidden_item_names = []
-            place_messages = []
-            forbid_messages = []
-
-            #First we get possible items names
-            if manual_location.get("place_item"):
-                eligible_item_names += manual_location["place_item"]
-                place_messages.append('", "'.join(manual_location["place_item"]))
-
-            if manual_location.get("place_item_category"):
-                eligible_item_names += [i["name"] for i in item_name_to_item.values() if "category" in i and set(i["category"]).intersection(manual_location["place_item_category"])]
-                place_messages.append('", "'.join(manual_location["place_item_category"]) + " category(ies)")
-
-            # Second we check for forbidden items names
-            if manual_location.get("dont_place_item"):
-                forbidden_item_names += manual_location["dont_place_item"]
-                forbid_messages.append('", "'.join(manual_location["dont_place_item"]) + ' items')
-
-            if manual_location.get("dont_place_item_category"):
-                forbidden_item_names += [i["name"] for i in item_name_to_item.values() if "category" in i and set(i["category"]).intersection(manual_location["dont_place_item_category"])]
-                forbid_messages.append('", "'.join(manual_location["dont_place_item_category"]) + ' category(ies)')
-
-            # If we forbid some names, check for those in the possible names and remove them
-            if forbidden_item_names:
-                eligible_item_names = [name for name in eligible_item_names if name not in forbidden_item_names]
-
-            if eligible_item_names:
-                eligible_items = [item for item in self.multiworld.itempool if item.player == self.player and item.name in eligible_item_names]
-
-            if len(eligible_items) == 0:
-                nl = "\n"
-                if forbidden_item_names:
-                    raise Exception(f'Could not find a suitable item to place at "{manual_location["name"]}".\n    No items that match "{f"{nl}     or ".join(place_messages)}"\n    Maybe because of forbidden "{f"{nl}     or ".join(forbid_messages)}"')
-                raise Exception(f'Could not find a suitable item to place at "{manual_location["name"]}". \n    No items that match "{f"{nl}     or ".join(place_messages)}"')
-
-            item_to_place = self.random.choice(eligible_items)
-            location.place_locked_item(item_to_place)
-
-            # remove the item we're about to place from the pool so it isn't placed twice
-            remove_specific_item(self.multiworld.itempool, item_to_place)
-
-
-        after_generate_basic(self, self.multiworld, self.player)
-
         # Enable this in Meta.json to generate a diagram of your manual.  Only works on 0.4.4+
         if get_option_value(self.multiworld, self.player, "generate_region_diagram"):
             from Utils import visualize_regions
-            visualize_regions(self.multiworld.get_region("Menu", self.player), f"{self.game}_{self.player}.puml")
+            visualize_regions(self.multiworld.get_region("Manual", self.player), f"{self.game}_{self.player}.puml")
 
     def pre_fill(self):
         # DataValidation after all the hooks are done but before fill
@@ -416,6 +450,7 @@ class ManualWorld(World):
 
         # slot_data["DeathLink"] = bool(self.multiworld.death_link[self.player].value)
         common_options = set(PerGameCommonOptions.type_hints.keys())
+        common_options |= set(["generate_region_diagram", "start_inventory_from_pool"])
         for option_key, _ in self.options_dataclass.type_hints.items():
             if option_key in common_options:
                 continue
@@ -440,6 +475,10 @@ class ManualWorld(World):
 
         apmanual = APManualFile(zf_path, player=self.player, player_name=self.player_name)
         apmanual.write()
+
+        if get_option_value(self.multiworld, self.player, "generate_region_diagram"):
+            from Utils import visualize_regions
+            visualize_regions(self.multiworld.get_region("Manual", self.player), f"{self.game}_{self.player}_spoiler.puml")
 
 
     def write_spoiler(self, spoiler_handle):
@@ -555,9 +594,9 @@ def launch_client(*args):
     from .ManualClient import launch as Main
 
     if CommonClient.gui_enabled:
-        launch_subprocess(Main, name="Manual client")
+        launch(Main, name="Manual client", args=args)
     else:
-        Main()
+        Main(*args)
 
 class VersionedComponent(Component):
     def __init__(self, display_name: str, script_name: Optional[str] = None, func: Optional[Callable] = None, version: int = 0, file_identifier: Optional[Callable[[str], bool]] = None, icon: Optional[str] = None):
@@ -565,7 +604,7 @@ class VersionedComponent(Component):
         self.version = version
 
 def add_client_to_launcher() -> None:
-    version = 2026_01_02 # YYYYMMDD
+    version = 2026_09_18 # YYYYMMDD
     found = False
 
     if "manual" not in icon_paths:

@@ -18,6 +18,14 @@ class TestBrotatoWorld(BrotatoTestBase):
                 self.test_all_state_can_reach_everything()
 
     def test_common_loot_crate_groups_correct(self):
+        """Checks that the apworld common loot crate groups are correct.
+
+        This is similar to test_loot_crates.py -> test_common_loot_crate_groups_correct,
+        except that this one checks the attributes on the apworld after generating
+        instead of calling build_loot_crate_groups directly. This helps check that the
+        options of the test data are valid (relevant when changing option maximums), and
+        that we actually apply the results of build_loot_crate_groups to the apworld.
+        """
         for test_idx, test_data in enumerate(LOOT_CRATE_GROUP_DATA_SETS):
             with self.data_set_subtest(test_data, idx=test_idx):
                 groups: list[BrotatoLootCrateGroup] = self.world.common_loot_crate_groups

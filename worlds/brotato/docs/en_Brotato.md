@@ -11,6 +11,10 @@ When connected to a multiworld, all characters apart from those received in the
 multiworld will be unlocked. You may receive characters that you have not unlocked in
 vanilla play, but these will be locked again when you disconnect.
 
+Unless `wave_caps` is set to one, you will not be able to play all 20 waves from the
+start. Instead, you will need to find "Progressive Wave Cap (<character>)" items to be
+able to play further waves and complete runs with a particular character.
+
 Loot crate drops in-game are replaced with MultiworldGG/AP "check" items. When picked up,
 these will send a check to the multiworld. Depending on your settings, normal loot
 crates may not appear when randomized.
@@ -21,7 +25,6 @@ multiworld.
 
 All game progress apart from characters (weapons and items unlocked, achievements, etc.)
 are not affected by the randomizer.
-
 
 ## What is the goal?
 

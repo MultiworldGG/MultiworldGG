@@ -1,5 +1,4 @@
-import json
-import os.path
+import orjson
 from pathlib import Path
 import re
 
@@ -38,7 +37,7 @@ def process_mods(mods_folder: str, mod_pv_dbs_path_list: list[str]) -> tuple[int
 
     return len(unique_seen_ids), finalize_json(mod_song_collection)
 
-def process_single_mod(mod_pv_db_path: str, mod_dir: str) -> tuple[set[int], list[list[str,int,int]]]:
+def process_single_mod(mod_pv_db_path: str, mod_dir: str) -> tuple[set[int], list[tuple[str,int,int]]]:
     difficulties = ["exextreme", "extreme", "hard", "normal", "easy"] # see shift_difficulty()
     songs = {}
     song_pack_ids = set()
@@ -64,7 +63,8 @@ def process_single_mod(mod_pv_db_path: str, mod_dir: str) -> tuple[set[int], lis
             if int(song_id) in base_game_ids:
                 continue
 
-            songs.setdefault(song_id, [f"AP Song {song_id}", int(song_id), 0])
+            default_name = f"AP Song {song_id}"
+            songs.setdefault(song_id, [default_name, int(song_id), 0])
             diff_lockout.setdefault(song_id, [False] * 5)
             song_pack_ids.add(song_id)
 
@@ -75,7 +75,7 @@ def process_single_mod(mod_pv_db_path: str, mod_dir: str) -> tuple[set[int], lis
                         songs[song_id][0] = value
                 case "song_name":
                     value = fix_song_name(value).replace("'", "''")
-                    if value and not songs[song_id][0]:
+                    if value and songs[song_id][0] == default_name:
                         songs[song_id][0] = value
                 case "difficulty" if not diff_rating == "encore":
                     extra_check = song_id, song_prop, diff_rating, '1', 'attribute.extra', '1'
@@ -121,5 +121,5 @@ def shift_difficulty(current_diffs: int = 0, index: int = 0, level_float: float 
     return current_diffs
 
 def finalize_json(mod_song_collection: dict) -> str:
-    output = json.dumps(mod_song_collection, separators=(',', ':'))
+    output = orjson.dumps(mod_song_collection).decode("utf-8") #, separators=(',', ':'))
     return f"'{output}'" # Wrapped in ' for the YAML.

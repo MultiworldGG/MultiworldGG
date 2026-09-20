@@ -13,7 +13,7 @@ class IDNames(MegaMixTestBase):
         As of writing, song item IDs start at 10. 1-9 are reserved for non-song items."""
         world = self.get_world()
 
-        quick = [name for name, locID in world.item_name_to_id.items() if not re.search(self.item_regex, name) and locID >= 10]
+        quick = [name for name, locID in world.item_name_to_id.items() if not re.search(self.item_regex, name) and locID >= 100]
         self.assertEqual(0, len(quick), f"Item names without song IDs: {quick}")
 
     def test_loc_names_have_id(self):
@@ -29,7 +29,7 @@ class IDNames(MegaMixTestBase):
         world = self.get_world()
 
         for name, itemID in world.item_name_to_id.items():
-            if itemID < 10:
+            if itemID < 100:
                 continue
 
             match = re.match(self.item_regex, name)
@@ -37,7 +37,7 @@ class IDNames(MegaMixTestBase):
 
             given_id = int(match.group('id'))
 
-            self.assertEqual(given_id, (itemID // 10), f"Song ID in item name does not match item ID: {name}")
+            self.assertEqual(given_id, (itemID // 100), f"Song ID in item name does not match item ID: {name}")
 
     def test_verify_loc_names_for_id(self):
         """Verify the ID in a location name matches its location ID.
@@ -50,4 +50,4 @@ class IDNames(MegaMixTestBase):
 
             given_id = int(match.group('id'))
 
-            self.assertEqual(given_id, (locID // 10), f"Song ID in location name does not match location ID: {name}")
+            self.assertEqual(given_id, (locID // 100), f"Song ID in location name does not match location ID: {name}")

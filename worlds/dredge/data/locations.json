@@ -267,7 +267,7 @@
   },
   "Bearded Mackerel": {
     "base_id_offset": 17,
-    "region": "Open Ocean",
+    "region": "Gale Cliffs",
     "location_group": "Encyclopedia",
     "expansion": "Base",
     "requirements": [
@@ -578,13 +578,13 @@
   },
   "Bulbous Toothfish": {
     "base_id_offset": 37,
-    "region": "Open Ocean",
+    "region": "The Pale Reach",
     "location_group": "Encyclopedia",
     "expansion": "PaleReach",
     "requirements": [
       {
         "type": "catch_type",
-        "value": "Coastal"
+        "value": "Ice"
       }
     ],
     "can_catch_rod": true,
@@ -1351,7 +1351,7 @@
   },
   "Flayed Mackerel": {
     "base_id_offset": 87,
-    "region": "Open Ocean",
+    "region": "Gale Cliffs",
     "location_group": "Encyclopedia",
     "expansion": "Base",
     "requirements": [
@@ -3161,7 +3161,7 @@
   },
   "Tiger Mackerel": {
     "base_id_offset": 204,
-    "region": "Open Ocean",
+    "region": "Gale Cliffs",
     "location_group": "Encyclopedia",
     "expansion": "Base",
     "requirements": [
@@ -3894,8 +3894,11 @@
     "expansion": "Base",
     "requirements": [
       {
+        "type": "items",
+        "all_of": ["Improved Trawl Net Researched"]
+      },
+      {
         "type": "research",
-        "all_of": ["Improved Trawl Net Researched"],
         "cost": 2
       }
     ]
@@ -4152,9 +4155,9 @@
       }
     ]
   },
-  "The Marrows - Lumber 1(I-6)": {
+  "Open Ocean - Lumber 1(I-6)": {
     "base_id_offset": 276,
-    "region": "The Marrows",
+    "region": "Open Ocean",
     "location_group": "Dredge",
     "expansion": "Base",
     "requirements": [
@@ -4188,9 +4191,9 @@
       }
     ]
   },
-  "Open Ocean - Lumber 1(L-10)": {
+  "The Marrows - Lumber 1(L-10)": {
     "base_id_offset": 279,
-    "region": "Open Ocean",
+    "region": "The Marrows",
     "location_group": "Dredge",
     "expansion": "Base",
     "requirements": [
@@ -4200,9 +4203,9 @@
       }
     ]
   },
-  "Open Ocean - Scrap 1(K-10)": {
+  "The Marrows - Scrap 1(K-10)": {
     "base_id_offset": 280,
-    "region": "Open Ocean",
+    "region": "The Marrows",
     "location_group": "Dredge",
     "expansion": "Base",
     "requirements": [
@@ -4260,9 +4263,9 @@
       }
     ]
   },
-  "Open Ocean - Lumber 2(K-10)": {
+  "The Marrows - Lumber 2(K-10)": {
     "base_id_offset": 285,
-    "region": "Open Ocean",
+    "region": "The Marrows",
     "location_group": "Dredge",
     "expansion": "Base",
     "requirements": [
@@ -4272,9 +4275,9 @@
       }
     ]
   },
-  "Open Ocean - Goblet(K-10)": {
+  "The Marrows - Goblet(K-10)": {
     "base_id_offset": 286,
-    "region": "Open Ocean",
+    "region": "The Marrows",
     "location_group": "Dredge",
     "expansion": "Base",
     "requirements": [
@@ -4284,9 +4287,9 @@
       }
     ]
   },
-  "Open Ocean - Cloth 1(K-10)": {
+  "The Marrows - Cloth 1(K-10)": {
     "base_id_offset": 287,
-    "region": "Open Ocean",
+    "region": "The Marrows",
     "location_group": "Dredge",
     "expansion": "Base",
     "requirements": [
@@ -4308,9 +4311,9 @@
       }
     ]
   },
-  "The Marrows - Silver Trinket(I-6)": {
+  "Open Ocean - Silver Trinket(I-6)": {
     "base_id_offset": 289,
-    "region": "The Marrows",
+    "region": "Open Ocean",
     "location_group": "Dredge",
     "expansion": "Base",
     "requirements": [
@@ -4344,9 +4347,9 @@
       }
     ]
   },
-  "The Marrows - Scrap 2(I-6)": {
+  "Open Ocean - Scrap 2(I-6)": {
     "base_id_offset": 292,
-    "region": "The Marrows",
+    "region": "Open Ocean",
     "location_group": "Dredge",
     "expansion": "Base",
     "requirements": [
@@ -4768,9 +4771,9 @@
       }
     ]
   },
-  "Twisted Strand - Dog Tag 1(H-13)": {
+  "Open Ocean - Dog Tag 1(H-13)": {
     "base_id_offset": 327,
-    "region": "Twisted Strand",
+    "region": "Open Ocean",
     "location_group": "Dredge",
     "expansion": "Base",
     "requirements": [
@@ -4780,9 +4783,9 @@
       }
     ]
   },
-  "Twisted Strand - Lumber 1(H-14)": {
+  "Open Ocean - Lumber 1(H-14)": {
     "base_id_offset": 328,
-    "region": "Twisted Strand",
+    "region": "Open Ocean",
     "location_group": "Dredge",
     "expansion": "Base",
     "requirements": [
@@ -6371,5 +6374,27 @@
         "cost": 3
       }
     ]
+  },
+  "A Place to Rest - Deliver Materials":{
+    "base_id_offset": 456,
+	"region": "The Marrows",
+	"location_group": "Pursuit",
+	"expansion": "Base",
+    "requirements": [
+      {
+        "type": "items",
+        "all_of": ["Dredge Crane"]
+      }]
+  },
+  "A Place to Rest - Escort Builder":{
+    "base_id_offset": 457,
+	"region": "The Marrows",
+	"location_group": "Pursuit",
+	"expansion": "Base",
+    "requirements": [
+      {
+        "type": "items",
+        "all_of": ["A Place to Rest - Returned to Builder"]
+      }]
   }
 }

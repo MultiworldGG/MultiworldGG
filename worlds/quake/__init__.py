@@ -952,7 +952,7 @@ class Q1World(World):
             self.options.difficulty, self.options.difficulty.option_medium
         )[inv_type]
 
-        # One base item and rest is capacity, unless we have progressive inventories
+        # Create the specified amount of base items as progression, so that they can be counted for logic
         progressive = self.options.progressive_inventories
         if progressive:
             main_name = f"Progressive {inv_type}"
@@ -960,9 +960,8 @@ class Q1World(World):
         else:
             main_name = inv_type
             cap_name = f"{inv_type} Capacity"
-        required_list = [self.create_item(main_name, True)] + [
-            self.create_item(cap_name, True)
-            for _ in range(required - 1 + prog_override_amount)
+        required_list = [self.create_item(main_name, True)
+            for _ in range(required + prog_override_amount)
         ]
         # Fill pool with capacity up to total amount
         useful_list = [

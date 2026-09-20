@@ -55,7 +55,7 @@ class CupheadWorld(CachedRuleBuilderWorld):
 
     GAME_NAME: ClassVar[str] = "Cuphead"
 
-    APWORLD_SEM_VERSION: ClassVar[tuple[int, int, int, int]] = (0, 2, 2, 10)
+    APWORLD_SEM_VERSION: ClassVar[tuple[int, int, int, int]] = (0, 2, 2, 11)
     APWORLD_VERSION_POSTFIX: ClassVar[str] = ""
     APWORLD_VERSION_POSTFIX_NO: ClassVar[int] = 10
 

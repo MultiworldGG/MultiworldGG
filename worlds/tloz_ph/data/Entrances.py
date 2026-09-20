@@ -5,6 +5,30 @@ else:
     from ..Subclasses import PHTransition, EntranceGroups, OPPOSITE_ENTRANCE_GROUPS
 
 
+def event(reg1:str, reg2: str="") -> dict:
+    return {
+        "two_way": False,
+        "entrance_region": reg1,
+        "exit_region": reg2 if reg2 else reg1 + " event",
+        "entrance": (0x0, 0x0, 0xF),
+        "type": EntranceGroups.EVENT,
+        "direction": EntranceGroups.NONE,
+        "island": EntranceGroups.NONE
+    }
+
+def silent_event(reg1: str, reg2: str, reverse_entrance=""):
+    return {
+        "return_name": reverse_entrance if reverse_entrance else f"{reg2} -> {reg1}",
+        "two_way": False,
+        "entrance_region": reg1,
+        "exit_region": reg2,
+        "extra_data": {"silent_event": True},
+        "entrance": (0x0, 0x0, 0xF),
+        "type": EntranceGroups.EVENT,
+        "direction": EntranceGroups.NONE,
+        "island": EntranceGroups.NONE
+    }
+
 ENTRANCE_DATA = {
     # "Name": {
     #   "return_name": str. what to call the vanilla connecting entrance that generates automatically
@@ -2092,7 +2116,7 @@ EVENT_DATA = {
         "direction": EntranceGroups.NONE,
         "island": EntranceGroups.NONE,
     },
-    "GOAL": {
+    "GOAL: Zauz": {
         "two_way": False,
         "entrance_region": "Goal",
         "exit_region": "Goal Event",
@@ -2171,34 +2195,31 @@ EVENT_DATA = {
         "direction": EntranceGroups.NONE,
         "island": EntranceGroups.NONE,
     },
-    "EVENT: Open Eddo's Door": {
-        "two_way": False,
-        "entrance_region": "Eddo's Workshop",
-        "exit_region": "Eddo Event",
-        "entrance": (0x13, 0xB, 0x0),
-        "type": EntranceGroups.EVENT,
-        "direction": EntranceGroups.NONE,
-        "island": EntranceGroups.NONE,
-    },
-    "EVENT: Gust Windmills": {
-        "two_way": False,
-        "entrance_region": "Gust North Sandworms",
-        "exit_region": "Gust North Event",
-        "entrance": (0x13, 0xB, 0x0),
-        "type": EntranceGroups.EVENT,
-        "direction": EntranceGroups.NONE,
-        "island": EntranceGroups.NONE,
-    },
-    "EVENT: Defeat Cubus Sisters": {
-        "two_way": False,
-        "entrance_region": "Post Cubus Sisters",
-        "exit_region": "Post Cubus Sisters Event",
-        "extra_data": {"shared_event": True},
-        "entrance": (0x4, 0x0, 0x0),
-        "type": EntranceGroups.EVENT,
-        "direction": EntranceGroups.NONE,
-        "island": EntranceGroups.NONE,
-    }
+    "EVENT: Open Eddo's Door": event("Eddo's Workshop", "Eddo Event"),
+    "EVENT: Gust Windmills": event("Gust North Sandworms", "Gust North Event"),
+    "EVENT: Defeat Cubus Sisters": event("Post Cubus Sisters", "Post Cubus Sisters Event"),
+
+    # Silent Events
+    "EVENT: Goron NW Bridge Shortcut": silent_event("Goron NW Shortcut", "Goron NW Outside Temple"),
+    "EVENT: Mercay NE Freedle Island Bridge": silent_event("Mercay NE", "Mercay NW Freedle Island"),
+    "EVENT: Goron NE Middle Bomb Wall": silent_event("Goron NE Middle", "Goron NE"),
+    "EVENT: Goron NE South Bomb Wall": silent_event("Goron NE South", "Goron NE"),
+    "EVENT: Goron NW Like Like Spikes": silent_event("Goron NW Outside Temple", "Goron NW Like Like"),
+
+    "EVENT: Ruins SE Bridge Shortcut": silent_event("Ruins SE Return Bridge West", "Ruins SE Return Bridge East"),
+    "EVENT: Frost SE Ice Spikes": silent_event("Frost SE Exit", "Frost SE"),
+    "EVENT: Uncharted Island Bridge": silent_event("Uncharted Outside Cave", "Uncharted Island"),
+    "EVENT: Molida North Open Temple Door": silent_event("Molida Outside Temple", "Molida North"),
+    "EVENT: Cannon Island Eddo's Bomb Blocks": silent_event("Cannon Outside Eddo", "Cannon Bomb Garden"),
+    "EVENT: Sun Lake Cave Bomb Blocks": silent_event("Sun Lake Cave", "Sun Lake Cave Back"),
+
+    "EVENT: Temple of Fire Blue Warp": silent_event("ToF 1F", "ToF 4F"),
+    "EVENT: Temple of Wind Blue Warp": silent_event("ToW 1F", "ToW 2F"),
+    "EVENT: Temple of Courage Blue Warp": silent_event("ToC 1F", "ToC 3F"),
+    "EVENT: Goron Temple Blue Warp": silent_event("GT 1F", "GT B4"),
+    "EVENT: Temple of Ice Blue Warp": silent_event("ToI 1F", "ToI Blue Warp"),
+    "EVENT: Mutoh's Temple Blue Warp": silent_event("MT 1F", "MT B3"),
+
 }
 
 
@@ -2214,46 +2235,3 @@ entrance_id_to_entrance = {d.id: d for d in ENTRANCES.values()}
 # print({key: value for key, value in counter.items() if value != 1})
 
 
-
-if __name__ == "__main__":
-    sorted_entrances = sorted(ENTRANCES, key=lambda x: (ENTRANCES[x].island, ENTRANCES[x].category_group, ENTRANCES[x].direction, ENTRANCES[x].name))
-    data = [
-        {
-            "name": "Bannan Salvatore Cave"
-        },
-        {
-            "name": "Bannan Wayfarer Cave"
-        },
-        {
-            "name": "Bannan Cave East Exit"
-        },
-        {
-            "name": "Bannan Cave West Exit"
-        },
-        {
-            "name": "Wayfarer's Exit"
-        },
-        {
-            "name": "Ocean NW Bannan"
-        },
-        {
-            "name": "Bannan Boat"
-        },
-        {"name": "Bannan West Hut"},
-        {"name": "Bannan West Cave"},
-        {"name": "Keese Passage West Exit"},
-        {"name": "Bannan East Cave"},
-        {"name": "Keese Passage East Exit"}
-    ]
-    process = [i.get("name") for i in data]
-    res = [i for i in sorted_entrances if i in process]
-    for i in res:
-        print("{" + f"\"name\": \"{i}\"" + "}, ")
-    # print(f"len {len(ENTRANCES)}")
-
-
-    # for name, data in ENTRANCES.items():
-    #     print(f"{name}:", "{")
-    #     for k, v in data.items():
-    #         print(f"\t{k}: {v}")
-    #     print("},")

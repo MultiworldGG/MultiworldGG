@@ -95,7 +95,7 @@ STAGE_FLAGS = {
     11: [0xC4, 0xDC, 0x06, 0x00],  # Mercay
     39: [0x40, 0x00, 0x00, 0x00],  # Mountain Passage
     37: [0xFE, 0xBE, 0xFB, 0xAF],  # TotOK
-    0: [0x82, 0xFC, 0x66, 0xED],  # Sea
+    0: [0x82, 0xFC, 0x26, 0xED],  # Sea
     13: [0xEC, 0x18, 0x17, 0x00],  # Ember
     28: [0x8E, 0xB9, 0x00, 0x00],  # ToF
     12: [0x34, 0x01, 0x00, 0x00],  # Molida
@@ -115,7 +115,7 @@ STAGE_FLAGS = {
     0x1A: [0x02, 0x00, 0x00, 0x00],  # Uncharted
 }
 
-SKIP_OCEAN_FIGHTS_FLAGS = [0x86, 0xFC, 0x66, 0xFD]
+SKIP_OCEAN_FIGHTS_FLAGS = [0x86, 0xFC, 0x26, 0xFD]
 SPAWN_B3_REAPLING_FLAGS = [0xC2, 0x10, 0xED, 0x08]
 
 STAGES = {
@@ -171,9 +171,11 @@ STAGES = {
     49: "Bellum",
     50: "Bellum's Ghost Ship",
     51: "Bellumbeck",
-    0x36: "Credits",
+    0x36: "Credits",  # 54
 
 }
+
+SPIRITS = ["Power", "Wisdom", "Courage"]
 
 ISLANDS = [
     "Mercay Island",
@@ -333,6 +335,8 @@ STAGE_LOCATION_GROUPS = {
         "TotOK B12 Kill Everything Chest",
         "TotOK B12 Phantom Chest",
         "TotOK B13 Sea Chart Chest",
+        "TotOK Flooded Chamber Left Chest",
+        "TotOK Flooded Chamber Right Chest"
     ],
     "Ocean": [
         "Ocean SW Salvage Courage Crest",
@@ -954,11 +958,15 @@ CATEGORY_LOCATION_GROUPS = {
         "TotOK B3 SW Chest",
         "TotOK B3 SE Chest",
     ],
+    "Free Standing Locations": [
+        "TotOK B9 Square Crystal",
+        "TotOK B12 Warp Phantom Force Gem"
+    ],
 }
 
 LOCATION_GROUPS = CATEGORY_LOCATION_GROUPS | STAGE_LOCATION_GROUPS
 
-DUNGEON_NAMES = [
+DUNGEON_NAMES: list[str] = [
     "Mountain Passage",
     "Temple of the Ocean King",
     "Temple of Fire",
@@ -970,6 +978,20 @@ DUNGEON_NAMES = [
     "Ghost Ship"
 ]
 
+DUNGEON_ABBREVIATIONS: dict[str, str] = {
+    "TotOK": "Temple of the Ocean King",
+    "ToF": "Temple of Fire",
+    "ToW": "Temple of Wind",
+    "ToC": "Temple of Courage",
+    "GT": "Goron Temple",
+    "ToI": "Temple of Ice",
+    "MT": "Mutoh's Temple",
+    "GS": "Ghost Ship"
+}
+DUNGEON_ABBREVIATIONS_LOWER: dict[str, str] = {
+    k.lower(): v for k, v in DUNGEON_ABBREVIATIONS.items()
+}
+
 DUNGEON_TO_BOSS_ITEM_LOCATION = {
     "Temple of the Ocean King": "TotOK B13 Sea Chart Chest",
     "Temple of Fire": "Blaaz Boss Reward",
@@ -980,6 +1002,9 @@ DUNGEON_TO_BOSS_ITEM_LOCATION = {
     "Mutoh's Temple": "Eox Boss Reward",
     "Ghost Ship": "_gs",
 }
+
+DUNGEON_TO_BOSS_ITEM_LOCATION_GS = DUNGEON_TO_BOSS_ITEM_LOCATION.copy()
+DUNGEON_TO_BOSS_ITEM_LOCATION_GS["Ghost Ship"] = "Cubus Sisters Ghost Key"
 
 BOSS_LOCATION_TO_DUNGEON = {
     "TotOK B13 Sea Chart Chest": "Temple of the Ocean King",
@@ -1010,6 +1035,8 @@ BOSS_STAIRCASES = {
     "MT Enter Boss": "Mutoh's Temple",
 }
 
+DUNGEON_TO_BOSS_ENTRANCE = {d: e for e, d in BOSS_STAIRCASES.items()}
+
 BOSS_LOOKUP = {
     "Temple of Fire": "Blaaz",
     "Temple of Wind": "Cyclok",
@@ -1030,9 +1057,29 @@ BOSS_ENTRANCE_LOOKUP = {
     "Gleeok Exit": "Gleeok Boss Reward",
     "Eox Exit": "Eox Boss Reward",
 }
+BOSS_LOC_TO_EXIT = {l: e for e, l in BOSS_ENTRANCE_LOOKUP.items()}
+
+KEY_COUNTS: dict[str, int] = {
+    "Mountain Passage": 3,
+    "Temple of the Ocean King": 6,
+    "Temple of Fire": 3,
+    "Temple of Wind": 1,
+    "Temple of Courage": 3,
+    "Temple of Ice": 3,
+    "Mutoh's Temple": 2,
+}
+
+BOSS_KEY_DUNGEONS = [
+    "Temple of Fire",
+    "Temple of Wind",
+    "Temple of Courage",
+    "Goron Temple",
+    "Temple of Ice",
+    "Mutoh's Temple",
+]
 
 DUNGEON_KEY_DATA = {
-    39: {
+    0x27: {
         "name": "Mountain Passage",
         "address": PHAddr.small_key_storage_1,
         "filter": 0x0C,
@@ -1156,10 +1203,10 @@ UT_EVENT_DATA = {
          "offset": 1},
         {"address": PHAddr.goron_bomb_blocks,
          "value": 0x8,
-         "event": "gms"},
+         "entrance": "EVENT: Goron NE Middle Bomb Wall"},
         {"address": PHAddr.goron_bomb_blocks,
          "value": 0x1,
-         "event": "gss"}],
+         "entrance": "EVENT: Goron NE South Bomb Wall"}],
     0x1003: [
         {"address": PHAddr.adv_flags_35,
          "value": 0x2,
@@ -1167,89 +1214,79 @@ UT_EVENT_DATA = {
     ],
     0x1002: {"address": PHAddr.adv_flags_34,
              "value": 0x20,
-             "entrance": "EVENT: Goron SW Kill Yellow Chus"},
+             "entrance": "EVENT: Goron SW Kill Yellow Chus"
+             },
     0x130B: {"address": PHAddr.adv_flags_6,
              "value": 0x2,
-             "entrance": "EVENT: Open Eddo's Door", },
+             "entrance": "EVENT: Open Eddo's Door"
+             },
     0xe01: {"address": "stage_flags",
             "value": 0x20,
-            "entrance": "EVENT: Gust Windmills", },
+            "entrance": "EVENT: Gust Windmills"
+            },
     0x1000: [{"address": "stage_flags",
               "value": 0x2,
-              "event": "gsb"},
+              "entrance": "EVENT: Goron NW Bridge Shortcut"
+              },
              {"address": "stage_flags",
               "value": 0x20,
-              "event": "gls"},
+              "entrance": "EVENT: Goron NW Like Like Spikes"},
              ],
     0xB02: {"address": "stage_flags",
             "value": 0x1,
-            "event": "fi",
-            "offset": 1},
+            "entrance": "EVENT: Mercay NE Freedle Island Bridge",
+            "offset": 1
+            },
     0x1203: {"address": "stage_flags",
              "value": 0x80,
-             "event": "rb",
-             "offset": 1},
+             "entrance": "EVENT: Ruins SE Bridge Shortcut",
+             "offset": 1
+             },
     0xF03: {"address": "stage_flags",
             "value": 0x10,
-            "event": "fif",
-            "offset": 2},
+            "entrance": "EVENT: Frost SE Ice Spikes",
+            "offset": 2
+            },
     0x1A00: {"address": PHAddr.adv_flags_38,
              "value": 0x10,
-             "event": "ub"},
-    0xd01: {"address": "stage_flags",
+             "entrance": "EVENT: Uncharted Island Bridge"
+             },
+    0xC01: {"address": "stage_flags",
             "value": 0x40,
-            "event": "md"},
+            "entrance": "EVENT: Molida North Open Temple Door"
+            },
     0x1c03: {"address": "stage_flags",
              "value": 0x80,
-             "event": "tfw",
-             "offset": 1},
+             "entrance": "EVENT: Temple of Fire Blue Warp",
+             "offset": 1
+             },
     0x1d04: {"address": PHAddr.tow_warp,
              "value": 0x1,
-             "event": "tww"},
+             "entrance": "EVENT: Temple of Wind Blue Warp"
+             },
     0x1e03: {"address": PHAddr.toc_warp,
              "value": 0x1,
-             "event": "tcw"},
+             "entrance": "EVENT: Temple of Courage Blue Warp"},
     0x2004: {"address": "stage_flags",
              "value": 0x80,
-             "event": "gtw",
+             "entrance": "EVENT: Goron Temple Blue Warp",
              "offset": 3},
     0x1f02: {"address": PHAddr.toi_warp,
              "value": 0x1,
-             "event": "tiw"},
+             "entrance": "EVENT: Temple of Ice Blue Warp"},
     0x2105: {"address": "stage_flags",
              "value": 0x10,
-             "event": "mtw",
+             "entrance": "EVENT: Mutoh's Temple Blue Warp",
              "offset": 1},
     0x1300: {"address": PHAddr.cannon_bomb_blocks,
              "value": 0x1,
-             "event": "cb"},
+             "entrance": "EVENT: Cannon Island Eddo's Bomb Blocks"},
     0xC0A: {"address": PHAddr.molida_bomb_blocks,
             "value": 0x1,
-            "event": "mcb"},
+            "entrance": "EVENT: Sun Lake Cave Bomb Blocks"},
 }
 
 hidden_event_connect = {
-    # Connected on flag read
-    "gsb": ("Goron NW Shortcut", "Goron NW Outside Temple"),
-    "fi": ("Mercay NE", "Mercay NW Freedle Island"),
-    "gms": ("Goron NE Middle", "Goron NE"),
-    "gss": ("Goron NE South", "Goron NE"),
-    "gls": ("Goron NW Outside Temple", "Goron NW Like Like"),
-
-    "rb": ("Ruins SE Return Bridge West", "Ruins SE Return Bridge East"),
-    "fif": ("Frost SE Exit", "Frost SE"),
-    "ub": ("Uncharted Outside Cave", "Uncharted Island"),
-    "md": ("Molida Outside Temple", "Molida North"),
-    "cb": ("Cannon Outside Eddo", "Cannon Bomb Garden"),
-    "mcb": ("Sun Lake Cave", "Sun Lake Cave Back"),
-
-    "tfw": ("ToF 1F", "ToF 4F"),
-    "tww": ("ToW 1F", "ToW 2F"),
-    "tcw": ("ToC 1F", "ToC 3F"),
-    "gtw": ("GT 1F", "GT B4"),
-    "tiw": ("ToI 1F", "ToI Blue Warp"),
-    "mtw": ("MT 1F", "MT B3"),
-
     # map warp connections
     "wsw": ("Menu", "SW Ocean East", "Warp to SW Ocean"),
     "wse": ("Menu", "SE Ocean", "Warp to SE Ocean"),
@@ -1390,17 +1427,6 @@ BOSS_WARP_SCENE_LOOKUP = {
     0x2F00: "Eox Exit",
     0x3000: "Cubus Sisters Blue Warp"
 }
-
-EQUIPPED_SHIP_PARTS_ADDR = [
-    PHAddr.equipped_ship_parts_0,
-    PHAddr.equipped_ship_parts_1,
-    PHAddr.equipped_ship_parts_2,
-    PHAddr.equipped_ship_parts_3,
-    PHAddr.equipped_ship_parts_4,
-    PHAddr.equipped_ship_parts_5,
-    PHAddr.equipped_ship_parts_6,
-    PHAddr.equipped_ship_parts_7,
-]
 
 TREASURE_READ_LIST = {i: (PHAddr.pink_coral_count + i * 4, 4, "Main RAM") for i in range(8)}
 
@@ -1544,7 +1570,7 @@ map_type_lookup = {
     0xb0e: "house",
     0xb0d: "house",
     0xb10: "cave",
-    0xb11: "house",
+    0xb11: "shop",
     0xb12: "cave",
     0xb13: "cave",
     0x1501: "cave",
@@ -1562,7 +1588,7 @@ map_type_lookup = {
     0xc0b: "house",
     0xc0c: "house",
     0xc0d: "house",
-    0xc0e: "house",
+    0xc0e: "shop",
     0xc0f: "cave",
     0x100a: "house",
     0x100b: "house",
@@ -1570,7 +1596,7 @@ map_type_lookup = {
     0x100d: "house",
     0x100f: "house",
     0x100e: "house",
-    0x1014: "house",
+    0x1014: "shop",
     0x1701: "cave",
     0x1700: "ow",
     0x1800: "ow",
@@ -1605,7 +1631,7 @@ map_type_lookup = {
     0xa00: "ship",
     0x900: "ship",
     0x400: "ship",
-    0x500: "ship",
+    0x500: "shop",
     0x600: "ship",
     0xD00: "ow",
     0xD01: "ow",
@@ -1706,18 +1732,7 @@ model_resets = {
     0x82: "Big Rupoor (-50)",
 }
 
-shop_location_lookup = {
-    0x2d: "Island Shop Power Gem",
-    0x28: "Island Shop Quiver",
-    0x2a: "Island Shop Bombchu Bag",
-    0xa: "Island Shop Heart Container"
-}
-
-SHOP_SCENES = [
-    0xB11,
-    0xc0e,
-
-]
+SHOP_SCENES = [0xb11, 0x500, 0x1014, 0xC0E]
 
 @dataclass
 class DigSpotData:
@@ -1989,6 +2004,7 @@ idents_0: dict[int, str] = {
     0x17a1a8: "Barrel",
     0x157054: "Bomb Flower",
     0x15aaac: "Chestnut",
+    0x16cd68: "Barrel",  # Ship
 
     0x15741c: "Peg",
     0x1576d4: "Dirt Pile",
@@ -2021,6 +2037,100 @@ idents_0: dict[int, str] = {
     0x16ccd4: "Grass",
     0x16c9dc: "Pit Trap",
     0x16cc74: "Hammer Catapult"
+}
+
+ACTOR_IDENTS: dict[int, str] = {
+    0x26cc40: "Fairy",
+
+    # NPCs
+    0x183ae0: "Mai",
+    0x183C48: "Beedle",
+
+    # Shop Items
+    0x182e38: "Shop: Bomb Refill",
+    0x183010: "Shop: Arrow Refill",
+    0x182c60: "Shop: Chu Refill",
+    0x18299c: "Shop: Treasure",
+    0x1826d8: "Shop: Potion",
+    0x1828b0: "Shop: Gem",
+    0x1827c4: "Shop: Shield",
+    0x182A88: "Shop: Ship Part",
+    0x1831E8: "Shop: Sold Out",
+    0x1830FC: "Shop: Heart Container",
+    0x182f24: "Shop: Quiver",
+    0x182b74: "Shop: Bombchu Bag",
+    0x182d4c: "Shop: Bomb Bag",
+
+    # Digs
+    0x158134: "Dig Spot",
+
+    # Interface?
+    0x182550: "Quit Button"
+
+}
+
+SHOP_LOCATIONS = {
+    0xb11: {
+        "Treasure": "Mercay Shop Treasure",
+        "Potion3": "Mercay Shop Red Potion",
+        "Potion5": "Mercay Shop Purple Potion",
+        "Shield": "Mercay Shop Shield",
+        "Bomb Refill": "Mercay Shop Bomb Refill",
+        "Gem": "Island Shop Power Gem",
+        "Quiver": "Island Shop Quiver",
+        "Bombchu Bag": "Island Shop Bombchu Bag",
+        "Heart Container": "Island Shop Heart Container"
+    },
+    0xc0e: {
+        "Potion3": "Molida Shop Red Potion",
+        "Potion5": "Molida Shop Purple Potion",
+        "Shield": "Molida Shop Shield",
+        "Bomb Refill": "Molida Shop Bomb Refill",
+        "Arrow Refill": "Molida Shop Arrow Refill",
+        "Gem": "Island Shop Power Gem",
+        "Quiver": "Island Shop Quiver",
+        "Bombchu Bag": "Island Shop Bombchu Bag",
+        "Heart Container": "Island Shop Heart Container"
+    },
+    0x1014: {
+        "Potion3": "Goron Shop Yellow Potion",
+        "Potion5": "Goron Shop Purple Potion",
+        "Shield": "Goron Shop Shield",
+        "Arrow Refill": "Goron Shop Arrow Refill",
+        "Chu Refill": "Goron Shop Bombchu Refill",
+        "Gem": "Island Shop Power Gem",
+        "Quiver": "Island Shop Quiver",
+        "Bombchu Bag": "Island Shop Bombchu Bag",
+        "Heart Container": "Island Shop Heart Container"
+    },
+    0x500: {
+        "Ship Part1": "Beedle Shop Top Ship Part",
+        "Ship Part2": "Beedle Shop Bottom Ship Part",
+        "Potion3": "Beedle Shop Red Potion",
+        "Treasure": "Beedle Shop Treasure",
+        "Potion5": "Beedle Shop Purple Potion",
+        "Bomb Bag": "Beedle Shop Bomb Bag",
+        "Gem": "Beedle Shop Wisdom Gem",
+    },
+    0x501: {  # Masked beedle variant
+        "Ship Part1": "Masked Beedle Top Ship Part",
+        "Ship Part2": "Masked Beedle Bottom Ship Part",
+        "Potion3": "Masked Beedle Red Potion",
+        "Treasure": "Masked Beedle Treasure",
+        "Potion5": "Masked Beedle Yellow Potion",
+        "Heart Container": "Masked Beedle Heart Container",
+        "Gem": "Masked Beedle Courage Gem",
+    }
+}
+
+
+AMMO_TYPE_LOOKUP = ["bomb", "arrow", "chu"]
+
+held_trigger_scenes = [0x250c, 0x2510]
+
+held_actor_ids: dict[int, str] = {
+    0x16BEE4: "Square Crystal",
+    0x16BDCC: "Force Gem"
 }
 
 map_object_idents: dict[int, str] = {
@@ -2057,6 +2167,11 @@ pedestal_rooms: list[int] = [
     0x250C,
     0x2510
 ]
+
+DIG_MODELS: list[int] = [
+    0x1a, 0x1b  # removed 0x9, cause that is default, and don't need to store that data
+] + list(range(0x4C, 0x6b))
+
 
 if __name__ == "__main__":
     for cat, value in CATEGORY_LOCATION_GROUPS.items():

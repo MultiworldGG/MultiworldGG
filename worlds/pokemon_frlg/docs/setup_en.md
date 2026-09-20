@@ -3,7 +3,7 @@
 ## Required Software
 
 * [MultiworldGG](https://github.com/MultiworldGG/MultiworldGG/releases)
-* [Pokémon FireRed and LeafGreen apworld](https://github.com/vyneras/Archipelago/releases/latest)
+* For AP: [Pokémon FireRed and LeafGreen apworld](https://github.com/vyneras/Archipelago/releases/latest)
 * [Bizhawk](https://tasvideos.org/BizHawk/ReleaseHistory)
 * An English FireRed or LeafGreen ROM
   * FireRed 1.0 `sha1: 41cb23d8dccc8ebd7c649cd8fbb58eeace6e2fdc`
@@ -11,7 +11,7 @@
   * LeafGreen 1.0 `sha1: 574fa542ffebb14be69902d1d36f1ec0a4afd71e`
   * LeafGreen 1.1 `sha1: 7862c67bdecbe21d1d69ce082ce34327e1c6ed5e`
 
- Place the `pokemon_frlg.apworld` file in your MultiworldGG installation's `custom_worlds` folder (Default location for Windows: `%programfiles%/Archipelago`).
+ For AP: Place the `pokemon_frlg.apworld` file in your Archipelago installation's `custom_worlds` folder (Default location for Windows: `%programfiles%/Archipelago`).
 
 It is recommended you follow the setup guide for Bizhawk in the [Pokémon Emerald Setup Guide](https://multiworld.gg/tutorial/Pokemon%20Emerald/setup/en#configuring-bizhawk).
 
@@ -65,4 +65,4 @@ Pokémon FireRed and LeafGreen has a fully functional map tracker that supports 
 2. Put the tracker pack into packs/ in your PopTracker install.
 3. Open PopTracker, and load the Pokémon FireRed/LeafGreen pack.
 4. For autotracking, click on the "AP" symbol at the top.
-5. Enter the Archipelago server address (the one you connected your client to), slot name, and password.
+5. Enter the MultiworldGG server address (the one you connected your client to), slot name, and password.

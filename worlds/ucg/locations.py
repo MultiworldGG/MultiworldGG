@@ -1,5 +1,7 @@
 from __future__ import annotations
 
+import json
+import pkgutil
 from typing import TYPE_CHECKING
 
 from BaseClasses import Location
@@ -241,8 +243,8 @@ LOCATION_DATA: dict[str, tuple[int, list[str]]] = {
     "4-8: On Heavens No The Chuckles Are Plentiful Peak Rank": (BASE_ID + 1407, ["Nuke", "Stop Markers", "Switch Tiles"]),
     "4-8: On Heavens No The Chuckles Are Plentiful Good Rank": (BASE_ID + 3407, ["Nuke", "Stop Markers", "Switch Tiles"]),
     "4-9: Uncanny Valley Complete": (BASE_ID + 408, ["Jump Pads", "Stop Markers", "Keys", "Nuke"]),
-    "4-9: Uncanny Valley Peak Rank": (BASE_ID + 1408, ["Jump Pads", "Stop Markers"]),
-    "4-9: Uncanny Valley Good Rank": (BASE_ID + 3408, ["Jump Pads", "Stop Markers"]),
+    "4-9: Uncanny Valley Peak Rank": (BASE_ID + 1408, ["Jump Pads", "Stop Markers", "Keys", "Nuke"]),
+    "4-9: Uncanny Valley Good Rank": (BASE_ID + 3408, ["Jump Pads", "Stop Markers", "Keys", "Nuke"]),
     "4-10: Dog Patrol Complete": (BASE_ID + 409, ["Dog"]),
     "4-10: Dog Patrol Peak Rank": (BASE_ID + 1409, ["Dog"]),
     "4-10: Dog Patrol Good Rank": (BASE_ID + 3409, ["Dog"]),
@@ -421,9 +423,9 @@ LOCATION_DATA: dict[str, tuple[int, list[str]]] = {
     "E-7: The Key to Failure Complete": (BASE_ID + 707, ["Breakable Tiles", "Keys", "Jump Pads"]),
     "E-7: The Key to Failure Peak Rank": (BASE_ID + 1707, ["Breakable Tiles", "Keys", "Jump Pads"]),
     "E-7: The Key to Failure Good Rank": (BASE_ID + 3707, ["Breakable Tiles", "Keys", "Jump Pads"]),
-    "E-8: HE'S IN THE WALLS!!! Complete": (BASE_ID + 708, ["Keys", "Jump Pads"]),
-    "E-8: HE'S IN THE WALLS!!! Peak Rank": (BASE_ID + 1708, ["Keys", "Jump Pads"]),
-    "E-8: HE'S IN THE WALLS!!! Good Rank": (BASE_ID + 3708, ["Keys", "Jump Pads"]),
+    "E-8: HE'S IN THE WALLS!!! Complete": (BASE_ID + 708, ["Jump Pads"]),
+    "E-8: HE'S IN THE WALLS!!! Peak Rank": (BASE_ID + 1708, ["Jump Pads"]),
+    "E-8: HE'S IN THE WALLS!!! Good Rank": (BASE_ID + 3708, ["Jump Pads"]),
     "E-9: Infinity Plaza Complete": (BASE_ID + 709, ["Keys", "Breakable Tiles"]),
     "E-9: Infinity Plaza Peak Rank": (BASE_ID + 1709, ["Keys", "Breakable Tiles"]),
     "E-9: Infinity Plaza Good Rank": (BASE_ID + 3709, ["Keys", "Breakable Tiles"]),
@@ -461,6 +463,45 @@ LOCATION_DATA: dict[str, tuple[int, list[str]]] = {
     "UNCANNY_DASH: 250 Score": (BASE_ID + 7009, ["UNCANNY_DASH"]),
 }
 
+# COIN LOCATIONS
+FULL_CLEAR_ID_OFFSET = 8000
+COIN_LOCATION_LEVELS: dict[str, str] = {}
+COIN_LOCATION_NAMES: list[str] = []
+FULL_CLEAR_LOCATION_NAMES: list[str] = []
+
+
+def _load_coin_locations() -> dict[str, tuple[int, list[str]]]:
+    coin_data: dict[str, dict[str, dict]] = json.loads(pkgutil.get_data(__name__, "data/coin_ids.json"))
+    complete_suffix = " Complete"
+    level_names_by_id = {
+        name.split(":", 1)[0]: name[: -len(complete_suffix)]
+        for name in LOCATION_DATA
+        if name.endswith(complete_suffix)
+    }
+
+    coin_locations: dict[str, tuple[int, list[str]]] = {}
+    for level_id_, coins in coin_data.items():
+        level = level_names_by_id[level_id_]
+        complete_id = LOCATION_DATA[f"{level}{complete_suffix}"][0]
+        requirements: list[str] = []
+
+        for coin in coins.values():
+            name = coin["name"]
+            coin_locations[name] = (coin["id"], coin["requires"])
+            COIN_LOCATION_LEVELS[name] = level
+            COIN_LOCATION_NAMES.append(name)
+            requirements += [req for req in coin["requires"] if req not in requirements]
+
+        # A full clear needs the gimmicks of all coins in the level combined
+        name = f"{level} All Coins"
+        coin_locations[name] = (complete_id + FULL_CLEAR_ID_OFFSET, requirements)
+        COIN_LOCATION_LEVELS[name] = level
+        FULL_CLEAR_LOCATION_NAMES.append(name)
+    return coin_locations
+
+
+LOCATION_DATA.update(_load_coin_locations())
+
 # The world class needs a plain name -> id mapping, without the logic requirements attached.
 LOCATION_NAME_TO_ID: dict[str, int] = {name: data[0] for name, data in LOCATION_DATA.items()}
 
@@ -483,26 +524,66 @@ def is_minigame_location(location_name: str) -> bool:
 
 def level_item_name(location_name: str) -> str:
     """"1-4: Breakthrough! Peak Rank" -> "1-4: Breakthrough!" (the level unlock item)."""
+    if location_name in COIN_LOCATION_LEVELS:
+        return COIN_LOCATION_LEVELS[location_name]
     for suffix in LEVEL_LOCATION_SUFFIXES:
         if location_name.endswith(suffix):
             return location_name[: -len(suffix)]
     return location_name
 
 
+def level_id(level_name: str) -> str:
+    """"1-4: Breakthrough!" -> "1-4"."""
+    return level_name.split(":", 1)[0].strip()
+
+
+LEVEL_NAMES: list[str] = list(dict.fromkeys(
+    level_item_name(location_name)
+    for location_name in LOCATION_DATA
+    if not is_minigame_location(location_name)
+))
+
+EXCLUDABLE_LEVEL_IDS: list[str] = [
+    level_id(name) for name in LEVEL_NAMES if items.world_prefix(name) != "0"
+]
+
+
+def get_excluded_level_ids(world: UncannyCatWorld) -> set[str]:
+    """The ids of the levels excluded, upper-cased so "p-14" matches "P-14"."""
+    return {key.strip().upper() for key in world.options.excluded_levels.value}
+
+
 def get_location_names_with_ids(location_names: list[str]) -> dict[str, int | None]:
     return {location_name: LOCATION_NAME_TO_ID[location_name] for location_name in location_names}
 
 
+def get_excluded_coin_locations(world: UncannyCatWorld) -> set[str]:
+    """Coin locations that coinsanity leaves out."""
+    from .options import Coinsanity
+
+    coinsanity = world.options.coinsanity.value
+    if coinsanity == Coinsanity.option_all:
+        return set(FULL_CLEAR_LOCATION_NAMES)
+    if coinsanity == Coinsanity.option_full_clear:
+        return set(COIN_LOCATION_NAMES)
+    return set(COIN_LOCATION_LEVELS)
+
+
 def get_excluded_locations(world: UncannyCatWorld) -> set[str]:
-    """Locations that don't exist under the player's options, and so get neither a check nor an unlock item."""
+    """Removed locations based on options."""
     included_worlds = items.get_included_world_prefixes(world)
     # The goal level is not included
     goal_level = items.GOAL_LEVEL[world.options.goal_level.value]
+    excluded_levels = get_excluded_level_ids(world)
+    excluded_minigames = world.options.excluded_minigames.value
 
-    excluded: set[str] = set()
+    excluded: set[str] = get_excluded_coin_locations(world)
     for location_name in LOCATION_NAME_TO_ID:
         if is_minigame_location(location_name):
             if not world.options.minigames:
+                excluded.add(location_name)
+            # Remove minigames that the player has chosen to remove
+            if any(location_name.startswith(f"{game}: ") for game in excluded_minigames):
                 excluded.add(location_name)
             continue
 
@@ -510,6 +591,8 @@ def get_excluded_locations(world: UncannyCatWorld) -> set[str]:
         if items.world_prefix(level) not in included_worlds:
             excluded.add(location_name)
         elif level == goal_level:
+            excluded.add(location_name)
+        elif level_id(level) in excluded_levels:
             excluded.add(location_name)
         elif not world.options.peak_checks and location_name.endswith(" Peak Rank"):
             excluded.add(location_name)

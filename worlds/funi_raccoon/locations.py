@@ -52,6 +52,7 @@ LOCATION_NAME_TO_ID = {
     "Store Goo": 1056,
     "Store Beenie the Birthday Boy": 1057,
     "Store Fan": 1059,
+    "Store Factory Sign": 1060,
     "Store Letter B": 1061,
     "Store Beenie, Our Savior": 1062,
     "Store Candle": 1063,
@@ -162,10 +163,15 @@ LOCATION_NAME_TO_ID = {
     "Store Average Canadian": 1174,
     "Store Cheese Wife": 1175,
     "Store Brazil Knight": 1176,
-    "Store Doggy": 1177,
-    "Store Real Football": 1178,
+    "Store Real Football": 1177,
+    "Store Doggy": 1178,
     "Store Hintblo": 1179,
     "Store Funi Raccoon": 1180,
+    "Store Good Engine": 1181,
+    "Store Outdoor Chair": 1182,
+    "Store Lightning Rod": 1183,
+    "Store Robin P. Bobin": 1184,
+    "Store Gacha Machine": 1185,
     
     "Get 1000 Score with Kei Truck": 2001,
     "Get 2000 Score with Kei Truck": 2002,
@@ -193,10 +199,10 @@ LOCATION_NAME_TO_ID = {
     "Find Media Player Hat": 6006,
     "Find Fridge Crown":     6007,
     "Find Patty Hat":        6008,
-    "Eat Green Mystical Gem":  7001,
-    "Eat Blue Mystical Gem":   7002,
-    "Eat Purple Mystical Gem": 7003,
-    "Eat Red Mystical Gem":    7004,
+    "Eat Green Mystical Jewel":  7001,
+    "Eat Blue Mystical Jewel":   7002,
+    "Eat Purple Mystical Jewel": 7003,
+    "Eat Red Mystical Jewel":    7004,
     
     # --- Euro collectibles ---
     "Norwich: Euro at train station":               8001,
@@ -224,7 +230,6 @@ LOCATION_NAME_TO_ID = {
     "City: Euro under city on girders 4":           8023,
     "City: Euro near cheese wheel":                 8024,
     "Village: Euro on castle":                      8025,
-    "Village: Euro near furnace":                   8026,
     "Wastes: Euro on top of breakfast building":    8027,
     "Wastes: Euro on top of chinese building":      8028,
     "Wastes: Euro on lower end of chinese building": 8029,
@@ -246,10 +251,12 @@ LOCATION_NAME_TO_ID = {
     "Desert: Euro on blue house roof in fridge land": 8045,
     "Desert: Euro in BLMB nuclear reactor":         8046,
     "Brazil: Euro on middle hill":                  8047,
-    "Hat Store: Euro from saving Toastie":          8048,
+    "Hat Store: Euro reward after saving Toastie":  8048,
 
     # --- Random Extras ---
     "Complete Behrman Speedway in under 1 minute": 9001,
+    "Unlock Tony/Fork Vehicle": 9002,
+    "Unlock Horse Vehicle":     9003,
 }
 
 
@@ -292,7 +299,7 @@ LOCATION_REGION: dict[str, str] = {
     # HAT STORE
     "Store Mr. Heel":                             "HAT STORE",
     "Store Ms. Heel":                             "HAT STORE",
-    "Hat Store: Euro from saving Toastie":        "HAT STORE",
+    "Hat Store: Euro reward after saving Toastie": "HAT STORE",
 
     # Cleaners
     "Store Washing Machine":                      "Cleaners",
@@ -301,7 +308,7 @@ LOCATION_REGION: dict[str, str] = {
     "Store Gizmo Cat":                            "Da Waaaater Zoooone",
     "Find Gizmo Cat":                             "Da Waaaater Zoooone",
     "Store Fan":                                  "Da Waaaater Zoooone",
-    "Eat Green Mystical Gem":                     "Da Waaaater Zoooone",
+    "Eat Green Mystical Jewel":                   "Da Waaaater Zoooone",
     "Water Zone: Euro under stairs underwater":   "Da Waaaater Zoooone",
     
     # Raccoon Central Station
@@ -341,6 +348,7 @@ LOCATION_REGION: dict[str, str] = {
     "Store Beach Ball":                           "Beenie HQ",
     "Store Crayon":                               "Beenie HQ",
     "Store Funi Marketable Plushie":              "Beenie HQ",
+    "Store Factory Sign":                         "Beenie HQ",
 
     # Beenie Factory
     "Store Marketable Plushie Box":               "Beenie Factory",
@@ -379,9 +387,7 @@ LOCATION_REGION: dict[str, str] = {
 
     # Fields
     "Store Feral Dog":                            "Fields",
-    # Store Windmill is storable from Fields or from Blimbo Village once Act 3 is
-    # open, so it's hosted in Beenie HQ (skipping the Goo gate into Fields) with an
-    # explicit rule in rules.py.
+    # This has a more explicit rule in the rules.py, but is kinda jank and bad I don't like this very much will change later
     "Store Windmill":                             "Beenie HQ",
     "Store Crisp":                                "Fields",
     "Store Crisps Undying Love":                  "Fields",
@@ -393,7 +399,7 @@ LOCATION_REGION: dict[str, str] = {
     # Howth
     "Store Street Lamp":                          "Howth",
     "Store Kettle":                               "Howth",
-    "Eat Blue Mystical Gem":                      "Howth",
+    "Eat Blue Mystical Jewel":                    "Howth",
 
     # --- Act 3 (35 items) ---
     
@@ -407,11 +413,9 @@ LOCATION_REGION: dict[str, str] = {
     "Store Under Construction":                   "Blimbo Village",
     "Store ROAD NOT DONE":                        "Blimbo Village",
     "Store Old Ass Rusty Ass Key":                "Blimbo Village",
-    "Store Fone":                                 "Blimbo Village",
     "Store Plimbo":                               "Blimbo Village",
     "Find Media Player Hat":                      "Blimbo Village",
     "Village: Euro on castle":                    "Blimbo Village",
-    "Village: Euro near furnace":                 "Blimbo Village",
     "Purchase Kei Truck Radio":                   "Blimbo Village",
     "Purchase Kei Truck Toaster":                 "Blimbo Village",
     "Purchase Kei Truck Boost":                   "Blimbo Village",
@@ -427,6 +431,12 @@ LOCATION_REGION: dict[str, str] = {
     "Store Police Car":                           "Petrol Station",
     "Store Knifedog":                             "Petrol Station",
     "Store Bomb":                                 "Petrol Station",
+    "Store Outdoor Chair":                        "Petrol Station",
+    "Store Lightning Rod":                        "Petrol Station",
+    "Store Gacha Machine":                        "Petrol Station",
+    "Store Good Engine":                          "Petrol Station", # Also requires Tony Vehicle
+    "Store Coffee Shop (closed)":                 "Petrol Station",
+    "Unlock Horse Vehicle":                       "Petrol Station",
 
     # Bildal Mines (from Blimbo Village)
     "Store Pickaxe":                              "Bildal Mines",
@@ -443,15 +453,14 @@ LOCATION_REGION: dict[str, str] = {
     "Store Radio Blimbo":                         "Garden World",
     
     # Mikk Barge
-    "Eat Purple Mystical Gem":                    "Mikk Barge",
-    "Store Mikk Masive Sign":                    "Mikk Barge",
+    "Eat Purple Mystical Jewel":                  "Mikk Barge",
+    "Store Mikk Masive Sign":                     "Mikk Barge",
 
     # The Forest
     "Store Eel Can":                              "The Forest",
     "Find Raccoon Hat":                           "The Forest",
 
     # Trasco Carpark
-    "Store Coffee Shop (closed)":                 "Trasco Carpark",
     "Store Trolley":                              "Trasco Carpark",
     "Store Fridge Key":                           "Trasco Carpark",
     # Store Fridge is reachable from Trasco Carpark or by taking the train to Brazil,
@@ -484,6 +493,7 @@ LOCATION_REGION: dict[str, str] = {
     "Store Dice":                                 "Blimbo City",
     "Store Average Canadian":                     "Blimbo City",
     "Store Apple":                                "Blimbo City",
+    "Store Fone":                                 "Blimbo City",
     "City: Euro on watertower":                   "Blimbo City",
     "City: Euro near boat on edge of city":       "Blimbo City",
     "City: Euro at Robin P. Bobin Store":         "Blimbo City",
@@ -494,6 +504,10 @@ LOCATION_REGION: dict[str, str] = {
     "City: Euro under city on girders 3":         "Blimbo City",
     "City: Euro under city on girders 4":         "Blimbo City",
     "City: Euro near cheese wheel":               "Blimbo City",
+
+    # The Forklift Problem (from Blimbo City)
+    "Store Robin P. Bobin":                       "The Forklift Problem",
+    "Unlock Tony/Fork Vehicle":                   "The Forklift Problem",
 
     # Pub (from Blimbo City)
     "Store Cheeky Pint":                          "Pub",
@@ -541,7 +555,7 @@ LOCATION_REGION: dict[str, str] = {
     "Store Lughling":                             "Cliffs of Nowher",
 
     # Da Dryyyy Zoooone
-    "Eat Red Mystical Gem":                       "Da Dryyyy Zoooone",
+    "Eat Red Mystical Jewel":                     "Da Dryyyy Zoooone",
 
     # Municipal Wastes
     "Store Chairapist":                           "Municipal Wastes",

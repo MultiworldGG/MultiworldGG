@@ -1,11 +1,8 @@
 from dataclasses import dataclass
-from datetime import datetime
-from .data.Entrances import ENTRANCES
-
 from Options import Choice, DeathLink, DefaultOnToggle, PerGameCommonOptions, Range, Toggle, StartInventoryPool, \
-    ItemDict, ItemsAccessibility, ItemSet, Visibility, OptionGroup, PlandoConnections
-from worlds.tloz_ph.data.Items import ITEMS_DATA
-
+    ItemDict, ItemsAccessibility, ItemSet, Visibility, OptionGroup, PlandoConnections, OptionSet, LocationSet
+from .data.Constants import DUNGEON_NAMES, DUNGEON_ABBREVIATIONS
+from .data.Entrances import ENTRANCES
 
 class PhantomHourglassGoal(Choice):
     """
@@ -129,13 +126,16 @@ class PhantomHourglassKeyRandomization(Choice):
 
 class PhantomHourglassRandomizeBossKeys(Choice):
     """
-    Randomize Boss Keys. Automatically sets boss_key_behaviour to inventory if not vanilla.
+    Randomize Boss Keys.
+    Boss keys turn into abstract items that don't need to be carried for all options except vanilla.
     - vanilla: Boss Keys are not randomized
+    - vanilla_abstract: Boss keys are not randomized, but you don't have to carry them.
     - in_own_dungeon: Boss Keys can be found in their own dungeon
     - anywhere: Boss Keys can be found anywhere
     """
     display_name = "Boss Key Randomization Settings"
     option_vanilla = 0
+    option_vanilla_abstract = 3
     option_in_own_dungeon = 1
     option_anywhere = 2
     default = 0
@@ -169,14 +169,15 @@ class PhantomHourglassBellumAccess(Choice):
     - unlock_staircase: getting your goal requirement unlocks the staircase to bellum. The phantoms on B13 spawn by default, and killing them unlocks the warp for later
     - warp_to_bellum: getting your goal requirement spawns the warp to bellum in TotOK. The phantoms are spawned by default, and the staircase to bellum is blocked off until reaching the goal
     - spawn_bellumbeck: getting your goal requirement spawns the ruins of the ghost ship in the SW quadrant, and you can skip bellum 1 and the ghost ship fight
-    - win: reaching your goal requirement wins the game
+    - zauz: giving metals to Zauz sends the goal. Sets Zauz's required metals to you goal metal count.
+    Lore wise he makes the sword with your metals and defeats Bellum by himself.
     """
     display_name = "Bellum Access"
     option_spawn_phantoms_on_b13 = 0
     option_unlock_staircase = 1
     option_warp_to_bellum = 2
     option_spawn_bellumbeck = 3
-    option_win = 4
+    option_zauz = 4
     default = 2
 
 
@@ -303,15 +304,21 @@ class PhantomHourglassExcludedDungeonHints(Toggle):
     display_name = "Excluded Dungeon Hints"
     default = 0
 
-class PhantomHourglassExcludeNonRequriedDungeons(Toggle):
+class PhantomHourglassExcludeNonRequiredDungeons(Choice):
     """
-    Non-required dungeons won't have progression or useful items.
+    How to handle locations in non-required dungeons.
     Does not apply to TotOK.
     If you don't require specific bosses, this will still exclude a number of dungeons.
     Their bosses will still count towards boss completions.
+    - include: Non-required dungeon locations are randomized as normal.
+    - exclude: Non-required dungeons won't have progression or useful items, but will still count towards hint costs.
+    - remove: Non-required dungeon locations will be removed completely.
     """
     display_name = "Exclude Non-Required Dungeons"
     default = 1
+    option_include = 0
+    option_exclude = 1
+    option_remove = 2
 
 
 class PhantomHourglassHintSpiritIsland(Choice):
@@ -355,7 +362,7 @@ class PhantomHourglassRandomizeMinigames(Choice):
     - Prince of Red Lions Fight
     if the hint option is on, all minigame rewards will be hinted for on entering their scene
     """
-    display_name = "Radnomize Minigames"
+    display_name = "Randomize Minigames"
     option_no_minigames = 0
     option_randomize_with_hints = 1
     option_randomize_without_hints = 2
@@ -408,14 +415,24 @@ class PhantomHourglassAdditionalSpiritGems(Range):
 
 class PhantomHourglassRandomizeSalvage(Choice):
     """
-    Randomize all 31 treasure maps and salvage locations!
-    Hint option gives you a hint for each location on receiving their map item
+    Randomize treasure maps and salvage locations.
+    Hint option gives you a hint for each location on receiving their map item.
+    You can set how many are randomized separately
     """
     display_name = "Randomize Salvage"
     option_no_salvage = 0
     option_randomize_with_hints = 1
     option_randomize_without_hints = 2
 
+class PhantomHourglassSalvageCount(Range):
+    """
+    How many treasure maps & salvage locations are included?
+    Includes the courage crest salvage, that's active even when salvage is disabled.
+    """
+    display_name = "Salvage Count"
+    range_start = 1
+    range_end = 32
+    default = 32
 
 class PhantomHourglassZauzRequiredMetals(Range):
     """
@@ -646,18 +663,6 @@ class PhantomHourglassPreserveDirectionality(Choice):
     option_disregard_simple_mixed_pool = 2
     option_disregard_all_but_simple_mixed_pool = 3
 
-class PhantomHourglassBossKeyBehavior(Choice):
-    """
-    How boss keys work as items
-    - vanilla: boss key has to be carried to the boss door. Not compatible with boss key rando or internal dungeon shuffle.
-    - inventory: getting the boss key item automatically opens it's boss door.
-    You may need to reload the room if you got the key in the same room as it's door.
-    """
-    option_vanilla = 0
-    option_inventory = 1
-    default = 0
-    display_name = "Boss Key Behavior"
-
 class PhantomHourglassSwitchBehaviour(Choice):
     """
     Modify the behaviour of color switches.
@@ -813,6 +818,166 @@ class PhantomHourglassSkipChestCutscenes(Toggle):
     display_name = "Skip Chest Cutscenes"
     default = 1
 
+class PhantomHourglassKeyrings(Choice):
+    """
+    Add keyrings instead of singular keys. Does not work with vanilla small key locations.
+    Separate option for boss keys.
+    - no_keyrings: keys are normal.
+    - all_keyrings: all keys are keyrings.
+    - random_mixed: will randomly choose what dungeons have keyrings.
+    """
+    display_name = "Keyrings"
+    option_no_keyrings = 0
+    option_all_keyrings = 1
+    option_random_mixed = 2
+
+class PhantomHourglassBossKeyrings(Toggle):
+    """
+    Include boss keys in keyrings?
+    Follows the location setting of small keys.
+    Does not work with vanilla boss key locations, and requires abstract boss keys.
+    """
+    display_name = "Boss Keys in Keyrings"
+    default = 0
+
+class PhantomHourglassProgressiveItems(Toggle):
+    """
+    Are Link's items progressive or not?
+    Affects sword, bombs, bow, chus and fishing rod.
+    Spirits have their own option.
+    """
+    display_name = "Progressive Items"
+    default = 1
+
+class PhantomHourglassSpiritTypes(Choice):
+    """
+    How to model base spirit items.
+    - progressive_single_spirits: you get 3 `Spirit of Power (Progressive)` items for each spirit type. Global upgrade option needs to be false.
+    - single_spirits: You get 1 'Spirit of Power' item of each spirit type. Upgrades handled in separate option.
+    - progressive_global_spirits: You get 3 `Spirit (Progressive)` items, that unlock power then wisdom then courage spirits. Upgrades handled in separate option.
+    """
+    display_name = "Spirit Type"
+    option_progressive_single_spirits = 0
+    option_single_spirits = 1
+    option_progressive_global_spirits = 2
+
+class PhantomHourglassGlobalSpiritUpgrades(Toggle):
+    """
+    Toggle if spirit upgrades are global and affect all spirit types, with 2 `Spirit Upgrade (Progressive)` in the pool;
+      or single, 2 `Power Upgrade (Progressive)` for each spirit type.
+    Needs to be false for progressive_single_spirits to work.
+    """
+    display_name = "Global Spirit Upgrades"
+    default = 0
+
+class PhantomHourglassOpenPostDungeonLocations(Toggle):
+    """
+    Some locations only unlock after clearing dungeons in the vanilla game.
+    Toggling this to true unlocks them before clearing their dungeons.
+    Examples include Mercay Shipyard, Molida Archery, Dee Ess Goron Minigame, Zauz Triforce Chart and Pirate Ambush
+    """
+    display_name = "Open Post-Dungeon Locations"
+    default = 0
+
+class PhantomHourglassBossRewardPool(Choice):
+    """
+    What items are in the boss reward pool?
+    - metals: boss rewards are metals
+    - spirits_and_metals: the reward pool starts with a spirit of each type, then fills remaining rewards with metals.
+    In cases where there are spirit items outside of dungeon reward locations, the game will also check if you've gotten those locations.
+    """
+    display_name = "Boss Reward Pool"
+    option_metals = 0
+    option_spirits_and_metals = 1
+    alias_metals_and_spirits = 1
+
+class PhantomHourglassStartingShip(Choice):
+    """
+    What ship you start with.
+    Has the following special options:
+    - random_whole: start with a random completed ship
+    - mismatched: start with a random set of parts
+    """
+    display_name = "Starting Ship"
+    option_ss_linebeck = 0
+    option_bright = 1
+    option_iron = 2
+    option_stone = 3
+    option_vintage = 4
+    option_demon = 5
+    option_tropical = 6
+    option_dignified = 7
+    option_golden = 8
+    option_mismatched = -2
+    option_random_whole = -1
+    default = 0
+
+class PhantomHourglassShipItems(Choice):
+    """
+    What ship items do you find?
+    Ship parts cannot be sold for rupees, but once a part is unlocked you can use it to customize your ship in the shipyard on Mercay Island.
+    Auto equipping found ships can be toggled in game at any time with the client command `/boat equip`.
+    - no_ships: no ship items
+    - whole_ships: you find whole ships
+    - whole_progressive: starting from your starting ship, each `Ship (Progressive)` item gives you the complete next ship in menu order.
+    - whole_mismatched: you find 8 shuffled parts at a time (one of each part type)
+    """
+    display_name = "Ship Items"
+    option_no_ships = 0
+    option_whole_ships = 1
+    option_whole_progressive = 3
+    option_whole_mismatched = 2
+    default = 1
+
+class PhantomHourglassShipAutoEquip(Toggle):
+    """
+    Auto-equip found ships?
+    Can be toggled in game with the client command /boat equip.
+    """
+    display_name = "Auto-Equip Ships"
+    default = 1
+
+class PhantomHourglassShopsanity(OptionSet):
+    """
+    Randomize shop items.
+    Shop items logically require 0.7 * total cost of all shop items.
+    Shops sell the vanilla after buying the randomized items.
+    (+x) denotes with masked beedle enabled, [+y] denotes with restocks
+    - uniques: unique items. 3[+3](+2) locations, 2000[+4000](+1500) rupees
+    - shields: 3 locations, 240 rupees
+    - ammo: refills of bombs and arrows etc. 5 locations, 250 rupees
+    - treasure: treasure and ship parts. 3[+1](+2[+1]) locations, variable rupees
+    - potions: 4[+4](+1[+1]) locations. 330[+650](+80[+200])
+    - restocks: randomizes shop items that unlock after buying something else and reentering the shop.
+    - all: all of the above.
+    """
+    display_name = "Shopsanity"
+    valid_keys_casefold = {"uniques", "shields", "ammo", "treasure", "potions", "all", "restocks"}
+    default = {"uniques"}
+
+class PhantomHourglassShieldInPool(Toggle):
+    """
+    Toggle if 3 shields are in the item pool or not.
+    If True, shop items locked behind buying a shield require the shield.
+    """
+    display_name = "Shields in Item Pool"
+    default = 0
+
+class PhantomHourglassRemoveLocations(LocationSet):
+    """
+    Removes locations from generation.
+    """
+    display_name = "Remove Locations"
+
+class PhantomHourglassPlandoDungeonPool(OptionSet):
+    """
+    Plando what dungeons to pick between with other dungeon options.
+    Allows both full names and abbreviations
+    """
+    display_name = "Plando Dungeon Pool"
+    default = set()
+    valid_keys_casefold = set(DUNGEON_NAMES[1:]) | set(DUNGEON_ABBREVIATIONS.keys())
+
 @dataclass
 class PhantomHourglassOptions(PerGameCommonOptions):
     # Accessibility
@@ -824,9 +989,11 @@ class PhantomHourglassOptions(PerGameCommonOptions):
     # Dungeons
     dungeons_required: PhantomHourglassDungeonsRequired
     require_specific_bosses: PhantomHourglassRequireSpecificBosses
-    exclude_non_required_dungeons: PhantomHourglassExcludeNonRequriedDungeons
+    exclude_non_required_dungeons: PhantomHourglassExcludeNonRequiredDungeons
     ghost_ship_in_dungeon_pool: PhantomHourglassGhostShipInDungeonPool
     totok_in_dungeon_pool: PhantomHourglassTotokInDungeonPool
+    boss_reward_pool: PhantomHourglassBossRewardPool
+    plando_dungeon_pool: PhantomHourglassPlandoDungeonPool
 
     # Metal Hunt
     metal_hunt_required: PhantomHourglassMetalHuntRequiredMetals
@@ -837,14 +1004,27 @@ class PhantomHourglassOptions(PerGameCommonOptions):
     phantom_combat_difficulty: PhantomHourglassPhantomCombatDifficulty
     boat_requires_sea_chart: PhantomHourglassBoatRequiresSeaChart
 
-    # Item Randomization
+    # Key Randomization
     keysanity: PhantomHourglassKeyRandomization
     randomize_pedestal_items: PhantomHourglassRandomizePedestalItems
+    pedestal_item_options: PhantomHourglassPedestalOptions
     randomize_boss_keys: PhantomHourglassRandomizeBossKeys
+    keyrings: PhantomHourglassKeyrings
+    boss_keyrings: PhantomHourglassBossKeyrings
+
+    # Item Randomization
+    progressive_items: PhantomHourglassProgressiveItems
+    spirit_type: PhantomHourglassSpiritTypes
+    global_spirit_upgrades: PhantomHourglassGlobalSpiritUpgrades
+    shield_in_pool: PhantomHourglassShieldInPool
+
+    # Additional Locations
+    shopsanity: PhantomHourglassShopsanity
     randomize_minigames: PhantomHourglassRandomizeMinigames
     randomize_frogs: PhantomHourglassFrogRandomization
     randomize_fishing: PhantomHourglassRandomizeFishing
     randomize_salvage: PhantomHourglassRandomizeSalvage
+    salvage_count: PhantomHourglassSalvageCount
     randomize_harrow: PhantomHourglassRandomizeHarrow
     randomize_digs: PhantomHourglassRandomizeDigSpots
     randomize_triforce_crest: PhantomHourglassTriforceCrestRandomization
@@ -860,12 +1040,11 @@ class PhantomHourglassOptions(PerGameCommonOptions):
 
     # World Options
     map_warp_options: PhantomHourglassMapWarp
-    boss_key_behaviour: PhantomHourglassBossKeyBehavior
-    pedestal_item_options: PhantomHourglassPedestalOptions
     color_switch_behaviour: PhantomHourglassSwitchBehaviour
     fog_settings: PhantomHourglassFogSettings
     skip_ocean_fights: PhantomHourglassSkipOceanFights
     zauz_required_metals: PhantomHourglassZauzRequiredMetals
+    open_post_dungeons: PhantomHourglassOpenPostDungeonLocations
     dungeon_shortcuts: PhantomHourglassDungeonShortcuts
     totok_checkpoints: PhantomHourglassTotOKCheckpoints
 
@@ -896,6 +1075,11 @@ class PhantomHourglassOptions(PerGameCommonOptions):
     decouple_entrances: PhantomHourglassDecoupleEntrances
     plando_transitions: PhantomHourglassEntrancePlando
 
+    # Ship options
+    starting_ship: PhantomHourglassStartingShip
+    ship_items: PhantomHourglassShipItems
+    equip_ship: PhantomHourglassShipAutoEquip
+
     # Cosmetic
     additional_metal_names: PhantomHourglassAdditionalMetalNames
     chest_cutscene_skips: PhantomHourglassSkipChestCutscenes
@@ -911,6 +1095,7 @@ class PhantomHourglassOptions(PerGameCommonOptions):
     add_items_to_pool: PhantomHourglassAddItemsToPool
     remove_items_from_pool: PhantomHourglassRemoveItemsFromPool
     death_link: DeathLink
+    remove_locations: PhantomHourglassRemoveLocations
 
 
 ph_option_groups = [
@@ -921,9 +1106,11 @@ ph_option_groups = [
     OptionGroup("Dungeon Options", [
         PhantomHourglassDungeonsRequired,
         PhantomHourglassRequireSpecificBosses,
-        PhantomHourglassExcludeNonRequriedDungeons,
+        PhantomHourglassExcludeNonRequiredDungeons,
         PhantomHourglassGhostShipInDungeonPool,
-        PhantomHourglassTotokInDungeonPool
+        PhantomHourglassTotokInDungeonPool,
+        PhantomHourglassBossRewardPool,
+        PhantomHourglassPlandoDungeonPool
     ]),
     OptionGroup("Metal Hunt Options", [
         PhantomHourglassMetalHuntRequiredMetals,
@@ -934,14 +1121,27 @@ ph_option_groups = [
         PhantomHourglassPhantomCombatDifficulty,
         PhantomHourglassBoatRequiresSeaChart
     ]),
-    OptionGroup("Item Randomization Options", [
+    OptionGroup("Key Randomization Options", [
         PhantomHourglassKeyRandomization,
         PhantomHourglassRandomizePedestalItems,
+        PhantomHourglassPedestalOptions,
         PhantomHourglassRandomizeBossKeys,
+        PhantomHourglassKeyrings,
+        PhantomHourglassBossKeyrings
+    ]),
+    OptionGroup("Item Options", [
+        PhantomHourglassProgressiveItems,
+        PhantomHourglassSpiritTypes,
+        PhantomHourglassGlobalSpiritUpgrades,
+        PhantomHourglassShieldInPool
+    ]),
+    OptionGroup("Extra Location Options", [
+        PhantomHourglassShopsanity,
         PhantomHourglassRandomizeMinigames,
         PhantomHourglassFrogRandomization,
         PhantomHourglassRandomizeFishing,
         PhantomHourglassRandomizeSalvage,
+        PhantomHourglassSalvageCount,
         PhantomHourglassRandomizeHarrow,
         PhantomHourglassRandomizeDigSpots,
         PhantomHourglassTriforceCrestRandomization,
@@ -960,11 +1160,10 @@ ph_option_groups = [
         PhantomHourglassFogSettings,
         PhantomHourglassSkipOceanFights,
         PhantomHourglassZauzRequiredMetals,
+        PhantomHourglassOpenPostDungeonLocations,
         PhantomHourglassDungeonShortcuts,
         PhantomHourglassTotOKCheckpoints,
         PhantomHourglassSwitchBehaviour,
-        PhantomHourglassBossKeyBehavior,
-        PhantomHourglassPedestalOptions
     ]),
     OptionGroup("Spirit Gem Options", [
         PhantomHourglassSpiritGemPacks,
@@ -995,13 +1194,20 @@ ph_option_groups = [
         PhantomHourglassUTSmartKeys,
         PhantomHourglassUTEvents
     ]),
+    OptionGroup("Ship Options", [
+        PhantomHourglassStartingShip,
+        PhantomHourglassShipItems,
+        PhantomHourglassShipAutoEquip
+    ]),
+
     OptionGroup("Cosmetic Options", [
         PhantomHourglassAdditionalMetalNames,
         PhantomHourglassSkipChestCutscenes
     ]),
     OptionGroup("Item & Location Options", [
         PhantomHourglassAddItemsToPool,
-        PhantomHourglassRemoveItemsFromPool
+        PhantomHourglassRemoveItemsFromPool,
+        PhantomHourglassRemoveLocations
     ]),
 ]
 

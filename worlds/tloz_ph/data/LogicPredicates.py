@@ -73,7 +73,6 @@ def ph_has_spirit_gems(state: CollectionState, player: int, spirit: str, count: 
             state.has(f"{spirit} Gem", player, count),
             state.has(f"{spirit} Gem Pack", player, ceil(count / pack_size)),
         ])
-
     ])
 
 
@@ -786,6 +785,9 @@ def ph_option_goal_midway(state: CollectionState, player: int):
 def ph_option_island_shuffle(state, player):
     return state.multiworld.worlds[player].options.shuffle_ports
 
+def ph_option_boss_keyrings(state, player):
+    return state.multiworld.worlds[player].options.boss_keyrings
+
 def ph_can_pass_sea_monsters(state, player):
     return any([
         ph_has_cannon(state, player),
@@ -872,11 +874,12 @@ def ph_option_vanilla_caves(state, player):
 # ============= Key logic ==============
 
 def ph_has_small_keys(state: CollectionState, player: int, dung_name: str, amount: int = 1):
-    return state.has(f"Small Key ({dung_name})", player, amount)
+    return state.has(f"Small Key ({dung_name})", player, amount) or state.has(f"Keyring ({dung_name})", player)
 
 
 def ph_has_boss_key(state: CollectionState, player: int, dung_name: str):
-    return state.has(f"Boss Key ({dung_name})", player)
+    return (state.has(f"Boss Key ({dung_name})", player)
+            or (state.has(f"Keyring ({dung_name})", player) and ph_option_boss_keyrings(state, player)))
 
 
 def ph_has_boss_key_simple(state: CollectionState, player: int, dung_name: str):
@@ -1384,7 +1387,7 @@ def ph_wind_temple_key_ut(state, player):
             all([
                 ph_has_bombs(state, player),
                 ph_ut_small_key_own_dungeon(state, player)]),
-            ph_ut_small_key_own_dungeon(state, player)
+            ph_option_keys_vanilla(state, player)
         ])
     ])
 
@@ -1433,18 +1436,18 @@ def ph_toc_key_door_1(state, player):
     return all([
         ph_has_damage(state, player),
         any([
-        ph_toc_key_doors(state, player, 3, 1),
-        # UT Keys
-        all([
-            ph_option_not_glitched_logic(state, player),
-            ph_ut_small_key_own_dungeon(state, player),
-            any([
-                ph_has_explosives(state, player),
-                ph_option_keys_vanilla(state, player)
-            ])
-        ]),
-    ])
+            ph_toc_key_doors(state, player, 3, 1),
+            # UT Keys
+            all([
+                ph_option_not_glitched_logic(state, player),
+                ph_ut_small_key_own_dungeon(state, player),
+                any([
+                    ph_has_explosives(state, player),
+                    ph_option_keys_vanilla(state, player)
+                ])
+            ]),
         ])
+    ])
 
 
 def ph_toc_key_door_2(state, player):
@@ -1774,6 +1777,10 @@ def ph_toi_key_door_1_ut(state, player):
             any([
                 ph_has_boomerang(state, player),
                 ph_has_grapple(state, player)
+            ]),
+            any([
+                ph_has_bombs(state, player),
+                ph_has_chus(state, player) and ph_option_hard_logic(state, player)
             ]),
             any([
                 ph_ut_small_key_vanilla_location(state, player),
@@ -2221,8 +2228,8 @@ def ph_time_b13(state, player):
     return min(
         ph_time_b12(state, player) + 60,
         ph_time_b12_h(state, player) + 50,
-        ph_time_b12(state, player) + 20 if ph_totok_b12_abstract_pedestals(state, player, 2) else 6000,
-        ph_time_b12_h(state, player) + 10 if ph_totok_b12_abstract_pedestals(state, player, 2) else 6000,
+        ph_time_b12(state, player) + 20 if ph_totok_b12_abstract_pedestals(state, player, 3) else 6000,
+        ph_time_b12_h(state, player) + 10 if ph_totok_b12_abstract_pedestals(state, player, 3) else 6000,
     )
 
 
@@ -2669,7 +2676,7 @@ def ph_ut_pedestals_vanilla(state, player):
 def ph_totok_b9_square_crystal(state, player, diff):
     return any([
         ph_has_shape_crystal(state, player, "Temple of the Ocean King", "Square", diff),
-        ph_totok_phantom_steal_object(state, player)
+        ph_totok_phantom_steal_object(state, player) & ph_option_pedestals_vanilla(state, player)
     ])
 
 def ph_totok_b9_corner_chest(state, player):
@@ -2687,7 +2694,10 @@ def ph_totok_b9_corner_chest(state, player):
                 ph_totok_has_floor_time(state, player, 9, 25),
                 ph_totok_has_floor_time(state, player, '9_2c'),
             ]),
-            ph_totok_b9_square_crystal(state, player, "West")
+            any([
+                ph_totok_b9_square_crystal(state, player, "West"),
+                ph_has_grapple(state, player)
+            ])
         ])
     ])
 
@@ -2809,20 +2819,20 @@ def ph_totok_b12_phantom(state, player):
         ])
     ])
 
-def ph_totok_b12_abstract_pedestals(state, player, count=2):
+def ph_totok_b12_abstract_pedestals(state, player, count=3):
     return all([
         not ph_option_pedestals_vanilla(state, player),
         any([
-            ph_has_force_gems(state, player, 12, 2),
+            ph_has_force_gems(state, player, 12, count),
         ])
     ])
 
 def ph_totok_b12_ghost(state, player):
     return any([
-        ph_totok_has_floor_time(state, player, '12_h', 20) if ph_totok_b12_abstract_pedestals(state, player) else False,
-        ph_totok_has_floor_time(state, player, 12, 20) if ph_totok_b12_abstract_pedestals(state, player) else False,
-        ph_totok_has_floor_time(state, player, '12_h', 50),
-        ph_totok_has_floor_time(state, player, 12, 70),
+        ph_totok_has_floor_time(state, player, '12_h', 20) if ph_totok_b12_abstract_pedestals(state, player, 2) else False,
+        ph_totok_has_floor_time(state, player, 12, 20) if ph_totok_b12_abstract_pedestals(state, player, 2) else False,
+        ph_totok_has_floor_time(state, player, '12_h', 50) and ph_option_pedestals_vanilla(state, player),
+        ph_totok_has_floor_time(state, player, 12, 70) and ph_option_pedestals_vanilla(state, player),
     ])
 
 

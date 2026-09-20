@@ -66,7 +66,7 @@ DUMPSTER_ITEMS.append("Kei Truck")
 _KT_DUMBBELL_LOCATIONS: frozenset[str] = frozenset({
     # Trasco Carpark (reachable via Blimbo Village with truck)
     "Store Trolley", "Store Coffee Shop (closed)", "Store CD Player", "Store Patrice",
-    "Store Fridge", "Store Trasco Sign"
+    "Store Fridge", "Store Trasco Sign",
     # Fridge World
     "Store Milk Klubnika",
     # Blimbo Village
@@ -74,6 +74,7 @@ _KT_DUMBBELL_LOCATIONS: frozenset[str] = frozenset({
     "Store CHEESE", "Store Door", "Store Fone", "Store Ougham Stone",
     # Petrol Station
     "Store Gas Pumpo", "Store Police Car", "Store Knifedog",
+    "Store Outdoor Chair", "Store Lightning Rod",
     # Bildal Mines
     "Store Pickaxe",
     # Purgatory
@@ -82,6 +83,8 @@ _KT_DUMBBELL_LOCATIONS: frozenset[str] = frozenset({
     "Store Coffee Cup", "Store Radiator", "Store Bin", "Store Suitcase", "Store Bell Boy", "Store Blimbo City Sign",
     # Pub
     "Store Cheeky Pint",
+    # The Forklift Problem
+    "Store Robin P. Bobin",
     # BLMB Reactor Core
     "Store Demon Core",
     # Garden World
@@ -140,6 +143,7 @@ _DUMBBELL_REQUIREMENTS: dict[str, int] = {
     "Store Door":                                1,
     "Store Goo Container":                       1,
     "Store Cheese Wife":                         1,
+    "Store Outdoor Chair":                       1,
     # MEDIUM (weight 3) — requires 2 Dumbbell
     "Store Crack Head":                          2,
     "Store Patrick O'Hara":                      2,
@@ -170,6 +174,8 @@ _DUMBBELL_REQUIREMENTS: dict[str, int] = {
     "Store Patrice":                             2,
     "Store Office Chair":                        2,
     "Store Desk":                                2,
+    "Store Lightning Rod":                       2,
+    "Store Robin P. Bobin":                      2,
     # HEAVY (weight 4) — requires 3 Dumbbell
     "Store Windmill":                            3,
     "Store Ougham Stone":                        3,
@@ -177,6 +183,7 @@ _DUMBBELL_REQUIREMENTS: dict[str, int] = {
     "Store Police Car":                          3,
     "Store Trasco Sign":                         3,
     "Store Mikk Masive Sign":                    3,
+    "Store Factory Sign":                        3,
     # CHUNKY (weight 5) — requires all 4 Dumbbell
     "Store Gym":                                 4,
     "Store Belgium Waffle":                      4,
@@ -200,12 +207,12 @@ def _goal_rule(world: FuniRaccoonWorld):
     if "fellowship" in goals:
         rules.append(Has("Priestess") & Has("GREENISH ABOMINATION") & Has("Kei Truck") & Has("Progressive Cooling Rod", 3) & items(world.options.act4_threshold.value))
     if "lugh" in goals:
-        rules.append(Has("Green Mystical Gem") & Has("Blue Mystical Gem") & Has("Purple Mystical Gem") & Has("Red Mystical Gem") & Has("Kei Truck") & items(world.options.act4_threshold.value))
+        rules.append(Has("Green Mystical Jewel") & Has("Blue Mystical Jewel") & Has("Purple Mystical Jewel") & Has("Red Mystical Jewel") & Has("Kei Truck") & items(world.options.act4_threshold.value))
     if not rules:
         return Has("Progressive Cooling Rod", 3) & Has("Orb") & Has("Kei Truck") & items(world.options.act4_threshold.value)
     result = rules[0]
     for r in rules[1:]:
-        result = result | r
+        result = result & r
     return result
 
 
@@ -234,17 +241,13 @@ def set_all_location_rules(world: FuniRaccoonWorld) -> None:
             r |= Has("Kei Truck")
         rule(loc_name, r)
 
-    # Store Fridge sits in Trasco Carpark but is also reachable by taking the train
-    # to Brazil. It's hosted in Raccoon Central Station (always open), so gate it on
-    # reaching either area, on top of its weight rule.
+    # Store Fridge is mainly in Trasco Carpark but is also reachable by taking the train to Brazil.
     _fridge = Has("Progressive Mystical Dumbbell", _DUMBBELL_REQUIREMENTS["Store Fridge"])
     if "Store Fridge" in _KT_DUMBBELL_LOCATIONS and not weight_blocking:
         _fridge |= Has("Kei Truck")
     rule("Store Fridge", _fridge & (CanReachRegion("Trasco Carpark") | CanReachRegion("Brazil")))
 
-    # Store Windmill sits in Fields but is also storable from Blimbo Village once
-    # Act 3 is open. It's hosted in Beenie HQ (no Goo gate), so gate it on reaching
-    # either area, on top of its weight rule.
+    # Store Windmill sits in Fields but is also in Blimbo Village
     rule("Store Windmill",
          Has("Progressive Mystical Dumbbell", _DUMBBELL_REQUIREMENTS["Store Windmill"])
          & (CanReachRegion("Fields") | CanReachRegion("Blimbo Village")))
@@ -260,6 +263,18 @@ def set_all_location_rules(world: FuniRaccoonWorld) -> None:
         _bell_boy |= Has("Kei Truck")
     rule("Store Bell Boy", _bell_boy & HasFromList("Kei Truck Toaster", "Kei Truck Boost", count=1))
 
+    # The moai head euros are logically gated behind both Kei Truck upgrades.
+    _moai_upgrade_rule = Has("Kei Truck") & Has("Kei Truck Toaster") & Has("Kei Truck Boost")
+    for moai_location in (
+        "Desert: Euro in moai head pool 1",
+        "Desert: Euro in moai head pool 2",
+        "Desert: Euro in moai head pool 3",
+        "Desert: Euro in moai head pool 4",
+        "Desert: Euro in moai head pool 5",
+        "Desert: Euro in moai head pool 6",
+    ):
+        rule(moai_location, _moai_upgrade_rule)
+
     # Within Billdal Mines, boingler and Broken Wall also require the Pickaxe
     rule("Store boingler Cat",   Has("Pickaxe"))
     rule("Store Broken Wall", Has("Pickaxe"))
@@ -271,14 +286,18 @@ def set_all_location_rules(world: FuniRaccoonWorld) -> None:
     rule("Gym: Euro at end of train tracks",
          (Has("Brob Energy")) | OutOfLogic("Accessible without items"))
 
-    # Behrman Speedway: normal logic needs Brob Energy + 4 Dumbbell; OOL just needs Brob Energy
+    # Behrman Speedway: normal logic needs Brob Energy + 4 Dumbbell
     rule("Complete Behrman Speedway in under 1 minute",
-         (Has("Brob Energy") & Has("Progressive Mystical Dumbbell", 4))
-         | (Has("Brob Energy") & OutOfLogic("Speedway accessible with only Brob Energy")))
+         (Has("Brob Energy") & Has("Progressive Mystical Dumbbell", 4)))
     
     # Patrick O'Hara requires Goo (inner Beenie HQ path) or Kei Truck + Blimbo Village access
     rule("Store Patrick O'Hara",
          Has("Progressive Mystical Dumbbell", 2) & (Has("Goo") | (items(world.options.act3_threshold.value) & Has("Kei Truck"))))
+
+    # Crisps Undying Love requires the unregistered firearm to be available.
+    rule("Store Crisps Undying Love",
+         Has("Progressive Mystical Dumbbell", _DUMBBELL_REQUIREMENTS["Store Crisps Undying Love"])
+         & Has("unregistered firearm"))
 
     # Evil Fish is out of logic before Goo; normal logic requires Goo to store it
     rule("Store Evil Fish", Has("Goo") | OutOfLogic("Evil Fish storable without Goo"))
@@ -294,19 +313,32 @@ def set_all_location_rules(world: FuniRaccoonWorld) -> None:
     # Lughling requires Butterfly
     rule("Store Lughling", Has("Butterfly"))
 
+    # The Good Engine is only obtainable with the Tony vehicle and Kei Truck access
+    rule("Store Good Engine", Has("Tony Vehicle") & Has("Kei Truck"))
+
     # Act 4 is required for Funi Raccoon Game Deluxe
     rule("Store Funi Raccoon Game Deluxe",
          Has("Kei Truck") & Has("Progressive Cooling Rod", 1) & items(world.options.act4_threshold.value))
 
     # Gem Dumbbell Requirements
-    rule("Eat Green Mystical Gem", Has("Progressive Mystical Dumbbell", 1))
-    rule("Eat Blue Mystical Gem",  Has("Progressive Mystical Dumbbell", 2))
+    rule("Eat Green Mystical Jewel", Has("Progressive Mystical Dumbbell", 1))
+    rule("Eat Blue Mystical Jewel",  Has("Progressive Mystical Dumbbell", 2))
 
-    # Higher Kei Truck scores require at least one truck upgrade
+    # All Kei Truck Scores REQUIRE Kei Truck, and 2000-5000 requires kei truck boost/toaster
+    rule("Get 1000 Score with Kei Truck", Has("Kei Truck"))
+    
     _truck_upgrade = HasFromList("Kei Truck Boost", "Kei Truck Toaster", count=1) & Has("Kei Truck")
     for score_check in ("Get 2000 Score with Kei Truck", "Get 3000 Score with Kei Truck",
                         "Get 4000 Score with Kei Truck", "Get 5000 Score with Kei Truck"):
         rule(score_check, _truck_upgrade)
+        
+    # All of these hard require kei truck, because you need to be able to go to city to do infinite euro grinding
+    rule("Purchase Kei Truck Toaster", Has("Kei Truck"))
+    rule("Purchase Kei Truck Boost", Has("Kei Truck"))
+    rule("Purchase Kei Truck Radio", Has("Kei Truck"))
+   
+    # The Orb shop requires Orb to sent to open up
+    rule("Store Orb", Has("Orb"))
 
 
 def set_completion_condition(world: FuniRaccoonWorld) -> None:

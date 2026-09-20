@@ -63,4 +63,3 @@ Quake 1:
 
 Use the same item names as `custom_included_locations`. Each value must be `0` or `1`; omitted types default to `0`. Active AP locations still use AP pickups. Disabled excluded items with map links appear as white translucent AP tokens so their triggers work. Excluded pickups obey the map's difficulty and multiplayer spawn flags.
 
-This requires the updated APWorld and engine, and a newly generated seed. Older seeds default to all types disabled. Loading an existing save restores its saved entities.

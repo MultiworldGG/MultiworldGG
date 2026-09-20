@@ -4,7 +4,7 @@ from worlds.LauncherComponents import Component, components, Type, launch_subpro
 from BaseClasses import Region, Item, ItemClassification, Tutorial
 from Options import PerGameCommonOptions, OptionError
 import settings
-from rule_builder.rules import Has
+from rule_builder.rules import Has, HasFromListUnique
 
 #Local
 from .Options import MegaMixOptions, megamix_option_groups
@@ -15,7 +15,7 @@ from .DataHandler import get_player_specific_ids
 
 #Python
 from typing import ClassVar, TextIO
-from math import floor
+from math import floor, ceil
 
 
 def launch_json_generator():
@@ -102,6 +102,8 @@ class MegaMixWorld(World):
             slot_data: dict[str, any] = re_gen_passthrough[self.game]
 
             self.options.progressive_hp.value = 1 + int(slot_data.get("progHP", 0))
+            if "locWinCount" in slot_data:
+                self.options.goal_mode.value = self.options.goal_mode.option_Percentage
 
             # Inject mod data, remap as needed
             from .SymbolFixer import format_song_name
@@ -110,7 +112,7 @@ class MegaMixWorld(World):
             for pack, items in slot_data.get("modData", {}).items():
                 for name, song_id in items:
                     formatted_name = format_song_name(name, song_id)
-                    item_id = remap.get(str(song_id), song_id * 10)
+                    item_id = remap.get(str(song_id), song_id * 100)
 
                     self.mm_collection.song_items[formatted_name] = SongData(item_id, song_id, set(), False, True, [])
                     for i in range(2):
@@ -125,7 +127,7 @@ class MegaMixWorld(World):
         # Initial search criteria
         lower_rating_threshold, higher_rating_threshold = self.get_difficulty_range()
         lower_diff_threshold, higher_diff_threshold = self.get_available_difficulties(self.options.song_difficulty_min.value, self.options.song_difficulty_max.value)
-        self.player_mod_data, self.player_mod_ids, self.player_mod_remap = get_player_specific_ids(self.options.megamix_mod_data.value, self.mm_collection.mod_remaps)
+        self.player_mod_data, self.player_mod_ids, self.player_mod_remap = get_player_specific_ids(self.player_name, self.options.megamix_mod_data.value, self.mm_collection.mod_remaps)
 
         while True:
             # In most cases this should only need to run once
@@ -239,13 +241,13 @@ class MegaMixWorld(World):
                 self.included_songs.append(available_song_keys.pop())
 
         victory_song = self.mm_collection.song_items.get(self.victory_song_name)
-        self.victory_song_id = (victory_song.code // 10) * 10
+        self.victory_song_id = (victory_song.code // 100) * 100
         self.final_song_ids.add(victory_song.songID)
 
     def create_item(self, name: str) -> Item:
 
         if name == self.mm_collection.LEEK_NAME:
-            return MegaMixFixedItem(name, ItemClassification.progression_skip_balancing, self.mm_collection.LEEK_CODE, self.player)
+            return MegaMixFixedItem(name, ItemClassification.progression_deprioritized_skip_balancing, self.mm_collection.LEEK_CODE, self.player)
 
         elif name == self.mm_collection.FILLER_NAME:
             return MegaMixFixedItem(name, ItemClassification.filler, self.mm_collection.FILLER_CODE, self.player)
@@ -273,12 +275,14 @@ class MegaMixWorld(World):
 
         items_left = len(self.multiworld.get_unfilled_locations(self.player))
 
-        for _ in range(0, self.get_leek_count()):
-            self.multiworld.itempool.append(self.create_item(self.mm_collection.LEEK_NAME))
+        if self.options.goal_mode.value == self.options.goal_mode.option_Leeks:
+            for _ in range(0, self.get_leek_count()):
+                self.multiworld.itempool.append(self.create_item(self.mm_collection.LEEK_NAME))
+            items_left -= self.get_leek_count()
 
         self.multiworld.itempool.extend(self.create_item(song) for song in self.included_songs)
 
-        items_left -= self.get_leek_count() + len(self.included_songs)
+        items_left -= len(self.included_songs)
         if items_left <= 0:
             return
 
@@ -288,7 +292,9 @@ class MegaMixWorld(World):
             self.prog_hp_added += 1
         items_left -= self.prog_hp_added
 
-        # Add duplicates based on user percentage
+        # Add duplicates based on user percentage (capped for %age Goal)
+        if self.options.goal_mode.value == self.options.goal_mode.option_Percentage:
+            self.options.duplicate_song_percentage.value = min(self.options.duplicate_song_percentage.value, 15)
         dupe_count = items_left * self.options.duplicate_song_percentage // 100
         items_left -= dupe_count
 
@@ -326,10 +332,23 @@ class MegaMixWorld(World):
                 menu_region.locations.append(loc)
 
     def set_rules(self) -> None:
-        self.set_completion_rule(
-            Has(self.mm_collection.LEEK_NAME, self.get_leek_win_count())
-            & Has("Progressive HP", self.prog_hp_added)
-        )
+        goal = Has("Progressive HP", self.prog_hp_added)
+
+        match self.options.goal_mode.value:
+            case self.options.goal_mode.option_Leeks:
+                goal &= Has(self.mm_collection.LEEK_NAME, self.get_leek_win_count())
+
+            case self.options.goal_mode.option_Percentage:
+                goal &= HasFromListUnique(*[*self.starting_songs, *self.included_songs], count=ceil(self.get_loc_win_count() / 2))
+
+        self.set_completion_rule(goal)
+
+    def get_loc_win_count(self) -> int:
+        """Number of locations checked to be in Go Mode."""
+        re_gen_passthrough = getattr(self.multiworld, "re_gen_passthrough", {})
+        if re_gen_passthrough and self.game in re_gen_passthrough:
+            return re_gen_passthrough[self.game].get("locWinCount")
+        return ceil(2 * len(self.starting_songs + self.included_songs) * self.options.goal_percentage.value / 100)
 
     def get_leek_count(self) -> int:
         """Number of Leeks to be placed in the item pool based on user option and final song count."""
@@ -370,12 +389,18 @@ class MegaMixWorld(World):
         return slot_data
 
     def fill_slot_data(self):
+        goal_key = "leekWinCount"
+        goal_val = self.get_leek_win_count()
+
+        if self.options.goal_mode.value == self.options.goal_mode.option_Percentage:
+            goal_key = "locWinCount"
+            goal_val = self.get_loc_win_count()
+
         return {
+            goal_key: goal_val,
             "victoryID": self.victory_song_id,
             "finalSongIDs": self.final_song_ids,
-            "leekWinCount": self.get_leek_win_count(),
             "scoreGradeNeeded": self.options.grade_needed.value,
-            "death_link": True, # APCpp requires this key name to set the tag
             "modData": {pack: [[song[0], song[1]] for song in songs if song[1] in self.final_song_ids]
                         for pack, songs in self.player_mod_data.items()},
             "modRemap": self.player_mod_remap,

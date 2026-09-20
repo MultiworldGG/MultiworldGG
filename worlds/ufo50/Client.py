@@ -276,7 +276,7 @@ def launch(*args: str) -> Any:
         # handle if text client is launched using the "archipelago://name:pass@host:port" url from webhost
         if args.url:
             url = urllib.parse.urlparse(args.url)
-            if url.scheme == "archipelago" or url.scheme == "mwgg":
+            if url.scheme == "archipelago":
                 if url.hostname:
                     if url.port:
                         server = shlex.quote(f"--server={url.hostname}:{url.port}")
@@ -287,7 +287,7 @@ def launch(*args: str) -> Any:
                 if url.password:
                     password = shlex.quote(f"--password={urllib.parse.unquote(url.password)}")
             else:
-                parser.error(f"bad url, found {args.url}, expected url in form of archipelago/mwgg://multiworld.gg:38281")
+                parser.error(f"bad url, found {args.url}, expected url in form of archipelago://multiworld.gg:38281")
     os.chdir(UFO50World.settings.install_folder)
 
     # check that the mod installation is valid

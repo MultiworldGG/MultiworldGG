@@ -4,7 +4,7 @@ from typing import Any, Dict, List, Optional, TextIO, Tuple
 
 from rule_builder.rules import Rule, And, Has, Or
 
-from BaseClasses import Item, ItemClassification, Location, Region, Tutorial
+from BaseClasses import Item, Location, Region, Tutorial
 
 from Options import OptionError
 
@@ -53,7 +53,7 @@ class PeggleNightsWebWorld(WebWorld):
     tutorials: List[Tutorial] = [
         Tutorial(
             "Multiworld Setup Guide",
-            "A guide to setting up the Peggle Nights randomizer connected to an Archipelago Multiworld",
+            "A guide to setting up the Peggle Nights randomizer connected to a MultiworldGG Multiworld",
             "English",
             "setup_en.md",
             "setup/en",
@@ -109,7 +109,7 @@ class PeggleNightsWorld(World):
     selected_starter_master: PeggleNightsCharacters
 
     selected_levels: List[PeggleNightsLevels]
-    selected_starter_level: PeggleNightsLevels
+    selected_starter_levels: List[PeggleNightsLevels]
     selected_goal_level: Optional[PeggleNightsLevels] = None
 
     target_scores: Dict[PeggleNightsLevels, List[int]]
@@ -192,9 +192,9 @@ class PeggleNightsWorld(World):
 
         level_pool = list(sorted(level_pool, key=lambda l: l.value))
 
-        if len(level_pool) < 5:
+        if len(level_pool) < 15:
             raise OptionError(
-                f"Peggle Nights: {self.player_name} must have at least 5 levels selected to play. "
+                f"Peggle Nights: {self.player_name} must have at least 15 levels selected to play. "
                 f"They only have {len(level_pool)} selected."
             )
 
@@ -216,7 +216,7 @@ class PeggleNightsWorld(World):
         else:
             self.selected_levels = level_pool[:]
 
-        self.selected_starter_level = self.selected_levels[0]
+        self.selected_starter_levels = self.selected_levels[:3]
 
         self.include_full_clears = bool(self.options.include_full_clears.value)
 
@@ -258,7 +258,6 @@ class PeggleNightsWorld(World):
         self.useful_item_percentage = self.options.useful_item_percentage.value
 
         self.useful_item_weights = {
-            PeggleNightsAPUsefulItems.FEVER_METER_BONUS: 1,
             PeggleNightsAPUsefulItems.FULL_CLEAR_DISCOUNT: 1,
             PeggleNightsAPUsefulItems.SCORE_MULTIPLIER: 1,
             PeggleNightsAPUsefulItems.TARGET_SCORE_DISCOUNT: 1,
@@ -287,41 +286,12 @@ class PeggleNightsWorld(World):
 
         # Endgame
         region_endgame: Region = Region("Endgame", self.player, self.multiworld)
+        self.multiworld.regions.append(region_endgame)
 
-        victory_location: PeggleNightsLocation = PeggleNightsLocation(
-            self.player,
-            "Victory",
-            None,
+        region_menu.connect(
             region_endgame,
+            rule=Has(PeggleNightsAPItems.SHADOW_PEG.value, self.shadow_pegs_required)
         )
-
-        victory_location.place_locked_item(
-            PeggleNightsItem(
-                "Victory",
-                ItemClassification.progression,
-                None,
-                self.player,
-            )
-        )
-
-        region_endgame.locations.append(victory_location)
-
-        if self.goal == PeggleNightsAPGoals.SHADOW_PEGS_FINAL_LEVEL:
-            region_menu.connect(
-                region_endgame,
-                rule=(
-                    And(
-                        Has(PeggleNightsAPItems.SHADOW_PEG.value, self.shadow_pegs_required),
-                        Has(f"Level Unlock: {self.selected_goal_level.value}"),
-                        Has(PeggleNightsAPItems.PROGRESSIVE_FEVER_METER.value, 4)
-                    )
-                )
-            )
-        elif self.goal == PeggleNightsAPGoals.SHADOW_PEG_HUNT:
-            region_menu.connect(
-                region_endgame,
-                rule=Has(PeggleNightsAPItems.SHADOW_PEG.value, self.shadow_pegs_required)
-            )
 
         # Levels
         level: PeggleNightsLevels
@@ -341,7 +311,7 @@ class PeggleNightsWorld(World):
                 if not self.include_full_clears and PeggleNightsAPTags.FULL_CLEAR_LOCATION in data.tags:
                     continue
 
-                if level == self.selected_goal_level and PeggleNightsAPTags.LEVEL_CLEAR_LOCATION not in data.tags:
+                if level == self.selected_goal_level:
                     continue
 
                 location: PeggleNightsLocation = PeggleNightsLocation(
@@ -351,15 +321,66 @@ class PeggleNightsWorld(World):
                     region_level,
                 )
 
-                location_access_rule: Optional[Rule]
+                location_access_rule: Optional[Rule] = None
 
-                if "Target Score (Mid)" in location_name:
+                starting_ball_increases_one_quarter: int = (self.maximum_starting_ball_count - 5) // 4
+                starting_ball_increases_one_third: int = (self.maximum_starting_ball_count - 5) // 3
+                starting_ball_increases_one_half: int = (self.maximum_starting_ball_count - 5) // 2
+                starting_ball_increases_two_thirds: int = ((self.maximum_starting_ball_count - 5) // 3) * 2
+                starting_ball_increases_three_quarters: int = ((self.maximum_starting_ball_count - 5) // 4) * 3
+
+                if "Fever Meter X2" in location_name:
+                    location_access_rule = Has(
+                        PeggleNightsAPItems.PROGRESSIVE_STARTING_BALL_INCREASE.value,
+                        starting_ball_increases_one_quarter,
+                    )
+                elif "Fever Meter X3" in location_name:
+                    location_access_rule = And(
+                        Has(f"Progressive Orange Pegs: {level.value}", 1),
+                        Has(
+                            PeggleNightsAPItems.PROGRESSIVE_STARTING_BALL_INCREASE.value,
+                            starting_ball_increases_one_third,
+                        )
+                    )
+                elif "Fever Meter X5" in location_name:
+                    location_access_rule = And(
+                        Has(f"Progressive Orange Pegs: {level.value}", 2),
+                        Has(
+                            PeggleNightsAPItems.PROGRESSIVE_STARTING_BALL_INCREASE.value,
+                            starting_ball_increases_one_half,
+                        )
+                    )
+                elif "Fever Meter X10" in location_name:
+                    location_access_rule = And(
+                        Has(f"Progressive Orange Pegs: {level.value}", 3),
+                        Has(
+                            PeggleNightsAPItems.PROGRESSIVE_STARTING_BALL_INCREASE.value,
+                            starting_ball_increases_two_thirds,
+                        )
+                    )
+                elif "Fever Meter Full" in location_name:
+                    location_access_rule = And(
+                        Has(f"Progressive Orange Pegs: {level.value}", 4),
+                        Has(
+                            PeggleNightsAPItems.PROGRESSIVE_STARTING_BALL_INCREASE.value,
+                            starting_ball_increases_three_quarters,
+                        )
+                    )
+                elif "Level Clear" in location_name:
+                    location_access_rule = Or(
+                        Has(
+                            PeggleNightsAPItems.PROGRESSIVE_STARTING_BALL_INCREASE.value,
+                            starting_ball_increases_one_half,
+                        ),
+                        Has(PeggleNightsAPItems.OOL.value),
+                    )
+                elif "Target Score (Mid)" in location_name:
                     location_access_rule = Or(
                         And(
-                            data.requirements,
+                            Has(f"Progressive Orange Pegs: {level.value}", 3),
                             Has(
                                 PeggleNightsAPItems.PROGRESSIVE_STARTING_BALL_INCREASE.value,
-                                round((self.maximum_starting_ball_count - 5) / 2)
+                                starting_ball_increases_one_half
                             )
                         ),
                         Has(PeggleNightsAPItems.OOL.value),
@@ -367,37 +388,46 @@ class PeggleNightsWorld(World):
                 elif "Target Score (High)" in location_name:
                     location_access_rule = Or(
                         And(
-                            data.requirements,
+                            Has(f"Progressive Orange Pegs: {level.value}", 4),
+                            Has(f"Purple Peg: {level.value}"),
                             Has(
                                 PeggleNightsAPItems.PROGRESSIVE_STARTING_BALL_INCREASE.value,
-                                self.maximum_starting_ball_count - 5
+                                starting_ball_increases_three_quarters
                             )
                         ),
                         And(
                             Has(PeggleNightsAPItems.OOL.value),
-                            Has(PeggleNightsAPItems.PROGRESSIVE_FEVER_METER.value, 2),
+                            Has(f"Progressive Orange Pegs: {level.value}", 3),
                             Has(
                                 PeggleNightsAPItems.PROGRESSIVE_STARTING_BALL_INCREASE.value,
-                                max((self.maximum_starting_ball_count // 2) - 5, 0)
+                                starting_ball_increases_one_half
                             )
                         )
+                    )
+                elif "Style Shot (25,000+)" in location_name:
+                    location_access_rule = Or(
+                        Has(f"Progressive Orange Pegs: {level.value}", 1),
+                        Has(PeggleNightsAPItems.OOL.value),
+                    )
+                elif "5 Orange Peg Combo" in location_name:
+                    location_access_rule = Or(
+                        Has(f"Progressive Orange Pegs: {level.value}", 2),
+                        Has(PeggleNightsAPItems.OOL.value),
                     )
                 elif "Full Clear" in location_name:
                     location_access_rule = Or(
                         Has(
                             PeggleNightsAPItems.PROGRESSIVE_STARTING_BALL_INCREASE.value,
-                            self.maximum_starting_ball_count - 5
+                            (self.maximum_starting_ball_count - 5) - 1
                         ),
                         And(
                             Has(PeggleNightsAPItems.OOL.value),
                             Has(
                                 PeggleNightsAPItems.PROGRESSIVE_STARTING_BALL_INCREASE.value,
-                                max((self.maximum_starting_ball_count // 2) - 5, 0)
+                                starting_ball_increases_three_quarters
                             ),
                         )
                     )
-                else:
-                    location_access_rule = data.requirements
 
                 if location_access_rule is not None:
                     self.set_rule(location, location_access_rule)
@@ -407,18 +437,10 @@ class PeggleNightsWorld(World):
             if level == self.selected_goal_level:
                 region_menu.connect(
                     region_level,
-                    rule=(
-                        And(
-                            Has(f"Level Unlock: {level.value}"),
-                            Has(PeggleNightsAPItems.SHADOW_PEG.value, self.shadow_pegs_required)
-                        )
-                    )
+                    rule=Has(PeggleNightsAPItems.SHADOW_PEG.value, self.shadow_pegs_required)
                 )
             else:
-                region_menu.connect(
-                    region_level,
-                    rule=Has(f"Level Unlock: {level.value}")
-                )
+                region_menu.connect(region_level, rule=Has(f"Level Unlock: {level.value}"))
 
             region_level.connect(region_menu)
 
@@ -431,8 +453,17 @@ class PeggleNightsWorld(World):
         # Starting Master
         items_to_precollect.append(f"Master Unlock: {self.selected_starter_master.value}")
 
-        # Starting Level
-        items_to_precollect.append(f"Level Unlock: {self.selected_starter_level.value}")
+        # Starting Levels
+        level: PeggleNightsLevels
+        for level in self.selected_starter_levels:
+            items_to_precollect.append(f"Level Unlock: {level.value}")
+
+        # Goal Level Items
+        if self.goal == PeggleNightsAPGoals.SHADOW_PEGS_FINAL_LEVEL:
+            for _ in range(4):
+                items_to_precollect.append(f"Progressive Orange Pegs: {self.selected_goal_level.value}")
+
+            items_to_precollect.append(f"Purple Peg: {self.selected_goal_level.value}")
 
         ## Item Pool
         item_pool: List[PeggleNightsItem] = list()
@@ -440,45 +471,41 @@ class PeggleNightsWorld(World):
         # Shadow Pegs
         i: int
         for i in range(self.shadow_pegs_total):
-            item: PeggleNightsItem = self.create_item(PeggleNightsAPItems.SHADOW_PEG.value)
-
-            if i >= self.shadow_pegs_required:
-                item.classification = ItemClassification.useful
-
-            item_pool.append(item)
+            item_pool.append(self.create_item(PeggleNightsAPItems.SHADOW_PEG.value))
 
         # Progressive Items
-        for _ in range(4):
-            item_pool.append(self.create_item(PeggleNightsAPItems.PROGRESSIVE_FEVER_METER.value))
-
-        for _ in range(self.maximum_starting_ball_count - 5):
+        for _ in range(self.maximum_starting_ball_count - 2):  # 3 Extra Copies
             item_pool.append(self.create_item(PeggleNightsAPItems.PROGRESSIVE_STARTING_BALL_INCREASE.value))
 
-        # Character Unlocks
+        # Character Items
         character: PeggleNightsCharacters
         for character in self.selected_masters:
-            if character == self.selected_starter_master:
-                continue
+            unlock_item_name: str = f"Master Unlock: {character.value}"
 
-            item_pool.append(self.create_item(f"Master Unlock: {character.value}"))
+            if unlock_item_name not in items_to_precollect:
+                item_pool.append(self.create_item(unlock_item_name))
 
-        # Level Unlocks + Prepare Useful Item Pool
+            for _ in range(4):
+                item_pool.append(self.create_item(f"Progressive Green Pegs: {character.value}"))
+
+        # Level Items + Prepare Useful Item Pool
         useful_item_pool: List[str] = list()
 
         level: PeggleNightsLevels
         for level in self.selected_levels:
-            if level != self.selected_starter_level:
+            if level not in self.selected_starter_levels:
                 item_pool.append(self.create_item(f"Level Unlock: {level.value}"))
 
-            useful_item_pool.append(f"{PeggleNightsAPUsefulItems.FEVER_METER_BONUS.value}: {level.value}")
+            for _ in range(5):  # 1 Extra Copy
+                item_pool.append(self.create_item(f"Progressive Orange Pegs: {level.value}"))
+
+            item_pool.append(self.create_item(f"Purple Peg: {level.value}"))
+
             useful_item_pool.append(f"{PeggleNightsAPUsefulItems.SCORE_MULTIPLIER.value}: {level.value}")
             useful_item_pool.append(f"{PeggleNightsAPUsefulItems.TARGET_SCORE_DISCOUNT.value}: {level.value}")
 
             if self.include_full_clears:
                 useful_item_pool.append(f"{PeggleNightsAPUsefulItems.FULL_CLEAR_DISCOUNT.value}: {level.value}")
-
-        if self.selected_goal_level is not None:
-            item_pool.append(self.create_item(f"Level Unlock: {self.selected_goal_level.value}"))
 
         # Filler / Useful Replacements
         total_location_count: int = len(self.multiworld.get_unfilled_locations(self.player))
@@ -505,7 +532,7 @@ class PeggleNightsWorld(World):
         )
 
     def generate_basic(self) -> None:
-        self.multiworld.completion_condition[self.player] = lambda state: state.has("Victory", self.player)
+        self.multiworld.completion_condition[self.player] = lambda state: state.can_reach_region("Endgame", self.player)
 
     def fill_slot_data(self) -> Dict[str, Any]:
         slot_data: Dict[str, Any] = self.options.as_dict(
@@ -529,7 +556,7 @@ class PeggleNightsWorld(World):
         slot_data["selected_starter_master"] = self.selected_starter_master.value
 
         slot_data["selected_levels"] = [level.value for level in self.selected_levels]
-        slot_data["selected_starter_level"] = self.selected_starter_level.value
+        slot_data["selected_starter_levels"] = [level.value for level in self.selected_starter_levels]
 
         if self.selected_goal_level is not None:
             slot_data["selected_goal_level"] = self.selected_goal_level.value
@@ -575,8 +602,8 @@ class PeggleNightsWorld(World):
             spoiler_handle.write(f"\nStarting Master: {self.selected_starter_master.value}")
             spoiler_handle.write(f"\n\nUnlockable Masters:\n  {join_string.join(sorted([m.value for m in self.selected_masters[1:]]))}")
 
-        spoiler_handle.write(f"\n\nStarting Level: {self.selected_starter_level.value}")
-        spoiler_handle.write(f"\n\nUnlockable Levels:\n  {join_string.join(sorted([l.value for l in self.selected_levels[1:]]))}")
+        spoiler_handle.write(f"\n\nStarting Levels: \n  {join_string.join(sorted([l.value for l in self.selected_starter_levels]))}")
+        spoiler_handle.write(f"\n\nUnlockable Levels:\n  {join_string.join(sorted([l.value for l in self.selected_levels[3:]]))}")
 
         if self.selected_goal_level is not None:
             spoiler_handle.write(f"\n\nGoal Level: {self.selected_goal_level.value}")
@@ -600,7 +627,10 @@ class PeggleNightsWorld(World):
         slot_data["selected_starter_master"] = PeggleNightsCharacters(slot_data["selected_starter_master"])
 
         slot_data["selected_levels"] = [PeggleNightsLevels(level_name) for level_name in slot_data["selected_levels"]]
-        slot_data["selected_starter_level"] = PeggleNightsLevels(slot_data["selected_starter_level"])
+
+        slot_data["selected_starter_levels"] = [
+            PeggleNightsLevels(level_name) for level_name in slot_data["selected_starter_levels"]
+        ]
 
         if "selected_goal_level" in slot_data and slot_data["selected_goal_level"] is not None:
             slot_data["selected_goal_level"] = PeggleNightsLevels(slot_data["selected_goal_level"])
@@ -629,7 +659,7 @@ class PeggleNightsWorld(World):
             self.selected_starter_master = passthrough["selected_starter_master"]
             self.selected_levels = passthrough["selected_levels"]
             self.selected_goal_level = passthrough.get("selected_goal_level")
-            self.selected_starter_level = passthrough["selected_starter_level"]
+            self.selected_starter_levels = passthrough["selected_starter_levels"]
             self.include_full_clears = passthrough["include_full_clears"]
             self.target_score_requirement_mode = passthrough["target_score_requirement_mode"]
             self.target_score_requirement_percentage = passthrough["target_score_requirement_percentage"]
@@ -659,7 +689,6 @@ class PeggleNightsWorld(World):
 
         if useful_items_needed > 0:
             useful_item_pool_by_type: Dict[PeggleNightsAPUsefulItems, List[str]] = {
-                PeggleNightsAPUsefulItems.FEVER_METER_BONUS: list(),
                 PeggleNightsAPUsefulItems.SCORE_MULTIPLIER: list(),
                 PeggleNightsAPUsefulItems.TARGET_SCORE_DISCOUNT: list(),
             }
@@ -669,9 +698,7 @@ class PeggleNightsWorld(World):
 
             useful_item_name: str
             for useful_item_name in useful_item_pool:
-                if PeggleNightsAPUsefulItems.FEVER_METER_BONUS.value in useful_item_name:
-                    useful_item_pool_by_type[PeggleNightsAPUsefulItems.FEVER_METER_BONUS].append(useful_item_name)
-                elif PeggleNightsAPUsefulItems.FULL_CLEAR_DISCOUNT.value in useful_item_name and self.include_full_clears:
+                if PeggleNightsAPUsefulItems.FULL_CLEAR_DISCOUNT.value in useful_item_name and self.include_full_clears:
                     useful_item_pool_by_type[PeggleNightsAPUsefulItems.FULL_CLEAR_DISCOUNT].append(useful_item_name)
                 elif PeggleNightsAPUsefulItems.SCORE_MULTIPLIER.value in useful_item_name:
                     useful_item_pool_by_type[PeggleNightsAPUsefulItems.SCORE_MULTIPLIER].append(useful_item_name)
@@ -679,7 +706,6 @@ class PeggleNightsWorld(World):
                     useful_item_pool_by_type[PeggleNightsAPUsefulItems.TARGET_SCORE_DISCOUNT].append(useful_item_name)
 
             allowable_useful_item_types: List[PeggleNightsAPUsefulItems] = [
-                PeggleNightsAPUsefulItems.FEVER_METER_BONUS,
                 PeggleNightsAPUsefulItems.SCORE_MULTIPLIER,
                 PeggleNightsAPUsefulItems.TARGET_SCORE_DISCOUNT,
             ]

@@ -1,3 +1,9 @@
+# 1.1.3
+## Bug Fixes
+* Fixed `fly_destination_plando` being completely ignored when randomizing fly destinations
+* Fixed ER generation failing excessively with certain settings
+* Fixed UT failing to load the Poptracker pack with some settings (credit to [Siv](https://github.com/siv-v))
+
 # 1.1.2
 ## Bug Fixes
 * Fixed an issue where strength wasn't required to enter Route 12 from Route 11 when `route_12_boulders` was on

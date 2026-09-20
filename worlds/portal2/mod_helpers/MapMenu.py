@@ -108,13 +108,6 @@ class MapMenuElement(MenuElement):
         self.info_text = indicator_characters["completed"] if self.completed else indicator_characters["map"]
         self.info_text += parse_sub_locations(self.sub_location_completion)
 
-        if blocked:
-            if access_icons["unplayable"] not in self.title:
-                self.title = access_icons["unplayable"] + self.title
-        elif access_icons["playable"] not in self.title:
-            self.title = self.title.strip(access_icons["unplayable"])
-            self.title = access_icons["playable"] + self.title
-
     def get_string(self, previous_completed: bool):
         # Update required items
         new_required_items = [item for item in self.required_items if item in self.parent.parent.client.item_list]
@@ -140,7 +133,7 @@ class MapMenuElement(MenuElement):
             "sub_locations": self.sub_location_completion,
             "required_items": [item for item in self.required_items if item in self.parent.parent.client.item_list],
             "location_id": self.location_id,
-            "title": self.title[2:],
+            "title": self.title,
             "command": self.command,
             "total_locations": self.total_locations,
             "finished_locations": (1 if self.completed else 0) + len([name for name, complete in self.sub_location_completion.items() if complete])

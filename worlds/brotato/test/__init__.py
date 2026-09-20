@@ -9,7 +9,7 @@ from .data_sets.base import BrotatoTestDataSet
 
 class BrotatoTestBase(WorldTestBase):
     game = "Brotato"
-    world: BrotatoWorld  # type: ignore
+    world: BrotatoWorld
     player: ClassVar[int] = 1
 
     @contextmanager

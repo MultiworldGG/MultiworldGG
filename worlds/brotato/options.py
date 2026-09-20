@@ -9,6 +9,7 @@ from .constants import (
     MAX_LEGENDARY_CRATE_DROPS,
     MAX_NORMAL_CRATE_DROP_GROUPS,
     MAX_NORMAL_CRATE_DROPS,
+    MAX_REQUIRED_RUN_WINS,
     MAX_SHOP_SLOTS,
     NUM_WAVES,
     TOTAL_NUM_CHARACTERS,
@@ -22,7 +23,7 @@ class NumberRequiredWins(Range):
     """
 
     range_start = 1
-    range_end = TOTAL_NUM_CHARACTERS
+    range_end = MAX_REQUIRED_RUN_WINS
 
     default = 10
     display_name = "Wins Required"
@@ -109,6 +110,31 @@ class WavesPerCheck(Range):
 
     default = 10
     display_name = "Waves Per Check"
+
+
+class NumWaveCaps(Choice):
+    """The number of caps to put on the accessible waves.
+
+    You will not be able to play beyond the maximum wave cap until you find additional
+    Progressive Wave Cap items.
+
+    With one cap, all waves are accessible from the start.
+
+    With two caps, waves 1-10 are accessible from the start, and waves 11-20 require one
+    Progressive Wave Cap.
+
+    With four caps: waves 1-5 are accessible from the start, waves 6-10 require one
+    Progressive Wave Cap, waves 11-15 require two, waves 16-20 require 3.
+    """
+
+    option_one = 0
+    option_two = 2
+    option_four = 4
+    option_ten = 10
+    option_twenty = 20
+
+    default = 2
+    display_name = "Number of Progressive Wave Caps"
 
 
 class GoldRewardMode(Choice):
@@ -484,6 +510,7 @@ class BrotatoOptions(PerGameCommonOptions, DeathLinkMixin):
     starting_characters: StartingCharacters
     include_base_game_characters: IncludeBaseGameCharacters
     waves_per_drop: WavesPerCheck
+    num_wave_caps: NumWaveCaps
     gold_reward_mode: GoldRewardMode
     xp_reward_mode: XpRewardMode
     enable_enemy_xp: EnableEnemyXp

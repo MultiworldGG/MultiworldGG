@@ -1,8 +1,42 @@
+import typing
+
 from Options import Toggle, Range, Choice, ItemSet, OptionSet, PerGameCommonOptions, FreeText, Visibility, \
-    OptionGroup, StartInventoryPool
+    OptionGroup, StartInventoryPool, OptionError
 from dataclasses import dataclass
 
 from .MegaMixCollection import MegaMixCollections
+from .MegaMixSongData import SONG_DATA
+from Utils import is_iterable_except_str
+
+
+class MegaMixSongSet(ItemSet):
+    """For options that expect songs, map IDs to their name before verify. 1 becomes Love is War [1]"""
+    @staticmethod
+    def song_id_to_name(song_id: int) -> str:
+        candidates = [name for name, data in SONG_DATA.items() if data.songID == song_id]
+        if len(candidates) > 1:
+            raise OptionError(f"Multiple candidates found for ID {song_id}. This player or all players should specify it by its full name."
+                              f"\nCandidates: {candidates}")
+        elif len(candidates) == 0:
+            raise OptionError(f"Could not find song with ID {song_id}.")
+        return candidates[0]
+
+    @classmethod
+    def from_text(cls, text: str):
+        if text.isdigit():
+            return cls.from_text(cls.song_id_to_name(int(text)))
+        return super().from_text(text)
+
+    @classmethod
+    def from_any(cls, data: typing.Any):
+        if is_iterable_except_str(data):
+            for i, v in enumerate(data):
+                if type(v) is int or (type(v) is str and v.isdigit()):
+                    data[i] = cls.song_id_to_name(int(v))
+            return cls(data)
+        if type(data) is int:
+            return cls.from_text(str(data))
+        return cls.from_text(str(data))
 
 
 class StartingSongs(Range):
@@ -30,7 +64,7 @@ class AdditionalSongs(Range):
 class DuplicateSongPercentage(Range):
     """
     After placing required items (Leeks and songs), the percentage of remaining filler slots to become duplicate song items.
-    Duplicate songs are considered Useful thus out of logic and may speed up completion time.
+    Duplicate songs are progressive like their original but classified as Useful thus out of logic and may speed up completion time.
     """
     range_start = 0
     range_end = 100
@@ -108,8 +142,19 @@ class ScoreGradeNeeded(Choice):
     default = 2
 
 
+class GoalMode(Choice):
+    """How the Goal Song is unlocked.
+
+    Leeks: The original mode where you collect Leeks from the item pool.
+    Percent: Reach a percentage of checks done. More room in the item pool for other things.
+    """
+    display_name = "Goal Mode"
+    option_Leeks = 0
+    option_Percentage = 1
+
+
 class TotalLeeksAvailable(Range):
-    """The percentage of Leeks to add to the pool based on the total number of Starting and Additional Songs.
+    """If Goal Mode is Leeks, the percentage of Leeks to add to the pool based on the total number of Starting and Additional Songs.
     A higher available Leek percentage leads to more consistent game lengths, but individual Leeks will be less important.
 
     Example: (5 Starting + 40 Additional Songs) * 20% Leeks Total = 9 Leeks will be available
@@ -124,7 +169,7 @@ class TotalLeeksAvailable(Range):
 
 
 class LeeksRequiredPercentage(Range):
-    """The percentage of available Leeks in the item pool that are needed to unlock the Goal Song.
+    """If Goal Mode is Leeks, the percentage of available Leeks in the item pool that are needed to unlock the Goal Song.
 
     Example: (5 Starting + 40 Additional Songs) * 20% Leeks Total * 80% Leeks Needed = 7 out of 9 Leeks needed to goal"""
     range_start = 50
@@ -133,7 +178,18 @@ class LeeksRequiredPercentage(Range):
     display_name = "Leek Percentage Needed to Win"
 
 
-class GoalSongs(ItemSet):
+class GoalPercentage(Range):
+    """If Goal Mode is Percentage, the percentage of checks done to unlock the Goal Song.
+    - Highly influenced by rooms that use collect or send_location.
+    - The Duplicate Songs option will be capped to 15%.
+    """
+    display_name = "Goal Percentage"
+    range_start = 50
+    range_end = 100
+    default = 60
+
+
+class GoalSongs(MegaMixSongSet):
     """Guarantee one song listed here as the final Goal Song.
     - Difficulty options are ignored.
     - If a Goal Song is also in the Starting Inventory, it will not be chosen as a Goal Song.
@@ -154,7 +210,7 @@ class IncludeSongsPercentage(Range):
     display_name = "Include Songs Percentage"
 
 
-class IncludeSongs(ItemSet):
+class IncludeSongs(MegaMixSongSet):
     """Songs listed here will be guaranteed to be included as part of the seed.
     - Difficulty options are ignored for these songs.
     - If you want these songs immediately, use start_inventory instead.
@@ -163,7 +219,7 @@ class IncludeSongs(ItemSet):
     display_name = "Include Songs"
 
 
-class ExcludeSongs(ItemSet):
+class ExcludeSongs(MegaMixSongSet):
     """Songs listed here and not previously chosen as a Goal or Include will be excluded from being a part of the seed.
     This is recommended instead of exclude_locations which would allow songs to appear but with guaranteed filler checks.
 
@@ -206,7 +262,7 @@ class ProgressiveHP(Range):
     - Non-lethal Death Link applies to max available HP
     - For finer control use "Progressive HP" in start_inventory or start_inventory_from_pool
 
-    WARNING: Currently the only logic for this is needing full HP for the Goal Song.
+    WARNING: The logic for this is needing full HP for the Goal Song.
     """
     range_start = 1
     range_end = 20
@@ -219,6 +275,8 @@ megamix_option_groups = [
         StartingSongs,
         AdditionalSongs,
         DuplicateSongPercentage,
+        GoalMode,
+        GoalPercentage,
         TotalLeeksAvailable,
         LeeksRequiredPercentage,
     ]),
@@ -256,8 +314,10 @@ class MegaMixOptions(PerGameCommonOptions):
     song_difficulty_rating_min: DifficultyRatingMin
     song_difficulty_rating_max: DifficultyRatingMax
     grade_needed: ScoreGradeNeeded
+    goal_mode: GoalMode
     leek_count_percentage: TotalLeeksAvailable
     leek_win_count_percentage: LeeksRequiredPercentage
+    goal_percentage: GoalPercentage
     goal_song: GoalSongs
     include_songs_percentage: IncludeSongsPercentage
     include_songs: IncludeSongs

@@ -16,7 +16,7 @@ if TYPE_CHECKING:
     from .Subclasses import PHTransition, PHItem
     from . import PhantomHourglassSettings
 
-default_boat_speed = 0x10A
+DEFAULT_BOAT_SPEED = 0x10A
 
 def get_client_as_command_processor(self: "BizHawkClientCommandProcessor"):
     ctx = self.ctx
@@ -27,16 +27,17 @@ def get_client_as_command_processor(self: "BizHawkClientCommandProcessor"):
     return client
 
 def cmd_boat_option(self: "BizHawkClientCommandProcessor",
-                     option: Literal["snap_speed", "speed", "options"] = "options",
+                     option: Literal["snap_speed", "speed", "options", "equip", "auto_equip"] = "options",
                      *args: str):
     """
     Change various train options. Currently implemented:
       - speed <speed: int | "default" | "reset" | "list"> <gear>
-      - snap_speed (True): instantly switch to new speeds after charting or starting the engine.
+      - snap_speed <bool>: instantly switch to new speeds after charting or starting the engine.
+      - equip <bool>: toggle auto-equipping ship items when found.
       - options: lists current option values
     """
     # Thanks to Silvris's mm2 implementation for help with bizhawk command processing
-    valid_options = ["snap_speed", "speed", "options"]
+    valid_options = ["snap_speed", "speed", "options",  "equip", "auto_equip"]
     option = option.lower()
     if option not in valid_options:
         self.output(f"  \"{option}\" is not a valid option! {valid_options}")
@@ -57,7 +58,11 @@ def cmd_boat_option(self: "BizHawkClientCommandProcessor",
         self.output(f"  Current boat options:")
         self.output(f"    speed: {client.boat_speed}")
         self.output(f"    snap_speed: {client.boat_snap_speed}")
+        self.output(f"    auto_equip: {client.boat_equip}")
         return True
+
+    if option in ["equip", "auto_equip"]:
+        option = "equip"
 
     setattr(client, f"boat_{option}", value_bool)
     host_settings: PhantomHourglassSettings = get_settings().get('tloz_ph_options')
@@ -82,7 +87,7 @@ def cmd_boat_speed(self: "BizHawkClientCommandProcessor",
             self.output(f"  Current boat speed: {client.boat_speed}")
             return True
         elif speed in ["default", "reset"]:
-            set_speed(default_boat_speed)
+            set_speed(DEFAULT_BOAT_SPEED)
             return True
 
     try:
@@ -159,7 +164,7 @@ class PhantomHourglassClient(DSZeldaClient):
         self.last_ship_parts = []
         self.at_sea = False
         self.lowered_water = False
-        self.visited_entrances = set()
+        self.traversed_entrances = set()
         self.redisconnected_entrances = set()
         self.checked_entrances = set()
 
@@ -196,9 +201,10 @@ class PhantomHourglassClient(DSZeldaClient):
         self.addr_received_item_index = PHAddr.received_item_index
         self.loading_stage = False
 
-        self.boat_speed = default_boat_speed
+        self.boat_speed = DEFAULT_BOAT_SPEED
         self.boat_snap_speed = True
         self.update_boat_speed = True
+        self.boat_equip = True
         self.last_gear = True
 
         self.print_map_objs = False
@@ -217,6 +223,13 @@ class PhantomHourglassClient(DSZeldaClient):
         self.boss_door_addr: Address | None = None
         self.stage_flags = STAGE_FLAGS
         self.was_in_cutscene: bool = False
+
+        self.last_held_offset: int = 0xffff
+        self.last_ammo_count: list[int] = [-1, -1, -1]  # ammo to reset
+        self.ammo_addresses: list[Address] = PHAddr.ammo_counts
+        self.masked_beedle: bool = False  # last seen beedle variant
+
+        self.models_set: dict[str, int] = {}  # when special modes like nothing or treasure is set, use this for choosing vanilla item to remove stuff.
 
 
     async def check_game_version(self, ctx: "BizHawkClientContext") -> bool:
@@ -240,6 +253,7 @@ class PhantomHourglassClient(DSZeldaClient):
 
     async def on_connect(self, ctx):
         # Get train settings from host.yaml
+        await self.update_stored_entrances(ctx)
         host_settings: PhantomHourglassSettings = get_settings().get('tloz_ph_options')
         printl(f"SETTINGS: {host_settings.get('boat_speed', self.boat_speed)}")
         self.boat_speed = host_settings.get("boat_speed", self.boat_speed)
@@ -279,7 +293,18 @@ class PhantomHourglassClient(DSZeldaClient):
         if ctx.slot_data["map_warp_options"]:
             write_list += PHAddr.inventory_5.get_write_list(0x1F)
 
-        printl(f"ssf write list: {write_list}")
+        if not ctx.slot_data["equip_ship"]:
+            write_list += PHAddr.custom_storage.get_write_list(2)
+            self.boat_equip = False
+
+        starting_ship = ctx.slot_data["starting_ship"]
+        if starting_ship >= 0:
+            write_list += [addr.get_inner_write_list(starting_ship) for addr in PHAddr.all_equipped_ship_parts]
+        elif starting_ship == -2:
+            print(f"all parts: {ctx.slot_data['ship_part_order']}")
+            write_list += [addr.get_inner_write_list(part) for addr, part in zip(PHAddr.all_equipped_ship_parts, ctx.slot_data["ship_part_order"][0])]
+
+        printl(f"ssf write list: {hex_f(write_list)}")
         return write_list
 
     async def get_coords(self, ctx, multi=False):
@@ -295,6 +320,7 @@ class PhantomHourglassClient(DSZeldaClient):
     def update_metal_count(self, ctx):
         metal_ids = [self.item_data[i].id for i in ITEM_GROUPS["Metals"]]
         self.metal_count = sum(1 for i in ctx.items_received if i.item in metal_ids)
+        print(f"\tUpdated metal count: {self.metal_count}")
 
     async def update_treasure_tracker(self, ctx):
         self.last_treasures = await PHAddr.all_treasure_count.read(ctx)
@@ -320,6 +346,7 @@ class PhantomHourglassClient(DSZeldaClient):
         return [PHAddr.link_x, PHAddr.link_y, PHAddr.link_z, PHAddr.boat_x, PHAddr.boat_z]
 
     async def update_main_read_list(self, ctx, stage, in_game=True):
+        printl(f"Updating Main Read List")
         read_keys = read_keys_always.copy()
         death_link_pointer = None
         if stage is not None:
@@ -336,6 +363,8 @@ class PhantomHourglassClient(DSZeldaClient):
                 if in_game:
                     death_link_pointer = (PHAddr.gPlayer, 0xa)
                 self.at_sea = False
+                if stage == 0x25:
+                    read_keys.append(PHAddr.link_held_item_offset_totok)
 
             if death_link_pointer:
                 addr, offset = death_link_pointer
@@ -343,7 +372,7 @@ class PhantomHourglassClient(DSZeldaClient):
                 self.health_address = Address.from_pointer(pointer_1 + offset, size=2, name="link_health")
                 self.last_health_pointer = pointer_1
                 read_keys.append(self.health_address)
-            printl(f"Health Address = {self.health_address}")
+            printl(f"\tHealth Address = {self.health_address}")
             self.main_read_list = read_keys
         else:
             self.at_sea = None
@@ -357,19 +386,35 @@ class PhantomHourglassClient(DSZeldaClient):
 
     async def refill_ammo(self, ctx, text=""):
         items = [i + " (Progressive)" for i in ["Bombs", "Bombchus", "Bow"]]
+        base = ["Bomb Bag", "Bombchu Bag", "Bow"]
+        upgrades = ["Bomb Bag Upgrade", "Bombchu Bag Upgrade", "Quiver Upgrade"]
 
         # Count upgrades
-        counts = {self.item_data[i].id: 0 for i in items}
-        for i in ctx.items_received:
-            for k in counts:
-                if k == i.item:
-                    counts[k] += 1
+        counts = [0, 0, 0]
+        counts_base = [0, 0, 0]
+        counts_upgrades = [0, 0, 0]
+        loops = [[self.item_data[i].id for i in j] for j in zip(items, base, upgrades)]
+        for k in ctx.items_received:
+            for i, g in enumerate(loops):
+                p, b, u = g
+                if p == k.item:
+                    counts[i] += 1
+                if b == k.item:
+                    counts_base[i] = 1
+                if u == k.item:
+                    counts_upgrades[i] += 1
+        for i, g in enumerate(zip(counts, counts_base, counts_upgrades)):
+            p, b, u = g
+            if b:
+                counts[i] = max(p, u+1)
 
         # Write Upgrades
         write_list = []
-        for i, count in enumerate(counts.values()):
+        for i, count in enumerate(counts):
             data = self.item_data[items[i]]
-            write_list += data.ammo_address.get_write_list(data.give_ammo[min(count - 1, 2)])
+            ammo_count = data.give_ammo[min(count - 1, 2)] if count else 0
+            write_list += data.ammo_address.get_write_list(ammo_count)
+        printl(f"Writing ammo: {hex_f(write_list)}")
         await bizhawk.write(ctx.bizhawk_ctx, write_list)
         await self.full_heal(ctx)
         if text == "milk_bar":
@@ -383,8 +428,9 @@ class PhantomHourglassClient(DSZeldaClient):
         if ctx.slot_data["goal_requirements"] < 2:
             total = ctx.slot_data["dungeons_required"]
             required = total
+            metal_total = len([1 for i in ctx.slot_data["boss_reward_items_pool"] if i in ITEM_GROUPS["Metals"]])
         elif ctx.slot_data["goal_requirements"] == 2:
-            total = ctx.slot_data["metal_hunt_total"]
+            total = metal_total = ctx.slot_data["metal_hunt_total"]
             required = ctx.slot_data["metal_hunt_required"]
         else:
             return
@@ -395,12 +441,14 @@ class PhantomHourglassClient(DSZeldaClient):
                             "opens the staircase to Bellum at the bottom of TotOK.",
                             "opens the blue warp to Bellum in TotOK.",
                             "spawns the ruins of the Ghost Ship in the SW Quadrant.",
-                            "wins the game."]
-            logger.info(f"You have {self.metal_count} out of {required} rare metals. There are {total} metals in total.\n"
-                        f"Finding the metals {bellum_texts[ctx.slot_data['bellum_access']]}")
+                            "and giving them to Zauz wins the game."]
+            logger.info(f"You have {self.metal_count} out of {required} boss rewards. There are {total} boss rewards in total.\n"
+                        f"Finding the boss rewards {bellum_texts[ctx.slot_data['bellum_access']]}\n"
+                        f"Boss Rewards: {ctx.slot_data['boss_reward_items_pool']}")
+
         elif scene == 0x160A:
             zauz_required = ctx.slot_data["zauz_required_metals"]
-            logger.info(f"Zauz needs {zauz_required} rare metals to give an item. You have {self.metal_count}/{total} metals.")
+            logger.info(f"Zauz needs {zauz_required} rare metals to give an item. You have {self.metal_count}/{metal_total} metals.")
 
     def process_loading_variable(self, read_result) -> bool:
         return read_result[PHAddr.loading_room] == 0xEE
@@ -410,8 +458,8 @@ class PhantomHourglassClient(DSZeldaClient):
         if self.at_sea:
             self.getting_location = read_result.get(PHAddr.shot_frog, False)
         else:
-            self.getting_location = (read_result.get(PHAddr.getting_location, 0) & 0x20
-                                     or read_result.get(PHAddr.getting_ship_part, False))
+            self.getting_location = (bool(read_result.get(PHAddr.getting_location, 0) & 0x20)
+                                     | bool(read_result.get(PHAddr.getting_ship_part, 0)) << 1)
 
         if not read_result[PHAddr.loading_stage]:
             self.loading_stage = True
@@ -494,7 +542,8 @@ class PhantomHourglassClient(DSZeldaClient):
 
             if self.update_boat_speed:
                 self.update_boat_speed = False
-                await PHAddr.boat_max_speed.overwrite(ctx, self.boat_speed, silent=True)
+                if self.boat_speed != DEFAULT_BOAT_SPEED:
+                    await PHAddr.boat_max_speed.overwrite(ctx, self.boat_speed, silent=True)
                 if self.boat_snap_speed:
                     await PHAddr.boat_speed.overwrite(ctx, self.boat_speed * read_result[PHAddr.boat_gear] // 2,
                                                       silent=True)
@@ -540,9 +589,11 @@ class PhantomHourglassClient(DSZeldaClient):
             if trigger_reload:
                 self.chest_reload_watches.clear()
                 printl(f"Reloading chests!")
+                await self.process_actors(ctx)  # happens before chests
                 await self.set_chest_contents(ctx)
                 await self.load_dig_spots(ctx)
                 await self.process_map_objects(ctx)
+
         if self.is_dead and not self.chest_reload_watches:
             self.chest_reload_watches.append((self.health_address, 0, "gt"))
             printl(f"Setting Chest reload for death: {self.chest_reload_watches}")
@@ -552,12 +603,18 @@ class PhantomHourglassClient(DSZeldaClient):
             if self.minigame_chest_reset and not in_minigame:
                 self.minigame_chest_reset = False
                 printl(f"Exited minigame, reloading chests")
+                await self.process_map_objects(ctx)
                 await self.set_chest_contents(ctx)
             if not self.minigame_chest_reset and in_minigame:
                 self.minigame_chest_reset = True
 
         # Process reloading of dig spots/bonk trees
         await self.repopulate_dig_spots(ctx)
+
+        # if self.reload_stage_flags:
+        #     print(f"reloading stage flags ph")
+        #     await self.set_stage_flags(ctx, self.current_stage)
+        #     self.reload_stage_flags = False
 
     async def detect_warp_to_start(self, ctx, read_result: dict):
         # Opened clog warp to start check
@@ -607,12 +664,16 @@ class PhantomHourglassClient(DSZeldaClient):
         await PHAddr.text_speed.overwrite(ctx, 2)  # Set text speed to fast, no matter settings
         # Set treasure prices so they match seed (save file resets it on menu)
         await PHAddr.treasure_price_index.overwrite(ctx, ctx.slot_data.get("treasure_price_index", 0))
-        await self.update_stored_entrances(ctx)
 
         # Set warp to start location
         if ctx.slot_data["shuffle_overworld_transitions"]:
             self.starting_entrance = (11, 0, 0)
 
+        # Update boat equip
+        self.boat_equip = not (await PHAddr.custom_storage.read(ctx) & 2)
+
+        self.traversed_entrances |= set(get_stored_data(ctx, traversal_key, set()))
+        printl(f"Current traversals: {self.traversed_entrances}")
 
     async def watched_intro_cs(self, ctx):
         watched_intro = await PHAddr.watched_intro.read(ctx, silent=True) & 2
@@ -624,14 +685,18 @@ class PhantomHourglassClient(DSZeldaClient):
         self.event_reads = []
         self.save_spam_protection = False  # Reset save spam protection
 
+        await self.process_actors(ctx)
         await self.set_chest_contents(ctx)
         await self.process_map_objects(ctx)
+
 
         # Yellow warp in TotOK saves keys
         # TODO: allow this to work with ER
         if self.last_scene is not None:
             if current_scene == 0x2509 and self.last_scene == 0x2507:
                 await self.write_totok_midway_keys(ctx)
+            if self.last_scene == 0x1701:
+                await self.reset_spirit_shrine(ctx)
 
         # Repair salvage arm in certain rooms
         if current_scene in [0x130A, 0x500]:
@@ -672,9 +737,15 @@ class PhantomHourglassClient(DSZeldaClient):
                 elif gem_count == 1:
                     await PHAddr.totok_b12_state.set_bits(ctx, 0x8)
 
-
         # Find potential dig spots
         await self.load_dig_spots(ctx)
+
+        # Update boat equip from client command
+        if bool(await PHAddr.custom_storage.read(ctx) & 2) == self.boat_equip:
+            if self.boat_equip:
+                await PHAddr.custom_storage.unset_bits(ctx, 0x2)
+            else:
+                await PHAddr.custom_storage.set_bits(ctx, 0x2)
 
     async def write_totok_midway_keys(self, ctx):
         data = DUNGEON_KEY_DATA[372]
@@ -694,7 +765,7 @@ class PhantomHourglassClient(DSZeldaClient):
             text = f"Repaired Salvage Arm for "
             if repair_kits > 0:
                 write_list += PHAddr.custom_storage.get_write_list(prev[PHAddr.custom_storage] - 0x20)
-                text += f"1 Salvage Repair Kit. You have {prev[PHAddr.custom_storage]} remaining."
+                text += f"1 Salvage Repair Kit. You have {repair_kits-1} remaining."
             else:
                 # Repair cost, doesn't care if you're out of rupees out of qol
                 cost = 100 if prev[PHAddr.global_salvage_health] == 0 else (6 - prev[PHAddr.global_salvage_health]) * 10
@@ -721,21 +792,33 @@ class PhantomHourglassClient(DSZeldaClient):
 
     @staticmethod
     async def remove_ship_parts(ctx):
-        ship_write_list = ([1] + [0] * 8) * 8
+        ship_write_list = ([0] * 9) * 8
         await PHAddr.ship_part_counts.overwrite(ctx, ship_write_list)
 
     async def edit_ship(self, ctx):
         # Figure out what ships player has
-        ships = [1] + [0]*8
+        starting_ship = ctx.slot_data["starting_ship"]
+        ships = [0]*9
+        if starting_ship >= 0:
+            ships[starting_ship] = 1
         for i in ctx.items_received:
             item_id = i.item
             item_name = self.item_id_to_name[item_id]
-            if "Ship:" in item_name:
+            if "Ship:" in item_name and item_name not in ["Ship: Mismatched", "Ship (Progressive)"]:
                 item_data = self.item_data[item_name]
                 ships[item_data.ship] = 1
-        # Give ship parts
+
         ship_write_list = [] + ships * 8
-        printl(ships, ship_write_list)
+        printl(f"whole ship writes: {ship_write_list}")
+        ship_order = ctx.slot_data["ship_part_order"]
+        ship_count = min(max(self.item_count(ctx, "Ship: Mismatched"), self.item_count(ctx, "Ship (Progressive)")), len(ship_order))
+        if starting_ship == -2:  # ship_part_order 0 is the starting ship
+            ship_count += 1
+        for part in ship_order[:ship_count]:
+            for i, ship in enumerate(part):
+                ship_write_list[9*i+ship] = 1
+        # Give ship parts
+        printl(f"all ship writes: {ship_write_list}")
         await bizhawk.write(ctx.bizhawk_ctx, [(PHAddr.ship_part_counts.addr, ship_write_list, "Main RAM")])
         await PHAddr.custom_storage.set_bits(ctx, 2)
 
@@ -758,8 +841,30 @@ class PhantomHourglassClient(DSZeldaClient):
 
                 # Goal Check
                 if "goal_requirement" in d:
-                    printl(f"Metal check: {self.metal_count} metals out of {ctx.slot_data['required_metals']}")
-                    return self.metal_count >= ctx.slot_data["required_metals"]
+                    printl(f"\tMetal check: {self.metal_count} metals out of {ctx.slot_data['required_metals']}")
+                    has_metals = self.metal_count >= ctx.slot_data["required_metals"]
+                    has_spirits = True
+                    if ctx.slot_data["boss_reward_pool"]:
+                        spirit_pool: list[str] = [s for s in ctx.slot_data["boss_reward_items_pool"] if s in ITEM_GROUPS["Spirits"]]
+                        if "Spirit (Progressive)" in spirit_pool:
+                            if len(spirit_pool) == 3:
+                                has_spirits = self.item_count(ctx, "Spirit (Progressive)") >= 3
+                                printl(f"Progressive Spirits == 3: {spirit_pool} {has_spirits}")
+                            else:
+                                has_spirits = self.item_count(ctx, "Spirit (Progressive)") >= len(spirit_pool)
+                                for loc in ctx.slot_data["required_dungeon_locations"]:
+                                    if self.location_name_to_id[loc] not in ctx.checked_locations:
+                                        has_spirits = False
+                                printl(f"\t\tProgressive Spirits < 3: {spirit_pool} {has_spirits}")
+                        elif spirit_pool[0].endswith("(Progressive)"):
+                            has_spirits = all([self.item_count(ctx, i) for i in spirit_pool])
+                            for loc in ctx.slot_data["required_dungeon_locations"]:
+                                if self.location_name_to_id[loc] not in ctx.checked_locations:
+                                    has_spirits = False
+                        else:
+                            has_spirits = all([self.item_count(ctx, i) for i in spirit_pool])
+                            printl(f"\t\tSpirit Pool: {spirit_pool} {has_spirits}")
+                    return has_metals and has_spirits
             return True
 
         # Beedle points
@@ -804,20 +909,31 @@ class PhantomHourglassClient(DSZeldaClient):
         return True
 
     async def set_stage_flags(self, ctx, stage):
+        if stage == self.last_stage and not self.reload_stage_flags:
+            return
         printl(f"Setting stage flags")
         self.stage_flag_address = await get_address_from_heap(ctx, PHAddr.gMapManager, STAGE_FLAGS_OFFSET)
         self.key_address = Address.from_pointer(self.stage_flag_address + SMALL_KEY_OFFSET)
         if stage in self.stage_flags:
             flags = self.stage_flags[stage]
+            print(f"\tstage flags: {self.stage_flags[stage]}")
 
-            printl(f"\tSetting Stage flags for {STAGES[stage]}, "
-                  f"adr: {self.stage_flag_address}")
-            await self.stage_flag_address.set_bits(ctx, flags)
+            res = await self.stage_flag_address.set_bits(ctx, flags, silent=False)
+            if res is not None:
+                printl(f"\tSetting Stage flags for {STAGES[stage]}, "
+                       f"adr: {self.stage_flag_address}")
 
 
     async def open_boss_door(self, ctx):
         data = BOSS_DOOR_DATA.get(self.current_scene, False)
-        if data and ctx.slot_data.get("boss_key_behaviour", True) and self.item_count(ctx, f"Boss Key ({data['name']})"):
+        if not data:
+            return
+
+        if ctx.slot_data["randomize_boss_keys"] != 3 and (
+                self.item_count(ctx, f"Boss Key ({data['name']})")
+                or (ctx.slot_data["boss_keyrings"] and self.item_count(ctx, f"Keyring ({data['name']})"))
+                or (ctx.slot_data["exclude_non_required_dungeons"] == 2 and STAGES[self.current_stage] not in ctx.slot_data["required_dungeons"])
+        ):
             if not self.boss_door_addr:
                 boss_door = await self.find_table_object(ctx, *data["map_obj_comp"])
                 if not boss_door:
@@ -921,11 +1037,12 @@ class PhantomHourglassClient(DSZeldaClient):
         if hasattr(item_data, "hint_on_receive"):
             if ctx.slot_data["randomize_salvage"] == 1:
                 await self.scout_location(ctx, item_data.hint_on_receive)
+        if item_name == "Phantom Sword" and not (self.item_count(ctx, "Oshus' Sword") or self.item_count(ctx, "Sword (Progressive)")):
+            await PHAddr.sword_count.overwrite(ctx, 0)
         # Increment metal count
         if item_name in ITEM_GROUPS["Metals"]:
             printl(f"Old thingy metal count: {self.metal_count+1}")
             self.update_metal_count(ctx)
-            printl(f"Updated metal count: {self.metal_count}")
         if "Boss Key" in item_name:
             await self.open_boss_door(ctx)
 
@@ -1019,22 +1136,26 @@ class PhantomHourglassClient(DSZeldaClient):
     async def process_game_completion(self, ctx: "BizHawkClientContext"):
         game_clear = False
         if ctx.slot_data["bellum_access"] == 4:
-            game_clear = self.metal_count >= ctx.slot_data["required_metals"]
-            if game_clear and not self.sent_goal:
+            has_metals = self.metal_count >= ctx.slot_data["required_metals"]
+            if has_metals and not self.sent_goal and self.current_scene == 0x160a and LOCATIONS_DATA["Zauz's House Phantom Blade"]["id"] in ctx.checked_locations:
                 printl(f"Bellum access: {ctx.slot_data['bellum_access']} metal count {self.metal_count} >= {ctx.slot_data['required_metals']}")
                 await self.store_visited_entrances(ctx, ENTRANCES["GOAL"], ENTRANCES["GOAL"].vanilla_reciprocal)
                 self.sent_goal = True
+                game_clear = True
         else:
-            if self.current_scene != self.goal_room:
+            if self.current_stage == 0x36:  # Backup check credits scene
+                self.defeated_bellum = True
+            elif self.current_scene != self.goal_room:
                 return game_clear
             if self.current_scene == 0x3300 and not self.defeated_bellum:
-                if await PHAddr.defeated_bellum.read(ctx, silent=True) == 1:
+                if await PHAddr.defeated_bellum.read(ctx, silent=True) in [1, 0xBB]:
                     if (await PHAddr.potion_protector.read(ctx, silent=True)  # drink potion
                             or await self.health_address.read(ctx) == 0):  # die and revive
                         printl(f"Tried to drink potion, don't send goal!")
                         await PHAddr.defeated_bellum.overwrite(ctx, 0, silent=True)
                     else:
                         self.defeated_bellum = True
+                        print(f"Got Goal")
 
             game_clear = self.defeated_bellum  # finished game
 
@@ -1195,7 +1316,7 @@ class PhantomHourglassClient(DSZeldaClient):
         return None
 
     async def update_stored_entrances(self, ctx: "BizHawkClientContext"):
-        self.visited_entrances.clear()
+        self.traversed_entrances.clear()
         self.redisconnected_entrances.clear()
         self.visited_scenes.clear()
         self.checked_entrances.clear()
@@ -1209,15 +1330,15 @@ class PhantomHourglassClient(DSZeldaClient):
 
     # UT store entrances to remove
     async def store_visited_entrances(self, ctx: "BizHawkClientContext", detect_data, exit_data, interaction="traverse"):
-        self.visited_entrances |= set(get_stored_data(ctx, traversal_key, set()))
-        old_visited_entrances = self.visited_entrances.copy()
+        self.traversed_entrances |= set(get_stored_data(ctx, traversal_key, set()))
+        old_visited_entrances = self.traversed_entrances.copy()
         new_data = {detect_data.id, exit_data.id} if not ctx.slot_data["decouple_entrances"] and detect_data.two_way else {detect_data.id}
         printl(f"New Storage Data: {new_data} {ctx.slot_data['decouple_entrances']}")
 
         if interaction == "traverse" or ctx.slot_data.get("ut_blocked_entrances_behaviour", 1) == 0:
             key = storage_key(ctx, traversal_key)
-            self.visited_entrances.update(new_data)
-            new_data = self.visited_entrances-old_visited_entrances
+            self.traversed_entrances.update(new_data)
+            new_data = self.traversed_entrances-old_visited_entrances
         elif interaction == "check":
             key = storage_key(ctx, checked_key)
             self.checked_entrances.update(new_data)
@@ -1290,6 +1411,9 @@ class PhantomHourglassClient(DSZeldaClient):
     async def check_location_post_processing(self, ctx, location):
         if location is None:
             self.last_location = None
+            if self.getting_location & 2 and self.current_scene in [0xc0b, 0x1b00, 0x1400]:
+                printl(f"Detected Unknown ship part, give treasure?")
+                await self.give_random_treasure(ctx)
             return
 
         if "do_special" in location:
@@ -1308,13 +1432,11 @@ class PhantomHourglassClient(DSZeldaClient):
                     entr = ENTRANCES[event_name]
                     await self.store_visited_entrances(ctx, entr, entr.vanilla_reciprocal)
 
-        if "reload_chests" in location:
-            reload_data = location["reload_chests"]
+        if location.reload_chests:
             printl(f"Reloading Chests!")
-            if reload_data is True:
-                self.chest_reload_watches.append((PHAddr.in_cutscene, 0xd8, "eq"))
-            elif isinstance(reload_data, tuple):
-                self.chest_reload_watches.append(reload_data)
+            self.chest_reload_watches.append((PHAddr.in_cutscene, 0xd8, "eq"))
+            # elif isinstance(reload_data, tuple):
+            #     self.chest_reload_watches.append(reload_data)
 
         self.last_location = location
 
@@ -1327,9 +1449,11 @@ class PhantomHourglassClient(DSZeldaClient):
             return
         if map_type_lookup.get(scene) == "ship":
             return
+        if map_type_lookup.get(scene) == "shop" and not ctx.slot_data["shopsanity"]:
+            return
 
         if scene in range(4) or scene in [0x300]:  # Sea overview if port shuffle
-            tab_scene = 1 if ctx.slot_data["shuffle_ports"] else 0
+            tab_scene = 1 if ctx.slot_data["shuffle_ports"] or ctx.slot_data["shuffle_dungeon_entrances"] else 0
         else:
             tab_scene = scene | (1 << 16) if ctx.slot_data.get("shuffle_overworld_transitions", False) else scene
         printl(f"Storing new scene for UT {hex(tab_scene)}")
@@ -1383,17 +1507,21 @@ class PhantomHourglassClient(DSZeldaClient):
         return False
 
     async def print_map_data(self, ctx):
-        pointer_table: list[PHAddr] = []
-        for i in range(1000):  # safety shutoff
-            pointer = await Address.from_pointer(PHAddr.map_obj_table + 4*i, 4).read(ctx, silent=True)
-            if not pointer:
-                break
-            pointer_table.append(Address.from_pointer(pointer-0x2000000, 4))
+        pointer_table: list[Address] = []
+
+        rl = []
+        # print(f"Table size: {table_size} max {hex_f(array_start+table_size*4)}")
+        for i in range(await PHAddr.map_obj_table_size.read(ctx)):
+            rl.append(Address.from_pointer(PHAddr.map_obj_table + i * 4, size=3))
+        talbe_read = await read_multiple(ctx, rl)
+        pointer_table = [Address.from_pointer(v, size=3) for k, v in talbe_read.items() if k and 0 < v < 0x400000]
+        # print("table", hex_f(pointer_table))
 
         length = len(pointer_table)
         printl(ctx.slot_data["location_models"])
         printl(f"Generated pointer table with length {length}")
-        obj_types = await read_multiple(ctx, pointer_table, offset=4, keys=range(length))
+        obj_ids = await read_multiple(ctx, pointer_table, offset=0, keys=range(length))
+        obj_flags = await read_multiple(ctx, pointer_table, offset=4, keys=range(length))
         obj_x = await read_multiple(ctx, pointer_table, offset=4 * 6, keys=range(length), signed=True)
         obj_y = await read_multiple(ctx, pointer_table, offset=4 * 7, keys=range(length), signed=True)
         obj_z = await read_multiple(ctx, pointer_table, offset=4 * 8, keys=range(length), signed=True)
@@ -1409,16 +1537,17 @@ class PhantomHourglassClient(DSZeldaClient):
             y: int
             z: int
             item: int
+            flags: int
             addr: Address
 
             def __post_init__(self):
-                self.type_str = map_object_idents.get(self.typ, hex(self.typ))
+                self.type_str = idents_0.get(self.typ, f"<{map_object_idents.get(self.flags, hex(self.typ))}>")
 
             def __str__(self):
                 return f"\t{self.index}\t{self.type_str} ({self.x}, {self.y}, {self.z}) {hex(self.item)} {self.addr}"
 
         map_objects: list[MapObject] = []
-        atr = [a.values() for a in [obj_types, obj_x, obj_y, obj_z, item]] + [pointer_table]
+        atr = [a.values() for a in [obj_ids, obj_x, obj_y, obj_z, item, obj_flags]] + [pointer_table]
         grass_counter = 0
         for i, args in enumerate(zip(*atr)):
             m = MapObject(i, *args)
@@ -1456,7 +1585,7 @@ class PhantomHourglassClient(DSZeldaClient):
                 self.last_vanilla_item.pop()
                 printl(f"oops it's vanilla or dummy! {self.last_vanilla_item}")
             elif self.current_scene not in getattr(item_data, "blocked_scenes", []):
-                _write_list += await item_data.receive_item(self, ctx, num_received_items)
+                _write_list += await item_data.receive_item(self, ctx, num_received_items+1)
             return _write_list
 
         # printl(f"Getting item last location: {self.last_location} location_models: {ctx.slot_data.get("location_models", {})}")
@@ -1466,7 +1595,7 @@ class PhantomHourglassClient(DSZeldaClient):
             if "chest_offset" in self.last_location or "gift_addr" in self.last_location:
                 printl(f"Handling Item: {item_name} ghost? {item_data.ghost_model} reset? {item_data.model_reset} last_vanilla: {self.last_vanilla_item}")
                 if (item_data.ghost_model or item_data.model is None or model_id in [0x1D, 0x1E]) and self.current_scene not in getattr(item_data, "blocked_scenes", []):
-                    write_list += await item_data.receive_item(self, ctx, num_received_items)
+                    write_list += await item_data.receive_item(self, ctx, num_received_items+1)
 
                 vanilla_model = item_data.vanilla_model[0]
                 printl(f"\tCancel removal conditions: {vanilla_model in model_resets} "
@@ -1479,7 +1608,9 @@ class PhantomHourglassClient(DSZeldaClient):
                                 not model_reset_vanillas.get(item_data.model)
                                 or model_reset_vanillas.get(item_data.model) == item_name # cancel reset for models that work in vanilla
                         )):
-                    self.last_vanilla_item.pop()
+                    printl(f"\t\tcanceling removal of {self.last_vanilla_item.pop()}")
+                    # self.delay_reset = 0
+
 
                 if self.last_vanilla_item and "monotone_incremental" in item_data.tags and "delay_reset" in self.last_location:
                     printl(f"Monotone Incremental {item_data} from delay reset, canceling delay reset.")
@@ -1510,6 +1641,7 @@ class PhantomHourglassClient(DSZeldaClient):
         self.key_door_watches.clear()
         self.paired_object_watches.clear()
         self.boss_door_addr = None
+        self.models_set.clear()
 
     @staticmethod
     async def find_table_object(ctx: "BizHawkClientContext", start_offset: int,
@@ -1559,47 +1691,54 @@ class PhantomHourglassClient(DSZeldaClient):
 
     async def set_chest_contents(self, ctx):
         write_list = []
-        set_shop = False
         for loc, data in self.locations_in_scene.items():
-            model = ctx.slot_data.get("location_models", {}).get(str(data["id"]), 0x1E)
-            chest_offset = data.get("chest_offset", None)
-            gift_addr = data.get("gift_addr", None)
+            model = ctx.slot_data.get("location_models", {}).get(str(data.id), 0x1E)
+            chest_offset = data.chest_offset
+            gift_addr = data.gift_addr
+            if data.id in ctx.checked_locations or data.id not in ctx.server_locations:
+                model = 0
 
             if gift_addr is not None:
                 # printl("gift_addr", isinstance(gift_addr, str), gift_addr, loc)
-                if isinstance(gift_addr, str) and gift_addr == "island_shop":
-                    # Shops are special
-                    if set_shop:
-                        continue
-                    shop_lookup = {0xB: 0x26e324, 0xC: 0x263964, 0x10: 0x2692d4}
-                    shop_addr = Address.from_pointer(shop_lookup[self.current_stage])
-                    vanilla_item = await shop_addr.read(ctx, silent=True)
-                    printl(f"Shop item lookup: {shop_addr} {vanilla_item} {shop_location_lookup.get(vanilla_item)}")
-                    if shop_location_lookup.get(vanilla_item) == loc:
-                        write_list.append(shop_addr.get_inner_write_list(model))
-                        set_shop = True
-                    continue
-
                 gift_addr: list[Address] = gift_addr if isinstance(gift_addr, list) else [gift_addr]
                 for addr in gift_addr:
                     printl(f"\tSetting read item model: {loc} {hex(model)}")
                     write_list.append(addr.get_inner_write_list(model))
 
-            elif chest_offset is not None:
-                # Farmable locations set treasure
-                if "farmable" in data and data["id"] in ctx.checked_locations:
-                    model = 0x7D
-                vanilla_item_model = self.item_data[data["vanilla_item"]].vanilla_model
-                printl(f"\tVanilla model {vanilla_item_model} offsets {chest_offset}")
-                chest_obj = await self.find_table_object(ctx, chest_offset, 9, vanilla_item_model, size=1)
-                if chest_obj:
-                    chest_content_addr = Address.from_pointer(chest_obj + 9 * 4, 1)
-                    write_list.append(chest_content_addr.get_inner_write_list(model))
-                    printl(f"Writing {model} to addr {chest_content_addr} for loc {loc}")
-                else:
-                    printl(f"Could not find chests for item swapping, probably restarted client in already loaded room.")
+            # elif chest_offset is not None:
+            #     # Farmable locations set treasure
+            #     if "farmable" in data and data["id"] in ctx.checked_locations:
+            #         model = 0x7D
+            #     vanilla_item_model = self.item_data[data["vanilla_item"]].vanilla_model
+            #     printl(f"\tVanilla model {vanilla_item_model} offsets {chest_offset}")
+            #     chest_obj = await self.find_table_object(ctx, chest_offset, 9, vanilla_item_model, size=1)
+            #     if chest_obj:
+            #         chest_content_addr = Address.from_pointer(chest_obj + 9 * 4, 1)
+            #         write_list.append(chest_content_addr.get_inner_write_list(model))
+            #         printl(f"Writing {model} to addr {chest_content_addr} for loc {loc}")
+            #     else:
+            #         printl(f"Could not find chests for item swapping, probably restarted client in already loaded room.")
+            self.models_set[loc] = model
 
         await bizhawk.write(ctx.bizhawk_ctx, write_list)
+
+    def set_chest_item(self, ctx, location, obj_addr):
+        res: list[tuple] = []
+        model = ctx.slot_data.get("location_models", {}).get(str(location.id), 0x1E)
+        # Set non-randomized locations to nothing
+        if location.id not in ctx.server_locations:
+            model = 0
+        # Farmable locations set treasure
+        if location.id in ctx.checked_locations:
+            model = 0
+            if "farmable" in location:
+                model = 0x7D
+
+        chest_content_addr = Address.from_pointer(obj_addr + 9 * 4, 1)
+        res.append(chest_content_addr.get_inner_write_list(model))
+        printl(f"Writing {model} to addr {chest_content_addr} for loc {location.name}")
+        self.models_set[location.name] = model
+        return res
 
     async def process_map_objects(self, ctx):
         if self.current_stage <=3:
@@ -1609,7 +1748,7 @@ class PhantomHourglassClient(DSZeldaClient):
         table_size = await PHAddr.map_obj_table_size.read(ctx)
         obj_idents = await self.get_table_data(ctx, PHAddr.map_obj_table, 0,
                                                  size=3, table_label=False, table_size=table_size)
-        printl(f"map objects ({table_size}): {hex_f(obj_idents)}")
+        printl(f"map objects ({table_size})")  #: {hex_f(obj_idents)}")
 
         identifiers = idents_0
 
@@ -1666,6 +1805,11 @@ class PhantomHourglassClient(DSZeldaClient):
         xs = await read_multiple(ctx, obj_idents.keys(), signed=True, offset=6*4)
         zs = await read_multiple(ctx, obj_idents.keys(), signed=True, offset=8*4)
 
+        # Prep chest identification
+        chest_locations = [c for c in self.locations_in_scene.values() if c.chest_offset]
+        chest_locations.sort(key=lambda c: c.chest_offset)
+        chest_counter = 0
+        printl(f"Chest objects in scene {hex_f(self.current_scene)}, {[c.name for c in chest_locations]}")
 
         for i, pack in enumerate(zip(obj_idents.items(), list(xs.values()), list(zs.values()))):
             pack2, x, z = pack
@@ -1675,14 +1819,18 @@ class PhantomHourglassClient(DSZeldaClient):
                 printl("Map Object Overflow!")
                 break
             if ident not in identifiers:
-                printl(f"Unknown map object: {hex_f(ident)} @ {addr} #{i}")
+                print(f"Unknown map object: {hex_f(ident)} @ {addr} #{i}")
                 continue
 
             if identifiers.get(ident) in ["Spirit Door", "Key Door", "Blue Door", "Arena Door", "Door"]:
                 write_list.append(Address.from_pointer(addr + 31*4, size=2).get_inner_write_list(0))  # closing
 
                 if identifiers.get(ident) in ["Spirit Door", "Key Door"]:
-                    self.key_door_watches[Address.from_pointer(addr + 8, 1)] = "key"
+                    if ctx.slot_data["exclude_non_required_dungeons"] == 2 and STAGES[self.current_stage] not in ctx.slot_data["required_dungeons"] + ["Temple of the Ocean King", "Mountain Passage"]:
+                        printl(f"opening excluded key door {addr}")
+                        write_list.append(Address.from_pointer(addr + 8, 1).get_inner_write_list(3))
+                    else:
+                        self.key_door_watches[Address.from_pointer(addr + 8, 1)] = "key"
                 if identifiers.get(ident) in ["Arena Door"]:
                     self.key_door_watches[Address.from_pointer(addr + 8, 1)] = "arena"
 
@@ -1795,10 +1943,10 @@ class PhantomHourglassClient(DSZeldaClient):
                         write_list.append(Address.from_pointer(addr + 42 * 4 + 2, size=2).get_inner_write_list(0))
                 elif self.current_scene == 0x250C:
                     if x == -51200:
-                        if not ctx.slot_data["randomize_pedestal_items"]:
-                            add_action("b9_flames", addr + 8)
-                        elif has_west:
+                        if has_west:
                             lower_spikes(addr)
+                        else:
+                            add_action("b9_flames", addr + 8)
                     else:
                         write_list.pop()  # Phantom Flames actually use the cutscene flag
                         write_list.append(Address.from_pointer(addr + 42 * 4+2, size=2).get_inner_write_list(0))
@@ -1912,7 +2060,7 @@ class PhantomHourglassClient(DSZeldaClient):
                         add_detection("gs_tri", addr + 8, comp=1, always_active=True)
                     else:
                         add_detection("gs_round", addr + 8, comp=1, always_active=True)
-                if self.current_scene == 0x250C and not ctx.slot_data["randomize_pedestal_items"]:
+                if self.current_scene == 0x250C:
                     if x == -63488:
                         add_detection("b9_flames", addr + 8, comp=1, always_active=True)
 
@@ -1922,8 +2070,14 @@ class PhantomHourglassClient(DSZeldaClient):
                     write_list.append(addr.get_inner_write_list(9, 4, 2))
 
             if identifiers.get(ident) in ["Small Chest", "Big Chest", "Unspawned Big Chest", "Unspawned Small Chest"]:
-                # Set chest contents?
+                if chest_counter < len(chest_locations):
+                    write_list += self.set_chest_item(ctx, chest_locations[chest_counter], addr)
+                chest_counter += 1
+
                 pass
+
+            if identifiers.get(ident) == "Unspawned Small Chest" and self.current_scene == 0x2512:
+                write_list.append(addr.get_inner_write_list(1, 8, 1))
 
         if self.current_scene == 0x1c00:
             add_detection("tof_arena", self.stage_flag_address+0, comp=0x10, comp_exact=False)
@@ -1946,22 +2100,86 @@ class PhantomHourglassClient(DSZeldaClient):
             printl(f"Deleting Cutscenes: {hex_f(write_list)}")
             await bizhawk.write(ctx.bizhawk_ctx, write_list)
 
-    async def get_object_read_addr(self, ctx, location) -> Address | None:
-        vanilla_item_model = self.item_data[location["vanilla_item"]].vanilla_model
-        chest_object = await self.find_table_object(ctx, location["chest_offset"], 9, vanilla_item_model, size=1)
+    async def get_object_read_addr(self, ctx, location: DSLocation) -> Address | None:
+        vanilla_item_model = self.item_data[location.vanilla_item].vanilla_model
+        chest_object = await self.find_table_object(ctx, location.chest_offset, 9, vanilla_item_model, size=1)
         if not chest_object:
             return None
-        LOCATIONS_DATA[location['name']] |= {
-            "value": 0x29,  # read for open chest
-            "exact_read": True,
-            "gift_addr": Address.from_pointer(chest_object+4*9)  # saves refinding object for model swaps
-        }
+        location.value = 0x29
+        location.exact_read = True
+        location.gift_addr = Address.from_pointer(chest_object+4*9)
         return Address.from_pointer(chest_object+4)
 
+    async def process_actors(self, ctx):
+        dig_scene = False
+        # for loc in self.locations_in_scene.values():  # don't bother with dig changing in this update
+        #     if loc.dig_spot:
+        #         dig_scene = True
+        #         break
+
+        if self.current_scene not in SHOP_SCENES and not dig_scene:
+            return
+
+        table_size = await PHAddr.actor_table_size.read(ctx)
+        actor_table_start = await PHAddr.actor_table_pointer.read(ctx)
+        actor_idents = await self.get_table_data(ctx, actor_table_start, 0,
+                                                 size=3, table_label=False, table_size=table_size)
+        printl(f"actor objects ({table_size}): {hex_f(actor_idents)}")
+        shop_slot = 0
+
+        for addr, ident in actor_idents.items():
+            print(f"\t{addr} -> {hex_f(ident)}: {ACTOR_IDENTS.get(ident, 'UNK')}")
+            ident = ACTOR_IDENTS.get(ident, "")
+            if not ident:
+                continue
+
+            if ident == "Dig Spot":
+                location = ""  # Figure out what location we're looking at...
+                if location:
+                    location.gift_addr = Address.from_pointer(addr+0x158, 1)
+                    self.locations_in_scene[data.name] = data
+
+            if ident.startswith("Shop:"):
+                shop_slot += 1
+                k = ident.split(":")[1][1:]
+                shop_scene = self.current_scene
+                if self.current_stage == 5:
+                    shop_scene = 0x501 if self.masked_beedle else 0x500
+                shop_scene = SHOP_LOCATIONS.get(shop_scene, {})
+                location = shop_scene.get(k, shop_scene.get(k+str(shop_slot), ""))
+                # print(f"{k} {k+str(shop_slot)} scene {shop_scene.keys()}")
+                if not location:
+                    continue
+                data = LOCATIONS_DATA[location]
+
+                if (data.id not in ctx.checked_locations and compare_slot_data(ctx, data)) or (k == "Shield" and ctx.slot_data["shield_in_pool"]):
+                    size = 4 if k.endswith("Refill") else 1
+                    printl(f"Creating watch for {location} {addr} -> {hex_f(addr+0x56*4)} size {size}")
+
+                    self.watches[location] = Address.from_pointer(addr+0x56*4, size=1)
+                    data.gift_addr = Address.from_pointer(addr+356, size=size)
+                    self.locations_in_scene[data.name] = data
+
+            if ident == "Beedle":
+                self.masked_beedle = (await Address.from_pointer(addr+284+3).read(ctx)) == 0x16
+                printl(f"Masked Beedle? {self.masked_beedle}")
+
+    def cancel_location_read(self, location: DSLocation):
+        if location.shop_model:
+            return True
+        return False
+
     async def _set_vanilla_item(self, ctx, location, vanilla_item: str | None = None):
-        printl(f"Setting vanilla item for {location.get('name')}")
+        printl(f"Setting vanilla item for {location.name}")
         if "chest_offset" in location or "gift_addr" in location:
-            model = ctx.slot_data.get("location_models", {}).get(str(location["id"]), 0x1E)
+            model = self.models_set.get(
+                location.name,
+                ctx.slot_data.get(
+                    "location_models", {}
+                ).get(
+                    str(location["id"]), 0x1E
+                )
+            )
             printl(f"Got swapped item model as vanilla item {hex(model)}: {model_resets.get(model)} {model_reset_vanillas.get(model)} {vanilla_item}")
             # Always remove for previously checked locations
             if model_resets.get(model, ""):
@@ -1982,26 +2200,43 @@ class PhantomHourglassClient(DSZeldaClient):
             printl(f"Not In Cutscene!")
             self.was_in_cutscene = False
             await self.update_main_read_list(ctx, self.current_stage)
+            await self.set_stage_flags(ctx, self.current_stage)
+
+        # Detect picking up phantom items
+        if self.current_scene in held_trigger_scenes and read_result[PHAddr.link_held_item_offset_totok] != self.last_held_offset:
+            self.last_held_offset = read_result[PHAddr.link_held_item_offset_totok]
+            if self.last_held_offset != 0xffff:
+                actor_table = await PHAddr.actor_table_pointer.read(ctx)
+                held_actor = await Address.from_pointer(actor_table+4*self.last_held_offset, size=3).read(ctx)
+                actor_id = await Address.from_pointer(held_actor, size=3).read(ctx)
+                if held_actor_ids.get(actor_id, "") == "Square Crystal" and self.current_scene == 0x250c:
+                    await self._process_checked_locations(ctx, "TotOK B9 Square Crystal")
+                if held_actor_ids.get(actor_id, "") == "Force Gem" and self.current_scene == 0x2510:
+                    await self._process_checked_locations(ctx, "TotOK B12 Warp Phantom Force Gem")
+
         await super().process_in_game(ctx, read_result)
 
     async def force_spawn_swordfish(self, ctx):
         printl(f"Checking RNG Swordfish {self.current_room}")
         if (self.item_count(ctx, "Swordfish Shadows")  # Progressive fishing when :(
-            and self.item_count(ctx, "Big Catch Lure")
+            and (self.item_count(ctx, "Big Catch Lure") or self.item_count(ctx, "Fishing Rod (Progressive)") > 2)
         ):
             fish_offset_table = [46, 53, 26, 34]
             swordfish_addr = await self.find_table_object(ctx,
                                                           fish_offset_table[self.current_scene],
-                                                          375/4, 0, 2,
+                                                          375//4, 0, 2,
                                                           PHAddr.sea_actor_table, max_search=4)
             if swordfish_addr:
                 printl(f"\tRNG Swordfish successful, spawning swordfish immediately {swordfish_addr}")
                 await Address.from_pointer(swordfish_addr+375, size=2).overwrite(ctx, 0x10F)
 
     async def load_dig_spots(self, ctx):
-        printl(f"Loading dig spots")
+
         self.dig_spots_in_scene.clear()
         self.last_actor_scan.clear()
+        if self.current_stage == 0 or not self.locations_in_scene:
+            return
+        printl(f"Loading dig spots")
         self.actor_table_pointer = await PHAddr.actor_table_pointer.read(ctx)
         wl = []
         for loc in self.locations_in_scene:
@@ -2087,6 +2322,42 @@ class PhantomHourglassClient(DSZeldaClient):
                     await spot_data[loc].reset(ctx)
                 self.linked_dig_spots.pop(loc)
 
+    async def reset_spirit_shrine(self, ctx):
+        progs = [f"Spirit of {s} (Progressive)" for s in SPIRITS]
+        base = [f"Spirit of {s}" for s in SPIRITS]
+        upgrades = [f"{s} Upgrade" for s in SPIRITS]
 
-
-
+        loops = [[self.item_data[i].id for i in j] for j in zip(progs, base, upgrades)]
+        count, base_count, upgrade_count = [0, 0, 0], [0, 0, 0], [0, 0, 0]
+        counts: list[list[int | bool]] = []
+        spirit_count, prog_upgrade_count = 0, 0
+        prog_spirit = self.item_data["Spirit (Progressive)"].id
+        prog_upgrade = self.item_data["Spirit Upgrade"].id
+        for k in ctx.items_received:
+            for i, g in enumerate(loops):
+                p, b, u = g
+                if k.item == p:
+                    count[i] += 1
+                elif k.item == b:
+                    base_count[i] = 1
+                elif k.item == u:
+                    base_count[i] += 1
+                elif k.item == prog_spirit:
+                    spirit_count += 1
+                elif k.item == prog_upgrade:
+                    prog_upgrade_count += 1
+        for i, g in enumerate(zip(count, base_count, upgrade_count)):
+            p, b, u = g  # prog singles, base, upgrades
+            counts.append([p or b or spirit_count > i,
+                         u >= 1 or p >= 2 or prog_upgrade_count >= 1,
+                         u >= 2 or p >= 3 or prog_upgrade_count >= 2])
+            # count[i] = min(max(p, 1+u+prog_upgrade_count if b else 0, 1+u+prog_upgrade_count if spirit_count > i else 0), 3)
+        print(f"spirits {counts}")
+        spirit_writes = {PHAddr.fairies_0: 0, PHAddr.fairies_1: 0}
+        for name, prog_count in zip(progs, counts):
+            item = self.item_data[name]
+            print(f"Spirit evals: {name} {[i for i, ev in enumerate(prog_count) if ev]}")
+            for addr, _value in [item.progressive[i] for i, ev in enumerate(prog_count) if ev]:
+                spirit_writes[addr] |= _value
+        printl(f"Spirit writes {hex_f(spirit_writes)}")
+        await write_multiple(ctx, spirit_writes.keys(), spirit_writes.values())

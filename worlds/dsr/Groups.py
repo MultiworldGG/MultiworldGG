@@ -48,6 +48,7 @@ progression_items = [
     "Covenant of Artorias",
     "Crest Key",
     "Crest of Artorias",
+    "Darkmoon Seance Ring",
     "Dungeon Cell Key",
     "Key to Depths",
     "Key to New Londo Ruins",
@@ -63,7 +64,7 @@ progression_items = [
 ]
 
 item_name_groups = {
-    "Key items"         : [item.name for item in item_dictionary.values() if item.category in [DSRItemCategory.KEY_ITEM]] + ["Covenant of Artorias","Orange Charred Ring", "Skull Lantern"],
+    "Key items"         : [item.name for item in item_dictionary.values() if item.category in [DSRItemCategory.KEY_ITEM]] + ["Covenant of Artorias","Orange Charred Ring", "Skull Lantern", "Darkmoon Seance Ring"],
     "Fog Wall Keys"     : [item.name for item in item_dictionary.values() if item.category in [DSRItemCategory.FOGWALL]],
     "Boss Fog Wall Keys": [item.name for item in item_dictionary.values() if item.category in [DSRItemCategory.BOSSFOGWALL]],
     "Consumables"       : [item.name for item in item_dictionary.values() if item.category in [DSRItemCategory.CONSUMABLE] and "soul" not in item.name.lower() and "fire keeper" not in item.name.lower()],
@@ -127,14 +128,16 @@ location_name_groups = {
     "All DLC regions": set(),
     "All Fog Walls": set(),
     "All Boss Fog Walls": set(),
+    "All Shop Extended Items": set(),
     "After O+S": set()
 }
 
 category_to_loc_name_map = {
-    "DOOR": "All Doors",
+    # "DOOR": "All Doors",
     "ITEM_LOT": "All Item Lots",
     "FOG_WALL": "All Fog Walls",
-    "BOSS_FOG_WALL": "All Boss Fog Walls"
+    "BOSS_FOG_WALL": "All Boss Fog Walls",
+    "SHOP_EXTENDED_ITEM": "All Shop Extended Items",
 }
 
 # regions to add to "All DLC regions" group
@@ -152,11 +155,13 @@ dlc_regions = [
     "Oolacile Township - After Crest Key",
     "Chasm of the Abyss",
     "Chasm of the Abyss - Manus",
+    "Firelink Shrine - Domhnall of Zena Under Aqueduct After Artorias",
 ]
 
 #Post Ornstein And Smough
 post_os_regions  = [
     "Anor Londo - After Ornstein and Smough",
+    "Firelink Shrine - Domhnall of Zena After O+S",
     "The Duke's Archives",
     "The Duke's Archives - After First Seath Encounter",
     "The Duke's Archives - After Archive Tower Cell Key",
@@ -191,6 +196,7 @@ post_os_regions  = [
     "Oolacile Township - After Crest Key",
     "Chasm of the Abyss",
     "Chasm of the Abyss - Manus",
+    "Firelink Shrine - Domhnall of Zena Under Aqueduct After Artorias",
     "Firelink Altar",
     "Kiln of the First Flame",
     "Kiln of the First Flame - Gwyn"

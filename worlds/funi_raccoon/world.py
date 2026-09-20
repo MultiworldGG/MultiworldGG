@@ -21,7 +21,7 @@ class FuniRaccoonWorld(World):
 
     location_name_to_id = locations.LOCATION_NAME_TO_ID
     item_name_to_id = items.ITEM_NAME_TO_ID
-    item_name_groups = {**items.ITEM_GROUPS, "Dumpster Items": set(rules.DUMPSTER_ITEMS)}
+    item_name_groups = {**items.ITEM_GROUPS, "Dumpster Items": rules.DUMPSTER_ITEMS}
 
     origin_region_name = "Overworld"
 
@@ -38,24 +38,19 @@ class FuniRaccoonWorld(World):
         act4 = self.options.act4_threshold.value
 
         if act2 <= museum:
-            raise OptionError(
-                f"Act 2 Threshold ({act2}) must be strictly greater than Museum Threshold ({museum})."
-            )
+            act2 = museum + 5
         if act3 <= act2:
-            raise OptionError(
-                f"Act 3 Threshold ({act3}) must be strictly greater than Act 2 Threshold ({act2})."
-            )
+            act3 = act2 + 5
         if act4 <= act3:
-            raise OptionError(
-                f"Act 4 Threshold ({act4}) must be strictly greater than Act 3 Threshold ({act3})."
-            )
+            act4 = act3 + 5
 
         max_dumpster_items = len(self.item_name_groups["Dumpster Items"])
         if act4 > max_dumpster_items:
-            raise OptionError(
-                f"Act 4 Threshold ({act4}) cannot be greater than the total pool of "
-                f"Dumpster Items ({max_dumpster_items})."
-            )
+            act4 = max_dumpster_items
+            
+        self.options.act2_threshold.value = act2
+        self.options.act3_threshold.value = act3
+        self.options.act4_threshold.value = act4
 
         re_gen_passthrough = getattr(self.multiworld, "re_gen_passthrough", {})
         if re_gen_passthrough and self.game in re_gen_passthrough:

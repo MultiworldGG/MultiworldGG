@@ -10,6 +10,7 @@ from . import options  # So we don't need to import every option class when defi
 from .characters import get_available_and_starting_characters
 from .constants import (
     MAX_SHOP_SLOTS,
+    PROGRESSIVE_WAVE_CAP_ITEM_TEMPLATE,
     RUN_COMPLETE_LOCATION_TEMPLATE,
 )
 from .item_weights import create_items_from_weights
@@ -25,6 +26,7 @@ from .options import (
 from .regions import create_regions
 from .rules import create_has_run_wins_rule
 from .shop_slots import get_num_shop_slot_and_lock_button_items
+from .wave_caps import get_wave_cap_info
 from .waves import get_wave_for_each_item, get_waves_with_checks
 
 logger = logging.getLogger("Brotato")
@@ -92,7 +94,7 @@ class BrotatoWorld(World):
     """
 
     options_dataclass = BrotatoOptions
-    options: BrotatoOptions  # type: ignore
+    options: BrotatoOptions
     game: ClassVar[str] = "Brotato"
     web = BrotatoWeb()
     data_version = 0
@@ -132,6 +134,16 @@ class BrotatoWorld(World):
     Calculated from player options in generate_early.
     """
 
+    num_wave_cap_increases: int
+    """The number of Progressive Wave Cap items to create."""
+
+    wave_access: dict[int, int]
+    """Lookup of waves to the number of wave cap increases needed to access it.
+
+    For example, wave_access[1] has the number of increases needed for wave 1 to be in
+    logic.
+    """
+
     common_loot_crate_groups: list[BrotatoLootCrateGroup]
     """Information about each common loot crate group, i.e. how many crates it has and how many wins it needs.
 
@@ -169,19 +181,25 @@ class BrotatoWorld(World):
     def generate_early(self) -> None:
         # Determine needed values from the options
         self.waves_with_checks = get_waves_with_checks(self.options.waves_per_drop)
-
-        self._include_characters, self._starting_characters = get_available_and_starting_characters(
-            self.options.include_base_game_characters.value,
-            bool(self.options.enable_abyssal_terrors_dlc.value),
-            self.options.include_abyssal_terrors_characters.value,
-            self.options.starting_characters,
-            self.options.num_starting_characters.value,
-            self.options.num_characters.value,
-            self.random,
-        )
+        re_gen_passthrough = getattr(self.multiworld, "re_gen_passthrough", {})
+        if re_gen_passthrough:
+            self._starting_characters = re_gen_passthrough[self.game]["starting_characters"]
+            self._include_characters = re_gen_passthrough[self.game]["include_characters"]
+        else:
+            self._include_characters, self._starting_characters = get_available_and_starting_characters(
+                self.options.include_base_game_characters.value,
+                bool(self.options.enable_abyssal_terrors_dlc.value),
+                self.options.include_abyssal_terrors_characters.value,
+                self.options.starting_characters,
+                self.options.num_starting_characters.value,
+                self.options.num_characters.value,
+                self.random,
+            )
 
         # Clamp the number of wins needed to goal to the number of included characters, so the game isn't unwinnable.
         self.num_wins_needed = min(self.options.num_victories.value, len(self._include_characters))
+
+        self.num_wave_cap_increases, self.wave_access = get_wave_cap_info(self.options.num_wave_caps)
 
         # Thought: if num victories is clamped, do some of the groups become unreachable?
         self.common_loot_crate_groups = build_loot_crate_groups(
@@ -215,6 +233,7 @@ class BrotatoWorld(World):
             [
                 len(self._include_characters),  # Run Won Items
                 len(self._include_characters) - len(self._starting_characters),  # The character items
+                self.num_wave_cap_increases * len(self._include_characters),
                 self.num_shop_slot_items,
                 self.num_shop_lock_button_items,
             ]
@@ -247,6 +266,7 @@ class BrotatoWorld(World):
             create_region,
             self._include_characters,
             self.waves_with_checks,
+            self.wave_access,
             self.common_loot_crate_groups,
             self.legendary_loot_crate_groups,
         )
@@ -262,6 +282,12 @@ class BrotatoWorld(World):
                 self.multiworld.push_precollected(character_item)
             else:
                 item_pool.append(character_item)
+
+            for _ in range(self.num_wave_cap_increases):
+                wave_cap_increase_item = self.create_item(
+                    name=PROGRESSIVE_WAVE_CAP_ITEM_TEMPLATE.format(char=character)
+                )
+                item_pool.append(wave_cap_increase_item)
 
         # Create an item for each nonessential item. These are determined in generate_early().
         for item_name, item_count in self.nonessential_item_counts.items():
@@ -294,6 +320,7 @@ class BrotatoWorld(World):
         return {
             "deathlink": self.options.death_link.value,
             "waves_with_checks": self.waves_with_checks,
+            "wave_access": self.wave_access,
             "num_wins_needed": self.num_wins_needed,
             "gold_reward_mode": self.options.gold_reward_mode.value,
             "xp_reward_mode": self.options.xp_reward_mode.value,
@@ -309,4 +336,18 @@ class BrotatoWorld(World):
             "legendary_crate_drop_groups": [asdict(g) for g in self.legendary_loot_crate_groups],
             "wave_per_game_item": wave_per_game_item,
             "enable_abyssal_terrors_dlc": self.options.enable_abyssal_terrors_dlc.value,
+            # Info for Universal Tracker, the mod doesn't use these.
+            "starting_characters": self._starting_characters,
+            "include_characters": self._include_characters,
         }
+
+    @staticmethod
+    def interpret_slot_data(slot_data: dict[str, Any]) -> dict[str, Any] | None:
+        if "starting_characters" in slot_data:
+            # If this key is present, all UT-related keys should be present
+            return {
+                "starting_characters": slot_data["starting_characters"],
+                "include_characters": slot_data["include_characters"],
+            }
+        # Backwards compat with worlds generated before UT support was added
+        return None

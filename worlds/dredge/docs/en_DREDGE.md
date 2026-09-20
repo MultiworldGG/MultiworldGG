@@ -45,7 +45,7 @@ Your main progression will be quest items and boat equipment/upgrades.
 ##  Known Issues
 
 ### Mod Compatibility
-The DREDGE MultiworldGG/AP World has **not been tested alongside other DREDGE mods**.  
+The DREDGE MultiworldGG World has **not been tested alongside other DREDGE mods**.  
 Running additional mods may cause unexpected behavior or prevent checks from being sent correctly.
 
 Currently reported conflicting mods:

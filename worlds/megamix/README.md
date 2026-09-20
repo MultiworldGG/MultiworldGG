@@ -36,7 +36,7 @@ ln -rsv ./DivaAPworld ./Archipelago/worlds/megamix
   - Open `Archipelago` as the project directory.
   - Develop within `Archipelago\worlds\megamix`.
   - Recommended run configurations:
-    - `Launcher.py "Universal Tracker"` ([tracker apworld](github.com/FarisTheAncient/Archipelago/releases/latest))
+    - `Launcher.py "Universal Tracker"` ([tracker apworld](https://github.com/FarisTheAncient/Archipelago/releases/latest))
     - `Launcher.py "Mega Mix JSON Generator"`
 - Testing
   - pytest: `pytest test/general worlds/megamix`

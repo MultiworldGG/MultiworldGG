@@ -40,10 +40,10 @@ class PHAddr:
     getting_location = Address(0x1B6F44)
     shot_frog = Address(0x1B7038)
     getting_ship_part = Address(0x11F5E4)
-    getting_salvage = Address(0x1BA654)
-    getting_salvage_1 = Address(0x1ba655)
-    getting_salvage_2 = Address(0x1ba656)
-    getting_salvage_3 = Address(0x1ba657)
+    getting_salvage = Address(0x1BA654, name="getting_salvage")
+    getting_salvage_1 = Address(0x1ba655, name="getting_salvage_1")
+    getting_salvage_2 = Address(0x1ba656, name="getting_salvage_2")
+    getting_salvage_3 = Address(0x1ba657, name="getting_salvage_3")
     
     stage_small = Address(0x1B2E94, size=1)  # Used for precision rads
     
@@ -72,10 +72,12 @@ class PHAddr:
     started_save_file = Address(0x1B7FB8)  # Used to trigger precision stuff from menu
 
     link_held_item_goron = Address(0x1CD770, size=2)
-    link_held_item_2 = Address(0x1CDAE0, size=2)
-    link_held_item = Address(0x1CD510, size=2)
+    link_held_item_2 = Address(0x1CDAE0, size=2)  # totok
+    link_held_item = Address(0x1CD510, size=2)  # elsewhere
+    link_held_item_offset_totok = Address(0x1CDAE4, size=2)
 
     actor_table_pointer = Address(0x1BA8C4, size=3)
+    actor_table_size = Address(0x1BA8B4, size=2)
 
     # Pointers
     gItemManager = DTCM(0x0fb4)
@@ -87,55 +89,55 @@ class PHAddr:
     
     # Adventure flags
     adv_flags = Address(0x1B557C, size=52)
-    adv_flags_0 = Address(0x1b557c)
-    adv_flags_1 = Address(0x1b557d)
-    adv_flags_2 = flags_fog_spirits = Address(0x1b557e)
-    adv_flags_3 = flags_bosses_0 = Address(0x1b557f)
-    adv_flags_4 = Address(0x1b5580)
-    adv_flags_5 = Address(0x1b5581)
-    adv_flags_6 = flags_clear_fog = flags_cannon = Address(0x1b5582)
-    adv_flags_7 = Address(0x1b5583)
-    adv_flags_8 = Address(0x1b5584)
-    adv_flags_9 = Address(0x1b5585)
-    adv_flags_10 = Address(0x1b5586)
-    adv_flags_11 = Address(0x1b5587)
-    adv_flags_12 = Address(0x1b5588)
-    adv_flags_13 = flags_shops = Address(0x1b5589)
-    adv_flags_14 = Address(0x1b558a)
-    adv_flags_15 = flags_metals = Address(0x1b558b)
-    adv_flags_16 = Address(0x1b558c)
-    adv_flags_17 = Address(0x1b558d)
-    adv_flags_18 = Address(0x1b558e)
-    adv_flags_19 = Address(0x1b558f)
-    adv_flags_20 = flags_trade_quest = Address(0x1b5590)
-    adv_flags_21 = Address(0x1b5591)
-    adv_flags_22 = Address(0x1b5592)
-    adv_flags_23 = Address(0x1b5593)
-    adv_flags_24 = Address(0x1b5594)
-    adv_flags_25 = Address(0x1b5595)
-    adv_flags_26 = Address(0x1b5596)
-    adv_flags_27 = Address(0x1b5597)
-    adv_flags_28 = Address(0x1b5598)
-    adv_flags_29 = Address(0x1b5599)
-    adv_flags_30 = Address(0x1b559a)
-    adv_flags_31 = Address(0x1b559b)
-    adv_flags_32 = Address(0x1b559c)
-    adv_flags_33 = Address(0x1b559d)
-    adv_flags_34 = Address(0x1b559e)
-    adv_flags_35 = Address(0x1b559f)
-    adv_flags_36 = Address(0x1b55a0)
-    adv_flags_37 = Address(0x1b55a1)
-    adv_flags_38 = Address(0x1b55a2)
-    adv_flags_39 = frog_glyphs = Address(0x1b55a3)
-    adv_flags_40 = Address(0x1b55a4)
-    adv_flags_41 = Address(0x1b55a5)
-    adv_flags_42 = Address(0x1b55a6)
-    adv_flags_43 = Address(0x1b55a7)
-    adv_flags_44 = watched_intro = Address(0x1b55a8)  # intro is 0x2
-    adv_flags_45 = Address(0x1b55a9)
-    adv_flags_46 = Address(0x1b55aa)
-    adv_flags_47 = flags_fog_done = Address(0x1b55ab)
-    adv_flags_48 = Address(0x1b55ac)
+    adv_flags_0 = Address(0x1b557c, name="adv_flags_0")
+    adv_flags_1 = Address(0x1b557d, name="adv_flags_1")
+    adv_flags_2 = flags_fog_spirits = Address(0x1b557e, name="adv_flags_2")
+    adv_flags_3 = flags_bosses_0 = Address(0x1b557f, name="adv_flags_3")
+    adv_flags_4 = Address(0x1b5580, name="adv_flags_4")
+    adv_flags_5 = Address(0x1b5581, name="adv_flags_5")
+    adv_flags_6 = flags_clear_fog = flags_cannon = Address(0x1b5582, name="adv_flags_6")
+    adv_flags_7 = Address(0x1b5583, name="adv_flags_7")
+    adv_flags_8 = Address(0x1b5584, name="adv_flags_8")
+    adv_flags_9 = Address(0x1b5585, name="adv_flags_9")
+    adv_flags_10 = Address(0x1b5586, name="adv_flags_10")
+    adv_flags_11 = Address(0x1b5587, name="adv_flags_11")
+    adv_flags_12 = Address(0x1b5588, name="adv_flags_12")
+    adv_flags_13 = flags_shops = Address(0x1b5589, name="adv_flags_13")
+    adv_flags_14 = Address(0x1b558a, name="adv_flags_14")
+    adv_flags_15 = flags_metals = Address(0x1b558b, name="adv_flags_15")
+    adv_flags_16 = Address(0x1b558c, name="adv_flags_16")
+    adv_flags_17 = Address(0x1b558d, name="adv_flags_17")
+    adv_flags_18 = Address(0x1b558e, name="adv_flags_18")
+    adv_flags_19 = Address(0x1b558f, name="adv_flags_19")
+    adv_flags_20 = flags_trade_quest = Address(0x1b5590, name="adv_flags_20")
+    adv_flags_21 = Address(0x1b5591, name="adv_flags_21")
+    adv_flags_22 = Address(0x1b5592, name="adv_flags_22")
+    adv_flags_23 = Address(0x1b5593, name="adv_flags_23")
+    adv_flags_24 = Address(0x1b5594, name="adv_flags_24")
+    adv_flags_25 = Address(0x1b5595, name="adv_flags_25")
+    adv_flags_26 = Address(0x1b5596, name="adv_flags_26")
+    adv_flags_27 = Address(0x1b5597, name="adv_flags_27")
+    adv_flags_28 = Address(0x1b5598, name="adv_flags_28")
+    adv_flags_29 = Address(0x1b5599, name="adv_flags_29")
+    adv_flags_30 = Address(0x1b559a, name="adv_flags_30")
+    adv_flags_31 = Address(0x1b559b, name="adv_flags_31")
+    adv_flags_32 = Address(0x1b559c, name="adv_flags_32")
+    adv_flags_33 = Address(0x1b559d, name="adv_flags_33")
+    adv_flags_34 = Address(0x1b559e, name="adv_flags_34")
+    adv_flags_35 = Address(0x1b559f, name="adv_flags_35")
+    adv_flags_36 = Address(0x1b55a0, name="adv_flags_36")
+    adv_flags_37 = Address(0x1b55a1, name="adv_flags_37")
+    adv_flags_38 = Address(0x1b55a2, name="adv_flags_38")
+    adv_flags_39 = frog_glyphs = Address(0x1b55a3, name="adv_flags_39")
+    adv_flags_40 = Address(0x1b55a4, name="adv_flags_40")
+    adv_flags_41 = Address(0x1b55a5, name="adv_flags_41")
+    adv_flags_42 = Address(0x1b55a6, name="adv_flags_42")
+    adv_flags_43 = Address(0x1b55a7, name="adv_flags_43")
+    adv_flags_44 = watched_intro = Address(0x1b55a8, name="adv_flags_44")  # intro is 0x2
+    adv_flags_45 = Address(0x1b55a9, name="adv_flags_45")
+    adv_flags_46 = Address(0x1b55aa, name="adv_flags_46")
+    adv_flags_47 = flags_fog_done = Address(0x1b55ab, name="adv_flags_47")
+    adv_flags_48 = Address(0x1b55ac, name="adv_flags_48")
     adv_flags_49 = Address(0x1b55ad)
     adv_flags_50 = Address(0x1b55ae)
     adv_flags_51 = Address(0x1b55af)
@@ -178,12 +180,14 @@ class PHAddr:
     totok_b9_elevator = Address(0x20C5F0)
     
     # Inventory Data
-    inventory_1 = Address(0x1ba644)
-    inventory_2 = Address(0x1ba645)  # Just hammer and potions lol
-    inventory_3 = fairies_0 = Address(0x1ba646)  # Fairies 0
-    inventory_4 = fairies_1 = Address(0x1ba647)  # Fairies 1
-    inventory_5 = Address(0x1ba648)
-    inventory_6 = Address(0x1ba649)
+    inventory_1 = Address(0x1ba644, name="inventory_1")
+    inventory_2 = Address(0x1ba645, name="inventory_2")  # Just hammer and potions lol
+    inventory_3 = fairies_0 = Address(0x1ba646, name="fairies_0")  # Fairies 0
+    inventory_4 = fairies_1 = Address(0x1ba647, name="fairies_1")  # Fairies 1
+    inventory_5 = Address(0x1ba648, name="inventory_5")
+    inventory_6 = Address(0x1ba649, name="inventory_6")
+
+    fairies = Address(0x1ba646, size=2)
     
     rupee_count = Address(0x1ba53e, size=2)
     
@@ -204,19 +208,22 @@ class PHAddr:
     phantom_hourglass_max = Address(0x1BA528, size=4)
     phantom_hourglass_current = Address(0x1E2A48, size=4)
     
-    treasure_maps_0 = Address(0x1BA650)
-    treasure_maps_1 = Address(0x1BA651)
-    treasure_maps_2 = Address(0x1BA652)
-    treasure_maps_3 = Address(0x1BA653)
+    treasure_maps_0 = Address(0x1BA650, name="treasure_maps_0")
+    treasure_maps_1 = Address(0x1BA651, name="treasure_maps_1")
+    treasure_maps_2 = Address(0x1BA652, name="treasure_maps_2")
+    treasure_maps_3 = Address(0x1BA653, name="treasure_maps_3")
     
     sword_count = Address(0x1ba6b8)
+    shield_count = Address(0x1ba6bA)
     boomerang_bit = Address(0x1BA6BC)
     shovel_bit = Address(0x1BA6BE)
-    bomb_count = Address(0x1BA6C0, size=2)
-    arrow_count = Address(0x1BA6C2, size=2)
+    bomb_count = Address(0x1BA6C0, size=2, name="bomb_count")
+    arrow_count = Address(0x1BA6C2, size=2, name="arrow_count")
     grapple_bit = Address(0x1BA6C4)
-    chu_count = Address(0x1BA6C6, size=2)
+    chu_count = Address(0x1BA6C6, size=2, name="chu_count")
     hammer_bit = Address(0x1BA6C8)
+
+    ammo_counts = [bomb_count, arrow_count, chu_count]
     
     bomb_upgrades = Address(0x1ba5d2)
     quiver_upgrades = Address(0x1ba5d0)
@@ -226,12 +233,12 @@ class PHAddr:
     wisdom_gem_count = Address(0x1BA542)
     courage_gem_count = Address(0x1BA540)
     
-    skippyjack_count = Address(0x1BA5B4)
-    toona_count = Address(0x1BA5B5)
-    loovar_count = Address(0x1BA5B6)
-    rsf_count = Address(0x1BA5B7)
-    neptoona_count = Address(0x1BA5B8)
-    stowfish_count = Address(0x1BA5B9)
+    skippyjack_count = Address(0x1BA5B4, name="skippyjack_count")
+    toona_count = Address(0x1BA5B5, name="toona_count")
+    loovar_count = Address(0x1BA5B6, name="loovar_count")
+    rsf_count = Address(0x1BA5B7, name="rsf_count")
+    neptoona_count = Address(0x1BA5B8, name="neptoona_count")
+    stowfish_count = Address(0x1BA5B9, name="stowfish_count")
     
     heart_containers = Address(0x1ba388, size=2)
     beedle_points = Address(0x1B2773)
@@ -264,7 +271,17 @@ class PHAddr:
     equipped_ship_parts_5 = Address(0x1ba558, size=4)
     equipped_ship_parts_6 = Address(0x1ba55c, size=4)
     equipped_ship_parts_7 = Address(0x1ba560, size=4)
-    
+
+    all_equipped_ship_parts = [
+        equipped_ship_parts_0,
+        equipped_ship_parts_1,
+        equipped_ship_parts_2,
+        equipped_ship_parts_3,
+        equipped_ship_parts_4,
+        equipped_ship_parts_5,
+        equipped_ship_parts_6,
+        equipped_ship_parts_7,
+]
     # island_visible_ = Address()
     # island_visible_ = Address()
     # island_visible_ = Address()
@@ -291,11 +308,11 @@ class PHAddr:
 
 class PHSRAM:
     # SRAM
-    mercay_se_chests = SRAM(0x3c4)
-    mountain_passage_chests = SRAM(0xae4)
-    mountain_passage = SRAM(0x230)
-    bannan = SRAM(0x198)
-    gs = SRAM(0xb14)
-    frost = SRAM(0x544)
-    iotd = SRAM(0x73c)
-    maze = SRAM(0x1c1)
+    mercay_se_chests = SRAM(0x3c4, name="mercay_se_chests")
+    mountain_passage_chests = SRAM(0xae4, name="mountain_passage_chests")
+    mountain_passage = SRAM(0x230, name="mountain_passage")
+    bannan = SRAM(0x198, name="bannan")
+    gs = SRAM(0xb14, name="gs")
+    frost = SRAM(0x544, name="frost")
+    iotd = SRAM(0x73c, name="iotd")
+    maze = SRAM(0x1c1, name="maze")

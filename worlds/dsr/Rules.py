@@ -191,18 +191,18 @@ region_rules_table: dict[str, list[DsrEntranceRule]] = {
   "Firelink Shrine - Domhnall of Zena": [
     DsrEntranceRule("Firelink Shrine", CanReachRegion("Depths") & HasAll("Bell of Awakening #1", "Bell of Awakening #2")), # vanilla, but his inventory is more complicated due to flags
   ],
-  # "Firelink Shrine - Domhnall of Zena - Post Iron Golem": [
-  #   DsrEntranceRule("Firelink Shrine - Domhnall of Zena", Has("Iron Golem Defeated")), 
-  # ],
-  # "Firelink Shrine - Domhnall of Zena - Post O+S": [
-  #   DsrEntranceRule("Firelink Shrine - Domhnall of Zena", Has("Ornstein and Smough Defeated")), #vanilla, but his inventory is more complicated due to flags
-  # ],
-  # "Firelink Shrine - Domhnall of Zena - Post Gwyndolin": [
-  #   DsrEntranceRule("Firelink Shrine - Domhnall of Zena", Has("Gwyndolin Defeated")), #vanilla, but his inventory is more complicated due to flags
-  # ],
-  # "Firelink Shrine - Domhnall of Zena - Post Artorias": [
-  #   DsrEntranceRule("Firelink Shrine - Domhnall of Zena", Has("Artorias the Abysswalker Defeated")), #vanilla, but his inventory is more complicated due to flags
-  # ],
+  "Firelink Shrine - Domhnall of Zena After Iron Golem": [
+    DsrEntranceRule("Firelink Shrine - Domhnall of Zena", Has("Iron Golem Defeated")),
+  ],
+  "Firelink Shrine - Domhnall of Zena After O+S": [
+    DsrEntranceRule("Firelink Shrine - Domhnall of Zena", Has("Ornstein and Smough Defeated")),
+  ],
+  "Firelink Shrine - Domhnall of Zena After Gwyndolin": [
+    DsrEntranceRule("Firelink Shrine - Domhnall of Zena", Has("Gwyndolin Defeated")),
+  ],
+  "Firelink Shrine - Domhnall of Zena Under Aqueduct After Artorias": [
+    DsrEntranceRule("Firelink Shrine - Domhnall of Zena", Has("Artorias the Abysswalker Defeated")),
+  ],
   "Depths to Blighttown Door": [
     DsrEntranceRule("Depths", Has("Blighttown Key")),
   ],
@@ -328,7 +328,8 @@ region_rules_table: dict[str, list[DsrEntranceRule]] = {
   ],
   "Anor Londo - Gwyndolin": [
     # attacking the illusion -> no ring needed
-    DsrEntranceRule("Anor Londo - After Ornstein and Smough", Has("Boss Fog Wall Key - Gwyndolin") | bossfogwall_sanity_off), 
+    DsrEntranceRule("Anor Londo - After Ornstein and Smough", Has("Boss Fog Wall Key - Gwyndolin") | bossfogwall_sanity_off),
+    DsrEntranceRule("Anor Londo - After First Fog", Has("Darkmoon Seance Ring") & (Has("Boss Fog Wall Key - Gwyndolin") | bossfogwall_sanity_off)),
   ],
   "Anor Londo - After Gwyndolin": [
     DsrEntranceRule("Anor Londo - Gwyndolin", True_()), # Has("Gwyndolin Defeated")),

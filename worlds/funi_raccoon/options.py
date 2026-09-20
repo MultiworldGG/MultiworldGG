@@ -8,7 +8,7 @@ class Goal(OptionSet):
     orb: Act 4 access, the Orb, 3 Progressive Cooling Rods. Throw the orb in the pot.
     museum: Act 4 access, 100 dumpster items, the Belgium Waffle, 4 Progressive Mystical Dumbbells, 3 Progressive Cooling Rods. Throw the Belgium Waffle in the pot.
     fellowship: Act 4 access, the GREENISH ABOMINATION, the Priestess, 3 Progressive Cooling Rods. Throw the GREENISH ABOMINATION in the pot.
-    lugh: Act 4 access, all 4 Mystical Gems. Jump into Lugh's hands at the Gully.
+    lugh: Act 4 access, all 4 Mystical Jewels. Jump into Lugh's hands at the Gully.
     """
     display_name = "Goal"
     valid_keys = ["orb", "museum", "fellowship", "lugh"]
@@ -23,10 +23,10 @@ class Eurosanity(Toggle):
 
 class Gemsanity(DefaultOnToggle):
     """
-    Include the Mystical Gem locations as randomizer checks.
+    Include the Mystical Jewels locations as randomizer checks.
     Automatically enabled if is the Lugh goal is selected.
     """
-    display_name = "Gemsanity"
+    display_name = "Jewelsanity"
 
 
 class Hatsanity(DefaultOnToggle):

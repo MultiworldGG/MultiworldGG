@@ -15,32 +15,49 @@ def set_all_rules(world: DREDGEWorld) -> None:
     set_region_rules(world)
     set_location_rules(world)
     set_completion_condition(world)
+    #set_prototype_rules(world)
+
+def set_prototype_rules(world: DREDGEWorld) -> None:
+    set_rule(
+        world.get_location("A Place to Rest - Materials Delivered Event"),
+        lambda state: state.has("Dredge Crane", world.player),
+    )
+    set_rule(
+        world.get_location("A Place to Rest - Returned to Builder Event"),
+        lambda state: state.has(
+            "A Place to Rest - Materials Delivered",
+            world.player,
+        ),
+    )
 
 def set_region_rules(world: "DREDGEWorld") -> None:
     player = world.player
 
+    world.get_entrance("The Marrows to Open Ocean").access_rule = \
+        lambda state: not world.options.add_passage_items or has_passage_item("The Pelagic Psalm", state, player)
     world.get_entrance("Open Ocean to Gale Cliffs").access_rule = \
-        lambda state: not world.options.require_engines or has_engines(1, state, player)
+        lambda state: (not world.options.add_passage_items or has_passage_item("The Windward Litany", state, player)) and (not world.options.require_engines or has_engines(1, state, player))
     world.get_entrance("Open Ocean to Stellar Basin").access_rule = \
-        lambda state: not world.options.require_engines or has_engines(1, state, player)
+        lambda state: (not world.options.add_passage_items or has_passage_item("The Astral Testament", state, player)) and (not world.options.require_engines or has_engines(1, state, player))
     world.get_entrance("Open Ocean to Twisted Strand").access_rule = \
-        lambda state: not world.options.require_engines or has_engines(1, state, player)
+        lambda state: (not world.options.add_passage_items or has_passage_item("The Mangrove Canticle", state, player)) and (not world.options.require_engines or has_engines(1, state, player))
     world.get_entrance("Open Ocean to Devil's Spine").access_rule = \
-        lambda state: not world.options.require_engines or has_engines(1, state, player)
+        lambda state: (not world.options.add_passage_items or has_passage_item("The Cinder Gospel", state, player)) and (not world.options.require_engines or has_engines(1, state, player))
     world.get_entrance("Open Ocean to The Iron Rig").access_rule = \
         lambda state: not world.options.require_engines or has_engines(2, state, player)
     world.get_entrance("Open Ocean to The Pale Reach").access_rule = \
-        lambda state: not world.options.require_engines or has_engines(2, state, player)
+        lambda state: (not world.options.add_passage_items or has_passage_item("The Rimebound Chronicle", state, player)) and (not world.options.require_engines or has_engines(2, state, player))
     world.get_entrance("Open Ocean to Insanity").access_rule = \
         lambda state: has_relics(state, player)
-
 
 def set_location_rules(world: "DREDGEWorld") -> None:
     player = world.player
     for world_location in world.get_locations():
-        if world_location.name == "The Collector":
+        if world_location.address is None:
             continue
         location = location_table[world_location.name]
+        if world.options.add_fishing_licenses and location.location_group == "Encyclopedia":
+            add_license_rule(world_location, location, player)
         for requirement in location.requirements:
             match requirement:
                 case ItemsReq():
@@ -53,6 +70,21 @@ def set_location_rules(world: "DREDGEWorld") -> None:
                     add_iron_rig_phase_rule(requirement, world_location, player)
                 case _:
                     set_rule(world_location, lambda state: True)
+
+def add_license_rule(world_location, location, player):
+    match location.region:
+        case "Gale Cliffs":
+            add_rule(world_location, lambda state: state.has("Gale Cliffs Fishing License", player))
+        case "Stellar Basin":
+            add_rule(world_location, lambda state: state.has("Stellar Basin Fishing License", player))
+        case "Twisted Strand":
+            add_rule(world_location, lambda state: state.has("Twisted Strand Fishing License", player))
+        case "Devil's Spine":
+            add_rule(world_location, lambda state: state.has("Devil's Spine Fishing License", player))
+        case "Open Ocean":
+            add_rule(world_location, lambda state: state.has("Open Ocean Fishing License", player))
+        case "The Pale Reach":
+            add_rule(world_location, lambda state: state.has("Pale Reach Fishing License", player))
 
 def add_iron_rig_phase_rule(requirement, world_location, player) -> None:
     if requirement.value > 4:
@@ -80,6 +112,9 @@ def add_item_rules(requirement, world_location, player) -> None:
         add_rule(world_location, lambda state: state.has_any(requirement.any_of, player))
     return
 
+def has_passage_item(passage_item, state, player):
+    return state.has(passage_item, player)
+
 def has_engines(distance: int, state: CollectionState, player: int) -> bool:
     valid_engines = [name for name, item in item_table.items() if item.item_value >= distance]
     return state.has_any(valid_engines, player)
@@ -98,8 +133,19 @@ def get_catch_type(location: DREDGELocationData) -> str | None:
                 return v
     return None
 
-def tools_for(catch_type: str, tool_group: str) -> tuple[str, ...]:
-    return CATCH_TOOL_INDEX.get((catch_type, tool_group))
+def tools_for(
+        catch_type: str,
+        tool_group: str,
+        size: int | None = None) -> tuple[str, ...]:
+    tools = CATCH_TOOL_INDEX.get((catch_type, tool_group))
+
+    if size is None:
+        return tools
+
+    return tuple(
+        tool for tool in tools
+        if getattr(item_table[tool], "size", None) == size
+    )
 
 
 def add_catch_type_rule(world_location: Location, location: DREDGELocationData, player: int, options: DREDGEOptions) -> None:
@@ -136,6 +182,7 @@ def can_catch_fish(
     has_net = (
         allow_net_logic
         and state.has_any(tools_for(catch_type, "Net"), player)
+        and can_use_net(state, player, catch_type)
     )
 
     return has_rod or has_net
@@ -143,3 +190,11 @@ def can_catch_fish(
 
 def set_completion_condition(world: DREDGEWorld) -> None:
     world.multiworld.completion_condition[world.player] = lambda state: state.has("Victory", world.player)
+
+
+def can_use_net(state: CollectionState, player: int, catch_type: str) -> bool:
+    if state.has("Progressive Hull", player, 3):
+        return True
+    if state.has("Progressive Hull", player) & state.has_any(tools_for(catch_type, "Net", 4), player):
+        return True
+    return False

@@ -493,8 +493,9 @@ class GameController:
             progressive_orange_pegs_item_count: int = self.received_items.get(progressive_orange_pegs_item, 0)
 
             if progressive_orange_pegs_item_count == 4 and self.game_state_orange_pegs_remaining == 0:
-                location: str = f"{level_prefix} Fever Meter Full"
-                checked_locations.append(location)
+                if self.game_state_level_state in (PeggleDeluxeLevelStates.SHOT_ACTIVE, PeggleDeluxeLevelStates.AFTER_SHOT):
+                    location: str = f"{level_prefix} Fever Meter Full"
+                    checked_locations.append(location)
 
             if self.game_state_current_level in self.target_score_locations_by_level:
                 multiplier_item_count: int = self.useful_items[self.game_state_current_level][PeggleDeluxeAPUsefulItems.SCORE_MULTIPLIER]

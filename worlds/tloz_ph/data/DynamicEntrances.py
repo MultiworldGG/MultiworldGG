@@ -66,6 +66,7 @@ DYNAMIC_ENTRANCES = {
         "entrance": "Ruins SW Port Cave",
         "destination": "MT Exit",
         "has_slot_data": [("dungeon_shortcuts", 1)],
+        "check_bits": [(PHAddr.lower_water, 0x4)],  # Water level
         "any_has_locations": ["Mutoh's Temple 2F Like-Like Maze Chest",
                               "Mutoh's Temple 3F Hammer Chest",
                               "Mutoh's Temple B2 Spike Roller Chest",

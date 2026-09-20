@@ -7,6 +7,7 @@ from typing import TYPE_CHECKING
 
 if TYPE_CHECKING:
     from .Subclasses import PHRegion
+    from . import PhantomHourglassWorld
 
 def make_overworld_logic():
     overworld_logic = [
@@ -171,7 +172,8 @@ def make_overworld_logic():
         ["TotOK B12", "TotOK B13", False, "totok_b13"],
 
         ["TotOK B13", "TotOK B13 Chest", False, "totok_b13_chest"],
-        ["TotOK B13", "TotOK B14", False, "b13_door"],
+        ["TotOK B13", "TotOK B14 South", False, "b13_door"],
+        ["TotOK B14 South", "TotOK B14", False, None],
         ["TotOK Lobby", "TotOK B14", False, "bellum_warp"],
         # Bellum
         ["TotOK B14", "Bellum", False, "bellum_staircase"],
@@ -885,8 +887,8 @@ def make_overworld_logic():
 
         # Goal stuff
         ["SW Ocean East", "Bellumbeck", False, "bellumbeck_quick_finish"],
-        ["Bellumbeck", "Beat Bellumbeck", False, "can_beat_bellumbeck"],
-        ["Beat Bellumbeck", "Goal", False, None],
+        ["Bellumbeck", "Defeat Bellumbeck", False, "can_beat_bellumbeck"],
+        ["Defeat Bellumbeck", "Goal", False, None],
         ["Goal", "Goal Event", False, None],  # Event stuff
         ["Goal", "Goal Event Triforce", False, None],  # Event stuff
         ["Goal", "Goal Event Bellumbeck", False, None],  # Event stuff
@@ -901,7 +903,7 @@ def is_item(item: Item, player: int, item_name: str):
     return item.player == player and item.name == item_name
 
 
-def create_connections(multiworld: MultiWorld, player: int, origin_name: str, options):
+def create_connections(world: "PhantomHourglassWorld", player: int, origin_name: str, options):
     def create_entrance(r1: "PHRegion", r2: "PHRegion", *arguments):
         entrance_key = (r1.name, r2.name)
         name = None
@@ -921,14 +923,14 @@ def create_connections(multiworld: MultiWorld, player: int, origin_name: str, op
             entrance.randomization_type = EntranceType.TWO_WAY if rando_type_bool else EntranceType.ONE_WAY
             entrance.randomization_group = entrance_data.direction | entrance_data.category_group | entrance_data.island
             entrance.name = entrance_data.name
-            multiworld.worlds[player].entrances[entrance.name] = entrance
+            world.entrances[entrance.name] = entrance
             uncreated_entrances.remove(entrance.name)
 
     all_logic = [
         make_overworld_logic()
     ]
     # UT creates alias regions
-    if getattr(multiworld, "generation_is_fake", False):
+    if world.is_ut:
         from .data.Constants import region_aliases
         from .data.Regions import REGIONS
         alias_logic = []
@@ -945,8 +947,8 @@ def create_connections(multiworld: MultiWorld, player: int, origin_name: str, op
     for logic_array in all_logic:
         for entrance_desc in logic_array:
             reg1, reg2, is_two_way, rule_lookup, *args = entrance_desc
-            region_1 = multiworld.get_region(reg1, player)
-            region_2 = multiworld.get_region(reg2, player)
+            region_1 = world.get_region(reg1)
+            region_2 = world.get_region(reg2)
 
             create_entrance(region_1, region_2, *args)
             if is_two_way:

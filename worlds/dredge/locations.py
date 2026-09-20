@@ -12,8 +12,6 @@ from dataclasses import dataclass, field
 
 from .options import DREDGEOptions
 
-from . import items
-
 if TYPE_CHECKING:
     from .world import DREDGEWorld
 
@@ -116,35 +114,38 @@ location_table = {
 
 LOCATION_NAME_TO_ID: Dict[str, int] = {name: location_base_id + data.base_id_offset for name, data in location_table.items()}
 
-def get_player_location_table(options: DREDGEOptions) -> Dict[str, bool]:
-    all_locations: Dict[str, bool] = {}
-    base_locations = {name: location.is_aberration for (name, location)
+
+
+
+def get_player_location_table(options: DREDGEOptions) -> list[str]:
+    all_locations: list[str] = []
+    base_locations = {name for (name, location)
                       in location_table.items() if location.expansion == "Base"}
-    iron_rig_locations = {name: location.is_aberration for (name, location)
+    iron_rig_locations = {name for (name, location)
                       in location_table.items() if location.expansion == "IronRig"}
-    pale_reach_locations = {name: location.is_aberration for (name, location)
+    pale_reach_locations = {name for (name, location)
                       in location_table.items() if location.expansion == "PaleReach"}
-    both_dlc_locations = {name: location.is_aberration for (name, location)
+    both_dlc_locations = {name for (name, location)
                       in location_table.items() if location.expansion == "Both"}
 
-    all_locations.update(base_locations)
+    all_locations.extend(base_locations)
 
     if options.include_iron_rig_dlc:
-        all_locations.update(iron_rig_locations)
+        all_locations.extend(iron_rig_locations)
     if options.include_pale_reach_dlc:
-        all_locations.update(pale_reach_locations)
+        all_locations.extend(pale_reach_locations)
     if options.include_pale_reach_dlc and options.include_iron_rig_dlc:
-        all_locations.update(both_dlc_locations)
+        all_locations.extend(both_dlc_locations)
 
-    # removing these checks while waiting for fix from mod
-    excluded_groups = {"Shop", "Pursuit", "World", "Relic"}
-    all_locations = {
-        name: id
-        for name, id in all_locations.items()
-        if location_table[name].location_group not in excluded_groups
-    }
+    all_locations = list(filter(exclude_groups, all_locations))
 
     return all_locations
+
+def exclude_groups(location_name):
+    # removing these checks while waiting for fix from mod
+    excluded_groups = {"Shop", "Pursuit", "World", "Relic"}
+    dredge_location = location_table[location_name]
+    return not (dredge_location.location_group in excluded_groups)
 
 LOCATION_NAME_GROUPS: Dict[str, Set[str]] = {}
 for loc_name, loc_data in location_table.items():
@@ -153,22 +154,18 @@ for loc_name, loc_data in location_table.items():
 
 def create_all_locations(world: DREDGEWorld) -> None:
     create_locations(world)
-    create_victory_event_location(world)
 
 def create_locations(world: DREDGEWorld) -> None:
-    for location_name, is_aberration in get_player_location_table(world.options).items():
+    for location_name in get_player_location_table(world.options):
         region = world.get_region(location_table[location_name].region)
         location_id = LOCATION_NAME_TO_ID[location_name]
+        dredge_location = location_table[location_name]
         location = DREDGELocation(world.player, location_name, location_id, region)
-        if is_aberration and not world.options.include_aberrations:
+        if dredge_location.is_aberration and not world.options.include_aberrations:
             location.progress_type = LPT.EXCLUDED
         region.locations.append(location)
         if location_table[location_name].location_group == "Research Unlock":
             add_research_unlock_item(world, location)
-
-def create_victory_event_location(world: DREDGEWorld) -> None:
-    victory_region = world.get_region("Insanity")
-    victory_region.add_event("The Collector", "Victory", location_type=DREDGELocation, item_type=items.DREDGEItem)
 
 def add_research_unlock_item(world: DREDGEWorld, location: DREDGELocation) -> None:
     research_unlock_item = world.create_item(location.name)

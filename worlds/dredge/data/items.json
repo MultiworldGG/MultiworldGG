@@ -1838,7 +1838,7 @@
     "base_id_offset": 274,
     "classification": "progression",
     "item_group": "Net",
-    "expansion": "Base",
+    "expansion": "PaleReach",
     "can_catch": [
       "Ice",
       "Coastal",
@@ -2085,7 +2085,7 @@
     "base_id_offset": 309,
     "classification": "filler",
     "item_group": "Material",
-    "expansion": "Base"
+    "expansion": "IronRig"
   },
   "Doubloon": {
     "base_id_offset": 310,
@@ -2355,6 +2355,120 @@
 	"base_id_offset": 354,
 	"classification": "progression",
 	"item_group": "Research",
+	"expansion": "Base"
+ },
+  "The Builder": {
+	"base_id_offset": 355,
+	"classification": "deprioritized",
+	"item_group": "Unused",
+	"expansion": "Base"
+ },
+  "Gale Cliffs Fishing License": {
+	"base_id_offset": 356,
+	"classification": "progression",
+	"item_group": "Virtual License",
+	"expansion": "Base"
+ },
+  "Stellar Basin Fishing License": {
+	"base_id_offset": 357,
+	"classification": "progression",
+	"item_group": "Virtual License",
+	"expansion": "Base"
+ },
+  "Twisted Strand Fishing License": {
+	"base_id_offset": 358,
+	"classification": "progression",
+	"item_group": "Virtual License",
+	"expansion": "Base"
+ },
+  "Devil's Spine Fishing License": {
+	"base_id_offset": 359,
+	"classification": "progression",
+	"item_group": "Virtual License",
+	"expansion": "Base"
+ },
+  "Open Ocean Fishing License": {
+	"base_id_offset": 360,
+	"classification": "progression",
+	"item_group": "Virtual License",
+	"expansion": "Base"
+ },
+  "Pale Reach Fishing License": {
+	"base_id_offset": 361,
+	"classification": "progression",
+	"item_group": "Virtual License",
+	"expansion": "PaleReach"
+ },
+  "The Windward Litany": {
+	"base_id_offset": 362,
+	"classification": "progression",
+	"item_group": "Virtual Passage Item",
+	"expansion": "Base"
+ },
+  "The Astral Testament": {
+	"base_id_offset": 363,
+	"classification": "progression",
+	"item_group": "Virtual Passage Item",
+	"expansion": "Base"
+ },
+  "The Mangrove Canticle": {
+	"base_id_offset": 364,
+	"classification": "progression",
+	"item_group": "Virtual Passage Item",
+	"expansion": "Base"
+ },
+  "The Cinder Gospel": {
+	"base_id_offset": 365,
+	"classification": "progression",
+	"item_group": "Virtual Passage Item",
+	"expansion": "Base"
+ },
+  "The Pelagic Psalm": {
+	"base_id_offset": 366,
+	"classification": "progression",
+	"item_group": "Virtual Passage Item",
+	"expansion": "Base"
+ },
+  "The Rimebound Chronicle": {
+	"base_id_offset": 367,
+	"classification": "progression",
+	"item_group": "Virtual Passage Item",
+	"expansion": "PaleReach"
+ },
+  "Cracked Bulb": {
+	"base_id_offset": 368,
+	"classification": "useful",
+	"item_group": "Light",
+	"expansion": "Base"
+ },
+  "Cloudy Lens": {
+	"base_id_offset": 369,
+	"classification": "useful",
+	"item_group": "Light",
+	"expansion": "Base"
+ },
+  "Halogen Spotlight": {
+	"base_id_offset": 370,
+	"classification": "useful",
+	"item_group": "Light",
+	"expansion": "Base"
+ },
+  "Tungsten Floodlight": {
+	"base_id_offset": 371,
+	"classification": "useful",
+	"item_group": "Light",
+	"expansion": "Base"
+ },
+  "Incandescent Array": {
+	"base_id_offset": 372,
+	"classification": "useful",
+	"item_group": "Light",
+	"expansion": "Base"
+ },
+  "Flame of the Sky": {
+	"base_id_offset": 373,
+	"classification": "useful",
+	"item_group": "Light",
 	"expansion": "Base"
  }
 }

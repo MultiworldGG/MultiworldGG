@@ -862,7 +862,7 @@ def set_rules(world: "PokemonFRLGWorld") -> None:
     entrance_rules["Pokemon Tower 6F Reveal Ghost (Bottom)"] = (
         Has("Silph Scope", options=[OptionFilter(BlockPokemonTower, BlockPokemonTower.option_false)])
     )
-    entrance_rules["Follow Mr. Fuji"] = Has("Rescue Mr. Fuji") & NotRandomizingEntrances()
+    entrance_rules["Follow Mr. Fuji"] = Has("Rescue Mr. Fuji")
 
     # Route 12
     location_rules["Route 12 - Fisherman Elliot Rematch Reward (4 Badges/Gyms)"] = TrainerRematch(4)
@@ -1205,7 +1205,7 @@ def set_rules(world: "PokemonFRLGWorld") -> None:
         Has("Secret Key", options=[OptionFilter(GymKeys, GymKeys.option_false)]) |
         Has("Cinnabar Key", options=[OptionFilter(GymKeys, GymKeys.option_true)])
     )
-    entrance_rules["Follow Bill"] = Has("Defeat Blaine") & NotRandomizingEntrances()
+    entrance_rules["Follow Bill"] = Has("Defeat Blaine")
 
     # Pokemon Mansion
     entrance_rules["Pokemon Mansion 1F East Exit"] = NotRandomizingEntrances()
@@ -1406,7 +1406,7 @@ def set_rules(world: "PokemonFRLGWorld") -> None:
     location_rules["Berry Forest - Item Past Southwest Pond"] = CanCut()
 
     entrance_rules["Berry Forest Surfing Spot"] = CanSurf()
-    entrance_rules["Follow Lostelle"] = Has("Rescue Lostelle") & NotRandomizingEntrances()
+    entrance_rules["Follow Lostelle"] = Has("Rescue Lostelle")
 
     # Four Island Town
     location_rules["Four Island Town - Beach Item"] = CanRockSmash()
@@ -1466,7 +1466,7 @@ def set_rules(world: "PokemonFRLGWorld") -> None:
     entrance_rules["Resort Gorgeous Surfing Spot (Near Cave)"] = CanSurf()
 
     # Lost Cave
-    entrance_rules["Follow Selphy"] = Has("Rescue Selphy") & NotRandomizingEntrances()
+    entrance_rules["Follow Selphy"] = Has("Rescue Selphy")
 
     # Water Path
     location_rules["Water Path - Hiker Earl Rematch Reward (8 Badges/Gyms)"] = TrainerRematch(8)

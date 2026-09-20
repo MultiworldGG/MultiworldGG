@@ -6,6 +6,7 @@ from ..enums import (
     PeggleNightsAPItems,
     PeggleNightsAPTags,
     PeggleNightsAPUsefulItems,
+    PeggleNightsCharacters,
     PeggleNightsLevels,
 )
 
@@ -32,15 +33,15 @@ item_data: Dict[str, PeggleNightsItemData] = {
         tags=(PeggleNightsAPTags.OOL_ITEM,),
     ),
     # Progressive Items
-    PeggleNightsAPItems.PROGRESSIVE_FEVER_METER.value: PeggleNightsItemData(
-        archipelago_id=item_offset + 10 + 1,
-        classification=ItemClassification.progression,
-        tags=(PeggleNightsAPTags.PROGRESSIVE_ITEM,),
-    ),
+    # PeggleNightsAPItems.PROGRESSIVE_FEVER_METER.value: PeggleNightsItemData(
+    #     archipelago_id=item_offset + 10 + 1,
+    #     classification=ItemClassification.progression,
+    #     tags=(PeggleNightsAPTags.PROGRESSIVE_ITEM,),
+    # ),
     PeggleNightsAPItems.PROGRESSIVE_STARTING_BALL_INCREASE.value: PeggleNightsItemData(
         archipelago_id=item_offset + 10 + 2,
         classification=ItemClassification.progression,
-        tags=(PeggleNightsAPTags.PROGRESSIVE_ITEM,),
+        tags=(PeggleNightsAPTags.PROGRESSIVE_STARTING_BALL_INCREASE_ITEM,),
     ),
     # Character Unlock Items
     PeggleNightsAPItems.CHARACTER_UNLOCK_BJORN.value: PeggleNightsItemData(
@@ -145,14 +146,14 @@ for i, level in enumerate(PeggleNightsLevels):
     )
 
     # Useful Items
-    item_data[f"{PeggleNightsAPUsefulItems.FEVER_METER_BONUS.value}: {level.value}"] = PeggleNightsItemData(
-        archipelago_id=item_offset + level_offset + 2,
-        classification=ItemClassification.useful,
-        tags=(
-            PeggleNightsAPTags.USEFUL_ITEM,
-            getattr(PeggleNightsAPTags, f"{level.name}_ITEM"),
-        ),
-    )
+    # item_data[f"{PeggleNightsAPUsefulItems.FEVER_METER_BONUS.value}: {level.value}"] = PeggleNightsItemData(
+    #     archipelago_id=item_offset + level_offset + 2,
+    #     classification=ItemClassification.useful,
+    #     tags=(
+    #         PeggleNightsAPTags.USEFUL_ITEM,
+    #         getattr(PeggleNightsAPTags, f"{level.name}_ITEM"),
+    #     ),
+    # )
 
     item_data[f"{PeggleNightsAPUsefulItems.FULL_CLEAR_DISCOUNT.value}: {level.value}"] = PeggleNightsItemData(
         archipelago_id=item_offset + level_offset + 3,
@@ -178,5 +179,43 @@ for i, level in enumerate(PeggleNightsLevels):
         tags=(
             PeggleNightsAPTags.USEFUL_ITEM,
             getattr(PeggleNightsAPTags, f"{level.name}_ITEM"),
+        ),
+    )
+
+    # Purple Peg
+    item_data[f"Purple Peg: {level.value}"] = PeggleNightsItemData(
+        archipelago_id=item_offset + level_offset + 6,
+        classification=ItemClassification.progression,
+        tags=(
+            PeggleNightsAPTags.PURPLE_PEG_ITEM,
+            getattr(PeggleNightsAPTags, f"{level.name}_ITEM"),
+        ),
+    )
+
+    # Progressive Orange Pegs
+    item_data[f"Progressive Orange Pegs: {level.value}"] = PeggleNightsItemData(
+        archipelago_id=item_offset + level_offset + 7,
+        classification=ItemClassification.progression,
+        tags=(
+            PeggleNightsAPTags.PROGRESSIVE_ORANGE_PEGS_ITEM,
+            getattr(PeggleNightsAPTags, f"{level.name}_ITEM"),
+        ),
+    )
+
+# Character Items
+item_offset = 100000
+
+i: int
+character: PeggleNightsCharacters
+for i, character in enumerate(PeggleNightsCharacters):
+    character_offset: int = 100 * i
+
+    # Progressive Green Pegs
+    item_data[f"Progressive Green Pegs: {character.value}"] = PeggleNightsItemData(
+        archipelago_id=item_offset + character_offset + 1,
+        classification=ItemClassification.useful,
+        tags=(
+            PeggleNightsAPTags.PROGRESSIVE_GREEN_PEGS_ITEM,
+            getattr(PeggleNightsAPTags, f"{character.name}_ITEM"),
         ),
     )

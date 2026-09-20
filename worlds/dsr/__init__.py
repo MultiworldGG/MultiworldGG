@@ -183,6 +183,7 @@ class DSRWorld(World):
         # if (self.options.shop_sanity.value == True):
         if (self.options.limited_shop_item_shuffle.value == True):
             self.enabled_location_categories.add(DSRLocationCategory.SHOP_ITEM)
+            self.enabled_location_categories.add(DSRLocationCategory.SHOP_EXTENDED_ITEM)
             # self.enabled_location_categories.add(DSRLocationCategory.MISSABLE_SHOP_ITEM)
 
         self.all_excluded_locations.update(self.options.exclude_locations.value)
@@ -321,10 +322,10 @@ class DSRWorld(World):
             "Firelink Shrine - Petrus of Thorolund",
             "Firelink Shrine - Rhea of Thorolund",
             "Firelink Shrine - Domhnall of Zena",
-            # "Firelink Shrine - Domhnall of Zena - Post Iron Golem",
-            # "Firelink Shrine - Domhnall of Zena - Post O+S",
-            # "Firelink Shrine - Domhnall of Zena - Post Gwyndolin",
-            # "Firelink Shrine - Domhnall of Zena - Post Artorias",
+            "Firelink Shrine - Domhnall of Zena After Iron Golem",
+            "Firelink Shrine - Domhnall of Zena After O+S",
+            "Firelink Shrine - Domhnall of Zena After Gwyndolin",
+            "Firelink Shrine - Domhnall of Zena Under Aqueduct After Artorias",
             "Upper Undead Burg - Male Undead Merchant",
             "Undead Parish - Andre of Astora",
             "Undead Parish - Oswald of Carim",
@@ -533,10 +534,6 @@ class DSRWorld(World):
         filler_items = [item for item in itempool if item_dictionary[item.name].category in [DSRItemCategory.FILLER]]
         junk_items = [item for item in itempool if item.name in item_name_groups["Junk"]]
         removable_items = filler_items + junk_items
-
-        filler_items = [item for item in itempool if item_dictionary[item.name].category in [DSRItemCategory.FILLER]]
-        junk_items = [item for item in itempool if item.name in item_name_groups["Junk"]]
-        removable_items = filler_items + junk_items
         # print("leftover removable items: " + str(len(removable_items)))
         # print("leftover filler items: " + str(len(filler_items)))
 
@@ -669,6 +666,7 @@ class DSRWorld(World):
                 "lizard_shuffle": self.options.lizard_shuffle.value,
 
                 # Shops
+                "unlimited_shop_item_shuffle": self.options.unlimited_shop_item_shuffle.value,
                 "limited_shop_item_shuffle": self.options.limited_shop_item_shuffle.value,
                 "shop_hints": self.options.shop_hints.value,
                 
@@ -703,7 +701,7 @@ class DSRWorld(World):
             "itemsId": items_id,
             "itemsUpgrades": items_upgrades,
             "itemsAddress": items_address,
-            "apworld_api_version" : "0.2.5" # Manually set our apworld api level, for detecting compatibility with client
+            "apworld_api_version" : "0.2.6" # Manually set our apworld api level, for detecting compatibility with client
         }
 
         self.items_id = items_id

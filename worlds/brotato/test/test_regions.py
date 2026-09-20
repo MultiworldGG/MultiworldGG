@@ -10,12 +10,15 @@ from ..constants import (
     CRATE_DROP_LOCATION_TEMPLATE,
     LEGENDARY_CRATE_DROP_GROUP_REGION_TEMPLATE,
     LEGENDARY_CRATE_DROP_LOCATION_TEMPLATE,
+    PROGRESSIVE_WAVE_CAP_ITEM_TEMPLATE,
     RUN_COMPLETE_LOCATION_TEMPLATE,
     WAVE_COMPLETE_LOCATION_TEMPLATE,
 )
 from ..items import ItemName
 from ..loot_crates import BrotatoLootCrateGroup
+from ..options import NumWaveCaps
 from ..regions import create_character_region, create_loot_crate_group_region, create_regions
+from ..wave_caps import get_wave_cap_info
 from . import BrotatoTestBase
 
 
@@ -26,6 +29,7 @@ class TestBrotatoRegions(WorldTestBase):
         self.multiworld.game[1] = "Brotato"
         self.multiworld.player_name = {self.player: "Tester"}
         self.multiworld.worlds[1] = BrotatoWorld(self.multiworld, 1)
+        self.default_wave_access: dict[int, int] = get_wave_cap_info(NumWaveCaps(1))[1]
 
     def _create_region(self, name: str) -> Region:
         """Region factory to pass to the region creation functions."""
@@ -43,14 +47,14 @@ class TestBrotatoCharacterRegions(TestBrotatoRegions):
             WAVE_COMPLETE_LOCATION_TEMPLATE.format(char="Crazy", wave=15),
             WAVE_COMPLETE_LOCATION_TEMPLATE.format(char="Crazy", wave=20),
         ]
-        region = create_character_region(self._create_region, "Crazy", waves_with_checks)
+        region = create_character_region(self._create_region, "Crazy", waves_with_checks, self.default_wave_access)
         region_location_names = [loc.name for loc in region.locations]
 
-        self.assertListEqual(region_location_names, expected_location_names)
+        self.assertSequenceEqual(region_location_names, expected_location_names)
 
     def test_create_character_region_invalid_character_fails(self):
         with self.assertRaises(KeyError):
-            create_character_region(self._create_region, "Ironclad", [3, 6, 9, 12, 15, 18])
+            create_character_region(self._create_region, "Ironclad", [3, 6, 9, 12, 15, 18], self.default_wave_access)
 
     def test_create_character_region_invalid_waves_with_checks_fails(self):
         """Check that we don't create a region with invalid wave complete locations.
@@ -64,8 +68,10 @@ class TestBrotatoCharacterRegions(TestBrotatoRegions):
                 f"Check that create_character_region fails when waves_with_checks={invalid_value}",
                 invalid_value=invalid_value,
             ):
+                # Run setup to clear to the location cache between subtests
+                self.setUp()
                 with self.assertRaises(ValueError):
-                    create_character_region(self._create_region, "Brawler", invalid_value)
+                    create_character_region(self._create_region, "Brawler", invalid_value, self.default_wave_access)
 
 
 class TestBrotatoLootCrateRegions(TestBrotatoRegions):
@@ -105,15 +111,15 @@ class TestBrotatoCreateRegions(TestBrotatoRegions):
     parent_region: Region
     regions: dict[str, Region]
 
-    characters: list[str] = ("Brawler", "Crazy", "Mage", "Demon")
+    characters: ClassVar[list[str]] = ["Brawler", "Crazy", "Mage", "Demon"]
     common_loot_crate_groups: ClassVar[list[BrotatoLootCrateGroup]] = [
         BrotatoLootCrateGroup(1, 10, 0),
-        BrotatoLootCrateGroup(2, 10, 5),
-        BrotatoLootCrateGroup(3, 10, 10),
+        BrotatoLootCrateGroup(2, 5, 5),
+        BrotatoLootCrateGroup(3, 5, 10),
         BrotatoLootCrateGroup(4, 5, 15),
     ]
-    legendary_loot_crate_groups: list[BrotatoLootCrateGroup] = (BrotatoLootCrateGroup(1, 5, 0),)
-    waves_with_checks: list[int] = (5, 10, 15, 20)
+    legendary_loot_crate_groups: ClassVar[list[BrotatoLootCrateGroup]] = [BrotatoLootCrateGroup(1, 5, 0)]
+    waves_with_checks: ClassVar[list[int]] = [5, 10, 15, 20]
 
     def setUp(self) -> None:
         super().setUp()
@@ -121,6 +127,7 @@ class TestBrotatoCreateRegions(TestBrotatoRegions):
             self._create_region,
             self.characters,
             self.waves_with_checks,
+            self.default_wave_access,
             self.common_loot_crate_groups,
             self.legendary_loot_crate_groups,
         )
@@ -129,9 +136,9 @@ class TestBrotatoCreateRegions(TestBrotatoRegions):
     def test_common_loot_crate_group_regions_have_correct_locations(self):
         expected_locations_per_region: list[list[str]] = [
             [CRATE_DROP_LOCATION_TEMPLATE.format(num=i) for i in range(1, 11)],
-            [CRATE_DROP_LOCATION_TEMPLATE.format(num=i) for i in range(11, 21)],
-            [CRATE_DROP_LOCATION_TEMPLATE.format(num=i) for i in range(21, 31)],
-            [CRATE_DROP_LOCATION_TEMPLATE.format(num=i) for i in range(31, 36)],
+            [CRATE_DROP_LOCATION_TEMPLATE.format(num=i) for i in range(11, 16)],
+            [CRATE_DROP_LOCATION_TEMPLATE.format(num=i) for i in range(16, 21)],
+            [CRATE_DROP_LOCATION_TEMPLATE.format(num=i) for i in range(21, 26)],
         ]
         for region_idx, expected_locations in enumerate(expected_locations_per_region, start=1):
             region_name: str = CRATE_DROP_GROUP_REGION_TEMPLATE.format(num=region_idx)
@@ -173,8 +180,11 @@ class TestBrotatoCreateRegions(TestBrotatoRegions):
 
 
 class TestBrotatoRegionAccessRules(BrotatoTestBase):
-    run_default_tests = False  # type:ignore
-    options: ClassVar[dict[str, Any]] = {
+    @property
+    def run_default_tests(self) -> bool:
+        return False
+
+    options: dict[str, Any] = {  # noqa: RUF012
         "num_victories": 10,
         "num_characters": 10,
         # Number of characters should match
@@ -191,6 +201,7 @@ class TestBrotatoRegionAccessRules(BrotatoTestBase):
             "Demon",
         ],
         "waves_per_drop": 4,
+        "num_wave_caps": 4,
         "num_common_crate_drops": 25,
         "num_common_crate_drop_groups": 5,
         "num_legendary_crate_drops": 5,
@@ -234,3 +245,49 @@ class TestBrotatoRegionAccessRules(BrotatoTestBase):
                 self.assertTrue(self.multiworld.state.can_reach_region(region_name, self.player))
             else:
                 self.assertAccessDependency(region_locations, [[char]])
+
+    def test_run_won_locations_have_correct_access_rules(self):
+        """Check that the run won locations require all wave cap increases to reach."""
+        characters = self.options["include_base_game_characters"]
+        for char in characters:
+            with self.subTest(character=char):
+                run_won_location_name = RUN_COMPLETE_LOCATION_TEMPLATE.format(char=char)
+                wave_cap_item_name = PROGRESSIVE_WAVE_CAP_ITEM_TEMPLATE.format(char=char)
+
+                # Our test options say there are 3 cap increase items total
+                expected_items = [wave_cap_item_name] * 3
+                if char in self.world._starting_characters:
+                    expected_items.append(char)
+                self.assertAccessDependency([run_won_location_name], [expected_items], only_check_listed=True)
+
+    def test_wave_complete_locations_have_correct_access_rules(self):
+        """Check that wave complete locations are only reachable if the player has enough
+        Progressive Wave Cap items.
+        """
+        characters = self.options["include_base_game_characters"]
+        for char in characters:
+            region_name = CHARACTER_REGION_TEMPLATE.format(char=char)
+            region = self.multiworld.regions.region_cache[self.player][region_name]
+            region_location_names = [loc.name for loc in region.locations]
+            expected_wave_location_access: dict[int, int] = {
+                4: 0,
+                8: 1,
+                12: 2,
+                16: 3,
+                20: 3,
+            }
+
+            for wave, expected_wave_cap_increases_needed in expected_wave_location_access.items():
+                with self.subTest(character=char, wave=wave):
+                    expected_items = [
+                        *[PROGRESSIVE_WAVE_CAP_ITEM_TEMPLATE.format(char=char)] * expected_wave_cap_increases_needed,
+                    ]
+                    if char not in self.world._starting_characters:
+                        expected_items.append(char)
+                    location_name = WAVE_COMPLETE_LOCATION_TEMPLATE.format(char=char, wave=wave)
+                    # Sanity check that the location is defined
+                    self.assertIn(location_name, region_location_names)
+                    if expected_items:
+                        self.assertAccessDependency([location_name], [expected_items], only_check_listed=True)
+                    else:
+                        self.assertTrue(self.can_reach_location(location_name))

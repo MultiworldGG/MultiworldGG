@@ -1,5 +1,5 @@
 import functools
-import json
+import orjson
 import re
 import os
 import sys
@@ -29,7 +29,7 @@ def game_paths() -> dict[str, str]:
     """Build relevant paths based on the game exe and, if available, the mod loader config."""
 
     exe_path = settings.get_settings()["megamix_options"]["game_exe"]
-    game_path = os.path.dirname(exe_path)
+    game_path = str(os.path.dirname(exe_path))
     mods_path = os.path.join(game_path, "mods")
 
     # Seemingly no TOML parser in frozen AP
@@ -81,7 +81,7 @@ def extract_mod_data_to_json() -> list[dict[str, list[tuple[str,int,int]]]]:
                     if not mod_data_content or isinstance(mod_data_content, dict):
                         continue
 
-                    parsed = json.loads(mod_data_content)
+                    parsed = orjson.loads(mod_data_content)
                     mod_json_schema.validate(parsed)
                     all_mod_data.append(parsed)
         except Exception as e:
@@ -92,18 +92,16 @@ def extract_mod_data_to_json() -> list[dict[str, list[tuple[str,int,int]]]]:
     return all_mod_data
 
 
-def get_player_specific_ids(mod_data: str, remap: dict[int, dict[str, list]]) -> (dict, set, dict):
+def get_player_specific_ids(player_name: str, mod_data: str, remap: dict[int, dict[str, list]]) -> tuple[dict, set, dict]:
     if not mod_data:
         return {}, set(), {}
 
     try:
-        parsed = json.loads(mod_data)
+        parsed = orjson.loads(mod_data)
         mod_json_schema.validate(parsed)
         player_specific = {song[1]: song[0] for pack, songs in parsed.items() for song in songs}
-    except SchemaError as e:
-        raise OptionError(f"Failed to extract player specific IDs (schema)\n{e}")
-    except Exception as e: # JSONDecodeError, UnicodeDecodeError
-        raise OptionError(f"Failed to extract player specific IDs\n{e}")
+    except (SchemaError, orjson.JSONDecodeError, UnicodeDecodeError, Exception) as e:
+        raise OptionError(f"Failed to extract player-specific mod data for {player_name} ({type(e).__name__})\n{e}")
 
     conflicts = remap.keys() & player_specific.keys()
 

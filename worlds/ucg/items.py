@@ -1,5 +1,6 @@
 from __future__ import annotations
 
+import math
 from typing import TYPE_CHECKING
 
 from BaseClasses import Item, ItemClassification
@@ -11,8 +12,8 @@ if TYPE_CHECKING:
 
 BASE_ID = 100
 
-GOAL_LEVEL = {0: "3-18: The Chuckle Coaster", 1: "4-17: CATaclysmic CATastrophe",
-              2: "5-18: The End Is Neigh.", 3: "P-17: One Last Huzzah"}
+GOAL_LEVEL = {0: "3-18: The Chuckle Coaster", 1: "4-17: CATaclysmic CATastrophe", 2: "4-18: The Wall",
+              3: "5-18: The End Is Neigh.", 4: "P-17: One Last Huzzah"}
 
 # Every item must have a unique integer ID associated with it.
 ITEM_NAME_TO_ID = {
@@ -203,6 +204,9 @@ ITEM_NAME_TO_ID = {
     "Catfish Costume": BASE_ID + 5019,
     "Hard Hat Costume": BASE_ID + 5020,
     "Nothing Costume": BASE_ID + 5021,
+
+    # Other
+    "Cannium Prism": BASE_ID + 6000, # Macguffin item, only used with macguffin goal
 }
 
 # All level and world unlocks are progression deprioritzed skip balancing
@@ -259,6 +263,8 @@ DEFAULT_ITEM_CLASSIFICATIONS = {
     "Catfish Costume": ItemClassification.filler,
     "Hard Hat Costume": ItemClassification.filler,
     "Nothing Costume": ItemClassification.filler,
+
+    "Cannium Prism": ItemClassification.progression_deprioritized_skip_balancing,
 }
 
 def _items_in_id_range(id_range: int) -> list[str]:
@@ -289,6 +295,7 @@ ITEM_GROUPS: dict[str, list[str]] = {
     "Minigames": MINIGAME_ITEM_NAMES,
     "Costumes": COSTUME_ITEM_NAMES,
     "Filler": FILLER_ITEM_NAMES,
+    "Macguffin": ["Cannium Prism"],
 }
 
 FILLER_ITEM_NAME = "Uncanny Cat Spray"
@@ -366,6 +373,34 @@ def get_gimmick_item_names(world: UncannyCatWorld) -> list[str]:
     ]
 
 
+def get_minigame_item_names(world: UncannyCatWorld) -> list[str]:
+    """The minigame unlock items. An excluded minigame drops its item, since it has no locations left to gate."""
+    names = sorted(MINIGAME_ITEM_NAMES)
+    if not world.options.minigames:
+        return names
+    excluded = world.options.excluded_minigames.value
+    return [name for name in names if name not in excluded]
+
+
+def get_required_item_names(world: UncannyCatWorld) -> list[str]:
+    """Every item the seed needs regardless of goal: level/world unlocks, gimmicks and minigames."""
+    return get_unlock_item_names(world) + get_gimmick_item_names(world) + get_minigame_item_names(world)
+
+
+def get_open_location_count(world: UncannyCatWorld) -> int:
+    """Locations left over once every required item has one. Macguffins and filler share these."""
+    from .locations import LOCATION_NAME_TO_ID, get_excluded_locations
+
+    location_count = len(LOCATION_NAME_TO_ID) - len(get_excluded_locations(world))
+    return location_count - len(get_required_item_names(world))
+
+
+def get_macguffins_required(world: UncannyCatWorld) -> int:
+    """How many Cannium Prisms the goal needs, out of the ones placed in the pool."""
+    amount = world.options.macguffin_amount.value
+    return max(1, math.ceil(amount * world.options.macguffin_percent_required.value / 100))
+
+
 def get_item_classification(world: UncannyCatWorld, name: str) -> ItemClassification:
     if name in MINIGAME_ITEM_NAMES and not world.options.minigames:
         return ItemClassification.filler
@@ -385,11 +420,13 @@ def get_random_filler_item_name(world: UncannyCatWorld) -> str:
     return FILLER_ITEM_NAME
 
 
-def get_pool_filler_item_name(world: UncannyCatWorld) -> str:
-    """With temporary modifiers on, all padding filler is modifiers. Otherwise it's all Uncanny Cat Spray."""
-    if world.options.temp_modifiers:
-        return world.random.choice(sorted(MODIFIER_ITEM_NAMES))
-    return FILLER_ITEM_NAME
+def get_pool_modifier_count(world: UncannyCatWorld, padding: int) -> int:
+    """How much of the padding filler becomes temporary modifiers. The rest is Uncanny Cat Spray."""
+    if not world.options.temp_modifiers:
+        return 0
+    if world.options.coinsanity:
+        return round(padding * 0.3)
+    return padding
 
 
 def create_item_with_correct_classification(world: UncannyCatWorld, name: str) -> UncannyCatItem:
@@ -397,10 +434,9 @@ def create_item_with_correct_classification(world: UncannyCatWorld, name: str) -
 
 
 def create_all_items(world: UncannyCatWorld) -> None:
-    itempool: list[Item] = [
-        world.create_item(name)
-        for name in get_unlock_item_names(world) + get_gimmick_item_names(world) + sorted(MINIGAME_ITEM_NAMES)
-    ]
+    itempool: list[Item] = [world.create_item(name) for name in get_required_item_names(world)]
+    if world.options.macguffin_goal:
+        itempool += [world.create_item("Cannium Prism") for _ in range(world.options.macguffin_amount.value)]
 
     # Every slot the required items don't claim is room to add fillers.
     location_count = len(world.multiworld.get_unfilled_locations(world.player))
@@ -408,7 +444,7 @@ def create_all_items(world: UncannyCatWorld) -> None:
     if filler_to_add < 0:
         raise OptionError(
             f"Uncanny Cat Golf ({world.player_name}) created {len(itempool)} items for only "
-            f"{location_count} locations. Enable more worlds or peak checks."
+            f"{location_count} locations. Enable more worlds or peak checks, or exclude fewer levels."
         )
 
     guaranteed = sorted(FILLER_ITEM_NAMES)
@@ -416,10 +452,11 @@ def create_all_items(world: UncannyCatWorld) -> None:
     del guaranteed[filler_to_add:]
     itempool += [world.create_item(name) for name in guaranteed]
 
-    # Whatever room is left becomes temporary modifiers, or Uncanny Cat Spray when temp mods are off.
-    itempool += [
-        world.create_item(get_pool_filler_item_name(world))
-        for _ in range(filler_to_add - len(guaranteed))
-    ]
+    # Whatever room is left becomes temporary modifiers and Uncanny Cat Spray.
+    padding = filler_to_add - len(guaranteed)
+    modifier_count = get_pool_modifier_count(world, padding)
+    modifier_names = sorted(MODIFIER_ITEM_NAMES)
+    itempool += [world.create_item(world.random.choice(modifier_names)) for _ in range(modifier_count)]
+    itempool += [world.create_item(FILLER_ITEM_NAME) for _ in range(padding - modifier_count)]
 
     world.multiworld.itempool += itempool

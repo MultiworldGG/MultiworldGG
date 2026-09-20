@@ -264,7 +264,10 @@ def set_completion_condition(world: UncannyCatWorld) -> None:
         if gimmicks is not None:
             parts.append(gimmicks)
 
-    parts.append(has_enough_prisms(world))
+    if world.options.macguffin_goal:
+        parts.append(Has("Cannium Prism", items.get_macguffins_required(world)))
+    else:
+        parts.append(has_enough_prisms(world))
 
     world.set_rule(world.get_location("Victory"), And(*parts))
     world.set_completion_rule(Has("Victory"))

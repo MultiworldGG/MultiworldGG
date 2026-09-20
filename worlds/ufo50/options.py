@@ -10,7 +10,7 @@ class AlwaysOnGames(OptionSet):
     """
     Choose which games you would like to enable.
 
-    The following games have full implementations: Barbuta, Vainger, Night Manor, and Porgy.
+    The following games have full implementations: Barbuta, Vainger, Night Manor, Divers, and Porgy.
     Party House has a more minor implementation, and counts as an implemented game.
     There is a host.yaml setting that you must enable to include unimplemented games.
     Unimplemented games will only have Garden, Gold, and/or Cherry checks.
@@ -150,7 +150,6 @@ class PorgyLanternless(Toggle):
     internal_name = "porgy_lanternless"
     display_name = "Porgy - Lanternless"
 
-
 # Night Manor
 class NMEarlyPin(DefaultOnToggle):
     """
@@ -158,6 +157,33 @@ class NMEarlyPin(DefaultOnToggle):
     """
     internal_name = "nm_early_pin"
     display_name = "Night Manor - Early Hairpin"
+
+#Divers
+class DiversLeverCheck(Toggle):
+    """
+    If enabled, the levers will be locations and items
+    """
+    internal_name = "divers_lever_check"
+    display_name = "Divers - Are Levers Checks"
+
+class DiversXpItem(Range):
+    """
+    Choose how many XP multipliers will be items
+    Each XP multiplier multiplies XP from enemies by 2
+    """
+    internal_name = "divers_xp_item"
+    display_name = "Divers - XP Multiplier Items"
+    range_end = 4
+
+class DiversCashItem(Range):
+    """
+    Choose how many Cash multipliers will be items
+    Each Cash multiplier multiplies Cash from enemies by 2
+    """
+    internal_name = "divers_cash_item"
+    display_name = "Divers - Cash Multiplier Items"
+    range_end = 5
+
 
 
 @dataclass
@@ -178,6 +204,10 @@ class UFO50Options(PerGameCommonOptions):
 
     nm_early_pin: NMEarlyPin
 
+    divers_lever_check: DiversLeverCheck
+    divers_xp_item: DiversXpItem
+    divers_cash_item: DiversCashItem
+
 
 ufo50_option_groups = [
     OptionGroup("General Options", [
@@ -197,5 +227,10 @@ ufo50_option_groups = [
     ]),
     OptionGroup("Night Manor Options", [
         NMEarlyPin,
+    ]),
+    OptionGroup("Divers Options", [
+        DiversLeverCheck,
+        DiversXpItem,
+        DiversCashItem,
     ])
 ]

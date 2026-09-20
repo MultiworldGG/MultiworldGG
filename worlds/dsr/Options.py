@@ -172,8 +172,17 @@ class CrystalLizardShuffle(Toggle):
     Great Hollow lizards are forced to spawn on every load instead of their vanilla 1/3 chance per load."""
     display_name = "Crystal Lizard Shuffle"
 
+
+class UnlimitedShopItemShuffle(DefaultOnToggle):
+    """Shuffles unlimited quantity consumable and arrow shop slots from unmissable shopkeepers.
+
+    Shops Shuffled by this option include all those on the Limited shuffle option below, plus Ingward.
+    """
+    display_name = "Unlimited Shop Item Shuffle"
+
 class LimitedShopItemShuffle(DefaultOnToggle):
     """Adds limited quantity shop slots from unmissable shopkeepers as locations, and shuffles their items into the multiworld.
+    This treats Weapon and Armor slots as limited quantity slots, adding 1 of each to the pool.
     Missable shopkeepers, who can be made unavailable based on progression or dialogue options, will not have their shops shuffled into the multiworld.
     Shuffled Shops' keepers will be made immune to player attacks to make them unmissable, and their drops added as shuffled locations to their shop.
     
@@ -181,9 +190,9 @@ class LimitedShopItemShuffle(DefaultOnToggle):
     Andre of Astora
     Big Hat Logan
     Crestfallen Merchant
-    Domhnall of Zena (not including post-boss equipment yet)
+    Domhnall of Zena (including post-boss equipment)
     Female Undead Merchant
-    Giant Blacksmith (shared Repairbox and Blacksmith Giant Hammer)
+    Giant Blacksmith
     Griggs of Vinheim
     Hawkeye Gough
     Laurentius of the Great Swamp - The client will prevent him from moving on to Blighttown until you have bought out his shop.
@@ -192,7 +201,7 @@ class LimitedShopItemShuffle(DefaultOnToggle):
     Oswald of Carim
     Petrus of Thorolund
     Rickert of Vinheim
-    Vamos (shared Repairbox + 2 drops only)
+    Vamos
     """
     display_name = "Limited Shop Item Shuffle"
 
@@ -455,6 +464,7 @@ option_groups = [
         CrystalLizardShuffle,
         ]),
     OptionGroup("Shops", [
+        UnlimitedShopItemShuffle,
         LimitedShopItemShuffle,
         ShopHints,
         ]),
@@ -528,6 +538,7 @@ class DSROption(PerGameCommonOptions):
     lizard_shuffle: CrystalLizardShuffle
 
     # Shops
+    unlimited_shop_item_shuffle: UnlimitedShopItemShuffle
     limited_shop_item_shuffle: LimitedShopItemShuffle
     shop_hints: ShopHints
 

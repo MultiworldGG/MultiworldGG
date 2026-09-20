@@ -1,44 +1,5 @@
 [
   {
-    "name": "Beedle's Ship",
-    "sections": [
-      {
-        "name": "Beedle Membership Bronze"
-      },
-      {
-        "name": "Beedle Membership Gold"
-      },
-      {
-        "name": "Beedle Membership Platinum"
-      },
-      {
-        "name": "Beedle Membership Silver"
-      },
-      {
-        "name": "Beedle Membership VIP"
-      },
-      {
-        "name": "Beedle Shop Bomb Bag"
-      },
-      {
-        "name": "Beedle Shop Wisdom Gem"
-      },
-      {
-        "name": "Masked Beedle Courage Gem"
-      },
-      {
-        "name": "Masked Beedle Heart Container"
-      }
-    ],
-    "map_locations": [
-      {
-        "map": "Sea Overview",
-        "x": 472,
-        "y": 421
-      }
-    ]
-  },
-  {
     "name": "Fish",
     "sections": [
       {
@@ -740,7 +701,7 @@
       "x": 770,
       "y": 550
     }] },
-  { "name": "Events - Bellumbeck", "sections": [{"name": "GOAL: Bellumbeck"}, {"name": "GOAL"}], "map_locations": [{
+  { "name": "Events - Bellumbeck", "sections": [{"name": "GOAL: Bellumbeck"}, {"name": "GOAL: Zauz"}], "map_locations": [{
       "map": "Sea Overview",
       "x": 250,
       "y": 455

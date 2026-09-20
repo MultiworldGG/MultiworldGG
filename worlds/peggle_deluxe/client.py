@@ -61,6 +61,11 @@ class PeggleDeluxeContext(Context):
     can_display_process_found_message: bool
     can_display_process_not_found_message: bool
 
+    tracker_loaded: bool
+
+    locations_in_logic: List[str]
+    locations_out_of_logic: List[str]
+
     def __init__(self, server_address: Optional[str], password: Optional[str]) -> None:
         super().__init__(server_address, password)
 
@@ -74,6 +79,22 @@ class PeggleDeluxeContext(Context):
 
         self.can_display_process_found_message = True
         self.can_display_process_not_found_message = True
+
+        self.tracker_loaded = tracker_loaded
+
+        self.locations_in_logic = list()
+        self.locations_out_of_logic = list()
+
+        if self.tracker_loaded:
+            def update_locations_in_logic(locations_in_logic: List[str]):
+                self.locations_in_logic = locations_in_logic
+
+            self.update_callback = update_locations_in_logic
+
+            def update_locations_out_of_logic(locations_out_of_logic: List[str]):
+                self.locations_out_of_logic = locations_out_of_logic
+
+            self.glitches_callback = update_locations_out_of_logic
 
     def make_gui(self):
         from .client_gui.client_gui import bootstrap_client_gui

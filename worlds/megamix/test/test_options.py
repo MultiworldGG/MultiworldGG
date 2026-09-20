@@ -18,7 +18,7 @@ class TestOptionIncludes(MegaMixTestBase):
 
     def test_included(self):
         world = self.get_world()
-        pool = {song.name for song in world.multiworld.itempool if song.code >= 10}
+        pool = {song.name for song in world.multiworld.itempool if song.code >= 100}
         pool.update(world.starting_songs)
         pool.add(world.victory_song_name)
 
@@ -42,7 +42,7 @@ class TestOptionIncludesExact(MegaMixTestBase):
 
     def test_include_exact(self):
         world = self.get_world()
-        pool = {item.name for item in world.multiworld.itempool if item.code >= 10}
+        pool = {item.name for item in world.multiworld.itempool if item.code >= 100}
         pool.update(world.starting_songs)
         pool.add(world.victory_song_name)
 
@@ -66,7 +66,7 @@ class TestOptionIncludesOverflow(MegaMixTestBase):
 
     def test_include_overflow(self):
         world = self.get_world()
-        pool = {item.name for item in world.multiworld.itempool if item.code >= 10}
+        pool = {item.name for item in world.multiworld.itempool if item.code >= 100}
         pool.update(world.starting_songs)
         pool.add(world.victory_song_name)
 
@@ -92,7 +92,7 @@ class TestIncludesPercentage(MegaMixTestBase):
         self.options["exclude_songs"] = group_miku
         self.world_setup()
 
-        pool = {song.name for song in self.world.multiworld.itempool if song.code >= 10}
+        pool = {song.name for song in self.world.multiworld.itempool if song.code >= 100}
         pool.update(self.world.starting_songs)
         pool.add(self.world.victory_song_name)
 
@@ -114,7 +114,7 @@ class TestOptionExcludes(MegaMixTestBase):
 
     def test_excluded(self):
         world = self.get_world()
-        pool = {song.name for song in world.multiworld.itempool if song.code >= 10}
+        pool = {song.name for song in world.multiworld.itempool if song.code >= 100}
         pool.update(world.starting_songs)
         pool.add(world.victory_song_name)
 
@@ -137,7 +137,7 @@ class TestOptionExcludeItemGroups(MegaMixTestBase):
         self.options["exclude_songs"] = group_songs
         self.world_setup()
 
-        pool = {song.name for song in self.world.multiworld.itempool if song.code >= 10}
+        pool = {song.name for song in self.world.multiworld.itempool if song.code >= 100}
         pool.update(self.world.starting_songs)
         pool.add(self.world.victory_song_name)
 
@@ -161,9 +161,30 @@ class TestOptionNoDLC(MegaMixTestBase):
     }
 
     def test_no_dlc(self):
-        pool = {song.name for song in self.world.multiworld.itempool if song.code >= 10}
+        pool = {song.name for song in self.world.multiworld.itempool if song.code >= 100}
         pool.update(self.world.starting_songs)
         pool.add(self.world.victory_song_name)
         dlc = {song for song in pool if self.world.mm_collection.song_items.get(song).DLC}
 
         self.assertEqual(0, len(dlc), f"DLC is disabled, got {len(dlc)} in the item pool.")
+
+
+class TestGoalModes(MegaMixTestBase):
+    options = {
+        "goal_mode": "percentage"
+    }
+
+    def test_no_leeks(self):
+        leeks = sum(1 for item in self.world.multiworld.itempool if item.code == self.world.mm_collection.LEEK_CODE)
+        self.assertEqual(0, leeks, f"Percentage Goal Mode should have 0 leeks, got {leeks}.")
+
+@classvar_matrix(song_set=["Love is War [1]", ["Love is War [1]"], "1", 1,])
+class TestMegaMixSongSet(MegaMixTestBase):
+    run_default_tests = False
+    song_set: ClassVar[str | int | list[str|int]]
+
+    def test_mega_mix_song_set(self):
+        self.options["goal_song"] = self.song_set
+        self.world_setup()
+
+        self.assertEqual(self.world.victory_song_name, "Love is War [1]", f"Goal Song (MegaMexSongSet) is invalid: {self.world.victory_song_name}")
