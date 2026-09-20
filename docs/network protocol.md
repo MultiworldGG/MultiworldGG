@@ -417,8 +417,12 @@ Requests the data package from the server. Does not require client authenticatio
 | games | list\[str\]  | Optional. If specified, will only send back the specified data. Such as, \["Factorio"\] -> Datapackage with only Factorio data. |
 
 ### Bounce
-Send this message to the server, tell it which clients should receive the message and 
-the server will forward the message to all those targets to which any one requirement applies.
+Send this message to the server, tell it which clients should receive the message and the server will forward
+the message to all those targets to which the requirements ("teams", "games", "slots", "tags") apply according
+to the operator chosen:
+- "or": Conditions are chained with "or".
+- "and": Conditions are chained with "and". (Important note: A completely missing key evaluates as **True**, whereas an empty list evaluates as **False**)
+- "legacy": Evaluates as `teams and (games or slots or tags)`.
 
 #### Arguments
 | Name | Type | Notes |
