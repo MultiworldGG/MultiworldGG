@@ -20,7 +20,8 @@ from .DungeonGenerator import create_dungeon_builders, split_dungeon_builder, si
 from .DungeonGenerator import dungeon_portals, dungeon_drops, connect_doors, count_reserved_locations
 from .DungeonGenerator import valid_region_to_explore
 from .KeyDoorShuffle import analyze_dungeon, build_key_layout, validate_key_layout, determine_prize_lock
-from .KeyDoorShuffle import validate_bk_layout, DoorRules
+from .KeyDoorShuffle import validate_bk_layout, DoorRules, apply_custom_key_rules
+from .source.dungeon.StaticKeyLogic import static_door_rules
 from .Utils import ncr, kth_combination
 
 
@@ -51,6 +52,9 @@ def link_doors(world, player):
             world.get_door("Skull Pinball WS", player).no_exit()
             world.swamp_patch_required[player] = orig_swamp_patch
             link_doors_prep(world, player)
+    if world.key_logic_algorithm[player] == 'static':
+        static_door_rules(world, player)
+    apply_custom_key_rules(world, player)
 
 
 def link_doors_prep(world, player):
@@ -2063,10 +2067,11 @@ def shuffle_small_key_doors(door_type_pools, used_doors, start_regions_map, all_
                 builder.total_keys = total_keys
             find_small_key_door_candidates(builder, start_regions_map[dungeon], used_doors, world, player)
             custom_doors = 0
-            if all_custom[dungeon]:
-                builder.candidates.small = filter_key_door_pool(builder.candidates.small, all_custom[dungeon])
-                custom_doors = len(custom_key_doors[dungeon])
-                remaining -= custom_doors
+            # Commenting out OWR code which was ironically causing UT to desync from the real multiworld
+            # if all_custom[dungeon]:
+            #     builder.candidates.small = filter_key_door_pool(builder.candidates.small, all_custom[dungeon])
+            #     custom_doors = len(custom_key_doors[dungeon])
+            #     remaining -= custom_doors
             builder.key_doors_num = max(0, len(builder.candidates.small) - builder.key_drop_cnt) + custom_doors
             total_keys -= builder.key_drop_cnt
             ttl += builder.key_doors_num
@@ -3479,7 +3484,7 @@ def find_accessible_entrances(world, player, builder):
             connect = ext.connected_region
             if connect is None or ext.door and ext.door.blocked:
                 continue
-            if world.mode[player] == 'standard' and builder.name == 'Hyrule Castle' and (ext.name.startswith('Flute From') or ext.name in ['Hyrule Castle Main Gate (North)', 'Castle Gate Teleporter (Inner)', 'Inverted Pyramid Entrance']):
+            if world.mode[player] == 'standard' and builder.name == 'Hyrule Castle' and (ext.name.startswith('Flute From') or ext.name in ['Hyrule Castle Main Gate (North)', 'Castle Gate Teleporter (Inner)', 'Pyramid Entrance']):
                 continue
             if connect.name in entrances and connect not in visited_entrances:
                 visited_entrances.append(connect.name)

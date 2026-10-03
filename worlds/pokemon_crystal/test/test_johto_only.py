@@ -7,15 +7,14 @@ class JohtoOnlyTest(PokemonCrystalTestBase):
     }
 
     def test_victory_road_access(self):
-        self.collect_all_but(["HM07 Waterfall", "EVENT_BEAT_ELITE_FOUR", "Victory"])
+        # collect_all_but hands out placed events, so the Indigo flypoint has to be held back
+        self.collect_all_but(["HM07 Waterfall", "EVENT_BEAT_ELITE_FOUR", "EVENT_VISITED_INDIGO"])
         self.assertBeatable(False)
         self.collect_by_name("HM07 Waterfall")
         self.assertBeatable(True)
 
     def test_victory_road_gate(self):
-        self.collect_all_but(["Mineral Badge", "EVENT_BEAT_ELITE_FOUR", "Victory", "Boulder Badge", "Cascade Badge",
-                              "Thunder Badge", "Rainbow Badge", "Soul Badge", "Marsh Badge", "Volcano Badge",
-                              "Earth Badge"])
+        self.collect_all_but(["Mineral Badge", "EVENT_BEAT_ELITE_FOUR"])
         self.assertBeatable(False)
         self.collect_by_name("Mineral Badge")
         self.assertBeatable(True)
@@ -25,8 +24,8 @@ class JohtoOnlyExtraBadgesTest(PokemonCrystalTestBase):
     options = {
         "johto_only": "on",
         "randomize_badges": "completely_random",
-        "elite_four_requirement": "badges",
-        "elite_four_count": "16"
+        "victory_road_requirement": "badges",
+        "victory_road_count": "16"
     }
 
     def test_badges_added_to_pool(self):
@@ -36,7 +35,7 @@ class JohtoOnlyExtraBadgesTest(PokemonCrystalTestBase):
             self.assertTrue(self.get_item_by_name(badge))
 
     def test_victory_road_badges(self):
-        self.collect_all_but(["Earth Badge", "EVENT_BEAT_ELITE_FOUR", "Victory"])
+        self.collect_all_but(["Earth Badge", "EVENT_BEAT_ELITE_FOUR", "EVENT_VISITED_INDIGO"])
         self.assertBeatable(False)
         self.collect_by_name("Earth Badge")
         self.assertBeatable(True)
@@ -45,7 +44,7 @@ class JohtoOnlyExtraBadgesTest(PokemonCrystalTestBase):
 class JohtoOnlyRedTest(PokemonCrystalTestBase):
     options = {
         "johto_only": "include_silver_cave",
-        "goal": "red",
+        "goal": ["Red"],
         "randomize_badges": "completely_random",
         "red_badges": "16"
     }
@@ -57,7 +56,7 @@ class JohtoOnlyRedTest(PokemonCrystalTestBase):
             self.assertTrue(self.get_item_by_name(badge))
 
     def test_silver_cave_badges(self):
-        self.collect_all_but(["Earth Badge", "EVENT_OPENED_MT_SILVER", "EVENT_BEAT_RED", "Victory"])
+        self.collect_all_but(["Earth Badge", "EVENT_OPENED_MT_SILVER", "EVENT_BEAT_RED"])
         self.assertBeatable(False)
         self.collect_by_name("Earth Badge")
         self.assertBeatable(True)

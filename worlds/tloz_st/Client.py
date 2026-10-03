@@ -200,8 +200,8 @@ class SpiritTracksClient(DSZeldaClient):
         self.in_stamp_stand: bool = False
         self.scene_to_stamp = build_scene_to_stamp()
         self.goal_locations = build_location_to_goal()
-        self.location_id_to_location = {l['id']: l for l in LOCATIONS_DATA.values()}
-        self.location_id_to_vanilla_item = {l['id']: l.get("vanilla_item", None) for l in LOCATIONS_DATA.values()}
+        self.location_id_to_location = {l.id: l for l in LOCATIONS_DATA.values()}
+        self.location_id_to_vanilla_item = {l.id: l.vanilla_item for l in LOCATIONS_DATA.values()}
 
         self.has_goal_location = False
         self.loading_stage = False  # Used to set stage flags mid loading cause the usual time is too late
@@ -232,7 +232,7 @@ class SpiritTracksClient(DSZeldaClient):
         self.event_data: list[dict] = []
         self.entrances: dict[str, "STTransition"] = ENTRANCES
         self.boss_warp_entrance = None
-        self.location_id_to_name = {loc["id"]: loc_name for loc_name, loc in LOCATIONS_DATA.items()}
+        self.location_id_to_name = {loc.id: loc_name for loc_name, loc in LOCATIONS_DATA.items()}
         self.exit_coords_addr: tuple = (STAddr.train_trans_x, STAddr.train_trans_y, STAddr.train_trans_z)
 
         # Train speed stuff
@@ -320,7 +320,7 @@ class SpiritTracksClient(DSZeldaClient):
         if slot_data["dark_realm_access"] in [2, 3]:
             shard_count = self.item_count(ctx, "Compass of Light Shard")
             logger.info(
-                f"You need Compass Shards to access the Dark Realm. You have {shard_count}/{slot_data['compass_shard_count']}")
+                f"You need Compass Shards to access the Dark Realm Portal. You have {shard_count}/{slot_data['compass_shard_count']}")
 
     async def print_train_actors(self, ctx, offset=11):
         """Print debug info about actors"""
@@ -564,10 +564,11 @@ class SpiritTracksClient(DSZeldaClient):
 
     async def update_main_read_list(self, ctx: "BizHawkClientContext", stage: int, in_game=True):
         read_keys = read_keys_always.copy()
-        if stage in range(4, 0xb):
+        if stage in range(4, 0xd):
             self.on_train = True
             read_keys += read_keys_train
             self.health_address = STAddr.train_health
+            self.mot_active_address = None
 
             train_speed_thingy = (await STAddr.train_speed_pointer.read(ctx))
             printl(f"Train speed thingy {hex(train_speed_thingy)}")
@@ -598,7 +599,7 @@ class SpiritTracksClient(DSZeldaClient):
 
         self.main_read_list = read_keys
         printl(f"read keys len: {len(read_keys)}")
-        printl(self.main_read_list, read_keys)
+        printl(f"main read list: {self.main_read_list}")
         # printl(f"Slot data {ctx.slot_data}")
 
     async def on_connect(self, ctx):
@@ -677,7 +678,7 @@ class SpiritTracksClient(DSZeldaClient):
 
     async def process_read_list(self, ctx: "BizHawkClientContext", read_result: dict):
         # reload when necessary
-        if not self.reload_map_objects and read_result.get(self.mot_active_address, 2) != 2:
+        if not self.reload_map_objects and self.mot_active_address and read_result.get(self.mot_active_address, 2) != 2:
             self.reload_map_objects = 1
 
         if self.precision_operation and self.precision_operation[0] == "special_ow_actors":
@@ -713,7 +714,9 @@ class SpiritTracksClient(DSZeldaClient):
             if self.current_stage in range(0x1e, 0x23):
                 safe_save = self.saving_safety == read_result[STAddr.getting_item_safety]
                 # printl(f"Checking Safe Save!")
-            self.saving = read_result.get(STAddr.getting_item_safety, False) or read_result[STAddr.saving] or safe_save
+            self.saving = read_result.get(STAddr.getting_item_safety, False) or read_result[STAddr.saving] or safe_save or read_result.get(STAddr.getting_location)
+            if not self.saving:
+                printl(f"Save Complete!")
 
         # Weird scene value on load from menu, set to last saved scene
         if read_result[STAddr.stage] == 0x79 and self.last_saved_scene:
@@ -806,7 +809,7 @@ class SpiritTracksClient(DSZeldaClient):
             self.save_ammo = await read_multiple(ctx, ammo_addresses)
             await write_multiple(ctx, ammo_addresses, [0, 0])
 
-        # Give tears of light when entering ToS
+        # Give tears of light when entering
         if self.current_stage == 0x13 and ctx.slot_data["randomize_tears"] != -1:
             await self.set_tears(ctx)
 
@@ -817,9 +820,6 @@ class SpiritTracksClient(DSZeldaClient):
             elif ctx.slot_data["excess_random_treasure"] == 0:
                 treasure = ITEM_MODEL_LOOKUP["Nothing"].value
             await self.reset_treasure_models(ctx, treasure)
-
-        if current_scene == 0x131e:  # Set tears for ToS 6 on 30F instead of 31F.
-            await self.set_tears(ctx)
 
         # Start Precision read for evil train deletion
         if not self._just_entered_game:
@@ -1194,7 +1194,7 @@ class SpiritTracksClient(DSZeldaClient):
         missing_stamps = []
 
         if ctx.slot_data["randomize_stamps"] == 1:  # vanilla_with_location
-            stamp_locations_received = [LOCATIONS_DATA[self.location_id_to_name[i]]["stamp"] for i in ctx.checked_locations if self.location_id_to_name[i] in LOCATION_GROUPS["Stamp Stands"]]
+            stamp_locations_received = [LOCATIONS_DATA[self.location_id_to_name[i]].stamp for i in ctx.checked_locations if self.location_id_to_name[i] in LOCATION_GROUPS["Stamp Stands"]]
             wrong_stamp_indexes = [stamps.index(i) for i in has_stamps if i not in stamp_locations_received]
             missing_stamps = [i for i in stamp_locations_received if i not in has_stamps]
 
@@ -1210,7 +1210,7 @@ class SpiritTracksClient(DSZeldaClient):
 
 
         elif ctx.slot_data["randomize_stamps"] == 4:
-            stamp_locations_received = [LOCATIONS_DATA[i]["stamp"] for i in LOCATION_GROUPS["Stamp Stands"] if self.entrances[LOCATIONS_DATA[i]["ut_connect"]].id in self.traversed_entrances]
+            stamp_locations_received = [LOCATIONS_DATA[i].stamp for i in LOCATION_GROUPS["Stamp Stands"] if self.entrances[LOCATIONS_DATA[i].ut_connect].id in self.traversed_entrances]
             print(f"traversed: {self.traversed_entrances}, stamps: {stamp_locations_received}")
             wrong_stamp_indexes = [stamps.index(i) for i in has_stamps if i not in stamp_locations_received]
             missing_stamps = [i for i in stamp_locations_received if i not in has_stamps]
@@ -1372,17 +1372,17 @@ class SpiritTracksClient(DSZeldaClient):
         item_priority = {}
         for loc_name in locations:
             loc_data = LOCATIONS_DATA[loc_name]
-            vanilla_item = loc_data.get("vanilla_item", []) or loc_data.get("hidden_vanilla_item", [])
+            vanilla_item = loc_data.vanilla_item or loc_data.hidden_vanilla_item
             vanilla_items = [vanilla_item] if isinstance(vanilla_item, str) else vanilla_item
-            priority = loc_data.get("priority", 0)
+            priority = loc_data.priority
 
-            if loc_data.get("farmable", "") in ["remove", "conditional"] and loc_data["id"] in ctx.checked_locations:
+            if vanilla_items is None or (loc_data.farmable in ["remove", "conditional"] and loc_data.id in ctx.checked_locations):
                 continue
 
             for item in vanilla_items:
                 if not priority:
                     # set location_id to None if there's a location conflict
-                    item_location_check[item] = None if item in item_location_check else loc_data['id']
+                    item_location_check[item] = None if item in item_location_check else loc_data.id
                     continue
 
                 # Sort locations by priority if applicable
@@ -1391,9 +1391,9 @@ class SpiritTracksClient(DSZeldaClient):
 
                 if hasattr(self.item_data[item], "progressive_model"):
                     for prog_item in self.item_data[item].progressive_model:
-                        item_location_check[prog_item] = loc_data['id']
+                        item_location_check[prog_item] = loc_data.id
 
-                item_location_check[item] = loc_data['id']
+                item_location_check[item] = loc_data.id
                 item_priority[item] = priority
 
         printl(f"Items with locations: {[(i, l) for i, l in item_location_check.items()]}")
@@ -1444,7 +1444,7 @@ class SpiritTracksClient(DSZeldaClient):
 
     async def unset_special_vanilla_items(self, ctx, location, item):
         # las chest is the only conditional for now, if las is shuffled make it give nothing
-        if location.get("farmable", "") == "conditional" and not str(self.entrances["Lost at Sea Dungeon Reward Room South"].id) in ctx.slot_data["er_pairings"]:
+        if location.farmable == "conditional" and not str(self.entrances["Lost at Sea Dungeon Reward Room South"].id) in ctx.slot_data["er_pairings"]:
             self.last_vanilla_item.pop()
 
     async def set_shop_models(self, ctx: "BizHawkClientContext", on_load=True):
@@ -1683,7 +1683,7 @@ class SpiritTracksClient(DSZeldaClient):
         if self.item_count(ctx, "Mountain Temple Snurglar Key") >= 3 or self.item_count(ctx, "Snurglar Keyring"):
             if (not any([self.item_count(ctx, i) for i in ITEM_GROUPS["Tracks: Mountain Temple Tracks"]])
                     or not self.item_count(ctx, "Cannon")
-                    or all([LOCATIONS_DATA[i]['id'] in ctx.checked_locations for i in LOCATION_GROUPS["Snurglars"]])):
+                    or all([LOCATIONS_DATA[i].id in ctx.checked_locations for i in LOCATION_GROUPS["Snurglars"]])):
                 printl(f"Got Snurglar keys, opening mountain temple")
                 await self.snurglar_addr.overwrite(ctx, 0x30)
             else:
@@ -1948,9 +1948,9 @@ class SpiritTracksClient(DSZeldaClient):
         current_destination = None
         for e in entrances_per_scene.get(self.last_scene, []):
             if e.detect_exit(scene, entrance, coords, self.er_y_offest):
-                current_destination = e
+                current_destination = e.vanilla_reciprocal
                 break
-        print(f"Bounce detected entrance: {current_destination} from {entrances_per_scene.get(self.last_scene, [])}")
+        # print(f"Bounce detected entrance: {current_destination} from {entrances_per_scene.get(self.last_scene, [])}")
         if current_destination and not await self.conditional_er(ctx, current_destination, detect_data=current_destination.vanilla_reciprocal):
             return current_destination.vanilla_reciprocal
         return None
@@ -2048,7 +2048,10 @@ class SpiritTracksClient(DSZeldaClient):
         if detect_data.name == "Ocean Realm North Rocktite Cave":
             rocktite_entrance = self.entrances["Ocean Realm North Rocktite Cave Fight"]
             er_map.setdefault(0x600, {})[rocktite_entrance] = exit_data
-            print(f"{rocktite_entrance} => {detect_data}")
+
+        if detect_data.name == "Snow Realm Snowfall Sanctuary Station":
+            rocktite_entrance = self.entrances["Snow Rocktite Exit"]
+            er_map.setdefault(0xA00, {})[rocktite_entrance] = exit_data
 
         # Capbone states
         if exit_data.name == "Capbone Exit":
@@ -2100,7 +2103,7 @@ class SpiritTracksClient(DSZeldaClient):
                 await STAddr.entrance_animation.overwrite(ctx, 0x39)
         elif "animation_override" in new_exit.extra_data:
             await STAddr.entrance_animation.overwrite(ctx, new_exit.extra_data["animation_override"])
-        elif await STAddr.entrance_animation.read(ctx) in [0x9]:  # change glitchy entrances
+        elif await STAddr.entrance_animation.read(ctx) in [0x9, 0x22, 0x23]:  # change glitchy entrances
             await STAddr.entrance_animation.overwrite(ctx, 0x18)
 
     # Respawn stuff
@@ -2145,6 +2148,8 @@ class SpiritTracksClient(DSZeldaClient):
             detect_data = self.entrances["Lost at Sea Lobby Enter Dungeon"]
         elif detect_data.name == "Ocean Realm North Rocktite Cave Fight":
             detect_data = self.entrances["Ocean Realm North Rocktite Cave"]
+        elif detect_data.name == "Snow Rocktite Exit":
+            detect_data = self.entrances["Snow Realm Snowfall Sanctuary Station"]
         elif detect_data.name == "Desert Temple B2 North Post-Fight":
             detect_data = self.entrances["Desert Temple B2 North Entrance"]
         elif detect_data.name == "Mountain Temple 2F NE Staircase Alt":
@@ -2191,10 +2196,13 @@ class SpiritTracksClient(DSZeldaClient):
 
     async def update_safe_respawn(self, ctx, new_exit: "STTransition", last_detect: "STTransition"):
         # await self.change_entrance_animation(ctx, new_exit)
+        print(f"New exit scene: {hex_f(new_exit.scene)}, last detect {hex_f(last_detect.scene)}")
         if new_exit.stage in unsafe_respawn_stages and new_exit.scene not in self.safe_respawn_rooms:
             if self.safe_respawn is None:
                 self.safe_respawn = last_detect.entrance
-                printl(f"Set new safe respawn: {hex_f(self.safe_respawn)}")
+                printl(f"Set new safe respawn: {hex_f(self.safe_respawn)} {last_detect}")
+            else:
+                printl(f"Keeping old safe respawn: {hex_f(self.safe_respawn)}")
             return
         self.safe_respawn = None
 

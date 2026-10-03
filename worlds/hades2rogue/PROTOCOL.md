@@ -1,39 +1,45 @@
-# Hades 2 ↔ Archipelago bridge protocol (v0.1)
+# Hades 2 Rogue ↔ Archipelago bridge protocol
 
 A local **TCP socket** carries newline-delimited UTF-8 messages between the
-in-game Lua mod and the Python Archipelago client.
+in-game Lua mod and the Python Archipelago client (Client.py). Nothing in this
+protocol is versioned on the wire; the apworld's `mod_version` / Client's
+`MOD_VERSION` handshake (slot_data `version_check`) is the only compatibility check.
 
 - **Transport:** TCP on `127.0.0.1:43055`. Hardcoded on both ends (Client.py
   `BRIDGE_HOST`/`BRIDGE_PORT`, Bridge.lua `BRIDGE_HOST`/`BRIDGE_PORT`) --
   deliberately NOT in config.lua, since r2modman's config editor lets players
   edit it and a mismatch breaks the connection with no error on either side.
 - **Roles:** the Python client is the **server** (listens); the Lua mod is the
-  **client** (connects out on load, retries on failure).
+  **client** (connects out from the render loop, retries every ~2s). Only one game
+  connection is kept; a new one replaces the old.
 - **Framing:** one message per line, terminated by `\n`.
-- **Format:** `COMMAND:payload` (payload may be empty). Lists use `|` as the
-  delimiter (no item/location name contains `|`).
+- **Format:** `COMMAND:payload`. The mod splits on the FIRST `:`, so the payload
+  may contain more colons. Payload may be empty.
+- **Free text:** anything that comes from other players (slot names, other games'
+  item names) goes through Client.py `_wire_text` first, which replaces newlines
+  and the `|` / `~` delimiters. Our own item and location names never contain them.
 
 ## Mod → Client
 
 | Message | Meaning |
 |---|---|
-| `HELLO` | Sent on (re)connect. Client replies with `SETTINGS` then a full `ITEMS` resync. |
-| `CHECK:<location name>` | A location check was completed in-game. |
-| `VICTORY:<chronosClears>-<chronosWeapons>-<typhonClears>-<typhonWeapons>` | Run-completion stats for goal evaluation (per-route clears + distinct weapons that have cleared). |
-| `DEATH` | Melinoë died (broadcasts a DeathLink, if enabled and the send threshold is met). |
+| `HELLO` | Sent on every (re)connect, and again after a late-loaded save was wiped by the seed check. Client replies with `SEED`, `SETTINGS`, `CHECKEDSCORE`, then `ITEMS`. |
+| `CHECK:<location name>` | A location was earned. Queued in the save (`APState.pending_checks`) and only flushed once the loaded save is verified against this connection's `SEED`, so a check earned while disconnected is never lost. The client buffers checks that arrive before it has the server's location list. |
+| `VICTORY:<chronosClears>-<weapons>-<typhonClears>-<weapons>-<zagreusClears>-<hadesClears>-<weapons>-<dreamClears>` | Goal state after a win (`LocationManager.victory_payload`). `<weapons>` is the same number in all three slots: distinct weapons used across every route's clears, Dream included (Dream reuses it; it has no slot of its own). Queued in the save (`victory_pending`) until a verified connection exists. Older clients read only the first 7 fields. |
+| `DEATH` | Melinoë died and the `deathlink_amnesty` threshold was reached. The client broadcasts a DeathLink if DeathLink is on. Not queued: a death while disconnected isn't sent. |
 
 ## Client → Mod
 
 | Message | Meaning |
 |---|---|
-| `SETTINGS:k=v;k=v;...` | Slot settings from the generated seed. Includes `location_system` (0 point / 1 room / 2 per-weapon-room), `score_rewards_amount`, `underworld_room_count`/`surface_room_count` (fixed room-check counts per route, used for the cap and the final-boss cascade), `included_routes`, `underworld_active`/`surface_active` (whether each route was generated), the sanity modes, goal counts, deathlink params, etc. |
-| `ITEMS:<name>\|<name>\|...` | The **full ordered list** of received items (stacks repeat). The mod applies only those past its saved processed-index, so this is safe to resend any time. |
-| `SCORESYNC:underworld_room=R;surface_room=S;combined_room=C` | Highest already-earned **room** check per route (`combined_room` = the combine_pools shared room pool). The mod advances `room_high` past these so a fresh save doesn't re-notify already-earned room checks. No longer carries point-based keys — point_based skipping moved to `CHECKEDSCORE`. Per-weapon room checks aren't synced (their high-water is per weapon); they re-notify harmlessly. Sent on each sync. |
-| `CHECKEDSCORE:underworld=<csv>;surface=<csv>` | **point_based only.** The comma-separated check numbers of `<route> Score N` locations the server **already** has (a finished player's auto-released/collected checks, an admin `!send_location`, fresh-save recovery). The mod skips those checks for **free** — advancing `next_check` past them without spending score or re-sending the `CHECK` — instead of charging score to re-earn them. Per-number (not a high-water mark) so out-of-order gaps like "0017 checked, 0015 not" are handled. **Replaces** the set on each receive. Sent on each sync (so a reconnecting mod gets the current set) and again on every `RoomUpdate` (so a player finishing mid-session is reflected immediately). Empty lists are allowed (`underworld=;surface=`). |
-| `CHECKED:<location name>\|<player> - <item>` | Echoed back immediately after the client forwards a `CHECK`. Carries the scouted contents of that location so the mod's subtle corner log can show who got what (e.g. `Sent Score Check 15 - Mario64 - Power Star`). The detail after `\|` is empty if scout data hasn't arrived yet. |
-| `DEATH:<source>` | Incoming DeathLink — the mod damages Melinoë by `deathlink_percent`% of max health (or kills outright if 0), and shows a "`<source>` Killed You" banner. `source` is the sending player's slot name (falls back to `Archipelago` if the bounce didn't carry one). |
-| `GOAL` | Acknowledgement that the goal was registered as met (optional/cosmetic). |
-| `RESET` | Debug: clear all applied-item state (processed index, counts, unlocks) so the next `ITEMS` re-applies from scratch. |
+| `SEED:<seed_name>` | AP's own per-generation identifier (`ctx.seed_name`, from `RoomInfo`). Sent first on every sync. The mod keeps it for the connection (`Bridge.seed_id`) and compares it with the save's `last_seed_id` (`Bridge.verify_save`): a save last used with a different multiworld is wiped (same wipe as `RESET`); a save with no seed on record is adopted. Nothing save-bound (queued checks, `VICTORY`) is sent until this matches. |
+| `SETTINGS:k=v;k=v;...` | Slot settings (Client.py `encode_settings`): the option values the mod needs, the resolved `*_offset` / `*_start` / `*_active` route flags, `location_multiplier`, the room counts, the Dream counter sizes, `enemysanity_shuffle_map` / `miniboss_room_map` (`Name:Name,...`), `goal_requires_<route>` 0/1 flags, and the seed-shape flags `godsanity_chaos` / `dream_met_checks` (0 on a seed generated before those existed, which keeps the mod from gating on an item or sending a check that seed never had). Values never contain `;` or `=`. Cached to disk by the mod for the next boot. |
+| `ITEMS:<item>~<sender>\|<item>~<sender>\|...` | The **full ordered list** of received items (stacks repeat). The mod applies only entries past its saved processed index (`APState.processed`), so resending is safe. Applied on the next frame where no menu, conversation or cutscene owns input. |
+| `CHECKEDSCORE:underworld=<csv>;surface=<csv>;nightmare=<csv>;dream=<csv>;combined=<csv>` | **point_based only.** Score-check numbers the server already has (a released/collected slot, an admin `!send_location`). The mod advances past them for free instead of spending points to re-earn them. Per number, so gaps are handled. Replaces the previous set. Sent on every sync and on every `RoomUpdate`. `combined` is combine_pools' shared `Score N` pool. Empty lists are allowed. |
+| `CHECKED:<location name>\|<player> - <item>` | Echo for a `CHECK` the server didn't already have, with the scouted contents so the corner log can show who got what. The detail after the first `\|` is empty if scouts haven't arrived yet. |
+| `DEATH:<source>` | Incoming DeathLink from slot `<source>` (`Archipelago` if the bounce had no source). The mod holds one pending DeathLink and applies it when the player has control: in a run, `deathlink_percent`% of max health (Death Defiance can still save you), or a kill if that setting is 0; in the Crossroads, a death-and-respawn sequence. Further DeathLinks while one is pending are dropped. A DeathLink that arrives while the game isn't connected is held by the client and sent on the next `HELLO`. |
+| `GOAL` | The goal was sent to the server. Log only. |
+| `RESET` | Debug: clear all applied-item state (processed index, counters, unlocks) so the next `ITEMS` re-applies from scratch. |
 
 ## Scouting
 - On `Connected`, the client sends a `LocationScouts` (with `create_as_hint=0`) for all of

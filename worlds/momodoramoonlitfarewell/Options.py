@@ -1,59 +1,59 @@
 from Options import Choice, Toggle, Range, PerGameCommonOptions
 from dataclasses import dataclass
 
+class Deathlink(Toggle):
+    """Link all player deaths together. If you die, all other players in the session (with Deathlink enabled) also die. This works the same the other way around."""
+    display_name = "Deathlink"
+    default = 0
+
 class OpenSpringleafPath(Toggle):
-    """Remove Demon Strings and Wind Barriers in Springleaf Path to enable entering other areas before getting Awakened Sacred Leaf/Sacred Anemone."""
+    """Remove Demon Strings and Wind Barriers in Springleaf Path to enable entering other areas before getting Awakened Sacred Leaf/Sacred Anemone.\nOther areas with Demon Strings will still require Awakened Sacred Leaf to open them."""
     display_name = "Open Springleaf Path"
     default = 1
 
-class DeathLink(Toggle):
-    """Link all player deaths together. If you die, all other players in the session (with deathlink enabled) also die. The same works the other way around."""
-    display_name = "Deathlink"
-    default = 1
-
 class BellHover(Toggle):
-    """Consider Bell Hover as a possible strat for world generation. Bell Hover is used to access certain areas without having the correct skill (i.e. Demon Frontier without Wall Jump) \n# With this setting on, you might need to get creative to access certain areas (i.e. using damage boost to reach a platform, speaking from experience)"""
+    """Consider Bell Hover as a possible strat for world generation.\nBell Hover is done by using the Healing Bell (at most 3 times) when reaching the peak of a jump to gain extra height.\nThis strat is used to access certain areas without having the correct skill (i.e. Demon Frontier without Wall Jump)"""
     display_name = "Bell Hover Generation"
     default: 0
 
+class LunarCrystalBranch(Toggle):
+    """Add the Lunar Crystal Branches (the white things that give you money when destroyed) as item location checks."""
+    display_name = "Lunar Crystal Branch Shuffle"
+    default: 0
+
 class RandomizeKeyItems(Toggle):
-    """Add Key Items needed for progression to the randomization pool and as location checks. These items are: Gold Moonlit Dust, Silver Moonlit Dust and Windmill Key."""
+    """Add Key Items needed for progression to the randomization pool and as location checks.\nThese items are: Gold Moonlit Dust, Silver Moonlit Dust and Windmill Key."""
     display_name = "Randomize Key items"
     default: 0
 
 class OracleSigil(Toggle):
-    """Add the Oracle Sigil to the item pool and as a location check. \n# Oracle requires to free all 30 Lumen Fairies, which can be a long task so it's recommended to have this setting off unless you really want to do this"""
+    """Add the Oracle Sigil to the item pool and as a location check.\nThe Oracle location check requires to free all 30 Lumen Fairies."""
     display_name = "Add Oracle Sigil"
     default = 0
 
+class Companionsanity(Toggle):
+    """Add Companions to the item pool and as item location checks.\nNote: Dora and Lineth companions are not locations checks or part of the itempool (coding jank)."""
+    display_name = "Companionsanity"
+    default = 0
+
 class ProgressiveFinalBossKeys(Toggle):
-    """Add 4 progressive keys required to open the door to the Final Boss to the randomization pool. \n# With this enabled, defeating the 4 bosses before the final boss will no longer help to unlock the door"""
-    display_name = "Progressive Final Boss Keys"
+    """Add 4 progressive keys required to open the door to the Selin boss fight to the randomization pool. \nWith this enabled, it's not required to defeat all four of Selin's Shades to unlock the door."""
+    display_name = "Progressive Selin Door Keys"
     default = 0
 
 class ProgressiveDamageUpgrade(Toggle):
-    """Add the Heavenly Lilies to the item location check, as well as adding progressive damage upgrade to the itempool (each upgrade grants 2 extra damage)"""
-    display_name = "Progressive Damage Upgrade"
+    """Add the Heavenly Lilies as item location checks, as well as adding progressive damage upgrade to the itempool."""
+    display_name = "Lilysanity"
     default = 0
 
-class ProgressiveHealthUpgrade(Toggle):
-    """Add the Dotted Berries to the item location check, as well as adding progressive health upgrade to the itempool (each upgrade grants 50 extra health)"""
-    display_name = "Progressive Health Upgrade"
-    default = 0
-
-class ProgressiveMagicUpgrade(Toggle):
-    """Add the Lun Berries to the item location check, as well as adding progressive magic upgrade to the itempool (each upgrade grants 10 extra magic)"""
-    display_name = "Progressive Magic Upgrade"
-    default = 0
-
-class ProgressiveStaminaUpgrade(Toggle):
-    """Add the Stamina Peaches to the item location check, as well as adding progressive stamina upgrade to the itempool"""
-    display_name = "Progressive Stamina Upgrade"
+class ProgressiveBerryUpgrade(Toggle):
+    """Add all berry types as item location checks, as well as adding progressive health, magic, stamina and black berry upgrades to the itempool."""
+    display_name = "Berrysanity"
     default = 0
 
 class ProgressiveLumenFairies(Toggle):
-    """Add the Lumen Fairies to the item location check, as well as adding progressive Lumen Fairies to the itempool (you need a total of 30 Lumen Fairies to unlock the Oracle Sigil)"""
-    display_name = "Progressive Lumen Fairies"
+    """Add the Lumen Fairies as item location checks, as well as adding progressive Lumen Fairies to the itempool\nYou need a total of 30 Lumen Fairies to unlock the Oracle Sigil item or location check."""
+    display_name = "Fairysanity"
     default = 0
 
 class VictoryCondition(Choice):
@@ -72,16 +72,16 @@ class VictoryCondition(Choice):
 
 @dataclass
 class MomodoraOptions(PerGameCommonOptions):
-    open_springleaf_path: OpenSpringleafPath
-    deathlink: DeathLink
-    bell_hover_generation: BellHover
-    randomize_key_items: RandomizeKeyItems
-    oracle_sigil: OracleSigil
-    final_boss_keys: ProgressiveFinalBossKeys
-    progressive_damage_upgrade: ProgressiveDamageUpgrade
-    progressive_health_upgrade: ProgressiveHealthUpgrade
-    progressive_magic_upgrade: ProgressiveMagicUpgrade
-    progressive_stamina_upgrade: ProgressiveStaminaUpgrade
-    progressive_lumen_fairies: ProgressiveLumenFairies
-    victory_condition: VictoryCondition
+    Deathlink: Deathlink
+    OpenSpringleafPath: OpenSpringleafPath
+    BellHoverGeneration: BellHover
+    LunarCrystalBranchShuffle: LunarCrystalBranch
+    RandomizeKeyItems: RandomizeKeyItems
+    OracleSigil: OracleSigil
+    Berrysanity: ProgressiveBerryUpgrade
+    Lilysanity: ProgressiveDamageUpgrade
+    Fairysanity: ProgressiveLumenFairies
+    Companionsanity: Companionsanity
+    SelinDoorKeysanity: ProgressiveFinalBossKeys
+    VictoryCondition: VictoryCondition
     # fast_travel: FastTravel

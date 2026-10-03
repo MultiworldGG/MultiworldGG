@@ -11,9 +11,9 @@ from ...common.patching.text import normalize_text
 
 
 def load_modded_seasons_text_data() -> None | tuple[dict[str, str], dict[str, str]]:
-    from ...World import OracleOfSeasonsWorld
+    from ...world import OracleOfSeasonsWorld
     text_dir = Path(Utils.cache_path("oos_ooa/text"))
-    dict_file = text_dir.joinpath(f"seasons_dict.json")
+    dict_file = text_dir.joinpath("seasons_dict.json")
     if not dict_file.is_file():
         return None
 
@@ -34,7 +34,7 @@ def load_modded_seasons_text_data() -> None | tuple[dict[str, str], dict[str, st
 
 
 def save_seasons_edited_text_data(texts: dict[str, str]) -> None:
-    from ...World import OracleOfSeasonsWorld
+    from ...world import OracleOfSeasonsWorld
     texts["version"] = OracleOfSeasonsWorld.version()
 
     text_dir = Path(Utils.cache_path("oos_ooa/text"))
@@ -66,6 +66,9 @@ def apply_text_edits(texts: dict[str, str]) -> None:
 
     # Brand-new texts, for 20 bombs
     texts["TX_0094"] = texts["TX_004d"].replace("ten", "twenty")
+
+    texts["TX_0095"] = ("You got 🟥100\n"
+                        "Ore Chunks⬜!")
 
     # Trade items
     # Cuccodex is fine
@@ -104,10 +107,16 @@ def apply_text_edits(texts: dict[str, str]) -> None:
     texts["TX_0065"] = ("You got a\n"
                         "\\col(84)📻🟥 Phonograph⬜!\n"
                         "What a tune!")
+    texts["TX_0071"] = ("You can now hold\n"
+                        "more 🟥Bombchus⬜\n"
+                        "than before!")
 
     # Appraisal text
     texts["TX_301c"] = ("You got the\n"
                         "\\call(fd)!")
+
+    # Remove appraisal text
+    texts["TX_3003"] = texts["TX_3003"].replace("\\stop\n \\optAppraise \\optList\n", "\n \\optList")
 
     # Cross items
     # Obtain text
@@ -161,7 +170,8 @@ def apply_text_edits(texts: dict[str, str]) -> None:
     texts["TX_0208"] = texts["TX_0208"].replace("Maze", "Dungeon")
 
     # Now unused text from Maku talking
-    texts["TX_1700"] = texts["TX_1701"] = ""
+    texts_to_blank.append("TX_1700")
+    texts_to_blank.append("TX_1701")
 
     texts["TX_020b"] = "Linked\nHero's Cave"
     texts["TX_0602"] = "Unknown Dungeon"
@@ -184,7 +194,7 @@ def apply_text_edits(texts: dict[str, str]) -> None:
                         "If you don't\n"
                         "have it, check\n"
                         "tinyurl.com\n"
-                        "/2cb35snu\n")
+                        "/by3n4dnv\n")
     texts["TX_5303"] = ("How do you\n"
                         "refill your\n"
                         "satchel and\n"
@@ -238,7 +248,7 @@ def apply_text_edits(texts: dict[str, str]) -> None:
     texts_to_blank.append("TX_3031")
     texts_to_blank.append("TX_303d")
     # There is probably more
-    texts_to_blank.append("TX_5200") # Prophet interupting when going first to suburb
+    texts_to_blank.append("TX_5200")  # Prophet interupting when going first to suburb
 
     # Maku tree talking texts are too big to be left there (unused)
     texts_to_blank.append("TX_1704")

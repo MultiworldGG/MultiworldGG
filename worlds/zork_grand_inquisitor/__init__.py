@@ -3,9 +3,9 @@ import worlds.LauncherComponents as LauncherComponents
 from .world import ZorkGrandInquisitorWorld
 
 
-def launch_client() -> None:
+def launch_client(*args) -> None:
     from .client import main
-    LauncherComponents.launch(main, name="ZorkGrandInquisitorClient")
+    LauncherComponents.launch(main, name="ZorkGrandInquisitorClient", args=args)
 
 
 LauncherComponents.components.append(

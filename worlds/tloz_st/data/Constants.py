@@ -409,7 +409,7 @@ BOSS_LOCATION_TO_EVENT_REGION = {
     "Fraaz Boss Reward": "bt fraaz",
     "Cactops Boss Reward": "oct phytops",
     "Vulcano Boss Reward": "mtt pre vulcano",
-    "Capbone Boss Reward": "dt skeldritch",
+    "Capbone Boss Reward": "dt skeldritch safety",
     "ToS 3F Forest Rail Glyph": "tos 3f rail map",
     "ToS 7F Snow Rail Glyph": "tos 7f rail map",
     "ToS 12F Ocean Rail Glyph": "tos 11f",
@@ -687,11 +687,15 @@ DUNGEON_STAGES_TO_ENTRANCE_SCENE = {
 ITEM_MAPPING = {
         i: "Rupees" for i in ITEM_GROUPS["Rupee Items"]
     } | {
-        f"Grass Rabbits ({i})": "Grass Rabbit" for i in list(range(2, 6)) + [10]
-    } | {
-        f"Snow Rabbits ({i})": "Snow Rabbit" for i in list(range(2, 6)) + [10]
+        f"{r} Rabbits ({i})": f"{r} Rabbit" for i in list(range(2, 6)) + [10] for r in rabbit_realms
     } | {
         t : "Treasure" for t in ITEM_GROUPS["All Treasures"]
+    } | {
+        f"Stamp Pack ({i})": ("Stamp", i) for i in range(2, 6)
+    } | {
+        i: ("Stamp", 1) for i in ITEM_GROUPS["Stamps"]
+    } | {
+        "_stamp_stand": ("Stamp", 1)
     }
 
 # Stamp stuff
@@ -1031,8 +1035,7 @@ special_respawn_stages = {
     0x23: (0x13, 0x14, 0)  # Staven
 }
 
-unsafe_respawn_stages = [
-    0x4, 0x5, 0x8, 0x9, 0xb, 0xc,
+unsafe_respawn_stages = list(range(0x13)) + [  # Train
     0x19, 0x1E,
     0x1a, 0x1F,
     0x1b, 0x20,

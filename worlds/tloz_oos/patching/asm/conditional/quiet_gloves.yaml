@@ -1,0 +1,3 @@
+# Reduce the frequencies from f6-c6 to f4-c4
+39/5c41/: db $29
+39/5c43/: db $24

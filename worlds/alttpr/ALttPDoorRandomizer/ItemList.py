@@ -11,7 +11,8 @@ from .Tables import bonk_prize_lookup
 from .Items import ItemFactory
 
 from .source.dungeon.EnemyList import add_drop_contents
-from .source.overworld.EntranceShuffle2 import exit_ids, door_addresses
+from .source.overworld.EntranceShuffle2 import exit_ids
+from .source.overworld.EntranceData import get_door_addresses
 from .source.item.FillUtil import trash_items, pot_items
 
 from .source.classes import constants as CONST
@@ -514,17 +515,20 @@ def generate_itempool(world, player):
 
     # increase pool if not enough items
     ttl_locations = sum(1 for x in world.get_unfilled_locations(player) if not x.prize and not x.event)
-    ttl_locations -= 10 if world.prizeshuffle[player] in ['dungeon', 'nearby'] else 0 # TODO: Fix item pool to include prizes for these modes
     pool_size = count_player_dungeon_item_pool(world, player)
     pool_size += sum(1 for x in world.itempool if x.player == player)
 
     if pool_size < ttl_locations:
-        retro_bow = world.bow_mode[player].startswith('retro')
         amount_to_add = ttl_locations - pool_size
-        filler_additions = random.choices(list(filler_items.keys()), filler_items.values(), k=amount_to_add)
-        for item in filler_additions:
-            item_name = 'Rupees (5)' if retro_bow and item == 'Arrows (10)' else item
-            world.itempool.append(ItemFactory(item_name, player))
+        if skip_pool_adjustments:
+            # Custom item_pool is exact: pad location shortfalls with Nothing, not junk.
+            world.itempool.extend(ItemFactory(['Nothing'] * amount_to_add, player))
+        else:
+            retro_bow = world.bow_mode[player].startswith('retro')
+            filler_additions = random.choices(list(filler_items.keys()), filler_items.values(), k=amount_to_add)
+            for item in filler_additions:
+                item_name = 'Rupees (5)' if retro_bow and item == 'Arrows (10)' else item
+                world.itempool.append(ItemFactory(item_name, player))
 
 
 
@@ -620,7 +624,7 @@ def connect_entrance(world, entrancename, exitname, player):
         entrance.connected_region.entrances.remove(entrance)
 
     target = exit_ids[exit.name][0] if exit is not None else exit_ids.get(region.name, None)
-    addresses = door_addresses[entrance.name][0]
+    addresses = get_door_addresses(entrance)[0]
 
     entrance.connect(region, addresses, target)
     world.spoiler.set_entrance(entrance.name, exit.name if exit is not None else region.name, 'entrance', player)
@@ -697,7 +701,8 @@ def create_farm_locations(world, player):
     def create_and_fill_location(region_name, loc_description, item_name):
         loc = world.get_location_unsafe(f'{region_name} {loc_description}', player)
         if loc:
-            loc.access_rule = lambda state: True
+            from source.logic.AccessRule import set_rule, TRUE
+            set_rule(loc, TRUE)
         else:
             region = world.get_region(region_name, player)
             loc = Location(player, f'{region_name} {loc_description}', 0, region)
@@ -715,17 +720,18 @@ def create_farm_locations(world, player):
         return loc
 
     from .Rules import set_rule, add_rule, add_bunny_rule
+    from .source.logic.AccessRule import Primitive, not_rule
     for region in bush_bombs:
         loc = create_and_fill_location(region, 'Bush Drop', 'Farmable Bombs')
         add_bunny_rule(loc, player)
     for region in rock_bombs:
         loc = create_and_fill_location(region, 'Rock Drop', 'Farmable Bombs')
-        set_rule(loc, lambda state: state.can_lift_rocks(player))
+        set_rule(loc, Primitive('can_lift_rocks', player))
         add_bunny_rule(loc, player)
     if not world.shuffle_bonk_drops[player]:
         for region in bonk_bombs:
             loc = create_and_fill_location(region, 'Bonk Drop', 'Farmable Bombs')
-            set_rule(loc, lambda state: state.can_collect_bonkdrops(player))
+            set_rule(loc, Primitive('can_collect_bonkdrops', player))
             add_bunny_rule(loc, player)
     if world.pottery[player] in ['none', 'keys', 'dungeon']:
         for region in bomb_caves + rupee_caves:
@@ -738,20 +744,20 @@ def create_farm_locations(world, player):
         rupee_farm = any(i in [0xda, 0xdb] for i in world.prizes[player]['pull'])
         for region in tree_pulls + pre_aga_tree_pulls + post_aga_tree_pulls:
             loc = create_and_fill_location(region, 'Tree Pull', 'Farmable Rupees' if rupee_farm else 'Farmable Bombs')
-            set_rule(loc, lambda state: state.can_kill_most_things(player))
+            set_rule(loc, Primitive('can_kill_most_things', player))
             if region in pre_aga_tree_pulls:
-                add_rule(loc, lambda state: not state.has_beaten_aga(player))
+                add_rule(loc, not_rule(Primitive('has_beaten_aga', player)))
             elif region in post_aga_tree_pulls:
-                add_rule(loc, lambda state: state.has_beaten_aga(player))
+                add_rule(loc, Primitive('has_beaten_aga', player))
             add_bunny_rule(loc, player)
     if world.enemy_shuffle[player] == 'none' and any(i in [0xda, 0xdb, 0xdc, 0xdd, 0xde] for i in world.prizes[player]['crab']):
         rupee_farm = any(i in [0xda, 0xdb] for i in world.prizes[player]['crab'])
         for region in bush_crabs + pre_aga_bush_crabs + rock_crabs:
             loc = create_and_fill_location(region, 'Crab Drop', 'Farmable Rupees' if rupee_farm else 'Farmable Bombs')
             if region in pre_aga_bush_crabs:
-                set_rule(loc, lambda state: not state.has_beaten_aga(player))
+                set_rule(loc, not_rule(Primitive('has_beaten_aga', player)))
             elif region in rock_crabs:
-                set_rule(loc, lambda state: state.can_lift_rocks(player))
+                set_rule(loc, Primitive('can_lift_rocks', player))
             add_bunny_rule(loc, player)
 
     world.clear_location_cache()
@@ -800,7 +806,11 @@ def fill_prizes(world, attempts=15):
             except FillError as e:
                 #logging.getLogger('').info("Failed to place dungeon prizes (%s). Will retry %s more times", e, attempts - attempt - 1)
                 for location in empty_crystal_locations:
+                    if location.item:
+                        location.item.location = None
+                        location.item.dungeon_object = None
                     location.item = None
+                    location.event = False
                 continue
             break
         else:
@@ -908,6 +918,7 @@ def customize_shops(world, player):
                 if item.name in ['Bombs (3)', 'Bombs (10)']:
                     choices.append((shop, idx, loc, item))
             if len(choices) > 0:
+                choices.sort(key=lambda c: (c[0].region.name, c[1], c[2].name))
                 shop, idx, loc, item = random.choice(choices)
                 upgrade = ItemFactory('Bomb Upgrade (+5)', player)
                 up_price = final_price(loc.name, upgrade.price, world, player)
@@ -922,6 +933,7 @@ def customize_shops(world, player):
                 if item.name == 'Arrows (10)' or (item.name == 'Single Arrow' and not retro_bow):
                     choices.append((shop, idx, loc, item))
             if len(choices) > 0:
+                choices.sort(key=lambda c: (c[0].region.name, c[1], c[2].name))
                 shop, idx, loc, item = random.choice(choices)
                 upgrade = ItemFactory('Arrow Upgrade (+5)', player)
                 up_price = final_price(loc.name, upgrade.price, world, player)
@@ -1589,8 +1601,18 @@ filler_items = {
 
 
 def count_player_dungeon_item_pool(world, player):
-    return sum(1 for dungeon in world.dungeons for item in dungeon.all_items
-               if dungeon.player == player and item.location is None and is_dungeon_item(item.name, world, player))
+    count = sum(
+        1 for dungeon in world.dungeons for item in dungeon.all_items
+        if dungeon.player == player and item.location is None
+        and (item.is_inside_dungeon_item(world) or item.is_near_dungeon_item(world))
+    )
+    if world.prizeshuffle[player] in ['dungeon', 'nearby']:
+        from Dungeons import dungeon_table
+        count += sum(
+            1 for dungeon in world.dungeons
+            if dungeon.player == player and dungeon_table[dungeon.name].prize
+        )
+    return count
 
 
 # location pool doesn't support larger values at this time
@@ -1723,6 +1745,7 @@ def shuffle_event_items(world, player):
     if world.shuffle_followers[player]:
         available_quests = follower_quests.copy()
         available_pickups = [quests[0] for quests in available_quests.values()]
+        dungeon_follower_locations = {'Zelda Pickup', 'Suspicious Maiden'}
 
         # finalize customizer followers first
         for loc_name in follower_quests.keys():
@@ -1741,25 +1764,36 @@ def shuffle_event_items(world, player):
             available_pickups.remove(zelda_pickup)
             set_event_item(world, player, zelda_dropoff, zelda_pickup)
 
-        follower_locations = [world.get_location(loc_name, player) for loc_name in available_quests.keys()]
-
+        logger = logging.getLogger('')
         attempts = 10
+        last_error = None
         for attempt in range(attempts):
+            for loc_name in available_quests.keys():
+                world.get_location(loc_name, player).item = None
+
+            follower_locations = [world.get_location(loc_name, player) for loc_name in available_quests.keys()]
+            dungeon_locs = [loc for loc in follower_locations if loc.name in dungeon_follower_locations]
+            other_locs = [loc for loc in follower_locations if loc.name not in dungeon_follower_locations]
+            random.shuffle(dungeon_locs)
+            random.shuffle(other_locs)
+            follower_locations = dungeon_locs + other_locs
+
             try:
                 all_state = world.get_all_state(keys=True)
+                if world.keyshuffle[player] == 'universal':
+                    all_state.assume_shop_keys = True  # Assume keys here so dungeon follower spots are fillable.
                 if world.prizeshuffle[player] != 'wild':
                     from Items import prize_item_table
                     prizes = ItemFactory(list(prize_item_table.keys()), player)
                     for prize in prizes:
                         all_state.collect(prize, True)
 
-                # randomize the follower pickups, but ensure that the last items are the unrestrictive ones
+                # Place restrictive pickups first (end of list is popped first); unrestrictive last.
                 unrestrictive_pickups = ItemFactory([p for p in ['Zelda Herself', 'Sign Vandalized'] if p in available_pickups], player)
-                restrictive_pickups = ItemFactory([p for p in available_pickups if p not in unrestrictive_pickups], player)
+                restrictive_pickups = ItemFactory([p for p in available_pickups if p not in ['Zelda Herself', 'Sign Vandalized']], player)
                 random.shuffle(restrictive_pickups)
                 random.shuffle(unrestrictive_pickups)
                 pickup_items = unrestrictive_pickups + restrictive_pickups
-                random.shuffle(follower_locations)
 
                 fill_restrictive(world, all_state, follower_locations, pickup_items, single_player_placement=True)
                 for loc_name in available_quests.keys():
@@ -1767,13 +1801,23 @@ def shuffle_event_items(world, player):
                     if loc.item:
                         set_event_item(world, player, loc_name)
             except FillError as e:
-                logging.getLogger('').info("Failed to place followers (%s). Will retry %s more times", e, attempts - attempt - 1)
-                for loc in follower_locations:
-                    loc.item = None
+                remaining = attempts - attempt - 1
+                last_error = e
+                logger.warning("Failed to place followers (%s). Will retry %s more times", e, remaining)
                 continue
             break
         else:
-            raise FillError(f'Unable to place followers: {", ".join(list(map(lambda d: d.hint_text, follower_locations)))}')
+            unfilled = [world.get_location(loc_name, player) for loc_name in available_quests.keys()
+                        if world.get_location(loc_name, player).item is None]
+            if not unfilled:
+                unfilled = [world.get_location(loc_name, player) for loc_name in available_quests.keys()]
+            detail = f' ({last_error})' if last_error else ''
+            def follower_location_desc(location):
+                dungeon = location.parent_region.dungeon.name if location.parent_region and location.parent_region.dungeon else None
+                return f'{location.name} ({dungeon})' if dungeon else location.name
+            raise FillError(
+                f'Unable to place followers: {", ".join(follower_location_desc(loc) for loc in unfilled)}{detail}'
+            )
 
 
 def get_item_and_event_flag(item, world, player, dungeon_pool, prize_set, prize_pool):

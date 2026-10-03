@@ -326,7 +326,7 @@ class Locations(StrEnum):
     tracker_barrel_trek_coin_2 = "Tracker Barrel Trek - Bear Coin #2 (Between Krumples)" # 11
     tracker_barrel_trek_bananas_1 = "Tracker Barrel Trek - Banana Bunch #1 (Above Tracker Barrel)" # 15
     tracker_barrel_trek_balloon_1 = "Tracker Barrel Trek - Balloon #1 (Near checkpoint)" # 33
-    tracker_barrel_trek_coin_3 = "Tracker Barrel Trek - Bear Coin #3 (Behind waterffal above two Re-Koils)" # 47
+    tracker_barrel_trek_coin_3 = "Tracker Barrel Trek - Bear Coin #3 (Behind waterfall above two Re-Koils)" # 47
     tracker_barrel_trek_coin_4 = "Tracker Barrel Trek - Bear Coin #4 (Before Koin)" # 66
 
     fish_food_frenzy_clear = "Fish Food Frenzy - Clear"
@@ -511,7 +511,7 @@ class Locations(StrEnum):
     buzzer_barrage_balloon_2 = "Buzzer Barrage - Balloon #2 (Above exit)" # 125
     buzzer_barrage_balloon_3 = "Buzzer Barrage - Balloon #3 (Cache below no animal sign)" # 4
     buzzer_barrage_coin_6 = "Buzzer Barrage - Bear Coin #6 (Above exit)" # 126
-    buzzer_barrage_coin_7 = "Buzzer Barrage - Bear Coin #6 (Cache near exit)" # 3
+    buzzer_barrage_coin_7 = "Buzzer Barrage - Bear Coin #7 (Cache near exit)" # 3
 
     kongfused_cliffs_clear = "Kong-Fused Cliffs - Clear"
     kongfused_cliffs_bonus_1 = "Kong-Fused Cliffs - Bonus #1"

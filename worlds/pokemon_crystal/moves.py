@@ -9,6 +9,9 @@ from .options import RandomizeLearnsets, PhysicalSpecialSplit, RandomizeTypeChar
 if TYPE_CHECKING:
     from .world import PokemonCrystalWorld
 
+# probability a randomized trainer move is drawn from the learnset rather than the TM/HM pool
+LEARNSET_MOVE_WEIGHT = 0.75
+
 MOVE_POWER_RATIO = {
     "BARRAGE": 3,
     "DOUBLESLAP": 3,
@@ -122,24 +125,26 @@ def get_random_move(world: "PokemonCrystalWorld", blocklist: Iterable[str], move
 
 def get_tmhm_compatibility(world: "PokemonCrystalWorld", pkmn_name) -> list[str]:
     pkmn_data = world.generated_pokemon[pkmn_name]
-    tm_value = world.options.tm_compatibility.value
-    hm_value = world.options.hm_compatibility.value
+    tm_same = world.options.tm_same_type_compatibility.value
+    tm_other = world.options.tm_other_type_compatibility.value
+    hm_same = world.options.hm_same_type_compatibility.value
+    hm_other = world.options.hm_other_type_compatibility.value
     tmhms = []
     for tm_name, tm_data in sorted(world.generated_tms.items(), key=lambda x: x[0]):
-        if tm_data.is_hm or tm_name in HM_COMPAT_TMS:
+        is_hm = tm_data.is_hm or tm_name in HM_COMPAT_TMS
+        same_type = tm_data.type in pkmn_data.types
+        if is_hm:
+            tier_value = hm_same if same_type else hm_other
             use_value = world.options.hm_compatibility_override.get(
                 crystal_data.moves[tm_data.id].name.title(),
-                hm_value)
+                tier_value)
         else:
-            use_value = tm_value
-        # if the value is -1, use vanilla compatibility
+            use_value = tm_same if same_type else tm_other
+        # if the value is -1, use vanilla compatibility for this move
         if use_value == -1:
             if tm_name in pkmn_data.tm_hm:
                 tmhms.append(tm_name)
-                continue
-        # double chance if types match
-        if tm_data.type in pkmn_data.types:
-            use_value = use_value * 2
+            continue
         if world.random.randint(0, 99) < use_value:
             tmhms.append(tm_name)
 
@@ -193,27 +198,40 @@ def randomize_tms(world: "PokemonCrystalWorld"):
 
 def get_random_move_from_learnset(world: "PokemonCrystalWorld", pokemon: str, level: int,
                                   exclude: list[str] | None = None):
-    move_pool = [learn_move.move for learn_move in world.generated_pokemon[pokemon].learnset if
-                 learn_move.level <= level and learn_move.move != "NO_MOVE"]
-    # double learnset pool to dilute HMs slightly
+    # weight learnset moves over TM/HM moves rather than pooling them uniformly
+    learnset_pool = [learn_move.move for learn_move in world.generated_pokemon[pokemon].learnset if
+                     learn_move.level <= level and learn_move.move != "NO_MOVE"]
     # exclude beat up as it can softlock the game if an enemy trainer uses it
-    move_pool.extend(world.generated_tms[tm].id for tm in world.generated_pokemon[pokemon].tm_hm if
-                     world.generated_tms[tm].id != "BEAT_UP")
-    if exclude:
-        filtered = [m for m in move_pool if m not in exclude]
-        if filtered:
-            move_pool = filtered
-    return world.random.choice(move_pool)
+    tmhm_pool = [world.generated_tms[tm].id for tm in world.generated_pokemon[pokemon].tm_hm if
+                 world.generated_tms[tm].id != "BEAT_UP"]
+
+    def apply_exclude(pool):
+        if exclude:
+            filtered = [m for m in pool if m not in exclude]
+            if filtered:
+                return filtered
+        return pool
+
+    learnset_pool = apply_exclude(learnset_pool)
+    tmhm_pool = apply_exclude(tmhm_pool)
+
+    if world.random.random() < LEARNSET_MOVE_WEIGHT:
+        chosen, fallback = learnset_pool, tmhm_pool
+    else:
+        chosen, fallback = tmhm_pool, learnset_pool
+    if not chosen:
+        chosen = fallback
+    return world.random.choice(chosen)
 
 
 def randomize_move_values(world: "PokemonCrystalWorld"):
     if world.options.randomize_moves:
 
-        power_restricted = RandomizeMoves.power_restricted in world.options.randomize_moves.value
-        power_full = RandomizeMoves.power_full in world.options.randomize_moves.value
-        pp_restricted = RandomizeMoves.pp_restricted in world.options.randomize_moves.value
-        pp_full = RandomizeMoves.pp_full in world.options.randomize_moves.value
-        accuracy = RandomizeMoves.accuracy in world.options.randomize_moves.value
+        power_restricted = RandomizeMoves.POWER_RESTRICTED in world.options.randomize_moves.value
+        power_full = RandomizeMoves.POWER_FULL in world.options.randomize_moves.value
+        pp_restricted = RandomizeMoves.PP_RESTRICTED in world.options.randomize_moves.value
+        pp_full = RandomizeMoves.PP_FULL in world.options.randomize_moves.value
+        accuracy = RandomizeMoves.ACCURACY in world.options.randomize_moves.value
 
         acc100 = 70  # Moves have a 70% chance to get 100% accuracy
         for move_name, move_data in world.generated_moves.items():
@@ -262,6 +280,7 @@ def randomize_move_values(world: "PokemonCrystalWorld"):
         physical_types = {type for type in crystal_data.types if world.random.randint(0, 1)}
     else:
         physical_types = set()
+    world.generated_physical_types = physical_types
 
     if world.options.physical_special_split in (PhysicalSpecialSplit.option_vanilla,
                                                 PhysicalSpecialSplit.option_random_by_type):
@@ -297,7 +316,7 @@ def cap_hm_move_power(world: "PokemonCrystalWorld"):
 
 
 def randomize_move_types(world: "PokemonCrystalWorld"):
-    if RandomizeMoves.type not in world.options.randomize_moves.value: return
+    if RandomizeMoves.TYPE not in world.options.randomize_moves.value: return
 
     all_types = sorted(crystal_data.types.keys())
 

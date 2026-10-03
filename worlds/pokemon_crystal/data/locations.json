@@ -904,7 +904,7 @@
     ]
   },
   "ITEM_FROM_KIMONO_GIRL_KUNI": {
-    "label": "Dance Theater - Kimono Girl Kuni",
+    "label": "Ecruteak Dance Theater - Kimono Girl Kuni",
     "flag": "EVENT_ITEM_FROM_KIMONO_GIRL_KUNI",
     "type": "trainer",
     "tags": [
@@ -917,7 +917,7 @@
     ]
   },
   "ITEM_FROM_KIMONO_GIRL_MIKI": {
-    "label": "Dance Theater - Kimono Girl Miki",
+    "label": "Ecruteak Dance Theater - Kimono Girl Miki",
     "flag": "EVENT_ITEM_FROM_KIMONO_GIRL_MIKI",
     "type": "trainer",
     "tags": [
@@ -930,7 +930,7 @@
     ]
   },
   "ITEM_FROM_KIMONO_GIRL_NAOKO": {
-    "label": "Dance Theater - Kimono Girl Naoko",
+    "label": "Ecruteak Dance Theater - Kimono Girl Naoko",
     "flag": "EVENT_ITEM_FROM_KIMONO_GIRL_NAOKO",
     "type": "trainer",
     "tags": [
@@ -943,7 +943,7 @@
     ]
   },
   "ITEM_FROM_KIMONO_GIRL_SAYO": {
-    "label": "Dance Theater - Kimono Girl Sayo",
+    "label": "Ecruteak Dance Theater - Kimono Girl Sayo",
     "flag": "EVENT_ITEM_FROM_KIMONO_GIRL_SAYO",
     "type": "trainer",
     "tags": [
@@ -956,7 +956,7 @@
     ]
   },
   "ITEM_FROM_KIMONO_GIRL_ZUKI": {
-    "label": "Dance Theater - Kimono Girl Zuki",
+    "label": "Ecruteak Dance Theater - Kimono Girl Zuki",
     "flag": "EVENT_ITEM_FROM_KIMONO_GIRL_ZUKI",
     "type": "trainer",
     "tags": [
@@ -1115,7 +1115,8 @@
     ],
     "default_item": "TM_24",
     "scripts": [
-      "AP_NPC_DragonsDen_TM24_From_Clair"
+      "AP_NPC_DragonsDen_TM24_From_Clair",
+      "AP_NPC_DragonShrine_TM24_From_Clair"
     ]
   },
   "DRAGONS_DEN_B1F_HIDDEN_MAX_POTION": {
@@ -1265,7 +1266,7 @@
     ]
   },
   "HM03_SURF": {
-    "label": "Ecruteak City - HM03 from Theater Director",
+    "label": "Ecruteak Dance Theater - HM03 from Theater Director",
     "flag": "EVENT_GOT_HM03_SURF",
     "type": "giveitem",
     "tags": [
@@ -3801,6 +3802,45 @@
       "AP_NPC_RadioTower1F_RADIO_CARD"
     ]
   },
+  "LUCKY_NUMBER_SHOW_1ST": {
+    "label": "Radio Tower 1F - Lucky Number Show 1st Prize",
+    "flag": "EVENT_LUCKY_NUMBER_1ST",
+    "type": "giveitem",
+    "tags": [
+      "Lucky Number Show",
+      "Radio Tower"
+    ],
+    "default_item": "MASTER_BALL",
+    "scripts": [
+      "AP_LuckyNumber_1st"
+    ]
+  },
+  "LUCKY_NUMBER_SHOW_2ND": {
+    "label": "Radio Tower 1F - Lucky Number Show 2nd Prize",
+    "flag": "EVENT_LUCKY_NUMBER_2ND",
+    "type": "giveitem",
+    "tags": [
+      "Lucky Number Show",
+      "Radio Tower"
+    ],
+    "default_item": "LUCKY_EGG",
+    "scripts": [
+      "AP_LuckyNumber_2nd"
+    ]
+  },
+  "LUCKY_NUMBER_SHOW_3RD": {
+    "label": "Radio Tower 1F - Lucky Number Show 3rd Prize",
+    "flag": "EVENT_LUCKY_NUMBER_3RD",
+    "type": "giveitem",
+    "tags": [
+      "Lucky Number Show",
+      "Radio Tower"
+    ],
+    "default_item": "PP_UP",
+    "scripts": [
+      "AP_LuckyNumber_3rd"
+    ]
+  },
   "BUENA_BLUE_CARD": {
     "label": "Radio Tower 2F - Blue Card from Buena",
     "flag": "EVENT_MET_BUENA",
@@ -4213,7 +4253,7 @@
     ]
   },
   "TEAM_ROCKET_BASE_B1F_GUARD_SPEC": {
-    "label": "Rocket HQ B1F - Item besides Computer",
+    "label": "Rocket HQ B1F - Item by Computer",
     "flag": "EVENT_TEAM_ROCKET_BASE_B1F_GUARD_SPEC",
     "type": "itemball",
     "tags": [
@@ -8616,19 +8656,6 @@
       "AP_Trainer_PSYCHIC_T_NATHAN"
     ]
   },
-  "ITEM_FROM_SUPER_NERD_STAN": {
-    "label": "Ruins of Alph Outside - Super Nerd Stan",
-    "flag": "EVENT_ITEM_FROM_SUPER_NERD_STAN",
-    "type": "trainer",
-    "tags": [
-      "Trainersanity",
-      "Ruins of Alph Outside"
-    ],
-    "default_item": "NO_ITEM",
-    "scripts": [
-      "AP_Trainer_SUPER_NERD_STAN"
-    ]
-  },
   "METAL_COAT_FROM_GRANDPA_ON_SS_AQUA": {
     "label": "S.S. Aqua - Metal Coat from Grandpa",
     "flag": "EVENT_GOT_METAL_COAT_FROM_GRANDPA_ON_SS_AQUA",
@@ -9481,6 +9508,19 @@
     "default_item": "NO_ITEM",
     "scripts": [
       "AP_Trainer_SAGE_JIN"
+    ]
+  },
+  "ITEM_FROM_SAGE_LI": {
+    "label": "Sprout Tower 3F - Sage Li",
+    "flag": "EVENT_ITEM_FROM_SAGE_LI",
+    "type": "giveitem",
+    "tags": [
+      "Trainersanity",
+      "Sprout Tower"
+    ],
+    "default_item": "NO_ITEM",
+    "scripts": [
+      "AP_NPC_SproutTower3F_SageLi_NO_ITEM"
     ]
   },
   "ITEM_FROM_SAGE_NEAL": {
@@ -10726,6 +10766,251 @@
     "default_item": "BERRY",
     "scripts": [
       "AP_NPC_BugContest_Participation_BERRY"
+    ]
+  },
+  "ROUTE_23_HIDDEN_STICK": {
+    "label": "Route 23 - Hidden Item in Bush",
+    "flag": "EVENT_ROUTE_23_HIDDEN_STICK",
+    "default_item": "STICK",
+    "type": "hiddenitem",
+    "tags": [
+      "Hidden",
+      "Hidden Items",
+      "Route 23 Restored"
+    ],
+    "scripts": [
+      "Route23RestoredHiddenStick"
+    ]
+  },
+  "EAST_WEST_UNDERGROUND_HIDDEN_NUGGET": {
+    "label": "East-West Underground Path - Hidden Nugget",
+    "flag": "EVENT_EAST_WEST_UNDERGROUND_PATH_HIDDEN_NUGGET",
+    "default_item": "NUGGET",
+    "type": "hiddenitem",
+    "tags": [
+      "Hidden",
+      "Hidden Items",
+      "East West Underground"
+    ],
+    "scripts": [
+      "EastWestUndergroundPathHiddenNugget"
+    ]
+  },
+  "EAST_WEST_UNDERGROUND_HIDDEN_MAX_REVIVE": {
+    "label": "East-West Underground Path - Hidden Max Revive",
+    "flag": "EVENT_EAST_WEST_UNDERGROUND_PATH_HIDDEN_MAX_REVIVE",
+    "default_item": "MAX_REVIVE",
+    "type": "hiddenitem",
+    "tags": [
+      "Hidden",
+      "Hidden Items",
+      "East West Underground"
+    ],
+    "scripts": [
+      "EastWestUndergroundPathHiddenMaxRevive"
+    ]
+  },
+  "FLOODED_MINE_HIDDEN_CHARCOAL_1": {
+    "label": "Flooded Mine - Hidden Item Near Cherrygrove Entrance",
+    "flag": "EVENT_FLOODED_MINE_CHARCOAL_1",
+    "default_item": "CHARCOAL",
+    "type": "hiddenitem",
+    "tags": [
+      "Hidden",
+      "Hidden Items",
+      "Flooded Mine"
+    ],
+    "scripts": [
+      "FloodedMineHiddenCharcoal1"
+    ]
+  },
+  "FLOODED_MINE_HIDDEN_CHARCOAL_2": {
+    "label": "Flooded Mine - Hidden Item Southeast",
+    "flag": "EVENT_FLOODED_MINE_CHARCOAL_2",
+    "default_item": "CHARCOAL",
+    "type": "hiddenitem",
+    "tags": [
+      "Hidden",
+      "Hidden Items",
+      "Flooded Mine"
+    ],
+    "scripts": [
+      "FloodedMineHiddenCharcoal2"
+    ]
+  },
+  "FLOODED_MINE_HIDDEN_CHARCOAL_3": {
+    "label": "Flooded Mine - Hidden Item Northwest",
+    "flag": "EVENT_FLOODED_MINE_CHARCOAL_3",
+    "default_item": "CHARCOAL",
+    "type": "hiddenitem",
+    "tags": [
+      "Hidden",
+      "Hidden Items",
+      "Flooded Mine"
+    ],
+    "scripts": [
+      "FloodedMineHiddenCharcoal3"
+    ]
+  },
+  "FLOODED_MINE_TM_DIG": {
+    "label": "Flooded Mine - Item",
+    "flag": "EVENT_FLOODED_MINE_TM_DIG",
+    "type": "itemball",
+    "tags": [
+      "Item Balls",
+      "Flooded Mine"
+    ],
+    "default_item": "TM_28",
+    "scripts": [
+      "FloodedMineTMDig"
+    ]
+  },
+  "ROUTE_23_HIDDEN_LUCKY_EGG": {
+    "label": "Route 23 - Hidden Item on Island",
+    "flag": "EVENT_ROUTE_23_HIDDEN_LUCKY_EGG",
+    "default_item": "LUCKY_EGG",
+    "type": "hiddenitem",
+    "tags": [
+      "Hidden",
+      "Hidden Items",
+      "Route 23 Restored"
+    ],
+    "scripts": [
+      "Route23RestoredHiddenLuckyEgg"
+    ]
+  },
+  "FRUITTREE_ROUTE_23": {
+    "label": "Route 23 - Berry Tree",
+    "flag": "FRUITTREE_ROUTE_23",
+    "type": "berrytree",
+    "tags": [
+      "Berry Trees",
+      "BerryTree",
+      "Route 23 Restored"
+    ],
+    "default_item": "GOLD_BERRY",
+    "scripts": [
+      "AP_FruitTree_ROUTE_23"
+    ]
+  },
+  "MOM_SAVINGS_1": {
+    "label": "Mom's Savings - 900",
+    "flag": "EVENT_MOM_MILESTONE_1",
+    "type": "momitem",
+    "tags": [
+      "Momsanity"
+    ],
+    "default_item": "SUPER_POTION",
+    "scripts": [
+      "AP_MomMilestone_0"
+    ]
+  },
+  "MOM_SAVINGS_2": {
+    "label": "Mom's Savings - 4000",
+    "flag": "EVENT_MOM_MILESTONE_2",
+    "type": "momitem",
+    "tags": [
+      "Momsanity"
+    ],
+    "default_item": "REPEL",
+    "scripts": [
+      "AP_MomMilestone_1"
+    ]
+  },
+  "MOM_SAVINGS_3": {
+    "label": "Mom's Savings - 7000",
+    "flag": "EVENT_MOM_MILESTONE_3",
+    "type": "momitem",
+    "tags": [
+      "Momsanity"
+    ],
+    "default_item": "SUPER_POTION",
+    "scripts": [
+      "AP_MomMilestone_2"
+    ]
+  },
+  "MOM_SAVINGS_4": {
+    "label": "Mom's Savings - 10000",
+    "flag": "EVENT_MOM_MILESTONE_4",
+    "type": "momitem",
+    "tags": [
+      "Momsanity"
+    ],
+    "default_item": "DOLL_CHARMANDER",
+    "scripts": [
+      "AP_MomMilestone_3"
+    ]
+  },
+  "MOM_SAVINGS_5": {
+    "label": "Mom's Savings - 15000",
+    "flag": "EVENT_MOM_MILESTONE_5",
+    "type": "momitem",
+    "tags": [
+      "Momsanity"
+    ],
+    "default_item": "MOON_STONE",
+    "scripts": [
+      "AP_MomMilestone_4"
+    ]
+  },
+  "MOM_SAVINGS_6": {
+    "label": "Mom's Savings - 19000",
+    "flag": "EVENT_MOM_MILESTONE_6",
+    "type": "momitem",
+    "tags": [
+      "Momsanity"
+    ],
+    "default_item": "SUPER_POTION",
+    "scripts": [
+      "AP_MomMilestone_5"
+    ]
+  },
+  "MOM_SAVINGS_7": {
+    "label": "Mom's Savings - 30000",
+    "flag": "EVENT_MOM_MILESTONE_7",
+    "type": "momitem",
+    "tags": [
+      "Momsanity"
+    ],
+    "default_item": "DOLL_CLEFAIRY",
+    "scripts": [
+      "AP_MomMilestone_6"
+    ]
+  },
+  "MOM_SAVINGS_8": {
+    "label": "Mom's Savings - 40000",
+    "flag": "EVENT_MOM_MILESTONE_8",
+    "type": "momitem",
+    "tags": [
+      "Momsanity"
+    ],
+    "default_item": "HYPER_POTION",
+    "scripts": [
+      "AP_MomMilestone_7"
+    ]
+  },
+  "MOM_SAVINGS_9": {
+    "label": "Mom's Savings - 50000",
+    "flag": "EVENT_MOM_MILESTONE_9",
+    "type": "momitem",
+    "tags": [
+      "Momsanity"
+    ],
+    "default_item": "DOLL_PIKACHU",
+    "scripts": [
+      "AP_MomMilestone_8"
+    ]
+  },
+  "MOM_SAVINGS_10": {
+    "label": "Mom's Savings - 100000",
+    "flag": "EVENT_MOM_MILESTONE_10",
+    "type": "momitem",
+    "tags": [
+      "Momsanity"
+    ],
+    "default_item": "DOLL_SNORLAX",
+    "scripts": [
+      "AP_MomMilestone_9"
     ]
   }
 }

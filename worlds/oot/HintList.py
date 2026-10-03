@@ -220,7 +220,7 @@ conditional_always: dict[str, Callable[[World], bool]] = {
     'Kak 50 Gold Skulltula Reward': lambda world: tokens_required_by_settings(world) < 50 and '50_skulltulas' not in world.options.misc_hints.value,
     'Kak 100 Gold Skulltula Reward': lambda world: tokens_required_by_settings(world) < 100 and '100_skulltulas' not in world.options.misc_hints.value,
     'ZR Frogs Ocarina Game':        lambda world: 'frogs2' not in world.options.misc_hints.value,
-    'LH Loach Fishing':             lambda world: not world.options.shuffle_loach_reward.value,  # 0 = off (vanilla)
+    'LH Loach Fishing':             lambda world: world.shuffle_loach_reward == 'vanilla',
 }
 
 

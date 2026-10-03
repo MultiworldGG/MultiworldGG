@@ -1,11 +1,20 @@
 from typing import Optional
 
 from ..RomData import RomData
-from . import char_table, kanji_table, text_offset_1_table_address_seasons, text_offset_2_table_address_seasons, text_table_eng_address_seasons, \
-    text_offset_split_index_seasons, text_offset_1_table_address_ages, text_offset_2_table_address_ages, text_table_eng_address_ages, \
-    text_offset_split_index_ages
 from ..Util import simple_hex
 from ..z80asm.Assembler import GameboyAddress
+from . import (
+    char_table,
+    kanji_table,
+    text_offset_1_table_address_ages,
+    text_offset_1_table_address_seasons,
+    text_offset_2_table_address_ages,
+    text_offset_2_table_address_seasons,
+    text_offset_split_index_ages,
+    text_offset_split_index_seasons,
+    text_table_eng_address_ages,
+    text_table_eng_address_seasons,
+)
 
 
 def parse_text_dict(rom: RomData, seasons: bool):

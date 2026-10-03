@@ -162,9 +162,9 @@ ITEM_NAME_TO_ID = {
     "Average Canadian": 174,
     "Cheese Wife": 175,
     "Brazil Knight": 176,
-    "Doggy": 177,
+    "Hintblo": 177,
     "Real Football": 178,
-    "Hintblo": 179,
+    "Doggy": 179,
     "Funi Raccoon": 180,
     "Good Engine": 181,
     "Outdoor Chair": 182,
@@ -185,10 +185,7 @@ ITEM_NAME_TO_ID = {
     "Media Player Hat": 506,
     "Fridge Crown":     507,
     "Patty Hat":        508,
-    "Green Mystical Jewel":  601,
-    "Blue Mystical Jewel":   602,
-    "Purple Mystical Jewel": 603,
-    "Red Mystical Jewel":    604,
+    "Progressive Mystical Jewel":  601,
     "Police Trap": 701,
     "Phone Ratio Trap": 702,
     "Brazil Train Ticket": 800,
@@ -377,11 +374,8 @@ DEFAULT_ITEM_CLASSIFICATIONS = {
     "Fridge Crown":     ItemClassification.filler,
     "Patty Hat":        ItemClassification.filler,
 
-    # Can change based on settings, these four can be a goal condition
-    "Green Mystical Jewel":  ItemClassification.filler, 
-    "Blue Mystical Jewel":   ItemClassification.filler, 
-    "Purple Mystical Jewel": ItemClassification.filler, 
-    "Red Mystical Jewel":    ItemClassification.filler,
+    # Can change based on settings, these can be a goal condition
+    "Progressive Mystical Jewel":  ItemClassification.filler, 
 
     "100 Euro": ItemClassification.filler,
     "10 Euro": ItemClassification.filler,
@@ -404,10 +398,7 @@ _LUGH_QUEST_ITEMS = [
 ]
 
 _GEMS = [
-    "Green Mystical Jewel",
-    "Blue Mystical Jewel",
-    "Purple Mystical Jewel",
-    "Red Mystical Jewel",
+    "Progressive Mystical Jewel",
 ]
 
 TRAP_ITEMS = ["Police Trap", "Phone Ratio Trap"]
@@ -461,7 +452,7 @@ def create_all_items(world: FuniRaccoonWorld) -> None:
     itempool: list[Item] = [
         world.create_item(name)
         for name in DEFAULT_ITEM_CLASSIFICATIONS
-        if is_progression_item(world, name)
+        if is_progression_item(world, name) and name not in _GEMS
     ]
 
     # Create extras of these
@@ -474,9 +465,10 @@ def create_all_items(world: FuniRaccoonWorld) -> None:
     if world.options.hatsanity:
         itempool += [world.create_item(name) for name in _HATS]
 
-
-    if world.options.gemsanity and "lugh" not in world.options.goal.value:
-        itempool += [world.create_item(name) for name in _GEMS]
+    if world.options.gemsanity:
+        itempool += [world.create_item("Progressive Mystical Jewel") for _ in range(4)]
+        
+    itempool.append(world.create_item("Kei Truck Radio"))
 
     # Vehicles are filler apart from Tony (which the loop above already created),
     # so add the remaining ones explicitly to guarantee one of each is placed.

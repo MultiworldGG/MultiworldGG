@@ -2,7 +2,7 @@ FRIENDLY_MART_NAMES = {
     "MART_CHERRYGROVE": "Cherrygrove City Poke Mart",
     "MART_VIOLET": "Violet City Poke Mart",
     "MART_AZALEA": "Azalea Town Poke Mart",
-    "MART_CIANWOOD": "Cianwood City Pharmacy",
+    "MART_CIANWOOD": "Cianwood Pharmacy",
     "MART_GOLDENROD_2F_1": "Goldenrod Dept. Store 2F - Top Salesman",
     "MART_GOLDENROD_2F_2": "Goldenrod Dept. Store 2F - Bottom Salesman",
     "MART_GOLDENROD_3F": "Goldenrod Dept. Store 3F - X Items Shop",
@@ -29,7 +29,6 @@ FRIENDLY_MART_NAMES = {
     "MART_MT_MOON": "Mt Moon Square Gift Shop",
     "MART_INDIGO_PLATEAU": "Indigo Plateau Poke Mart",
     "MART_UNDERGROUND": "Goldenrod UG - Herb Shop",
-    "MART_GOLDENROD_1F_S": "Evolution Stone Shop",
     "MART_ROOFTOP_SALE": "Goldenrod Dept. Store - Rooftop Sale",
     "MART_BARGAIN_SHOP": "Goldenrod UG - Bargain Shop",
     "MART_BLUE_CARD": "Radio Tower 2F - Blue Card Shop",
@@ -111,8 +110,5 @@ MART_CATEGORIES = {
     "Game Corners": {
         "MART_GOLDENROD_GAME_CORNER",
         "MART_CELADON_GAME_CORNER_PRIZE_ROOM"
-    },
-    "invalid": {
-        "MART_GOLDENROD_1F_S"
     },
 }

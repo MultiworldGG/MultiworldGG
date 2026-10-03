@@ -21,20 +21,25 @@ ffxiv:
     - |
       the award-winning
       Heavensward
+      expansion,
     - |
-      expansion
-      and also the
-    - |
-      award-winning
+      the thrilling 
       Stormblood
+      expansion and
     - |
+      also the
+      player-favorited
+    - |
+      Shadowbringers
       expansion
-      up to Lv.70 for
     - |
-      free with no
+      up to level 80
+      for free with no
       restrictions on
     - |
       playtime?
+      Now on also on
+      Nintendo Switch 2!
     - |
       Play today!
 
@@ -1604,53 +1609,53 @@ hyper_beam_compensation:
       involve CHAMPION
       LANCE's DRAGONITE.
 
-#l_plus_ratio:
-#  caller: withheld
-#  script:
-#    - |
-#      L + ratio + no
-#      BADGES + CUT grass
-#      + mischief +
-#    - |
-#      low HP + bad DVs +
-#      don't care +
-#      extra ROM byte +
-#    - |
-#      CIANWOOD jail
-#      start + cope +
-#      no checks +
-#    - |
-#      parafused + full
-#      BOX + no shinies +
-#      cry about it +
-#    - |
-#      WEAST + MOM spent
-#      money + no FLY +
-#      chrisGrin +
-#    - |
-#      BK + cringe +
-#      no hint points +
-#      long PHONE TRAP +
-#    - |
-#      tracker is wrong +
-#      MOUNT MORTAR +
-#      ratio again +
-#    - |
-#      POKéMON disobeys +
-#      gen 1 miss +
-#      skill issue +
-#    - |
-#      bad moves +
-#      you lost battles +
-#      deathlink +
-#    - |
-#      REPEL ran out +
-#      invalid YAML +
-#      didn't ask +
-#    - |
-#      learn logic +
-#      pay ROCKET toll +
-#      infinite fake EXP
+l_plus_ratio:
+  caller: withheld
+  script:
+    - |
+      L + ratio + no
+      BADGES + CUT grass
+      + mischief +
+    - |
+      low HP + bad DVs +
+      don't care +
+      extra ROM byte +
+    - |
+      CIANWOOD jail
+      start + cope +
+      no checks +
+    - |
+      parafused + full
+      BOX + no shinies +
+      cry about it +
+    - |
+      WEAST + MOM spent
+      money + no FLY +
+      chrisGrin +
+    - |
+      BK + cringe +
+      no hint points +
+      long PHONE TRAP +
+    - |
+      tracker is wrong +
+      MOUNT MORTAR +
+      ratio again +
+    - |
+      POKéMON disobeys +
+      gen 1 miss +
+      skill issue +
+    - |
+      bad moves +
+      you lost battles +
+      deathlink +
+    - |
+      REPEL ran out +
+      invalid YAML +
+      didn't ask +
+    - |
+      learn logic +
+      pay ROCKET toll +
+      infinite fake EXP
 
 question:
   caller: withheld
@@ -1674,3 +1679,120 @@ question:
       ... 
     - |
       ...
+
+
+super_nerd_stan:
+  caller: withheld
+  script:
+    - |
+      Have you ever
+      heard the story
+      of
+    - |
+      SUPER NERD STAN?
+    - |
+      Legends say that
+      he is a SUPER NERD
+      fascinated with
+    - |
+      the RUINS OF
+      ALPH... The old
+      scripts say he
+    - |
+      can be found
+      there - but he's
+      never been seen.
+    - |
+      Some wonder if he
+      is even real.
+    - |
+      Others are con-
+      vinced he is -
+      just not in
+    - |
+      this version of
+      reality...
+    - |
+      What do you think,
+      <player>?
+
+
+elevator_dimension:
+  caller: out_of_area
+  script:
+    - |
+      Um. Hello?
+    - |
+      I uh.
+    - |
+      Where am I?
+    - |
+      I just wanted to
+      buy a FRESH WATER
+    - |
+      But now I can't
+      leave the
+      elevator.
+    - |
+      My GO HOME button
+      isn't working 
+      either.
+    - |
+      The screen 
+      just says
+      ELEVATOR DIMENSION
+
+incorrect_tracker:
+  caller: out_of_area
+  script:
+    - |
+      Psst… Hey
+      <player>…
+      That tracker…
+    - |
+      It's WRONG!
+    - |
+      I don't have much
+      time to explain…
+      but listen…
+    - |
+      You cannot trust
+      a single check…
+      It will LIE…
+    - |
+      You have to…
+      …Oh no…
+      …
+    - |
+      (You hear a door
+      being broken)
+    - |
+      …
+      …
+      …
+
+flash_discontinued:
+  caller: withheld
+  script:
+    - |
+      IMPORTANT NOTICE
+      FROM SILPH CO.
+      THE MOVE FLASH
+    - |
+      WILL BE
+      DISCONTINUED
+      IN A FEW MONTHS!
+    - |
+      PLEASE CONVERT
+      YOUR DARK CAVES
+    - |
+      INTO BEING LIT
+      UP BY HTML 05!
+      THANK YOU.
+
+good_luck:
+  caller: withheld
+  script:
+    - |
+      Good luck on the
+      run, <player>!

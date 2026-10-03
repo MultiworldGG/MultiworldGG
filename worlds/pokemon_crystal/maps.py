@@ -76,5 +76,8 @@ FLASH_MAP_GROUPS: Mapping[str, Sequence[str]] = {
     "Burned Tower": [
         "BurnedTower1F",
         "BurnedTowerB1F"
+    ],
+    "Flooded Mine": [
+        "FloodedMine"
     ]
 }

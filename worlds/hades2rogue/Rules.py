@@ -2,21 +2,34 @@ import math
 from typing import TYPE_CHECKING, Optional
 from worlds.AutoWorld import LogicMixin
 from worlds.generic.Rules import add_rule
-from .Routes import ROUTES, UNDERWORLD, SURFACE, NIGHTMARE, boss_event, boss_victory, \
+from .Routes import ROUTES, UNDERWORLD, SURFACE, NIGHTMARE, DREAM, boss_event, boss_victory, \
     active_routes, NPC_ROUTE_LOCK, NPC_RANDOMIZED_HELPERS, NPC_RANDOMIZED_ZONE_INDEX, \
     GOAL_BOSSES, ALL_SELECTED, goal_includes, COMBAT_HELPER_NPCS, combat_helper_native_fallback
 from .Items import WEAPON_SHORT_NAMES, arcana_titles, keepsake_titles, aspect_titles, \
     ASPECT_BASE_TITLE_BY_WEAPON, ASPECT_TITLES_BY_WEAPON, vow_names, ASPECT_MAX_RANK, \
-    godsanity_gods, godsanity_shop_gods, \
-    helper_story_npcs, helper_story_npcs_nightmare, GOD_KEEPSAKE_COMBINED_GODS, GOD_KEEPSAKE_TITLE, \
+    helper_story_npcs, helper_story_npcs_nightmare, GOD_KEEPSAKE_TITLE, GODSANITY_CHAOS, \
     KEEPSAKE_PROGRESSIVE_COUNT, weapon_aspect_slots
 from .Locations import combine_active, _score_count_for, _combined_room_count, \
     _combined_score_count, COMBINED_SCORE_PREFIX, COMBINED_ROOM_PREFIX, _zone_bounds, \
     SHARED_ENEMY_ZONES, ENEMY_BY_ZONE, MINIBOSS_ENEMY_NAMES, MINIBOSS_ZONE_OVERRIDE, \
-    ZAGREUS_MET_LOCATION, ZAGREUS_DEFEATED_LOCATION, NPC_INTRO
+    ENEMY_COMPANIONS, \
+    ZAGREUS_MET_LOCATION, ZAGREUS_DEFEATED_LOCATION, NPC_INTRO, DREAM_ROOM_GUARANTEED_PER_REGION
 
 if TYPE_CHECKING:
     from . import Hades2World
+
+
+def _dream_zones(world, player: int) -> list:
+    """This player's Dream region names. Never read Locations.zone_tables here: it is module-
+    global and holds the LAST player's tables, so a multiworld with a second Hades2Rogue slot
+    crashed with KeyError('Dream'). Hades2World.create_regions keeps a per-player snapshot."""
+    return list(world.worlds[player].dream_zone_tables.keys())
+
+
+def _gated_gods(world, player: int) -> list:
+    """The gods GodSanity gates in this player's seed -- per seed, not a constant: a seed
+    generated before Chaos joined has 11, not 12 (Hades2World._resolve_godsanity_gated_gods)."""
+    return world.worlds[player].godsanity_gated_gods
 
 # Reverse of Items.weapon_aspect_slots: (weapon, display_key) -> internal_aspect_key ("base"
 # or the alt's full title), for parsing per_aspect_room_based location names back into the
@@ -31,16 +44,8 @@ _ASPECT_INTERNAL_KEY_BY_DISPLAY = {
 def _internal_aspect_key(weapon: str, display_key: str) -> Optional[str]:
     return _ASPECT_INTERNAL_KEY_BY_DISPLAY.get((weapon, display_key))
 
-# Weapons required to beat each of a route's 4 bosses (index 0..2), and to beat the 4th/final
-# boss (FINAL_WEAPONS). These gate the BOSS ITSELF (see BOSS_TIER_PERCENT below), not just the
-# zone-exit that follows it -- see the July 17 tightening pass. Trimmed July 17 (later same day,
-# generation-failure pass): the July 17 tightening left the ramp at 2/3/5/6 -- landing on 5 and
-# then 6 back-to-back for the last two bosses forced almost the entire weapon pool in hand before
-# the 3rd boss, well before the fill algorithm has placed enough progression items. Smoothed to a
-# steady 2/3/4/5 ramp; still requires real weapon variety without demanding literally the whole
-# 6-weapon pool.
-ZONE_WEAPON_GATES = [2, 3, 4]
-FINAL_WEAPONS = 5
+# (Fixed-step weapon gates retired 8/4: ZONE_WEAPON_GATES=[2,3,4]/FINAL_WEAPONS=5 folded into
+# _tier_requirement_met's percent-of-cap pools instead -- see that function's 8/4 note.)
 
 # Location-system option values (match Options.LocationSystem / Locations.py).
 POINT_BASED = 0
@@ -183,9 +188,10 @@ _ARCANA_PROG_ITEMS = [f"Progressive {title} Arcana" for title in arcana_titles]
 # exist (GraspCount); Arcana/vow-weight/void-vow-weight/progressive-weapon/gods-unlocked share
 # the same percentages for consistency. GodSanity (added July 21) is a resource pool the same
 # way: while it's active, boons from a locked god can never be picked up, so a boss tier
-# assuming you've accumulated boon-derived power needs its own share of the 11 "<God> Unlock"
-# items too, not just grasp/arcana -- otherwise a seed could demand 75% arcana off boon-fueled
-# runs while GodSanity still had 10 of 11 gods locked. Each piece only gates when its mode is
+# assuming you've accumulated boon-derived power needs its own share of the "<God> Unlock"
+# items too (12 once Chaos joined, 9/30), not just grasp/arcana -- otherwise a seed could demand
+# 75% arcana off boon-fueled runs while GodSanity still had all but one god locked. Each piece
+# only gates when its mode is
 # actually in play this seed (mirrors _hades2_grasp_count/_hades2_arcana_count's "return a
 # large number when off" pass-through pattern). Re-tightened July 24: now that every resource
 # above is guaranteed progression (no longer a mix of progression/useful), _tier_requirement_met
@@ -224,22 +230,10 @@ def _weapon_cap(options) -> int:
     return len(options.included_weapons.value)
 
 
-def _zone_weapon_gate(z: int, options) -> int:
-    """Weapons needed to beat a route's zone-z (0..2) boss, clamped to this seed's actual
-    weapon count."""
-    return min(ZONE_WEAPON_GATES[z], _weapon_cap(options))
-
-
-def _final_weapon_gate(options) -> int:
-    """Weapons needed to beat a route's final (4th) boss / the Zagreus Defeated check,
-    clamped to this seed's actual weapon count."""
-    return min(FINAL_WEAPONS, _weapon_cap(options))
-
-
 def _progressive_weapon_pool_size(options) -> int:
     """Total "Progressive <Weapon>" copies that actually exist this seed -- only meaningful
     when aspectsanity=progressive (see _progressive_weapon_active). Scales with
-    IncludedWeapons instead of assuming all 6, same reasoning as _zone_weapon_gate."""
+    IncludedWeapons instead of assuming all 6, same reasoning as _weapon_cap."""
     return _weapon_cap(options) * ASPECT_MAX_RANK
 
 
@@ -257,7 +251,7 @@ _GOD_BY_KEEPSAKE_TITLE = {title: god for god, title in GOD_KEEPSAKE_TITLE.items(
 
 
 def _god_keepsake_combined(options) -> bool:
-    """Whether GodSanity's 11 "<God> Unlock" items are fused with their KeepsakeSanity
+    """Whether GodSanity's "<God> Unlock" items are fused with their KeepsakeSanity
     keepsake item into a single "<God> Unlock + Keepsake" item this seed (see Items.py's
     GOD_KEEPSAKE_COMBINED_GODS) -- only when KeepsakeSanity is "randomized" (one item per
     keepsake, mode 1) AND GodSanity is active. Progressive keepsakes (mode 2) have no
@@ -274,17 +268,17 @@ def _god_unlock_item(god: str, options) -> str:
     return f"{god} Unlock"
 
 
-def _god_cap(options) -> int:
+def _god_cap(options, gated_gods: list) -> int:
     """Total "<God> Unlock" items that actually exist this seed, for scaling the boss-tier
     fractions. A large number when GodSanity is "unlocked" (0) -- boons aren't gated behind
     an item at all then, so this pool never binds -- mirrors _grasp_cap/_arcana_cap's
-    sentinel. All 11 GodSanity items count (the 9 boon-reward gods plus Hermes/Selene):
-    GodSanity restricts what CAN spawn in a boon-reward slot regardless of which of the 11
-    it is, so the boss-tier gate treats "gods unlocked" as one pool the same way grasp/arcana
-    are, rather than trying to split boon-slot vs. shop-eligibility gods apart."""
+    sentinel. Every gated god counts (the 9 boon-reward gods plus Hermes/Selene and Chaos):
+    GodSanity restricts what CAN spawn regardless of which of them it is, so the boss-tier
+    gate treats "gods unlocked" as one pool the same way grasp/arcana are, rather than trying
+    to split boon-slot vs. shop-eligibility vs. Chaos Gate gods apart."""
     if options.godsanity.value == 0:
         return 99
-    return len(godsanity_gods) + len(godsanity_shop_gods)
+    return len(gated_gods)
 
 
 def _progressive_weapon_active(options) -> bool:
@@ -391,11 +385,11 @@ class Hades2Logic(LogicMixin):
         return self.count("Progressive Grasp", player)
 
     def _hades2_god_count(self, player: int, options) -> int:
-        """How many of the 11 "<God> Unlock" items are held. Returns a large number when
+        """How many of this seed's "<God> Unlock" items are held. Returns a large number when
         GodSanity is "unlocked" (0), since boons aren't gated behind an item then."""
         if options.godsanity.value == 0:
             return 99
-        return sum(1 for god in godsanity_gods + godsanity_shop_gods
+        return sum(1 for god in _gated_gods(self.multiworld, player)
                     if self.has(_god_unlock_item(god, options), player))
 
     def _hades2_keepsake_count(self, player: int, options) -> int:
@@ -409,24 +403,35 @@ class Hades2Logic(LogicMixin):
         Achilles, before his locations were removed July 31)
         had a permanently-unreachable Met+Keepsake rule under keepsakesanity=progressive
         whenever a progression item landed there (generation-breaking, fixed 7/22). Normal
-        keepsakes have no check locations, so this is never consulted there."""
+        keepsakes have no check locations, so this is never consulted there.
+        progressive_per (mode 3): each title has its own "Progressive <title>" item, so this
+        counts distinct titles with at least one copy -- same shape as randomized, just a
+        different item name per title."""
         mode = options.keepsakesanity.value
         if mode == 2:
             copies = self.count("Progressive Keepsake", player)
             if copies >= KEEPSAKE_PROGRESSIVE_COUNT:
                 return _keepsake_pool_size(options)
             return math.ceil(KEEPSAKE_HARD_TIER_PCT.get(copies, 0) * _keepsake_pool_size(options))
-        if mode == 1:
-            if _god_keepsake_combined(options):
-                # The 11 GodSanity gods' titles are fused into "<God> Unlock + Keepsake"
+        if mode == 1 or mode == 3:
+            if mode == 1 and _god_keepsake_combined(options):
+                # The gated gods' titles are fused into "<God> Unlock + Keepsake"
                 # items (see Items.GOD_KEEPSAKE_TITLE) -- check those instead of the bare
-                # title, which was never placed in the pool this seed.
+                # title, which was never placed in the pool this seed. (progressive_per has
+                # no per-NPC item to fuse -- see _god_keepsake_combined -- so this never
+                # applies under mode 3.)
+                gated = _gated_gods(self.multiworld, player)
+
                 def owned(title):
                     god = _GOD_BY_KEEPSAKE_TITLE.get(title)
-                    name = f"{god} Unlock + Keepsake" if god else title
+                    name = f"{god} Unlock + Keepsake" if god in gated else title
                     return self.has(name, player)
                 return sum(1 for title in keepsake_titles if owned(title))
-            return sum(1 for title in keepsake_titles if self.has(title, player))
+            # mode 1: the bare title is the item. mode 3 (progressive_per): the first
+            # "Progressive <title>" copy is what unlocks it (mirrors _hades2_arcana_count's
+            # progressive_arcana branch -- existence-only, not level).
+            prefix = "" if mode == 1 else "Progressive "
+            return sum(1 for title in keepsake_titles if self.has(prefix + title, player))
         return 99
 
     def _hades2_vow_weight_state(self, player: int, options) -> tuple:
@@ -472,7 +477,7 @@ class Hades2Logic(LogicMixin):
         return sum(self.count(f"Progressive {w}", player) for w in WEAPON_SHORT_NAMES)
 
     def _hades2_can_get_victory(self, player: int, options) -> bool:
-        # Route bosses (chronos/typhon/hades) each need the configured weapon-clear variety;
+        # Route goals (chronos/typhon/hades/dream) each need the configured weapon-clear variety;
         # zagreus (secret superboss, no route) doesn't -- a single clear with any weapon
         # satisfies his part of the goal.
         weapons = options.weapons_clears_needed.value
@@ -519,8 +524,16 @@ def _tier_requirement_met(state, player: int, options, percent: float, grasp_cap
     pool was split so Void has its own dedicated gate (_hades2_void_vow_state) distinct from the
     combined vow-weight one -- with the ramp gentler and each pool's own fill correspondingly
     easier to satisfy, requiring all of them together is deliberate this time, not an oversight to
-    relax again."""
+    relax again.
+
+    Weapon-count folded in here (8/4): instead of a separate fixed-step gate the caller applies
+    on top (the old ZONE_WEAPON_GATES=[2,3,4]/FINAL_WEAPONS=5 ramp), distinct-weapon variety is
+    now just another percent-of-cap pool, same treatment as grasp/arcana/gods -- and unlike
+    those it's always active (weapon variety always exists, no "off" state to guard against).
+    This also generalizes cleanly to Dream's own linear i/n curve (_set_dream_rules), which has
+    no fixed 4-boss shape to hang a separate ZONE_WEAPON_GATES-style table off of."""
     checks = []
+    checks.append(state._hades2_has_enough_weapons(player, options, math.ceil(percent * _weapon_cap(options))))
     if grasp_cap < 99:
         checks.append(state._hades2_grasp_count(player, options) >= math.ceil(percent * grasp_cap))
     if arcana_cap < 99:
@@ -542,25 +555,121 @@ def _tier_requirement_met(state, player: int, options, percent: float, grasp_cap
     return all(checks)
 
 
+def _set_dream_rules(world: "Hades2World", player: int, options, route_offsets: dict,
+                     grasp_cap: int, arcana_cap: int, weapon_active: bool, god_cap: int,
+                     dream_access_via_progressive: bool = False) -> list:
+    """Dream's dedicated rule-construction (called once from set_rules, alongside -- not
+    instead of -- the generic per-route loop, which continues handling Underworld/Surface/
+    Nightmare exactly as before). Dream can't reuse that loop: it walks ROUTES[route]["bosses"]
+    against the fixed 4-entry BOSS_TIER_PERCENT and chains zone-exits on named boss-Victory
+    items, but Dream has a variable region count and no fixed boss identity per region (see
+    Routes.DREAM's definition comment).
+
+    Region reachability is a linear percent curve instead: region i of n needs i/n of every
+    active resource pool (reusing _tier_requirement_met, now including the folded-in weapon
+    pool -- see that function's 8/4 note), confirmed by the user as deliberately linear rather
+    than a rescaled version of BOSS_TIER_PERCENT's 30/50/75/100 shape. There is no per-region
+    boss-victory-item chaining (no fixed boss identity to chain off) -- the percent gate alone
+    provides ordering, since it's monotonic in player state. Progressive Dream count-gating
+    only applies when lock_routes is on (confirmed by user), mirroring every other route's
+    `if locked:` shape exactly.
+
+    Returns each region's "cleared" predicate (region i of n: i/n of every pool), which
+    _set_room_tail_rules uses for the rooms past the guaranteed count."""
+    locked = bool(options.lock_routes)
+    prog = "Progressive Dream"
+    offset = route_offsets.get(DREAM, 0)
+
+    # This player's Dream zone table is the single source of truth for which regions exist this
+    # seed (already clamped to the native DreamDiveTweaks pool by Locations.fill_dream_checks --
+    # see Regions.py's matching comment).
+    zones = _dream_zones(world, player)
+    n = len(zones)
+    region_cleared = []
+    if n == 0:
+        return region_cleared
+
+    if locked:
+        add_rule(world.get_entrance("Descend " + DREAM, player),
+                 lambda state, o=offset: state.count(prog, player) >= o)
+
+    # Dream Access item, or the first Progressive Dream copy substituting for it -- same
+    # shape as Surface/Nightmare's own Access-item gate, stacked on top of (not instead of)
+    # the generic offset mechanism just above.
+    if dream_access_via_progressive:
+        add_rule(world.get_entrance("Descend " + DREAM, player),
+                 lambda state: state.count(prog, player) >= 1)
+    else:
+        add_rule(world.get_entrance("Descend " + DREAM, player),
+                 lambda state: state.has("Dream Access", player))
+
+    for i in range(1, n + 1):
+        percent = i / n
+
+        def _region_reachable(state, pct=percent):
+            return _tier_requirement_met(state, player, options, pct, grasp_cap,
+                                          arcana_cap, weapon_active, god_cap)
+        region_cleared.append(_region_reachable)
+
+        if i < n:
+            add_rule(world.get_entrance("Exit " + zones[i - 1], player), _region_reachable)
+            if locked:
+                add_rule(world.get_entrance("Exit " + zones[i - 1], player),
+                         lambda state, need=i + offset: state.count(prog, player) >= need)
+        else:
+            # Final region: gates the single "Beat Dream" event instead of an "Exit" entrance
+            # (there's no region n+1 to exit into). Only exists when Dream is actually active
+            # this seed -- see Locations.setup_location_table_with_settings's matching guard.
+            try:
+                beat_dream = world.get_location(boss_event("Dream"), player)
+            except KeyError:
+                pass
+            else:
+                # No extra `if locked:` progressive-count rule here, deliberately -- unlike
+                # the earlier `i < n` branch, the pool only ever creates (n-1)+offset copies
+                # of "Progressive Dream" (see create_items), and reaching this final region
+                # already required count >= (n-1)+offset via the previous region's Exit rule
+                # above. A `>= n+offset` requirement here would demand one more copy than
+                # will ever exist -- exactly mirroring how the generic per-route loop below
+                # adds no extra count check on its own final "Beat <boss>" event either.
+                add_rule(beat_dream, _region_reachable)
+    return region_cleared
+
+
 def set_rules(world: "Hades2World", player: int, options, route_offsets: dict,
               surface_access_via_progressive: bool = False,
               nightmare_access_via_progressive: bool = False,
               starting_weapon: str = None,
-              starting_aspect_index: int = None) -> None:
+              starting_aspect_index: int = None,
+              dream_access_via_progressive: bool = False,
+              enemy_placement: dict = None) -> None:
     locked = bool(options.lock_routes)
     routes = active_routes(options)
     system = options.location_system.value
+    # Which enemy check sits in which zone. In shuffled modes this is ENEMY_BY_ZONE relabelled by
+    # the substitution permutation (Locations.enemy_zone_placement), because a shuffled enemy is
+    # only killable where its preimage spawns. Every zone-keyed enemy rule below reads THIS, not
+    # ENEMY_BY_ZONE, or it would gate the wrong creature's check.
+    enemy_placement = enemy_placement if enemy_placement is not None else ENEMY_BY_ZONE
     grasp_cap = _grasp_cap(options)
     arcana_cap = _arcana_cap(options)
     weapon_active = _progressive_weapon_active(options)
-    god_cap = _god_cap(options)
+    god_cap = _god_cap(options, _gated_gods(world, player))
 
     # (route, zone-index) -> (zone name, predicate(state)) for that zone's own boss, so the
     # enemy gates (point 6) and the Zagreus checks (point 7) below can reuse the exact same
     # "is this boss beatable" test instead of re-deriving it.
     route_boss_conditions: dict = {}
+    dream_region_cleared: list = []
+
+    if DREAM in routes:
+        dream_region_cleared = _set_dream_rules(world, player, options, route_offsets, grasp_cap,
+                                                arcana_cap, weapon_active, god_cap,
+                                                dream_access_via_progressive)
 
     for route in routes:
+        if route == DREAM:
+            continue  # handled above -- no ROUTES[DREAM] entry, see Routes.DREAM's comment
         zones = ROUTES[route]["zones"]
         bosses = ROUTES[route]["bosses"]
         prog = ROUTES[route]["progressive"]
@@ -573,18 +682,16 @@ def set_rules(world: "Hades2World", player: int, options, route_offsets: dict,
 
         # Each of a route's 4 bosses is now the ONLY thing gating the zone behind it -- a
         # zone's rooms/score checks are no longer treated as "beatable" just because the zone
-        # itself is reachable (July 17 tightening). A boss's own weapon count + tier
-        # percentage (BOSS_TIER_PERCENT) gates ITS OWN "Beat <boss>" event directly; leaving
-        # the zone then just needs that boss's Victory item (which encodes everything above)
-        # plus, when locked, enough route-progressives.
+        # itself is reachable (July 17 tightening). A boss's own tier percentage
+        # (BOSS_TIER_PERCENT, now including weapon variety -- see _tier_requirement_met's 8/4
+        # note) gates ITS OWN "Beat <boss>" event directly; leaving the zone then just needs
+        # that boss's Victory item (which encodes everything above) plus, when locked, enough
+        # route-progressives.
         for z, boss in enumerate(bosses):
-            weapons_needed = _final_weapon_gate(options) if z == len(bosses) - 1 \
-                else _zone_weapon_gate(z, options)
             percent = BOSS_TIER_PERCENT[z]
 
-            def _boss_beatable(state, w=weapons_needed, pct=percent):
-                return state._hades2_has_enough_weapons(player, options, w) \
-                    and _tier_requirement_met(state, player, options, pct, grasp_cap,
+            def _boss_beatable(state, pct=percent):
+                return _tier_requirement_met(state, player, options, pct, grasp_cap,
                                               arcana_cap, weapon_active, god_cap)
 
             add_rule(world.get_location(boss_event(boss), player), _boss_beatable)
@@ -622,6 +729,9 @@ def set_rules(world: "Hades2World", player: int, options, route_offsets: dict,
     # additionally needs that weapon AND its specific Aspect ranked up for the check's area.
     elif system == PER_ASPECT_ROOM_BASED:
         _set_per_aspect_rules(world, player, options, routes, starting_weapon, starting_aspect_index)
+    if not combine_active(options) and system in (ROOM_BASED, PER_WEAPON_ROOM_BASED,
+                                                  PER_ASPECT_ROOM_BASED):
+        _set_room_tail_rules(world, player, routes, route_boss_conditions, dream_region_cleared)
 
     # Enemy "Defeated" checks (point 6, narrowed): ONLY mini-boss enemies (MINIBOSS_ENEMY_NAMES
     # -- real secondary mini-bosses plus the handful that are the same fight as the zone's own
@@ -636,7 +746,7 @@ def set_rules(world: "Hades2World", player: int, options, route_offsets: dict,
     # silently never applied to ANY route. Fixed via _is_miniboss_location / stripping the
     # suffix before the MINIBOSS_ZONE_OVERRIDE lookup.
     for (route, z), (zone, pred) in route_boss_conditions.items():
-        for name in ENEMY_BY_ZONE.get((route, zone), []):
+        for name in enemy_placement.get((route, zone), []):
             if not _is_miniboss_location(name):
                 continue
             try:
@@ -663,7 +773,7 @@ def set_rules(world: "Hades2World", player: int, options, route_offsets: dict,
             add_rule(world.get_entrance("Descend Surface", player),
                      lambda state: state.has("Surface Access", player))
         _set_surface_cure_rules(world, player, options)
-        _set_surface_enemy_cure_rules(world, player)
+        _set_surface_enemy_cure_rules(world, player, enemy_placement)
 
     # Nightmare needs its own Access item to open the Crossroads Chaos Gate -- same shape as
     # Surface. This is on top of (not instead of) the generic Progressive-offset mechanism
@@ -692,7 +802,9 @@ def set_rules(world: "Hades2World", player: int, options, route_offsets: dict,
     # fully accessible (its last zone reachable) rather than just an early zone. In
     # Empowered mode, also require a threshold share of Progressive Zagreus Weaken so the
     # fight isn't attemptable while he's still at full empowered strength.
-    zagreus_final_zones = [ROUTES[route]["zones"][-1] for route in routes]
+    # Dream excluded: its "final zone" has no fixed identity/name to reason about here (see
+    # Routes.DREAM's definition comment), and Zagreus-via-Dream was never part of this design.
+    zagreus_final_zones = [ROUTES[route]["zones"][-1] for route in routes if route != DREAM]
     weaken_needed = -(-(options.zagreus_weaken_tiers.value * 3) // 5) \
         if options.zagreus_encounter_mode.value == 1 and goal_includes(options, "zagreus") \
         else 0   # ceil(0.6 * tiers), Empowered only, and only when the pool has Weaken items
@@ -773,10 +885,11 @@ def set_rules(world: "Hades2World", player: int, options, route_offsets: dict,
         pass
     else:
         add_rule(zagreus_defeated,
-                 lambda state, zones=zagreus_final_zones, need=defeat_weaken_needed,
-                     w=_final_weapon_gate(options):
+                 lambda state, zones=zagreus_final_zones, need=defeat_weaken_needed:
                      any(state.can_reach(z, "Region", player) for z in zones)
-                     and state._hades2_has_enough_weapons(player, options, w)
+                     # Weapon variety folded into _tier_requirement_met (8/4) -- 100% tier
+                     # already demands every weapon, same as the old explicit w=FINAL_WEAPONS
+                     # check used to (min(5, cap)), just no longer a separate condition.
                      and _tier_requirement_met(state, player, options, 1.0, grasp_cap,
                                                arcana_cap, weapon_active, god_cap)
                      and state.count("Progressive Zagreus Weaken", player) >= need)
@@ -784,12 +897,47 @@ def set_rules(world: "Hades2World", player: int, options, route_offsets: dict,
     world.completion_condition[player] = lambda state: state._hades2_can_get_victory(player, options)
 
 
+def _set_room_tail_rules(world: "Hades2World", player: int, routes: list,
+                         route_boss_conditions: dict, dream_region_cleared: list) -> None:
+    """Split-pool room systems: a zone's rooms 1..K (zone_room_guaranteed) are in logic as soon
+    as the zone is reachable (its region), but rooms K+1..N only once the zone's boss is beatable
+    -- a run doesn't always reach them before the boss, and beating the boss sends them all (the
+    mod's zone cascade). Every lane's name carries the same "<Route> <Zone> Room DD" core
+    (per-weapon appends " <Weapon>", per-aspect prepends "<Aspect> <Weapon> ", slots append
+    " +k"), so one parser covers room_based, per_weapon and per_aspect."""
+    zone_specs = []    # (region name, room-name core, K, predicate)
+    for route in routes:
+        if route == DREAM:
+            for i, region_name in enumerate(_dream_zones(world, player)):
+                if i < len(dream_region_cleared):
+                    zone_specs.append((region_name, f"{region_name} Room ",
+                                       DREAM_ROOM_GUARANTEED_PER_REGION, dream_region_cleared[i]))
+            continue
+        for z, region_name in enumerate(ROUTES[route]["zones"]):
+            if (route, z) not in route_boss_conditions:
+                continue
+            core = f"{route} {ROUTES[route]['zone_display'][z]} Room "
+            zone_specs.append((region_name, core, ROUTES[route]["zone_room_guaranteed"][z],
+                               route_boss_conditions[(route, z)][1]))
+    for region_name, core, guaranteed, pred in zone_specs:
+        for location in world.get_region(region_name, player).locations:
+            at = location.name.find(core)
+            if at < 0 or (at > 0 and location.name[at - 1] != " "):
+                continue
+            digits = location.name[at + len(core):at + len(core) + 2]
+            if digits.isdigit() and int(digits) > guaranteed:
+                add_rule(location, pred)
+
+
 def _is_miniboss_location(location_name: str) -> bool:
-    """MINIBOSS_ENEMY_NAMES holds bare creature names ("Erymanthian Boar"), but every enemy
-    "Defeated" check/location name has " Defeated" appended (see Locations.py's ENEMY_BY_ZONE/
-    SHARED_ENEMY_ZONES construction) -- strip it before comparing so the miniboss boss-tier gate
-    (below and in _set_shared_enemy_rules) actually matches instead of silently never firing."""
+    """Whether an enemy "Defeated" location takes its zone boss's gate: a miniboss
+    (MINIBOSS_ENEMY_NAMES), or a companion (Locations.ENEMY_COMPANIONS) that only appears inside
+    such a fight. Those tables hold bare
+    creature names, so " Defeated" is stripped before comparing."""
     bare = location_name[:-len(" Defeated")] if location_name.endswith(" Defeated") else location_name
+    host = ENEMY_COMPANIONS.get(bare)
+    if host is not None:
+        bare = host
     return bare in MINIBOSS_ENEMY_NAMES
 
 
@@ -800,29 +948,36 @@ def _room_depth(name: str, prefix: str) -> int:
 
 def _set_surface_cure_rules(world: "Hades2World", player: int, options) -> None:
     """Without the Surface Penalty Cure the Surface curse limits you to its earliest
-    checks (Logic.txt): rooms up to depth 3, or the first 3.6% of score checks."""
+    checks (Logic.txt): rooms up to depth 3 in the FIRST zone only, or the first 3.6% of
+    score checks. Room depth now resets per zone (per-zone room-check renumbering), so rooms
+    1-3 recur in every zone -- the depth-3 carve-out is restricted to zone index 0 (City of
+    Ephyra); every other zone is unconditionally gated regardless of its own local depth,
+    since only City of Ephyra's first few rooms are genuinely "early" in a run. (Score checks
+    are unaffected -- point_based wasn't part of the per-zone renumbering.)"""
     system = options.location_system.value
-    if system == POINT_BASED:
-        prefix = ROUTES[SURFACE]["score_prefix"]
-        count = _score_count_for(SURFACE, options)
-    else:
-        prefix = ROUTES[SURFACE]["room_prefix"]
-        count = 0
-    for zone in ROUTES[SURFACE]["zones"]:
+    score_prefix = ROUTES[SURFACE]["score_prefix"]
+    score_count = _score_count_for(SURFACE, options)
+    zone_display = ROUTES[SURFACE]["zone_display"]
+    for zi, zone in enumerate(ROUTES[SURFACE]["zones"]):
+        room_prefix = f"{SURFACE} {zone_display[zi]} Room"
         for location in world.get_region(zone, player).locations:
             name = location.name
-            if not name.startswith(prefix + " "):
-                continue
-            depth = _room_depth(name, prefix)
             if system == POINT_BASED:
-                gated = count > 0 and (depth / count) > SURFACE_NO_CURE_SCORE_FRACTION
+                if not name.startswith(score_prefix + " "):
+                    continue
+                depth = _room_depth(name, score_prefix)
+                gated = score_count > 0 and (depth / score_count) > SURFACE_NO_CURE_SCORE_FRACTION
             else:
-                gated = depth > SURFACE_NO_CURE_ROOM_DEPTH
+                if not name.startswith(room_prefix + " "):
+                    continue
+                depth = _room_depth(name, room_prefix)
+                gated = zi > 0 or depth > SURFACE_NO_CURE_ROOM_DEPTH
             if gated:
                 add_rule(location, lambda state: state.has("Surface Penalty Cure", player))
 
 
-def _set_surface_enemy_cure_rules(world: "Hades2World", player: int) -> None:
+def _set_surface_enemy_cure_rules(world: "Hades2World", player: int,
+                                  enemy_placement: dict = None) -> None:
     """Enemy "Defeated" checks need a stricter bar than room/score checks: those can be banked
     cumulatively across many separate run attempts (each one only needs to reach a little
     farther than the last), but a "Defeated" check needs one live encounter with that specific
@@ -840,8 +995,9 @@ def _set_surface_enemy_cure_rules(world: "Hades2World", player: int) -> None:
         only reachable at all by having already survived that whole curse-laden stretch.
     """
     zones = ROUTES[SURFACE]["zones"]
+    placement = enemy_placement if enemy_placement is not None else ENEMY_BY_ZONE
     for zi, zone in enumerate(zones):
-        for name in ENEMY_BY_ZONE.get((SURFACE, zone), []):
+        for name in placement.get((SURFACE, zone), []):
             if zi == 0 and not _is_miniboss_location(name):
                 continue    # City of Ephyra trash: reachable in its own pre-curse opening pool
             try:
@@ -907,13 +1063,32 @@ def _set_keepsake_rules(world: "Hades2World", player: int, options, routes: list
     # applied unconditionally (not just under keepsakesanity) since "Met <God>" exists either
     # way. Sits outside keepsakes_active for the same reason KEEPSAKE_ITEM_GATE does.
     if options.godsanity.value != 0:
-        # Hermes/Selene (godsanity_shop_gods) are gated in Lua by a different mechanism
-        # (existence-only check on their own eligibility requirements, not the per-god Boon
-        # reroll the other 9 use), but the same Met/Keepsake location rule applies either way.
-        for god in godsanity_gods + godsanity_shop_gods:
+        # Hermes/Selene (godsanity_shop_gods) and Chaos are gated in Lua by a different
+        # mechanism (existence-only check on their own eligibility requirements, not the
+        # per-god Boon reroll the other 9 use), but the same Met/Keepsake location rule
+        # applies either way.
+        for god in _gated_gods(world, player):
             item_name = _god_unlock_item(god, options)
             for location in npc_locations(god):
                 add_rule(location, lambda state, i=item_name: state.has(i, player))
+
+    # Chaos when a Dream Dive is the seed's only dependable source of Chaos Gates (9/30, after a
+    # Dream-only game sat stuck on a Progressive Dream at "Met Chaos"). In a dive a gate can only
+    # spawn in an Erebus or Oceanus region (vanilla BaseF/BaseG SecretSpawnChance 0.10/0.12 a
+    # room; Fields is 0, Tartarus/Thessaly/the Summit are excluded outright, Ephyra/Olympus sit
+    # behind Surface story flags), and which slots those two land in is rerolled every attempt
+    # -- Erebus never in the first. So, like every other meet that hangs on a slot's biome
+    # (Locations.DREAM_MET_ROUTES), it's only dependable once the dive's final region is
+    # reachable. The Underworld and Nightmare offer gates on every run, so a seed with either
+    # keeps the plain rule; so does a seed generated before this (_resolve_dream_met_checks).
+    # Later on 9/30 the mod started rolling its own gates in every other biome's combat rooms
+    # (ItemManager.chaos_gate_anywhere), which is why Surface-only seeds get no rule of their
+    # own. That makes this one stricter than the game needs; it stays until that is playtested.
+    if DREAM in routes and UNDERWORLD not in routes and NIGHTMARE not in routes \
+            and world.worlds[player].dream_met_checks:
+        final_region = _dream_zones(world, player)[-1]
+        for location in npc_locations(GODSANITY_CHAOS):
+            add_rule(location, lambda state, r=final_region: state.can_reach(r, "Region", player))
 
     # Helper Room Sanity: on "items"/"items_random" (1/3), the mod won't let a helper NPC's
     # dialogue/buff (or the Met check itself) fire until their own "<NPC> Room" item is
@@ -978,7 +1153,17 @@ def _set_keepsake_rules(world: "Hades2World", player: int, options, routes: list
         if npc in NPC_RANDOMIZED_HELPERS and not combat_native_only:
             # Reachable once at least ceil(len(routes)/2) of the active routes have their
             # OWN final zone (index 3) reachable -- see Routes.NPC_RANDOMIZED_ZONE_INDEX.
-            final_zones = tuple(ROUTES[r]["zones"][NPC_RANDOMIZED_ZONE_INDEX] for r in routes)
+            # Dream counts as a route here (9/30), its final zone being its last region: a
+            # dive's story rooms and combat-assist encounters do appear, muted (vanilla
+            # SilenceForDreamRun blocks only their dialogue and gifts) but still talked to /
+            # fought beside, which is all "Met" needs. It used to be left out, so a Dream-only
+            # seed had no zones to count, needed 0 of them, and put every one of these in logic
+            # from the start. Still left out for a seed generated before then
+            # (Hades2World._resolve_dream_met_checks).
+            final_zones = tuple(ROUTES[r]["zones"][NPC_RANDOMIZED_ZONE_INDEX]
+                                 for r in routes if r != DREAM)
+            if DREAM in routes and world.worlds[player].dream_met_checks:
+                final_zones += tuple(_dream_zones(world, player)[-1:])
             need = -(-len(final_zones) // 2)  # ceil(n/2): 1->1, 2->1, 3->2
             for location in locations:
                 add_rule(location,
@@ -1013,22 +1198,26 @@ def _set_keepsake_rules(world: "Hades2World", player: int, options, routes: list
 
 def _set_shared_enemy_rules(world: "Hades2World", player: int, routes: list,
                             route_boss_conditions: dict) -> None:
-    """Gate the 13 enemy names Nightmare shares with the existing Underworld roster (see
+    """Gate the 12 enemy names Nightmare shares with the existing Underworld roster (see
     Locations.SHARED_ENEMY_ZONES): these live in the Crossroads region (always reachable),
     not their original zone, precisely so their reachability can't be locked to one specific
     region -- see the comment on SHARED_ENEMY_ZONES for why an access_rule alone can't widen
-    reachability across regions. July 18 (user ruling): these 13 only EXIST when the
+    reachability across regions. July 18 (user ruling): these 12 only EXIST when the
     Nightmare route is in the seed, and only their NIGHTMARE zone counts for logic -- their
     Underworld-side spawns (Asphodel-anomaly detours etc.) are too rare/inconsistent to be
-    load-bearing, though the mod still accepts an Underworld kill opportunistically. Only
-    "King Vermin" (the one mini-boss among these 13 -- see MINIBOSS_ENEMY_NAMES) additionally
-    needs that zone's own boss beaten, matching the per-zone enemy gate in set_rules. See the
-    July 18 note there re: _is_miniboss_location -- same suffix-mismatch bug applied here too."""
+    load-bearing, though the mod still accepts an Underworld kill opportunistically. None of
+    them is a miniboss (King Vermin used to be; it is now a normal zone check -- see
+    Locations.KING_VERMIN_LOCATION), but the miniboss branch stays as a guard.
+    In shuffled seeds a shared name sits in the zone where its substitute spawns instead
+    (Locations.enemy_zone_placement), and that region is its whole gate -- so only the
+    Crossroads-resident ones get this rule."""
     for name, zones in SHARED_ENEMY_ZONES.items():
         try:
             location = world.get_location(name, player)
         except KeyError:
             continue    # Nightmare excluded this seed -- location doesn't exist at all
+        if location.parent_region is None or location.parent_region.name != "Crossroads":
+            continue
         pairs = []
         for route, zi in zones:
             if route != NIGHTMARE or route not in routes or (route, zi) not in route_boss_conditions:
@@ -1049,8 +1238,17 @@ def _set_shared_enemy_rules(world: "Hades2World", player: int, routes: list,
 def _set_per_weapon_rules(world: "Hades2World", player: int, options, routes: list) -> None:
     """Gate each per-weapon room check behind owning the matching weapon."""
     for route in routes:
-        prefix = ROUTES[route]["room_prefix"]
-        for region_name in ROUTES[route]["zones"]:
+        if route == DREAM:
+            region_names = _dream_zones(world, player)
+            zone_display = None
+        else:
+            region_names = ROUTES[route]["zones"]
+            zone_display = ROUTES[route]["zone_display"]
+        for zi, region_name in enumerate(region_names):
+            # Room-check prefix for this zone: "<Route> <Zone> Room" -- Dream's region_name is
+            # already "Dream Region N", matching the check name's own zone token verbatim, so no
+            # separate zone_display lookup is needed there.
+            prefix = f"{region_name} Room" if route == DREAM else f"{route} {zone_display[zi]} Room"
             region = world.get_region(region_name, player)
             for location in region.locations:
                 name = location.name
@@ -1067,14 +1265,28 @@ def _set_per_aspect_rules(world: "Hades2World", player: int, options, routes: li
     """Gate each per-aspect room check behind owning the matching weapon AND that weapon's
     specific Aspect being ranked up enough for the check's own area (PER_ASPECT_AREA_RANK)."""
     for route in routes:
-        prefix = ROUTES[route]["room_prefix"]
-        zones = ROUTES[route]["zones"]
+        if route == DREAM:
+            zones = _dream_zones(world, player)
+            zone_display = None
+        else:
+            zones = ROUTES[route]["zones"]
+            zone_display = ROUTES[route]["zone_display"]
+        n = len(zones)
         for zi, region_name in enumerate(zones):
             region = world.get_region(region_name, player)
-            required_rank = PER_ASPECT_AREA_RANK[zi]
+            if route == DREAM:
+                # PER_ASPECT_AREA_RANK is a fixed 4-entry table (one rank per always-4 zones);
+                # Dream has a variable region count, so its rank curve is generalized the same
+                # way BOSS_TIER_PERCENT was for _set_dream_rules -- linear across n regions,
+                # scaled to ASPECT_MAX_RANK instead of PER_ASPECT_AREA_RANK's fixed values.
+                required_rank = min(ASPECT_MAX_RANK, math.ceil((zi + 1) / n * ASPECT_MAX_RANK))
+                prefix = f"{region_name} Room"
+            else:
+                required_rank = PER_ASPECT_AREA_RANK[zi]
+                prefix = f"{route} {zone_display[zi]} Room"
             for location in region.locations:
                 # name: "<Aspect> <Weapon> <prefix> DD[ +k]" -- prefix itself may be multiple
-                # words ("Underworld Room"), so split off just the first two tokens.
+                # words ("Underworld Erebus Room"), so split off just the first two tokens.
                 parts = location.name.split(" ", 2)
                 if len(parts) < 3 or parts[1] not in WEAPON_SHORT_NAMES:
                     continue
@@ -1100,7 +1312,7 @@ def _set_combined_aspect_rules(world: "Hades2World", player: int, options, route
         region = world.get_region("Combined Rooms", player)
     except KeyError:
         return
-    count = _combined_room_count()
+    count = _combined_room_count(options)
     bounds = _zone_bounds(count)
 
     def zone_of(depth: int) -> int:
@@ -1123,7 +1335,13 @@ def _set_combined_aspect_rules(world: "Hades2World", player: int, options, route
         required_rank = PER_ASPECT_AREA_RANK[zi]
         capped = depth > SURFACE_NO_CURE_ROOM_DEPTH
         surface_zone = ROUTES[SURFACE]["zones"][zi] if SURFACE in routes else None
-        other_zones = [ROUTES[route]["zones"][zi] for route in routes if route != SURFACE]
+        # Dream excluded: combine_pools' shared-pool sizing growing with dream_region_count is
+        # explicitly deferred (not part of this pass -- Locations.fill_dream_checks skips
+        # populating anything under combine_pools), so it has no relevant checks in these
+        # shared "Combined Rooms"/"Combined Score" pools yet, and no ROUTES[DREAM] entry to
+        # index at a fixed zi anyway (see Routes.DREAM's definition comment).
+        other_zones = [ROUTES[route]["zones"][zi] for route in routes
+                       if route not in (SURFACE, DREAM)]
         add_rule(location,
                  lambda state, sz=surface_zone, others=other_zones, capped=capped:
                      any(state.can_reach(reg, "Region", player) for reg in others)
@@ -1170,7 +1388,13 @@ def _set_combined_score_rules(world: "Hades2World", player: int, options, routes
         zi = zone_of(n)
         capped = (n / count) > SURFACE_NO_CURE_SCORE_FRACTION
         surface_zone = ROUTES[SURFACE]["zones"][zi] if SURFACE in routes else None
-        other_zones = [ROUTES[route]["zones"][zi] for route in routes if route != SURFACE]
+        # Dream excluded: combine_pools' shared-pool sizing growing with dream_region_count is
+        # explicitly deferred (not part of this pass -- Locations.fill_dream_checks skips
+        # populating anything under combine_pools), so it has no relevant checks in these
+        # shared "Combined Rooms"/"Combined Score" pools yet, and no ROUTES[DREAM] entry to
+        # index at a fixed zi anyway (see Routes.DREAM's definition comment).
+        other_zones = [ROUTES[route]["zones"][zi] for route in routes
+                       if route not in (SURFACE, DREAM)]
         add_rule(location,
                  lambda state, sz=surface_zone, others=other_zones, capped=capped:
                      any(state.can_reach(reg, "Region", player) for reg in others)
@@ -1188,7 +1412,7 @@ def _set_combined_room_rules(world: "Hades2World", player: int, options, routes:
         region = world.get_region("Combined Rooms", player)
     except KeyError:
         return
-    count = _combined_room_count()
+    count = _combined_room_count(options)
     bounds = _zone_bounds(count)   # depth d (1..count) lives in zone z where bounds[z] < d <= bounds[z+1]
 
     def zone_of(depth: int) -> int:
@@ -1215,7 +1439,13 @@ def _set_combined_room_rules(world: "Hades2World", player: int, options, routes:
         # and this collapses back to "any route's zone is reachable".
         capped = depth > SURFACE_NO_CURE_ROOM_DEPTH
         surface_zone = ROUTES[SURFACE]["zones"][zi] if SURFACE in routes else None
-        other_zones = [ROUTES[route]["zones"][zi] for route in routes if route != SURFACE]
+        # Dream excluded: combine_pools' shared-pool sizing growing with dream_region_count is
+        # explicitly deferred (not part of this pass -- Locations.fill_dream_checks skips
+        # populating anything under combine_pools), so it has no relevant checks in these
+        # shared "Combined Rooms"/"Combined Score" pools yet, and no ROUTES[DREAM] entry to
+        # index at a fixed zi anyway (see Routes.DREAM's definition comment).
+        other_zones = [ROUTES[route]["zones"][zi] for route in routes
+                       if route not in (SURFACE, DREAM)]
         add_rule(location,
                  lambda state, sz=surface_zone, others=other_zones, capped=capped:
                      any(state.can_reach(reg, "Region", player) for reg in others)

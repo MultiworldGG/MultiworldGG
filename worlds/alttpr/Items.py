@@ -135,6 +135,7 @@ progressive_items = [
     "Bottle (Fairy)",
     "Bottle (Bee)",
     "Bottle (Good Bee)",
+    "Cape",
     "Cane of Byrna",
     "Cane of Somaria",
     "Crystal 1",
@@ -464,81 +465,41 @@ def place_escape_key(possible_locations: List[str], world: ALttPRWorld, key_size
 
 
 
-def place_junk_items_in_pots(progitempool: List[Item], usefulitempool: List[Item], filleritempool: List[Item], fill_locations: List[Location], world) -> None:
+def place_junk_items_locally(progitempool: List[Item], usefulitempool: List[Item], filleritempool: List[Item], fill_locations: List[Location], world) -> None:
     # There is a technical limit of 256 multiworld items under pots
-    local_pot_item_names = [
+    junk_item_names = [
+        "Arrows (5)",
         "Big Magic",
         "Blue Shield",
         "Chicken",
         "Fairy",
+        "Nothing",
         "Red Shield",
         "Rupee (1)",
         "Rupees (5)",
         "Single Bomb",
         "Small Heart",
         "Small Magic",
-        "Triforce Piece",
     ]
 
-    # These items look wonky anywhere other than under a pot
-    priority_pot_items = [
-        "Arrows (5)",
-        "Nothing",
-    ]
-
-    local_pot_items = ([item for item in filleritempool if item.player == world.player and item.name in local_pot_item_names])
-    num_filler_items = len(local_pot_items)
-    local_pot_items.extend([item for item in progitempool if item.player == world.player and item.name in local_pot_item_names])
-    local_pot_items.sort()
-    world.random.shuffle(local_pot_items)
-    local_pot_items.extend([item for item in filleritempool if item.name in priority_pot_items])
-    local_pot_items.reverse()  # Prioritize Nothing and Arrows (5) in pots
-    local_pot_items = [item for item in local_pot_items if item.name not in world.options.non_local_items]
-    pot_locations = [location for location in fill_locations if location.player == world.player and "Pot" in location.name]
+    junk_items = ([item for item in filleritempool if item.player == world.player and
+                                                           item.name in junk_item_names and
+                                                           item.name not in world.options.non_local_items])
+    junk_items.sort()
+    world.random.shuffle(junk_items)
     num_filler_items_placed = 0
-
-    if len(pot_locations) > 256:
-        pot_locations.sort()
-        world.random.shuffle(pot_locations)
-        local_pot_locations = pot_locations[256:]
-        assert len(local_pot_items) >= len(local_pot_locations), "Not enough local junk items to place in pots"
-
-        # TODO: A smarter algorithm could distribute items better, so that e.g. two Zelda players with lottery
-        # would always have 256 pots filled with the other player's items
-        for i in range(0, len(local_pot_locations)):
-            item = local_pot_items[i]
-            location = local_pot_locations[i]
-            location.place_locked_item(item)
-            fill_locations.remove(location)
-            if item.name == "Triforce Piece":
-                # All items with the same name are considered equal, so it can't differentiate between
-                # a Triforce Piece placed in a location vs. one not placed yet. Removing the wrong Triforce Piece
-                # screws up the item pool.
-                for i in range(0, len(progitempool)):
-                    if progitempool[i] == item and progitempool[i].location:
-                        progitempool.pop(i)
-                        break
-            else:
-                filleritempool.remove(item)
-                num_filler_items_placed = num_filler_items_placed + 1
 
     local_fill_percent = world.options.local_fill_percent
     if local_fill_percent > 0:
-        num_filler_items_to_place = num_filler_items * (local_fill_percent / 100)
-        junk_items = ([item for item in filleritempool if item.player == world.player and
-                       (item.name in local_pot_item_names or item.name in priority_pot_items) and
-                       item.name not in world.options.non_local_items])
-        junk_items.sort()
-        world.random.shuffle(junk_items)
-
         locations = [location for location in fill_locations if location.player == world.player]
         locations.sort()
         world.random.shuffle(locations)
+        num_filler_items_to_place = len(junk_items) * (local_fill_percent / 100)
 
         while num_filler_items_to_place > num_filler_items_placed and junk_items and locations:
             item = junk_items.pop(0)
             location = locations.pop(0)
             location.place_locked_item(item)
-            filleritempool.remove(item)
+            filleritempool.pop(next(i for i, candidate in enumerate(filleritempool) if candidate is item))
             fill_locations.remove(location)
             num_filler_items_placed = num_filler_items_placed + 1

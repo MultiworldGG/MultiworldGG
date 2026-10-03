@@ -1,11 +1,21 @@
 import logging
 
 from Options import OptionError
-from ..Options import OracleOfSeasonsOldMenShuffle, OracleOfSeasonsLinkedHerosCave
-from ..Util import get_old_man_values_pool
-from ..World import OracleOfSeasonsWorld
-from ..data import LOCATIONS_DATA, ITEMS_DATA
-from ..data.Constants import DIRECTIONS, SEASONS, DIRECTION_LEFT, DIRECTION_UP, SEASON_NAMES, VALID_RUPEE_PRICE_VALUES, AVERAGE_PRICE_PER_LOCATION
+
+from ..data.Constants import (
+    AVERAGE_PRICE_PER_LOCATION,
+    DIRECTION_LEFT,
+    DIRECTION_UP,
+    DIRECTIONS,
+    SEASON_NAMES,
+    SEASONS,
+    VALID_RUPEE_PRICE_VALUES,
+)
+from ..data.items import ITEMS_DATA
+from ..data.locations import LOCATIONS_DATA
+from ..options import OracleOfSeasonsLinkedHerosCave, OracleOfSeasonsLogicDifficulty, OracleOfSeasonsOldMenShuffle
+from ..util import get_old_man_values_pool
+from ..world import OracleOfSeasonsWorld
 
 
 def generate_early(world: OracleOfSeasonsWorld) -> None:
@@ -16,7 +26,7 @@ def generate_early(world: OracleOfSeasonsWorld) -> None:
     if len(conflicting_rings) > 0:
         raise OptionError("Required Rings and Excluded Rings contain the same element(s)", conflicting_rings)
 
-    world.remaining_progressive_gasha_seeds = world.options.deterministic_gasha_locations.value
+    world.remaining_progression_gasha_seeds = world.options.deterministic_gasha_locations.value
 
     pick_essences_in_game(world)
     if len(world.essences_in_game) < world.options.treehouse_old_man_requirement:
@@ -30,28 +40,26 @@ def generate_early(world: OracleOfSeasonsWorld) -> None:
         # Pick 4 random seasons & directions (last one has to be "left")
         world.lost_woods_item_sequence = []
         for i in range(4):
-            world.lost_woods_item_sequence.append([
-                world.random.choice(DIRECTIONS) if i < 3 else DIRECTION_LEFT,
-                world.random.choice(SEASONS)
-            ])
+            world.lost_woods_item_sequence.append(
+                [world.random.choice(DIRECTIONS) if i < 3 else DIRECTION_LEFT, world.random.choice(SEASONS)]
+            )
 
     if world.options.randomize_lost_woods_main_sequence:
         # Pick 4 random seasons & directions (last one has to be "up")
         world.lost_woods_main_sequence = []
         for i in range(4):
-            world.lost_woods_main_sequence.append([
-                world.random.choice(DIRECTIONS) if i < 3 else DIRECTION_UP,
-                world.random.choice(SEASONS)
-            ])
+            world.lost_woods_main_sequence.append(
+                [world.random.choice(DIRECTIONS) if i < 3 else DIRECTION_UP, world.random.choice(SEASONS)]
+            )
 
     if world.options.randomize_samasa_gate_code:
         world.samasa_gate_code = []
-        for i in range(world.options.samasa_gate_code_length.value):
+        for _ in range(world.options.samasa_gate_code_length.value):
             world.samasa_gate_code.append(world.random.randint(0, 3))
 
     randomize_shop_order(world)
     randomize_shop_prices(world)
-    compute_rupee_requirements(world)
+    compute_shop_requirements(world)
 
     create_random_rings_pool(world)
 
@@ -69,16 +77,10 @@ def generate_early(world: OracleOfSeasonsWorld) -> None:
         "Rupees (200)": ("Rupees", 200),
         "_reached_d2_rupee_room": ("Rupees", 150),
         "_reached_d6_rupee_room": ("Rupees", 90),
-
         "Ore Chunks (10)": ("Ore Chunks", 10),
         "Ore Chunks (25)": ("Ore Chunks", 25),
         "Ore Chunks (50)": ("Ore Chunks", 50),
-
-        "Bombs (10)": ("Bombs", 1),
-        "Bombs (20)": ("Bombs", 2),
-
-        "Bombchus (10)": ("Bombchus", 1),
-        "Bombchus (20)": ("Bombchus", 2),
+        "Ore Chunks (100)": ("Ore Chunks", 100),
     }
     for old_man in world.old_man_rupee_values:
         rupees = world.old_man_rupee_values[old_man]
@@ -86,27 +88,47 @@ def generate_early(world: OracleOfSeasonsWorld) -> None:
         # If this becomes an issue, state initialisation shall account for negative values
         world.item_mapping_collect[f"rupees from {old_man}"] = ("Rupees", rupees)
 
+    if world.options.logic_difficulty == OracleOfSeasonsLogicDifficulty.option_casual:
+        world.remaining_progression_containers = 5
+    elif world.options.logic_difficulty == OracleOfSeasonsLogicDifficulty.option_medium:
+        world.remaining_progression_containers = 4
+    else:
+        world.remaining_progression_containers = 2
+
+    dungeon_for_d4_5_bosses = world.random.sample([1, 2, 4, 5, 6, 7, 8], 2)
+    world.boss_mapping[dungeon_for_d4_5_bosses[0]] = 4
+    world.boss_mapping[dungeon_for_d4_5_bosses[1]] = 5
+    remaining_bosses = [1, 2, 3, 6, 7, 8]
+    other_dungeons = [i for i in range(1, 9) if i not in dungeon_for_d4_5_bosses]
+    world.random.shuffle(remaining_bosses)
+    for i, boss in enumerate(remaining_bosses):
+        world.boss_mapping[other_dungeons[i]] = boss
+
 
 def pick_essences_in_game(world: OracleOfSeasonsWorld) -> None:
     # -1 is the named range to set the placed essences equal to the required essences
     if world.options.placed_essences.value == -1:
-        world.options.placed_essences.value = world.options.placed_essences.value
+        world.options.placed_essences.value = world.options.required_essences.value
 
     # If the value for "Placed Essences" is lower than "Required Essences" (which can happen when using random
     # values for both), a new random value is automatically picked in the valid range.
     elif world.options.required_essences > world.options.placed_essences:
         new_placed_essences = world.random.randint(world.options.required_essences.value, 8)
-        logging.warn(f"Essences placed for {world.player_name} required to be {world.options.placed_essences.value} "
-                     f"but {world.options.required_essences} essences are required to beat the seed.\n"
-                     f"Increased the value to {new_placed_essences}. "
-                     f"You might want to set the range to 'included essences' or use triggers instead.")
+        logging.warning(
+            f"Essences placed for {world.player_name} required to be {world.options.placed_essences.value} "
+            f"but {world.options.required_essences} essences are required to beat the seed.\n"
+            f"Increased the value to {new_placed_essences}. "
+            f"You might want to set the range to 'included essences' or use triggers instead."
+        )
         world.options.placed_essences.value = new_placed_essences
 
     # If some essence pedestal locations were excluded and essences are not shuffled,
     # remove those essences in priority
     if not world.options.shuffle_essences:
-        excluded_locations_data = {name: data for name, data in LOCATIONS_DATA.items() if name in world.options.exclude_locations.value}
-        for loc_name, loc_data in excluded_locations_data.items():
+        excluded_locations_data = {
+            name: data for name, data in LOCATIONS_DATA.items() if name in world.options.exclude_locations.value
+        }
+        for loc_data in excluded_locations_data.values():
             if "essence" in loc_data and loc_data["essence"] is True:
                 world.essences_in_game.remove(loc_data["vanilla_item"])
         if len(world.essences_in_game) < world.options.required_essences:
@@ -114,7 +136,7 @@ def pick_essences_in_game(world: OracleOfSeasonsWorld) -> None:
 
     # If we need to remove more essences, pick them randomly
     world.random.shuffle(world.essences_in_game)
-    world.essences_in_game = world.essences_in_game[0:world.options.placed_essences]
+    world.essences_in_game = world.essences_in_game[0 : world.options.placed_essences]
 
 
 def restrict_non_local_items(world: OracleOfSeasonsWorld) -> None:
@@ -170,7 +192,7 @@ def randomize_shop_order(world: OracleOfSeasonsWorld) -> None:
     world.shop_order = [
         ["horonShop1", "horonShop2", "horonShop3"],
         ["memberShop1", "memberShop2", "memberShop3"],
-        ["syrupShop1", "syrupShop2", "syrupShop3"]
+        ["syrupShop1", "syrupShop2", "syrupShop3"],
     ]
     if world.options.advance_shop:
         world.shop_order.append(["advanceShop1", "advanceShop2", "advanceShop3"])
@@ -197,20 +219,18 @@ def randomize_shop_prices(world: OracleOfSeasonsWorld) -> None:
         for location_code in shop:
             value = world.random.gauss(average, deviation) * shop_price_factor
             world.shop_prices[location_code] = min(VALID_RUPEE_PRICE_VALUES, key=lambda x: abs(x - value))
+
     # Subrosia market special cases
     for i in range(2, 6):
         value = world.random.gauss(average, deviation) * 0.5
-        world.shop_prices[f"subrosianMarket{i}"] = min(VALID_RUPEE_PRICE_VALUES, key=lambda x: abs(x - value))
+        value = min(VALID_RUPEE_PRICE_VALUES, key=lambda x: abs(x - value))
+        world.shop_prices[f"subrosianMarket{i}"] = value
 
 
-def compute_rupee_requirements(world: OracleOfSeasonsWorld) -> None:
+def compute_shop_requirements(world: OracleOfSeasonsWorld) -> None:
     # Compute global rupee requirements for each shop, based on shop order and item prices
     cumulated_requirement = 0
     for shop in world.shop_order:
-        if shop[0].startswith("advance") and not world.options.advance_shop:
-            continue
-        if shop[0].endswith("Scrub") and not world.options.shuffle_business_scrubs:
-            continue
         # Add the price of each shop location in there to the requirement
         for shop_location in shop:
             cumulated_requirement += world.shop_prices[shop_location]
@@ -218,7 +238,13 @@ def compute_rupee_requirements(world: OracleOfSeasonsWorld) -> None:
         shop_name = shop[0]
         if not shop_name.endswith("Scrub"):
             shop_name = shop_name[:-1]
-        world.shop_rupee_requirements[shop_name] = cumulated_requirement
+        # Divide the requirement by 2 as the player will likely skip/grind
+        world.shop_requirements[shop_name] = cumulated_requirement // 2
+
+    subrosia_total_price = 0
+    for i in range(2, 6):
+        subrosia_total_price += world.shop_prices[f"subrosianMarket{i}"]
+    world.shop_requirements["subrosianMarket"] = subrosia_total_price // 2
 
 
 def create_random_rings_pool(world: OracleOfSeasonsWorld) -> None:
@@ -226,7 +252,11 @@ def create_random_rings_pool(world: OracleOfSeasonsWorld) -> None:
     ring_names = [name for name, idata in ITEMS_DATA.items() if "ring" in idata]
 
     # Remove required rings because they'll be added later anyway
-    ring_names = [name for name in ring_names if name not in world.options.required_rings.value and name not in world.options.excluded_rings.value]
+    ring_names = [
+        name
+        for name in ring_names
+        if name not in world.options.required_rings.value and name not in world.options.excluded_rings.value
+    ]
 
     world.random.shuffle(ring_names)
     world.random_rings_pool = ring_names

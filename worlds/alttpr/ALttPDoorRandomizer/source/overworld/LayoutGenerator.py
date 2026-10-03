@@ -985,7 +985,7 @@ def calculate_merged_restrictions(pieces: List[Piece], arrangement: List[List[in
     for tr in translated_restrictions[1:]:
         result &= tr
 
-    return list(result)
+    return sorted(result)
 
 def merge_pieces(piece_list: List[Piece], arrangement: List[List[int]], world: World, player: int, overworld_screens: Dict[int, Screen]) -> List[Piece]:
     """

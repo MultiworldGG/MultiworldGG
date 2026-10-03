@@ -10,13 +10,14 @@ from rule_builder.rules import Rule, And, Has
 
 from worlds.AutoWorld import WebWorld, World
 
-from .data.entrance_data import Entrance, EntranceRuleData, entrance_rule_data
+from .data.entrance_data import EntranceRuleData, entrance_rule_data
 
 from .data.entrance_randomizer_data import (
     entrances_to_game_location_teleports,
     entrances_to_game_locations,
     randomizable_entrances,
     randomizable_entrances_subway,
+    time_tunnels,
 )
 
 from .data.item_data import ZorkGrandInquisitorItemData, item_data
@@ -30,6 +31,8 @@ from .data.mapping_data import (
     starter_kit_for_entrance_randomizer,
     starter_kits_for_starting_location,
     starting_location_to_region,
+    time_tunnel_for_starting_location,
+    time_tunnel_starter_kit_items,
 )
 
 from .data_funcs import (
@@ -126,6 +129,9 @@ class ZorkGrandInquisitorWorld(World):
     deaths_required: int
     deathsanity: ZorkGrandInquisitorDeathsanity
     early_items: Tuple[ZorkGrandInquisitorItems, ...]
+    shuffle_time_tunnels: bool
+    time_tunnel_destinations: Dict[str, str]
+    time_tunnel_entrance_names: Dict[Tuple[ZorkGrandInquisitorRegions, ZorkGrandInquisitorRegions], str]
     entrance_randomizer: ZorkGrandInquisitorEntranceRandomizer
     entrance_randomizer_include_subway_destinations: bool
 
@@ -138,7 +144,6 @@ class ZorkGrandInquisitorWorld(World):
     entrance_rule_data: EntranceRuleData
     filler_item_names: List[str] = item_groups()["Filler"]
     goal: ZorkGrandInquisitorGoals
-    grant_missable_location_checks: bool
     hotspots: ZorkGrandInquisitorHotspots
     initial_totemizer_destination: ZorkGrandInquisitorItems
     item_data: Dict[ZorkGrandInquisitorItems, ZorkGrandInquisitorItemData]
@@ -190,6 +195,20 @@ class ZorkGrandInquisitorWorld(World):
 
         self.starting_location = id_to_starting_locations()[self.options.starting_location.value]
 
+        self.shuffle_time_tunnels = bool(self.options.shuffle_time_tunnels)
+        self.time_tunnel_destinations = dict()
+
+        if self.shuffle_time_tunnels:
+            tunnel_ids: List[str] = [tunnel_id for tunnel_id, _, _ in time_tunnels]
+            shuffled_tunnel_ids: List[str] = list(tunnel_ids)
+
+            self.random.shuffle(shuffled_tunnel_ids)
+
+            if shuffled_tunnel_ids == tunnel_ids:
+                self.random.shuffle(shuffled_tunnel_ids)
+
+            self.time_tunnel_destinations = dict(zip(tunnel_ids, shuffled_tunnel_ids))
+
         self.entrance_randomizer = id_to_entrance_randomizer()[self.options.entrance_randomizer.value]
 
         if self.entrance_randomizer != ZorkGrandInquisitorEntranceRandomizer.DISABLED:
@@ -206,10 +225,41 @@ class ZorkGrandInquisitorWorld(World):
                 starter_kits_for_starting_location[self.starting_location]
             )
 
+            if self.time_tunnel_destinations and self.starting_location in time_tunnel_for_starting_location:
+                starting_tunnel_id: str = time_tunnel_for_starting_location[self.starting_location]
+
+                world_for_tunnel: Dict[str, ZorkGrandInquisitorRegions] = {
+                    time_tunnel_id: world_region for time_tunnel_id, _, world_region in time_tunnels
+                }
+
+                vanilla_world: ZorkGrandInquisitorRegions = world_for_tunnel[starting_tunnel_id]
+                destination_world: ZorkGrandInquisitorRegions = world_for_tunnel[
+                    self.time_tunnel_destinations[starting_tunnel_id]
+                ]
+
+                totem: ZorkGrandInquisitorItems
+                for totem in (
+                    ZorkGrandInquisitorItems.TOTEM_BROG,
+                    ZorkGrandInquisitorItems.TOTEM_GRIFF,
+                    ZorkGrandInquisitorItems.TOTEM_LUCY,
+                ):
+                    if totem in self.starter_kit and destination_world != vanilla_world:
+                        starter_kit_adjusted: List[ZorkGrandInquisitorItems] = [
+                            item
+                            for item in self.starter_kit
+                            if item not in time_tunnel_starter_kit_items[(vanilla_world, totem)]
+                        ]
+
+                        item: ZorkGrandInquisitorItems
+                        for item in time_tunnel_starter_kit_items[(destination_world, totem)]:
+                            if item not in starter_kit_adjusted:
+                                starter_kit_adjusted.append(item)
+
+                        self.starter_kit = tuple(starter_kit_adjusted)
+
             if self.entrance_randomizer != ZorkGrandInquisitorEntranceRandomizer.DISABLED:
                 starter_kit_extended: List[ZorkGrandInquisitorItems] = list(self.starter_kit)
 
-                item: ZorkGrandInquisitorItems
                 for item in starter_kit_for_entrance_randomizer:
                     if item not in starter_kit_extended:
                         starter_kit_extended.append(item)
@@ -224,32 +274,21 @@ class ZorkGrandInquisitorWorld(World):
             )
 
         self.craftable_spells = id_to_craftable_spell_behaviors()[self.options.craftable_spells.value]
-        self.hotspots = id_to_hotspots()[self.options.hotspots]
+        self.hotspots = id_to_hotspots()[self.options.hotspots.value]
 
-        self.deathsanity = id_to_deathsanity()[self.options.deathsanity]
+        self.deathsanity = id_to_deathsanity()[self.options.deathsanity.value]
 
         if self.goal == ZorkGrandInquisitorGoals.GRIM_JOURNEY and (
             self.deathsanity == ZorkGrandInquisitorDeathsanity.OFF
         ):
             self.deathsanity = ZorkGrandInquisitorDeathsanity.ON
 
-        self.landmarksanity = id_to_landmarksanity()[self.options.landmarksanity]
+        self.landmarksanity = id_to_landmarksanity()[self.options.landmarksanity.value]
 
         if self.goal == ZorkGrandInquisitorGoals.ZORK_TOUR and (
             self.landmarksanity == ZorkGrandInquisitorLandmarksanity.OFF
         ):
             self.landmarksanity = ZorkGrandInquisitorLandmarksanity.ON
-
-        self.grant_missable_location_checks = bool(self.options.grant_missable_location_checks)
-
-        if self.grant_missable_location_checks:
-            if self.entrance_randomizer != ZorkGrandInquisitorEntranceRandomizer.DISABLED:
-                self.grant_missable_location_checks = False
-
-                logging.warning(
-                    f"Zork Grand Inquisitor: {self.player_name} wants to grant missable location checks but "
-                    "has the entrance randomizer enabled. Disabling the granting of missable location checks..."
-                )
 
         self.entrance_randomizer_pairings = dict()
         self.entrance_randomizer_pairings_by_name = dict()
@@ -293,10 +332,52 @@ class ZorkGrandInquisitorWorld(World):
         if self.is_universal_tracker:
             self._apply_universal_tracker_passthrough()
 
+        self.time_tunnel_entrance_names = dict()
+
+        if self.time_tunnel_destinations:
+            self.entrance_rule_data = dict(self.entrance_rule_data)
+
+            lobby_for_tunnel: Dict[str, ZorkGrandInquisitorRegions] = {
+                tunnel_id: lobby_region for tunnel_id, lobby_region, _ in time_tunnels
+            }
+
+            world_for_tunnel: Dict[str, ZorkGrandInquisitorRegions] = {
+                tunnel_id: world_region for tunnel_id, _, world_region in time_tunnels
+            }
+
+            tunnel_rules: Dict[str, Optional[Rule]] = dict()
+
+            tunnel_id: str
+            lobby_region: ZorkGrandInquisitorRegions
+            world_region: ZorkGrandInquisitorRegions
+            for tunnel_id, lobby_region, world_region in time_tunnels:
+                tunnel_rules[tunnel_id] = self.entrance_rule_data.pop((lobby_region, world_region))
+                del self.entrance_rule_data[(world_region, lobby_region)]
+
+            for tunnel_id, lobby_region, world_region in time_tunnels:
+                destination_lobby_region: ZorkGrandInquisitorRegions = lobby_for_tunnel[
+                    self.time_tunnel_destinations[tunnel_id]
+                ]
+
+                destination_world_region: ZorkGrandInquisitorRegions = world_for_tunnel[
+                    self.time_tunnel_destinations[tunnel_id]
+                ]
+
+                self.entrance_rule_data[(lobby_region, destination_world_region)] = tunnel_rules[tunnel_id]
+                self.entrance_rule_data[(destination_world_region, lobby_region)] = None
+
+                self.time_tunnel_entrance_names[(lobby_region, destination_world_region)] = entrance_names[
+                    (lobby_region, world_region)
+                ]
+
+                self.time_tunnel_entrance_names[(destination_world_region, lobby_region)] = entrance_names[
+                    (destination_world_region, destination_lobby_region)
+                ]
+
     def create_regions(self) -> None:
-        entrances_by_region: Dict[ZorkGrandInquisitorRegions, List[Entrance]] = entrances_by_region_for_world(
-            self.entrance_rule_data
-        )
+        entrances_by_region: Dict[
+            ZorkGrandInquisitorRegions, List[Tuple[ZorkGrandInquisitorRegions, ZorkGrandInquisitorRegions]]
+        ] = entrances_by_region_for_world(self.entrance_rule_data)
 
         region_mapping: Dict[ZorkGrandInquisitorRegions, Region] = dict()
 
@@ -309,7 +390,6 @@ class ZorkGrandInquisitorWorld(World):
 
         region_connecting_endgame: ZorkGrandInquisitorRegions = endgame_connecting_regions_for_goal[self.goal]
 
-        region_enum_item: ZorkGrandInquisitorRegions
         region: Region
         for region_enum_item, region in region_mapping.items():
             regions_locations: List[ZorkGrandInquisitorLocations] = region_locations_mapping[region_enum_item]
@@ -355,15 +435,15 @@ class ZorkGrandInquisitorWorld(World):
                     region_exit,
                 )
 
-                entrance: Entrance
-                entrance_rule: Optional[Rule] = self.entrance_rule_data.get(connection_tuple, None)
-
-                if entrance_rule is None:
-                    entrance = region.connect(region_mapping[region_exit])
-                else:
-                    entrance = region.connect(region_mapping[region_exit], rule=entrance_rule)
-
-                entrance.name = entrance_names.get(connection_tuple, entrance.name)
+                region.connect(
+                    region_mapping[region_exit],
+                    name=(
+                        self.time_tunnel_entrance_names[connection_tuple]
+                        if connection_tuple in self.time_tunnel_entrance_names
+                        else entrance_names[connection_tuple]
+                    ),
+                    rule=self.entrance_rule_data[connection_tuple],
+                )
 
             if region_enum_item == region_connecting_endgame:
                 goal_access_rule: Optional[Rule] = None
@@ -380,8 +460,8 @@ class ZorkGrandInquisitorWorld(World):
                             Has(ZorkGrandInquisitorItems.SPELL_GOLGATEM.value),
                             Has(ZorkGrandInquisitorItems.SPELL_IGRAM.value),
                             Has(ZorkGrandInquisitorItems.SPELL_KENDALL.value),
-                            Has(ZorkGrandInquisitorItems.SPELL_OBIDIL.value),
                             Has(ZorkGrandInquisitorItems.SPELL_NARWILE.value),
+                            Has(ZorkGrandInquisitorItems.SPELL_OBIDIL.value),
                             Has(ZorkGrandInquisitorItems.SPELL_REZROV.value),
                             Has(ZorkGrandInquisitorItems.SPELL_SNAVIG.value),
                             Has(ZorkGrandInquisitorItems.SPELL_THROCK.value),
@@ -458,7 +538,10 @@ class ZorkGrandInquisitorWorld(World):
         if self.starting_location != ZorkGrandInquisitorStartingLocations.DM_LAIR_INTERIOR:
             items_to_precollect.add(ZorkGrandInquisitorItems.HOTSPOT_DUNGEON_MASTERS_HOUSE_EXIT)
 
-        if self.starting_location != ZorkGrandInquisitorStartingLocations.SPELL_LAB:
+        if (
+            self.starting_location != ZorkGrandInquisitorStartingLocations.SPELL_LAB
+            or self.entrance_randomizer != ZorkGrandInquisitorEntranceRandomizer.DISABLED
+        ):
             items_to_precollect.add(ZorkGrandInquisitorItems.HOTSPOT_SPELL_LAB_BRIDGE_EXIT)
 
         items_to_ignore |= items_to_precollect
@@ -502,9 +585,8 @@ class ZorkGrandInquisitorWorld(World):
             set(self.early_items) - items_to_ignore
         )
 
-        if len(items_to_place_early):
-            for item in items_to_place_early:
-                self.multiworld.early_items[self.player][item.value] = 1
+        for item in items_to_place_early:
+            self.multiworld.early_items[self.player][item.value] = 1
 
     def create_item(self, name: str) -> ZorkGrandInquisitorItem:
         data: ZorkGrandInquisitorItemData = (self.item_data or item_data)[self.item_name_to_item[name]]
@@ -567,11 +649,13 @@ class ZorkGrandInquisitorWorld(World):
             "wild_voxam_chance",
             "deathsanity",
             "landmarksanity",
+            "shuffle_time_tunnels",
             "entrance_randomizer",
             "entrance_randomizer_include_subway_destinations",
             "trap_percentage",
             "grant_missable_location_checks",
             "client_seed_information",
+            "in_game_overlay",
             "death_link",
         )
 
@@ -596,8 +680,7 @@ class ZorkGrandInquisitorWorld(World):
         if slot_data["landmarksanity"] != self.landmarksanity.value:
             slot_data["landmarksanity"] = self.landmarksanity.value
 
-        if slot_data["grant_missable_location_checks"] != self.grant_missable_location_checks:
-            slot_data["grant_missable_location_checks"] = self.grant_missable_location_checks
+        slot_data["time_tunnel_destinations"] = self.time_tunnel_destinations
 
         slot_data["entrance_randomizer_data"] = dict()
         slot_data["entrance_randomizer_data_by_name"] = dict()
@@ -639,6 +722,22 @@ class ZorkGrandInquisitorWorld(World):
         hint_data[self.player] = data
 
     def write_spoiler_header(self, spoiler_handle: TextIO) -> None:
+        if self.time_tunnel_destinations:
+            spoiler_handle.write("\nShuffled Time Tunnels:")
+
+            world_for_tunnel: Dict[str, ZorkGrandInquisitorRegions] = {
+                tunnel_id: world_region for tunnel_id, _, world_region in time_tunnels
+            }
+
+            tunnel_id: str
+            lobby_region: ZorkGrandInquisitorRegions
+            world_region: ZorkGrandInquisitorRegions
+            for tunnel_id, lobby_region, world_region in time_tunnels:
+                spoiler_handle.write(
+                    f"\n    {lobby_region.value}: {entrance_names[(lobby_region, world_region)]} -> "
+                    f"{world_for_tunnel[self.time_tunnel_destinations[tunnel_id]].value}"
+                )
+
         if self.entrance_randomizer == ZorkGrandInquisitorEntranceRandomizer.DISABLED:
             return
 
@@ -670,6 +769,7 @@ class ZorkGrandInquisitorWorld(World):
         slot_data["craftable_spells"] = id_to_craftable_spell_behaviors()[slot_data["craftable_spells"]]
         slot_data["deathsanity"] = id_to_deathsanity()[slot_data["deathsanity"]]
         slot_data["landmarksanity"] = id_to_landmarksanity()[slot_data["landmarksanity"]]
+        slot_data["shuffle_time_tunnels"] = bool(slot_data["shuffle_time_tunnels"])
         slot_data["entrance_randomizer"] = id_to_entrance_randomizer()[slot_data["entrance_randomizer"]]
         slot_data["entrance_randomizer_include_subway_destinations"] = bool(slot_data["entrance_randomizer_include_subway_destinations"])
 
@@ -696,6 +796,8 @@ class ZorkGrandInquisitorWorld(World):
             self.hotspots = passthrough["hotspots"]
             self.deathsanity = passthrough["deathsanity"]
             self.landmarksanity = passthrough["landmarksanity"]
+            self.shuffle_time_tunnels = passthrough["shuffle_time_tunnels"]
+            self.time_tunnel_destinations = passthrough["time_tunnel_destinations"]
             self.entrance_randomizer = passthrough["entrance_randomizer"]
 
             self.entrance_randomizer_include_subway_destinations = passthrough[
@@ -724,8 +826,8 @@ class ZorkGrandInquisitorWorld(World):
             self.trap_percentage = passthrough["trap_percentage"] / 100
             self.trap_weights = passthrough["trap_weights"]
 
-    def _prepare_entrance_randomizer_slot_data(self) -> Dict[str, str]:
-        entrance_randomizer_slot_data: Dict[str, str] = dict()
+    def _prepare_entrance_randomizer_slot_data(self) -> Dict[str, Tuple[str, int]]:
+        entrance_randomizer_slot_data: Dict[str, Tuple[str, int]] = dict()
 
         entrance_from: Tuple[ZorkGrandInquisitorRegions, ZorkGrandInquisitorRegions]
         entrance_to: Tuple[ZorkGrandInquisitorRegions, ZorkGrandInquisitorRegions]
@@ -733,7 +835,7 @@ class ZorkGrandInquisitorWorld(World):
             game_locations_pair: Tuple[str, str]
             for game_locations_pair in entrances_to_game_locations[entrance_from]:
                 entrance_randomizer_slot_data["-".join(game_locations_pair)] = (
-                    " ".join(entrances_to_game_location_teleports[entrance_to])
+                    entrances_to_game_location_teleports[entrance_to]
                 )
 
         return entrance_randomizer_slot_data
@@ -779,7 +881,6 @@ class ZorkGrandInquisitorWorld(World):
                 ZorkGrandInquisitorTags.DEATHSANITY
             )
 
-            location: ZorkGrandInquisitorLocations
             for location in deathsanity_locations:
                 locked_items[location] = ZorkGrandInquisitorItems.DEATH
 
@@ -811,8 +912,8 @@ class ZorkGrandInquisitorWorld(World):
                 ZorkGrandInquisitorItems.SPELL_GOLGATEM,
                 ZorkGrandInquisitorItems.SPELL_IGRAM,
                 ZorkGrandInquisitorItems.SPELL_KENDALL,
-                ZorkGrandInquisitorItems.SPELL_OBIDIL,
                 ZorkGrandInquisitorItems.SPELL_NARWILE,
+                ZorkGrandInquisitorItems.SPELL_OBIDIL,
                 ZorkGrandInquisitorItems.SPELL_REZROV,
                 ZorkGrandInquisitorItems.SPELL_SNAVIG,
                 ZorkGrandInquisitorItems.SPELL_THROCK,

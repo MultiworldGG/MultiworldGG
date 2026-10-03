@@ -799,9 +799,16 @@ class TCGRequiresLens(Toggle):
     display_name = "TCG Requires Lens of Truth"
 
 
-class ShuffleLoachReward(Toggle):
-    """Shuffle the Hyrule Loach reward from the Fishing Pond."""
-    display_name = "Shuffle Loach Reward"
+class ShuffleLoachReward(Choice):
+    """Shuffle the Hyrule Loach reward from the Fishing Pond.
+    Vanilla Behavior keeps the original loach spawn and sinking lure rules.
+    Easier Behavior always spawns the loach, makes the sinking lure available
+    immediately, and allows the normal fishing prizes to be won with it."""
+    display_name = "Shuffle Hyrule Loach Reward"
+    option_off = 0
+    option_vanilla = 1
+    option_easy = 2
+    default = 0
 
 
 class KeyRingsGiveBossKeys(Toggle):

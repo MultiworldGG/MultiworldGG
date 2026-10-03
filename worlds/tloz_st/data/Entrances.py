@@ -2721,7 +2721,7 @@ ENTRANCE_DATA |= {
     "Desert Temple B2 North Post-Fight": {
         "return_name": "Skeldritch Post-Fight Exit",
         "entrance_region": "dt b2 n",
-        "exit_region": "dt skeldritch",
+        "exit_region": "dt skeldritch safety",
         "entrance": (0x1D, 0x4, 0x1),
         "exit": (0x22, 0x1, 0),
         "type": EntranceGroups.NONE,
@@ -2778,7 +2778,7 @@ ENTRANCE_DATA |= {
     },
     "Desert Temple Bow of Light Room Blue Warp": {
         "return_name": "Desert Temple Lobby Boss Warp",
-        "entrance_region": "dt skeldritch",
+        "entrance_region": "dt skeldritch safety",
         "exit_region": "desert temple lobby",
         "entrance": (0x1d, 0x5, 1),
         "exit": (0x1D, 0x6, 2),
@@ -2805,7 +2805,7 @@ ENTRANCE_DATA |= {
     "EVENT: Defeat Fraaz": event("bt fraaz", "event_fraaz"),
     "EVENT: Defeat Cactops": event("oct phytops", "event_phytops"),
     "EVENT: Defeat Vulcano": event("mtt vulcano", "event_vulcano"),
-    "EVENT: Defeat Capbone": event("dt skeldritch", "skeldritch event"),
+    "EVENT: Defeat Capbone": event("dt skeldritch safety", "skeldritch event"),
     "EVENT: Reach ToS 3F": event("tos 3f rail map", "event_3f"),
     "EVENT: Reach ToS 7F": event("tos 7f rail map", "event_7f"),
     "EVENT: Reach ToS 12F": event("tos 11f", "event_12f"),
@@ -2820,7 +2820,7 @@ ENTRANCE_DATA |= {
     "GOAL: Defeat Fraaz": event("bt fraaz", "goal_fraaz"),
     "GOAL: Defeat Cactops": event("oct phytops", "goal_phytops"),
     "GOAL: Defeat Vulcano": event("mtt pre vulcano", "goal_vulcano"),
-    "GOAL: Defeat Skeldritch": event("dt skeldritch", "skeldritch goal"),
+    "GOAL: Defeat Skeldritch": event("dt skeldritch safety", "skeldritch goal"),
     "GOAL: Reach ToS 3F": event("tos 3f rail map", "goal_forest_glyph"),
     "GOAL: Reach ToS 7F": event("tos 7f rail map", "goal_forest_glyph"),
     "GOAL: Reach ToS 12F": event("tos 11f", "goal_ocean_glyph"),
@@ -3037,6 +3037,28 @@ ENTRANCE_DATA |= {
     "EVENT: Blizzard Temple 1F Bell Door 2": event("bt 1f ne bell"),
     "EVENT: Desert Temple B1 Red Door": silent_event("dt b1 mid", "dt b1 s"),
 
+    "Snow Realm Enter Rocktite Fight": {
+        "return_name": "Snow Rocktite Entrance",
+        "entrance_region": "snow realm",
+        "exit_region": "snow sanc station",
+        "entrance": (0x5, 0x0, 0x0),
+        "exit": (0xB, 0x0, 0x0),
+        "type": EntranceGroups.NONE,
+        "direction": EntranceGroups.NONE,
+        "island": EntranceGroups.NONE,
+        "two_way": False
+    },
+    "Snow Rocktite Exit": {
+        "return_name": "Snowfall Sanc from Rocktite",
+        "entrance_region": "snow sanc tracks",
+        "exit_region": "snow sanc",
+        "entrance": (0xB, 0x0, 0x0),
+        "exit": (0x31, 0x0, 0x0),
+        "type": EntranceGroups.NONE,
+        "direction": EntranceGroups.NONE,
+        "island": EntranceGroups.NONE,
+        "two_way": False
+    },
 }
 
 

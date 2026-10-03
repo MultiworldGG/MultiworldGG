@@ -5,22 +5,46 @@ Module that provides functions to create AST calls representing various game obj
 import typing
 import ast
 
-from ..types.condition import Condition
+from ..types.condition import AndCondition, Condition, OrCondition, QuestCondition
 from ..types.locations import AccessInfo, LocationData
 from ..types.regions import Goal, RegionConnection
 from ..types.items import ItemData, ItemPoolEntry, ProgressiveChainEntry, SingleItemData
 from ..types.shops import ShopData
 
 
+def create_expression_dataclass(cls) -> ast.Call:
+    result = ast.Call(
+        func=ast.Name(cls.__class__.__name__),
+        args=[],
+        keywords=[
+            ast.keyword(arg=key, value=ast.Constant(value))
+            for key, value in cls.__dict__.items()
+            if cls.__dataclass_fields__[key].init
+        ],
+    )
+    ast.fix_missing_locations(result)
+
+    return result
+
 def create_expression_condition(condition: Condition) -> ast.Call:
     """
     Create an expression representing a singular condition.
     """
-    result = ast.Call(
-        func=ast.Name(condition.__class__.__name__),
-        args=[],
-        keywords=[ast.keyword(arg=key, value=ast.Constant(value)) for key, value in condition.__dict__.items()],
-    )
+    if isinstance(condition, OrCondition) or isinstance(condition, AndCondition):
+        # we handle these conditions in a special way, since their lists cannot be encoded by ast.Constant
+        result = ast.Call(
+            func=ast.Name(condition.__class__.__name__),
+            args=[],
+            keywords=[
+                ast.keyword(
+                    arg="subconditions",
+                    value=create_expression_condition_list(condition.subconditions)
+                )
+            ],
+        )
+    else:
+        # this block should handle most cases, unless you make a condition that has a complex type
+        result = create_expression_dataclass(condition)
     ast.fix_missing_locations(result)
 
     return result

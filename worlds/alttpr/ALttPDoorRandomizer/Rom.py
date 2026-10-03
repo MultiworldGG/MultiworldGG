@@ -30,9 +30,11 @@ from .Text import Lumberjacks_texts, SickKid_texts, FluteBoy_texts, Zora_texts, 
 from .source.classes.ContributorCredits import get_credits_data
 from .Utils import local_path, int16_as_bytes, int32_as_bytes, snes_to_pc
 from .Items import ItemFactory, prize_item_table
-from .source.overworld.EntranceData import door_addresses, ow_prize_table
+from .source.overworld.EntranceData import door_addresses, get_door_addresses, get_ow_prize_coords
 from .source.overworld.EntranceShuffle2 import exit_ids
 from .source.overworld.FluteShuffle import default_flute_connections, flute_data
+from .source.overworld.OWMap import apply_ow_map_assets
+from .source.overworld.OWTileChanges import write_static_map_changes
 from .InitialSram import InitialSram
 
 from .source.classes.SFX import randomize_sfx, randomize_sfxinstruments, randomize_songinstruments
@@ -45,10 +47,10 @@ from .source.enemizer.Enemizer import write_enemy_shuffle_settings
 
 
 JAP10HASH = '03a63945398191337e896e5771f77173'
-RANDOMIZERBASEHASH = '17e19fe2d62915e58dcf31e71524ce29'
+RANDOMIZERBASEHASH = 'eb1061713867a4a9454bcc44933126ca'
 
 limited_run_hashes = {
-    '2604' : 'b642538db5d6d0149ece7c9df988ac8a',
+    '2604' : 'f6db6681f0e28e8463c2cc9ac3a07f07',
 }
 
 class JsonRom(object):
@@ -489,10 +491,8 @@ def patch_rom(world, rom, player, team, is_mystery=False, rom_header=None, hint_
                 else:
                     itemid = 0x5A
 
-        if not location.locked and ((location.item.smallkey and world.keyshuffle[player] == 'none') or (
-            location.item.bigkey and world.bigkeyshuffle[player] == 'none') or (
-            location.item.map and world.mapshuffle[player] == 'none') or (
-            location.item.compass and world.compassshuffle[player] == 'none')):
+        if (not location.locked and location.item
+                and location.item.is_inside_dungeon_item(world)):
             itemid = handle_native_dungeon(location, itemid)
 
         rom.write_byte(location.address, itemid)
@@ -583,6 +583,7 @@ def patch_rom(world, rom, player, team, is_mystery=False, rom_header=None, hint_
             rom.write_byte(0x153D00 + cell_id % 0x40, pos)
         for pos, cell_id in enumerate(sum(grid[1], [])):
             rom.write_byte(0x153D40 + cell_id % 0x40, pos)
+        apply_ow_map_assets(rom)  # OW Map GFX ($18C000) + LW/DW tilemaps ($0AC739 / $0AD739)
     elif world.owMixed[player]:
         owFlags |= 0x02
         owFog = 1
@@ -1119,6 +1120,7 @@ def patch_rom(world, rom, player, team, is_mystery=False, rom_header=None, hint_
     # saved fish prize
     rom.write_byte(0xE82CC, world.prizes[player]['fish'])
 
+
     # fill enemy prize packs
     rom.write_bytes(0x37A78, world.prizes[player]['enemies'])
 
@@ -1499,10 +1501,11 @@ def patch_rom(world, rom, player, team, is_mystery=False, rom_header=None, hint_
                     if owid in [0x00, 0x03, 0x05, 0x18, 0x1B, 0x1E, 0x30, 0x35]:
                         coords = (coords[0] + 0x100, coords[1] + 0x100)
         else:
-            if ent.name in ow_prize_table:
-                coords = ow_prize_table[ent.name]
-            elif door_addresses[ent.name][1] is not None:
-                coords = (door_addresses[ent.name][1][6], door_addresses[ent.name][1][5])
+            prize_coords = get_ow_prize_coords(ent.name, world, player)
+            if prize_coords is not None:
+                coords = prize_coords
+            elif get_door_addresses(ent, world, player)[1] is not None:
+                coords = (get_door_addresses(ent, world, player)[1][6], get_door_addresses(ent, world, player)[1][5])
             else:
                 raise Exception(f"No overworld map coordinates for entrance {ent.name}")
         map_x, map_y = adjust_ow_coordinates_to_layout(world, player, coords[0], coords[1], ent.parent_region.type == RegionType.DarkWorld)
@@ -1640,6 +1643,11 @@ def patch_rom(world, rom, player, team, is_mystery=False, rom_header=None, hint_
     rom.write_byte(0x180020, digging_game_rng)
     rom.write_byte(0xEFD95, digging_game_rng)
     glitches_enabled = world.logic[player] in ['owglitches', 'hybridglitches', 'nologic']
+
+    # record number of digs for spoiler log
+    player_name = '' if world.players == 1 else str(' (' + world.get_player_names(player) + ')')
+    world.spoiler.dig_game_digs[player_name] = digging_game_rng
+
     rom.write_byte(0x1800A3, 0x01)  # enable correct world setting behaviour after agahnim kills
     rom.write_byte(0x1800A4, 0x01 if not glitches_enabled else 0x00)  # enable POD EG fix
     rom.write_byte(0x180042, 0x01 if world.save_and_quit_from_boss else 0x00)  # Allow Save and Quit after boss kill
@@ -1682,7 +1690,9 @@ def patch_rom(world, rom, player, team, is_mystery=False, rom_header=None, hint_
             rom.write_bytes(0x180188, [0x80, 0, 0])  # Zelda respawn refills (magic, bombs, arrows)
             rom.write_bytes(0x18018B, [0x80, 0, 0])  # Mantle respawn refills (magic, bombs, arrows)
             magic_max = 0x80
-        if world.doorShuffle[player] not in ['vanilla', 'basic']:
+        # enemized escapes can logically need a bow or magic that the uncle item didn't supply
+        enemized_vanilla = world.doorShuffle[player] == 'vanilla' and world.enemy_shuffle[player] != 'none'
+        if world.doorShuffle[player] not in ['vanilla', 'basic'] or enemized_vanilla:
             # Uncle respawn refills (magic, bombs, arrows)
             rom.write_bytes(0x180185, [max(magic_small, magic_max), max(bomb_small, bomb_max), max(bow_small, bow_max)])
             # Zelda respawn refills (magic, bombs, arrows)
@@ -2378,7 +2388,7 @@ def write_strings(rom, world, player, team, multiworld_hint_text={}):
             "    Winners\n{HARP}\n"
             "    ~~~2025~~~\n      humbugh\n\n"
             "    ~~~2024~~~\n    Gammachuu\n\n"
-            "    ~~~2023~~~\n    WallKicks\n\n"            
+            "    ~~~2023~~~\n    WallKicks\n\n"
             "    ~~~2022~~~\n     Schulzer\n\n"
             "    ~~~2021~~~\n      Goomba\n\n"
             "    ~~~2020~~~\n    Linlinlin\n\n"
@@ -2493,7 +2503,7 @@ def write_strings(rom, world, player, team, multiworld_hint_text={}):
             entrances_to_hint.update(InsanityEntrances)
             if world.shuffle_ganon[player]:
                 if world.is_tile_swapped(0x1b, player):
-                    entrances_to_hint.update({'Inverted Pyramid Entrance': 'The extra castle passage'})
+                    entrances_to_hint.update({'Pyramid Entrance': 'The extra castle passage'})
                 else:
                     entrances_to_hint.update({'Pyramid Entrance': 'The pyramid ledge'})
         hint_count = 4 if world.shuffle[player] not in ['vanilla', 'dungeonssimple', 'dungeonsfull', 'district', 'swapped'] else 0
@@ -2777,7 +2787,12 @@ def write_strings(rom, world, player, team, multiworld_hint_text={}):
 
     # this is what shows after getting the green pendant item in rando
     tt['sahasrahla_quest_have_master_sword'] = Sahasrahla2_texts[random.randint(0, len(Sahasrahla2_texts) - 1)]
-    tt['blind_by_the_light'] = Blind_texts[random.randint(0, len(Blind_texts) - 1)]
+    blind_by_the_light_text = Blind_texts[random.randint(0, len(Blind_texts) - 1)]
+    tt['blind_by_the_light'] = blind_by_the_light_text
+    player_name = '' if world.players == 1 else str(' (' + world.get_player_names(player) + ')')
+    world.spoiler.ingame_texts[player_name] = {
+        'Blind Pun': str(blind_by_the_light_text).replace('\n', ' ')
+    }
 
     if world.goal[player] in ['triforcehunt']:
         tt['ganon_fall_in_alt'] = 'Why are you even here?\n You can\'t even hurt me! Get the Triforce Pieces.'
@@ -3147,6 +3162,8 @@ def set_inverted_mode(world, player, rom, inverted_buffer):
     # apply inverted map changes
     for b in range(0x00, len(inverted_buffer)):
         rom.write_byte(0x153A70 + b, inverted_buffer[b])
+
+    write_static_map_changes(rom, world, player)
 
 def patch_shuffled_dark_sanc(world, rom, player):
     dark_sanc = world.get_region('Dark Sanctuary Hint', player)

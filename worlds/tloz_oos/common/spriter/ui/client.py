@@ -153,6 +153,8 @@ class ImageApp(MDApp):
         file_path = Utils.save_filename("Save sprite file", (("BMP", (".bmp",)),), f"{image_name}.bmp")
         if not file_path:
             return
+        if not file_path.endswith(".bmp"):
+            file_path += ".bmp"
         shutil.copy(self.img.source, file_path)
 
     def export_binary(self, *_) -> None:
@@ -163,6 +165,8 @@ class ImageApp(MDApp):
         file_path = Utils.save_filename("Save sprite binary", (("BIN", (".bin",)),), f"{image_name}.bin")
         if not file_path:
             return
+        if not file_path.endswith(".bin"):
+            file_path += ".bin"
 
         image = MicroBMP().load(self.img.source)
         remap_sprite(image)

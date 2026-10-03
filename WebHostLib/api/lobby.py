@@ -13,6 +13,7 @@ from flask import request, session, jsonify, send_file
 from markupsafe import Markup
 from pony.orm import commit, count, select, flush
 
+from Generate import SafeFormatter
 from Utils import tuplize_version, Version, utcnow
 from WebHostLib.api import api_endpoints
 from WebHostLib.check import get_yaml_data, parse_meta_yaml, roll_options
@@ -28,6 +29,7 @@ APWORLD_MAX_SIZE = 60 * 1024 * 1024  # 60 MB - leaves headroom under 64 MB globa
 LOBBY_LOCAL_GENERATION_YAML_LIMIT = 25
 AUXILIARY_APWORLD_LIMIT = 5
 META_YAML_MAX_SIZE = 1024 * 1024
+YAML_PLAYER_NAME_MAX_LENGTH = 16
 
 def _safe_zip_name(name: str) -> str:
     """Replace characters that are problematic in ZIP entry names."""
@@ -42,6 +44,72 @@ def _has_name_template(name: str) -> bool:
     Such names are guaranteed unique after generation and must be excluded
     from duplicate-name checks."""
     return bool(_NAME_TEMPLATE_RE.search(name))
+
+
+def _player_name_length_error(name, filename: str, player_count: int) -> str | None:
+    """Check every selectable name, allowing templates that fit after expansion.
+
+    Use the lobby's slot count as a bound on player and occurrence numbers, so
+    names cannot overflow when generation reorders slots or rerolls weights.
+    """
+    if isinstance(name, dict):
+        names = [candidate for candidate, weight in name.items() if int(weight) > 0]
+    elif isinstance(name, list):
+        names = name
+    else:
+        names = [name]
+    for candidate in names:
+        candidate = candidate or os.path.splitext(os.path.basename(filename))[0]
+        if not isinstance(candidate, str):
+            return f"Player name in '{filename}' must be a string."
+        try:
+            # Match Generate.handle_name's expansion, but measure before its truncation.
+            template = "%".join(part.replace("%number%", "{number}").replace("%player%", "{player}")
+                                for part in candidate.split("%%"))
+            optional_number = player_count if player_count > 1 else ''
+            expanded = SafeFormatter().vformat(template, (), {
+                "number": player_count, "NUMBER": optional_number,
+                "player": player_count, "PLAYER": optional_number,
+            }).strip()
+        except (ValueError, TypeError) as exc:
+            return f"Invalid player name '{candidate}' in '{filename}': {exc}"
+        if len(expanded) > YAML_PLAYER_NAME_MAX_LENGTH:
+            detail = f"currently {len(expanded)}"
+            if expanded != candidate.strip():
+                detail = f"up to {len(expanded)} after expanding placeholders for {player_count} slots"
+            return (f"Player name '{candidate}' in '{filename}' must be "
+                    f"{YAML_PLAYER_NAME_MAX_LENGTH} characters or fewer ({detail}).")
+    return None
+
+
+def _yaml_player_name_length_error(options: dict[str, bytes], player_count: int) -> str | None:
+    from Utils import parse_yamls
+
+    for filename, content in options.items():
+        try:
+            for document in parse_yamls(content):
+                if not isinstance(document, dict):
+                    continue  # The existing option validator handles malformed documents.
+                names = [document.get('name')]
+                # Linked options and triggers may replace or extend the root name weights.
+                option_sets = list(document.get('linked_options', [])) + list(document.get('triggers', []))
+                games = document.get('game', '')
+                if isinstance(games, str):
+                    games = [games]
+                for game in games:
+                    category = document.get(game)
+                    if isinstance(category, dict):
+                        option_sets.extend(category.get('triggers', []))
+                for option_set in option_sets:
+                    root_options = option_set.get('options', {}).get(None, {})
+                    names.extend(value for key, value in root_options.items() if key in ('name', '+name'))
+                for name in names:
+                    error = _player_name_length_error(name, filename, player_count)
+                    if error:
+                        return error
+        except (ValueError, TypeError, AttributeError, yaml.YAMLError) as exc:
+            return f"Could not validate player name in '{filename}': {exc}"
+    return None
 
 
 def _delete_apworld_file(apworld: LobbyApworld | LobbyAuxiliaryApworld) -> None:
@@ -1183,6 +1251,16 @@ def lobby_upload_yaml(lobby: UUID):
             }), 400
     options = expanded
 
+    existing_yamls = select(y for y in LobbyYaml if y.lobby == lobby)[:]
+    player_count = len(existing_yamls) + len(options)
+    name_error = _yaml_player_name_length_error(options, player_count)
+    if not name_error:
+        # Adding slots can increase the number of digits in an existing template.
+        name_error = _yaml_player_name_length_error(
+            {f"{y.id}/{y.filename}": y.content for y in existing_yamls}, player_count)
+    if name_error:
+        return jsonify({"error": name_error}), 400
+
     force_custom_filenames = set(request.form.getlist("force_custom_file"))
 
     from worlds.AutoWorld import AutoWorldRegister
@@ -1292,6 +1370,9 @@ def lobby_upload_yaml(lobby: UUID):
     # Check for duplicates within the uploaded batch
     seen_names: dict[str, str] = {}
     for filename, name in new_names.items():
+        name_error = _player_name_length_error(name, filename, player_count)
+        if name_error:
+            return jsonify({"error": name_error}), 400
         if _has_name_template(name):
             continue
         if name in seen_names:
@@ -1302,10 +1383,7 @@ def lobby_upload_yaml(lobby: UUID):
         seen_names[name] = filename
 
     # Check against existing YAMLs in the lobby
-    existing_names = set(select(
-        y.yaml_player_name for y in LobbyYaml
-        if y.lobby == lobby and y.yaml_player_name is not None
-    )[:])
+    existing_names = {y.yaml_player_name for y in existing_yamls if y.yaml_player_name}
     for filename, name in new_names.items():
         if _has_name_template(name):
             continue
@@ -1641,6 +1719,10 @@ def lobby_generate(lobby: UUID):
         unique_key = f"{yaml_record.player.player_name}_{yaml_record.id}_{yaml_record.filename}"
         options[unique_key] = yaml_record.content
 
+    name_error = _yaml_player_name_length_error(options, len(all_yamls))
+    if name_error:
+        return jsonify({"error": name_error}), 400
+
     # Validate all options together
     meta = _lobby_meta_with_host_display_name(lobby)
     plando_options = set(meta.get("plando_options", []))
@@ -1659,6 +1741,11 @@ def lobby_generate(lobby: UUID):
         )
         commit()
         return jsonify({"error": error_msg}), 400
+
+    for filename, rolled_opts in gen_options.items():
+        name_error = _player_name_length_error(getattr(rolled_opts, 'name', None), filename, len(all_yamls))
+        if name_error:
+            return jsonify({"error": name_error}), 400
 
     pre_generate_state = lobby.state
     lobby.state = LOBBY_GENERATING

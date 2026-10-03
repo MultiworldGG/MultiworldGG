@@ -13,4 +13,4 @@ This means that, based on configuration, every form of meaningful progression ca
 
 Items are configurable, but can include: Max Grasp, Arcanas, Weapons, Aspects, Pets, Progressive Region Unlocks, unlocking helpers, and even unlocking gods themselves. Your goal is to defeat bosses, configurable in the YAML.
 
-Additionally, this mod has support for Zagreus' Journey, a mod by NikkelM that allows Melinoë to fight through Zagreus' path from the first game; this only works if you have Hades 1 installed, do not enable those settings otherwise.
+Additionally, this mod has support for Zagreus' Journey, a mod by NikkelM that allows Melinoë to fight through Zagreus' path from the first game; this only works if you have Zagreus' Journey downloaded and Hades 1 installed, do not enable those settings otherwise.

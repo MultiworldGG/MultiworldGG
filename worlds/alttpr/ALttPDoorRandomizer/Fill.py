@@ -14,10 +14,28 @@ from .source.item.FillUtil import filter_special_locations, valid_pot_items
 
 
 def get_dungeon_item_pool(world):
-    dungeon_items = [item for dungeon in world.dungeons for item in dungeon.all_items if item.location is None]
+    def get_prize_names(player):
+        names = set()
+        for item in world.itempool:
+            if item.prize and item.player == player:
+                names.add(item.name)
+        for loc in world.get_filled_locations(player):
+            if loc.item and loc.item.prize:
+                names.add(loc.item.name)
+        for dungeon in world.dungeons:
+            if dungeon.player == player and dungeon.prize:
+                names.add(dungeon.prize.name)
+        return names
+
+    dungeon_items = [item for dungeon in world.dungeons for item in dungeon.all_items
+                     if item.location is None and item not in world.itempool]
+    from .Items import prize_item_table
     for player in range(1, world.players+1):
         if world.prizeshuffle[player] != 'none':
-            dungeon_items.extend(ItemFactory(['Red Pendant', 'Blue Pendant', 'Green Pendant', 'Crystal 1', 'Crystal 2', 'Crystal 3', 'Crystal 4', 'Crystal 7', 'Crystal 5', 'Crystal 6'], player))
+            present = get_prize_names(player)
+            missing = [name for name in prize_item_table if name not in present]
+            if missing:
+                dungeon_items.extend(ItemFactory(missing, player))
 
     return dungeon_items
 
@@ -97,6 +115,7 @@ def fill_dungeons_restrictive(world, shuffled_locations):
             hybrid_smalls = [ItemFactory('Small Key (Swamp Palace)', player)] * 2
             fill(hybrid_state_base, hybrid_smalls, hybrid_locations, unplaced_smalls)
 
+    bigs_copy, smalls_copy = list(bigs), list(smalls)
     big_state_base = all_state_base.copy()
     for x in smalls + prizes + others:
         big_state_base.collect(x, True)
@@ -108,48 +127,57 @@ def fill_dungeons_restrictive(world, shuffled_locations):
     fill(small_state_base, smalls, shuffled_locations, unplaced_smalls)
 
     prizes_copy = prizes.copy()
+    placed_keys = bigs_copy + smalls_copy
+    layout_snapshot = {}
+    for dungeon in world.dungeons:
+        layout = world.dungeon_layouts[dungeon.player][dungeon.name]
+        layout_snapshot[dungeon] = (layout.dungeon_items, layout.free_items)
+
     for attempt in range(15):
         try:
             for player in range(1, world.players + 1):
-                if world.prizeshuffle[player] == 'nearby' and world.algorithm != 'vanilla_fill':
+                if world.algorithm == 'vanilla_fill':
+                    assign_vanilla_prize_dungeons(world, player, prizes)
+                elif world.prizeshuffle[player] == 'nearby':
                     dungeon_pool = []
                     for dungeon in world.dungeons:
                         from Dungeons import dungeon_table
-                        if dungeon.player == player and dungeon_table[dungeon.name].prize:
+                        if dungeon.player == player and dungeon_table[dungeon.name].prize and not dungeon.prize:
                             dungeon_pool.append(dungeon)
                     random.shuffle(dungeon_pool)
                     for item in prizes:
-                        if item.player == player:
+                        if item.player == player and dungeon_pool:
                             dungeon = dungeon_pool.pop()
                             dungeon.prize = item
                             item.dungeon_object = dungeon
             random.shuffle(prizes)
             random.shuffle(shuffled_locations)
-            prize_state_base = all_state_base.copy()
-            for x in others:
+            # Match fill_prizes: assume keys and other dungeon items are available
+            prize_state_base = world.get_all_state(keys=True)
+            for x in placed_keys + others:
                 prize_state_base.collect(x, True)
             fill(prize_state_base, prizes, shuffled_locations)
         except FillError as e:
             #logging.getLogger('').info("Failed to place dungeon prizes (%s). Will retry %s more times", e, 14 - attempt)
             prizes = prizes_copy.copy()
             for dungeon in world.dungeons:
-                dungeon.prize = None
+                if dungeon.prize in prizes:
+                    dungeon.prize = None
+                layout = world.dungeon_layouts[dungeon.player][dungeon.name]
+                layout.dungeon_items, layout.free_items = layout_snapshot[dungeon]
             for prize in prizes:
-                if prize.location:
-                    prize.location.item = None
+                loc = prize.location
+                if loc:
+                    loc.item = None
+                    loc.event = False
+                    if shuffled_locations is not None and loc not in shuffled_locations:
+                        shuffled_locations.append(loc)
                     prize.location = None
+                prize.dungeon_object = None
             continue
         break
     else:
         raise FillError(f'Unable to place dungeon prizes: {", ".join(list(map(lambda d: d.name, prizes)))}')
-
-    if world.algorithm == 'vanilla_fill':
-        for prize in prizes_copy:
-            if prize.is_near_dungeon_item(world):
-                if prize.location and prize.location.parent_region.dungeon:
-                    dungeon = prize.location.parent_region.dungeon
-                    dungeon.prize = prize
-                    prize.dungeon_object = dungeon
 
     random.shuffle(shuffled_locations)
     fill(all_state_base, others, shuffled_locations)
@@ -242,8 +270,7 @@ def verify_spot_to_fill(location, item_to_place, max_exp_state, single_player_pl
         test_state.sweep_for_events()
         if location.can_fill(test_state, item_to_place, perform_access_check):
             if valid_key_placement(item_to_place, location, key_pool, test_state, world):
-                if (item_to_place.prize and (world.prizeshuffle[item_to_place.player] == 'none' \
-                        or (world.algorithm == 'vanilla_fill' and item_to_place.is_near_dungeon_item(world)))) \
+                if (item_to_place.prize and world.prizeshuffle[item_to_place.player] == 'none') \
                         or valid_dungeon_placement(item_to_place, location, world):
                     return location
     if item_to_place.smallkey or item_to_place.bigkey or item_to_place.prize:
@@ -277,7 +304,8 @@ def valid_key_placement(item, location, key_pool, collection_state, world):
         if key_logic.prize_location and dungeon.prize and dungeon.prize.location and dungeon.prize.location.player == item.player:
             prize_loc = dungeon.prize.location
         cr_count = world.crystals_needed_for_gt[location.player]
-        wild_keys = world.keyshuffle[item.player] != 'none'
+        wild_keys = (world.keyshuffle[item.player] != 'none'
+                     and not item.is_inside_dungeon_item(world))
         if wild_keys:
             reached_keys = {x for x in collection_state.locations_checked
                             if x.item and x.item.name == key_logic.small_key_name and x.item.player == item.player}
@@ -291,7 +319,27 @@ def valid_key_placement(item, location, key_pool, collection_state, world):
         return not item.is_inside_dungeon_item(world)
 
 
+def location_in_algorithm_restricted_set(location, world, player):
+    config = world.item_pool_config
+    if world.algorithm == 'major_only':
+        return location.name in config.reserved_locations[player]
+    if world.algorithm == 'dungeon_only':
+        return location.name in config.location_groups[0].locations
+    if world.algorithm == 'district':
+        restricted = config.location_groups[0].locations
+        return location.name in restricted and player in restricted[location.name]
+    return True
+
+
 def valid_reserved_placement(item, location, world):
+    if item.prize:
+        if (world.algorithm in ['major_only', 'dungeon_only', 'district']
+                and world.prizeshuffle[item.player] in ['dungeon', 'nearby']):
+            if (world.algorithm in ['district', 'dungeon_only']
+                    and item.is_inside_dungeon_item(world)):
+                return True
+            return location_in_algorithm_restricted_set(location, world, item.player)
+        return True
     if item.player == location.player and item.is_inside_dungeon_item(world):
         return location.name not in world.item_pool_config.reserved_locations[location.player]
     return True
@@ -310,7 +358,9 @@ def valid_dungeon_placement(item, location, world):
                 return item.dungeon_object == dungeon and layout.free_items > 0
             return layout.free_items > 0
         elif item.prize:
-            return not dungeon.prize and layout.dungeon_items > 0
+            if item.dungeon_object:
+                return dungeon is item.dungeon_object and layout.dungeon_items > 0
+            return (not dungeon.prize or dungeon.prize is item) and layout.dungeon_items > 0
         else:
             # the second half probably doesn't matter much - should always return true
             return item.dungeon == dungeon.name and layout.dungeon_items > 0
@@ -337,20 +387,14 @@ def track_dungeon_items(item, location, world):
         else:
             layout.free_items -= 1
         if item.prize:
-            location.parent_region.dungeon.prize = item
-            item.dungeon_object = location.parent_region.dungeon
-    elif world.algorithm == 'vanilla_fill' and item.prize and location.parent_region.dungeon:
-        dungeon = location.parent_region.dungeon
-        dungeon.prize = item
-        item.dungeon_object = dungeon
+            placed_dungeon = location.parent_region.dungeon
+            if not item.dungeon_object or item.dungeon_object is placed_dungeon:
+                placed_dungeon.prize = item
+                item.dungeon_object = placed_dungeon
 
 
 def is_dungeon_item(item, world):
-    return ((item.prize and world.prizeshuffle[item.player] in ['none', 'dungeon'])
-            or (item.smallkey and world.keyshuffle[item.player] == 'none')
-            or (item.bigkey and world.bigkeyshuffle[item.player] == 'none')
-            or (item.compass and world.compassshuffle[item.player] == 'none')
-            or (item.map and world.mapshuffle[item.player] == 'none'))
+    return item.is_inside_dungeon_item(world)
 
 
 def recovery_placement(item_to_place, locations, world, state, base_state, itempool, perform_access_check, attempted,
@@ -360,14 +404,14 @@ def recovery_placement(item_to_place, locations, world, state, base_state, itemp
         return last_ditch_placement(item_to_place, locations, world, state, base_state, itempool, key_pool,
                                     single_player_placement)
     elif world.algorithm == 'vanilla_fill':
-        if item_to_place.prize:
+        if item_to_place.prize and world.prizeshuffle[item_to_place.player] == 'none':
             possible_swaps = [x for x in state.locations_checked if x.item.prize]
             return try_possible_swaps(possible_swaps, item_to_place, locations, world, base_state, itempool,
                                       key_pool, single_player_placement)
         else:
             i, config = 0, world.item_pool_config
             tried = set(attempted)
-            if not item_to_place.is_inside_dungeon_item(world):
+            if not item_to_place.is_inside_dungeon_item(world) and not (item_to_place.prize and item_to_place.dungeon_object):
                 while i < len(config.location_groups[item_to_place.player]):
                     fallback_locations = config.location_groups[item_to_place.player][i].locations
                     other_locs = [x for x in locations if x.name in fallback_locations]
@@ -679,21 +723,45 @@ def ensure_good_items(world, write_skips=False):
     for dungeon in world.dungeons:
         if dungeon_table[dungeon.name].prize:
             dungeon_pool[dungeon.player].append(dungeon)
-    prize_set = set(prize_item_table.keys())
     for p in range(1, world.players + 1):
-        prize_pool[p] = prize_set.copy()
+        prize_pool[p] = sorted(prize_item_table.keys())
 
     for player in dungeon_pool:
         dungeons = list(dungeon_pool[player])
         random.shuffle(dungeons)
         dungeon_pool[player] = dungeons
     for dungeon in world.dungeons:
-        if dungeon.prize:
-            dungeon_pool[dungeon.player].remove(dungeon)
-            prize_pool[dungeon.prize.player].remove(dungeon.prize.name)
+        if not dungeon.prize:
+            continue
+        name = dungeon.prize.name
+        prize_player = dungeon.prize.player
+        if dungeon not in dungeon_pool[dungeon.player]:
+            dungeon.prize = None
+            continue
+        if name not in prize_pool[prize_player]:
+            dungeon.prize = None
+            continue
+        dungeon_pool[dungeon.player].remove(dungeon)
+        prize_pool[prize_player].remove(name)
     for p in range(1, world.players + 1):
+        unassigned_placed = []
+        seen = set()
+        for loc in world.get_locations():
+            item = loc.item
+            if (item and item.prize and item.player == p and item.name in prize_pool[p]
+                    and id(item) not in seen):
+                if not item.dungeon_object or item.dungeon_object.prize is not item:
+                    unassigned_placed.append(item)
+                    seen.add(id(item))
+        random.shuffle(unassigned_placed)
         for dungeon in dungeon_pool[p]:
-            dungeon.prize = ItemFactory(prize_pool[p].pop(), p)
+            if unassigned_placed:
+                item = unassigned_placed.pop()
+                prize_pool[p].remove(item.name)
+                dungeon.prize = item
+                item.dungeon_object = dungeon
+            elif prize_pool[p]:
+                dungeon.prize = ItemFactory(prize_pool[p].pop(0), p)
 
 
 invalid_location_replacement = {'Arrows (5)': 'Arrows (10)', 'Nothing':  'Rupees (5)',
@@ -1034,7 +1102,7 @@ def balance_money_progression(world):
     kiki_check = {player: False for player in range(1, world.players+1)}
     kiki_paid = {player: False for player in range(1, world.players+1)}
     rooms_visited = {player: set() for player in range(1, world.players+1)}
-    balance_locations = {player: set() for player in range(1, world.players+1)}
+    balance_locations = {player: [] for player in range(1, world.players+1)}
 
     pay_for_locations = {'Bottle Merchant': 100, 'Chest Game': 30, 'Digging Game': 80,
                          'King Zora': 500, 'Blacksmith': 10}
@@ -1100,24 +1168,45 @@ def balance_money_progression(world):
                 path = path[1]
         return False
 
+    def is_movable_rupee_location(loc, player):
+        """Rupee packs that may be swapped into earlier free spots."""
+        if not loc.item or loc.locked or loc.event:
+            return False
+        if loc.item.player != player:
+            return False
+        # Singular 1-rupee green packs are poor swap sources and often ignored for wallet credit.
+        return loc.item.name in rupee_chart and loc.item.name != 'Rupee (1)'
+
+    def is_balance_candidate(loc, max_value):
+        if not loc.item or loc.locked or loc.event:
+            return False
+        value = rupee_chart[loc.item.name] if loc.item.name in rupee_chart else 0
+        return value < max_value
+
     done = False
-    attempts = world.players * 20 + 20
+    # Must cover a full playthrough sphere walk (can exceed a few dozen spheres with
+    # keysanity / large location sets). The old players*20+20 cap falsely aborted
+    # legitimate long walks as "infinite loops".
+    attempts = max(200, len(unchecked_locations) + world.players * 50)
+    stagnant_rounds = 0
+    prev_unchecked = len(unchecked_locations)
     while not done:
         attempts -= 1
         if attempts < 0:
             from .DungeonGenerator import GenerationException
             raise GenerationException(f'Infinite loop detected at "balance_money_progression"')
         sphere_costs = {player: 0 for player in range(1, world.players+1)}
-        locked_by_money = {player: set() for player in range(1, world.players+1)}
+        locked_by_money = {player: [] for player in range(1, world.players+1)}
         sphere_locations = get_sphere_locations(state, unchecked_locations)
         checked_locations = []
+        progress_this_round = False
         for player in range(1, world.players+1):
             kiki_payable = state.prog_items[('Moon Pearl', player)] > 0 or world.is_tile_swapped(0x1e, player)
             if kiki_payable and world.get_region('Palace of Darkness Area', player) in state.reachable_regions[player]:
                 if not kiki_paid[player]:
                     kiki_check[player] = True
                     sphere_costs[player] += 110
-                    locked_by_money[player].add('Kiki')
+                    locked_by_money[player].append('Kiki')
         for location in sphere_locations:
             location_free, loc_player = True, location.player
             if location.parent_region.name in shop_to_location_table and location.name != 'Potion Shop':
@@ -1126,54 +1215,68 @@ def balance_money_progression(world):
                 shop_item = shop.inventory[slot]
                 if shop_item and location.item and interesting_item(location, location.item, world, location.item.player):
                     if location.item.name.startswith('Rupee') and loc_player == location.item.player:
-                        if shop_item['price'] < rupee_chart[location.item.name]:
+                        if location.item.name in rupee_chart and shop_item['price'] < rupee_chart[location.item.name]:
                             wallet[loc_player] -= shop_item['price']  # will get picked up in the location_free block
                         else:
                             location_free = False
                     else:
                         location_free = False
                         sphere_costs[loc_player] += shop_item['price']
-                        locked_by_money[loc_player].add(location)
+                        locked_by_money[loc_player].append(location)
             elif location.name in pay_for_locations:
                 sphere_costs[loc_player] += pay_for_locations[location.name]
                 location_free = False
-                locked_by_money[loc_player].add(location)
+                locked_by_money[loc_player].append(location)
             if kiki_check[loc_player] and not kiki_paid[loc_player] and kiki_required(state, location):
-                locked_by_money[loc_player].add(location)
+                locked_by_money[loc_player].append(location)
                 location_free = False
             if location_free and location.item:
                 state.collect(location.item, True, location)
                 unchecked_locations.remove(location)
+                progress_this_round = True
                 if location.item:
                     if location.item.name.startswith('Rupee'):
                         if not (location.item.name == 'Rupee (1)' and world.algorithm != 'district'):
                             wallet[location.item.player] += rupee_chart[location.item.name]
                             if location.item.name != 'Rupees (300)':
-                                balance_locations[location.item.player].add(location)
+                                balance_locations[location.item.player].append(location)
                     elif interesting_item(location, location.item, world, location.item.player):
                         checked_locations.append(location)
                     elif location.item.name in acceptable_balancers:
-                        balance_locations[location.item.player].add(location)
+                        balance_locations[location.item.player].append(location)
+                    else:
+                        # Non-interesting free loot still counts as sphere progress so we
+                        # don't fall into the money-balancing branch incorrectly.
+                        checked_locations.append(location)
         for room, income in rupee_rooms.items():
             for player in range(1, world.players+1):
                 if room not in rooms_visited[player] and world.get_region(room, player) in state.reachable_regions[player]:
                     wallet[player] += income
                     rooms_visited[player].add(room)
         if checked_locations or len(unchecked_locations) == 0:
+            stagnant_rounds = 0
+            prev_unchecked = len(unchecked_locations)
             if world.has_beaten_game(state):
                 done = True
                 continue
             # else go to next sphere
         else:
+            # No reachable progress without spending money (or softlocked path).
             # check for solvent players
-            solvent = set()
-            insolvent = set()
+            solvent = []
+            insolvent = []
             for player in range(1, world.players+1):
                 modifier = world.money_balance[player]/100
                 if wallet[player] >= sphere_costs[player] * modifier >= 0:
-                    solvent.add(player)
+                    solvent.append(player)
                 if sphere_costs[player] > 0 and sphere_costs[player] * modifier > wallet[player]:
-                    insolvent.add(player)
+                    insolvent.append(player)
+
+            # Nothing reachable and nothing money-gated: cannot progress via balancing.
+            if not sphere_locations and not any(locked_by_money.values()):
+                logger.warning('Money balancing stuck with no reachable locations; continuing without further swaps')
+                break
+
             if len([p for p in solvent if len(locked_by_money[p]) > 0]) == 0:
                 if len(insolvent) > 0:
                     target_player = min(insolvent, key=lambda p: sphere_costs[p]-wallet[p])
@@ -1183,16 +1286,30 @@ def balance_money_progression(world):
                 else:
                     difference = 0
                     target_player = next(p for p in solvent)
+
                 while difference > 0:
-                    swap_targets = [x for x in unchecked_locations if x not in sphere_locations and x.item.name.startswith('Rupees') and x.item.player == target_player]
+                    # Any uncollected movable rupee pack is a valid source — including those
+                    # already in the current sphere but money-locked (e.g. expensive shop slots).
+                    # Previously those were excluded with `x not in sphere_locations`, which made
+                    # the algorithm invent brand-new Rupees (300) while real packs sat unused.
+                    swap_targets = [x for x in unchecked_locations if is_movable_rupee_location(x, target_player)]
                     if len(swap_targets) == 0:
+                        # No uncollected packs left to relocate.
+                        # Prefer farming; only mint a single 300 as absolute last resort.
                         best_swap, best_value = None, 300
                     else:
-                        best_swap = max(swap_targets, key=lambda t: rupee_chart[t.item.name])
+                        # Prefer a pack large enough to cover the shortfall; else largest available.
+                        covering = [t for t in swap_targets if rupee_chart[t.item.name] >= difference]
+                        best_swap = min(covering, key=lambda t: rupee_chart[t.item.name]) if covering \
+                            else max(swap_targets, key=lambda t: rupee_chart[t.item.name])
                         best_value = rupee_chart[best_swap.item.name]
-                    increase_targets = [x for x in balance_locations[target_player] if x.item.name in rupee_chart and rupee_chart[x.item.name] < best_value]
+
+                    increase_targets = [x for x in balance_locations[target_player] if is_balance_candidate(x, best_value)]
                     if len(increase_targets) == 0:
-                        increase_targets = [x for x in balance_locations[target_player] if (rupee_chart[x.item.name] if x.item.name in rupee_chart else 0) < best_value]
+                        # Fallback: any early balancer/rupee worth less than the incoming pack.
+                        increase_targets = [x for x in balance_locations[target_player]
+                                            if is_balance_candidate(x, best_value + 1) or
+                                            (x.item and x.item.name in acceptable_balancers)]
                     if len(increase_targets) == 0:
                         if state.can_farm_rupees(target_player):
                             logger.warning(f'No more swap targets available. Short by {difference} rupees, but continuing (player can farm)')
@@ -1202,11 +1319,16 @@ def balance_money_progression(world):
                     best_target = min(increase_targets, key=lambda t: rupee_chart[t.item.name] if t.item.name in rupee_chart else 0)
                     make_item_free = wallet[target_player] < 20
                     old_value = 0 if make_item_free else (rupee_chart[best_target.item.name] if best_target.item.name in rupee_chart else 0)
+
                     if best_swap is None:
-                        logger.debug(f'Upgrading {best_target.item.name} @ {best_target.name} for 300 Rupees')
+                        if state.can_farm_rupees(target_player):
+                            logger.warning(f'No rupee packs left to swap. Short by {difference}; relying on farm instead of inventing Rupees (300)')
+                            break
+                        logger.debug(f'Upgrading {best_target.item.name} @ {best_target.name} for 300 Rupees (short {difference})')
                         best_target.item = ItemFactory('Rupees (300)', best_target.item.player)
                         best_target.item.location = best_target
                         check_shop_swap(best_target.item.location, make_item_free)
+                        balance_locations[target_player].remove(best_target)  # Don't keep using a minted 300 as a further upgrade base.
                     else:
                         old_item = best_target.item
                         logger.debug(f'Swapping {best_target.item.name} @ {best_target.name} for {best_swap.item.name} @ {best_swap.name}')
@@ -1216,10 +1338,21 @@ def balance_money_progression(world):
                         best_swap.item.location = best_swap
                         check_shop_swap(best_target.item.location, make_item_free)
                         check_shop_swap(best_swap.item.location)
+
                     increase = best_value - old_value
+                    if increase <= 0:
+                        # Avoid infinite loops if a candidate cannot actually help.
+                        balance_locations[target_player].remove(best_target)
+                        if not balance_locations[target_player]:
+                            if state.can_farm_rupees(target_player):
+                                logger.warning(f'Unable to increase early money further. Short by {difference}; continuing (player can farm)')
+                                break
+                            raise Exception(f'No early sphere swaps for rupees - money grind would be required - bailing for now')
+                        continue
                     difference -= increase
                     wallet[target_player] += increase
-                solvent.add(target_player)
+                if target_player not in solvent:
+                    solvent.append(target_player)
             # apply solvency
             for player in solvent:
                 modifier = world.money_balance[player]/100
@@ -1227,11 +1360,22 @@ def balance_money_progression(world):
                 for location in locked_by_money[player]:
                     if isinstance(location, str) and location == 'Kiki':
                         kiki_paid[player] = True
-                    else:
+                        progress_this_round = True
+                    elif location in unchecked_locations:
                         state.collect(location.item, True, location)
                         unchecked_locations.remove(location)
-                        if location.item and location.item.name.startswith('Rupee'):
+                        progress_this_round = True
+                        if location.item and location.item.name in rupee_chart:
                             wallet[location.item.player] += rupee_chart[location.item.name]
+
+            if len(unchecked_locations) >= prev_unchecked and not progress_this_round:
+                stagnant_rounds += 1
+            else:
+                stagnant_rounds = 0
+            prev_unchecked = len(unchecked_locations)
+            if stagnant_rounds >= 3:
+                logger.warning('Money balancing made no progress for multiple rounds; continuing')
+                break
 
 def set_prize_drops(world, player):
     prizes = [0xD8, 0xD8, 0xD8, 0xD8, 0xD9, 0xD8, 0xD8, 0xD9,
@@ -1316,3 +1460,46 @@ def set_prize_drops(world, player):
     world.prizes[player]['fish'] = prizes.pop()
 
     world.prizes[player]['enemies'] = prizes
+
+    # Names for the spoiler. Bytes above are what the ROM write uses.
+    byte_to_prize = {code: name for name, code in possible_prizes.items()}
+    chosen = world.prizes[player]
+    player_name = '' if world.players == 1 else f' ({world.get_player_names(player)})'
+    world.spoiler.drops[f'Drops{player_name}'] = {
+        'PullTree': {
+            'Tier1': byte_to_prize[chosen['pull'][0]],
+            'Tier2': byte_to_prize[chosen['pull'][1]],
+            'Tier3': byte_to_prize[chosen['pull'][2]],
+        },
+        'RupeeCrab': {
+            'Main': byte_to_prize[chosen['crab'][0]],
+            'Final': byte_to_prize[chosen['crab'][1]],
+        },
+        'Stun': byte_to_prize[chosen['stun']],
+        'FishSave': byte_to_prize[chosen['fish']],
+    }
+    packs = {}
+    for group_index in range(7):
+        sprites = [byte_to_prize[code] for code in chosen['enemies'][group_index * 8:(group_index + 1) * 8]]
+        packs[f'EnemyGroup{group_index + 1}'] = {
+            'PrizePackName': get_prize_pack_name(sprites),
+            'DropOrder': ', '.join(sprites),
+        }
+    world.spoiler.prize_packs[f'PrizePacks{player_name}'] = packs
+
+def get_prize_pack_name(prize_pack_set):
+    if prize_pack_set[0] == "Small Heart":  # Heart
+        if prize_pack_set[1] == "Fairy":  # Fairy
+            return "LargeVarietyPack"
+        return "HeartsPack"
+    if prize_pack_set[0] == "Rupees (5)":  # RupeeBlue
+        return "RupeesPack"
+    if prize_pack_set[0] == "Single Bomb":  # BombRefill1
+        return "BombsPack"
+    if prize_pack_set[0] == "Small Magic":  # MagicRefillSmall
+        return "SmallVarietyPack"
+    if prize_pack_set[0] == "Big Magic":  # MagicRefillFull
+        return "MagicPack"
+    if prize_pack_set[0] == "Arrows (5)":  # ArrowRefill5
+        return "ArrowsPack"
+    return "Unknown"

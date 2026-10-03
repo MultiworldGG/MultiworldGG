@@ -137,7 +137,7 @@ ITEM_DEFS = {
     "ATV": ItemDef(121883, ItemClassification.progression_skip_balancing, True, [4], "Small", "atv_v"),
     "Obliteratatron Big Wheel Truck": ItemDef(121884, ItemClassification.progression_skip_balancing, True, [5], "Extra Large", "oblit_v"),
     "Planet Hype 50's Car": ItemDef(121885, ItemClassification.progression_skip_balancing, True, [6], "Small", "hype_v"),
-    "R/C Buggy": ItemDef(121886, ItemClassification.progression_skip_balancing, True, [7], "Extra Small", "dune_v"),
+    "R/C Buggy": ItemDef(121886, ItemClassification.progression_skip_balancing, True, [8], "Extra Small", "dune_v"), #technically level 7, put saying 8 to exclude it from being a starting car.
 
     "Progressive Wallet Upgrade": ItemDef(121887, ItemClassification.progression, always_exists=False),
     "Progressive Level": ItemDef(121888, ItemClassification.progression, always_exists=False),

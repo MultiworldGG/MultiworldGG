@@ -426,7 +426,7 @@ def get_pool_modifier_count(world: UncannyCatWorld, padding: int) -> int:
         return 0
     if world.options.coinsanity:
         return round(padding * 0.3)
-    return padding
+    return round(padding * 0.5)
 
 
 def create_item_with_correct_classification(world: UncannyCatWorld, name: str) -> UncannyCatItem:

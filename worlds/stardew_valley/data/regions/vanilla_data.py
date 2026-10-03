@@ -24,12 +24,12 @@ vanilla_regions: tuple[RegionData, ...] = (
             LogicEntrance.find_secret_notes,
             LogicEntrance.farmhouse_upgrade_kitchen,
             LogicEntrance.farmhouse_cooking,
+            Entrance.farmhouse_to_cellar
         ),
     ),
     RegionData(RegionName.farm_house_kitchen, (LogicEntrance.farmhouse_upgrade_crib,)),
-    RegionData(RegionName.farm_house_crib, (LogicEntrance.farmhouse_upgrade_cellar,)),
-    RegionData(RegionName.farm_house_cellar, (Entrance.downstairs_to_cellar, Entrance.downstairs_to_farmhouse)),
-    RegionData(RegionName.cellar, (Entrance.cellar_to_downstairs,)),
+    RegionData(RegionName.farm_house_crib),
+    RegionData(RegionName.cellar, (Entrance.cellar_to_farmhouse,)),
     RegionData(
         RegionName.farm,
         (
@@ -570,20 +570,18 @@ vanilla_connections: tuple[ConnectionData, ...] = (
     ),
     ConnectionData(LogicEntrance.farmhouse_upgrade_kitchen, RegionName.farm_house_kitchen),
     ConnectionData(LogicEntrance.farmhouse_upgrade_crib, RegionName.farm_house_crib),
-    ConnectionData(LogicEntrance.farmhouse_upgrade_cellar, RegionName.farm_house_cellar),
     ConnectionData(
-        Entrance.downstairs_to_cellar,
+        Entrance.farmhouse_to_cellar,
         RegionName.cellar,
         flag=RandomizationFlag.FARMHOUSE | RandomizationFlag.BUILDINGS,
         group=GroupFlag.IN_TO_IN | GroupFlag.DOWN,
     ),
     ConnectionData(
-        Entrance.cellar_to_downstairs,
-        RegionName.farm_house_cellar,
+        Entrance.cellar_to_farmhouse,
+        RegionName.farm_house,
         flag=RandomizationFlag.FARMHOUSE | RandomizationFlag.BUILDINGS,
         group=GroupFlag.IN_TO_IN | GroupFlag.UP,
     ),
-    ConnectionData(Entrance.downstairs_to_farmhouse, RegionName.farm_house),
     ConnectionData(
         Entrance.farm_to_backwoods,
         RegionName.backwoods,

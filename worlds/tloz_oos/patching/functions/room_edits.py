@@ -6,7 +6,7 @@ from settings import get_settings
 from ... import patching
 from ...common.patching.RomData import RomData
 from ...common.patching.rooms.decoding import decompress_rooms
-from ...Options import OracleOfSeasonsLinkedHerosCave
+from ...options import OracleOfSeasonsLinkedHerosCave
 
 ### How rooms work:
 # Room number 0xYZZ = group Y, room ZZ
@@ -152,14 +152,6 @@ def apply_anti_softlock_edits(room_data: list[bytearray]) -> None:
 
 
 def apply_misc_edits(room_data: list[bytearray]) -> None:
-    # Remove access to first refill room on 4 essences
-    for i in range(2, 80, 10):
-        for j in range(6):
-            room_data[0x41C][i + j] = 0x62 + j
-
-    # Remove access to second refill room on 6 essences
-    room_data[0x44B][3] = 0x63
-
     # Reveal hidden subrosia digging spots if required
     if get_settings()["tloz_oos_options"]["reveal_hidden_subrosia_digging_spots"]:
         room_data[0x406][18] = 0x2F

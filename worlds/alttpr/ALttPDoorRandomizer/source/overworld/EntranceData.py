@@ -147,6 +147,35 @@ door_addresses = {'Links House':                            (0x00, (0x0104, 0x2c
                   'Lake Hylia Fortune Teller':              (0x72, (0x0122, 0x35, 0x0380, 0x0c6a, 0x0a00, 0x0cb8, 0x0a58, 0x0cd7, 0x0a85, 0x06, 0xfa, 0x0000, 0x0000), 0x00),
                   'Kakariko Gamble Game':                   (0x66, (0x0118, 0x29, 0x069e, 0x0ac4, 0x02ea, 0x0b18, 0x0368, 0x0b33, 0x036f, 0x0a, 0xf6, 0x09AC, 0x0000), 0x00)}
 
+# Internal ROM/coord rows for the flipped 0x1b pyramid hole and door.
+# World objects and customizer names are always Pyramid Hole / Pyramid Entrance;
+# lookup remaps to these keys when tile 0x1b is swapped.
+
+def pyramid_data_name(name, world, player):
+    inverted_pyramid_names = {
+        'Pyramid Entrance': 'Inverted Pyramid Entrance',
+        'Pyramid Hole': 'Inverted Pyramid Hole',
+    }
+    if name in inverted_pyramid_names and world.is_tile_swapped(0x1b, player):
+        return inverted_pyramid_names[name]
+    return name
+
+
+def get_door_addresses(name_or_entrance, world=None, player=None):
+    if not isinstance(name_or_entrance, str):
+        entrance = name_or_entrance
+        name = entrance.name
+        player = entrance.player
+        parent = entrance.parent_region
+        if parent is not None and getattr(parent, 'world', None) is not None:
+            world = parent.world
+    else:
+        name = name_or_entrance
+    if world is not None and player is not None:
+        name = pyramid_data_name(name, world, player)
+    return door_addresses[name]
+
+
 ow_prize_table = {'Lost Woods Gamble': (0x2A0, 0x080),
                   'Lost Woods Hideout Drop': (0x338, 0x218),
                   'Lost Woods Hideout Stump': (0x2A0, 0x2E0),
@@ -290,6 +319,14 @@ ow_prize_table = {'Lost Woods Gamble': (0x2A0, 0x080),
                   'Dark Lake Hylia Ledge Hint': (0xEF8, 0xC36),
                   'Dark Lake Hylia Ledge Spike Cave': (0xEB8, 0xCC6),
                   'Swamp Palace': (0x778, 0xF68)}
+
+
+def get_ow_prize_coords(name, world, player):
+    key = pyramid_data_name(name, world, player)
+    if key in ow_prize_table:
+        return ow_prize_table[key]
+    return ow_prize_table.get(name)
+
 
 default_connector_connections = [('Death Mountain Return Cave (West)', 'Death Mountain Return Cave Exit (West)'),
                                  ('Death Mountain Return Cave (East)', 'Death Mountain Return Cave Exit (East)'),

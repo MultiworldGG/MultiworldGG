@@ -349,17 +349,20 @@ def update_deprecated_args(args):
         # Don't do: Yes
         # Do:       No
         if "suppress_spoiler" in argVars:
-            args.spoiler = 'none'
+            if args.suppress_spoiler in truthy:
+                args.spoiler = 'none'
         # Don't do: No
         # Do:       Yes
         if "create_spoiler" in argVars:
-            args.spoiler = 'full'
+            if args.create_spoiler in truthy:
+                args.spoiler = 'full'
 
         # ROM defaults to TRUE
         # Don't do: Yes
         # Do:       No
         if "suppress_rom" in argVars:
-            args.create_rom = not args.suppress_rom in truthy
+            if args.suppress_rom in truthy:
+                args.create_rom = False
         # Don't do: No
         # Do:       Yes
         if "create_rom" in argVars:
@@ -369,37 +372,41 @@ def update_deprecated_args(args):
         # Don't do: Yes
         # Do:       No
         if "no_shuffleganon" in argVars:
-            if isinstance(args.shuffleganon, dict):
-                for player in range(1, players + 1):
-                    args.shuffleganon[player] = not args.no_shuffleganon in truthy
-            else:
-                args.shuffleganon = not args.no_shuffleganon in truthy
+            if args.no_shuffleganon in truthy:
+                if isinstance(args.shuffleganon, dict):
+                    for player in range(1, players + 1):
+                        args.shuffleganon[player] = False
+                else:
+                    args.shuffleganon = False
 
         # OW Parallel defaults to TRUE
         # Don't do: Yes
         # Do:       No
         if "ow_unparallel" in argVars:
-            if isinstance(args.ow_parallel, dict):
-                for player in range(1, players + 1):
-                    args.ow_parallel[player] = not args.ow_unparallel in truthy
-            else:
-                args.ow_parallel = not args.ow_unparallel in truthy
+            if args.ow_unparallel in truthy:
+                if isinstance(args.ow_parallel, dict):
+                    for player in range(1, players + 1):
+                        args.ow_parallel[player] = False
+                else:
+                    args.ow_parallel = False
 
         # OW Fog defaults to TRUE
         # Don't do: Yes
         # Do:       No
         if "ow_no_fog" in argVars:
-            if isinstance(args.ow_fog, dict):
-                for player in range(1, players + 1):
-                    args.ow_fog[player] = not args.ow_no_fog in truthy
-            else:
-                args.ow_fog = not args.ow_no_fog in truthy
+            if args.ow_no_fog in truthy:
+                if isinstance(args.ow_fog, dict):
+                    for player in range(1, players + 1):
+                        args.ow_fog[player] = False
+                else:
+                    args.ow_fog = False
 
         # Playthrough defaults to TRUE
         # Don't do: Yes
         # Do:       No
         if "skip_playthrough" in argVars:
-            args.calc_playthrough = not args.skip_playthrough in truthy
+            if args.skip_playthrough in truthy:
+                args.calc_playthrough = False
         # Don't do: No
         # Do:       Yes
         if "calc_playthrough" in argVars:

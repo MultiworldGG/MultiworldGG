@@ -94,8 +94,8 @@ hasNoBombs:
     rom.patch(0x04, 0x3AA9, 0x3AAE, ASM("jp $7AC3"), fill_nop=True)
 
     # Patch over the "you stole it" dialog
-    rom.patch(0x00, 0x1A1C, 0x1A21, ASM("""ld   a, $C9
-       call   $2385"""), fill_nop=True)
+    #rom.patch(0x00, 0x1A1C, 0x1A21, ASM("""ld   a, $C9
+    #   call   $2385"""), fill_nop=True)
     rom.patch(0x04, 0x3AC3, 0x3AD8, ASM("""
         ; No room override needed, we're in the proper room
         ; Call our chest item giving code.

@@ -7,31 +7,21 @@ DIRECTION_UP = 0
 DIRECTION_RIGHT = 1
 DIRECTION_DOWN = 2
 DIRECTION_LEFT = 3
-DIRECTIONS = [
-    DIRECTION_UP,
-    DIRECTION_RIGHT,
-    DIRECTION_DOWN,
-    DIRECTION_LEFT
-]
+DIRECTIONS = [DIRECTION_UP, DIRECTION_RIGHT, DIRECTION_DOWN, DIRECTION_LEFT]
 
 SEASON_SPRING = 0x00
 SEASON_SUMMER = 0x01
 SEASON_AUTUMN = 0x02
 SEASON_WINTER = 0x03
 SEASON_CHAOTIC = 0xFF
-SEASONS = [
-    SEASON_SPRING,
-    SEASON_SUMMER,
-    SEASON_AUTUMN,
-    SEASON_WINTER
-]
+SEASONS = [SEASON_SPRING, SEASON_SUMMER, SEASON_AUTUMN, SEASON_WINTER]
 
 SEASON_NAMES = {
     SEASON_SPRING: "spring",
     SEASON_SUMMER: "summer",
     SEASON_AUTUMN: "autumn",
     SEASON_WINTER: "winter",
-    SEASON_CHAOTIC: "chaotic"
+    SEASON_CHAOTIC: "chaotic",
 }
 
 SEASON_ITEMS = {
@@ -61,18 +51,12 @@ DUNGEON_NAMES = [
     "Sword & Shield Dungeon",
     "",
     "",
-    "Linked Hero's Cave"
+    "Linked Hero's Cave",
 ]
 
-VALID_RUPEE_PRICE_VALUES = [
-    1, 2, 5, 10, 20, 25, 30, 40, 50, 60, 70, 80, 100, 150, 200, 300, 400, 500, 900, 999
-]
-VALID_RUPEE_ITEM_VALUES = [
-    1, 5, 10, 20, 30, 50, 100, 200
-]
-VALID_ORE_ITEM_VALUES = [
-    10, 25, 50
-]
+VALID_RUPEE_PRICE_VALUES = [1, 2, 5, 10, 20, 25, 30, 40, 50, 60, 70, 80, 100, 150, 200, 300, 400, 500, 900, 999]
+VALID_RUPEE_ITEM_VALUES = [5, 10, 20, 30, 50, 100, 200] # Exclude 1 from the valid values to be generated
+VALID_ORE_ITEM_VALUES = [10, 25, 50, 100]
 MARKET_LOCATIONS = ["subrosianMarket2", "subrosianMarket3", "subrosianMarket4", "subrosianMarket5"]
 
 DEFAULT_SEASONS = {
@@ -86,7 +70,7 @@ DEFAULT_SEASONS = {
     "TEMPLE_REMAINS": SEASON_WINTER,
     "LOST_WOODS": SEASON_AUTUMN,
     "TARM_RUINS": SEASON_SPRING,
-    "HORON_VILLAGE": SEASON_CHAOTIC
+    "HORON_VILLAGE": SEASON_CHAOTIC,
 }
 
 DUNGEON_CONNECTIONS = {
@@ -134,7 +118,7 @@ OLD_MAN_RUPEE_VALUES = {
     "old man in horon": 100,
     "old man near d6": -200,
     "old man near holly's house": -50,
-    "old man near mrs. ruul": -100
+    "old man near mrs. ruul": -100,
 }
 
 RUPEE_OLD_MAN_LOCATIONS = [
@@ -145,14 +129,14 @@ RUPEE_OLD_MAN_LOCATIONS = [
     "Western Coast: Old Man",
     "Woods of Winter: Old Man",
     "Holodrum Plain: Old Man Near Mrs. Ruul's House",
-    "Tarm Ruins: Old Man Near D6"
+    "Tarm Ruins: Old Man Near D6",
 ]
 
 SCRUB_LOCATIONS = [
     "Spool Swamp: Business Scrub",
     "Snake's Remains: Business Scrub",
     "Dancing Dragon Dungeon (1F): Business Scrub",
-    "Samasa Desert: Business Scrub"
+    "Samasa Desert: Business Scrub",
 ]
 
 SUBROSIA_HIDDEN_DIGGING_SPOTS_LOCATIONS = [
@@ -162,7 +146,7 @@ SUBROSIA_HIDDEN_DIGGING_SPOTS_LOCATIONS = [
     "Subrosia: Temple of Seasons Digging Spot",
     "Subrosia: Northern Volcanoes Digging Spot",
     "Subrosia: D8 Portal Digging Spot",
-    "Subrosia: Western Volcanoes Digging Spot"
+    "Subrosia: Western Volcanoes Digging Spot",
 ]
 
 SECRETS = [
@@ -175,17 +159,12 @@ SECRETS = [
     "Subrosia: Temple Secret",
     "Natzu Region: Deku Secret",
     "Goron Mountain: Biggoron Secret",
-    "Horon Village: Mayor Secret"
+    "Horon Village: Mayor Secret",
 ]
 
 SAMASA_GATE_CODE = [2, 2, 1, 0, 0, 3, 3, 3]
 
-AVERAGE_PRICE_PER_LOCATION = {
-    "cheap": 50,
-    "reasonable": 100,
-    "expensive": 200,
-    "outrageous": 350
-}
+AVERAGE_PRICE_PER_LOCATION = {"cheap": 50, "reasonable": 100, "expensive": 200, "outrageous": 350}
 
 VANILLA_SHOP_PRICES = {
     "horonShop1": 20,
@@ -210,8 +189,19 @@ VANILLA_SHOP_PRICES = {
     "d4Scrub": 20,
 }
 
+ESSENCES = [
+    "Fertile Soil",
+    "Gift of Time",
+    "Bright Sun",
+    "Soothing Rain",
+    "Nurturing Warmth",
+    "Blowing Wind",
+    "Seed of Life",
+    "Changing Seasons",
+]
+
 ITEM_GROUPS = {
-    "Small Keys": [
+    "Small Keys": {
         "Small Key (Hero's Cave)",
         "Small Key (Gnarled Root Dungeon)",
         "Small Key (Snake's Remains)",
@@ -222,8 +212,8 @@ ITEM_GROUPS = {
         "Small Key (Explorer's Crypt)",
         "Small Key (Sword & Shield Dungeon)",
         "Small Key (Linked Hero's Cave)",
-    ],
-    "Boss Keys": [
+    },
+    "Boss Keys": {
         "Boss Key (Gnarled Root Dungeon)",
         "Boss Key (Snake's Remains)",
         "Boss Key (Poison Moth's Lair)",
@@ -232,8 +222,8 @@ ITEM_GROUPS = {
         "Boss Key (Ancient Ruins)",
         "Boss Key (Explorer's Crypt)",
         "Boss Key (Sword & Shield Dungeon)",
-    ],
-    "Compasses": [
+    },
+    "Compasses": {
         "Compass (Gnarled Root Dungeon)",
         "Compass (Snake's Remains)",
         "Compass (Poison Moth's Lair)",
@@ -242,8 +232,8 @@ ITEM_GROUPS = {
         "Compass (Ancient Ruins)",
         "Compass (Explorer's Crypt)",
         "Compass (Sword & Shield Dungeon)",
-    ],
-    "Dungeon Maps": [
+    },
+    "Dungeon Maps": {
         "Dungeon Map (Gnarled Root Dungeon)",
         "Dungeon Map (Snake's Remains)",
         "Dungeon Map (Poison Moth's Lair)",
@@ -252,8 +242,8 @@ ITEM_GROUPS = {
         "Dungeon Map (Ancient Ruins)",
         "Dungeon Map (Explorer's Crypt)",
         "Dungeon Map (Sword & Shield Dungeon)",
-    ],
-    "Master Keys": [
+    },
+    "Master Keys": {
         "Master Key (Hero's Cave)",
         "Master Key (Gnarled Root Dungeon)",
         "Master Key (Snake's Remains)",
@@ -264,33 +254,19 @@ ITEM_GROUPS = {
         "Master Key (Explorer's Crypt)",
         "Master Key (Sword & Shield Dungeon)",
         "Master Key (Linked Hero's Cave)",
-    ],
-    "Essences": [
-        "Fertile Soil",
-        "Gift of Time",
-        "Bright Sun",
-        "Soothing Rain",
-        "Nurturing Warmth",
-        "Blowing Wind",
-        "Seed of Life",
-        "Changing Seasons",
-    ],
-    "Jewels": [
-        "Square Jewel",
-        "Pyramid Jewel",
-        "Round Jewel",
-        "X-Shaped Jewel"
-    ]
+    },
+    "Essences": set(ESSENCES),
+    "Jewels": {"Square Jewel", "Pyramid Jewel", "Round Jewel", "X-Shaped Jewel"},
 }
 
 LOCATION_GROUPS = {
-    "D0": [
+    "D0": {
         "Hero's Cave: Topmost Chest",
         "Hero's Cave: Final Chest",
         "Hero's Cave: Item in Basement Under Keese Room",
         "Hero's Cave: Alternative Entrance Chest",
-    ],
-    "D1": [
+    },
+    "D1": {
         "Gnarled Root Dungeon: Drop in Right Stalfos Room",
         "Gnarled Root Dungeon: Item in Basement",
         "Gnarled Root Dungeon: Chest in Block-pushing Room",
@@ -302,8 +278,8 @@ LOCATION_GROUPS = {
         "Gnarled Root Dungeon: Chest in Goriya Room",
         "Gnarled Root Dungeon: Boss Reward",
         "Gnarled Root Dungeon: Essence",
-    ],
-    "D2": [
+    },
+    "D2": {
         "Snake's Remains: Drop in Left Rope Room",
         "Snake's Remains: Chest in Distant Moblins Room",
         "Snake's Remains: Chest in Rollers Section",
@@ -316,8 +292,8 @@ LOCATION_GROUPS = {
         "Snake's Remains: Business Scrub",
         "Snake's Remains: Boss Reward",
         "Snake's Remains: Essence",
-    ],
-    "D3": [
+    },
+    "D3": {
         "Poison Moth's Lair (B1F): Chest in Roller Room",
         "Poison Moth's Lair (1F): Chest in Mimics Room",
         "Poison Moth's Lair (1F): Chest Above East Trampoline",
@@ -329,8 +305,8 @@ LOCATION_GROUPS = {
         "Poison Moth's Lair (B1F): Chest in Moving Blade Room",
         "Poison Moth's Lair (1F): Boss Reward",
         "Poison Moth's Lair: Essence",
-    ],
-    "D4": [
+    },
+    "D4": {
         "Dancing Dragon Dungeon (2F): Pots on Buttons Puzzle Drop",
         "Dancing Dragon Dungeon (2F): Chest North of Entrance",
         "Dancing Dragon Dungeon (1F): Chest in Southwest Quadrant of Beamos Room",
@@ -344,8 +320,8 @@ LOCATION_GROUPS = {
         "Dancing Dragon Dungeon (B1F): Boss Reward",
         "Dancing Dragon Dungeon (1F): Business Scrub",
         "Dancing Dragon Dungeon: Essence",
-    ],
-    "D5": [
+    },
+    "D5": {
         "Unicorn's Cave: Right Cart Chest",
         "Unicorn's Cave: Chest Left from Entrance",
         "Unicorn's Cave: Magnet Gloves Chest",
@@ -358,8 +334,8 @@ LOCATION_GROUPS = {
         "Unicorn's Cave: Treadmills Basement Item",
         "Unicorn's Cave: Boss Reward",
         "Unicorn's Cave: Essence",
-    ],
-    "D6": [
+    },
+    "D6": {
         "Ancient Ruins (1F): Magnet Ball Puzzle Drop",
         "Ancient Ruins (2F): Chest North of Main Spinner",
         "Ancient Ruins (3F): Armos Hall Chest",
@@ -373,8 +349,8 @@ LOCATION_GROUPS = {
         "Ancient Ruins (2F): Chest on Red Terrace Before Vire",
         "Ancient Ruins (5F): Boss Reward",
         "Ancient Ruins: Essence",
-    ],
-    "D7": [
+    },
+    "D7": {
         "Explorer's Crypt (1F): Chest in Wizzrobe Room",
         "Explorer's Crypt (B1F): Chest in Fast Moving Platform Room",
         "Explorer's Crypt (B2F): Stair Maze Chest",
@@ -388,8 +364,8 @@ LOCATION_GROUPS = {
         "Explorer's Crypt (B1F): Chest in Jumping Stalfos Room",
         "Explorer's Crypt (B1F): Boss Reward",
         "Explorer's Crypt: Essence",
-    ],
-    "D8": [
+    },
+    "D8": {
         "Sword & Shield Dungeon (1F): Eye Drop Near Entrance",
         "Sword & Shield Dungeon (1F): Three Eyes Chest",
         "Sword & Shield Dungeon (1F): Drop in Hardhat & Magnet Ball Room",
@@ -405,8 +381,8 @@ LOCATION_GROUPS = {
         "Sword & Shield Dungeon (1F): Chest in Sparks & Pots Room",
         "Sword & Shield Dungeon (B1F): Boss Reward",
         "Sword & Shield Dungeon: Essence",
-    ],
-    "D11": [
+    },
+    "D11": {
         "Linked Hero's Cave: Alternate Entrance Chest",
         "Linked Hero's Cave: First Reward",
         "Linked Hero's Cave: Checkerboard Drop",
@@ -417,9 +393,9 @@ LOCATION_GROUPS = {
         "Linked Hero's Cave: Fourth Reward",
         "Linked Hero's Cave: Gauntlet",
         "Linked Hero's Cave: Boomerang Maze",
-        "Linked Hero's Cave: Final Reward"
-    ],
-    "Trade Sequence": [
+        "Linked Hero's Cave: Final Reward",
+    },
+    "Trade Sequence": {
         "Horon Village: Dr. Left Reward",
         "North Horon: Malon Trade",
         "Maple Trade",
@@ -436,27 +412,8 @@ LOCATION_GROUPS = {
         "Sunken City: Syrup Shop #1",
         "Sunken City: Syrup Shop #2",
         "Sunken City: Syrup Shop #3",
-    ]
+    },
 }
-
-GASHA_SPOT_REGIONS = [
-    "impa gasha spot",
-    "horon gasha spot",
-    "suburbs gasha spot",
-    "holodrum plain gasha spot",
-    "holodrum plain island gasha spot",
-    "spool swamp north gasha spot",
-    "spool swamp south gasha spot",
-    "sunken city gasha spot",
-    "mt cucco gasha spot",
-    "goron mountain left gasha spot",
-    "goron mountain right gasha spot",
-    "eyeglass lake gasha spot",
-    "tarm ruins gasha spot",
-    "western coast gasha spot",
-    "samasa desert gasha spot",
-    "onox gasha spot",
-]
 
 TREASURE_SPAWN_INSTANT = 0x00
 TREASURE_SPAWN_POOF = 0x10

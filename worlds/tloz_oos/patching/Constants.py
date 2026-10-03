@@ -24,6 +24,7 @@ CAVE_DATA: list[int | list[int | list[int]]] = [
         0x3FC0,  # End of bank
     ],
     [
+        [0x191E, 0x1BE5],  # Cutscenes making the d8 ice freeze
         [0x2E6D, 0x2EAE],  # Ricky giving his flute
         0x3F4E,  # 09
     ],
@@ -44,14 +45,20 @@ CAVE_DATA: list[int | list[int | list[int]]] = [
     0x3EF3,  # 0e
     0x3F9D,  # 0f
     0x3BEE,  # 10
-    0x3EB0,  # 11
+    [
+        [0x2372, 0x239D],  # Maku Tree Top before 23b
+        [0x23C8, 0x23D3],  # Maku Tree Top after 23c
+        0x3EB0,  # 11
+    ],
     0x3C8F,  # 12
     0x3BD2,  # 13
     [
         [0x0E3F, 0x0F51],  # Rosa hiding
         0x2FC9,  # 14 - ton of free space here
     ],
-    [  # 15
+    [
+        # 15
+        [0x0000, 0x0586],  # All the gbc link functions, farore spawning stuff
         [0x1435, 0x1464],  # Trade item (0x41) data
         [0x1E5D, 0x1EDD],  # Strange bros stealing feathers, companions in swamp
         0x392D,
@@ -104,6 +111,7 @@ CAVE_DATA: list[int | list[int | list[int]]] = [
     0x4000,  # 3d
     0x4000,  # 3e
     [  # 3f - also here
+        [0x053A, 0x054D], # Extra item/Remove item tables for treasures
         [0x314B, 0x3FBF],
         0x4000,  # Slot name takes the last 40 bytes
     ],
@@ -208,14 +216,11 @@ DEFINES = {
     "wScrollMode": "$cd00",
     "wScreenTransitionDirection": "$cd02",
     "wScreenOffsetY": "$cd08",
-
     "w1Link.yh": "$d00b",
     "w1Link.xh": "$d00d",
     "w7ActiveBank": "$d0d4",
-
     # High RAM offsets (FF00 + offset)
     "hRomBank": "$97",
-
     # Bank 0 functions
     "addAToDe": "$0068",
     "addAToBc": "$006d",
@@ -264,11 +269,9 @@ DEFINES = {
     "getFreeInteractionSlot": "$3ac6",
     "interactionDelete": "$3ad9",
     "getFreePartSlot": "$3ea7",
-
     # Byte constants
     "INVENTORY_CAPACITY": "$14",
     "TEXT_WARP_PROTECTION_MARGIN": "$09",
-    "STARTING_TREE_MAP_INDEX": "$f8",
     "INTERACID_TREASURE": "$60",
     "BTN_A": "$01",
     "BTN_B": "$02",
@@ -285,17 +288,14 @@ DEFINES = {
     # "COLLECT_CHEST_MAP_OR_COMPASS": "$68",
     "COLLECT_FALL": "$29",
     "COLLECT_FALL_KEY": "$28",
-
     "SND_SOLVEPUZZLE_2": "$5b",
     "SND_GETSEED": "$5e",
     "SND_TELEPORT": "$8d",
     "SND_COMPASS": "$a2",
-
     "SEASON_SPRING": "$00",
     "SEASON_SUMMER": "$01",
     "SEASON_AUTUMN": "$02",
     "SEASON_WINTER": "$03",
-
     "TREASURE_SHIELD": "$01",
     "TREASURE_PUNCH": "$02",
     "TREASURE_BOMBS": "$03",
@@ -366,7 +366,8 @@ DEFINES = {
     "TREASURE_WOODEN_BIRD": "$3d",  # Rando specific ID
     "TREASURE_ENGINE_GREASE": "$3e",  # Rando specific ID
     "TREASURE_PHONOGRAPH": "$3f",  # Rando specific ID
-
+    "TREASURE_BOMB_UPGRADE": "$61",
+    "TREASURE_BOMBCHU_UPGRADE": "$5f", # Rando specific ID
     # Scripting
     "scriptend": "$00",
     "loadscript": "$83",
@@ -427,12 +428,12 @@ RUPEE_VALUES = {
     30: 0x07,
     60: 0x08,
     70: 0x09,
-    25: 0x0a,
-    50: 0x0b,
-    100: 0x0c,
-    200: 0x0d,
-    400: 0x0e,
-    150: 0x0f,
+    25: 0x0A,
+    50: 0x0B,
+    100: 0x0C,
+    200: 0x0D,
+    400: 0x0E,
+    150: 0x0F,
     300: 0x10,
     500: 0x11,
     900: 0x12,
@@ -444,167 +445,166 @@ DUNGEON_ENTRANCES: dict[str, dict[str, int]] = {
     # "addr": Address of the pointer to the warp dest aka start of the line + 2
     "d0": {
         "addr": GameboyAddress(0x04, 0x7651).address_in_rom(),
-        "map_tile": 0xd4,
-        "room": 0xd4,
+        "map_tile": 0xD4,
+        "room": 0xD4,
         "group": 0x00,
-        "position": 0x54
+        "position": 0x54,
     },
     "d1": {
-        "addr": GameboyAddress(0x04, 0x746d).address_in_rom(),
+        "addr": GameboyAddress(0x04, 0x746D).address_in_rom(),
         "map_tile": 0x96,
         "room": 0x96,
         "group": 0x00,
-        "position": 0x44
+        "position": 0x44,
     },
     "d2": {
         "addr": GameboyAddress(0x04, 0x7659).address_in_rom(),
-        "map_tile": 0x8d,
-        "room": 0x8d,
+        "map_tile": 0x8D,
+        "room": 0x8D,
         "group": 0x00,
-        "position": 0x24
+        "position": 0x24,
     },
     "d3": {
         "addr": GameboyAddress(0x04, 0x7671).address_in_rom(),
         "map_tile": 0x60,
         "room": 0x60,
         "group": 0x00,
-        "position": 0x25
+        "position": 0x25,
     },
     "d4": {
         "addr": GameboyAddress(0x04, 0x7479).address_in_rom(),
-        "map_tile": 0x1d,
-        "room": 0x1d,
+        "map_tile": 0x1D,
+        "room": 0x1D,
         "group": 0x00,
-        "position": 0x13
+        "position": 0x13,
     },
     "d5": {
-        "addr": GameboyAddress(0x04, 0x747d).address_in_rom(),
-        "map_tile": 0x8a,
-        "room": 0x8a,
+        "addr": GameboyAddress(0x04, 0x747D).address_in_rom(),
+        "map_tile": 0x8A,
+        "room": 0x8A,
         "group": 0x00,
-        "position": 0x25
+        "position": 0x25,
     },
     "d6": {
         "addr": GameboyAddress(0x04, 0x7481).address_in_rom(),
         "map_tile": 0x00,
         "room": 0x00,
         "group": 0x00,
-        "position": 0x34
+        "position": 0x34,
     },
     "d7": {
         "addr": GameboyAddress(0x04, 0x7485).address_in_rom(),
-        "map_tile": 0xd0,
-        "room": 0xd0,
+        "map_tile": 0xD0,
+        "room": 0xD0,
         "group": 0x00,
-        "position": 0x34
+        "position": 0x34,
     },
     "d8": {
-        "addr": GameboyAddress(0x04, 0x769d).address_in_rom(),
+        "addr": GameboyAddress(0x04, 0x769D).address_in_rom(),
         "map_tile": 0x04,
         "room": 0x00,
         "group": 0x01,
-        "position": 0x23
-    }
+        "position": 0x23,
+    },
 }
 
 DUNGEON_EXITS: dict[str, int] = {
     "d0": GameboyAddress(0x04, 0x7909).address_in_rom(),
-    "d1": GameboyAddress(0x04, 0x790d).address_in_rom(),
+    "d1": GameboyAddress(0x04, 0x790D).address_in_rom(),
     "d2": GameboyAddress(0x04, 0x7911).address_in_rom(),
     "d3": GameboyAddress(0x04, 0x7915).address_in_rom(),
     "d4": GameboyAddress(0x04, 0x7919).address_in_rom(),
-    "d5": GameboyAddress(0x04, 0x791d).address_in_rom(),
+    "d5": GameboyAddress(0x04, 0x791D).address_in_rom(),
     "d6": GameboyAddress(0x04, 0x7921).address_in_rom(),
-    "d7": GameboyAddress(0x04, 0x7a89).address_in_rom(),
-    "d8": GameboyAddress(0x04, 0x7a8d).address_in_rom(),
+    "d7": GameboyAddress(0x04, 0x7A89).address_in_rom(),
+    "d8": GameboyAddress(0x04, 0x7A8D).address_in_rom(),
 }
 
 PORTAL_WARPS = {
     "eastern suburbs portal": {
-        "addr": 0x134fd,
-        "map_tile": 0x9a,
+        "addr": 0x134FD,
+        "map_tile": 0x9A,
         "in_subrosia": False,
         "text_index": 0x0,
     },
     "spool swamp portal": {
         "addr": 0x13501,
-        "map_tile": 0xb0,
+        "map_tile": 0xB0,
         "in_subrosia": False,
         "text_index": 0x1,
     },
     "mt. cucco portal": {
         "addr": 0x13601,
-        "map_tile": 0x1e,
+        "map_tile": 0x1E,
         "in_subrosia": False,
         "text_index": 0x2,
     },
     "eyeglass lake portal": {
         "addr": 0x13509,
-        "map_tile": 0xb9,
+        "map_tile": 0xB9,
         "in_subrosia": False,
         "text_index": 0x3,
     },
     "horon village portal": {
         "addr": 0x13905,
-        "map_tile": 0xf7,
+        "map_tile": 0xF7,
         "in_subrosia": False,
         "text_index": 0x4,
     },
     "temple remains lower portal": {
-        "addr": 0x1350d,
+        "addr": 0x1350D,
         "map_tile": 0x25,
         "in_subrosia": False,
         "text_index": 0x5,
     },
     "temple remains upper portal": {
-        "addr": 0x1388d,
+        "addr": 0x1388D,
         "map_tile": 0x04,
         "in_subrosia": False,
         "text_index": 0x6,
     },
-
     "volcanoes east portal": {
-        "addr": 0x136b5,
+        "addr": 0x136B5,
         "map_tile": 0x05,
         "in_subrosia": True,
         "text_index": 0x7,
     },
     "subrosia market portal": {
-        "addr": 0x136b9,
-        "map_tile": 0x3e,
+        "addr": 0x136B9,
+        "map_tile": 0x3E,
         "in_subrosia": True,
         "text_index": 0x8,
     },
     "strange brothers portal": {
-        "addr": 0x136bd,
-        "map_tile": 0x3a,
+        "addr": 0x136BD,
+        "map_tile": 0x3A,
         "in_subrosia": True,
         "text_index": 0x9,
     },
     "great furnace portal": {
-        "addr": 0x136c1,
+        "addr": 0x136C1,
         "map_tile": 0x36,
         "in_subrosia": True,
-        "text_index": 0xa,
+        "text_index": 0xA,
     },
     "house of pirates portal": {
         "addr": 0x13729,
-        "map_tile": 0x4f,
+        "map_tile": 0x4F,
         "in_subrosia": True,
-        "text_index": 0xb,
+        "text_index": 0xB,
     },
     "volcanoes west portal": {
-        "addr": 0x136c5,
-        "map_tile": 0x0e,
+        "addr": 0x136C5,
+        "map_tile": 0x0E,
         "in_subrosia": True,
-        "text_index": 0xc,
+        "text_index": 0xC,
     },
     "d8 entrance portal": {
-        "addr": 0x136c9,
+        "addr": 0x136C9,
         "map_tile": 0x16,
         "in_subrosia": True,
-        "text_index": 0xd,
-    }
+        "text_index": 0xD,
+    },
 }
 
 PALETTE_BYTES = {
@@ -615,15 +615,15 @@ PALETTE_BYTES = {
 }
 
 # Scripting constants
-DELAY_6 = 0xf6
-CALL_SCRIPT = 0xc0
-MOVE_UP = 0xec
-MOVE_DOWN = 0xee
-MOVE_LEFT = 0xef
-MOVE_RIGHT = 0xed
-WRITE_OBJECT_BYTE = 0x8e
+DELAY_6 = 0xF6
+CALL_SCRIPT = 0xC0
+MOVE_UP = 0xEC
+MOVE_DOWN = 0xEE
+MOVE_LEFT = 0xEF
+MOVE_RIGHT = 0xED
+WRITE_OBJECT_BYTE = 0x8E
 SHOW_TEXT_LOW_INDEX = 0x98
-ENABLE_ALL_OBJECTS = 0xb9
+ENABLE_ALL_OBJECTS = 0xB9
 
 DIRECTION_STRINGS = {
     DIRECTION_UP: "⬆ ",
@@ -632,9 +632,4 @@ DIRECTION_STRINGS = {
     DIRECTION_RIGHT: "➡ ",
 }
 
-SEASON_STRINGS = {
-    SEASON_SPRING: "Spring",
-    SEASON_SUMMER: "Summer",
-    SEASON_AUTUMN: "Autumn",
-    SEASON_WINTER: "Winter"
-}
+SEASON_STRINGS = {SEASON_SPRING: "Spring", SEASON_SUMMER: "Summer", SEASON_AUTUMN: "Autumn", SEASON_WINTER: "Winter"}

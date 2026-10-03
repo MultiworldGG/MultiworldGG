@@ -166,8 +166,8 @@
 07/6e3e/: /copy o,$07,$70d7,$01
 # copy ENEMYCOLLISION_DARKNUT 0x1f (seasons) from ENEMYCOLLISION_DARKNUT 0x20 (ages)
 07/6e7e/: /copy o,$07,$7117,$01
-# copy ENEMYCOLLISION_BURNABLE_UNDEAD 0x20 (seasons) from ENEMYCOLLISION_BURNABLE_UNDEAD 0x7e (ages)
-07/6e9e/: /copy o,$07,$7cd7,$01
+# copy ENEMYCOLLISION_BURNABLE_UNDEAD 0x20 (seasons) from ENEMYCOLLISION_BURNABLE_ENEMY 0x11 (ages)
+07/6e9e/: /copy o,$07,$6f37,$01
 # copy ENEMYCOLLISION_POLS_VOICE 0x21 (seasons) from ENEMYCOLLISION_POLS_VOICE 0x21 (ages)
 07/6ebe/: /copy o,$07,$7137,$01
 # copy ENEMYCOLLISION_LIKE_LIKE 0x22 (seasons) from ENEMYCOLLISION_LIKE_LIKE 0x22 (ages)
@@ -182,8 +182,8 @@
 07/6f5e/: /copy o,$07,$71f7,$01
 # copy ENEMYCOLLISION_THWOMP 0x27 (seasons) from ENEMYCOLLISION_THWOMP 0x28 (ages)
 07/6f7e/: /copy o,$07,$7217,$01
-# copy ENEMYCOLLISION_UNDEAD 0x28 (seasons) from ENEMYCOLLISION_UNDEAD 0x7d (ages)
-07/6f9e/: /copy o,$07,$7cb7,$01
+# copy ENEMYCOLLISION_UNDEAD 0x28 (seasons) from ENEMYCOLLISION_STANDARD_ENEMY 0x10 (ages)
+07/6f9e/: /copy o,$07,$6f17,$01
 # copy ENEMYCOLLISION_KEESE 0x29 (seasons) from ENEMYCOLLISION_KEESE 0x1f (ages)
 07/6fbe/: /copy o,$07,$70f7,$01
 # copy ENEMYCOLLISION_ZOL 0x2a (seasons) from ENEMYCOLLISION_ZOL 0x29 (ages)

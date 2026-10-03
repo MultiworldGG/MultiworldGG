@@ -1,14 +1,20 @@
 import hashlib
 import io
 import logging
+import os
+from pathlib import Path
 import pkgutil
-from typing import Callable, Sequence
+import shutil
+import tempfile
+from typing import Any, Callable, Sequence
+from urllib.request import urlopen
 
 from worlds.Files import APPatchExtension, APProcedurePatch, APTokenMixin, APTokenTypes
 from .ALttPDoorRandomizer.InitialSram import InitialSram
-from .ALttPDoorRandomizer.Rom import JAP10HASH, RANDOMIZERBASEHASH
+from .ALttPDoorRandomizer.Rom import JAP10HASH, RANDOMIZERBASEHASH, Sprite
 from .python_bps_continued.bps.apply import apply_to_bytearrays
 from .python_bps_continued.bps.io import read_bps
+from . import Sprites
 
 
 logger = logging.Logger("alttpr")
@@ -20,6 +26,7 @@ class ALttPRProcedurePatch(APProcedurePatch, APTokenMixin):
     result_file_ending = ".sfc"
     procedure = [
         ("apply_randomizer_rom", []),
+        ("apply_sprite", ["sprite_name.txt"]),
         ("apply_tokens", ["token_data.bin"]),
     ]
 
@@ -45,6 +52,55 @@ class ALttPRBaseRandomizerPatch(APPatchExtension):
             rom_writable = rom_writable[0x200:]
             has_smc_header = True
         return bytes(patch_base_rom(rom_writable))
+
+
+    @staticmethod
+    def apply_sprite(caller: ALttPRProcedurePatch, rom: bytes, sprite_name_file: str) -> bytes:
+        sprite_name = caller.get_file(sprite_name_file).decode()
+        if not sprite_name:
+            return rom
+
+        sprite_filename = None
+        with tempfile.NamedTemporaryFile(delete=False) as sprite_file:
+            sprite_filename = sprite_file.name
+            print(f"Created temporary file {sprite_filename}")
+            loaded_sprite = load_sprite_file(sprite_name, sprite_file)
+        if not loaded_sprite or not sprite_filename or not os.path.isfile(sprite_filename):
+            print(f"Could not download and read the sprite file for {sprite_name}.")
+            Path(sprite_filename).unlink()
+            return rom
+
+        sprite = Sprite(sprite_filename)
+        Path(sprite_filename).unlink()
+        if not sprite.valid:
+            print(f"Sprite file for {sprite_name} is not valid.")
+            return rom
+
+        rom_writable = bytearray(rom)
+        rom_writable[0x80000:0x80000 + len(sprite.sprite)] = sprite.sprite
+        rom_writable[0xDD308:0xDD308 + len(sprite.palette)] = sprite.palette
+        rom_writable[0xDEDF5:0xDEDF5 + len(sprite.glove_palette)] = sprite.glove_palette
+        return rom_writable
+
+
+def load_sprite_file(sprite_name_arg, dest_file) -> bool:
+    sprite_name = sprite_name_arg.lower()
+    if sprite_name == "link":
+        return False
+    if not sprite_name in Sprites.sprites:
+        # This should never happen because validate_options also checks this, but better safe than sorry.
+        logger.error(f"Invalid sprite option {sprite_name_arg}. No custom sprite will be applied.")
+        return False
+
+    # TODO: Do this asynchronously
+    try:
+        with urlopen(Sprites.sprites[sprite_name]["url"], timeout=10) as response:
+            shutil.copyfileobj(response, dest_file)
+    except Exception as e:
+        logger.error(f"Could not download sprite {sprite_name} from {Sprites.sprites[sprite_name]['url']}: {e}. No custom sprite will be applied.")
+        return False
+
+    return True
 
 
 def patch_base_rom(buffer):
@@ -78,11 +134,12 @@ def patch_base_rom(buffer):
 # be a child of LocalRom to reuse some its logic, and only overwrite the methods we need to?
 # Was focused on getting it working rather than correct architecture while writing this code.
 class ALttPRRom:
-    def __init__(self, player: int, player_name: str, seed_hash: bytes):
+    def __init__(self, player: int, player_name: str, seed_hash: bytes, sprite: str | None):
         self.initial_sram = InitialSram()
         self.name = None
         self.orig_buffer = None
         self.patch = ALttPRProcedurePatch(player=player, player_name=player_name)
+        self.patch.write_file("sprite_name.txt", sprite.encode() if sprite else bytes())
         self.hash = JAP10HASH
         self.player = player
         self.player_name = player_name

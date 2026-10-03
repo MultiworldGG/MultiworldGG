@@ -337,6 +337,9 @@
 # Mega Man X3
 /worlds/mmx3/ @TheLX5
 
+# Mega Man Zero 3
+/worlds/mmzero3/ @brodieberger
+
 # Meritous
 /worlds/meritous/ @FelicitusNeko
 
@@ -689,6 +692,9 @@
 
 # Wario Land 4
 /worlds/wl4/ @lilDavid
+
+# WarioWare, Inc. - Mega Microgame$!
+/worlds/wario_ware_inc/ @TheLX5
 
 # Wordipelago
 /worlds/wordipelago/ @ProfDeCube

@@ -22,7 +22,7 @@
       "X": -302.4317322,
       "Y": 5.427081108,
       "Z": -219.7859192,
-      "Desc": "(LVL 1) CARD - Corner Outside Near StoneCutter Entrance"
+      "Desc": "(LVL 1) CARD - Alleyway Corner Across from Burns Mansion"
     },
     {
       "X": -405.0764465,
@@ -366,7 +366,7 @@
       "X": 134.2268677,
       "Y": 15.85085201,
       "Z": 36.59646225,
-      "Desc": "(LVL 2) CARD - Statue"
+      "Desc": "(LVL 2) CARD - Jebediah Statue"
     },
     {
       "X": 202.2677612,
@@ -396,7 +396,7 @@
       "X": -83.46542358,
       "Y": 32.15192413,
       "Z": 361.3511963,
-      "Desc": "(LVL 2) CARD - Alleyway Behind Krusty Burger"
+      "Desc": "(LVL 2) CARD - Alleyway Behind Downtown Krusty Burger"
     },
     {
       "X": 125.1598892,
@@ -577,12 +577,6 @@
       "Y": 7.406544,
       "Z": 335.6536,
       "Desc": "(LVL 2) CARD - DMV Sign"
-    },
-    {
-      "X": -267.6559,
-      "Y": 14.2319,
-      "Z": 385.8924,
-      "Desc": "(LVL 2) CARD - DMV Light Pole"
     },
     {
       "X": -235.8823,
@@ -782,13 +776,13 @@
       "X": 25.57963753,
       "Y": 16.40629768,
       "Z": -6.203155518,
-      "Desc": "(LVL 3) CARD - Comic Book Guy's Rooftop"
+      "Desc": "(LVL 3) CARD - Android's Dungeon Rooftop"
     },
     {
       "X": -184.2379456,
       "Y": -27.26276016,
       "Z": -153.8770447,
-      "Desc": "(LVL 3) CARD - Above Bowling"
+      "Desc": "(LVL 3) CARD - Above Bowlarama"
     },
     {
       "X": -578.3439331,
@@ -1186,7 +1180,7 @@
       "X": 243.234787,
       "Y": 12.13956642,
       "Z": -335.0282898,
-      "Desc": "(LVL 4) CARD - Gas Station Roof 1"
+      "Desc": "(LVL 4) CARD - Between Gas Station and Lard Lad's"
     },
     {
       "X": -288.3317566,
@@ -1270,7 +1264,7 @@
       "X": 60.2593,
       "Y": 8.918048,
       "Z": -178.3054,
-      "Desc": "(LVL 4) CARD - Above Street Between Simpson's House and Kwik-E-Mart"
+      "Desc": "(LVL 4) CARD - Above Street Between Simpsons' House and Kwik-E-Mart"
     },
     {
       "X": 152.4694,
@@ -1608,7 +1602,7 @@
       "X": 149.2706,
       "Y": 11.255,
       "Z": -19.41399,
-      "Desc": "(LVL 5) CARD - Courthouse Light Pole"
+      "Desc": "(LVL 5) CARD - Light Pole by Court House"
     },
     {
       "X": 220.7135,
@@ -1777,12 +1771,6 @@
       "Y": 7.406544,
       "Z": 335.6536,
       "Desc": "(LVL 5) CARD - DMV Sign"
-    },
-    {
-      "X": -267.6559,
-      "Y": 14.2319,
-      "Z": 385.8924,
-      "Desc": "(LVL 5) CARD - DMV Light Pole"
     },
     {
       "X": -2.307083,
@@ -1982,7 +1970,7 @@
       "X": 93.15557098,
       "Y": 9.024598122,
       "Z": -70.6791687,
-      "Desc": "(LVL 6) CARD - Above Street BallPit House"
+      "Desc": "(LVL 6) CARD - Above Street by Ball Pit Gag"
     },
     {
       "X": -390.5621948,
@@ -2168,7 +2156,7 @@
       "X": 162.2277,
       "Y": -4.13788,
       "Z": -106.4636,
-      "Desc": "(LVL 6) CARD - Green Building Across From Principal Skinner"
+      "Desc": "(LVL 6) CARD - Green Building Near Lumber King Billboard"
     },
     {
       "X": 174.4207,

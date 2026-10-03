@@ -1,5 +1,8 @@
 # Donkey Kong Toluca (DKC3)
 
+## Full Guide
+Info [here](https://thelx5.github.io/dkc3/index.html).
+
 ## Where is the options page?
 
 The [player options page for this game](../player-options) contains all the options you need to configure and export a config file.

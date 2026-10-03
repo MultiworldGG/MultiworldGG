@@ -1618,11 +1618,11 @@ ITEMS_DATA |= {
         "model": "Forest Glyph",
         "id": 199,
     },
-    "Snowfall Sanctuary Cave Key": {
+    "Snow Realm Rocktite Cave Key": {
         "classification": ItemClassification.progression,
         "address": STAddr.adv_flags_b,
         "value": 0x10,
-        "item_groups": ["Misc Keys"],
+        "item_groups": ["Misc Keys", "Rocktite Key", "Snow Sanc Key"],
         "model": "Key",
         "id": 200,
     },

@@ -89,7 +89,7 @@ class FuniRaccoonWorld(World):
             "goal":        sorted(self.options.goal.value),
             "current_map": self.origin_region_name,
             "options": {
-                **self.options.as_dict("eurosanity", "gemsanity", "hatsanity", "dumpster_weight_blocking", "lugh_quest_locking", "trap_toggle", "museum_threshold", "act2_threshold", "act3_threshold", "act4_threshold", "color_rando"),
+                **self.options.as_dict("eurosanity", "gemsanity", "hatsanity", "lugh_quest_locking", "trap_toggle", "museum_threshold", "act2_threshold", "act3_threshold", "act4_threshold", "color_rando"),
                 "goal": sorted(self.options.goal.value),
             },
         }

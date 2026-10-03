@@ -19,12 +19,12 @@ class ArgumentDefaultsHelpFormatter(argparse.RawTextHelpFormatter):
         return textwrap.dedent(action.help)
 
 
-def parse_cli(argv, no_defaults=False):
+def parse_cli(argv, no_defaults=False, include_user_settings=True):
     def defval(value):
         return value if not no_defaults else None
 
     # get settings
-    settings = parse_settings()
+    settings = parse_settings(include_user_settings=include_user_settings)
 
     lang = "en"
     fish = BabelFish(lang=lang)
@@ -137,7 +137,7 @@ def parse_cli(argv, no_defaults=False):
     if player_num:
         defaults = copy.deepcopy(ret)
         for player in range(1, player_num + 1):
-            playerargs = parse_cli(shlex.split(getattr(ret, f"p{player}")), True)
+            playerargs = parse_cli(shlex.split(getattr(ret, f"p{player}")), True, include_user_settings)
             
             if playerargs.filename:
                 playersettings = apply_settings_file({}, playerargs.filename)
@@ -181,7 +181,7 @@ def apply_settings_file(settings, settings_path):
     return settings
 
 
-def parse_settings():
+def parse_settings(include_user_settings=True):
     # set default settings
     settings = {
         "lang": "en",
@@ -397,14 +397,15 @@ def parse_settings():
     }
 
     # read saved settings file if it exists and set these
-    settings_path = os.path.join(".", "resources", "user", "settings.json")
-    settings = apply_settings_file(settings, settings_path)
-    if settings["settingsonload"] == "saved":
-        settings_path = os.path.join(".", "resources", "user", "saved.json")
+    if include_user_settings:
+        settings_path = os.path.join(".", "resources", "user", "settings.json")
         settings = apply_settings_file(settings, settings_path)
-    elif settings["settingsonload"] == "lastused":
-        settings_path = os.path.join(".", "resources", "user", "last.json")
-        settings = apply_settings_file(settings, settings_path)
+        if settings["settingsonload"] == "saved":
+            settings_path = os.path.join(".", "resources", "user", "saved.json")
+            settings = apply_settings_file(settings, settings_path)
+        elif settings["settingsonload"] == "lastused":
+            settings_path = os.path.join(".", "resources", "user", "last.json")
+            settings = apply_settings_file(settings, settings_path)
     return settings
 
 # Priority fallback is:

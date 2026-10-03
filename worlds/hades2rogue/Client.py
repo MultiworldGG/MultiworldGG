@@ -3,12 +3,10 @@ from typing import Optional
 
 import Utils
 from NetUtils import ClientStatus
-from CommonClient import gui_enabled, logger, get_base_parser, server_loop
+from CommonClient import gui_enabled, logger, get_base_parser, handle_url_arg, server_loop
 
-from .Items import WEAPON_SHORT_NAMES, vow_names, aspect_titles, ASPECT_BASE_TITLE_BY_WEAPON, \
-    ASPECT_TITLES_BY_WEAPON, ASPECT_MAX_RANK, INITIAL_WEAPON_BY_VALUE, \
-    godsanity_gods, godsanity_shop_gods, helper_story_npcs, helper_story_npcs_nightmare, \
-    combat_helper_npcs
+from . import Tracker
+from .Items import ASPECT_MAX_RANK
 
 # Universal Tracker integration: if the player has separately installed the real
 # Universal Tracker (github.com/FarisTheAncient/Archipelago, distributed as
@@ -35,21 +33,14 @@ BRIDGE_PORT = 43055
 
 # Compared against slot_data's version_check (set from Hades2World.mod_version) on connect.
 # KEEP IN STEP with __init__.py's mod_version and the mod's manifest.json on every release.
-MOD_VERSION = "0.9.3"
+MOD_VERSION = "0.10.0"
 
-# Hades 2 tab colors. Routes: 0 (can't enter) -> red .. 4 (all zones open) -> blue.
-ROUTE_LEVEL_COLORS = {
-    0: (0.85, 0.2, 0.2, 1), 1: (1.0, 0.55, 0.15, 1), 2: (0.85, 0.8, 0.15, 1),
-    3: (0.25, 0.8, 0.25, 1), 4: (0.25, 0.55, 1.0, 1),
-}
-# Weapons: 0 (not owned) -> grey, 1-5 match the game's own aspect-rank rarity colors.
-WEAPON_LEVEL_COLORS = {
-    0: (0.5, 0.5, 0.5, 1), 1: (0.9, 0.9, 0.9, 1), 2: (0.25, 0.8, 0.25, 1),
-    3: (0.25, 0.55, 1.0, 1), 4: (0.65, 0.35, 0.9, 1), 5: (0.9, 0.25, 0.25, 1),
-}
-# God/helper icon+label tint: not-yet-unlocked -> grey, unlocked -> full color.
-SANITY_LOCKED_COLOR = (0.45, 0.45, 0.45, 1)
-SANITY_UNLOCKED_COLOR = (1, 1, 1, 1)
+
+def _wire_text(text) -> str:
+    """Free text from other players (slot names, other games' item names) made safe for the
+    bridge's line protocol: every message ends at a newline, and ITEMS/CHECKED split on "|" and
+    "~". Our own item and location names never contain these."""
+    return str(text).replace("\r", " ").replace("\n", " ").replace("|", "/").replace("~", "-")
 
 
 class Hades2CommandProcessor(ClientCommandProcessor):
@@ -129,12 +120,24 @@ class Hades2Context(CommonContext):
         self.pending_death_source = "Archipelago"
 
         # Most recent REAL per-boss clears/weapon-variety from the mod's VICTORY payload (see
-        # evaluate_goal), cached here purely so a subclass can re-check goal completion later
-        # against the latest known numbers without re-parsing a payload itself. Unused by the
-        # plain client's own UI/commands -- just bookkeeping.
+        # evaluate_goal). The Hades 2 tab's goal rows read these, and CheatClient re-checks goal
+        # completion against them. The mod only sends VICTORY at the moment of a win, so they're
+        # also saved to the server's data storage (goal_stats_key) and read back on connect --
+        # otherwise every client restart would show the goal as unknown until the next win.
         self.last_goal_clears: dict = {}
         self.last_goal_weapons: dict = {}
         self.last_goal_zagreus_clears: int = 0
+        self.goal_stats_known = False
+        # (slot id, payload) of a VICTORY that arrived while the server link was down (CommonContext
+        # clears self.slot on disconnect, so neither the goal StatusUpdate nor the stats save could
+        # be sent). Evaluated on the next Connected -- only if that's the same slot again.
+        self.pending_victory: Optional[tuple] = None
+        self.connected_slot_id: Optional[tuple] = None
+
+        # Hades 2 tab: this slot's locations (id -> name) and where the tab counts each one
+        # (Tracker.classify_locations), built once per connection since the list never changes.
+        self.tracker_locations: dict = {}
+        self.tracker_keys: dict = {}
 
         # The single active connection from the Lua mod, if any.
         self.bridge_server: Optional[asyncio.AbstractServer] = None
@@ -176,6 +179,19 @@ class Hades2Context(CommonContext):
                     f"Seed generated with mod version {version}, client expects {self.mod_version}. "
                     "These may be incompatible.")
             self.location_name_to_id = self.get_location_name_to_id()
+            self.tracker_locations = {loc_id: name for name, loc_id in self.location_name_to_id.items()}
+            self.tracker_keys = Tracker.classify_locations(self.slot_data, self.tracker_locations)
+            # Goal stats belong to the slot just connected to (this may be a different one than
+            # last time): start unknown, then evaluate a VICTORY held from an outage on this same
+            # slot, or else read the stats saved on the server.
+            self.connected_slot_id = self.goal_slot_id()
+            held, self.pending_victory = self.pending_victory, None
+            self.last_goal_clears, self.last_goal_weapons, self.last_goal_zagreus_clears = {}, {}, 0
+            self.goal_stats_known = False
+            if held is not None and held[0] == self.connected_slot_id:
+                self.evaluate_goal(held[1])
+            else:
+                Utils.async_start(self.send_msgs([{"cmd": "Get", "keys": [self.goal_stats_key()]}]))
             # Flush any checks the mod sent during the pre-sync window (see pending_checks).
             if self.pending_checks:
                 buffered, self.pending_checks = self.pending_checks, []
@@ -206,7 +222,18 @@ class Hades2Context(CommonContext):
             for net_item in args.get("locations", []):
                 player_name = self.player_names.get(net_item.player, f"Player {net_item.player}")
                 item_name = self.item_names.lookup_in_slot(net_item.item, net_item.player)
-                self.scouted[net_item.location] = f"{player_name} - {item_name}"
+                self.scouted[net_item.location] = _wire_text(f"{player_name} - {item_name}")
+
+        elif cmd == "Retrieved":
+            # Reply to the Connected-time Get for the saved goal stats (see goal_stats_key). A
+            # live VICTORY this session is newer, so it wins. No saved value means no win has
+            # ever been reported for this slot: every count really is 0, not unknown.
+            if self.goal_stats_key() in args.get("keys", {}) and not self.goal_stats_known:
+                saved = args["keys"][self.goal_stats_key()]
+                stats = self.parse_victory(saved) if isinstance(saved, str) else None
+                if stats is not None:
+                    self.last_goal_clears, self.last_goal_weapons, self.last_goal_zagreus_clears = stats
+                self.goal_stats_known = True
 
         # NOTE: no "Bounced" branch here on purpose. CommonContext.process_server_cmd already
         # dispatches DeathLink bounces to on_deathlink, guarded by an echo filter
@@ -230,8 +257,9 @@ class Hades2Context(CommonContext):
                 logger.warning(f"Unknown location checked by game (buffered pre-connect): {payload!r}")
                 continue
             loc_ids.append(loc_id)
-            detail = self.scouted.get(loc_id, "")
-            self.send_to_mod(f"CHECKED:{payload}|{detail}")
+            if loc_id not in self.checked_locations:
+                detail = self.scouted.get(loc_id, "")
+                self.send_to_mod(f"CHECKED:{payload}|{detail}")
         if loc_ids:
             await self.check_locations(loc_ids)
             logger.info(f"Flushed {len(loc_ids)} buffered check(s) after connecting.")
@@ -266,9 +294,9 @@ class Hades2Context(CommonContext):
         # flush on the mod's next HELLO. Otherwise the client shows the DeathLink banner but the
         # player never dies, which reads as "DeathLink does nothing."
         # Payload carries the killer's name so the mod can show "<source> Killed You" instead of
-        # a generic message. ":" can't appear in a slot name (it's the mod protocol's own
-        # command/payload separator), so no escaping needed beyond stripping stray newlines.
-        source = source.replace("\n", " ").replace("\r", " ")
+        # a generic message. The mod splits a message on its FIRST ":", so a ":" inside the name
+        # is harmless; newlines are not.
+        source = _wire_text(source)
         if self.bridge_writer is not None:
             self.send_to_mod(f"DEATH:{source}")
         else:
@@ -328,7 +356,12 @@ class Hades2Context(CommonContext):
                     break
                 message = line.decode("utf-8", errors="replace").strip()
                 if message:
-                    await self.handle_mod_message(message)
+                    try:
+                        await self.handle_mod_message(message)
+                    except Exception:
+                        # One bad message must not end the read loop (and with it the game's
+                        # connection) -- log it and keep reading.
+                        logger.exception(f"Error handling game message {message[:200]!r}")
         except (ConnectionResetError, asyncio.IncompleteReadError):
             pass
         finally:
@@ -360,11 +393,15 @@ class Hades2Context(CommonContext):
         elif command == "CHECK":
             if payload in self.location_name_to_id:
                 loc_id = self.location_name_to_id[payload]
+                # The mod re-sends checks the server already has (nothing tells it about them),
+                # so only echo -- i.e. only show "Sent ..." in game -- for a new one.
+                already = loc_id in self.checked_locations
                 await self.check_locations([loc_id])
-                # Echo back the scouted contents so the mod's subtle log can show who got
-                # what. Detail is empty if scout data hasn't arrived yet (mod handles that).
-                detail = self.scouted.get(loc_id, "")
-                self.send_to_mod(f"CHECKED:{payload}|{detail}")
+                if not already:
+                    # Echo back the scouted contents so the mod's subtle log can show who got
+                    # what. Detail is empty if scout data hasn't arrived yet (mod handles that).
+                    detail = self.scouted.get(loc_id, "")
+                    self.send_to_mod(f"CHECKED:{payload}|{detail}")
             elif not self.location_name_to_id:
                 # Not connected/synced yet (location_name_to_id is only filled on Connected). Don't
                 # drop it -- the mod won't resend a one-time check -- buffer and flush on Connected.
@@ -383,77 +420,41 @@ class Hades2Context(CommonContext):
 
     async def sync_mod(self) -> None:
         if self.slot_data is not None:
+            # Sent FIRST, ahead of SETTINGS: identifies which multiworld generation this is
+            # (AP's own self.seed_name, set from the RoomInfo packet -- unrelated to our seed's
+            # options). Lets the mod tell "still the same seed I was tracking" apart from "this
+            # save got reused for a different multiworld" and auto-wipe its stale AP state in the
+            # latter case, BEFORE anything else in this sync (including SETTINGS's one-time
+            # resync-lost-checks pass) has a chance to act on stale bookkeeping.
+            self.send_to_mod(f"SEED:{self.seed_name}")
             self.send_to_mod("SETTINGS:" + self.encode_settings())
-            # Tell the mod the highest score check the server already has, so a fresh save
-            # doesn't re-send / re-notify "Clear Score" checks it re-earns from depth 0.
-            self.send_to_mod(self.compute_score_sync())
             # point_based: tell the mod which score checks the server already has so it can
             # skip them for free (see compute_checked_score). Sent here so a reconnecting mod
             # gets the current set; also resent on RoomUpdate when checked_locations changes.
             self.send_to_mod(self.compute_checked_score())
         await self.send_items_to_mod()
 
-    def compute_score_sync(self) -> str:
-        # Tell the mod the highest already-earned ROOM check per route, so a fresh save (lost
-        # save, power outage) doesn't re-notify room checks the server already has. Covers
-        # room_based ("<route> Room N") and the combine_pools shared room pool ("Room N").
-        # Point-based "<route> Score N" checks are NO LONGER synced here: a max()-based jump
-        # would wrongly skip 1..16 if 0017 is checked out of order. Point skipping is now
-        # per-number via CHECKEDSCORE (see compute_checked_score). Per-weapon room checks
-        # aren't synced (their high-water is per weapon); they re-notify harmlessly on a fresh
-        # save - the checks themselves still dedupe server-side.
-        id_to_name = {loc_id: name for name, loc_id in self.location_name_to_id.items()}
-        uroom = sroom = hroom = croom = 0
-        for loc_id in self.checked_locations:
-            name = id_to_name.get(loc_id, "")
-            # combine_pools shared room pool: "Room NNNN" (no route prefix, no weapon).
-            if name.startswith("Room "):
-                remainder = name[len("Room "):]
-                if " " not in remainder:   # weapon suffix -> per-weapon combined, skip
-                    try:
-                        croom = max(croom, int(remainder))
-                    except ValueError:
-                        pass
-                continue
-            for prefix, route in (
-                ("Underworld Room ", "u"), ("Surface Room ", "s"), ("Nightmare Room ", "h"),
-            ):
-                if not name.startswith(prefix):
-                    continue
-                remainder = name[len(prefix):]
-                if " " in remainder:   # has a weapon suffix -> per-weapon, skip
-                    break
-                try:
-                    num = int(remainder)
-                except ValueError:
-                    break
-                if route == "u":
-                    uroom = max(uroom, num)
-                elif route == "s":
-                    sroom = max(sroom, num)
-                else:
-                    hroom = max(hroom, num)
-                break
-        return (f"SCORESYNC:underworld_room={uroom};surface_room={sroom};"
-                f"nightmare_room={hroom};combined_room={croom}")
-
     def compute_checked_score(self) -> str:
         # point_based only: tell the mod which score checks the server ALREADY has (a finished
         # player's auto-released/collected checks, an admin !send_location, fresh-save
         # recovery). The mod advances past these for FREE - no score spent, no CHECK re-sent.
         # This is per-number (not a high-water mark) so a gap like "0017 checked while 0015 is
-        # not" is handled correctly. Parsing mirrors compute_score_sync (names with a trailing
-        # space + weapon suffix are room checks and are skipped).
+        # not" is handled correctly. Names with a trailing space + weapon suffix are room checks
+        # and are skipped.
         # "combined" is separate_checks=combine_pools' shared, route-agnostic "Score N" pool;
         # the per-route buckets are split_pools' "<Route> Score N". A seed only ever uses one
         # kind, so the other simply comes through empty.
         id_to_name = {loc_id: name for name, loc_id in self.location_name_to_id.items()}
-        underworld, surface, nightmare, combined = [], [], [], []
+        underworld, surface, nightmare, dream, combined = [], [], [], [], []
         for loc_id in self.checked_locations:
             name = id_to_name.get(loc_id, "")
+            # "Dream Score " must be listed before the bare "Score " (combine_pools) prefix --
+            # the loop takes the first match. Dream was absent from this list entirely, so its
+            # already-checked score numbers never got the free skip every other route gets.
             for prefix, bucket in (("Underworld Score ", underworld),
                                    ("Surface Score ", surface),
                                    ("Nightmare Score ", nightmare),
+                                   ("Dream Score ", dream),
                                    ("Score ", combined)):
                 if not name.startswith(prefix):
                     continue
@@ -465,284 +466,58 @@ class Hades2Context(CommonContext):
                 except ValueError:
                     pass
                 break
-        for bucket in (underworld, surface, nightmare, combined):
+        for bucket in (underworld, surface, nightmare, dream, combined):
             bucket.sort()
         return ("CHECKEDSCORE:underworld=" + ",".join(str(n) for n in underworld)
                 + ";surface=" + ",".join(str(n) for n in surface)
                 + ";nightmare=" + ",".join(str(n) for n in nightmare)
+                + ";dream=" + ",".join(str(n) for n in dream)
                 + ";combined=" + ",".join(str(n) for n in combined))
 
-    def compute_display_progress(self) -> list:
-        """Hades 2 tab: a list of column dicts {"header": <route name, or None for the
-        combine_pools shared pool>, "rows": [(label, checked, total), ...]}, shaped by
-        location_system (point/room/per-weapon-room) and separate_checks (split per
-        route vs. combine_pools' shared pool) -- one column per active route when
-        split, a single header-less column when combined. Unlike compute_score_sync/
-        compute_checked_score (wire-protocol high-water marks the mod consumes), this is
-        display-only and always reflects the server's real checked_locations count."""
-        if not self.slot_data:
-            return []
-        system = int(self.slot_data.get("location_system", 1))
-        combined = bool(int(self.slot_data.get("separate_checks", 0)))
-        multiplier = int(self.slot_data.get("location_multiplier", 1))
-        score_total = int(self.slot_data.get("score_rewards_amount", 0))
-        # combined room pool is always sized off Underworld's room_count (see
-        # Locations._combined_room_count) -- every route uses the same room_count anyway.
-        room_total_combined = int(self.slot_data.get("underworld_room_count", 0)) * multiplier
+    # ---------------- Hades 2 tab ---------------------------------------------
 
-        id_to_name = {loc_id: name for name, loc_id in self.location_name_to_id.items()}
-        checked_names = {id_to_name[loc_id] for loc_id in self.checked_locations if loc_id in id_to_name}
+    def tracker_in_logic(self) -> Optional[set]:
+        """Location ids Universal Tracker currently has in logic, or None when UT isn't installed
+        or has no working regen for this slot (the tab then hides every "in logic" count rather
+        than showing a misleading 0)."""
+        core = getattr(self, "tracker_core", None)
+        if core is None:
+            return None
+        try:
+            if core.get_current_world() is None:
+                return None
+            return set(core.locations_available)
+        except Exception:
+            return None
 
-        def count_checked(prefix: str, weapon: Optional[str] = None) -> int:
-            n = 0
-            for name in checked_names:
-                if not name.startswith(prefix):
-                    continue
-                tokens = name[len(prefix):].split()
-                if not tokens:
-                    continue
-                last = tokens[-1]
-                if weapon is None:
-                    if last in WEAPON_SHORT_NAMES:
-                        continue    # per-weapon check -- counted separately
-                elif last != weapon:
-                    continue
-                n += 1
-            return n
+    def tracker_inputs_key(self) -> tuple:
+        """Cheap fingerprint of everything build_tracker_model reads, so the once-a-second refresh
+        only rebuilds the model when one of them changed. UT replaces locations_available with a
+        new list on every update, so its identity is enough to notice a change."""
+        core = getattr(self, "tracker_core", None)
+        available = getattr(core, "locations_available", None)
+        return (id(self.slot_data), len(self.tracker_keys), len(self.items_received),
+                len(self.checked_locations), id(available), self.goal_stats_known,
+                tuple(sorted(self.last_goal_clears.items())), tuple(sorted(self.last_goal_weapons.items())),
+                self.last_goal_zagreus_clears, self.finished_game)
 
-        # Weapons removed from the YAML (IncludedWeapons, Options.py) never had rooms/items for
-        # them generated at all -- without this filter they'd still show a permanent 0/0 grey
-        # row here, which reads as "not unlocked yet" instead of "not in this seed."
-        included_weapons = [w for w in WEAPON_SHORT_NAMES
-                             if w in self.slot_data.get("included_weapons", WEAPON_SHORT_NAMES)]
+    def build_tracker_model(self) -> dict:
+        received = [self.item_names.lookup_in_game(item.item) for item in self.items_received]
+        stats = {"clears": self.last_goal_clears, "weapons": self.last_goal_weapons,
+                 "zagreus": self.last_goal_zagreus_clears} if self.goal_stats_known else None
+        return Tracker.build_model(self.slot_data, received, self.tracker_locations, self.tracker_keys,
+                                   set(self.checked_locations), self.tracker_in_logic(), stats,
+                                   bool(self.finished_game))
 
-        routes = (
-            ("Underworld", "underworld_active", "Underworld Room", "Underworld Score", "underworld_room_count"),
-            ("Surface", "surface_active", "Surface Room", "Surface Score", "surface_room_count"),
-            ("Nightmare", "nightmare_active", "Nightmare Room", "Nightmare Score", "nightmare_room_count"),
-        )
-        columns = []
-        if system == 0:     # point_based
-            if combined:
-                columns.append({"header": None,
-                                 "rows": [("Score Locations", count_checked("Score"), score_total)]})
-            else:
-                for label, active_key, _, score_prefix, _ in routes:
-                    if int(self.slot_data.get(active_key, 0)):
-                        columns.append({"header": label,
-                                         "rows": [("Score Locations", count_checked(score_prefix), score_total)]})
-        elif system == 2:   # per_weapon_room_based
-            if combined:
-                columns.append({"header": None, "rows": [
-                    (weapon, count_checked("Room", weapon), room_total_combined) for weapon in included_weapons
-                ]})
-            else:
-                for label, active_key, room_prefix, _, count_key in routes:
-                    if not int(self.slot_data.get(active_key, 0)):
-                        continue
-                    total = int(self.slot_data.get(count_key, 0)) * multiplier
-                    columns.append({"header": label, "rows": [
-                        (weapon, count_checked(room_prefix, weapon), total) for weapon in included_weapons
-                    ]})
-        else:               # room_based
-            if combined:
-                columns.append({"header": None,
-                                 "rows": [("Rooms Cleared", count_checked("Room"), room_total_combined)]})
-            else:
-                for label, active_key, room_prefix, _, count_key in routes:
-                    if int(self.slot_data.get(active_key, 0)):
-                        total = int(self.slot_data.get(count_key, 0)) * multiplier
-                        columns.append({"header": label,
-                                         "rows": [("Rooms Cleared", count_checked(room_prefix), total)]})
-        return columns
+    def goal_stats_key(self) -> str:
+        """Server data-storage key holding this slot's latest VICTORY payload (see evaluate_goal)."""
+        return f"Hades2Rogue_goal_stats_{self.team}_{self.slot}"
 
-    def compute_route_access_level(self, route: str) -> int:
-        """0 (can't even enter) .. 4 (all 4 zones open), purely from Progressive-<route>/
-        Access-item counts and the same thresholds Rules.set_rules uses for "Descend
-        <route>"/"Exit <zone>" -- NOT a real logic sweep (deliberately ignores the
-        weapon-count/boss-victory/arcana/grasp zone gates Rules.py also applies)."""
-        if not self.slot_data:
-            return 0
-        lock_routes = bool(int(self.slot_data.get("lock_routes", 0)))
-        prog_name = f"Progressive {route}"
-        counts: dict = {}
-        received_names = set()
-        for net_item in self.items_received:
-            name = self.item_names.lookup_in_game(net_item.item)
-            counts[name] = counts.get(name, 0) + 1
-            received_names.add(name)
-        p = counts.get(prog_name, 0)
-
-        if route == "Underworld":
-            offset = int(self.slot_data.get("underworld_offset", 0))
-            entered = p >= offset
-        else:
-            start = bool(int(self.slot_data.get(f"{route.lower()}_start", 0)))
-            access_via_progressive = lock_routes and not start
-            if access_via_progressive:
-                entered = p >= 1
-                # That first progressive is "spent" opening the door -- it doesn't also
-                # count toward area 2 (Rules.py's own item-count math says it does, since
-                # the door and the zone-1-exit share the same ">= 1" threshold, but the
-                # zone-1-exit is also AND-gated on the zone's boss/weapons in real play,
-                # so treating the door-opener as separate matches what's actually usable).
-                offset = 1
-            else:
-                offset = 0
-                entered = start or f"{route} Access" in received_names
-
-        if not lock_routes:
-            return 4 if entered else 0
-        if not entered:
-            return 0
-        level = 1
-        for i in range(3):
-            if p >= i + 1 + offset:
-                level = i + 2
-        return level
-
-    def compute_weapon_level(self, weapon: str) -> int:
-        """0 (weapon not owned, grey) .. 5 (an aspect at max rank, matching the game's own
-        rarity colors), purely from item counts for whichever aspectsanity mode this seed
-        uses -- not a logic sweep."""
-        if not self.slot_data:
-            return 0
-        asp = int(self.slot_data.get("aspectsanity", 0))
-        combine_on = asp in (1, 2, 3)
-        initial_weapon = INITIAL_WEAPON_BY_VALUE.get(int(self.slot_data.get("initial_weapon", 0)))
-        starting_aspect_index = int(self.slot_data.get("starting_aspect_index", 0))
-
-        counts: dict = {}
-        for net_item in self.items_received:
-            name = self.item_names.lookup_in_game(net_item.item)
-            counts[name] = counts.get(name, 0) + 1
-
-        unlock_item = f"{weapon} Weapon Unlock Item"
-        owned = weapon == initial_weapon or counts.get(unlock_item, 0) > 0
-        rank = 0
-
-        if asp == 1:      # randomized: any of the weapon's 4 aspect items -> max rank
-            names = [ASPECT_BASE_TITLE_BY_WEAPON[weapon]] + ASPECT_TITLES_BY_WEAPON.get(weapon, [])
-            if any(counts.get(n, 0) > 0 for n in names):
-                rank = ASPECT_MAX_RANK
-                if combine_on:
-                    owned = True
-            elif weapon == initial_weapon:
-                rank = 1   # starting weapon begins with its picked aspect at rank 1
-        elif asp == 2:    # progressive: N copies of one shared line = rank N
-            item_name = f"Progressive {weapon}" if combine_on else f"Progressive {weapon} Aspect"
-            rank = min(ASPECT_MAX_RANK, counts.get(item_name, 0))
-            if combine_on and rank > 0:
-                owned = True
-        elif asp == 3:    # per_aspect: 4 independent lines, take the highest
-            names = [f"Progressive {weapon} Base Aspect"] + \
-                [f"Progressive {title}" for title, w in aspect_titles if w == weapon]
-            best = 0
-            for i, name in enumerate(names):
-                count = counts.get(name, 0)
-                if weapon == initial_weapon and i == starting_aspect_index:
-                    count += 1   # this one aspect's first copy is precollected
-                best = max(best, min(ASPECT_MAX_RANK, count))
-            rank = best
-            if combine_on and rank > 0:
-                owned = True
-        # asp == 0 (unlocked): no aspect items exist; rank stays 0, ownership alone decides.
-
-        if not owned:
-            return 0
-        return max(1, rank)
-
-    def compute_vow_counts(self) -> dict:
-        """vow name -> currently-applied count, purely from items_received: the static
-        configured level (vow_<name> in slot_data) minus how many "<Vow> Vow Removal"
-        items have been received. No mod state needed -- the mod computes this same
-        "configured minus removed" value for its own in-game purposes (apply_all_vows),
-        but the removal count is just an item count the client already has."""
-        if not self.slot_data:
-            return {}
-        removals: dict = {}
-        for net_item in self.items_received:
-            name = self.item_names.lookup_in_game(net_item.item)
-            if name.endswith(" Vow Removal"):
-                vow = name[:-len(" Vow Removal")]
-                removals[vow] = removals.get(vow, 0) + 1
-        return {
-            vow: max(0, int(self.slot_data.get(f"vow_{vow.lower()}", 0)) - removals.get(vow, 0))
-            for vow in vow_names
-        }
-
-    def compute_god_status(self) -> list:
-        """Hades 2 tab: [(god name, unlocked), ...] for GodSanity's 11 gods (the 9 boon-reward
-        gods plus Hermes/Selene, see Items.godsanity_gods/godsanity_shop_gods) -- empty when
-        godsanity is "unlocked" (slot_data value 0), since no "<God> Unlock" item exists in the
-        pool at all in that mode. "unlocked" here checks either the plain unlock item or the
-        fused "<God> Unlock + Keepsake" item (keepsakesanity=randomized + godsanity combo, see
-        Items.item_table_god_keepsake_combined) -- whichever one this seed actually uses."""
-        if not self.slot_data or not int(self.slot_data.get("godsanity", 0)):
-            return []
-        received_names = {self.item_names.lookup_in_game(net_item.item) for net_item in self.items_received}
-        return [
-            (god, f"{god} Unlock" in received_names or f"{god} Unlock + Keepsake" in received_names)
-            for god in godsanity_gods + godsanity_shop_gods
-        ]
-
-    def compute_helper_status(self) -> list:
-        """Hades 2 tab: [(npc name, unlocked), ...] for helper NPCs whose governing sanity
-        option is one of the item-based modes (HelperRoomSanity/CombatHelperSanity option
-        values 1="items"/3="items_random", both odd) -- e.g. combat helpers on but story-room
-        helpers off surfaces Artemis but not Narcissus. Empty for a sanity whose option is
-        "unlocked"/"unlocked_random" (0/2, even): no unlock item exists in the pool then."""
-        if not self.slot_data:
-            return []
-        received_names = {self.item_names.lookup_in_game(net_item.item) for net_item in self.items_received}
-        result = []
-        if int(self.slot_data.get("helper_room_sanity", 0)) % 2 == 1:
-            npcs = list(helper_story_npcs)
-            if int(self.slot_data.get("nightmare_active", 0)):
-                npcs += helper_story_npcs_nightmare
-            result += [(npc, f"{npc} Room" in received_names) for npc in npcs]
-        if int(self.slot_data.get("combat_helper_sanity", 0)) % 2 == 1:
-            result += [(npc, f"{npc} Helper" in received_names) for npc in combat_helper_npcs]
-        return result
-
-    def compute_route_goal_complete(self, route: str) -> bool:
-        """Whether `route`'s own goal boss (chronos/typhon/hades for Underworld/Surface/
-        Nightmare respectively) has already met its configured clear-count and weapon-variety
-        requirement, purely from the most recent VICTORY payload cached by evaluate_goal
-        (last_goal_clears/last_goal_weapons) -- False until the mod has ever reported one,
-        independent of whether this route's boss is actually one of goals_required."""
-        boss = {"Underworld": "chronos", "Surface": "typhon", "Nightmare": "hades"}.get(route)
-        if boss is None or not self.slot_data:
-            return False
-        weapons_needed = int(self.slot_data.get("weapons_clears_needed", 1))
-        wins_needed = self._wins_needed(route.lower())
-        return (self.last_goal_clears.get(boss, 0) >= wins_needed
-                and self.last_goal_weapons.get(boss, 0) >= weapons_needed)
-
-    # Pre-"Options simplification v0.7.3" slot_data keys. A seed generated before that
-    # option rename still has ITS slot_data under these names, never "<route>_wins_needed"
-    # -- so a plain .get(f"{route}_wins_needed", 1) silently reads back the "unset" default
-    # of 1 for every route regardless of the real configured value (e.g. 10/4), making the
-    # goal (and the mod's own goal-cascade checks) look satisfied after just one clear.
-    LEGACY_WINS_NEEDED_KEY = {
-        "underworld": "chronos_defeats_needed", "surface": "typhon_defeats_needed",
-        "nightmare": "hades_defeats_needed",
-    }
-    # Same mapping, keyed by the NEW slot_data key name instead of the bare route -- what
-    # encode_settings needs when substituting a legacy value in under its new name so the
-    # mod (which only ever reads "<route>_wins_needed") gets a real number from an
-    # old-generated seed's slot_data either way.
-    LEGACY_WINS_NEEDED_KEY_BY_NEW_KEY = {
-        "underworld_wins_needed": "chronos_defeats_needed",
-        "surface_wins_needed": "typhon_defeats_needed",
-        "nightmare_wins_needed": "hades_defeats_needed",
-    }
+    def goal_slot_id(self) -> tuple:
+        return (self.seed_name, self.team, self.slot)
 
     def _wins_needed(self, route_lower: str) -> int:
-        v = self.slot_data.get(f"{route_lower}_wins_needed")
-        if v is None:
-            v = self.slot_data.get(self.LEGACY_WINS_NEEDED_KEY.get(route_lower, ""), 1)
-        return int(v)
+        return int(self.slot_data.get(f"{route_lower}_wins_needed", 1))
 
     def encode_settings(self) -> str:
         if not self.slot_data:
@@ -750,11 +525,14 @@ class Hades2Context(CommonContext):
         keys = [
             "initial_weapon", "location_system",
             "score_rewards_amount", "underworld_room_count", "surface_room_count",
-            "nightmare_room_count", "location_multiplier",
-            "enemy_locations", "npc_locations",
+            "nightmare_room_count", "combined_room_count", "location_multiplier",
+            "npc_locations",
             "grasp_intervals", "arcanasanity",
             "aspectsanity", "starting_aspect_index",
-            "keepsakesanity", "petsanity", "helper_room_sanity", "combat_helper_sanity", "godsanity",
+            "keepsakesanity", "enemysanity", "include_minibosses", "enemysanity_shuffle_map",
+            "miniboss_room_map",
+            "petsanity", "helper_room_sanity", "combat_helper_sanity", "godsanity",
+            "godsanity_chaos",
             "reverse_vow", "reverse_rivals",
             "vow_pain", "vow_grit", "vow_wards", "vow_frenzy", "vow_hordes",
             "vow_menace", "vow_return", "vow_fangs", "vow_scars", "vow_debt",
@@ -765,10 +543,13 @@ class Hades2Context(CommonContext):
             "include_zagreus_journey",
             "separate_checks",
             "starting_route", "lock_routes",
-            "underworld_offset", "surface_offset", "nightmare_offset",
-            "surface_start", "nightmare_start",
-            "underworld_active", "surface_active", "nightmare_active",
+            "underworld_offset", "surface_offset", "nightmare_offset", "dream_offset",
+            "surface_start", "nightmare_start", "dream_start",
+            "underworld_active", "surface_active", "nightmare_active", "dream_active",
             "underworld_wins_needed", "surface_wins_needed", "nightmare_wins_needed",
+            "dream_region_count", "dream_wins_needed", "dream_enemy_locations",
+            "dream_region_count_actual", "dream_enemy_count", "dream_miniboss_count",
+            "dream_boss_count", "dream_met_checks",
             "zagreus_defeats_needed",
             "zagreus_weaken_tiers", "weapons_clears_needed",
             "nectar_pack_value",
@@ -776,20 +557,34 @@ class Hades2Context(CommonContext):
             "starting_gold_value", "starting_armor_value",
             "deathlink", "deathlink_percent", "deathlink_amnesty",
         ]
-        def _value(k: str):
-            if k in self.slot_data:
-                return self.slot_data.get(k)
-            legacy = self.LEGACY_WINS_NEEDED_KEY_BY_NEW_KEY.get(k)
-            if legacy is not None and legacy in self.slot_data:
-                return self.slot_data.get(legacy)
-            return 0
-        return ";".join(f"{k}={_value(k)}" for k in keys)
+        encoded = [f"{k}={self.slot_data.get(k, 0)}" for k in keys]
+
+        # Which routes the goal actually requires, one 0/1 flag per route.
+        # goals_required is a SET of route names in slot_data, which the ";"/"=" wire format
+        # can't carry as-is -- so it was simply never sent, and the mod's own
+        # LocationManager.all_required_goals_met read three keys ("goal_requires_chronos" /
+        # "_typhon" / "_hades") that have never existed in any payload. Every lookup came back
+        # nil -> false -> "no route is required" -> that function returned true unconditionally.
+        # It exists specifically to stop combine_pools' ONE shared Score/Room pool from being
+        # cascaded away the moment a single required route finishes (leaving nothing to earn on
+        # the others), so that protection has been inert. Flags are named per ROUTE (matching
+        # every other route-keyed setting here) rather than per boss.
+        goals_required = self.slot_data.get("goals_required") or []
+        for route in ("Underworld", "Surface", "Nightmare", "Dream"):
+            encoded.append(f"goal_requires_{route.lower()}={1 if route in goals_required else 0}")
+        return ";".join(encoded)
 
     async def send_items_to_mod(self) -> None:
         if self.bridge_writer is None:
             return
-        names = [self.item_names.lookup_in_game(item.item) for item in self.items_received]
-        self.send_to_mod("ITEMS:" + "|".join(names))
+        # "<item>~<sender>" per entry (~ never appears in either) so the mod can show who
+        # sent each item, e.g. "Received from Player1 - Progressive Underworld".
+        entries = []
+        for item in self.items_received:
+            name = self.item_names.lookup_in_game(item.item)
+            sender = _wire_text(self.player_names.get(item.player, f"Player {item.player}"))
+            entries.append(f"{name}~{sender}")
+        self.send_to_mod("ITEMS:" + "|".join(entries))
 
     # ---------------- Goal evaluation ----------------------------------------
 
@@ -797,37 +592,67 @@ class Hades2Context(CommonContext):
     # zagreus (secret superboss, no route) doesn't. Mirrors Rules.GOAL_BOSSES; kept as an
     # inline duplicate since this module runs standalone and doesn't import the apworld
     # package.
-    GOAL_BOSSES = ["chronos", "typhon", "hades", "zagreus"]
+    GOAL_BOSSES = ["chronos", "typhon", "hades", "zagreus", "dream"]
     # Route each boss's final-boss slot_data keys are prefixed with (goals_required entries
-    # and <route>_wins_needed), mirrors Routes._BOSS_ROUTES. Zagreus has no route.
-    BOSS_ROUTE = {"chronos": "underworld", "typhon": "surface", "hades": "nightmare"}
+    # and <route>_wins_needed), mirrors Routes._BOSS_ROUTES. Zagreus has no route. "dream"
+    # maps to itself since Dream's own route name lowercased already matches its slot_data
+    # prefix ("dream_wins_needed") -- no separate route name to translate through.
+    BOSS_ROUTE = {"chronos": "underworld", "typhon": "surface", "hades": "nightmare", "dream": "dream"}
 
-    def evaluate_goal(self, payload: str) -> None:
-        # payload: "<chronos_clears>-<chronos_weapons>-<typhon_clears>-<typhon_weapons>-
-        #           <zagreus_clears>-<hades_clears>-<hades_weapons>"
-        if not self.slot_data:
-            return
+    @staticmethod
+    def parse_victory(payload: str) -> Optional[tuple]:
+        """VICTORY payload -> (clears by boss, weapons by boss, zagreus clears), or None if malformed.
+        payload: "<chronos_clears>-<chronos_weapons>-<typhon_clears>-<typhon_weapons>-
+                  <zagreus_clears>-<hades_clears>-<hades_weapons>-<dream_clears>"
+        dream_clears appended as an 8th field (not inserted mid-sequence) so a mod build that
+        hasn't been updated yet still parses the first 7 fields fine via parts[:7]. Dream has no
+        weapons field of its own: the mod sends one combined count (Dream clears included) in
+        every <weapons> slot, so Dream reuses it."""
         parts = payload.split("-")
         try:
             (chronos_clears, chronos_weapons, typhon_clears, typhon_weapons,
              zagreus_clears, hades_clears, hades_weapons) = (int(p) for p in parts[:7])
         except (ValueError, IndexError):
+            return None
+        try:
+            dream_clears = int(parts[7])
+        except (ValueError, IndexError):
+            dream_clears = 0  # older mod build that doesn't send Dream clears yet
+        return ({"chronos": chronos_clears, "typhon": typhon_clears, "hades": hades_clears,
+                 "dream": dream_clears},
+                {"chronos": chronos_weapons, "typhon": typhon_weapons, "hades": hades_weapons,
+                 "dream": chronos_weapons},
+                zagreus_clears)
+
+    def evaluate_goal(self, payload: str) -> None:
+        if self.slot is None:
+            # Server link down. Hold the newest win for the slot we were connected to (on_package's
+            # Connected branch evaluates it). Before the first connection there's no slot to tie it
+            # to, so it's dropped, as it always was.
+            if self.connected_slot_id is not None:
+                self.pending_victory = (self.connected_slot_id, payload)
+            return
+        stats = self.parse_victory(payload)
+        if stats is None:
             logger.warning(f"Malformed VICTORY payload: {payload!r}")
             return
-
-        self.last_goal_clears = {"chronos": chronos_clears, "typhon": typhon_clears, "hades": hades_clears}
-        self.last_goal_weapons = {"chronos": chronos_weapons, "typhon": typhon_weapons, "hades": hades_weapons}
-        self.last_goal_zagreus_clears = zagreus_clears
+        self.last_goal_clears, self.last_goal_weapons, self.last_goal_zagreus_clears = stats
+        self.goal_stats_known = True
+        # Saved per slot on the server so the Hades 2 tab's goal rows survive a client restart
+        # (read back on Connected -- see the "Retrieved" branch in on_package).
+        Utils.async_start(self.send_msgs([{
+            "cmd": "Set", "key": self.goal_stats_key(), "default": "", "want_reply": False,
+            "operations": [{"operation": "replace", "value": payload}],
+        }]))
+        clears, weapons, zagreus_clears = stats
 
         weapons_needed = int(self.slot_data.get("weapons_clears_needed", 1))
-        clears = {"chronos": chronos_clears, "typhon": typhon_clears, "hades": hades_clears}
-        weapons = {"chronos": chronos_weapons, "typhon": typhon_weapons, "hades": hades_weapons}
         achieved = {
             boss: clears[boss] >= self._wins_needed(self.BOSS_ROUTE[boss])
                   and weapons[boss] >= weapons_needed
-            for boss in ("chronos", "typhon", "hades")
+            for boss in ("chronos", "typhon", "hades", "dream")
         }
-        # No weapon-variety requirement for Zagreus.
+        # No weapon-variety requirement for Zagreus (matches Rules._hades2_can_get_victory).
         achieved["zagreus"] = zagreus_clears >= int(self.slot_data.get("zagreus_defeats_needed", 1))
 
         goals_required = self.slot_data.get("goals_required") or []
@@ -870,10 +695,80 @@ class Hades2Context(CommonContext):
         ui = super().make_gui()
 
         from kivy.clock import Clock
+        from kivy.graphics import Color, Line, Rectangle
+        from kivy.metrics import dp
+        from kivy.uix.behaviors import ButtonBehavior
         from kivy.uix.boxlayout import BoxLayout
         from kivy.uix.gridlayout import GridLayout
         from kivy.uix.label import Label
         from kivy.uix.scrollview import ScrollView
+        from kivy.uix.widget import Widget
+
+        labels = Tracker.LABELS
+        row_height = dp(24)
+        header_height = dp(30)
+
+        class Marks(Widget):
+            """`total` small squares, the first `filled` solid and the rest outlined. One square is
+            an on/off state (zone open, weapon owned, check sent); five are an Aspect rank. The
+            state is carried by shape, never by hue, so it reads the same for colorblind players."""
+            def __init__(self, filled: int, total: int, color, **kwargs):
+                self._marks = (filled, total, tuple(color))
+                side, gap = dp(10), dp(3)
+                super().__init__(size_hint=(None, None), height=row_height,
+                                 width=total * side + (total - 1) * gap, **kwargs)
+                self.bind(pos=self._draw, size=self._draw)
+                self._draw()
+
+            def _draw(self, *_):
+                filled, total, color = self._marks
+                side, gap = dp(10), dp(3)
+                y = self.y + (self.height - side) / 2
+                self.canvas.clear()
+                with self.canvas:
+                    Color(*color)
+                    for i in range(total):
+                        x = self.x + i * (side + gap)
+                        if i < filled:
+                            Rectangle(pos=(x, y), size=(side, side))
+                        else:
+                            Line(rectangle=(x + 0.5, y + 0.5, side - 1, side - 1), width=1)
+
+        class ClickableRow(ButtonBehavior, BoxLayout):
+            pass
+
+        def text_label(text: str, color, bold: bool = False, height: float = row_height) -> Label:
+            """Fills the remaining width, left-aligned, cut with "..." rather than overlapping."""
+            label = Label(text=text, color=color, bold=bold, halign="left", valign="middle",
+                          size_hint=(1, None), height=height, shorten=True, shorten_from="right")
+            label.bind(size=lambda inst, value: setattr(inst, "text_size", value))
+            return label
+
+        def fit_label(text: str, color, bold: bool = False, height: float = row_height) -> Label:
+            """Exactly as wide as its text."""
+            label = Label(text=text, color=color, bold=bold, size_hint=(None, None), height=height)
+            label.bind(texture_size=lambda inst, value: setattr(inst, "width", value[0]))
+            return label
+
+        def progress_text(checked: int, total: int, in_logic: Optional[int]) -> str:
+            text = f"{checked}/{total}"
+            if in_logic:
+                text += "   " + labels["in_logic"].format(n=in_logic)
+            return text
+
+        def row(*widgets, height: float = row_height) -> BoxLayout:
+            box = BoxLayout(orientation="horizontal", size_hint_y=None, height=height, spacing=dp(6))
+            for widget in widgets:
+                box.add_widget(widget)
+            return box
+
+        def auto_height(layout):
+            layout.bind(minimum_height=layout.setter("height"))
+            return layout
+
+        def status_grid() -> GridLayout:
+            return auto_height(GridLayout(cols=3, size_hint_y=None, row_default_height=row_height,
+                                          row_force_default=True, spacing=(dp(12), 0)))
 
         class Hades2Manager(ui):
             base_title = "Archipelago Hades 2 Rogue Client"
@@ -884,132 +779,237 @@ class Hades2Context(CommonContext):
                 self.add_client_tab("Hades 2", self.build_hades2_tab())
                 return container
 
-            # ---- Hades 2 tab: route/score/room progress + Vow Tracker ----
+            # ---- Hades 2 tab: goal, routes/zones, weapons, check lists, unlocks, vows ----
+            # Everything shown comes from Tracker.build_model; this class only draws it. The
+            # model is rebuilt when one of its inputs changes (ctx.tracker_inputs_key) and the
+            # widgets only when the model itself changed, so the 1s tick is nearly free.
 
             def build_hades2_tab(self):
                 root = BoxLayout(orientation="vertical")
-                scroll = ScrollView()
-                outer = BoxLayout(orientation="vertical", size_hint_y=None, spacing=8, padding=8)
-                outer.bind(minimum_height=outer.setter("height"))
-                # One column per active route (or a single header-less column when
-                # combined) -- rebuilt whenever the column SHAPE changes, not just the
-                # numbers inside it (see _refresh_hades2_tab).
-                self._progress_columns = BoxLayout(orientation="horizontal", size_hint_y=None, height=200)
-                self._god_grid = GridLayout(cols=3, size_hint_y=None, spacing=6)
-                self._god_grid.bind(minimum_height=self._god_grid.setter("height"))
-                self._helper_grid = GridLayout(cols=3, size_hint_y=None, spacing=6)
-                self._helper_grid.bind(minimum_height=self._helper_grid.setter("height"))
-                self._vow_grid = GridLayout(cols=3, size_hint_y=None, spacing=6)
-                self._vow_grid.bind(minimum_height=self._vow_grid.setter("height"))
-                outer.add_widget(self._progress_columns)
-                outer.add_widget(self._god_grid)
-                outer.add_widget(self._helper_grid)
-                outer.add_widget(self._vow_grid)
-                scroll.add_widget(outer)
+                scroll = ScrollView(do_scroll_x=False)
+                self._tab_body = auto_height(BoxLayout(orientation="vertical", size_hint_y=None,
+                                                       spacing=dp(12), padding=dp(10)))
+                scroll.add_widget(self._tab_body)
                 root.add_widget(scroll)
-                self._progress_shape_key = None
-                self._progress_labels = []     # [(Label widget, weapon-name-or-None), ...]
-                self._progress_headers = []    # [(Label widget, route-name), ...]
-                self._goal_banners = []        # [(Label widget, route-name), ...]
-                self._god_refresh_key = None
-                self._helper_refresh_key = None
-                self._vow_refresh_key = None
+                self._tab_inputs = None
+                self._tab_model = None
+                self._tab_expanded = set()     # category keys whose lists are open
+                self._tab_error = None
                 Clock.schedule_interval(self._refresh_hades2_tab, 1.0)
                 return root
 
             def _refresh_hades2_tab(self, dt):
-                ctx = self.ctx
-
-                columns = ctx.compute_display_progress()
-                shape_key = [(col["header"], [label for label, _, _ in col["rows"]]) for col in columns]
-                if shape_key != self._progress_shape_key:
-                    self._progress_shape_key = shape_key
-                    self._progress_columns.clear_widgets()
-                    self._progress_labels = []
-                    self._progress_headers = []
-                    self._goal_banners = []
-                    for col in columns:
-                        col_box = BoxLayout(orientation="vertical", size_hint_x=1)
-                        if col["header"]:
-                            # Reserved even when not yet complete (empty text) so a route's
-                            # column doesn't jump/resize the moment its goal finishes.
-                            banner_label = Label(text="", bold=True, color=(0.3, 0.85, 0.3, 1),
-                                                  size_hint_y=None, height=20)
-                            col_box.add_widget(banner_label)
-                            self._goal_banners.append((banner_label, col["header"]))
-                            header_label = Label(text=col["header"], bold=True,
-                                                  size_hint_y=None, height=28)
-                            col_box.add_widget(header_label)
-                            self._progress_headers.append((header_label, col["header"]))
-                        for label, checked, total in col["rows"]:
-                            row_label = Label(text=f"{label}: {checked}/{total}",
-                                               size_hint_y=None, height=24)
-                            col_box.add_widget(row_label)
-                            weapon = label if label in WEAPON_SHORT_NAMES else None
-                            self._progress_labels.append((row_label, weapon))
-                        self._progress_columns.add_widget(col_box)
-                else:
-                    i = 0
-                    for col in columns:
-                        for label, checked, total in col["rows"]:
-                            self._progress_labels[i][0].text = f"{label}: {checked}/{total}"
-                            i += 1
-
-                # Colors are recomputed every tick regardless of the shape/text branch above --
-                # they change purely from received items, independent of the text they're
-                # attached to (see Hades2Context.compute_route_access_level/compute_weapon_level;
-                # deliberately item-count-based, not a real logic sweep).
-                for header_label, route in self._progress_headers:
-                    header_label.color = ROUTE_LEVEL_COLORS[ctx.compute_route_access_level(route)]
-                for row_label, weapon in self._progress_labels:
-                    if weapon is not None:
-                        row_label.color = WEAPON_LEVEL_COLORS[ctx.compute_weapon_level(weapon)]
-                for banner_label, route in self._goal_banners:
-                    banner_label.text = "Goal Complete!" if ctx.compute_route_goal_complete(route) else ""
-
-                def refresh_status_grid(grid, refresh_key_attr, status):
-                    key = tuple(status)
-                    if key == getattr(self, refresh_key_attr):
+                try:
+                    inputs = self.ctx.tracker_inputs_key()
+                    if inputs == self._tab_inputs:
                         return
-                    setattr(self, refresh_key_attr, key)
-                    grid.clear_widgets()
-                    for name, unlocked in status:
-                        row = BoxLayout(size_hint_y=None, height=36, spacing=6)
-                        color = SANITY_UNLOCKED_COLOR if unlocked else SANITY_LOCKED_COLOR
-                        name_label = Label(text=name, color=color, halign="left", valign="middle")
-                        name_label.bind(size=lambda inst, value: setattr(inst, "text_size", value))
-                        row.add_widget(name_label)
-                        grid.add_widget(row)
+                    self._tab_inputs = inputs
+                    model = self.ctx.build_tracker_model()
+                    if model != self._tab_model:
+                        self._tab_model = model
+                        self._render_hades2_tab()
+                except Exception as exc:
+                    # An exception escaping a Clock callback takes the whole client down (it
+                    # did once, over a missing icon file). Log each distinct failure once.
+                    if repr(exc) != self._tab_error:
+                        self._tab_error = repr(exc)
+                        logger.exception("Hades 2 tab failed to refresh")
 
-                refresh_status_grid(self._god_grid, "_god_refresh_key", ctx.compute_god_status())
-                refresh_status_grid(self._helper_grid, "_helper_refresh_key", ctx.compute_helper_status())
+            def _toggle_category(self, key: str) -> None:
+                self._tab_expanded ^= {key}
+                self._render_hades2_tab()
 
-                slot_data = ctx.slot_data
-                vow_counts = ctx.compute_vow_counts()
-                vow_key = (tuple(sorted(vow_counts.items())), slot_data is not None)
-                if vow_key != self._vow_refresh_key:
-                    self._vow_refresh_key = vow_key
-                    self._vow_grid.clear_widgets()
-                    if slot_data and int(slot_data.get("reverse_vow", 0)):
-                        for vow in vow_names:
-                            n = int(slot_data.get(f"vow_{vow.lower()}", 0))
-                            if n <= 0:
-                                continue
-                            x = vow_counts.get(vow, n)
-                            row = BoxLayout(size_hint_y=None, height=36, spacing=6)
-                            # halign has no effect unless text_size is bound to the widget's
-                            # own size -- without it, Kivy centers the rendered text in
-                            # whatever space the Label is given, which (since the Label fills
-                            # the rest of the row) reads as "floating" away from the icon.
-                            vow_label = Label(text=f"{vow} {x}/{n}", halign="left", valign="middle")
-                            vow_label.bind(size=lambda inst, value: setattr(inst, "text_size", value))
-                            row.add_widget(vow_label)
-                            self._vow_grid.add_widget(row)
+            def _tab_colors(self) -> tuple:
+                """Text colors from the client's own theme (so a light theme stays readable); the
+                dim variant marks locked/finished things by brightness, never by hue."""
+                theme = getattr(self, "theme_cls", None)
+                text = tuple(getattr(theme, "onSurfaceColor", None) or (1, 1, 1, 1))
+                return text, text[:3] + (0.45,)
+
+            def _render_hades2_tab(self) -> None:
+                body = self._tab_body
+                body.clear_widgets()
+                model = self._tab_model
+                if not model:
+                    return
+                text, dim = self._tab_colors()
+
+                def header(title: str, *extra) -> BoxLayout:
+                    return row(fit_label(title, text, bold=True, height=header_height), *extra,
+                               Widget(), height=header_height)
+
+                def goal_banner() -> Label:
+                    return fit_label(labels["goal_complete"], text, bold=True, height=header_height)
+
+                def section(width: Optional[float] = None) -> BoxLayout:
+                    """One section's rows, stacked tight; `body` spaces the sections apart. A
+                    width keeps short name/count rows readable instead of window-wide."""
+                    box = auto_height(BoxLayout(orientation="vertical", size_hint_y=None))
+                    if width is not None:
+                        box.size_hint_x, box.width = None, width
+                    return box
+
+                narrow = dp(460)
+
+                # Goal
+                goal = model["goal"]
+                if goal:
+                    sec = section(narrow)
+                    sec.add_widget(header(labels["goal_title"], *([goal_banner()] if goal["complete"] else [])))
+                    if sum(1 for r in goal["rows"] if r["kind"] == "boss") > 1:
+                        sec.add_widget(row(text_label(
+                            labels["goal_mode_all" if goal["mode_all"] else "goal_mode_any"], dim)))
+                    for goal_row in goal["rows"]:
+                        have = labels["unknown"] if goal_row["have"] is None else str(goal_row["have"])
+                        count = f"{have}/{goal_row['need']}"
+                        if goal_row["label"]:
+                            count += " " + goal_row["label"]
+                        sec.add_widget(row(Marks(1 if goal_row["done"] else 0, 1, text),
+                                           text_label(goal_row["name"], text), fit_label(count, text)))
+                    body.add_widget(sec)
+
+                # combine_pools' shared pool
+                if model["shared"]:
+                    sec = section(narrow)
+                    sec.add_widget(header(labels["shared_title"]))
+                    for label, checked, total, in_logic in model["shared"]:
+                        sec.add_widget(row(text_label(label, text),
+                                           fit_label(progress_text(checked, total, in_logic), text)))
+                    body.add_widget(sec)
+
+                # Routes, side by side: which zones your items open, and room progress per zone
+                routes = model["routes"]
+                if routes:
+                    grid = auto_height(GridLayout(cols=len(routes) if len(routes) <= 3 else 2,
+                                                  size_hint_y=None, spacing=(dp(24), dp(12))))
+                    columns = []
+                    for route in routes:
+                        column = section()
+                        column.add_widget(header(route["route"], *([goal_banner()] if route["goal_done"] else [])))
+                        if route["progressive"]:
+                            name, have, need = route["progressive"]
+                            column.add_widget(row(text_label(name, text), fit_label(f"{have}/{need}", text)))
+                        for label, checked, total, in_logic in route["rows"]:
+                            column.add_widget(row(text_label(label, text),
+                                                  fit_label(progress_text(checked, total, in_logic), text)))
+                        for zone in route["zones"]:
+                            widgets = [Marks(1 if zone["open"] else 0, 1, text),
+                                       text_label(zone["name"], text if zone["open"] else dim)]
+                            if zone["total"] is not None:
+                                widgets.append(fit_label(progress_text(
+                                    zone["checked"], zone["total"], zone["in_logic"]), text))
+                            column.add_widget(row(*widgets))
+                        columns.append(column)
+                    # GridLayout bottom-aligns a shorter cell, so pad every column in a grid row
+                    # down to the tallest one to keep the route headers lined up.
+                    per_row = grid.cols
+                    for start in range(0, len(columns), per_row):
+                        group = columns[start:start + per_row]
+                        tallest = max(sum(child.height for child in c.children) for c in group)
+                        for c in group:
+                            gap = tallest - sum(child.height for child in c.children)
+                            if gap > 0:
+                                c.add_widget(Widget(size_hint_y=None, height=gap))
+                    for c in columns:
+                        grid.add_widget(c)
+                    body.add_widget(grid)
+
+                # Weapons: owned, Aspect rank, and (per-weapon/per-aspect systems) room progress
+                weapons = model["weapons"]
+                if weapons["rows"]:
+                    sec = section()
+                    sec.add_widget(header(labels["weapons_title"]))
+                    columns = weapons["columns"]
+                    name_width, rank_width, cell_width, gap = dp(170), dp(110), dp(170), dp(12)
+                    grid = auto_height(GridLayout(cols=2 + len(columns), size_hint=(None, None),
+                                                  row_default_height=row_height, row_force_default=True,
+                                                  spacing=(gap, 0)))
+                    grid.width = name_width + rank_width + len(columns) * cell_width + (1 + len(columns)) * gap
+
+                    def cell(widget, width):
+                        widget.size_hint_x, widget.width = None, width
+                        return widget
+
+                    if columns:
+                        grid.add_widget(cell(Widget(), name_width))
+                        grid.add_widget(cell(text_label(labels["rank"], dim), rank_width))
+                        for column in columns:
+                            grid.add_widget(cell(text_label(column or labels["shared_title"], dim), cell_width))
+                    for weapon in weapons["rows"]:
+                        name_cell = cell(row(), name_width)
+                        if weapon["indent"]:
+                            name_cell.add_widget(Widget(size_hint_x=None, width=dp(24)))
+                            active = bool(weapon["rank"])
+                        else:
+                            name_cell.add_widget(Marks(1 if weapon["owned"] else 0, 1, text))
+                            active = weapon["owned"]
+                        name_cell.add_widget(text_label(weapon["name"], text if active else dim))
+                        grid.add_widget(name_cell)
+                        rank = weapon["rank"]
+                        rank_cell = cell(row(), rank_width)
+                        if rank is not None:
+                            rank_cell.add_widget(Marks(rank, ASPECT_MAX_RANK, text))
+                            rank_cell.add_widget(fit_label(f"{rank}/{ASPECT_MAX_RANK}", text))
+                        grid.add_widget(rank_cell)
+                        for progress in weapon["cells"]:
+                            grid.add_widget(cell(text_label(
+                                progress_text(*progress) if progress else "", text), cell_width))
+                    sec.add_widget(grid)
+                    body.add_widget(sec)
+
+                # Check lists (keepsakes by NPC, NPCs met, enemies defeated): a count, and the
+                # full list on click
+                for category in model["categories"]:
+                    key = category["key"]
+                    expanded = key in self._tab_expanded
+                    sec = section()
+                    toggle = ClickableRow(orientation="horizontal", size_hint_y=None,
+                                          height=header_height, spacing=dp(12))
+                    toggle.add_widget(fit_label(category["title"], text, bold=True, height=header_height))
+                    toggle.add_widget(fit_label(progress_text(category["checked"], category["total"],
+                                                              category["in_logic"]), text, height=header_height))
+                    toggle.add_widget(fit_label(labels["hide" if expanded else "show"], dim,
+                                                height=header_height))
+                    toggle.add_widget(Widget())
+                    toggle.bind(on_release=lambda _, k=key: self._toggle_category(k))
+                    sec.add_widget(toggle)
+                    if expanded:
+                        grid = status_grid()
+                        for name, checked, in_logic in category["entries"]:
+                            entry = row(Marks(1 if checked else 0, 1, text),
+                                        text_label(name, dim if checked else text))
+                            if in_logic:
+                                entry.add_widget(fit_label(labels["entry_in_logic"], text))
+                            grid.add_widget(entry)
+                        sec.add_widget(grid)
+                    body.add_widget(sec)
+
+                # Unlocks and vows
+                for title, statuses in (("gods_title", model["gods"]), ("helpers_title", model["helpers"])):
+                    if not statuses:
+                        continue
+                    sec = section()
+                    sec.add_widget(header(labels[title]))
+                    grid = status_grid()
+                    for name, unlocked in statuses:
+                        grid.add_widget(row(Marks(1 if unlocked else 0, 1, text),
+                                            text_label(name, text if unlocked else dim)))
+                    sec.add_widget(grid)
+                    body.add_widget(sec)
+                if model["vows"]:
+                    sec = section()
+                    sec.add_widget(header(labels["vows_title"]))
+                    grid = status_grid()
+                    for vow, current, configured in model["vows"]:
+                        grid.add_widget(row(text_label(vow, text if current else dim),
+                                            fit_label(f"{current}/{configured}", text)))
+                    sec.add_widget(grid)
+                    body.add_widget(sec)
 
         return Hades2Manager
 
 
-def launch():
+def launch(*launch_args):
     # Without this, a crash anywhere below is completely invisible: this client never
     # shows a console, and nothing else in this process writes to Archipelago's own
     # logs folder. This matches every other CommonClient-based client's launch().
@@ -1017,6 +1017,8 @@ def launch():
 
     async def main(args):
         ctx = Hades2Context(args.connect, args.password)
+        # get_username() falls back to this before prompting, and keeps using it on reconnects.
+        ctx.username = args.name
         ctx.server_task = Utils.async_start(server_loop(ctx), name="server loop")
         # Background task (retries on a stuck port) so the UI always opens.
         Utils.async_start(ctx.start_bridge_server(), name="bridge server")
@@ -1032,8 +1034,11 @@ def launch():
         await ctx.shutdown()
 
     import colorama
-    parser = get_base_parser()
-    args = parser.parse_args()
+    parser = get_base_parser(description="Hades 2 Rogue Archipelago client.")
+    parser.add_argument("--name", default=None, help="Slot name to connect as.")
+    parser.add_argument("url", nargs="?", help="Archipelago connection url")
+    # Parse the Launcher-forwarded args, not sys.argv (which is the Launcher's own).
+    args = handle_url_arg(parser.parse_args(launch_args), parser=parser)
     colorama.init()
     try:
         asyncio.run(main(args))

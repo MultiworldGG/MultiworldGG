@@ -1,22 +1,22 @@
-from typing import Any
+from typing import Any, cast
 
 from ...common.patching.text import normalize_text
 from ...common.patching.Util import simple_hex
 from ...common.patching.z80asm.Assembler import Z80Assembler
-from ...data import LOCATIONS_DATA
 from ...data.Constants import SEED_ITEMS
-from ...generation.Hints import make_hint_texts
+from ...data.locations import LOCATIONS_DATA
+from ...generation.hints import make_hint_texts
 
 
 def process_item_name_for_shop_text(item: dict[str, str | bool]) -> str:
     if "player" in item:
-        player_name = item["player"]
+        player_name = cast(str, item["player"])
         if len(player_name) > 14:
             player_name = player_name[:13] + "."
         item_name = f"🟦{player_name}⬜'s 🟥"
     else:
         item_name = "🟥"
-    item_name += item["item"]
+    item_name += cast(str, item["item"])
     item_name = normalize_text(item_name)
     item_name += "⬜\\stop\n"
     return item_name
@@ -24,7 +24,7 @@ def process_item_name_for_shop_text(item: dict[str, str | bool]) -> str:
 
 def make_text_data(assembler: Z80Assembler, text: dict[str, str], patch_data: dict[str, Any]) -> None:
     # Process shops
-    OVERWORLD_SHOPS = [
+    overworld_shops = [
         "Horon Village: Shop",
         "Horon Village: Member's Shop",
         "Sunken City: Syrup Shop",
@@ -54,7 +54,7 @@ def make_text_data(assembler: Z80Assembler, text: dict[str, str], patch_data: di
         "d2Scrub": "TX_450d",
     }
 
-    for shop_name in OVERWORLD_SHOPS:
+    for shop_name in overworld_shops:
         for i in range(1, 4):
             location_name = f"{shop_name} #{i}"
             symbolic_name = LOCATIONS_DATA[location_name]["symbolic_name"]
@@ -76,13 +76,13 @@ def make_text_data(assembler: Z80Assembler, text: dict[str, str], patch_data: di
             item_text += "I'll trade for\n🟥\\num1 Ore Chunks⬜.\n\\jump(0b)"
         text[tx_indices[symbolic_name]] = item_text
 
-    BUSINESS_SCRUBS = [
+    business_scrubs = [
         "Spool Swamp: Business Scrub",
         "Samasa Desert: Business Scrub",
         "Snake's Remains: Business Scrub",
         "Dancing Dragon Dungeon (1F): Business Scrub",
     ]
-    for location_name in BUSINESS_SCRUBS:
+    for location_name in business_scrubs:
         symbolic_name = LOCATIONS_DATA[location_name]["symbolic_name"]
         if location_name not in patch_data["locations"]:
             continue

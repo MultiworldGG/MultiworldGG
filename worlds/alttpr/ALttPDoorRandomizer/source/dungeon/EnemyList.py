@@ -15,7 +15,7 @@ from ...Items import ItemFactory
 from ...PotShuffle import key_drop_special
 from ...Utils import snes_to_pc, pc_to_snes, int16_as_bytes
 
-from ..overworld.EntranceData import door_addresses
+from ..overworld.EntranceData import get_door_addresses
 
 class EnemyStats:
     def __init__(self, sprite, static, drop_flag=False, prize_pack: typing.Union[tuple, int] = 0,
@@ -304,7 +304,7 @@ def init_enemy_stats():
         EnemySprite.Moblin: EnemyStats(EnemySprite.Moblin, False, True, 1, health=4, dmg=5),
         EnemySprite.MiniHelmasaur: EnemyStats(EnemySprite.MiniHelmasaur, False, True, 7, health=4, dmg=3),
         EnemySprite.ThievesTownGrate: EnemyStats(EnemySprite.ThievesTownGrate, True, dmg=0, dmask=0x40),
-        EnemySprite.AntiFairy: EnemyStats(EnemySprite.AntiFairy, False, False, dmg=4),
+        EnemySprite.AntiFairy: EnemyStats(EnemySprite.AntiFairy, False, False, ignore=True, dmg=4),
         EnemySprite.Wiseman: EnemyStats(EnemySprite.Wiseman, True, dmg=0),
         EnemySprite.Hoarder: EnemyStats(EnemySprite.Hoarder, False, True, health=2, dmg=2),
         EnemySprite.MiniMoldorm: EnemyStats(EnemySprite.MiniMoldorm, False, True, 2, health=3, dmg=3),
@@ -2266,7 +2266,7 @@ def find_entrance_ids(region):
         current = queue.popleft()
         for ent in current.entrances:
             if ent.parent_region.type in [RegionType.LightWorld, RegionType.DarkWorld]:
-                entrance_list.append(door_addresses[ent.name][0] + 1)
+                entrance_list.append(get_door_addresses(ent)[0] + 1)
             elif ent.parent_region not in visited:
                 queue.append(ent.parent_region)
                 visited.add(ent.parent_region)

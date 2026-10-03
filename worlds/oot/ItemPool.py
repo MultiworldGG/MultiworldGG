@@ -896,7 +896,7 @@ def get_pool_core(world):
                 location.show_in_spoiler = False
 
         elif location.name == 'LH Loach Fishing':
-            shuffle_item = world.shuffle_loach_reward
+            shuffle_item = world.shuffle_loach_reward != 'off'
             if not shuffle_item:
                 location.show_in_spoiler = False
 

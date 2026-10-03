@@ -1,0 +1,4 @@
+# Remove the interaction in 064 setting your companion to ricky if you have another
+# and that disables ricky in the pen if not
+11/5c13/: |
+  dw $634b ; No interaction here

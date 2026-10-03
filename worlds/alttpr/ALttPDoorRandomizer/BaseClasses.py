@@ -11,11 +11,12 @@ except ImportError:
     from enum import IntFlag as FastEnum
 
 from .source.classes.BabelFish import BabelFish
+from .source.logic.AccessRule import TRUE, true_fn
 from .Utils import int16_as_bytes
 from .Tables import normal_offset_table, spiral_offset_table, multiply_lookup, divisor_lookup
 from .RoomData import Room
 from .source.dungeon.RoomObject import RoomObject
-from .source.overworld.EntranceData import door_addresses
+from .source.overworld.EntranceData import door_addresses, get_door_addresses
 
 
 class World(object):
@@ -112,6 +113,8 @@ class World(object):
         self.fish = BabelFish()
         self.data_tables = {}
         self.damage_table = {}
+        # district + nearby: dungeon names whose nearby items are forced in-dungeon
+        self.district_nearby_forced_inside = defaultdict(set)
 
 
         for player in range(1, players + 1):
@@ -642,6 +645,7 @@ class CollectionState(object):
             self.dungeons_to_check = {player: defaultdict(dict) for player in range(1, parent.players + 1)}
         self.dungeon_limits = None
         self.placing_items = None
+        self.assume_shop_keys = False
         # self.trace = None
 
     def can_reach_from(self, spot, start, player=None):
@@ -1001,6 +1005,7 @@ class CollectionState(object):
                                        for name, checklist in self.dungeons_to_check[player].items()})
             for player in range(1, self.world.players + 1)}
         ret.placing_items = self.placing_items
+        ret.assume_shop_keys = self.assume_shop_keys
         return ret
 
     def apply_dungeon_exploration(self, rrp, player, dungeon_name, checklist):
@@ -1187,6 +1192,8 @@ class CollectionState(object):
         if self.world.keyshuffle[player] == 'universal':
             if self.world.mode[player] == 'standard' and self.world.doorShuffle[player] == 'vanilla' and item == 'Small Key (Escape)':
                 return True  # Cannot access the shop until escape is finished.  This is safe because the key is manually placed in make_custom_item_pool
+            if self.assume_shop_keys:
+                return True
             return self.can_buy_unlimited('Small Key (Universal)', player)
         if count == 1:
             return (item, player) in self.prog_items
@@ -1196,9 +1203,38 @@ class CollectionState(object):
         if self.world.keyshuffle[player] == 'universal':
             if self.world.mode[player] == 'standard' and self.world.doorShuffle[player] == 'vanilla' and item == 'Small Key (Escape)':
                 return True  # Cannot access the shop until escape is finished.  This is safe because the key is manually placed in make_custom_item_pool
+            if self.assume_shop_keys:
+                return True
             return self.can_buy_unlimited('Small Key (Universal)', player)
         obtained = self.prog_items[item, player] - self.forced_keys[item, player]
         return obtained >= count
+
+    def eval_small_key_door(self, door_name, dungeon, player):
+        from .Rules import eval_small_key_door_main
+        return eval_small_key_door_main(self, door_name, dungeon, player)
+
+    def eval_small_key_door_partial(self, door_name, dungeon, player):
+        from .Rules import eval_small_key_door_partial_main
+        return eval_small_key_door_partial_main(self, door_name, dungeon, player)
+
+    def eval_small_key_door_strict(self, door_name, dungeon, player):
+        from .Rules import eval_small_key_door_strict_main
+        return eval_small_key_door_strict_main(self, door_name, dungeon, player)
+
+    def eval_alternative_crystal(self, door_name, dungeon, player):
+        from .Rules import eval_alternative_crystal_main
+        return eval_alternative_crystal_main(self, door_name, dungeon, player)
+
+    def item_is_at(self, location, player, item):
+        loc = self.world.get_location(location, player)
+        return loc.item is not None and loc.item.name == item and loc.item.player == player
+
+    def item_in_named_locations(self, item, player, location_names):
+        for name in location_names:
+            loc = self.world.get_location(name, player)
+            if loc.item is not None and loc.item.name == item and loc.item.player == player:
+                return True
+        return False
 
     def can_buy_unlimited(self, item, player):
         for shop in self.world.shops[player]:
@@ -1207,24 +1243,24 @@ class CollectionState(object):
         return False
 
     def can_collect_bonkdrops(self, player):
-        return self.has_Boots(player) or (self.has_sword(player) and self.has("Quake", player))
+        return self.has_Boots(player) or (self.has_sword(player) and self.has('Quake', player))
 
     def can_farm_rupees(self, player):
-        return self.has("Farmable Rupees", player)
+        return self.has('Farmable Rupees', player)
 
     def can_farm_bombs(self, player):
-        if self.world.mode[player] == "standard" and not self.has("Zelda Delivered", player):
+        if self.world.mode[player] == 'standard' and not self.has('Zelda Delivered', player):
             return True
 
-        if self.has("Farmable Bombs", player):
+        if self.has('Farmable Bombs', player):
             return True
 
         # stun prize
-        if self.can_stun_enemies(player) and self.world.prizes[player]["stun"] in [0xdc, 0xdd, 0xde]:
+        if self.can_stun_enemies(player) and self.world.prizes[player]['stun'] in [0xdc, 0xdd, 0xde]:
             return True
 
         # bomb purchases
-        if self.can_farm_rupees(player) and (self.can_buy_unlimited("Bombs (10)", player) or self.can_reach("Big Bomb Shop", None, player)):
+        if self.can_farm_rupees(player) and (self.can_buy_unlimited('Bombs (10)', player) or self.can_reach('Big Bomb Shop', None, player)):
             return True
 
         return False
@@ -1658,14 +1694,9 @@ class Region(object):
             ret = ret or (len(self.districts) and item_dungeon and len([d for d in self.districts if d in item_dungeon.districts]))
             return ret and item.player == self.player
 
-        inside_dungeon_item = ((item.smallkey and self.world.keyshuffle[item.player] == 'none')
-                               or (item.bigkey and self.world.bigkeyshuffle[item.player] == 'none')
-                               or (item.map and self.world.mapshuffle[item.player] == 'none')
-                               or (item.compass and self.world.compassshuffle[item.player] == 'none')
-                               or (item.prize and self.world.prizeshuffle[item.player] == 'dungeon'))
         # not all small keys to escape must be in escape
         # sewer_hack = self.world.mode[item.player] == 'standard' and item.name == 'Small Key (Escape)'
-        if inside_dungeon_item:
+        if item.is_inside_dungeon_item(self.world):
             return self.dungeon and self.dungeon.is_dungeon_item(item) and item.player == self.player
         return True
 
@@ -1696,8 +1727,8 @@ class Entrance(object):
         self.spot_type = 'Entrance'
         self.recursion_count = 0
         self.vanilla = None
-        self.access_rule = lambda state: True
-        self.verbose_rule = None
+        self.access_rule = true_fn
+        self.verbose_rule = TRUE
         self.player = player
         self.door = None
         self.hide_path = False
@@ -1783,7 +1814,7 @@ class Entrance(object):
         exits_to_traverse = list()
         found = False
         self.checking_can_reach_thru = True
-        
+
         if not found and allow_mirror_reentry and state.has_Mirror(self.player):
             # check for path using mirror portal re-entry at location of the follower pickup
             # this is checked first as this often the shortest path
@@ -1791,7 +1822,7 @@ class Entrance(object):
             if follower_region.type not in [RegionType.LightWorld, RegionType.DarkWorld]:
                 ent_list = [e for e in start_region.entrances if e.parent_region.type != RegionType.Menu]
                 follower_region = ent_list[0].parent_region
-            if (follower_region.world.mode[self.player] != 'inverted') == (follower_region.type == RegionType.LightWorld):
+            elif (follower_region.world.mode[self.player] != 'inverted') == (follower_region.type == RegionType.LightWorld):
                 from .OverworldShuffle import get_mirror_edges
                 mirror_map = get_mirror_edges(follower_region.world, follower_region, self.player)
                 while len(mirror_map) and not found:
@@ -1846,11 +1877,18 @@ class Entrance(object):
             if follower_region.type not in [RegionType.LightWorld, RegionType.DarkWorld]:
                 ent_list = [e for e in start_region.entrances if e.parent_region.type != RegionType.Menu]
                 follower_region = ent_list[0].parent_region
-            if (follower_region.world.mode[self.player] != 'inverted') == (follower_region.type == RegionType.LightWorld):
+            elif (follower_region.world.mode[self.player] != 'inverted') == (follower_region.type == RegionType.LightWorld):
                 dest_region = self.parent_region
                 if dest_region.type not in [RegionType.LightWorld, RegionType.DarkWorld]:
-                    dest_region = dest_region.entrances[0].parent_region
-                if (dest_region.world.mode[self.player] != 'inverted') != (dest_region.type == RegionType.LightWorld):
+                    if self.name == 'Revealing Light':
+                        # Maiden dest is inside TT (single lobby). Mirror portals belong
+                        # on the OW region leading into TT lobby, not an interior room.
+                        portal = dest_region.world.get_portal_unsafe('Thieves Town', self.player)
+                        ow_ent = portal.find_portal_entrance() if portal else None
+                        dest_region = ow_ent.parent_region if ow_ent else None
+                    else:
+                        dest_region = dest_region.entrances[0].parent_region if dest_region.entrances else None
+                elif (dest_region.world.mode[self.player] != 'inverted') != (dest_region.type == RegionType.LightWorld):
                     # loop thru potential places to leave a mirror portal
                     from .OverworldShuffle import get_mirror_edges
                     mirror_map = get_mirror_edges(dest_region.world, dest_region, self.player)
@@ -1871,8 +1909,11 @@ class Entrance(object):
                                 # find path from follower pickup to placed mirror portal
                                 found = False
                                 traverse_paths(follower_region, mirror_exit.connected_region)
-                            state.collect(mirror_item, True)
+                                state.collect(mirror_item, True)
                         mirror_map.pop(0)
+                    if found and self.name == 'Revealing Light' and dest_region != self.parent_region:
+                        found = False
+                        traverse_paths(dest_region, self.parent_region)
                     if found:
                         path = state.path.get(self.parent_region, (self.parent_region.name, None))
                         path = (mirror_exit.name, path)
@@ -2722,8 +2763,8 @@ class Location(object):
         self.locked = False
         self.real = True
         self.always_allow = None
-        self.access_rule = lambda state: True
-        self.verbose_rule = None
+        self.access_rule = true_fn
+        self.verbose_rule = TRUE
         self.item_rule = lambda item: True
         self.player = player
         self.skip = False
@@ -2844,14 +2885,34 @@ class Item(object):
             item_dungeon = 'Hyrule Castle'
         return item_dungeon
 
+    def is_district_nearby_forced_inside(self, world):
+        forced = getattr(world, 'district_nearby_forced_inside', None)
+        if not forced:
+            return False
+        player_set = forced.get(self.player)
+        if not player_set:
+            return False
+        dungeon_name = self.dungeon
+        if not dungeon_name and self.prize and self.dungeon_object:
+            dungeon_name = self.dungeon_object.name
+        return bool(dungeon_name) and dungeon_name in player_set
+
     def is_inside_dungeon_item(self, world):
-        return ((self.prize and world.prizeshuffle[self.player] in ['none', 'dungeon'])
+        if ((self.prize and world.prizeshuffle[self.player] in ['none', 'dungeon'])
                 or (self.smallkey and world.keyshuffle[self.player] == 'none')
                 or (self.bigkey and world.bigkeyshuffle[self.player] == 'none')
                 or (self.compass and world.compassshuffle[self.player] == 'none')
-                or (self.map and world.mapshuffle[self.player] == 'none'))
+                or (self.map and world.mapshuffle[self.player] == 'none')):
+            return True
+        # district algorithm may force uncovered nearby items back in-dungeon
+        return self.is_nearby_by_setting(world) and self.is_district_nearby_forced_inside(world)
 
     def is_near_dungeon_item(self, world):
+        if not self.is_nearby_by_setting(world):
+            return False
+        return not self.is_district_nearby_forced_inside(world)
+
+    def is_nearby_by_setting(self, world):
         return ((self.prize and world.prizeshuffle[self.player] == 'nearby')
                 or (self.smallkey and world.keyshuffle[self.player] == 'nearby')
                 or (self.bigkey and world.bigkeyshuffle[self.player] == 'nearby')
@@ -2926,7 +2987,7 @@ class Shop(object):
         entrances = self.region.entrances
         config = self.item_count
         if len(entrances) == 1 and entrances[0].name in door_addresses:
-            door_id = door_addresses[entrances[0].name][0] + 1
+            door_id = get_door_addresses(entrances[0])[0] + 1
         else:
             door_id = 0
             config |= 0x40  # ignore door id
@@ -2976,6 +3037,10 @@ class Spoiler(object):
         self.lobbies = {}
         self.medallions = {}
         self.bottles = {}
+        self.drops = {}
+        self.dig_game_digs = {}
+        self.prize_packs = {}
+        self.ingame_texts = {}        
         self.playthrough = {}
         self.unreachables = []
         self.startinventory = []
@@ -3242,6 +3307,10 @@ class Spoiler(object):
         out['Starting Inventory'] = self.startinventory
         out['Special'] = self.medallions
         out['Bottles'] = self.bottles
+        out['Drops'] = self.drops
+        out['Dig Game Digs'] = self.dig_game_digs
+        out['Prize Packs'] = self.prize_packs
+        out['In-Game Texts'] = self.ingame_texts        
         if self.hashes:
             out['Hashes'] = {f"{self.world.player_names[player][team]} (Team {team + 1})": hash for (player, team), hash in self.hashes.items()}
         if self.shops:
@@ -3555,6 +3624,39 @@ class Spoiler(object):
                     for idx, sprite in enumerate(sprite_list):
                         outfile.write(f'{hex(area)} Enemy #{idx + 1}{player_tag}: {str(sprite)}\n')
 
+            # drops, prize packs and in-game text are recorded while patching the rom, so they are absent
+            # when the rom is suppressed
+            if self.drops:
+                outfile.write('\n\nDrops:\n\n')
+                for player in range(1, self.world.players + 1):
+                    player_name = '' if self.world.players == 1 else str(' (' + self.world.get_player_names(player) + ')')
+                    player_drops = self.drops[f'Drops{player_name}']
+                    outfile.write(f'Tree Pull Tier 1{player_name}: {player_drops["PullTree"]["Tier1"]}\n')
+                    outfile.write(f'Tree Pull Tier 2{player_name}: {player_drops["PullTree"]["Tier2"]}\n')
+                    outfile.write(f'Tree Pull Tier 3{player_name}: {player_drops["PullTree"]["Tier3"]}\n')
+                    outfile.write(f'Rupee Crab Main{player_name}: {player_drops["RupeeCrab"]["Main"]}\n')
+                    outfile.write(f'Rupee Crab Final{player_name}: {player_drops["RupeeCrab"]["Final"]}\n')
+                    outfile.write(f'Stun Prize{player_name}: {player_drops["Stun"]}\n')
+                    outfile.write(f'Fish Save Prize{player_name}: {player_drops["FishSave"]}\n')
+                    outfile.write(f'Digging Game Digs{player_name}: {self.dig_game_digs[player_name]}\n')
+
+            if self.prize_packs:
+                outfile.write('\n\nPrize Packs:\n\n')
+                for player in range(1, self.world.players + 1):
+                    player_name = '' if self.world.players == 1 else str(' (' + self.world.get_player_names(player) + ')')
+                    player_prize_packs = self.prize_packs[f'PrizePacks{player_name}']
+                    for enemy_group, prize_pack_info in player_prize_packs.items():
+                        outfile.write(f'{enemy_group}{player_name}: {prize_pack_info["PrizePackName"]}\n'
+                                      f'Drop Order{player_name}: {prize_pack_info["DropOrder"]}\n')
+
+            if self.ingame_texts:
+                outfile.write('\n\nIn-Game Text:\n\n')
+                for player in range(1, self.world.players + 1):
+                    player_name = '' if self.world.players == 1 else str(' (' + self.world.get_player_names(player) + ')')
+                    player_ingame_text = self.ingame_texts[f'{player_name}']
+                    for game_text_type, game_text_value in player_ingame_text.items():
+                        outfile.write(f'{game_text_type}{player_name}: {game_text_value}\n')
+
     def playthrough_to_file(self, filename):
         with open(filename, 'a') as outfile:
             # locations: Change up location names; in the instance of a location with multiple sections, it'll try to translate the room name
@@ -3762,7 +3864,7 @@ prizeshuffle_mode = {'none': 0, 'dungeon': 1, 'nearby': 2, 'wild': 3}
 # byte 14: POOT TKKK (pseudoboots, overworld_map, trap_door_mode, key_logic_algo)
 overworld_map_mode = {'default': 0, 'compass': 1, 'map': 2}
 trap_door_mode = {'vanilla': 0, 'optional': 1, 'boss': 2, 'oneway': 3}
-key_logic_algo = {'dangerous': 0, 'partial': 1, 'strict': 2}
+key_logic_algo = {'dangerous': 0, 'partial': 1, 'strict': 2, 'static': 3}
 
 # byte 15: SSLL M?DD (skullwoods, linked_drops, mirrorscroll, 1 free byte, door_type)
 skullwoods_mode = {'original': 0, 'restricted': 1, 'loose': 2, 'followlinked': 3}

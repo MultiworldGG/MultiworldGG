@@ -663,9 +663,14 @@ def combine_req(sub_groups, requirement):
                 sub_groups[i].intersection_update(requirement.sub_groups[i])
 
 
-def setup_custom_enemy_sheets(custom_enemies, sheets, data_tables, sheet_range, uw=True):
+def setup_custom_enemy_sheets(custom_enemies, sheets, data_tables, sheet_range, uw=True, force_enemy=None):
     requirements = data_tables.sprite_requirements
     for room_id, enemy_map in custom_enemies.items():
+        if any(room_id in sheets[num].room_set for num in sheet_range if num in sheets):
+            # If a sheet is already pre-assigned to this area (e.g. by setup_required_overworld/dungeon_groups),
+            # skip custom sheet planning so forced enemies don't create a conflicting secondary assignment.
+            # The forced enemy will use the pre-assigned sheet, preserving static NPC graphics.
+            continue
         if uw:
             original_list = data_tables.uw_enemy_table.room_map[room_id]
         else:
@@ -680,30 +685,48 @@ def setup_custom_enemy_sheets(custom_enemies, sheets, data_tables, sheet_range, 
                 try:
                     combine_req(sub_groups_choices, req)
                 except IncompatibleEnemyException:
-                    logging.getLogger('').warning(f'Incompatible enemy: {hex(room_id)}:{idx} {enemy_map[idx]}')
+                    if force_enemy and enemy_map[idx] == force_enemy:
+                        logging.getLogger('').warning(f'Incompatible enemy: {hex(room_id)}:{idx} {enemy_map[idx]}')
+                    else:
+                        raise IncompatibleEnemyException(f'Incompatible enemy: {hex(room_id)}:{idx} {enemy_map[idx]}')
             else:
                 sprite_secondary = 0 if sprite.sub_type != SpriteType.Overlord else sprite.sub_type
                 key = (sprite.kind, sprite_secondary)
                 if key not in requirements:
                     continue
                 req = requirements[key]
-                if isinstance(req, dict) and room_id in req:
-                    req = req[room_id]
-                else:
-                    req = None
-                if req and (req.static or not req.can_randomize):
+                if isinstance(req, dict):
+                    req = req.get(room_id)
+                if req and (req.static or not req.can_randomize or sprite.static):
                     try:
                         combine_req(sub_groups_choices, req)
                     except IncompatibleEnemyException:
-                        raise IncompatibleEnemyException(f'Incompatible enemy: {hex(room_id)}:{idx} {str(req)}')
+                        # Static sprite GFX requirements take priority over forced enemy constraints.
+                        # Override conflicting slots with the static sprite's requirements.
+                        for i in range(0, 4):
+                            if req.sub_groups[i]:
+                                sub_groups_choices[i] = set(req.sub_groups[i])
+        # Enforce pre-determined room-level slot constraints (e.g. pull switches must use
+        # slot 3 = exactly 82). These override the looser requirements from force_enemy sprites
+        # so that static/mandatory sprites always win the sheet selection.
+        if uw and hasattr(data_tables, 'room_requirements') and room_id in data_tables.room_requirements:
+            room_reqs = data_tables.room_requirements[room_id]
+            for i, req_val in enumerate(room_reqs):
+                if req_val is not None:
+                    if isinstance(req_val, tuple):
+                        existing = sub_groups_choices[i]
+                        intersected = existing & set(req_val) if existing else set(req_val)
+                        sub_groups_choices[i] = intersected if intersected else set(req_val)
+                    else:
+                        sub_groups_choices[i] = {req_val}  # force exact value
         sheet_req = [None if not x else tuple(x) for x in sub_groups_choices]
         find_matching_sheet(sheet_req, sheets, sheet_range, [room_id], True)
 
 
-def randomize_underworld_sprite_sheets(sheets, data_tables, custom_enemies, limited_run=None):
+def randomize_underworld_sprite_sheets(sheets, data_tables, custom_enemies, limited_run=None, force_enemy=None):
     setup_required_dungeon_groups(sheets, data_tables, limited_run)
 
-    setup_custom_enemy_sheets(custom_enemies, sheets, data_tables, range(65, 124), True)
+    setup_custom_enemy_sheets(custom_enemies, sheets, data_tables, range(65, 124), True, force_enemy)
 
     for num in range(65, 124):  # sheets 0x41 to 0x7B inclusive
         sheet = sheets[num]
@@ -724,10 +747,10 @@ def randomize_underworld_sprite_sheets(sheets, data_tables, custom_enemies, limi
 
 
 def setup_required_overworld_groups(sheets):
-    sheets[7].add_sprite_to_sheet([None, None, 74, None], {0x2})  # lumberjacks
-    sheets[16].add_sprite_to_sheet([None, None, 18, 16], {0x3, 0x93})  # WDM (pre/post-Aga)
-    sheets[7].add_sprite_to_sheet([None, None, None, 17], {0xA, 0x9A})  # DM Foothills? (pre/post-Aga)
-    sheets[4].add_sprite_to_sheet([None, None, None, None], {0xF, 0x9F})  # Waterfall of wishing (pre/post-Aga)
+    sheets[7].add_sprite_to_sheet([None, None, 74, None], {0x02})  # lumberjacks
+    sheets[16].add_sprite_to_sheet([None, None, 18, 16], {0x03, 0x93})  # WDM (pre/post-Aga)
+    sheets[7].add_sprite_to_sheet([None, None, None, 17], {0x0A, 0x9A})  # DM Foothills Rock Hoarder (pre/post-Aga)
+    #sheets[4].add_sprite_to_sheet([None, None, None, None], {0x0F, 0x9F})  # Waterfall of wishing (pre/post-Aga)
     sheets[3].add_sprite_to_sheet([None, None, None, 14], {0x14, 0xA4})  # Graveyard (pre/post-Aga)
     sheets[1].add_sprite_to_sheet([None, None, 76, 0x3F], {0x1B, 0xAB})  # Hyrule Castle (pre/post-Aga)
     ## group 0 set to 0x48 for tutortial guards
@@ -781,35 +804,79 @@ def find_matching_sheet(groups, sheets, search_sheets, room_list=None, lock_matc
         if num in {6, 65, 69, 71, 78, 79, 82, 88, 98}:  # these are not useful sheets for randomization
             continue
         sheet = sheets[num]
-        valid = True
-        match = True
+        conflict = False
+        is_exact_match = True
+        has_locked_compatible = False
         for idx, value in enumerate(groups):
-            if value is not None and sheet.locked[idx]:
-                valid = False
-                if (sheet.sub_groups[idx] not in value if isinstance(value, tuple)
-                   else value != sheet.sub_groups[idx]):
-                    match = False
-            elif value is not None:
-                match = False
-        if match:
+            if value is not None:
+                if sheet.locked[idx]:
+                    is_compatible = (sheet.sub_groups[idx] in value
+                                     if isinstance(value, tuple)
+                                     else value == sheet.sub_groups[idx])
+                    if not is_compatible:
+                        conflict = True
+                        is_exact_match = False
+                        break
+                    else:
+                        has_locked_compatible = True
+                else:
+                    is_exact_match = False
+        if conflict:
+            continue
+        if is_exact_match:
             found_match = True
             if lock_match and room_list is not None:
                 sheet.room_set.update(room_list)
             break
-        if valid:
-            possible_sheets.append(sheet)
+        if has_locked_compatible:
+            possible_sheets.append((1, sheet))
+        else:
+            possible_sheets.append((0, sheet))
     if not found_match:
         if len(possible_sheets) == 0:
             raise NoMatchingSheetException
-        chosen_sheet = random.choice(possible_sheets)
-        chosen_groups = [(random.choice(g) if isinstance(g, tuple) else g) for g in groups]
+        # Prefer sheets that already have some required slots locked to compatible values
+        # (partial matches), so that hard constraints like TalkingTree GFX slot are preserved.
+        preferred = [s for _, s in possible_sheets if _ == 1]
+        candidates = preferred if preferred else [s for _, s in possible_sheets]
+        chosen_sheet = random.choice(candidates)
+        # Skip already-locked slots so their values are not overwritten.
+        chosen_groups = [
+            None if chosen_sheet.locked[idx] else (random.choice(g) if isinstance(g, tuple) else g)
+            for idx, g in enumerate(groups)
+        ]
         chosen_sheet.add_sprite_to_sheet(chosen_groups, room_list)
 
 
-def randomize_overworld_sprite_sheets(sheets, data_tables, custom_enemies):
+def setup_force_enemy_overworld_sheet_preferences(sheets, data_tables, force_enemy):
+    if not force_enemy:
+        return
+
+    key = (sprite_translation[force_enemy], 0)
+    if key not in data_tables.sprite_requirements:
+        return
+
+    req = data_tables.sprite_requirements[key]
+    if isinstance(req, dict):
+        return
+
+    for num in range(1, 64):
+        if num == 6:  # skip this group - it is locked for kakariko
+            continue
+
+        sheet = sheets[num]
+        for idx in range(0, 4):
+            if sheet.locked[idx] or not req.sub_groups[idx]:
+                continue
+            sheet.sub_groups[idx] = random.choice(req.sub_groups[idx])
+            sheet.locked[idx] = True
+
+
+def randomize_overworld_sprite_sheets(sheets, data_tables, custom_enemies, force_enemy=None):
     setup_required_overworld_groups(sheets)
 
-    setup_custom_enemy_sheets(custom_enemies, sheets, data_tables, range(1, 64), False)
+    setup_custom_enemy_sheets(custom_enemies, sheets, data_tables, range(1, 64), False, force_enemy)
+    setup_force_enemy_overworld_sheet_preferences(sheets, data_tables, False)
 
     for num in range(1, 64):  # sheets 0x1 to 0x3F inclusive
         sheet = sheets[num]

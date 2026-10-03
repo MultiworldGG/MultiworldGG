@@ -75,9 +75,9 @@ def get_target_groups(entrance_randomization_behavior: EntranceRandomizationBeha
 
     area_matching_group_lookup = {
         GroupFlag.TO_ANY: [GroupFlag.IN_TO_IN, GroupFlag.IN_TO_OUT, GroupFlag.OUT_TO_IN, GroupFlag.OUT_TO_OUT, GroupFlag.TO_ANY],
-        GroupFlag.IN_TO_IN: [GroupFlag.IN_TO_IN, GroupFlag.TO_ANY],
-        GroupFlag.IN_TO_OUT: [GroupFlag.IN_TO_OUT, GroupFlag.TO_ANY],
-        GroupFlag.OUT_TO_IN: [GroupFlag.OUT_TO_IN, GroupFlag.TO_ANY],
+        GroupFlag.IN_TO_IN: [GroupFlag.IN_TO_IN, GroupFlag.IN_TO_OUT, GroupFlag.OUT_TO_IN, GroupFlag.TO_ANY],
+        GroupFlag.IN_TO_OUT: [GroupFlag.IN_TO_OUT, GroupFlag.IN_TO_IN, GroupFlag.OUT_TO_IN, GroupFlag.TO_ANY],
+        GroupFlag.OUT_TO_IN: [GroupFlag.OUT_TO_IN, GroupFlag.IN_TO_IN, GroupFlag.IN_TO_OUT, GroupFlag.TO_ANY],
         GroupFlag.OUT_TO_OUT: [GroupFlag.OUT_TO_OUT, GroupFlag.TO_ANY],
     }
 
@@ -109,9 +109,7 @@ def get_target_groups(entrance_randomization_behavior: EntranceRandomizationBeha
     groups[GroupFlag.DOWN | GroupFlag.IN_TO_OUT | GroupFlag.FROM_FARMHOUSE] = [
         pair_direction | pair_inorout | farmhouse_flag
         for pair_direction in direction_matching_group_lookup[GroupFlag.DOWN & dir_mask]
-        for pair_inorout in (
-            area_matching_group_lookup[GroupFlag.IN_TO_OUT] + area_matching_group_lookup[GroupFlag.OUT_TO_OUT]
-        )
+        for pair_inorout in area_matching_group_lookup[GroupFlag.IN_TO_OUT & area_mask]
         for farmhouse_flag in [GroupFlag.FROM_FARMHOUSE, GroupFlag.TO_ANY]
     ]
 

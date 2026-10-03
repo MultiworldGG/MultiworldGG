@@ -4,7 +4,8 @@ from typing import TYPE_CHECKING, Dict, Set
 
 from BaseClasses import Item, ItemClassification
 from .data import data
-from .options import Shopsanity, ItemPoolFill, ShopsanityXItems, FreeFlyLocation
+from .evolution import EVOLUTION_ITEM_TYPES, evolution_type_in_logic
+from .options import Shopsanity, ItemPoolFill, ShopsanityXItems, FreeFlyLocation, WildEncounterMethodsRequired
 
 if TYPE_CHECKING:
     from .world import PokemonCrystalWorld
@@ -14,17 +15,22 @@ class PokemonCrystalItem(Item):
     game: str = data.manifest.game
     tags: frozenset[str]
     flag_index: int | None
+    source: str | None
+    source_key: str | None
 
     def __init__(self,
                  name: str,
                  classification: ItemClassification,
                  code: int | None,
                  player: int,
-                 flag_index: int | None = None) -> None:
+                 flag_index: int | None = None,
+                 source: str | None = None) -> None:
 
         super().__init__(name, classification, code, player)
 
         self.flag_index = flag_index
+        self.source = source
+        self.source_key = f"{name}@{source}" if source is not None else None
 
         if code is None:
             self.tags = frozenset(["Event"])
@@ -61,70 +67,75 @@ def item_const_name_to_label(const_name):
     return CONST_NAME_TO_LABEL.get(const_name, "Poke Ball")
 
 
+EVOLUTION_ITEMS = ("WATER_STONE", "FIRE_STONE", "THUNDERSTONE", "LEAF_STONE", "SUN_STONE", "MOON_STONE",
+                   "KINGS_ROCK", "METAL_COAT", "DRAGON_SCALE", "UP_GRADE", "LINK_CABLE")
+
+# gates the Ruins of Alph Omanyte item room regardless of evolution options
+ALWAYS_REQUIRED_EVOLUTION_ITEMS = ("WATER_STONE",)
+
+
 def get_random_filler_item(world: "PokemonCrystalWorld") -> str:
     option = world.options.item_pool_fill
-    if not hasattr(option, "weighted_pool"):
+    if not hasattr(option, "groups"):
         if option == ItemPoolFill.option_balanced:
-            option.weighted_pool = [["RARE_CANDY", "ETHER", "ELIXER", "MAX_ETHER", "MAX_ELIXER", "MYSTERYBERRY",
-                                     "WATER_STONE", "FIRE_STONE", "THUNDERSTONE", "LEAF_STONE", "SUN_STONE",
-                                     "MOON_STONE", "ESCAPE_ROPE", "NUGGET", "STAR_PIECE", "STARDUST", "PEARL",
+            option.groups = [["RARE_CANDY", "ETHER", "ELIXER", "MAX_ETHER", "MAX_ELIXER", "MYSTERYBERRY",
+                                     "ESCAPE_ROPE", "NUGGET", "STAR_PIECE", "STARDUST", "PEARL",
                                      "BIG_PEARL", "POKE_BALL", "GREAT_BALL", "ULTRA_BALL", "POTION", "SUPER_POTION",
                                      "ENERGY_ROOT", "ENERGYPOWDER", "HYPER_POTION", "FULL_RESTORE", "REPEL",
                                      "SUPER_REPEL", "MAX_REPEL", "REVIVE", "REVIVAL_HERB", "MAX_REVIVE", "HP_UP",
                                      "PP_UP", "PROTEIN", "CARBOS", "CALCIUM", "IRON", "GUARD_SPEC", "DIRE_HIT",
                                      "X_ATTACK", "X_DEFEND", "X_SPEED", "X_SPECIAL", "HEAL_POWDER", "BURN_HEAL",
                                      "PARLYZ_HEAL", "ICE_HEAL", "ANTIDOTE", "AWAKENING", "FULL_HEAL"]]
+            option.weights = [1]
         elif option == ItemPoolFill.option_youngster:
-            option.weighted_pool = [["RARE_CANDY", "ESCAPE_ROPE"] * 11,
-                                    ["ETHER", "ELIXER", "MAX_ETHER", "MAX_ELIXER", "MYSTERYBERRY"] * 9,
-                                    ["WATER_STONE", "FIRE_STONE", "THUNDERSTONE", "LEAF_STONE", "SUN_STONE",
-                                     "MOON_STONE"] * 2,
-                                    ["GREAT_BALL"] * 1, ["POTION", "POKE_BALL", "REPEL"] * 12,
-                                    ["SUPER_POTION", "ENERGY_ROOT", "ENERGYPOWDER", "SUPER_REPEL"] * 2,
-                                    ["HYPER_POTION", "FULL_RESTORE"] * 1, ["MAX_REPEL"] * 1,
-                                    ["REVIVE", "REVIVAL_HERB"] * 5 + ["MAX_REVIVE"] * 1,
-                                    ["HP_UP", "PP_UP", "PROTEIN", "CARBOS", "CALCIUM", "IRON"] * 1,
+            option.groups = [["RARE_CANDY", "ESCAPE_ROPE"],
+                                    ["ETHER", "ELIXER", "MAX_ETHER", "MAX_ELIXER", "MYSTERYBERRY"],
+                                    ["GREAT_BALL"], ["POTION", "POKE_BALL", "REPEL"],
+                                    ["SUPER_POTION", "ENERGY_ROOT", "ENERGYPOWDER", "SUPER_REPEL"],
+                                    ["HYPER_POTION", "FULL_RESTORE"], ["MAX_REPEL"],
+                                    ["REVIVE", "REVIVAL_HERB"], ["MAX_REVIVE"],
+                                    ["HP_UP", "PP_UP", "PROTEIN", "CARBOS", "CALCIUM", "IRON"],
                                     ["HEAL_POWDER", "BURN_HEAL", "PARLYZ_HEAL", "ICE_HEAL", "ANTIDOTE", "AWAKENING",
-                                     "FULL_HEAL"] * 2]
+                                     "FULL_HEAL"]]
+            option.weights = [11, 9, 1, 12, 2, 1, 1, 5, 1, 1, 2]
         elif option == ItemPoolFill.option_cooltrainer:
-            option.weighted_pool = [["RARE_CANDY", "ESCAPE_ROPE"] * 11,
-                                    ["MAX_ETHER", "MAX_ELIXER", "MYSTERYBERRY"] * 9,
-                                    ["WATER_STONE", "FIRE_STONE", "THUNDERSTONE", "LEAF_STONE", "SUN_STONE",
-                                     "MOON_STONE"] * 5,
-                                    ["SUPER_POTION", "ENERGY_ROOT", "ENERGYPOWDER", "SUPER_REPEL", "FULL_HEAL"] * 1,
-                                    ["NUGGET", "STAR_PIECE", "STARDUST", "PEARL", "BIG_PEARL"] * 5,
-                                    ["GUARD_SPEC", "DIRE_HIT", "X_ATTACK", "X_DEFEND", "X_SPEED", "X_SPECIAL"] * 10,
-                                    ["HYPER_POTION", "FULL_RESTORE", "MAX_REPEL"] * 10,
-                                    ["REVIVE", "REVIVAL_HERB"] * 5 + ["MAX_REVIVE"] * 10,
-                                    ["HP_UP", "PP_UP", "PROTEIN", "CARBOS", "CALCIUM", "IRON"] * 10,
+            option.groups = [["RARE_CANDY", "ESCAPE_ROPE"],
+                                    ["MAX_ETHER", "MAX_ELIXER", "MYSTERYBERRY"],
+                                    ["SUPER_POTION", "ENERGY_ROOT", "ENERGYPOWDER", "SUPER_REPEL", "FULL_HEAL"],
+                                    ["NUGGET", "STAR_PIECE", "STARDUST", "PEARL", "BIG_PEARL"],
+                                    ["GUARD_SPEC", "DIRE_HIT", "X_ATTACK", "X_DEFEND", "X_SPEED", "X_SPECIAL"],
+                                    ["HYPER_POTION", "FULL_RESTORE", "MAX_REPEL"],
+                                    ["REVIVE", "REVIVAL_HERB"], ["MAX_REVIVE"],
+                                    ["HP_UP", "PP_UP", "PROTEIN", "CARBOS", "CALCIUM", "IRON"],
                                     ["TWISTEDSPOON", "MYSTIC_WATER", "LEFTOVERS", "CHARCOAL", "BRIGHTPOWDER", "MAGNET",
-                                     "SCOPE_LENS", "DRAGON_FANG", "NEVERMELTICE", "SMOKE_BALL"] * 2]
+                                     "SCOPE_LENS", "DRAGON_FANG", "NEVERMELTICE", "SMOKE_BALL"]]
+            option.weights = [11, 9, 1, 5, 10, 10, 5, 10, 10, 2]
         elif option == ItemPoolFill.option_vanilla:
             # weights are roughly based on vanilla occurrence
-            option.weighted_pool = [["RARE_CANDY"] * 3,
-                                    ["ETHER", "ELIXER", "MAX_ETHER", "MAX_ELIXER", "MYSTERYBERRY"] * 5,
-                                    ["WATER_STONE", "FIRE_STONE", "THUNDERSTONE", "LEAF_STONE", "SUN_STONE",
-                                     "MOON_STONE"] * 2,
-                                    ["ESCAPE_ROPE"] * 3,
-                                    ["NUGGET", "STAR_PIECE", "STARDUST", "PEARL", "BIG_PEARL"] * 2,
-                                    ["POKE_BALL", "GREAT_BALL", "ULTRA_BALL"] * 5,
-                                    ["POTION", "SUPER_POTION", "ENERGY_ROOT", "ENERGYPOWDER"] * 12,
-                                    ["HYPER_POTION", "FULL_RESTORE"] * 2, ["REPEL", "SUPER_REPEL", "MAX_REPEL"] * 3,
-                                    ["REVIVE", "REVIVAL_HERB"] * 4 + ["MAX_REVIVE"] * 2,
-                                    ["HP_UP", "PP_UP", "PROTEIN", "CARBOS", "CALCIUM", "IRON"] * 5,
-                                    ["GUARD_SPEC", "DIRE_HIT", "X_ATTACK", "X_DEFEND", "X_SPEED", "X_SPECIAL"] * 2,
+            option.groups = [["RARE_CANDY"],
+                                    ["ETHER", "ELIXER", "MAX_ETHER", "MAX_ELIXER", "MYSTERYBERRY"],
+                                    ["ESCAPE_ROPE"],
+                                    ["NUGGET", "STAR_PIECE", "STARDUST", "PEARL", "BIG_PEARL"],
+                                    ["POKE_BALL", "GREAT_BALL", "ULTRA_BALL"],
+                                    ["POTION", "SUPER_POTION", "ENERGY_ROOT", "ENERGYPOWDER"],
+                                    ["HYPER_POTION", "FULL_RESTORE"], ["REPEL", "SUPER_REPEL", "MAX_REPEL"],
+                                    ["REVIVE", "REVIVAL_HERB"], ["MAX_REVIVE"],
+                                    ["HP_UP", "PP_UP", "PROTEIN", "CARBOS", "CALCIUM", "IRON"],
+                                    ["GUARD_SPEC", "DIRE_HIT", "X_ATTACK", "X_DEFEND", "X_SPEED", "X_SPECIAL"],
                                     ["HEAL_POWDER", "BURN_HEAL", "PARLYZ_HEAL", "ICE_HEAL", "ANTIDOTE", "AWAKENING",
-                                     "FULL_HEAL"] * 5]
+                                     "FULL_HEAL"]]
+            option.weights = [3, 5, 3, 2, 5, 12, 2, 3, 4, 2, 5, 2, 5]
         elif option == ItemPoolFill.option_shuckle:
-            option.weighted_pool = [
-                ["WATER_STONE", "FIRE_STONE", "THUNDERSTONE", "LEAF_STONE", "SUN_STONE", "MOON_STONE"] * 2,
-                ["ESCAPE_ROPE"] * 3, ["NUGGET", "STAR_PIECE", "STARDUST", "PEARL", "BIG_PEARL"] * 2,
-                ["PSNCUREBERRY", "PRZCUREBERRY", "BURNT_BERRY", "ICE_BERRY", "BITTER_BERRY", "MINT_BERRY"] * 5,
-                ["MIRACLEBERRY", "BERRY_JUICE", "MYSTERYBERRY", "BERRY"] * 5, ["POKE_BALL"] * 2]
+            option.groups = [
+                ["ESCAPE_ROPE"], ["NUGGET", "STAR_PIECE", "STARDUST", "PEARL", "BIG_PEARL"],
+                ["PSNCUREBERRY", "PRZCUREBERRY", "BURNT_BERRY", "ICE_BERRY", "BITTER_BERRY", "MINT_BERRY"],
+                ["MIRACLEBERRY", "BERRY_JUICE", "MYSTERYBERRY", "BERRY"], ["POKE_BALL"]]
+            option.weights = [3, 2, 5, 5, 2]
         else:
             # oops :)
-            option.weighted_pool = [["NUGGET"] * 100]
-    group = world.random.choice(option.weighted_pool)
+            option.groups = [["NUGGET"]]
+            option.weights = [1]
+    group = world.random.choices(option.groups, weights=option.weights)[0]
     return world.random.choice(group)
 
 
@@ -135,49 +146,59 @@ def get_random_ball(random: Random):
     return random.choices(balls, weights=ball_weights)[0]
 
 
-def adjust_item_classifications(world: "PokemonCrystalWorld"):
-    all_items = world.itempool + world.pre_fill_items + world.multiworld.precollected_items[world.player]
+def get_classification_override(world: "PokemonCrystalWorld", item_data) -> ItemClassification | None:
+    """
+    Returns an overridden classification for the given item based on the world's options,
+    or None if the item's default classification should be used.
 
-    if Shopsanity.blue_card not in world.options.shopsanity.value:
-        for item in all_items:
-            if item.name == "Blue Card":
-                item.classification = ItemClassification.useful
+    Applied at item creation time so Universal Tracker sees the correct classification.
+    """
+    name = item_data.label
+    tags = item_data.tags
+    options = world.options
 
-    if Shopsanity.apricorns not in world.options.shopsanity.value:
-        for item in all_items:
-            if "Apricorn" in item.tags:
-                item.classification = ItemClassification.filler
+    if name == "Blue Card" and Shopsanity.BLUE_CARD not in options.shopsanity.value:
+        return ItemClassification.useful
 
-    if not world.options.require_itemfinder:
-        for item in all_items:
-            if item.name == "Itemfinder":
-                item.classification = ItemClassification.useful
+    if "Apricorn" in tags and Shopsanity.APRICORNS not in options.shopsanity.value:
+        return ItemClassification.filler
 
-    if world.options.free_fly_location < FreeFlyLocation.option_free_fly_and_map_card:
-        for item in all_items:
-            if item.name == "Map Card":
-                item.classification = ItemClassification.useful
+    if name == "Itemfinder" and not options.require_itemfinder:
+        return ItemClassification.useful
 
-    if not world.options.randomize_phone_call_items:
-        for item in all_items:
-            if item.name == "Phone Card":
-                item.classification = ItemClassification.useful
+    if name == "Map Card" and options.free_fly_location < FreeFlyLocation.option_free_fly_and_map_card:
+        return ItemClassification.useful
 
-    if world.options.johto_only:
-        for item in all_items:
-            if item.name == "Radio Card":
-                item.classification = ItemClassification.useful
+    if (name == "Phone Card"
+            and not options.randomize_phone_call_items
+            and not options.rematchsanity
+            and WildEncounterMethodsRequired.SWARM not in options.wild_encounter_methods_required):
+        return ItemClassification.useful
 
-    if (world.options.johto_only and not world.options.randomize_phone_call_items
-            and world.options.free_fly_location < FreeFlyLocation.option_free_fly_and_map_card):
-        for item in all_items:
-            if item.name == "Pokegear":
-                item.classification = ItemClassification.useful
+    if name == "Radio Card" and options.johto_only:
+        return ItemClassification.useful
 
-    if world.options.johto_only and not world.options.national_park_access:
-        for item in all_items:
-            if item.name == "Bicycle":
-                item.classification = ItemClassification.useful
+    if (name == "Pokegear"
+            and options.johto_only
+            and not options.randomize_phone_call_items
+            and not options.rematchsanity
+            and WildEncounterMethodsRequired.SWARM not in options.wild_encounter_methods_required
+            and options.free_fly_location < FreeFlyLocation.option_free_fly_and_map_card
+            and not (options.unlockable_time_of_day and options.time_of_day_encounters)):
+        return ItemClassification.useful
+
+    if name == "Bicycle" and options.johto_only and not options.national_park_access:
+        return ItemClassification.useful
+
+    evolution_types = EVOLUTION_ITEM_TYPES.get(item_data.item_const)
+    if (evolution_types
+            # UT keeps out-of-logic evolution locations, which still need these items
+            and not world.is_universal_tracker
+            and item_data.item_const not in ALWAYS_REQUIRED_EVOLUTION_ITEMS
+            and not any(evolution_type_in_logic(world, evo_type) for evo_type in evolution_types)):
+        return ItemClassification.useful
+
+    return None
 
 
 def place_x_items(world: "PokemonCrystalWorld") -> list[str]:
@@ -207,19 +228,22 @@ def place_x_items(world: "PokemonCrystalWorld") -> list[str]:
 
 
 def randomize_item_values(world: "PokemonCrystalWorld"):
-    if not world.options.randomize_item_values: return
+    if world.options.randomize_item_values:
+        min_item_value = world.options.minimum_item_value
+        max_item_value = world.options.maximum_item_value
+        if world.options.minimum_item_value > world.options.maximum_item_value:
+            logging.info("Pokemon Crystal: Minimum Item Value for player %s (%s)"
+                         " is greater than Maximum Item Value.",
+                         world.player, world.player_name)
+            min_item_value = world.options.maximum_item_value.value
+            max_item_value = world.options.minimum_item_value.value
 
-    min_item_value = world.options.minimum_item_value
-    max_item_value = world.options.maximum_item_value
-    if world.options.minimum_item_value > world.options.maximum_item_value:
-        logging.info("Pokemon Crystal: Minimum Item Value for player %s (%s)"
-                     " is greater than Maximum Item Value.",
-                     world.player, world.player_name)
-        min_item_value = world.options.maximum_item_value.value
-        max_item_value = world.options.minimum_item_value.value
+        world.generated_item_values = {code: world.random.randint(min_item_value, max_item_value) for code in
+                                       sorted(world.generated_item_values.keys())}
 
-    world.generated_item_values = {code: world.random.randint(min_item_value, max_item_value) for code in
-                                   sorted(world.generated_item_values.keys())}
+    label_to_id = create_item_label_to_code_map()
+    for label, value in world.options.item_value_plando.value.items():
+        world.generated_item_values[label_to_id[label]] = value
 
 
 ITEM_GROUPS: Dict[str, Set[str]] = {}
@@ -252,4 +276,7 @@ EXTENDED_TRAPLINK_MAPPING = {
     "Slip Trap": item_const_name_to_id("ICE_TRAP"),
     "Instant Death Trap": item_const_name_to_id("EXPLOSION_TRAP"),
     "Spam Trap": item_const_name_to_id("PHONE_TRAP"),
+    "Shuffle Trap": item_const_name_to_id("SHUFFLE_TRAP"),
+    "Inventory Shuffle Trap": item_const_name_to_id("SHUFFLE_TRAP"),
+    "Chaos Trap": item_const_name_to_id("SHUFFLE_TRAP"),
 }

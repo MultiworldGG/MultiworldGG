@@ -93,7 +93,7 @@ class NumberOfMinigames(Range):
     display_name = "Number of Minigames"
     default = 7
     range_start = -1
-    range_end = 17
+    range_end = 18
     
 class NerfMinigameChecks(Toggle):
     """
@@ -195,6 +195,9 @@ class MinigamesLikeliness(OptionCounter):
     Defunct Rando Minigame:
     Defunct Minigame but randomized. Three buttons light up at a time.
     Keep pressing them until the entire game is gone D:
+    
+    Relocate Minigame:
+    You see a picture on screen, recreate it perfectly and press T for 2 checks. There are 3 photos.
     """
    
     display_name = "Likeliness of minigames"
@@ -217,6 +220,7 @@ class MinigamesLikeliness(OptionCounter):
         "Custom Minigame": int,
         "Defunct Minigame": int,
         "Defunct Rando Minigame": int,
+        "Relocate Minigame": int,
     })
     min = 0
     default = {
@@ -237,6 +241,7 @@ class MinigamesLikeliness(OptionCounter):
         "Custom Minigame": 1,
         "Defunct Minigame": 2,
         "Defunct Rando Minigame": 4,
+        "Relocate Minigame": 2,
     }
     
 

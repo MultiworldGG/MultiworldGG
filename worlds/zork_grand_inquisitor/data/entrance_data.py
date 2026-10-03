@@ -15,15 +15,7 @@ EntranceRuleData = Dict[Entrance, Optional[Rule]]
 
 entrance_rule_data: EntranceRuleData = {
     (ZorkGrandInquisitorRegions.BOTTOM_OF_THE_WELL, ZorkGrandInquisitorRegions.CROSSROADS): None,
-    (ZorkGrandInquisitorRegions.BOTTOM_OF_THE_WELL, ZorkGrandInquisitorRegions.OUTSIDE_PORT_FOOZLE_WELL): (
-        And(
-            Has(ZorkGrandInquisitorItems.WELL_ROPE.value),
-            Or(
-                Has(ZorkGrandInquisitorItems.HOTSPOT_BUCKET.value),
-                Has(ZorkGrandInquisitorItems.HOTSPOT_REGIONAL_CROSSROADS.value),
-            )
-        )
-    ),
+    (ZorkGrandInquisitorRegions.BOTTOM_OF_THE_WELL, ZorkGrandInquisitorRegions.OUTSIDE_PORT_FOOZLE_WELL): None,
     (ZorkGrandInquisitorRegions.CROSSROADS, ZorkGrandInquisitorRegions.BOTTOM_OF_THE_WELL): None,
     (ZorkGrandInquisitorRegions.CROSSROADS, ZorkGrandInquisitorRegions.DM_LAIR): (
         And(
@@ -31,7 +23,7 @@ entrance_rule_data: EntranceRuleData = {
             Or(
                 Has(ZorkGrandInquisitorItems.HOTSPOT_DUNGEON_MASTERS_LAIR_ENTRANCE.value),
                 Has(ZorkGrandInquisitorItems.HOTSPOT_REGIONAL_CROSSROADS.value),
-            )
+            ),
         )
     ),
     (ZorkGrandInquisitorRegions.CROSSROADS, ZorkGrandInquisitorRegions.GUE_TECH_ENTRANCE): (
@@ -40,7 +32,7 @@ entrance_rule_data: EntranceRuleData = {
             Or(
                 Has(ZorkGrandInquisitorItems.HOTSPOT_IN_MAGIC_WE_TRUST_DOOR.value),
                 Has(ZorkGrandInquisitorItems.HOTSPOT_REGIONAL_CROSSROADS.value),
-            )
+            ),
         )
     ),
     (ZorkGrandInquisitorRegions.CROSSROADS, ZorkGrandInquisitorRegions.SUBWAY_CROSSROADS): (
@@ -49,7 +41,7 @@ entrance_rule_data: EntranceRuleData = {
             Or(
                 Has(ZorkGrandInquisitorItems.HOTSPOT_SUBWAY_TOKEN_SLOT.value),
                 Has(ZorkGrandInquisitorItems.HOTSPOT_REGIONAL_CROSSROADS.value),
-            )
+            ),
         )
     ),
     (ZorkGrandInquisitorRegions.CROSSROADS, ZorkGrandInquisitorRegions.TELEPORTER): None,
@@ -92,11 +84,32 @@ entrance_rule_data: EntranceRuleData = {
             Or(
                 Has(ZorkGrandInquisitorItems.HOTSPOT_DRAGON_CLAW.value),
                 Has(ZorkGrandInquisitorItems.HOTSPOT_REGIONAL_DRAGON_ARCHIPELAGO.value),
-            )
+            ),
         )
     ),
     (ZorkGrandInquisitorRegions.DRAGON_ARCHIPELAGO, ZorkGrandInquisitorRegions.HADES_BEYOND_GATES): None,
     (ZorkGrandInquisitorRegions.DRAGON_ARCHIPELAGO_DRAGON, ZorkGrandInquisitorRegions.DRAGON_ARCHIPELAGO): None,
+    (ZorkGrandInquisitorRegions.FLATHEAD_MESA, ZorkGrandInquisitorRegions.FLATHEAD_MESA_RADIO_TOWER): (
+        And(
+            Has(ZorkGrandInquisitorItems.SPELL_REZROV.value),
+            Or(
+                Has(ZorkGrandInquisitorItems.HOTSPOT_GUARDS_TENT.value),
+                Has(ZorkGrandInquisitorItems.HOTSPOT_REGIONAL_FLATHEAD_MESA.value),
+            ),
+            Has(ZorkGrandInquisitorItems.SPELL_IGRAM.value),
+            Or(
+                Has(ZorkGrandInquisitorItems.HOTSPOT_ELECTRIC_FENCE.value),
+                Has(ZorkGrandInquisitorItems.HOTSPOT_REGIONAL_FLATHEAD_MESA.value),
+            ),
+            Or(
+                Has(ZorkGrandInquisitorItems.HOTSPOT_FENCE_POWER_CORD.value),
+                Has(ZorkGrandInquisitorItems.HOTSPOT_REGIONAL_FLATHEAD_MESA.value),
+            ),
+            Has(ZorkGrandInquisitorItems.SWORD.value),
+        )
+    ),
+    (ZorkGrandInquisitorRegions.FLATHEAD_MESA, ZorkGrandInquisitorRegions.WALKING_CASTLE): None,
+    (ZorkGrandInquisitorRegions.FLATHEAD_MESA_RADIO_TOWER, ZorkGrandInquisitorRegions.FLATHEAD_MESA): None,
     (ZorkGrandInquisitorRegions.GUE_TECH, ZorkGrandInquisitorRegions.GUE_TECH_ENTRANCE): (
         Or(
             Has(ZorkGrandInquisitorItems.HOTSPOT_GUE_TECH_WINDOWS.value),
@@ -109,7 +122,7 @@ entrance_rule_data: EntranceRuleData = {
             Or(
                 Has(ZorkGrandInquisitorItems.HOTSPOT_PURPLE_WORDS.value),
                 Has(ZorkGrandInquisitorItems.HOTSPOT_REGIONAL_GUE_TECH.value),
-            )
+            ),
         )
     ),
     (ZorkGrandInquisitorRegions.GUE_TECH, ZorkGrandInquisitorRegions.GUE_TECH_OUTSIDE): (
@@ -118,6 +131,7 @@ entrance_rule_data: EntranceRuleData = {
             Has(ZorkGrandInquisitorItems.HOTSPOT_REGIONAL_GUE_TECH.value),
         )
     ),
+    (ZorkGrandInquisitorRegions.GUE_TECH_ENTRANCE, ZorkGrandInquisitorRegions.GUE_TECH_BOTTOMLESS_PITS): None,
     (ZorkGrandInquisitorRegions.GUE_TECH_ENTRANCE, ZorkGrandInquisitorRegions.CROSSROADS): None,
     (ZorkGrandInquisitorRegions.GUE_TECH_ENTRANCE, ZorkGrandInquisitorRegions.GUE_TECH): (
         Or(
@@ -125,6 +139,7 @@ entrance_rule_data: EntranceRuleData = {
             Has(ZorkGrandInquisitorItems.HOTSPOT_REGIONAL_GUE_TECH.value),
         )
     ),
+    (ZorkGrandInquisitorRegions.GUE_TECH_ENTRANCE, ZorkGrandInquisitorRegions.GUE_TECH_GRASS): None,
     (ZorkGrandInquisitorRegions.GUE_TECH_HALLWAY, ZorkGrandInquisitorRegions.GUE_TECH): None,
     (ZorkGrandInquisitorRegions.GUE_TECH_HALLWAY, ZorkGrandInquisitorRegions.SPELL_LAB_BRIDGE): (
         And(
@@ -132,22 +147,22 @@ entrance_rule_data: EntranceRuleData = {
             Or(
                 Has(ZorkGrandInquisitorItems.HOTSPOT_STUDENT_ID_MACHINE.value),
                 Has(ZorkGrandInquisitorItems.HOTSPOT_REGIONAL_GUE_TECH.value),
-            )
+            ),
         )
     ),
+    (ZorkGrandInquisitorRegions.GUE_TECH_OUTSIDE, ZorkGrandInquisitorRegions.GUE_TECH_BOTTOMLESS_PITS): None,
     (ZorkGrandInquisitorRegions.GUE_TECH_OUTSIDE, ZorkGrandInquisitorRegions.GUE_TECH): (
         Or(
             Has(ZorkGrandInquisitorItems.HOTSPOT_GUE_TECH_WINDOWS.value),
             Has(ZorkGrandInquisitorItems.HOTSPOT_REGIONAL_GUE_TECH.value),
         )
     ),
+    (ZorkGrandInquisitorRegions.GUE_TECH_OUTSIDE, ZorkGrandInquisitorRegions.GUE_TECH_GRASS): None,
     (ZorkGrandInquisitorRegions.GUE_TECH_OUTSIDE, ZorkGrandInquisitorRegions.TELEPORTER): None,
     (ZorkGrandInquisitorRegions.HADES, ZorkGrandInquisitorRegions.HADES_BEYOND_GATES): (
-        And(
-            Has(ZorkGrandInquisitorItems.SPELL_SNAVIG.value),
-            Has(ZorkGrandInquisitorItems.TOTEM_BROG.value),
-        )
+        Has(ZorkGrandInquisitorItems.SPELL_SNAVIG.value)
     ),
+    (ZorkGrandInquisitorRegions.HADES, ZorkGrandInquisitorRegions.HADES_CHARON): None,
     (ZorkGrandInquisitorRegions.HADES, ZorkGrandInquisitorRegions.HADES_SHORE): (
         And(
             Has(ZorkGrandInquisitorItems.POUCH_OF_ZORKMIDS.value),
@@ -174,6 +189,9 @@ entrance_rule_data: EntranceRuleData = {
             Has(ZorkGrandInquisitorItems.POUCH_OF_ZORKMIDS.value),
         )
     ),
+    (ZorkGrandInquisitorRegions.HADES_SHORE, ZorkGrandInquisitorRegions.HADES_CHARON): (
+        Has(ZorkGrandInquisitorEvents.CHARON_CALLED.value)
+    ),
     (ZorkGrandInquisitorRegions.HADES_SHORE, ZorkGrandInquisitorRegions.SUBWAY_HADES): None,
     (ZorkGrandInquisitorRegions.HADES_SHORE, ZorkGrandInquisitorRegions.TELEPORTER): None,
     (ZorkGrandInquisitorRegions.MONASTERY, ZorkGrandInquisitorRegions.HADES_SHORE): (
@@ -186,7 +204,7 @@ entrance_rule_data: EntranceRuleData = {
             Or(
                 Has(ZorkGrandInquisitorItems.HOTSPOT_TOTEMIZER_SWITCH.value),
                 Has(ZorkGrandInquisitorItems.HOTSPOT_REGIONAL_MONASTERY.value),
-            )
+            ),
         )
     ),
     (ZorkGrandInquisitorRegions.MONASTERY, ZorkGrandInquisitorRegions.MONASTERY_EXHIBIT): (
@@ -199,11 +217,17 @@ entrance_rule_data: EntranceRuleData = {
             Or(
                 Has(ZorkGrandInquisitorItems.HOTSPOT_TOTEMIZER_SWITCH.value),
                 Has(ZorkGrandInquisitorItems.HOTSPOT_REGIONAL_MONASTERY.value),
-            )
+            ),
         )
     ),
     (ZorkGrandInquisitorRegions.MONASTERY, ZorkGrandInquisitorRegions.SUBWAY_MONASTERY): None,
     (ZorkGrandInquisitorRegions.MONASTERY_EXHIBIT, ZorkGrandInquisitorRegions.MONASTERY): None,
+    (ZorkGrandInquisitorRegions.MONASTERY_EXHIBIT, ZorkGrandInquisitorRegions.MONASTERY_OUTSIDE): (
+        Or(
+            Has(ZorkGrandInquisitorItems.HOTSPOT_MONASTERY_EXHIBIT_DOOR.value),
+            Has(ZorkGrandInquisitorItems.HOTSPOT_REGIONAL_MONASTERY.value),
+        )
+    ),
     (ZorkGrandInquisitorRegions.MONASTERY_EXHIBIT, ZorkGrandInquisitorRegions.PORT_FOOZLE_PAST): (
         And(
             Or(
@@ -219,6 +243,7 @@ entrance_rule_data: EntranceRuleData = {
             Has(ZorkGrandInquisitorItems.SPELL_YASTARD.value),
         )
     ),
+    (ZorkGrandInquisitorRegions.MONASTERY_OUTSIDE, ZorkGrandInquisitorRegions.MONASTERY_EXHIBIT): None,
     (
         ZorkGrandInquisitorRegions.OUTSIDE_PORT_FOOZLE_INQUISITION_HQ,
         ZorkGrandInquisitorRegions.OUTSIDE_PORT_FOOZLE_SIGNPOST
@@ -261,7 +286,7 @@ entrance_rule_data: EntranceRuleData = {
             Or(
                 Has(ZorkGrandInquisitorItems.HOTSPOT_PORT_FOOZLE_PAST_TAVERN_DOOR.value),
                 Has(ZorkGrandInquisitorItems.HOTSPOT_REGIONAL_PORT_FOOZLE_PAST.value),
-            )
+            ),
         )
     ),
     (ZorkGrandInquisitorRegions.PORT_FOOZLE_PAST_TAVERN, ZorkGrandInquisitorRegions.PORT_FOOZLE_PAST): None,
@@ -284,7 +309,7 @@ entrance_rule_data: EntranceRuleData = {
             Or(
                 Has(ZorkGrandInquisitorItems.HOTSPOT_SPELL_LAB_CHASM.value),
                 Has(ZorkGrandInquisitorItems.HOTSPOT_REGIONAL_SPELL_LAB.value),
-            )
+            ),
         )
     ),
     (ZorkGrandInquisitorRegions.SPELL_LAB_BRIDGE, ZorkGrandInquisitorRegions.TELEPORTER): None,
@@ -376,6 +401,7 @@ entrance_rule_data: EntranceRuleData = {
         )
     ),
     (ZorkGrandInquisitorRegions.WALKING_CASTLE, ZorkGrandInquisitorRegions.DM_LAIR_INTERIOR): None,
+    (ZorkGrandInquisitorRegions.WALKING_CASTLE, ZorkGrandInquisitorRegions.FLATHEAD_MESA): None,
     (ZorkGrandInquisitorRegions.WHITE_HOUSE, ZorkGrandInquisitorRegions.DM_LAIR_INTERIOR): None,
     (ZorkGrandInquisitorRegions.WHITE_HOUSE, ZorkGrandInquisitorRegions.WHITE_HOUSE_INTERIOR): (
         And(
@@ -385,4 +411,3 @@ entrance_rule_data: EntranceRuleData = {
     ),
     (ZorkGrandInquisitorRegions.WHITE_HOUSE_INTERIOR, ZorkGrandInquisitorRegions.WHITE_HOUSE): None,
 }
-

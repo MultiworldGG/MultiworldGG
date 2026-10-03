@@ -185,11 +185,17 @@ class TemporaryModifiers(DefaultOnToggle):
     Adds temporary modifier items based on the existing modifiers, some of which are traps and some are useful. These last until you complete a level.
     If you find these too difficult, you can always go back to 0-1 to cycle through them, as that level will always be available.
 
-    When enabled, these make up all of the filler in your pool, or about 30% of it with Coinsanity on (the rest is Uncanny Cat Spray).
-    When disabled, that filler is all Uncanny Cat Spray instead.
-    Either way you still get one of each of the costumes and other one-off filler items.
+    When enabled, these make up 50% of the filler in your world, or 30% of it with Coinsanity on (the rest is Uncanny Cat Spray, which prevents you from dying to the Uncanny Cat one time per item).
+    When disabled, that filler is all Uncanny Cat Spray instead (besides the costumes and other one off fillers)
     """
     display_name = "Temporary Modifiers"
+    
+class BuffCatSpray(DefaultOnToggle):
+    """
+    Buffs the Uncanny Cat Spray item from doing nothing to giving you a one time protection against the Uncanny Cat.
+    It is used up the moment you touch the Uncanny Cat, and doesn't come back upon restarting a level.
+    """
+    display_name = "Buff Uncanny Cat Spray"
 
 class ChillMode(Toggle):
     """
@@ -210,16 +216,6 @@ class PanicMode(Toggle):
     """
     display_name = "Panic Mode"
 
-class DeathLinkAmnesty(Range):
-    """
-    Amount of deaths before sending a Death Link.
-    This can be changed in the mod config.
-    """
-    display_name = "Death Link Amnesty"
-    range_start = 1
-    range_end = 10
-    default = 5
-
 @dataclass
 class UncannyCatOptions(PerGameCommonOptions):
     goal_level: GoalLevel
@@ -239,7 +235,7 @@ class UncannyCatOptions(PerGameCommonOptions):
     excluded_minigames: ExcludedMinigames
     rank_check_difficulty: RankCheckDifficulty
     temp_modifiers: TemporaryModifiers
+    buff_uncanny_cat_spray: BuffCatSpray
     chill_mode: ChillMode
     panic_mode: PanicMode
     death_link: DeathLink
-    death_link_amnesty: DeathLinkAmnesty

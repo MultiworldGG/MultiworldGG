@@ -14,7 +14,6 @@ class ISTicket(Choice):
     display_name = "Itchy and Scratchy Ticket Requirement"
     default = 0
     option_missions_complete = 0
-    option_story_missions_complete = 1
     option_final_mission_L7M7 = 2
     option_cars_collected = 3
 
@@ -33,13 +32,23 @@ class CardAmount(Range):
     default = 25
 
 class RequiredMissionLevels(OptionSetNoEmpty):
-    """If the ticket requires missions or story missions, choose which level's missions are required.
+    """If the ticket requires missions, choose which level's missions are required.
        Missions in other levels may still unlock required items.
        Has no effect if the ticket doesn't require missions.
        Valid options are 1, 2, 3, 4, 5, 6, 7, or All."""
     default = frozenset({"All"})
     valid_keys = ["1", "2", "3", "4", "5", "6", "7", "All"]
     display_name = "Required Mission Levels"
+
+class BonusMissionRequired(Toggle):
+    """Choose whether bonus missions from required levels are required to goal."""
+    default = False
+    display_name = "Bonus Mission Required"
+
+class RaceMissionRequired(Toggle):
+    """Choose whether race missions from required levels are required to goal."""
+    default = False
+    display_name = "Race Mission Required"
 
 class EarlyLevel(Toggle):
     """If enabled, attempt to place at least one of your required levels in an early location."""
@@ -301,6 +310,8 @@ class SimpsonsHitNRunOptions(PerGameCommonOptions):
     Wasp_Amount: WaspAmount
     Card_Amount: CardAmount
     Required_Mission_Levels: RequiredMissionLevels
+    Bonus_Mission_Required: BonusMissionRequired
+    Race_Mission_Required: RaceMissionRequired
     Car_Amount: CarAmount
     Lock_Levels: LockLevels
     Early_Level: EarlyLevel
@@ -344,7 +355,7 @@ option_groups = [
     ),
     OptionGroup(
         "Goals",
-        [ISTicket, WaspAmount, CardAmount, RequiredMissionLevels, CarAmount],
+        [ISTicket, WaspAmount, CardAmount, RequiredMissionLevels, CarAmount, RaceMissionRequired, BonusMissionRequired],
     ),
     OptionGroup(
         "Gameplay Changes",

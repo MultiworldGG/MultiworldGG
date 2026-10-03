@@ -714,7 +714,7 @@ class DKC3StrictRules(DKC3Rules):
             Locations.tracker_barrel_trek_bananas_1:
                 HasBarrelTracker,
             Locations.tracker_barrel_trek_balloon_1:
-                HasBarrelTracker & HasBarrelCannon,
+                HasBarrelTracker & HasBarrelCannon & HasDixie,
             Locations.tracker_barrel_trek_coin_3:
                 HasBarrelTracker & HasBarrelCannon,
             Locations.tracker_barrel_trek_coin_4:
@@ -836,7 +836,7 @@ class DKC3StrictRules(DKC3Rules):
                 True_(),
 
             Locations.blazing_bazukas_clear:
-                HasBarrelCannon & CanClimb & ( HasSquitter | HasBarrelSwitch ),
+                HasBarrelCannon & CanClimb & ( HasSquitter | ( HasBarrelSwitch & ( CanHover | CanSpin ) ) ),
             Locations.blazing_bazukas_bonus_1:
                 HasBarrelCannon & CanClimb & HasSquitter,
             Locations.blazing_bazukas_bonus_2:
@@ -844,7 +844,7 @@ class DKC3StrictRules(DKC3Rules):
             Locations.blazing_bazukas_dk_coin:
                 HasBarrelCannon & CanClimb & HasSquitter & HasBarrelSwitch,
             Locations.blazing_bazukas_kong:
-                HasBarrelCannon & CanClimb & ( HasSquitter | CanTeamAttack & HasBarrelSwitch ),
+                HasBarrelCannon & CanClimb & ( HasSquitter | ( CanTeamAttack & ( HasBarrelSwitch & ( CanHover | CanSpin ) ) ) ),
             Locations.blazing_bazukas_coin_1:
                 HasBarrelCannon & CanClimb,
             Locations.blazing_bazukas_coin_2:
@@ -854,13 +854,13 @@ class DKC3StrictRules(DKC3Rules):
             Locations.blazing_bazukas_coin_3:
                 HasBarrelCannon & CanClimb & HasSquitter,
             Locations.blazing_bazukas_bananas_2:
-                HasBarrelCannon & CanClimb & ( HasSquitter | HasBarrelSwitch ),
+                HasBarrelCannon & CanClimb & ( HasSquitter | ( HasBarrelSwitch & ( CanHover | CanSpin ) ) ),
             Locations.blazing_bazukas_bananas_3:
-                HasBarrelCannon & CanClimb & ( HasSquitter | HasBarrelSwitch ),
+                HasBarrelCannon & CanClimb & ( HasSquitter | ( HasBarrelSwitch & ( CanHover | CanSpin ) ) ),
             Locations.blazing_bazukas_coin_4:
-                HasBarrelCannon & CanClimb & ( HasSquitter | HasBarrelSwitch ),
+                HasBarrelCannon & CanClimb & ( HasSquitter | ( HasBarrelSwitch & ( CanHover | CanSpin ) ) ),
             Locations.blazing_bazukas_balloon_1:
-                HasBarrelCannon & CanClimb & ( HasSquitter | HasBarrelSwitch ),
+                HasBarrelCannon & CanClimb & ( HasSquitter | ( HasBarrelSwitch & ( CanHover | CanSpin ) ) ),
 
             Locations.low_g_labyrinth_clear:
                 HasSquawks,
@@ -1771,7 +1771,7 @@ class DKC3LooseRules(DKC3Rules):
             Locations.bobbing_barrel_brawl_dk_coin:
                 HasBarrelCannon & HasEllie,
             Locations.bobbing_barrel_brawl_kong:
-                HasBarrelCannon & HasEllie & CanTeamAttack,
+                HasBarrelCannon & HasEllie & ( CanTeamAttack | ( CanCarry | HasBothKongs ) ),
             Locations.bobbing_barrel_brawl_balloon_1:
                 HasBarrelCannon & HasEllie,
             Locations.bobbing_barrel_brawl_coin_1:
@@ -2014,7 +2014,7 @@ class DKC3LooseRules(DKC3Rules):
                 True_(),
 
             Locations.blazing_bazukas_clear:
-                HasBarrelCannon & CanClimb & ( HasSquitter | HasBarrelSwitch ),
+                HasBarrelCannon & CanClimb & ( HasSquitter | ( HasBarrelSwitch & ( CanHover | CanSpin ) ) ),
             Locations.blazing_bazukas_bonus_1:
                 HasBarrelCannon & CanClimb & HasSquitter,
             Locations.blazing_bazukas_bonus_2:
@@ -2022,7 +2022,7 @@ class DKC3LooseRules(DKC3Rules):
             Locations.blazing_bazukas_dk_coin:
                 HasBarrelCannon & CanClimb & HasSquitter & HasBarrelSwitch,
             Locations.blazing_bazukas_kong:
-                HasBarrelCannon & CanClimb & ( HasSquitter | CanTeamAttack & HasBarrelSwitch ),
+                HasBarrelCannon & CanClimb & ( HasSquitter | ( CanTeamAttack & ( HasBarrelSwitch & ( CanHover | CanSpin ) ) ) ),
             Locations.blazing_bazukas_coin_1:
                 HasBarrelCannon & CanClimb,
             Locations.blazing_bazukas_coin_2:
@@ -2032,13 +2032,13 @@ class DKC3LooseRules(DKC3Rules):
             Locations.blazing_bazukas_coin_3:
                 HasBarrelCannon & CanClimb & HasSquitter,
             Locations.blazing_bazukas_bananas_2:
-                HasBarrelCannon & CanClimb & ( HasSquitter | HasBarrelSwitch ),
+                HasBarrelCannon & CanClimb & ( HasSquitter | ( HasBarrelSwitch & ( CanHover | CanSpin ) ) ),
             Locations.blazing_bazukas_bananas_3:
-                HasBarrelCannon & CanClimb & ( HasSquitter | HasBarrelSwitch ),
+                HasBarrelCannon & CanClimb & ( HasSquitter | ( HasBarrelSwitch & ( CanHover | CanSpin ) ) ),
             Locations.blazing_bazukas_coin_4:
-                HasBarrelCannon & CanClimb & ( HasSquitter | HasBarrelSwitch ),
+                HasBarrelCannon & CanClimb & ( HasSquitter | ( HasBarrelSwitch & ( CanHover | CanSpin ) ) ),
             Locations.blazing_bazukas_balloon_1:
-                HasBarrelCannon & CanClimb & ( HasSquitter | HasBarrelSwitch ),
+                HasBarrelCannon & CanClimb & ( HasSquitter | ( HasBarrelSwitch & ( CanHover | CanSpin ) ) ),
 
             Locations.low_g_labyrinth_clear:
                 HasSquawks,
@@ -2481,7 +2481,7 @@ class DKC3LooseRules(DKC3Rules):
             Locations.lightning_look_out_clear:
                 CanCarry & CanSwim,
             Locations.lightning_look_out_bonus_1:
-                CanCarry & CanSwim,
+                CanCarry & ( CanSwim | CanHover ),
             Locations.lightning_look_out_bonus_2:
                 CanCarry & CanSwim & CanTeamAttack,
             Locations.lightning_look_out_dk_coin:
@@ -3666,7 +3666,7 @@ class DKC3ExpertRules(DKC3Rules):
             Locations.lightning_look_out_clear:
                 CanSwim | (HasBothKongs & CanCarry),
             Locations.lightning_look_out_bonus_1:
-                CanSwim,
+                CanSwim | CanHover,
             Locations.lightning_look_out_bonus_2:
                 CanCarry & (CanSpin | CanTeamAttack) & (CanSwim | HasBothKongs),
             Locations.lightning_look_out_dk_coin:
@@ -3684,7 +3684,7 @@ class DKC3ExpertRules(DKC3Rules):
             Locations.lightning_look_out_coin_3:
                 CanTeamAttack & (CanSwim | CanHover | CanWaterBounce),
             Locations.lightning_look_out_balloon_2:
-                CanSwim | (HasBothKongs & CanCarry) & CanTeamAttack,
+                CanTeamAttack & (CanSwim | CanCarry | CanHover),
 
             Locations.koindozer_klamber_clear:
                 CanClimb | CanHover | CanSpin,

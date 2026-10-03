@@ -24,6 +24,7 @@ from .Doors import create_doors
 from .DoorShuffle import link_doors, connect_portal, link_doors_prep
 from .RoomData import create_rooms
 from .Rules import set_rules
+from .source.logic.AccessRule import set_rule, TRUE
 from .Dungeons import create_dungeons
 from .Fill import distribute_items_restrictive, promote_dungeon_items, fill_dungeons_restrictive, ensure_good_items
 from .Fill import dungeon_tracking
@@ -34,7 +35,7 @@ from .Utils import output_path, parse_player_names
 
 from .source.item.District import init_districts
 from .source.item.FillUtil import create_item_pool_config, massage_item_pool, district_item_pool_config, verify_item_pool_config
-from .source.overworld.EntranceShuffle2 import link_entrances_new
+from .source.overworld.EntranceShuffle2 import link_entrances_new, relocate_pyramid_entrances
 from .source.tools.BPS import create_bps_from_data
 from .source.classes.CustomSettings import CustomSettings
 from .source.enemizer.DamageTables import DamageTable
@@ -43,7 +44,7 @@ from .source.rom.DataTables import init_data_tables
 from .source.limited.LimitedRunCoordinator import adjust_world_for_limited_runs
 from .source.rom.DataTables import init_data_tables, init_custom_rooms, init_custom_sprites
 
-version_number = '1.5.6'
+version_number = '1.5.7'
 version_branch = '-u'
 __version__ = f'{version_number}{version_branch}'
 
@@ -828,6 +829,7 @@ def copy_world(world):
     for player in range(1, world.players + 1):
         create_regions(ret, player)
         update_world_regions(ret, player)
+        relocate_pyramid_entrances(ret, player)
         if world.logic[player] in ('owglitches', 'hybridglitches', 'nologic'):
             create_owg_connections(ret, player)
         create_dungeon_regions(ret, player)
@@ -902,7 +904,7 @@ def copy_world(world):
         new_location.locked = location.locked
         new_location.skip = location.skip
         # these need to be modified properly by set_rules
-        new_location.access_rule = lambda state: True
+        set_rule(new_location, TRUE)
         new_location.item_rule = lambda state: True
         new_location.forced_item = location.forced_item
         new_location.pot = location.pot
@@ -1054,6 +1056,7 @@ def copy_world_premature(world, player, create_flute_exits=True):
 
     create_regions(ret, player)
     update_world_regions(ret, player)
+    relocate_pyramid_entrances(ret, player)
     if world.logic[player] in ('owglitches', 'hybridglitches', 'nologic'):
         create_owg_connections(ret, player)
     create_dungeon_regions(ret, player)

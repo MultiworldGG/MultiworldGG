@@ -162,6 +162,26 @@ def data_to_script(data: PhoneScriptData):
     return PhoneScript(caller, script_lines)
 
 
+POKEMON_REGIONS = {
+    "POKEMON RED AND BLUE": "KANTO",
+    "POKEMON RED": "KANTO",
+    "POKEMON BLUE": "KANTO",
+    "POKEMON YELLOW": "KANTO",
+    "POKEMON CRYSTAL": "JOHTO",
+    "POKEMON EMERALD": "HOENN",
+    "POKEMON FIRERED AND LEAFGREEN": "KANTO",
+    "POKEMON PLATINUM": "SINNOH",
+    "POKEMON HEARTGOLD AND SOULSILVER": "JOHTO",
+    "POKEMON HGSS": "JOHTO",
+    "POKEMON BLACK AND WHITE": "UNOVA",
+    "VOLTORB FLIP": "the GAME CORNER",
+    "POKEMON PINBALL": "KANTO GAME CORNER",
+    "POKEMON MYSTERY DUNGEON EXPLORERS OF SKY": "GRASS CONTINENT",
+    "POKEMON RANGER (QUEST)": "FIORE",
+    "POKEPARK": "the <POKE>PARK",
+}
+
+
 def split_location(location_name):
     if len(location_name) < 17:
         return [line_cmd, location_name]
@@ -175,22 +195,12 @@ def template_call_remote(location: Location, world):
     # split into lines with cont
     location_cmd = split_location(location.name.upper())
 
-    POKEMON_REGIONS = {
-        "POKEMON RED AND BLUE": "KANTO",
-        "POKEMON CRYSTAL": "JOHTO",
-        "POKEMON EMERALD": "HOENN",
-        "POKEMON FIRERED AND LEAFGREEN": "KANTO",
-        "POKEMON PLATINUM": "SINNOH",
-        "POKEMON BLACK AND WHITE": "UNOVA",
-        "VOLTORB FLIP": "the GAME CORNER",
-        "POKEMON PINBALL": "KANTO GAME CORNER",
-        "POKEMON MYSTERY DUNGEON EXPLORERS OF SKY": "GRASS CONTINENT",
-        "POKEMON RANGER (QUEST)": "FIORE"
-    }
-
     raw_game_name = location.item.game.upper()
-    game_name = POKEMON_REGIONS.get(raw_game_name, raw_game_name)
-    game_name = (game_name[:15] + "…") if len(game_name) > 16 else game_name
+    if raw_game_name in POKEMON_REGIONS:
+        game_cmd = script_line_to_blocks(line_cmd, POKEMON_REGIONS[raw_game_name])
+    else:
+        game_name = (raw_game_name[:15] + "…") if len(raw_game_name) > 16 else raw_game_name
+        game_cmd = [line_cmd, game_name]
 
     player_name = world.multiworld.player_name[player].upper()
 
@@ -201,7 +211,7 @@ def template_call_remote(location: Location, world):
         ScriptLine([text_cmd, "Hi, ", play_g_cmd, "! It's"]),
         ScriptLine([line_cmd, player_name]),
         ScriptLine([para_cmd, "I'm calling from"]),
-        ScriptLine([line_cmd, game_name]),
+        ScriptLine(game_cmd),
         ScriptLine([para_cmd, "I'm looking for my"]),
         ScriptLine([line_cmd, item_name]),
         ScriptLine([para_cmd, "that's at your"]),

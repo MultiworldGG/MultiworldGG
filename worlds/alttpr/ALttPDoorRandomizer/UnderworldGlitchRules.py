@@ -1,7 +1,7 @@
-import functools
 from .BaseClasses import Entrance, DoorType, Door
 from .DoorShuffle import connect_simple_door
 from . import Rules
+from .source.logic.AccessRule import Has, Primitive, Reach, and_rule, or_rule, TRUE, FALSE
 
 kikiskip_spots = [
     ("Kiki Skip", "Spectacle Rock Cave (Bottom)", "Palace of Darkness Portal")
@@ -125,32 +125,27 @@ def dungeon_reentry_rules(
 
         # entrance doesn't exist until you fire rod it from the other side
         if dungeon_entrance.name == "Skull Woods Final Section":
-            Rules.set_rule(clip, lambda state: False)
+            Rules.set_rule(clip, FALSE)
 
         elif dungeon_entrance.name == "Misery Mire":
             if world.swords[player] == "swordless":
-                Rules.add_rule(
-                    clip, lambda state: state.has_misery_mire_medallion(player)
-                )
+                Rules.add_rule(clip, Primitive('has_misery_mire_medallion', player))
             else:
                 Rules.add_rule(
                     clip,
-                    lambda state: state.has_sword(player)
-                    and state.has_misery_mire_medallion(player),
+                    and_rule(Primitive('has_sword', player), Primitive('has_misery_mire_medallion', player)),
                 )
 
         elif dungeon_entrance.name == "Agahnims Tower":
             Rules.add_rule(
                 clip,
-                lambda state: state.has("Cape", player)
-                or state.has_beam_sword(player)
-                or state.has("Beat Agahnim 1", player),
+                or_rule(Has('Cape', player), Primitive('has_beam_sword', player), Has('Beat Agahnim 1', player)),
             )
 
         # Then we set a restriction on exiting the dungeon, so you can't leave unless you got in normally.
         Rules.add_rule(
             world.get_entrance(dungeon_exit, player),
-            lambda state: dungeon_entrance.can_reach(state),
+            Reach(dungeon_entrance),
         )
     elif (
         not fix_fake_worlds
@@ -163,7 +158,7 @@ def dungeon_reentry_rules(
         # exiting restriction
         Rules.add_rule(
             world.get_entrance(dungeon_exit, player),
-            lambda state: dungeon_entrance.can_reach(state),
+            Reach(dungeon_entrance),
         )
 
     # Otherwise, the shuffle type is lean, lite, crossed, or insanity; all of these do not need additional rules on where we can go,
@@ -171,23 +166,22 @@ def dungeon_reentry_rules(
 
 
 def underworld_glitches_rules(world, player):
-    def mire_clip(state):
-        torches = world.get_region("Mire Torches Top", player)
-        return (state.can_dash_clip(torches, player)
-            or (state.can_bomb_clip(torches, player) and state.has_fire_source(player))
-        ) and state.can_reach(torches, player)
+    torches = world.get_region("Mire Torches Top", player)
+    mire_clip = and_rule(
+        or_rule(
+            Primitive('can_dash_clip', torches, player),
+            and_rule(Primitive('can_bomb_clip', torches, player), Primitive('has_fire_source', player)),
+        ),
+        Reach(torches),
+    )
+    hera = world.get_region("Hera 4F", player)
+    hera_clip = and_rule(
+        or_rule(Primitive('can_bomb_clip', hera, player), Primitive('can_dash_clip', hera, player)),
+        Has('Flippers', player),
+        Reach(hera),
+        mire_clip,
+    )
 
-    def hera_clip(state):
-        hera = world.get_region("Hera 4F", player)
-        return (state.can_bomb_clip(hera, player) or state.can_dash_clip(hera, player)) \
-                and state.has("Flippers", player) and state.can_reach(hera) and mire_clip(state)
-
-    # We use these plus functool.partial because lambdas don't work in loops properly.
-    def bomb_clip(state, region, player):
-        return state.can_bomb_clip(region, player) and state.can_reach(region, player)
-
-    def dash_clip(state, region, player):
-        return state.can_dash_clip(region, player) and state.can_reach(region, player)
     # Bomb clips
     for clip in (
         kikiskip_spots
@@ -198,14 +192,14 @@ def underworld_glitches_rules(world, player):
         region = world.get_region(clip[1], player)
         Rules.set_rule(
             world.get_entrance(clip[0], player),
-            functools.partial(bomb_clip, region=region, player=player),
+            and_rule(Primitive('can_bomb_clip', region, player), Reach(region)),
         )
     # Dash clips
     for clip in icepalace_spots:
         region = world.get_region(clip[1], player)
         Rules.add_rule(
             world.get_entrance(clip[0], player),
-            functools.partial(dash_clip, region=region, player=player),
+            and_rule(Primitive('can_dash_clip', region, player), Reach(region)),
             combine="or",
         )
 
@@ -220,37 +214,38 @@ def underworld_glitches_rules(world, player):
     for clip in mirehera_spots:
         Rules.set_rule(
             world.get_entrance(clip[0], player),
-            lambda state: mire_clip(state),
+            mire_clip,
         )
 
     # Need to be able to escape by hitting the switch from the back
     Rules.set_rule(
         world.get_entrance("Ice Bomb Drop Clip", player),
-        lambda state: (
-            state.can_use_bombs(player) or state.has("Cane of Somaria", player)
-        ),
+        or_rule(Primitive('can_use_bombs', player), Has('Cane of Somaria', player)),
     )
 
     # Allow mire big key to be used in Hera
     Rules.add_rule(
         world.get_entrance("Hera Startile Corner NW", player),
-        lambda state: state.has("Big Key (Misery Mire)", player) and mire_clip(state),
+        and_rule(Has('Big Key (Misery Mire)', player), mire_clip),
         combine="or",
     )
     Rules.add_rule(
         world.get_location("Tower of Hera - Big Chest", player),
-        lambda state: state.has("Big Key (Misery Mire)", player) and mire_clip(state),
+        and_rule(Has('Big Key (Misery Mire)', player), mire_clip),
         combine="or",
     )
     # This uses the mire clip because it's always expected to come from mire
     Rules.set_rule(
         world.get_entrance("Hera to Swamp Clip", player),
-        lambda state: state.has("Flippers", player) and mire_clip(state),
+        and_rule(Has('Flippers', player), mire_clip),
     )
     Rules.add_rule(
         world.get_location("Swamp Palace - Big Chest", player),
-        lambda state: (state.has("Big Key (Misery Mire)", player) or state.has("Big Key (Tower of Hera)", player)) \
-                and state.has("Flippers", player) and mire_clip(state),
+        and_rule(
+            or_rule(Has('Big Key (Misery Mire)', player), Has('Big Key (Tower of Hera)', player)),
+            Has('Flippers', player),
+            mire_clip,
+        ),
         combine="or",
     )
     # We need to set _all_ swamp doors to be openable with mire keys, otherwise the small key can't be behind them - 6 keys because of Pots
@@ -270,15 +265,13 @@ def underworld_glitches_rules(world, player):
     ]:
         Rules.add_rule(
             world.get_entrance(door, player),
-            lambda state: state.has("Flippers", player)
-            and state.has("Small Key (Misery Mire)", player, count=6)
-            and mire_clip(state),
+            and_rule(Has('Flippers', player), Has('Small Key (Misery Mire)', player, 6), mire_clip),
             combine="or",
         )
 
     Rules.add_rule(
         world.get_location("Trench 1 Switch", player),
-        lambda state: mire_clip(state) or hera_clip(state),
+        or_rule(mire_clip, hera_clip),
         combine="or",
     )
 
@@ -291,52 +284,43 @@ def underworld_glitches_rules(world, player):
         "dungeonsfull",
     ]:
         rule_map = {
-            "Mire Portal": (
-                lambda state: state.can_reach("Mire Torches Top", "Entrance", player)
-            ),
-            "Hera Portal": (
-                lambda state: state.can_reach(
-                    "Hera Startile Corner NW", "Entrance", player
-                )
-            ),
+            "Mire Portal": Reach("Mire Torches Top", "Entrance", player),
+            "Hera Portal": Reach("Hera Startile Corner NW", "Entrance", player),
         }
         inverted_dm = (world.mode[player] == "inverted") != world.is_tile_swapped(0x03, player)
+        hera_pearl = TRUE if not inverted_dm else Has('Moon Pearl', player)
+        gt_pearl = TRUE if inverted_dm else Has('Moon Pearl', player)
 
         def hera_rule(state):
-            return (state.has("Moon Pearl", player) or not inverted_dm) and rule_map.get(
+            return hera_pearl(state) and rule_map.get(
                 world.get_entrance("Tower of Hera", player).connected_region.name,
-                lambda state: False,
+                FALSE,
             )(state)
 
         def gt_rule(state):
-            return (state.has("Moon Pearl", player) or inverted_dm) and rule_map.get(
-                world.get_entrance(("Ganons Tower"), player).connected_region.name,
-                lambda state: False,
+            return gt_pearl(state) and rule_map.get(
+                world.get_entrance("Ganons Tower", player).connected_region.name,
+                FALSE,
             )(state)
-
-        def mirrorless_moat_rule(state):
-            return (
-                state.can_reach("Old Man S&Q", "Entrance", player)
-                and state.has("Flippers", player)
-                and (hera_rule(state) or gt_rule(state))
-                and mire_clip(state)
-            )
 
         Rules.add_rule(
             world.get_entrance("Swamp Lobby Moat", player),
-            lambda state: mirrorless_moat_rule(state),
+            and_rule(
+                Reach("Old Man S&Q", "Entrance", player),
+                Has("Flippers", player),
+                or_rule(hera_rule, gt_rule),
+                mire_clip,
+            ),
             combine="or",
         )
     desert_exits = ["West", "South", "East"]
+    thieves_attic = world.get_region("Thieves Attic", player)
 
     for desert_exit in desert_exits:
         Rules.add_rule(
             world.get_entrance(f"Thieves to Desert {desert_exit} Clip", player),
-            lambda state: state.can_dash_clip(
-                world.get_region("Thieves Attic", player), player
-            ),
+            Primitive('can_dash_clip', thieves_attic, player),
         )
-
 
     # Collecting left chests in Paradox Cave using a dash clip -> dash citrus, 1f right, teleport up
     paradox_left_chests = [
@@ -345,11 +329,10 @@ def underworld_glitches_rules(world, player):
         "Paradox Cave Lower - Middle",
     ]
     for location in paradox_left_chests:
+        loc = world.get_location(location, player)
         Rules.add_rule(
-            world.get_location(location, player),
-            lambda state: state.can_dash_clip(
-                world.get_location(location, player).parent_region, player
-            ),
+            loc,
+            Primitive('can_dash_clip', loc.parent_region, player),
             "or",
         )
 
@@ -359,13 +342,9 @@ def underworld_glitches_rules(world, player):
         "Paradox Cave Lower - Far Right",
     ]
     for location in paradox_right_chests:
+        loc = world.get_location(location, player)
         Rules.add_rule(
-            world.get_location(location, player),
-            lambda state: (
-                state.can_dash_clip(
-                    world.get_location(location, player).parent_region, player
-                )
-                and state.can_hit_crystal(player)
-            ),
+            loc,
+            and_rule(Primitive('can_dash_clip', loc.parent_region, player), Primitive('can_hit_crystal', player)),
             "or",
         )

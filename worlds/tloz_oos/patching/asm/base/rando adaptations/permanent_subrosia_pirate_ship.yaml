@@ -1,0 +1,42 @@
+09/723c/: | # never delete the prow in the desert
+  db $00,$00,$00
+  
+09/6581/: | # Always delete the interaction that places a quicksand where the ship is
+  db $C3
+
+04/65aa/: | # Never replace top of sub ship
+  db $C9
+
+04/65b8/: | # Never replace bottom of sub ship
+  db $C9
+
+04/65c6/: | # Never replace ship in desert
+  db $C9
+
+# Make ambi a "pirate captain" once the bell is returned
+0a/73ae/: |
+  ld e,$42 ; interaction.subid
+  ld a,(de)
+  cp $04
+  jp nz,interactionDelete
+  ld a,$13 ; GLOBALFLAG_PIRATES_LEFT_FOR_SHIP
+  call checkGlobalFlag
+  jp z,interactionDelete
+
+  call interactionIncState
+  call $15e9 ; interactionInitGraphics
+  call $1e15 ; objectSetVisible80
+
+  ld a,$3a
+  call $24f5 ; interactionSetHighTextIndex
+
+  ; set the script to be ready to warp to ship
+  ld e,$7a
+  ld a,$01
+  ld (de),a
+  inc a
+  inc e
+  ld (de),a
+
+  ld hl,$5cec ; piratianCaptainScript_inHouse
+  jp interactionSetScript

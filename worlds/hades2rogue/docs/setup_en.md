@@ -11,7 +11,9 @@
 - The Hades2Rogue [mod](https://thunderstore.io/c/hades-ii/p/BrittisH39/Hades2RogueArchipelago/) (installed via r2modman)
 
 ## Optional
-- An installation of Hades 1 will allow you to utilize the Zagreus' Journey mod made by NikkelM to include some original Hades 1 content in your Hades 2 game. This includes the original route, some NPCs, and some keepsakes. Zagreus' Journey is a dependency of the AP mod, and will give you an "Installation Failed" message if you do not have Hades 1 installed in the same location as Hades 2. This can be ignored if you didn't include the Zagreus' Journey content.
+- An installation of Hades 1 will allow you to utilize the Zagreus' Journey mod made by NikkelM to include some original Hades 1 content in your Hades 2 game. This includes the original route, some NPCs, and some keepsakes. Zagreus' Journey is no longer a dependency of the AP mod, so it won't be downloaded automatically. If you want that content, search for and download "Zagreus Journey" in r2modman, on the same profile as the AP mod.
+
+
 
 ## Installation
 
@@ -22,7 +24,9 @@
 - Select or create a profile (name doesn't matter).
 - Select Online on the left side, then search for and find "Hades2RogueArchipelago".
 
-- Select download, then download with dependencies.
+- Select download, then download with dependencies. This also downloads the other mods it needs (Hell2Modding, and zerp's NPCRoomRandomizer, Extended NPC Encounters, and DreamDiveTweaks).
+
+
 
 ### APWorld (only with AP)
 
@@ -34,7 +38,7 @@
 ## Configuring Your YAML
 
 - Runs are designed to be possible regardless of your YAML settings, but it's recommended not to set maximum vows unless you are very confident in your Hades 2 skills. You will start the game with nothing, and the logic is set to believe you can at least make it to the boss of each region you have access to.
-- DO NOT enable Zagreus' Journey unless you have Hades 1 installed in the same location you have Hades 2 installed in; alternatively you can use the Zagreus' Journey config in r2modman to point to your Hades 1 installation.
+- DO NOT enable Zagreus' Journey unless you have downloaded the Zagreus' Journey mod, and have Hades 1 installed in the same location you have Hades 2 installed in; alternatively you can use the Zagreus' Journey config in r2modman to point to your Hades 1 installation.
 
 
 ## Connecting to a Game

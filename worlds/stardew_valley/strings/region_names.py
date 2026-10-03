@@ -3,7 +3,6 @@ class Region:
     farm_house = "Farmhouse"
     farm_house_kitchen = "Farmhouse Kitchen"
     farm_house_crib = "Farmhouse Crib"
-    farm_house_cellar = "Farmhouse Cellar Entrance"
     cellar = "Cellar"
     farm = "Farm"
     coop = "Coop"
@@ -301,6 +300,7 @@ class JasperRegion:
 
 class AlecRegion:
     pet_store = "Alec's Pet Shop"
+    pet_store_back = "Alec's Pet Shop Back"
     alec_bedroom = "Alec's Bedroom"
 
 

@@ -2,7 +2,7 @@ from typing import Dict, List, NamedTuple, Optional
 
 from BaseClasses import Item, ItemClassification
 
-from .Routes import ROUTES, ROUTE_NAMES, boss_event, boss_victory, COMBAT_HELPER_NPCS_ALL
+from .Routes import ROUTES, ROUTE_NAMES, DREAM, boss_event, boss_victory, COMBAT_HELPER_NPCS_ALL
 
 
 class ItemData(NamedTuple):
@@ -38,8 +38,8 @@ item_table_filler: Dict[str, ItemData] = {
     # blocked entirely). Item id offset 8 retired; do not reuse.
     # "Bones": ItemData(hades2_base_item_id + 8, False),
     "Nectar": ItemData(hades2_base_item_id + 9, False),
-    # Moon Dust (CardUpgradePoints) = the Arcana upgrade currency. Only joins the filler
-    # rotation when ArcanaSanity is not Progressive (so manual upgrades are allowed).
+    # Ashes and Moon Dust are no longer generated (build_filler_pool doesn't use them); they stay
+    # here so their ids remain in the datapackage for seeds generated before they were dropped.
     "Moon Dust": ItemData(hades2_base_item_id + 153, False),
 }
 
@@ -97,6 +97,12 @@ item_table_routes: Dict[str, ItemData] = {
     # plus the usual lock_routes progressive for zones 2-4.
     "Progressive Nightmare": ItemData(hades2_base_item_id + 244, True),
     "Nightmare Access": ItemData(hades2_base_item_id + 243, True),
+    # Dream (variable region count, no fixed zone shape -- see Routes.DREAM's definition
+    # comment). "Progressive Dream" is the region-depth gate (n-1 + offset copies, generalized
+    # from the other routes' hardcoded 3 = len(zones)-1 -- see __init__.py's pool construction);
+    # "Dream Access" mirrors Surface/Nightmare's own Access item shape.
+    "Progressive Dream": ItemData(hades2_base_item_id + 400, True),
+    "Dream Access": ItemData(hades2_base_item_id + 401, True),
 }
 
 # --- Weapon Aspects (aspectsanity) --------------------------------------------
@@ -311,9 +317,9 @@ KEEPSAKE_NO_LOCATION = {"Time Piece", "Calling Card", "Jeweled Pom", "Skull Earr
 # receives item *names*, not ids) is unaffected by the relocation.
 _KEEPSAKE_NIGHTMARE_COUNT = 7
 # The 7 Nightmare keepsakes by title (the appended block of keepsake_titles). Their items
-# only join the pool when the Nightmare route is active this seed (__init__.py) -- without
-# Zagreus' Journey / SharedKeepsakePort in play the keepsake they unlock doesn't exist, so
-# on other seeds they'd be dead items that still inflate the keepsake-count logic gates.
+# only join the pool when include_zagreus_journey is on (__init__.py) -- without Zagreus'
+# Journey / SharedKeepsakePort the keepsake they unlock doesn't exist, so they'd be dead items
+# that still inflate the keepsake-count logic gates.
 KEEPSAKE_NIGHTMARE_TITLES = set(keepsake_titles[-_KEEPSAKE_NIGHTMARE_COUNT:])
 keepsake_item_base = hades2_base_item_id + 90              # original 33: +90..+122
 keepsake_nightmare_item_base = hades2_base_item_id + 267     # Nightmare's 7: +267..+273
@@ -332,7 +338,16 @@ item_table_keepsakes_randomized: Dict[str, ItemData] = {
 item_table_keepsakes_progressive: Dict[str, ItemData] = {
     "Progressive Keepsake": ItemData(hades2_base_item_id + 245, False, useful=True),
 }
-item_table_keepsakes = {**item_table_keepsakes_randomized, **item_table_keepsakes_progressive}
+# progressive_per mode (keepsakesanity=3): each keepsake gets its own "Progressive <Title>"
+# items (KEEPSAKE_PROGRESSIVE_COUNT copies each -- see __init__.create_items) instead of
+# sharing the single "Progressive Keepsake" pool above. One id per title, same 40-title order.
+keepsake_per_item_base = hades2_base_item_id + 402          # +402..+441 (40)
+item_table_keepsakes_progressive_per: Dict[str, ItemData] = {
+    f"Progressive {title}": ItemData(keepsake_per_item_base + i, False, useful=True)
+    for i, title in enumerate(keepsake_titles)
+}
+item_table_keepsakes = {**item_table_keepsakes_randomized, **item_table_keepsakes_progressive,
+                        **item_table_keepsakes_progressive_per}
 
 # --- Familiars / pets (petsanity) ---------------------------------------------
 # Items only (no check locations). "randomized" mode = one item per familiar.
@@ -346,7 +361,16 @@ item_table_familiars_randomized: Dict[str, ItemData] = {
 item_table_familiars_progressive: Dict[str, ItemData] = {
     "Progressive Familiar": ItemData(hades2_base_item_id + 86, False, useful=True),
 }
-item_table_familiars = {**item_table_familiars_randomized, **item_table_familiars_progressive}
+# progressive_per mode (petsanity=3): each familiar gets its own "Progressive <Name>" items
+# (FAMILIAR_PROGRESSIVE_COUNT copies each) instead of sharing the single "Progressive
+# Familiar" pool above.
+familiar_per_item_base = hades2_base_item_id + 442          # +442..+446 (5)
+item_table_familiars_progressive_per: Dict[str, ItemData] = {
+    f"Progressive {name}": ItemData(familiar_per_item_base + i, False, useful=True)
+    for i, name in enumerate(familiar_names)
+}
+item_table_familiars = {**item_table_familiars_randomized, **item_table_familiars_progressive,
+                        **item_table_familiars_progressive_per}
 
 # --- Boon gods (godsanity) -----------------------------------------------------
 # Items only (no check locations of their own). The 9 gods who hand out boons through the
@@ -384,10 +408,29 @@ item_table_shop_gods: Dict[str, ItemData] = {
     for i, god in enumerate(godsanity_shop_gods)
 }
 
+# Chaos (added 9/30) hands out boons through neither of the above: only inside a Chaos Gate's
+# secret room. So the Lua mod gates the gates themselves -- NamedRequirementsData.ChaosUnlocked,
+# which every route's SecretSpawnRequirements names -- and no gate spawns until the item
+# arrives. Same item shape and Met/Keepsake gating as the other 11. Its own id rather than the
+# next shop-god one: +316 already belongs to the combat helpers.
+GODSANITY_CHAOS = "Chaos"
+godsanity_chaos_item_base = hades2_base_item_id + 334    # +334 (1)
+item_table_chaos_god: Dict[str, ItemData] = {
+    f"{GODSANITY_CHAOS} Unlock": ItemData(godsanity_chaos_item_base, True),
+}
+
+
+def godsanity_gods_for(include_chaos: bool = True) -> list:
+    """Every god GodSanity gates, in pool order. include_chaos=False is the roster of a seed
+    generated before Chaos joined (it has no "Chaos Unlock" item) -- see
+    Hades2World._resolve_godsanity_gated_gods."""
+    return godsanity_gods + godsanity_shop_gods + ([GODSANITY_CHAOS] if include_chaos else [])
+
+
 # --- Combined God Unlock + Keepsake (keepsakesanity=randomized AND godsanity active) -------
 # When KeepsakeSanity is "randomized" (one item per keepsake) and GodSanity isn't "unlocked",
-# the 11 GodSanity gods (the 9 boon-reward gods above plus Hermes/Selene) have their own
-# "<God> Unlock" item and their keepsake item (e.g. Ares's Sword Hilt) fused into a single
+# the 12 GodSanity gods (the 9 boon-reward gods above plus Hermes/Selene and Chaos) have their
+# own "<God> Unlock" item and their keepsake item (e.g. Ares's Sword Hilt) fused into a single
 # "<God> Unlock + Keepsake" item -- receiving it unlocks that god's boons AND makes their
 # keepsake giftable at once, instead of needing both items separately. __init__.create_items
 # swaps these in for both halves when the seed has both modes active (combine_god_keepsake);
@@ -396,11 +439,11 @@ item_table_shop_gods: Dict[str, ItemData] = {
 # unlock_god/unlock_shop_god/unlock_keepsake handlers. Progressive keepsakes (mode 2) have no
 # per-NPC item to fuse, so this never applies then. Always progression, like the plain god
 # items it replaces (both halves already were).
-GOD_KEEPSAKE_COMBINED_GODS = godsanity_gods + godsanity_shop_gods
+GOD_KEEPSAKE_COMBINED_GODS = godsanity_gods_for()
 GOD_KEEPSAKE_TITLE: Dict[str, str] = {
     npc: title for title, npc in KEEPSAKE_NPC.items() if npc in GOD_KEEPSAKE_COMBINED_GODS
 }
-god_keepsake_combined_item_base = hades2_base_item_id + 322       # +322..+332 (11)
+god_keepsake_combined_item_base = hades2_base_item_id + 322       # +322..+333 (12)
 item_table_god_keepsake_combined: Dict[str, ItemData] = {
     f"{god} Unlock + Keepsake": ItemData(god_keepsake_combined_item_base + i, True)
     for i, god in enumerate(GOD_KEEPSAKE_COMBINED_GODS)
@@ -702,6 +745,11 @@ items_table_event: Dict[str, ItemData] = {
     for route in ROUTE_NAMES for boss in ROUTES[route]["bosses"]
 }
 items_table_event[boss_victory("Zagreus")] = ItemData(None, True, True)
+# Dream: a single "Dream Victory" event item, mirroring every other route (Rules.py's
+# world.completion_condition only ever needs one-time ownership -- see Routes.DREAM's
+# definition comment for why Dream can't join the ROUTE_NAMES loop above, which assumes one
+# Victory item per named boss in a fixed 4-boss list).
+items_table_event[boss_victory("Dream")] = ItemData(None, True, True)
 
 
 item_table = {
@@ -717,6 +765,7 @@ item_table = {
     **item_table_familiars,
     **item_table_gods,
     **item_table_shop_gods,
+    **item_table_chaos_god,
     **item_table_god_keepsake_combined,
     **item_table_helper_npcs,
     **item_table_combat_helpers,
@@ -738,7 +787,7 @@ group_keepsakes = {"keepsakes": item_table_keepsakes.keys()}
 group_familiars = {"familiars": item_table_familiars.keys()}
 group_incantations = {"incantations": item_table_incantations.keys()}
 group_gods = {"gods": list(item_table_gods) + list(item_table_shop_gods)
-                       + list(item_table_god_keepsake_combined)}
+                       + list(item_table_chaos_god) + list(item_table_god_keepsake_combined)}
 group_helper_npcs = {"helper_npcs": item_table_helper_npcs.keys()}
 group_combat_helpers = {"combat_helpers": item_table_combat_helpers.keys()}
 
@@ -763,6 +812,7 @@ event_item_pairs: Dict[str, str] = {
     boss_event(boss): boss_victory(boss)
     for route in ROUTE_NAMES for boss in ROUTES[route]["bosses"]
 }
+event_item_pairs[boss_event("Dream")] = boss_victory("Dream")
 event_item_pairs[boss_event("Zagreus")] = boss_victory("Zagreus")
 
 

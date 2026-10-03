@@ -375,7 +375,7 @@ def make_overworld_logic(player: int, origin_name: str, options: SpiritTracksOpt
 
         # =========== Snow Sanctuary ==========
 
-        ["snow realm", "snow sanc", False, lambda state: st_has_temple_tracks(state, player, "Blizzard") or (state.has("Snowfall Sanctuary Cave Key", player) and st_has_cannon(state, player))],
+        ["snow realm", "snow sanc", False, lambda state: st_has_temple_tracks(state, player, "Blizzard") or (state.has("Snow Realm Rocktite Cave Key", player) and st_has_cannon(state, player))],
         ["snow sanc", "snow sanc stamp station", False, lambda state: st_has_stamp_book(state, player)],
         ["snow sanc", "snow sanc song", False, lambda state: st_has_spirit_flute(state, player)],
         ["snow sanc song", "steem gift", False, lambda state: st_has_source(state, player, "Snow")],

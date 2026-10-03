@@ -2,13 +2,20 @@ from collections.abc import Sequence
 from typing import TYPE_CHECKING
 
 from BaseClasses import Location, Region, LocationProgressType
+from .battle_tower_data import BATTLE_TOWER_TRAINERS, BATTLE_TOWER_TIER_OFFSET, BATTLE_TOWER_NUM_TIERS, \
+    BATTLE_TOWER_TRAINER_OFFSET, BATTLE_TOWER_TRAINERS_PER_TIER
 from .data import data, LogicalAccess, GrassTile
 from .evolution import evolution_location_name
-from .item_data import POKEDEX_OFFSET, POKEDEX_COUNT_OFFSET, GRASS_OFFSET, FLAG_ITEM_OFFSET
+from .fly import get_fly_regions, SILVER_CAVE_FLY_INDEX
+from .item_data import POKEDEX_OFFSET, POKEDEX_COUNT_OFFSET, GRASS_OFFSET, FLAG_ITEM_OFFSET, CANONICAL_ITEM_ID_MASK
 from .items import item_const_name_to_id
-from .options import Goal, DexsanityStarters, Grasssanity, RandomizeBugCatchingContest
+from .options import Goal, DexsanityStarters, Grasssanity, RandomizeBugCatchingContest, WildEncounterMethodsRequired, \
+    PokemonSourceLogic, BattleTowerSanity, VanillaEventChains, RandomizeFlyUnlocks, JohtoOnly, Shopsanity
 from .pokemon import get_priority_dexsanity, get_excluded_dexsanity
-from .utils import get_fly_regions, get_mart_slot_location_name
+from .rematch_trainer_data import (
+    all_rematch_locations
+)
+from .utils import get_mart_slot_location_name
 
 if TYPE_CHECKING:
     from . import PokemonCrystalWorld
@@ -47,11 +54,13 @@ def create_locations(world: "PokemonCrystalWorld", regions: dict[str, Region]) -
         exclude.add("Pokegear")
     if not world.options.randomize_badges:
         exclude.add("Badge")
-    if not world.options.randomize_berry_trees and not world.options.remote_items:
+    remote_apricorn_trees_only = (world.options.remote_items and not world.options.randomize_berry_trees
+                                  and Shopsanity.APRICORNS in world.options.shopsanity.value)
+    if not world.options.randomize_berry_trees and not remote_apricorn_trees_only:
         exclude.add("BerryTree")
     if not world.options.saffron_gatehouse_tea:
         exclude.add("RequiresSaffronGatehouses")
-    if world.options.vanilla_clair:
+    if VanillaEventChains.CLAIR in world.options.vanilla_event_chains.value:
         exclude.add("VanillaClairOff")
     else:
         exclude.add("VanillaClairOn")
@@ -62,8 +71,12 @@ def create_locations(world: "PokemonCrystalWorld", regions: dict[str, Region]) -
         exclude.add("Trainersanity")
     if not world.options.randomize_phone_call_items:
         exclude.add("Phone Calls")
+    if not world.options.momsanity:
+        exclude.add("Momsanity")
     if not world.options.randomize_pokedex:
         exclude.add("Pokedex")
+    if not world.options.randomize_lucky_number_show:
+        exclude.add("Lucky Number Show")
 
     exclude.add("Contest")
 
@@ -76,16 +89,21 @@ def create_locations(world: "PokemonCrystalWorld", regions: dict[str, Region]) -
     elif world.options.randomize_bug_catching_contest == RandomizeBugCatchingContest.option_participate:
         always_include.add("ContestParticipate")
 
+    def is_vanilla_berry_tree(loc: str) -> bool:
+        return (remote_apricorn_trees_only and "BerryTree" in data.locations[loc].tags
+                and "Apricorn" not in data.items[data.locations[loc].default_item].tags)
+
     for region_name, region_data in data.regions.items():
         if region_name in regions:
             region = regions[region_name]
             filtered_locations = [loc for loc in region_data.locations if
-                                  always_include.intersection(set(data.locations[loc].tags)) or
-                                  not exclude.intersection(set(data.locations[loc].tags))]
+                                  (always_include.intersection(set(data.locations[loc].tags)) or
+                                   not exclude.intersection(set(data.locations[loc].tags)))
+                                  and not is_vanilla_berry_tree(loc)]
             for location_name in filtered_locations:
                 location_data = data.locations[location_name]
                 progress_type = LocationProgressType.EXCLUDED \
-                    if (world.options.goal == Goal.option_elite_four
+                    if (world.options.goal.value == {Goal.ELITE_FOUR}
                         and "PostE4" in location_data.tags
                         and world.options.exclude_post_goal_locations) else LocationProgressType.DEFAULT
                 location = PokemonCrystalLocation(
@@ -110,7 +128,7 @@ def create_locations(world: "PokemonCrystalWorld", regions: dict[str, Region]) -
                     location.show_in_spoiler = False
                     region.locations.append(location)
 
-            if world.options.goal == Goal.option_unown_hunt:
+            if Goal.UNOWN_HUNT in world.options.goal:
                 for sign in region_data.signs:
                     if sign not in world.generated_unown_signs: continue
                     location = PokemonCrystalLocation(
@@ -119,7 +137,7 @@ def create_locations(world: "PokemonCrystalWorld", regions: dict[str, Region]) -
                         region
                     )
                     location.show_in_spoiler = False
-                    location.place_locked_item(world.create_event("UNOWN"))
+                    location.place_locked_item(world.create_event("UNOWN", source=PokemonSourceLogic.STATICS))
                     region.locations.append(location)
 
                     location = PokemonCrystalLocation(
@@ -131,9 +149,18 @@ def create_locations(world: "PokemonCrystalWorld", regions: dict[str, Region]) -
                     location.place_locked_item(world.create_event(world.generated_unown_signs[sign]))
                     region.locations.append(location)
 
+    if world.options.randomize_lucky_number_show:
+        trade_region = {t: rn for rn, rd in data.regions.items() for t in rd.trades}
+        for i, trade_id in enumerate(world.generated_lucky_number_trades):
+            region = regions[trade_region[trade_id]]
+            location = PokemonCrystalLocation(world.player, f"Lucky Number Trade {i + 1}", region)
+            location.show_in_spoiler = False
+            location.place_locked_item(world.create_event(f"Lucky Number Trade {i + 1}"))
+            region.locations.append(location)
+
     if world.options.dexsanity:
         if not world.is_universal_tracker:
-            pokemon_items = sorted(world.logic.available_pokemon)
+            pokemon_items = sorted(world.pokemon_pool.get_filtered(world.options.dexsanity_logic))
             priority_pokemon = sorted(get_priority_dexsanity(world))
             excluded_pokemon = get_excluded_dexsanity(world)
 
@@ -165,9 +192,69 @@ def create_locations(world: "PokemonCrystalWorld", regions: dict[str, Region]) -
             )
             pokedex_region.locations.append(new_location)
 
+    if world.options.battle_tower_sanity:
+        vitamins = ["HP_UP", "PROTEIN", "IRON", "CARBOS", "CALCIUM"]
+        for tier_idx in range(BATTLE_TOWER_NUM_TIERS):
+            tier_region = regions[f"Battle Tower Tier {tier_idx + 1}"]
+            new_location = PokemonCrystalLocation(
+                world.player,
+                f"Battle Tower - Tier {tier_idx + 1} Complete",
+                tier_region,
+                rom_addresses=[data.rom_addresses[f"AP_BattleTowerTierReward_{tier_idx + 1}"]],
+                flag=BATTLE_TOWER_TIER_OFFSET + tier_idx,
+                default_item_value=item_const_name_to_id(world.random.choice(vitamins)),
+                tags=frozenset({"Battle Tower Tier"})
+            )
+            tier_region.locations.append(new_location)
+
+        if world.options.battle_tower_sanity == BattleTowerSanity.option_tiers_and_trainers:
+            trainer_rewards_base = data.rom_addresses["AP_BattleTowerTrainerRewards"]
+            for canonical_idx, (cls, name) in enumerate(BATTLE_TOWER_TRAINERS):
+                shuffled_pos = world.battle_tower_trainer_permutation.index(canonical_idx)
+                tier_idx = shuffled_pos // BATTLE_TOWER_TRAINERS_PER_TIER
+                tier_region = regions[f"Battle Tower Tier {tier_idx + 1}"]
+                new_location = PokemonCrystalLocation(
+                    world.player,
+                    f"Battle Tower - {cls} {name}",
+                    tier_region,
+                    rom_addresses=[trainer_rewards_base + canonical_idx],
+                    flag=BATTLE_TOWER_TRAINER_OFFSET + canonical_idx,
+                    default_item_value=item_const_name_to_id("NO_ITEM"),
+                    tags=frozenset({"Battle Tower Trainer"})
+                )
+                tier_region.locations.append(new_location)
+
+    if world.options.rematchsanity:
+        rewards_base = data.rom_addresses["AP_RematchTrainerRewards"]
+        johto_only = bool(world.options.johto_only)
+        pokemon_requests = bool(world.options.randomize_pokemon_requests)
+        for label, ap_id, trainer, idx in all_rematch_locations():
+            gate = trainer.tier_gates[idx]
+            # KANTO-tier rematches are unreachable in a johto-only seed
+            # (EVENT_RESTORED_POWER_TO_KANTO never fires); skip them so fill
+            # can't place items behind permanently unreachable locations.
+            if johto_only and gate == "EVENT_RESTORED_POWER_TO_KANTO":
+                continue
+            if trainer.pokemon_request_slot is not None and not pokemon_requests:
+                continue
+            parent_region = regions.get(trainer.region)
+            if parent_region is None:
+                continue
+            canonical_idx = trainer.base_index + idx
+            new_location = PokemonCrystalLocation(
+                world.player,
+                label,
+                parent_region,
+                rom_addresses=[rewards_base + canonical_idx],
+                flag=ap_id,
+                default_item_value=item_const_name_to_id("NO_ITEM"),
+                tags=frozenset({"Rematchsanity"})
+            )
+            parent_region.locations.append(new_location)
+
     if world.options.dexcountsanity:
         if not world.is_universal_tracker:
-            total_pokemon = len(world.logic.available_pokemon)
+            total_pokemon = len(world.pokemon_pool.get_filtered(world.options.dexsanity_logic))
             dexcountsanity_total = min(world.options.dexcountsanity.value, total_pokemon)
             dexcountsanity_step = world.options.dexcountsanity_step.value
 
@@ -218,7 +305,7 @@ def create_locations(world: "PokemonCrystalWorld", regions: dict[str, Region]) -
                 )
                 new_location.show_in_spoiler = False
                 new_location.place_locked_item(
-                    world.create_event(evolution.pokemon)
+                    world.create_event(evolution.pokemon, source=PokemonSourceLogic.EVOLUTION)
                 )
                 evolution_region.locations.append(new_location)
                 created_locations.add(location_name)
@@ -236,7 +323,7 @@ def create_locations(world: "PokemonCrystalWorld", regions: dict[str, Region]) -
             )
             new_location.show_in_spoiler = False
             new_location.place_locked_item(
-                world.create_event(pokemon_id)
+                world.create_event(pokemon_id, source=PokemonSourceLogic.BREEDING)
             )
             breeding_region.locations.append(new_location)
 
@@ -248,7 +335,7 @@ def create_locations(world: "PokemonCrystalWorld", regions: dict[str, Region]) -
 
                 for i, item in enumerate(mart_data.items):
                     progress_type = LocationProgressType.EXCLUDED \
-                        if (world.options.goal == Goal.option_elite_four
+                        if (world.options.goal.value == {Goal.ELITE_FOUR}
                             and mart == "MART_ROOFTOP_SALE"
                             and world.options.exclude_post_goal_locations) else LocationProgressType.DEFAULT
                     new_location = PokemonCrystalLocation(
@@ -264,10 +351,19 @@ def create_locations(world: "PokemonCrystalWorld", regions: dict[str, Region]) -
                     new_location.price = item.price
                     region.locations.append(new_location)
 
-    if world.options.randomize_fly_unlocks or world.options.remote_items:
+    if world.options.randomize_fly_unlocks:
 
-        for fly_region in get_fly_regions(world):
-            parent_region = regions[data.regions[fly_region.unlock_region].name]
+        if world.options.randomize_fly_destinations:
+            default_fly_item = lambda idx, fr: ((CANONICAL_ITEM_ID_MASK + 1) | (FLAG_ITEM_OFFSET + idx)
+                    if fr.id != SILVER_CAVE_FLY_INDEX or
+                        (world.options.randomize_fly_unlocks.value != RandomizeFlyUnlocks.option_exclude_silver_cave
+                         and world.options.johto_only.value != JohtoOnly.option_on)
+                    else FLAG_ITEM_OFFSET + fr.id)
+        else:
+            default_fly_item = lambda _, fr: FLAG_ITEM_OFFSET + fr.id
+
+        for i, fly_region in enumerate(get_fly_regions(world)):
+            parent_region = regions[fly_region.unlock_region]
 
             location = PokemonCrystalLocation(
                 world.player,
@@ -276,10 +372,14 @@ def create_locations(world: "PokemonCrystalWorld", regions: dict[str, Region]) -
                 tags=frozenset({"fly"}),
                 flag=data.event_flags[f"EVENT_VISITED_{fly_region.base_identifier}"],
                 rom_addresses=[data.rom_addresses[f"AP_FlyUnlock_{fly_region.base_identifier}"]],
-                default_item_value=FLAG_ITEM_OFFSET + fly_region.id
+                default_item_value=default_fly_item(i+1, fly_region)
             )
 
             parent_region.locations.append(location)
+
+    # NB: the EVENT_VISITED_X events are placed in regions.json on the
+    # appropriate city region (or :FLY sub-region), so randomize_fly_destinations
+    # no longer needs to inject them separately.
 
     if world.options.grasssanity == Grasssanity.option_full:
         for region_id, grass in sorted(data.grass_tiles.items(), key=lambda x: x[0]):
@@ -356,7 +456,7 @@ def create_locations(world: "PokemonCrystalWorld", regions: dict[str, Region]) -
         locs_to_remove = len(trainer_locations) - world.options.kanto_trainersanity.value
         remove_excess_trainersanity(trainer_locations, locs_to_remove)
 
-    if "Bug Catching Contest" in world.options.wild_encounter_methods_required or world.is_universal_tracker:
+    if WildEncounterMethodsRequired.BUG_CATCHING_CONTEST in world.options.wild_encounter_methods_required or world.is_universal_tracker:
         region = regions["REGION_NATIONAL_PARK:CONTEST"]
 
         for i in range(len(world.generated_contest)):
@@ -406,17 +506,33 @@ def create_location_label_to_id_map() -> dict[str, int]:
     for index, region in enumerate(data.grass_regions.keys()):
         label_to_id_map[region] = index + GRASS_OFFSET + next_grass_index
 
+    for tier_idx in range(BATTLE_TOWER_NUM_TIERS):
+        label_to_id_map[f"Battle Tower - Tier {tier_idx + 1} Complete"] = BATTLE_TOWER_TIER_OFFSET + tier_idx
+
+    for canonical_idx, (cls, name) in enumerate(BATTLE_TOWER_TRAINERS):
+        label_to_id_map[f"Battle Tower - {cls} {name}"] = BATTLE_TOWER_TRAINER_OFFSET + canonical_idx
+
+    for label, ap_id, _trainer, _idx in all_rematch_locations():
+        label_to_id_map[label] = ap_id
+
     return label_to_id_map
 
 
 DEXSANITY_LOCATIONS = {f"Pokedex - {pokemon.friendly_name}" for pokemon in data.pokemon.values()}
 DEXCOUNTSANITY_LOCATIONS = {f"Pokedex - Catch {i + 1} Pokemon" for i in range(len(data.pokemon) - 1)} | {
     "Pokedex - Final Catch"}
+BATTLE_TOWER_SANITY_LOCATIONS = {f"Battle Tower - Tier {n} Complete" for n in range(1, BATTLE_TOWER_NUM_TIERS + 1)}
+BATTLE_TOWER_TRAINER_LOCATIONS = {f"Battle Tower - {cls} {name}" for cls, name in BATTLE_TOWER_TRAINERS}
+REMATCH_LOCATIONS = {label for label, _id, _t, _i in all_rematch_locations()}
 
 LOCATION_GROUPS: dict[str, set[str]] = {
     "Dexsanity": DEXSANITY_LOCATIONS,
     "Dexcountsanity": DEXCOUNTSANITY_LOCATIONS,
     "Dex": DEXSANITY_LOCATIONS | DEXCOUNTSANITY_LOCATIONS,
+    "Battle Tower Tier": BATTLE_TOWER_SANITY_LOCATIONS,
+    "Battle Tower Trainer": BATTLE_TOWER_TRAINER_LOCATIONS,
+    "Battle Tower": BATTLE_TOWER_SANITY_LOCATIONS | BATTLE_TOWER_TRAINER_LOCATIONS,
+    "Rematchsanity": REMATCH_LOCATIONS,
     "Shopsanity": {f"{mart_data.friendly_name} - {get_mart_slot_location_name(mart, i)}" for mart, mart_data in
                    data.marts.items() for i, item in
                    enumerate(mart_data.items) if item.flag},
@@ -436,6 +552,33 @@ for location in data.locations.values():
         if tag not in LOCATION_GROUPS:
             LOCATION_GROUPS[tag] = set()
         LOCATION_GROUPS[tag].add(location.label)
+
+
+def _area_group(region_name: str) -> str:
+    region = data.regions[region_name]
+    return "Johto" if region.johto or region.silver_cave else "Kanto"
+
+
+_mart_regions = {mart: region_name for region_name, region in data.regions.items() for mart in region.marts}
+for mart, mart_data in data.marts.items():
+    LOCATION_GROUPS[_area_group(_mart_regions[mart])].update(
+        f"{mart_data.friendly_name} - {get_mart_slot_location_name(mart, i)}"
+        for i, item in enumerate(mart_data.items) if item.flag)
+
+for fly_region in data.fly_regions:
+    johto = fly_region.johto or fly_region.id == SILVER_CAVE_FLY_INDEX
+    LOCATION_GROUPS["Johto" if johto else "Kanto"].add(f"Visit {fly_region.name}")
+
+for region_name, grass in data.grass_tiles.items():
+    LOCATION_GROUPS[_area_group(region_name)].update(tile.name for tile in grass)
+
+for location_name, grass_regions in data.grass_regions.items():
+    LOCATION_GROUPS[_area_group(grass_regions[0])].add(location_name)
+
+for label, _id, trainer, _i in all_rematch_locations():
+    LOCATION_GROUPS[_area_group(trainer.region)].add(label)
+
+LOCATION_GROUPS["Johto"].update(BATTLE_TOWER_SANITY_LOCATIONS | BATTLE_TOWER_TRAINER_LOCATIONS)
 
 for pokemon in data.pokemon.values():
     location = f"Pokedex - {pokemon.friendly_name}"

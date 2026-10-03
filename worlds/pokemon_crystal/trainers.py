@@ -4,9 +4,9 @@ from typing import TYPE_CHECKING
 from .data import data as crystal_data, TrainerPokemon
 from .items import get_random_filler_item
 from .moves import get_random_move_from_learnset
-from .options import RandomizeTrainerParties, RandomizeLearnsets, BoostTrainerPokemonLevels, LevelCurve, LevelScaling
+from .options import RandomizeLearnsets, BoostTrainerPokemonLevels, LevelCurve, LevelScaling, ForceFullyEvolved
 from .utils import bound
-from .pokemon import get_random_pokemon, get_random_nezumi
+from .pokemon import get_random_pokemon, get_random_nezumi, get_evolution_at_level
 from .pokemon_data import VANILLA_STARTERS
 
 if TYPE_CHECKING:
@@ -66,6 +66,8 @@ def randomize_trainers(world: "PokemonCrystalWorld"):
         return
 
     trainer_party_blocklist = world.options.trainer_party_blocklist.get_ids(world)
+    force_fully_evolved = world.options.force_fully_evolved.value
+    evolve_to_level = force_fully_evolved == ForceFullyEvolved.special_evolution_level
 
     for trainer_name, trainer_data in world.generated_trainers.items():
         new_party = []
@@ -76,22 +78,32 @@ def randomize_trainers(world: "PokemonCrystalWorld"):
 
             # If the current pokemon is rival's starter, don't change its evolution line
             if is_rival_starter_pokemon(trainer_name, trainer_data, i):
-                if world.options.force_fully_evolved.value and pkmn_data.level >= world.options.force_fully_evolved:
+                if evolve_to_level:
+                    new_pokemon = get_evolution_at_level(world, new_pokemon, pkmn_data.level)
+                elif force_fully_evolved and pkmn_data.level >= force_fully_evolved:
                     new_pokemon = get_last_evolution(world, new_pokemon)
             else:
                 match_types = None
-                if world.options.randomize_trainer_parties == RandomizeTrainerParties.option_match_types:
+                if world.options.randomize_trainer_parties.matches_types:
                     match_types = crystal_data.pokemon[pkmn_data.pokemon].types
+
+                match_bst = None
+                if world.options.randomize_trainer_parties.matches_base_stats:
+                    match_bst = crystal_data.pokemon[pkmn_data.pokemon].bst
 
                 if "LASS_ALICE" in trainer_name:
                     new_pokemon = get_random_nezumi(world.random)
+                    if evolve_to_level:
+                        new_pokemon = get_evolution_at_level(world, new_pokemon, pkmn_data.level)
                 else:
                     new_pokemon = get_random_pokemon(
                         world,
                         types=match_types,
-                        force_fully_evolved_at=world.options.force_fully_evolved,
+                        force_fully_evolved_at=None if evolve_to_level else force_fully_evolved,
                         current_level=pkmn_data.level,
-                        blocklist=trainer_party_blocklist
+                        blocklist=trainer_party_blocklist,
+                        match_bst=match_bst,
+                        evolve_at_level=pkmn_data.level if evolve_to_level else None,
                     )
             if pkmn_data.item is not None:
                 # If this trainer has items, add an item
@@ -141,7 +153,7 @@ def boost_trainer_pokemon(world: "PokemonCrystalWorld"):
                 if new_level > 100: new_level = 100
             elif world.options.boost_trainers == BoostTrainerPokemonLevels.option_set_min_level:
                 if new_level < world.options.trainer_level_boost:
-                    new_level = world.options.trainer_level_boost
+                    new_level = world.options.trainer_level_boost.value
             new_party.append(replace(trainer_mon, level=new_level))
         world.generated_trainers[trainer_name] = replace(
             world.generated_trainers[trainer_name],

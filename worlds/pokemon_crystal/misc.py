@@ -3,10 +3,20 @@ from math import floor
 from typing import TYPE_CHECKING
 
 from .data import MiscOption
-from .options import JohtoOnly, RequireFlash, EnableMischief
+from .options import JohtoOnly, RequireFlash, EnableMischief, WildEncounterMethodsRequired
 
 if TYPE_CHECKING:
     from . import PokemonCrystalWorld
+
+
+AFRICAN_COUNTRIES = (
+    "Mali", "Chad", "Togo", "Egypt", "Congo", "Kenya", "Sudan", "Ghana", "Benin", "Libya", "Gabon", "Uganda",
+    "Angola", "Malawi", "Zambia", "Guinea", "Rwanda", "Gambia", "Nigeria", "Algeria", "Morocco", "Somalia", "Senegal",
+    "Burundi", "Tunisia", "Liberia", "Eritrea", "Namibia", "Lesotho", "Reunion", "Comoros", "Ethiopia", "Tanzania",
+    "DR Congo", "Cameroon", "Zimbabwe", "Botswana", "Eswatini", "Djibouti", "S. Africa", "Mauritius", "Mozambique",
+    "Madagascar", "Mauritania", "Cape Verde", "Seychelles", "IvoryCoast", "SouthSudan", "BurkinaFas", "SierraLeon",
+    "GuineaBiss", "Wes.Sahara", "Equ.Guinea",
+)
 
 
 def randomize_mischief(world: "PokemonCrystalWorld"):
@@ -16,7 +26,10 @@ def randomize_mischief(world: "PokemonCrystalWorld"):
     wild_mischief = list(world.generated_misc.wild)
 
     # Dynamic mischief assignments go here
-    # (Currently nothing)
+    if "Dungeon" in world.options.randomize_entrances:
+        wild_mischief.append(MiscOption.WhirlDexLocations)
+    else:
+        mild_mischief.append(MiscOption.WhirlDexLocations)
 
     # Decide which mischief is eligible
     all_mischief = list(mild_mischief)
@@ -39,6 +52,13 @@ def randomize_mischief(world: "PokemonCrystalWorld"):
         if misc_option.value in eligible_mischief:
             eligible_mischief.remove(misc_option)
 
+    if "Gym Interior" in world.options.randomize_entrances:
+        safe_remove_mischief(MiscOption.SaffronGym)
+        safe_remove_mischief(MiscOption.BlackthornGym)
+
+    if "One-Way" in world.options.randomize_entrances:
+        safe_remove_mischief(MiscOption.BlackthornGym)
+
     if world.options.johto_only != JohtoOnly.option_off:
         safe_remove_mischief(MiscOption.FuchsiaGym)
         safe_remove_mischief(MiscOption.SaffronGym)
@@ -47,8 +67,8 @@ def randomize_mischief(world: "PokemonCrystalWorld"):
         safe_remove_mischief(MiscOption.Fuschia)
         safe_remove_mischief(MiscOption.BlueBlue)
 
-    if not world.options.dexsanity or ("Land" not in world.options.wild_encounter_methods_required and
-                                       "Surfing" not in world.options.wild_encounter_methods_required):
+    if not world.options.dexsanity or (WildEncounterMethodsRequired.LAND not in world.options.wild_encounter_methods_required and
+                                       WildEncounterMethodsRequired.SURFING not in world.options.wild_encounter_methods_required):
         safe_remove_mischief(MiscOption.WhirlDexLocations)
 
     if world.options.require_flash != RequireFlash.option_hard_required:

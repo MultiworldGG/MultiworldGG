@@ -1,5 +1,6 @@
-import copy
-import logging 
+import heapq
+import logging
+import math
 
 from ... import RaceRandom as random
 from ...BaseClasses import Entrance, RegionType, Terrain
@@ -7,172 +8,652 @@ from .EntranceShuffle2 import connect_simple
 from ...OWEdges import OWTileRegions
 from ...DungeonGenerator import GenerationException
 
+LARGE_SCREENS = frozenset({0x00, 0x03, 0x05, 0x18, 0x1b, 0x1e, 0x35})
+PORTAL_OWIDS = frozenset({
+    0x03, 0x05, 0x07, 0x10, 0x1b, 0x2f, 0x33, 0x35,
+    0x43, 0x45, 0x47, 0x50, 0x6f, 0x73, 0x75,
+})
+
+# Graph distance costs
+DIST_REGION_STEP = 0.1
+DIST_OWID_HOP = 1.0
+DIST_LARGE_EXIT = 1.0
+
+# Coverage quality: typical walk, with a lighter worst-case term.
+COVERAGE_MAX_WEIGHT = 0.3
+
+# Heatmap: score every remaining candidate, then pick from the top pool.
+# Higher attractiveness is more likely.
+LAYER_WEIGHT_COVERAGE = 1.0
+LAYER_WEIGHT_PORTAL = 0.25
+LAYER_WEIGHT_NEIGHBOR = 0.5
+NEIGHBOR_PENALTY_1 = 3.0
+NEIGHBOR_PENALTY_2 = 1.0
+PORTAL_BONUS = 1.0
+PORTAL_NEIGHBOR_BONUS = 0.5
+HEATMAP_POOL_SIZE = 6
+HEATMAP_TEMPERATURE = 0.35
+EXCLUDE_HOP1_FROM_POOL = True
+
+
 def shuffle_flute_spots(world, player):
     def connect_flutes(flute_destinations):
-        for o in range(0, len(flute_destinations)):
-            owid = flute_destinations[o]
+        for o, owid in enumerate(flute_destinations):
             regions = flute_data[owid][0]
             if not world.is_tile_swapped(owid, player):
                 connect_simple(world, 'Flute Spot ' + str(o + 1), regions[0], player)
             else:
                 connect_simple(world, 'Flute Spot ' + str(o + 1), regions[1], player)
-    
+
     if world.owFluteShuffle[player] == 'vanilla':
         flute_spots = default_flute_connections.copy()
         sort_flute_spots(world, player, flute_spots)
         world.owflutespots[player] = flute_spots
         connect_flutes(flute_spots)
-    else:
-        from ...OverworldShuffle import one_way_ledges
+        create_dynamic_flute_exits(world, player)
+        return
 
-        flute_spots = 8
-        flute_pool = list(flute_data.keys())
-        new_spots = list()
-        ignored_regions = set()
-        used_flute_regions = []
-        forbidden_spots = []
-        forbidden_regions = []
+    logger = logging.getLogger('')
 
-        def addSpot(owid, ignore_proximity, forced):
-            if world.owFluteShuffle[player] == 'balanced':
-                def getIgnored(regionname, base_owid, owid):
-                    region = world.get_region(regionname, player)
-                    for exit in region.exits:
-                        if exit.connected_region is not None and exit.connected_region.type in [RegionType.LightWorld, RegionType.DarkWorld] and exit.connected_region.name not in new_ignored:
-                            if exit.connected_region.name in OWTileRegions and (OWTileRegions[exit.connected_region.name] in [base_owid, owid] or OWTileRegions[regionname] == base_owid):
-                                new_ignored.add(exit.connected_region.name)
-                                getIgnored(exit.connected_region.name, base_owid, OWTileRegions[exit.connected_region.name])
-                    if regionname in one_way_ledges:
-                        for ledge_region in one_way_ledges[regionname]:
-                            if ledge_region not in new_ignored:
-                                new_ignored.add(ledge_region)
-                                getIgnored(ledge_region, base_owid, OWTileRegions[ledge_region])
+    remaining_spots = 8
+    flute_pool = list(flute_data.keys())
+    new_spots = []
+    forbidden_spots = set()
+    forced_intents = []  # (owid, region_name)
 
-                if not world.is_tile_swapped(owid, player):
-                    new_region = flute_data[owid][0][0]
-                else:
-                    new_region = flute_data[owid][0][1]
+    def flute_region_name(owid):
+        return flute_data[owid][0][1 if world.is_tile_swapped(owid, player) else 0]
 
-                if new_region in ignored_regions and not forced:
-                    return False
-                
-                new_ignored = {new_region}
-                getIgnored(new_region, OWTileRegions[new_region], OWTileRegions[new_region])
-                if not ignore_proximity and not forced and random.randint(0, 31) != 0 and new_ignored.intersection(ignored_regions):
-                    return False
-                ignored_regions.update(new_ignored)
-            if owid in flute_pool:
-                flute_pool.remove(owid)
-                if ignore_proximity and not forced:
-                    logging.getLogger('').warning(f'Warning: Adding flute spot within proximity: {hex(owid)}')
-                logging.getLogger('').debug(f'Placing flute at: {hex(owid)}')
-                new_spots.append(owid)
-            else:
-                # TODO: Inspect later, seems to happen only with 'random' flute shuffle
-                logging.getLogger('').warning(f'Warning: Attempted to place flute spot not in pool: {hex(owid)}')
-            return True
-        
-        if world.customizer:
-            custom_spots = world.customizer.get_owflutespots()
-            if custom_spots and player in custom_spots:
-                if 'force' in custom_spots[player]:
-                    for id in custom_spots[player]['force']:
-                        owid = id & 0xBF
-                        addSpot(owid, True, True)
-                        flute_spots -= 1
-                        if not world.is_tile_swapped(owid, player):
-                            used_flute_regions.append(flute_data[owid][0][0])
-                        else:
-                            used_flute_regions.append(flute_data[owid][0][1])
-                if 'forbid' in custom_spots[player]:
-                    for id in custom_spots[player]['forbid']:
-                        owid = id & 0xBF
-                        if owid not in new_spots:
-                            forbidden_spots.append(owid)
-                            if not world.is_tile_swapped(owid, player):
-                                forbidden_regions.append(flute_data[owid][0][0])
-                            else:
-                                forbidden_regions.append(flute_data[owid][0][1])
+    def place(owid, candidates=None, forced=False):
+        if owid not in flute_pool:
+            logger.warning(f'Warning: Attempted to place flute spot not in pool: {hex(owid)}')
+            return False
+        flute_pool.remove(owid)
+        logger.debug(f'Placing flute at: {hex(owid)}')
+        new_spots.append(owid)
+        if candidates is not None and owid in candidates:
+            candidates.remove(owid)
+        return True
 
-        # determine sectors (isolated groups of regions) to place flute spots
-        flute_regions = {(f[0][0] if (o not in world.owswaps[player][0]) != (world.mode[player] == 'inverted') else f[0][1]) : o for o, f in flute_data.items() if o not in new_spots and o not in forbidden_spots}
-        flute_sectors = [(len([r for l in s for r in l]), [r for l in s for r in l if r in flute_regions]) for s in world.owsectors[player]]
-        flute_sectors = [s for s in flute_sectors if len(s[1]) > 0]
-        region_total = sum([c for c,_ in flute_sectors])
-        sector_total = len(flute_sectors)
-        empty_sector_total = 0
-        sector_has_spot = []
+    if world.customizer:
+        custom_spots = world.customizer.get_owflutespots()
+        if custom_spots and player in custom_spots:
+            if 'forbid' in custom_spots[player]:
+                for spot_id in custom_spots[player]['forbid']:
+                    owid = spot_id & 0xBF
+                    if owid in flute_data:
+                        forbidden_spots.add(owid)
+                        if owid in flute_pool:
+                            flute_pool.remove(owid)
+            if 'force' in custom_spots[player]:
+                for spot_id in custom_spots[player]['force']:
+                    owid = spot_id & 0xBF
+                    if owid not in flute_data:
+                        logger.warning(f'Invalid flute spot in customizer: {hex(owid)}')
+                        continue
+                    if owid in forbidden_spots:
+                        logger.warning(f'Forced flute spot is also forbidden: {hex(owid)}')
+                        continue
+                    forced_intents.append((owid, flute_region_name(owid)))
 
-        # determine which sectors still need a flute spot
-        for sector in flute_sectors:
-            already_has_spot = any(region in sector for region in used_flute_regions)
-            sector_has_spot.append(already_has_spot)
-            if not already_has_spot:
-                empty_sector_total += 1
-        if flute_spots < empty_sector_total:
-            #logging.getLogger('').warning(f'Warning: Not every sector can have a flute spot, generation might fail')
-            # pretend like some of the empty sectors already have a flute spot, don't know if they will be reachable
-            for i in range(len(flute_sectors)):
-                if not sector_has_spot[i]:
-                    sector_has_spot[i] = True
-                    empty_sector_total -= 1
-                    if flute_spots == empty_sector_total:
-                        break
+    portal_neighbors = _compute_portal_neighbors(world, player)
+    debug = FluteDebugLog(world, player, logger=logger)
 
-        # distribute flute spots for each sector
+    # Same sector partition and quota inputs as FluteShuffle: candidate regions only
+    # for allocation, with the full sector region list kept for coverage distances.
+    flute_regions = {
+        (f[0][0] if (o not in world.owswaps[player][0]) != (world.mode[player] == 'inverted') else f[0][1]): o
+        for o, f in flute_data.items()
+        if o not in forbidden_spots
+    }
+    flute_sectors = []
+    for sector_groups in world.owsectors[player]:
+        all_regions = [r for group in sector_groups for r in group]
+        candidate_regions = [r for r in all_regions if r in flute_regions]
+        if candidate_regions:
+            flute_sectors.append((len(all_regions), candidate_regions, all_regions))
+
+    region_total = sum(count for count, _, _ in flute_sectors)
+    sector_total = len(flute_sectors)
+    sector_has_spot = []
+    empty_sector_total = 0
+    forced_region_names = {region for _, region in forced_intents}
+
+    for _, candidate_regions, _ in flute_sectors:
+        already_has_spot = any(region in candidate_regions for region in forced_region_names)
+        sector_has_spot.append(already_has_spot)
+        if not already_has_spot:
+            empty_sector_total += 1
+
+    if remaining_spots < empty_sector_total:
+        logger.warning('Warning: Not every sector can have a flute spot, generation might fail')
         for i in range(len(flute_sectors)):
-            sector = flute_sectors[i]
-            sector_total -= 1
             if not sector_has_spot[i]:
+                sector_has_spot[i] = True
                 empty_sector_total -= 1
-            spots_to_place = min(flute_spots - empty_sector_total, max(0 if sector_has_spot[i] else 1, round((sector[0] * (flute_spots - sector_total) / region_total) + 0.5)))
-            target_spots = len(new_spots) + spots_to_place
-            logging.getLogger('').debug(f'Sector of {sector[0]} regions gets {spots_to_place} spot(s)')
-            
-            if 0x30 in flute_pool and 0x30 not in forbidden_spots and len(new_spots) < target_spots and ('Desert Teleporter Ledge' in sector[1] or 'Mire Teleporter Ledge' in sector[1]):
-                addSpot(0x30, True, True) # guarantee desert/mire access
+                if remaining_spots == empty_sector_total:
+                    break
 
-            random.shuffle(sector[1])
-            f = 0
-            t = 0
-            while len(new_spots) < target_spots:
-                if f >= len(sector[1]):
-                    f = 0
-                    t += 1
-                    if t > 5:
-                        raise GenerationException('Infinite loop detected in flute shuffle')
-                owid = flute_regions[sector[1][f]]
-                if owid not in new_spots and owid not in forbidden_spots:
-                    addSpot(owid, t > 0, False)
-                f += 1
+    for i, (sector_count, candidate_regions, all_regions) in enumerate(flute_sectors):
+        sector_total -= 1
+        if not sector_has_spot[i]:
+            empty_sector_total -= 1
+        spots_to_place = min(
+            remaining_spots - empty_sector_total,
+            max(0 if sector_has_spot[i] else 1, round((sector_count * (remaining_spots - sector_total) / region_total) + 0.5)),
+        )
+        spots_to_place = max(0, spots_to_place)
+        target_spots = len(new_spots) + spots_to_place
+        logger.debug(f'Sector of {sector_count} regions gets {spots_to_place} spot(s)')
+        debug.log(f'Sector regions={sector_count} candidates={len(candidate_regions)} allocated={spots_to_place}')
 
-            region_total -= sector[0]
-            flute_spots -= spots_to_place
+        placed_before = len(new_spots)
+        sector_candidate_set = set(candidate_regions)
 
-        # connect new flute spots
-        sort_flute_spots(world, player, new_spots)
-        world.owflutespots[player] = new_spots
-        connect_flutes(new_spots)
+        if (0x30 in flute_pool and 0x30 not in forbidden_spots and len(new_spots) < target_spots
+                and ('Desert Teleporter Ledge' in candidate_regions or 'Mire Teleporter Ledge' in candidate_regions)):
+            place(0x30, forced=True)
 
-        # update spoiler
-        #new_spots = list(map(lambda o: flute_data[o][1], new_spots))
-        s = list(map(lambda x: ' ' if x not in new_spots else 'F', [i for i in range(0x40)]))
-        text_output = flute_spoiler_table.replace('s', '%s') % (                             s[0x02],                                s[0x07],
-                                                                                 s[0x00],                s[0x03],        s[0x05],
-            s[0x00],        s[0x02],s[0x03],        s[0x05],        s[0x07],                 s[0x0a],                                s[0x0f],
-                            s[0x0a],                                s[0x0f],
-            s[0x10],s[0x11],s[0x12],s[0x13],s[0x14],s[0x15],s[0x16],s[0x17], s[0x10],s[0x11],s[0x12],s[0x13],s[0x14],s[0x15],s[0x16],s[0x17],
-            s[0x18],        s[0x1a],s[0x1b],        s[0x1d],s[0x1e],
-                            s[0x22],                s[0x25],                                 s[0x1a],                s[0x1d],
-            s[0x28],s[0x29],s[0x2a],s[0x2b],s[0x2c],s[0x2d],s[0x2e],s[0x2f],     s[0x18],                s[0x1b],                s[0x1e],
-            s[0x30],        s[0x32],s[0x33],s[0x34],s[0x35],        s[0x37],                 s[0x22],                s[0x25],
-                            s[0x3a],s[0x3b],s[0x3c],                s[0x3f],
-                                                                             s[0x28],s[0x29],s[0x2a],s[0x2b],s[0x2c],s[0x2d],s[0x2e],s[0x2f],
-                                                                                             s[0x32],s[0x33],s[0x34],                s[0x37],
-                                                                                 s[0x30],                                s[0x35],
-                                                                                             s[0x3a],s[0x3b],s[0x3c],                s[0x3f])
-        world.spoiler.set_map('flute', text_output, new_spots, player)
+        for owid, region in forced_intents:
+            if region in sector_candidate_set and owid in flute_pool:
+                place(owid, forced=True)
+
+        candidates = []
+        seen_owids = set()
+        for region in candidate_regions:
+            owid = flute_regions.get(region)
+            if owid is not None and owid in flute_pool and owid not in seen_owids:
+                seen_owids.add(owid)
+                candidates.append(owid)
+
+        if world.owFluteShuffle[player] == 'balanced':
+            _place_balanced_spots(
+                world, player, candidates, new_spots, target_spots, all_regions,
+                portal_neighbors, debug, place,
+            )
+        else:
+            _place_random_spots(candidate_regions, flute_regions, new_spots, forbidden_spots, target_spots, place)
+
+        remaining_spots -= (len(new_spots) - placed_before)
+        region_total -= sector_count
+
+    for owid, _region in forced_intents:
+        if owid in flute_pool:
+            place(owid, forced=True)
+
+    sort_flute_spots(world, player, new_spots)
+    world.owflutespots[player] = new_spots
+    connect_flutes(new_spots)
+    debug.write()
+    _write_spoiler_map(world, player, new_spots)
     create_dynamic_flute_exits(world, player)
+
+
+def _place_random_spots(candidate_regions, flute_regions, new_spots, forbidden_spots, target_spots, place):
+    order = list(candidate_regions)
+    random.shuffle(order)
+    f = 0
+    t = 0
+    while len(new_spots) < target_spots:
+        if f >= len(order):
+            f = 0
+            t += 1
+            if t > 5:
+                raise GenerationException('Infinite loop detected in flute shuffle')
+        owid = flute_regions[order[f]]
+        if owid not in new_spots and owid not in forbidden_spots:
+            place(owid)
+        f += 1
+
+
+def _place_balanced_spots(world, player, candidates, new_spots, target_spots, all_regions, portal_neighbors, debug, place):
+    if not candidates or len(new_spots) >= target_spots:
+        return
+
+    coverage = _CoverageIndex(world, player, all_regions)
+    owid_neighbors = {}
+
+    while len(new_spots) < target_spots and candidates:
+        placed_in_sector = [owid for owid in new_spots if coverage.has_start(owid)]
+        field = coverage.combined(placed_in_sector)
+        heat = _score_all_candidates(coverage, candidates, placed_in_sector, field, portal_neighbors, owid_neighbors, world, player)
+
+        debug.log(f"Placed={[hex(o) for o in new_spots]} remaining={target_spots - len(new_spots)}")
+        debug.print_map(coverage.region_owid_scores(field), set(new_spots), 'Coverage field (dist to nearest placed):')
+        debug.print_map({owid: heat.get(owid, 0.0) for owid in flute_data}, set(new_spots), 'Heatmap attractiveness:')
+
+        pool = _heatmap_pool(candidates, placed_in_sector, heat, owid_neighbors, world, player)
+        if not pool:
+            pick = random.choice(candidates)
+            debug.log(f'Empty heatmap pool, fallback pick: {hex(pick)}')
+            place(pick, candidates)
+            continue
+
+        pick, pool_weights = _weighted_heatmap_pick(pool, heat)
+        debug.log(f"Heatmap pool: {', '.join(f'{hex(o)}={w:.3f}' for o, w in pool_weights)}")
+        debug.log(f'Picked: {hex(pick)}')
+        place(pick, candidates)
+
+
+def _coverage_improvement(coverage, field, owid):
+    current = coverage.score(field)
+    added = coverage.score(coverage.merge_onto(field, (owid,)))
+    current_metric = current[1]
+    added_metric = added[1]
+    if current_metric == math.inf and added_metric == math.inf:
+        return 0.0
+    if current_metric == math.inf:
+        return 1.0 / (1.0 + added_metric)
+    return current_metric - added_metric
+
+
+def _portal_bonus(owid, portal_neighbors):
+    if owid in PORTAL_OWIDS:
+        return PORTAL_BONUS
+    if owid in portal_neighbors:
+        return PORTAL_NEIGHBOR_BONUS
+    return 0.0
+
+
+def _neighbor_penalty(owid, placed_spots, owid_neighbors, world, player):
+    penalty = 0.0
+    closest = None
+    for placed in placed_spots:
+        hop = _owid_hop_distance(owid, placed, owid_neighbors, world, player)
+        if hop is None:
+            continue
+        if closest is None or hop < closest:
+            closest = hop
+        if hop == 1:
+            penalty += NEIGHBOR_PENALTY_1
+        elif hop == 2:
+            penalty += NEIGHBOR_PENALTY_2
+    return penalty, closest
+
+
+def _score_all_candidates(coverage, candidates, placed_spots, field, portal_neighbors, owid_neighbors, world, player):
+    raw_improve = {}
+    raw_portal = {}
+    raw_neighbor = {}
+    for owid in candidates:
+        raw_improve[owid] = _coverage_improvement(coverage, field, owid)
+        raw_portal[owid] = _portal_bonus(owid, portal_neighbors)
+        penalty, _closest = _neighbor_penalty(owid, placed_spots, owid_neighbors, world, player)
+        raw_neighbor[owid] = penalty
+
+    improve_vals = list(raw_improve.values())
+    min_imp = min(improve_vals)
+    max_imp = max(improve_vals)
+    spread = max_imp - min_imp
+
+    heat = {}
+    for owid in candidates:
+        if spread > 1e-9:
+            coverage_layer = (raw_improve[owid] - min_imp) / spread
+        else:
+            coverage_layer = 0.5
+        heat[owid] = (
+            LAYER_WEIGHT_COVERAGE * coverage_layer
+            + LAYER_WEIGHT_PORTAL * raw_portal[owid]
+            - LAYER_WEIGHT_NEIGHBOR * raw_neighbor[owid]
+        )
+    return heat
+
+
+def _heatmap_pool(candidates, placed_spots, heat, owid_neighbors, world, player):
+    ranked = sorted(candidates, key=lambda owid: heat.get(owid, float('-inf')), reverse=True)
+    if EXCLUDE_HOP1_FROM_POOL and placed_spots:
+        filtered = []
+        for owid in ranked:
+            _penalty, closest = _neighbor_penalty(owid, placed_spots, owid_neighbors, world, player)
+            if closest == 1:
+                continue
+            filtered.append(owid)
+        if filtered:
+            ranked = filtered
+    return ranked[:max(1, min(HEATMAP_POOL_SIZE, len(ranked)))]
+
+
+def _weighted_heatmap_pick(pool, heat):
+    scores = [heat.get(owid, 0.0) for owid in pool]
+    max_score = max(scores)
+    weights = [math.exp((score - max_score) / HEATMAP_TEMPERATURE) for score in scores]
+    total = sum(weights)
+    if total <= 0:
+        pick = random.choice(list(pool))
+        return pick, [(owid, 0.0) for owid in pool]
+    pick = random.choices(list(pool), weights=weights, k=1)[0]
+    return pick, [(owid, weight / total) for owid, weight in zip(pool, weights)]
+
+
+class _CoverageIndex:
+    def __init__(self, world, player, sector_regions):
+        self.world = world
+        self.player = player
+        self.region_names = list(sector_regions)
+        self.region_index = {name: i for i, name in enumerate(self.region_names)}
+        self.graph = _build_sector_graph(world, player, self.region_names)
+        self._profiles = {}
+        self._inf = [math.inf] * len(self.region_names)
+        # Score barren *screens*, not raw region count. Kak/Castle/Lake have many
+        # subregions and were pulling spots into already-dense areas.
+        self.owid_groups = {}
+        for i, name in enumerate(self.region_names):
+            owid = OWTileRegions.get(name)
+            key = owid if owid is not None else ('region', name)
+            self.owid_groups.setdefault(key, []).append(i)
+
+    def flute_start(self, owid):
+        return flute_data[owid][0][1 if self.world.is_tile_swapped(owid, self.player) else 0]
+
+    def has_start(self, owid):
+        return self.flute_start(owid) in self.region_index
+
+    def profile(self, owid):
+        cached = self._profiles.get(owid)
+        if cached is not None:
+            return cached
+        start = self.flute_start(owid)
+        start_i = self.region_index.get(start)
+        if start_i is None:
+            self._profiles[owid] = list(self._inf)
+            return self._profiles[owid]
+        self._profiles[owid] = _dijkstra(self.graph, start_i, len(self.region_names))
+        return self._profiles[owid]
+
+    def combined(self, owids):
+        merged = list(self._inf)
+        return self.merge_onto(merged, owids)
+
+    def merge_onto(self, base, owids):
+        merged = list(base)
+        for owid in owids:
+            prof = self.profile(owid)
+            for i, dist in enumerate(prof):
+                if dist < merged[i]:
+                    merged[i] = dist
+        return merged
+
+    def score(self, combined):
+        uncovered = 0
+        total = 0.0
+        max_d = 0.0
+        covered = 0
+        for indexes in self.owid_groups.values():
+            best = math.inf
+            for i in indexes:
+                if combined[i] < best:
+                    best = combined[i]
+            if best == math.inf:
+                uncovered += 1
+            else:
+                covered += 1
+                total += best
+                if best > max_d:
+                    max_d = best
+        if not covered:
+            return (uncovered, math.inf, math.inf, math.inf)
+        avg = total / covered
+        metric = avg + COVERAGE_MAX_WEIGHT * max_d
+        return (uncovered, metric, avg, max_d)
+
+    def worst_area_index(self, combined):
+        worst_key = None
+        worst_i = 0
+        for indexes in self.owid_groups.values():
+            best_i = indexes[0]
+            best = combined[best_i]
+            for i in indexes[1:]:
+                if combined[i] < best:
+                    best = combined[i]
+                    best_i = i
+            key = math.inf if best == math.inf else best
+            if worst_key is None or key > worst_key:
+                worst_key = key
+                worst_i = best_i
+        return worst_i
+
+    def owid_distance(self, owid, combined):
+        start = self.flute_start(owid)
+        idx = self.region_index.get(start)
+        if idx is not None:
+            return combined[idx]
+        for name in flute_data[owid][0]:
+            idx = self.region_index.get(name)
+            if idx is not None:
+                return combined[idx]
+        return math.inf
+
+    def region_owid_scores(self, combined):
+        scores = {}
+        for owid in flute_data:
+            scores[owid] = self.owid_distance(owid, combined)
+        return scores
+
+
+def _build_sector_graph(world, player, region_names):
+    sector_set = set(region_names)
+    index = {name: i for i, name in enumerate(region_names)}
+    graph = [[] for _ in region_names]
+    for name in region_names:
+        src_i = index[name]
+        src_owid = OWTileRegions.get(name)
+        region = world.get_region(name, player)
+        if region is None or src_owid is None:
+            continue
+        for exit in region.exits:
+            dest = exit.connected_region
+            if dest is None or dest.name not in sector_set:
+                continue
+            dst_owid = OWTileRegions.get(dest.name)
+            if dst_owid is None:
+                continue
+            if src_owid == dst_owid:
+                cost = DIST_REGION_STEP
+            else:
+                cost = DIST_OWID_HOP
+                if (dst_owid & 0x3F) in LARGE_SCREENS:
+                    cost += DIST_LARGE_EXIT
+            graph[src_i].append((index[dest.name], cost))
+    return graph
+
+
+def _dijkstra(graph, start_i, node_count):
+    dist = [math.inf] * node_count
+    dist[start_i] = 0.0
+    heap = [(0.0, start_i)]
+    while heap:
+        current, node = heapq.heappop(heap)
+        if current > dist[node]:
+            continue
+        for nbr, cost in graph[node]:
+            candidate = current + cost
+            if candidate < dist[nbr]:
+                dist[nbr] = candidate
+                heapq.heappush(heap, (candidate, nbr))
+    return dist
+
+
+def _get_adjacent_owids(owid, cache, world, player):
+    cached = cache.get(owid)
+    if cached is not None:
+        return cached
+    region_names = OWTileRegions.inverse.get(owid) or []
+    pending = list(region_names)
+    visited = set(pending)
+    neighbors = set()
+    while pending:
+        region_name = pending.pop()
+        region = world.get_region(region_name, player)
+        if region is None:
+            continue
+        for entrance in region.entrances:
+            parent = entrance.parent_region
+            if parent is None or parent.name not in OWTileRegions:
+                continue
+            parent_owid = OWTileRegions[parent.name]
+            if parent_owid == owid:
+                if parent.name not in visited:
+                    visited.add(parent.name)
+                    pending.append(parent.name)
+            else:
+                neighbors.add(parent_owid)
+    cache[owid] = neighbors
+    return neighbors
+
+
+def _owid_hop_distance(start_owid, target_owid, cache, world, player, max_depth=2):
+    if start_owid == target_owid:
+        return 0
+    visited = {start_owid}
+    frontier = {start_owid}
+    depth = 0
+    while frontier and depth < max_depth:
+        depth += 1
+        next_frontier = set()
+        for current in frontier:
+            for neighbor in _get_adjacent_owids(current, cache, world, player):
+                if neighbor == target_owid:
+                    return depth
+                if neighbor not in visited:
+                    visited.add(neighbor)
+                    next_frontier.add(neighbor)
+        frontier = next_frontier
+    return None
+
+
+def _compute_portal_neighbors(world, player):
+    neighbors = set()
+    cache = {}
+    for owid in PORTAL_OWIDS:
+        for parent_owid in _get_adjacent_owids(owid, cache, world, player):
+            if parent_owid not in PORTAL_OWIDS:
+                neighbors.add(parent_owid)
+    return neighbors
+
+
+class FluteDebugLog:
+    def __init__(self, world, player, logger=None):
+        self.enabled = world.owFluteShuffle[player] == 'balanced' and (logger and logger.isEnabledFor(logging.DEBUG))
+        self.lines = []
+        self.grid = None
+        if self.enabled and hasattr(world, 'spoiler') and hasattr(world.spoiler, 'maps'):
+            entry = world.spoiler.maps.get(('layout_grid_lw', player))
+            if entry:
+                self.grid = entry.get('data')
+                text = entry.get('text')
+                if text:
+                    self.log('Light World Layout:')
+                    self.log('')
+                    for line in text.rstrip().splitlines():
+                        self.log(line)
+                    self.log('')
+
+    def log(self, line=''):
+        if self.enabled:
+            self.lines.append(line)
+
+    def write(self):
+        if self.enabled:
+            with open('flute_debug.txt', 'w', encoding='utf-8') as debug_file:
+                debug_file.write('\n'.join(self.lines) + '\n')
+
+    def print_map(self, score_map, placed_spots, title):
+        if not self.enabled or not self.grid:
+            return
+        large_screen_ids = [0x00, 0x03, 0x05, 0x18, 0x1B, 0x1E, 0x30, 0x35, 0x40, 0x43, 0x45, 0x58, 0x5B, 0x5E, 0x70, 0x75]
+        grid = self.grid
+        cell_width = 4
+
+        def is_same_large_screen(row1, col1, row2, col2):
+            id1 = grid[row1 % 8][col1 % 8]
+            id2 = grid[row2 % 8][col2 % 8]
+            if id1 == -1 or id2 == -1:
+                return False
+            return id1 == id2 and id1 in large_screen_ids
+
+        self.log(title)
+        header = '      '
+        for col in range(8):
+            header += f' {col:^{cell_width}}'
+        self.log(header)
+
+        for row in range(8):
+            border_line = '     +'
+            for col in range(8):
+                if row > 0 and is_same_large_screen(row, col, row - 1, col):
+                    border_line += ' ' * cell_width
+                else:
+                    border_line += '-' * cell_width
+                if col < 7:
+                    has_horizontal_left = row == 0 or not is_same_large_screen(row, col, row - 1, col)
+                    has_horizontal_right = row == 0 or not is_same_large_screen(row, col + 1, row - 1, col + 1)
+                    has_vertical_top = row == 0 or not is_same_large_screen(row - 1, col, row - 1, col + 1)
+                    has_vertical_bottom = not is_same_large_screen(row, col, row, col + 1)
+                    if has_vertical_bottom or has_vertical_top:
+                        border_line += '+' if (has_horizontal_left or has_horizontal_right) else '|'
+                    else:
+                        border_line += '-' if (has_horizontal_left or has_horizontal_right) else ' '
+                else:
+                    border_line += '+'
+            self.log(border_line)
+
+            row_name = 'ABCDEFGH'[row]
+            content_line = f'{row_name}({row * 8:02X})|'
+            for col in range(8):
+                screen_id = grid[row][col]
+                if screen_id == -1:
+                    cell = ' ' * cell_width
+                else:
+                    owid = screen_id & 0xBF
+                    value = score_map.get(owid)
+                    if value is None:
+                        cell = ' ' * (cell_width - 2) + '--'
+                    elif value == math.inf:
+                        text = ' inf'
+                        if owid in placed_spots:
+                            text = '*' + text[1:]
+                        cell = text
+                    else:
+                        text = f'{value:.1f}'.rjust(cell_width)
+                        if owid in placed_spots:
+                            text = '*' + text[1:]
+                        cell = text
+                content_line += cell
+                if col < 7:
+                    content_line += '|' if not is_same_large_screen(row, col, row, col + 1) else ' '
+                else:
+                    content_line += '|'
+            self.log(content_line)
+
+        bottom_border = '     +'
+        for col in range(8):
+            bottom_border += '-' * cell_width
+            if col < 7:
+                bottom_border += '-' if is_same_large_screen(7, col, 7, col + 1) else '+'
+            else:
+                bottom_border += '+'
+        self.log(bottom_border)
+
+
+def _write_spoiler_map(world, player, new_spots):
+    s = list(map(lambda x: ' ' if x not in new_spots else 'F', [i for i in range(0x40)]))
+    text_output = flute_spoiler_table.replace('s', '%s') % (
+                                 s[0x02],                                s[0x07],
+                                                     s[0x00],                s[0x03],        s[0x05],
+        s[0x00],        s[0x02],s[0x03],        s[0x05],        s[0x07],                 s[0x0a],                                s[0x0f],
+                        s[0x0a],                                s[0x0f],
+        s[0x10],s[0x11],s[0x12],s[0x13],s[0x14],s[0x15],s[0x16],s[0x17], s[0x10],s[0x11],s[0x12],s[0x13],s[0x14],s[0x15],s[0x16],s[0x17],
+        s[0x18],        s[0x1a],s[0x1b],        s[0x1d],s[0x1e],
+                        s[0x22],                s[0x25],                                 s[0x1a],                s[0x1d],
+        s[0x28],s[0x29],s[0x2a],s[0x2b],s[0x2c],s[0x2d],s[0x2e],s[0x2f],     s[0x18],                s[0x1b],                s[0x1e],
+        s[0x30],        s[0x32],s[0x33],s[0x34],s[0x35],        s[0x37],                 s[0x22],                s[0x25],
+                        s[0x3a],s[0x3b],s[0x3c],                s[0x3f],
+                                                                     s[0x28],s[0x29],s[0x2a],s[0x2b],s[0x2c],s[0x2d],s[0x2e],s[0x2f],
+                                                                                     s[0x32],s[0x33],s[0x34],                s[0x37],
+                                                         s[0x30],                                s[0x35],
+                                                                                     s[0x3a],s[0x3b],s[0x3c],                s[0x3f])
+    world.spoiler.set_map('flute', text_output, new_spots, player)
 
 
 def sort_flute_spots(world, player, flute_spots):
@@ -267,3 +748,4 @@ H(38)|  sss  s|       +-+-+-+-+-+-+-+-+
                       | s +-+-+-+ s +-+
                  H(38)|   |s|s|s|   |s|
                       +---+-+-+-+---+-+"""
+

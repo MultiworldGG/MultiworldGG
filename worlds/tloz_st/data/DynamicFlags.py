@@ -1591,6 +1591,12 @@ DYNAMIC_FLAGS: dict[str, dict[str, Any]] = {
         "check_bits": [(STAddr.adv_flags_59, 0x4)],
         "set_if_true": [(STAddr.adv_flags_1f, 0x80)],
     },
+    "Backup check goron geyser 2 location": {
+        "on_scenes": [0x2e00],
+        "has_slot_data": [("randomize_cargo", [1, 2, 3])],
+        "has_locations": ["Goron Village Deliver Ice Force Gem"],
+        "set_if_true": [(STAddr.adv_flags_2b, 0x4)],
+    },
     "Backup unset goron geyser": {
         "on_scenes": [0x2e00],
         "has_slot_data": [("randomize_cargo", [1, 2, 3])],
@@ -1615,14 +1621,14 @@ DYNAMIC_FLAGS: dict[str, dict[str, Any]] = {
     },
     "Lock Snow Realm Rocktite Cave": {
         "on_scenes": [0x500],
-        "has_items": [("Snowfall Sanctuary Cave Key", 0)],
+        "has_items": [("Snow Realm Rocktite Cave Key", 0)],
         "not_has_groups": ["Tracks: Blizzard Temple Tracks"],
         "unset_if_true": [(STAddr.adv_flags_0, 0x20), (STAddr.adv_flags_b, 0x10)],
         "reset_flags": ["RESET Add Snow Source"]
     },
     "Unlock Snow Sanc Cave": {
         "on_scenes": [0x500],
-        "has_items": [("Snowfall Sanctuary Cave Key", 1)],
+        "has_items": [("Snow Realm Rocktite Cave Key", 1)],
         "set_if_true": [(STAddr.adv_flags_b, 0x10)],
     },
     "Anouki shop skip HC": {
@@ -2727,7 +2733,6 @@ DYNAMIC_FLAGS: dict[str, dict[str, Any]] = {
     },
     "Fire realm prevent ice crash": {
         "on_scenes": [0x700],
-        "not_has_groups": ["Tracks: Fire Glyph"],
         "unset_if_true": [(STAddr.adv_flags_20, 0x20)]
     },
     "RESET Passengers": {
@@ -3002,12 +3007,6 @@ DYNAMIC_FLAGS: dict[str, dict[str, Any]] = {
         "has_slot_data": [("randomize_passengers", [2, 3])],
         "not_has_locations": ["Snow Realm Pick Up Ferrus"],
         "unset_if_true": [(STAddr.adv_flags_3a, 0x80)]
-    },
-    "Reset city goron GV": {
-        "on_scenes": [0x2e00],
-        "not_has_locations": ["Goron Village Pick Up City Goron"],
-        "has_slot_data": [("randomize_passengers", [2, 3])],
-        "unset_if_true": [(STAddr.adv_flags_3a, 1)]
     },
     "Spawn Ferrus Fire Realm": {
         "on_scenes": [0x700],

@@ -50,12 +50,13 @@ class RefunctWorld(World):
     
     item_name_groups = item_groups
 
-    ap_world_version = "1.7.0"
+    ap_world_version = "1.8.0"
         
     def get_filler_item_name(self) -> str:
         return ":)"
     
     def generate_early(self):
+        self.relocate_seed = self.multiworld.random.random()  # fine if it's different for UT
         if hasattr(self.multiworld, "re_gen_passthrough"):
             self.regen = self.multiworld.re_gen_passthrough[self.game]
             
@@ -224,6 +225,12 @@ class RefunctWorld(World):
             for _ in range(num_unlocks):
                 items_to_add.append("Defunct Rando Minigame")
             for _ in range(37 - num_unlocks):
+                items_to_add.append("Flower")
+                
+        if "Relocate Minigame" in self.minigames:
+            for _ in range(num_unlocks):
+                items_to_add.append("Relocate Minigame")
+            for _ in range(6 - num_unlocks):
                 items_to_add.append("Flower")
                    
         if self.options.nerf_minigame_checks.value:
@@ -592,6 +599,13 @@ class RefunctWorld(World):
             for loc_name, loc_data in [(a, b) for a, b in location_table.items() if b.minigame == "Defunct Rando"]:
                 region_object = self.multiworld.get_region("Defunct Rando Minigame", self.player)
                 region_object.locations.append(RefunctLocation(self.player, loc_name, loc_data.id, region_object))
+                
+        if "Relocate Minigame" in self.minigames:
+            self.multiworld.regions.append(Region("Relocate Minigame", self.player, self.multiworld))
+            for loc_name, loc_data in [(a, b) for a, b in location_table.items() if b.minigame == "Relocate"]:
+                region_object = self.multiworld.get_region("Relocate Minigame", self.player)
+                region_object.locations.append(RefunctLocation(self.player, loc_name, loc_data.id, region_object))
+        
         
     def set_og_randomizer_order(self):
         # OG Randomizer Minigame info
@@ -1043,6 +1057,12 @@ class RefunctWorld(World):
             region_b = self.multiworld.get_region("Defunct Rando Minigame", self.player)
             region_a.connect(region_b, f"Enter Defunct Rando Minigame", 
                 Has("Defunct Rando Minigame"))
+            
+        if "Relocate Minigame" in self.minigames:
+            region_a = self.multiworld.get_region("10010102", self.player)
+            region_b = self.multiworld.get_region("Relocate Minigame", self.player)
+            region_a.connect(region_b, f"Enter Relocate Minigame", 
+                Has("Relocate Minigame"))
 
     def create_item(self, name: str, force_useful = False) -> Item:
         item_data = item_table[name]
@@ -1075,6 +1095,7 @@ class RefunctWorld(World):
             
         slot_data["minigames"] = self.minigames
         slot_data["has_clique"] = "Clique" in self.minigames
+        slot_data["relocate_minigame_seed"] = self.relocate_seed
 
         slot_data["death_link"] = self.options.death_link.value
         

@@ -38,15 +38,15 @@ LOCATION_NAME_TO_ID = {
     "(LVL 1) Talk to Barney": 122679,
 
     # Level 1 Races
-    "(LVL 1) Time Trial Race": 122297,
-    "(LVL 1) Circuit Race": 122298,
-    "(LVL 1) Checkpoint Race": 122299,
+    "(LVL 1) RACE - Time Trial Race": 122297,
+    "(LVL 1) RACE - Circuit Race": 122298,
+    "(LVL 1) RACE - Checkpoint Race": 122299,
 
     # Level 1 Cards
     "(LVL 1) CARD - Simpsons' Backyard": 122692,
     "(LVL 1) CARD - Kwik-E-Mart Roof": 122693,
     "(LVL 1) CARD - Wiggum's Backyard": 122694,
-    "(LVL 1) CARD - Corner Outside Near StoneCutter Entrance": 122695,
+    "(LVL 1) CARD - Alleyway Corner Across from Burns Mansion": 122695,
     "(LVL 1) CARD - Above StoneCutters Table": 122696,
     "(LVL 1) CARD - Highest Platform in Power Plant": 122697,
     "(LVL 1) CARD - Trailer Park": 122698,
@@ -106,20 +106,20 @@ LOCATION_NAME_TO_ID = {
 
     # Level 1 Wasps
     "(LVL 1) WASP - Small Park Next to Simpsons House": 122366,
-    "(LVL 1) WASP - Next to the Blue House Besides Simpsons House": 122367,
+    "(LVL 1) WASP - Simpson's Neighbor's House": 122367,
     "(LVL 1) WASP - Flanders Backyard": 122368,
     "(LVL 1) WASP - Wiggum's Backyard": 122369,
     "(LVL 1) WASP - Kwik-E-Mart Roof": 122370,
     "(LVL 1) WASP - Gas Pump Roof": 122371,
-    "(LVL 1) WASP - Lard Lads Roof": 122372,
+    "(LVL 1) WASP - Lard Lad's Roof": 122372,
     "(LVL 1) WASP - School Yard Bus": 122373,
     "(LVL 1) WASP - Back Door of School": 122374,
     "(LVL 1) WASP - School Roof 1": 122375,
     "(LVL 1) WASP - School Roof 2": 122376,
     "(LVL 1) WASP - Top of Tower Before Broken Bridge": 122377,
     "(LVL 1) WASP - Rocket Car": 122378,
-    "(LVL 1) WASP - StoneCutters Table 1": 122379,
-    "(LVL 1) WASP - StoneCutters Table 2": 122380,
+    "(LVL 1) WASP - StoneCutter's Table 1": 122379,
+    "(LVL 1) WASP - StoneCutter's Table 2": 122380,
     "(LVL 1) WASP - Barn Haystack": 122381,
     "(LVL 1) WASP - Trailer Park 1": 122382,
     "(LVL 1) WASP - Trailer Park 2": 122383,
@@ -129,15 +129,15 @@ LOCATION_NAME_TO_ID = {
     # Level 1 Gags
     "(LVL 1) GAG - Simpsons TV": 122393,
     "(LVL 1) GAG - Swings Besides Blue House": 122394,
-    "(LVL 1) GAG - Simpsons Grill": 122395,
-    "(LVL 1) GAG - Simpsons Swing": 122396,
-    "(LVL 1) GAG - Simpsons FireBreathing Tiki": 122397,
+    "(LVL 1) GAG - Simpson's Grill": 122395,
+    "(LVL 1) GAG - Simpson's Swings": 122396,
+    "(LVL 1) GAG - Simpson's Fire Breathing Tiki": 122397,
     "(LVL 1) GAG - Flanders Bomb Shelter": 122398,
     "(LVL 1) GAG - Tank in Front of Power Plant": 122399,
     "(LVL 1) GAG - Homer's Workstation Meltdown": 122400,
     "(LVL 1) GAG - School Fire Extinguisher": 122401,
     "(LVL 1) GAG - School Fire Alarm": 122402,
-    "(LVL 1) GAG - Man in Freezer at Kwik-E-Mart": 122403,
+    "(LVL 1) GAG - Frostillicus in Kwik-E-Mart": 122403,
     "(LVL 1) GAG - Silent Alarm in Kwik-E-Mart": 122404,
     "(LVL 1) GAG - Arcade Cabinet in Kwik-E-Mart": 122405,
     "(LVL 1) GAG - Squishee Machine in Kwik-E-Mart": 122406,
@@ -163,17 +163,17 @@ LOCATION_NAME_TO_ID = {
     "(LVL 2) Talk to Homer": 122680,
 
     # Level 2 Races
-    "(LVL 2) Time Trial Race": 122308,
-    "(LVL 2) Circuit Race": 122309,
-    "(LVL 2) Checkpoint Race": 122310,
+    "(LVL 2) RACE - Time Trial Race": 122308,
+    "(LVL 2) RACE - Circuit Race": 122309,
+    "(LVL 2) RACE - Checkpoint Race": 122310,
 
     # Level 2 Cards
-    "(LVL 2) CARD - Statue": 122752,
+    "(LVL 2) CARD - Jebediah Statue": 122752,
     "(LVL 2) CARD - Roof Across Monkey Building": 122753,
     "(LVL 2) CARD - Legitimate Businessman's Roof": 122754,
     "(LVL 2) CARD - Car Wash": 122755,
     "(LVL 2) CARD - Train Wagon": 122756,
-    "(LVL 2) CARD - Alleyway Behind Krusty Burger": 122757,
+    "(LVL 2) CARD - Alleyway Behind Downtown Krusty Burger": 122757,
     "(LVL 2) CARD - Fountain At Stadium": 122758,
     "(LVL 2) CARD - Light Pole by Court House": 122759,
     "(LVL 2) CARD - Behind Museum Sign": 122760,
@@ -204,7 +204,6 @@ LOCATION_NAME_TO_ID = {
     "(LVL 2) CARD - Behind Herman's Military Antiques": 122785,
     "(LVL 2) CARD - Above Street Near Helter Shelter": 122786,
     "(LVL 2) CARD - DMV Sign": 122787,
-    "(LVL 2) CARD - DMV Light Pole": 122788,
     "(LVL 2) CARD - Above Street Between DMV and Trainyard": 122789,
     "(LVL 2) CARD - Between Trains": 122790,
     "(LVL 2) CARD - Above Train Crossing": 122791,
@@ -239,7 +238,7 @@ LOCATION_NAME_TO_ID = {
     "(LVL 2) CARD - Inside Moe's": 122820,
 
     # Level 2 Wasps
-    "(LVL 2) WASP - CourtHouse Steps": 122413,
+    "(LVL 2) WASP - Courthouse Steps": 122413,
     "(LVL 2) WASP - Gazebo Between Museum and Courthouse": 122414,
     "(LVL 2) WASP - Museum Steps": 122415,
     "(LVL 2) WASP - Hospital Front Yard": 122416,
@@ -248,12 +247,12 @@ LOCATION_NAME_TO_ID = {
     "(LVL 2) WASP - Town Hall (Back)": 122419,
     "(LVL 2) WASP - Behind Downtown Krusty Burger": 122420,
     "(LVL 2) WASP - Monorail Stairs": 122421,
-    "(LVL 2) WASP - Upstair Beside Monorail": 122422,
-    "(LVL 2) WASP - Roof Across Monorail": 122423,
+    "(LVL 2) WASP - Upstairs Beside Monorail": 122422,
+    "(LVL 2) WASP - Monorail Building": 122423,
     "(LVL 2) WASP - Stairs Leading atop Trains": 122424,
     "(LVL 2) WASP - Across Moving Train": 122425,
     "(LVL 2) WASP - On Train Past Water Tank": 122426,
-    "(LVL 2) WASP - Inside Trainyard Parking Spot": 122427,
+    "(LVL 2) WASP - Inside Trainyard Shortcut": 122427,
     "(LVL 2) WASP - Car Wash": 122428,
     "(LVL 2) WASP - Legitimate Businessman's Rooftop 1": 122429,
     "(LVL 2) WASP - Legitimate Businessman's Rooftop 2": 122430,
@@ -263,15 +262,15 @@ LOCATION_NAME_TO_ID = {
     # Level 2 Gags
     "(LVL 2) GAG - CATapult": 122440,
     "(LVL 2) GAG - Cement Truck": 122441,
-    "(LVL 2) GAG - Pickled Egg Jar at Moes": 122442,
-    "(LVL 2) GAG - Slot Machine at Moes": 122443,
-    "(LVL 2) GAG - Love Tester as Moes": 122444,
-    "(LVL 2) GAG - Light up Drinks at Moes": 122445,
+    "(LVL 2) GAG - Pickled Egg Jar at Moe's": 122442,
+    "(LVL 2) GAG - Slot Machine at Moe's": 122443,
+    "(LVL 2) GAG - Love Tester as Moe's": 122444,
+    "(LVL 2) GAG - Light up Drinks at Moe's": 122445,
     "(LVL 2) GAG - Rat's Milk Machine atop Legitimate Businessman's Roof": 122446,
-    "(LVL 2) GAG - Blinding Hans Moleman at the DMV": 122447,
+    "(LVL 2) GAG - Camera in DMV": 122447,
     "(LVL 2) GAG - Car Ride at Try-N-Save": 122448,
     "(LVL 2) GAG - Missile Behind Military Antiques": 122449,
-    "(LVL 2) GAG - Dumpster Behind Krusty Burger (Near Police Station)": 122450,
+    "(LVL 2) GAG - Dumpster Behind Downtown Krusty Burger": 122450,
 
     # Level 2 Shops
     "(LVL 2) Shop Check 1": 122451,
@@ -293,13 +292,13 @@ LOCATION_NAME_TO_ID = {
     "(LVL 3) Talk to Otto": 122681,
 
     # Level 3 Races
-    "(LVL 3) Time Trial Race": 122319,
-    "(LVL 3) Circuit Race": 122320,
-    "(LVL 3) Checkpoint Race": 122321,
+    "(LVL 3) RACE - Time Trial Race": 122319,
+    "(LVL 3) RACE - Circuit Race": 122320,
+    "(LVL 3) RACE - Checkpoint Race": 122321,
 
     # Level 3 Cards
-    "(LVL 3) CARD - Comic Book Guy's Rooftop": 122821,
-    "(LVL 3) CARD - Above Bowling": 122822,
+    "(LVL 3) CARD - Android's Dungeon Rooftop": 122821,
+    "(LVL 3) CARD - Above Bowlarama": 122822,
     "(LVL 3) CARD - Atop Lighthouse": 122823,
     "(LVL 3) CARD - Edge of Globex Ship": 122824,
     "(LVL 3) CARD - Krusty Studio Balcony": 122825,
@@ -371,7 +370,7 @@ LOCATION_NAME_TO_ID = {
     "(LVL 3) WASP - Kamp Krusty Near Stage": 122466,
     "(LVL 3) WASP - Kamp Krusty Well": 122467,
     "(LVL 3) WASP - Exit of Kamp Krusty's Well": 122468,
-    "(LVL 3) WASP - Motel Complex": 122469,
+    "(LVL 3) WASP - Motel near Observatory": 122469,
     "(LVL 3) WASP - Duff Brewery Behind Krusty Glass": 122470,
     "(LVL 3) WASP - Duff Blimp 1": 122471,
     "(LVL 3) WASP - Duff Blimp 2": 122472,
@@ -380,22 +379,22 @@ LOCATION_NAME_TO_ID = {
     "(LVL 3) WASP - Globex Ship Front End": 122475,
     "(LVL 3) WASP - Globex Ship Next to the Crane": 122476,
     "(LVL 3) WASP - Globex Ship Stairs": 122477,
-    "(LVL 3) WASP - LightHouse": 122478,
+    "(LVL 3) WASP - Lighthouse": 122478,
     "(LVL 3) WASP - Planet Hype": 122479,
     "(LVL 3) WASP - Beach": 122480,
-    "(LVL 3) WASP - Bowling Rooftop": 122481,
+    "(LVL 3) WASP - Bowlarama Rooftop": 122481,
     "(LVL 3) WASP - Comic Book Guy Rooftop": 122482,
 
     # Level 3 Gags
     "(LVL 3) GAG - Comic Book Guy Robot": 122490,
     "(LVL 3) GAG - Comic Book Guy Radioactive Man": 122491,
-    "(LVL 3) GAG - Yellow Dumpster Across Krusty Burger": 122492,
+    "(LVL 3) GAG - Yellow Dumpster at Noiseland Arcade": 122492,
     "(LVL 3) GAG - Kid Drowning in Ball Pit": 122493,
     "(LVL 3) GAG - Crane on Ship": 122494,
     "(LVL 3) GAG - Observatory Alarm": 122495,
     "(LVL 3) GAG - Perpetual Motion Machine at Observatory": 122496,
     "(LVL 3) GAG - Telescope at Observatory": 122497,
-    "(LVL 3) GAG - (Observatory) Monkey": 122498,
+    "(LVL 3) GAG - Monkey in Observatory": 122498,
     "(LVL 3) GAG - Kamp Krusty Flag": 122499,
     "(LVL 3) GAG - Boar's Head at Kamp Krusty": 122500,
 
@@ -419,12 +418,12 @@ LOCATION_NAME_TO_ID = {
     "(LVL 4) Talk to Willie": 122682,
 
     # Level 4 Races
-    "(LVL 4) Checkpoint Race": 122330,
-    "(LVL 4) Circuit Race": 122331,
-    "(LVL 4) Time Trial Race": 122332,
+    "(LVL 4) RACE - Checkpoint Race": 122330,
+    "(LVL 4) RACE - Circuit Race": 122331,
+    "(LVL 4) RACE - Time Trial Race": 122332,
 
     # Level 4 Cards
-    "(LVL 4) CARD - Gas Station Roof 1": 122888,
+    "(LVL 4) CARD - Between Gas Station and Lard Lad's": 122888,
     "(LVL 4) CARD - Burns Mansion Secret": 122889,
     "(LVL 4) CARD - Big Bridge": 122890,
     "(LVL 4) CARD - Atop Tower Before Broken Bridge": 122891,
@@ -438,7 +437,7 @@ LOCATION_NAME_TO_ID = {
     "(LVL 4) CARD - Kwik-E-Mart's Dumpster": 122899,
     "(LVL 4) CARD - Krusty Burger Dumpster": 122900,
     "(LVL 4) CARD - Gas Station Roof 2": 122901,
-    "(LVL 4) CARD - Above Street Between Simpson's House and Kwik-E-Mart": 122902,
+    "(LVL 4) CARD - Above Street Between Simpsons' House and Kwik-E-Mart": 122902,
     "(LVL 4) CARD - Evergreen Terrace Horseshoe Road": 122903,
     "(LVL 4) CARD - Top of Krusty Burger Near Kwik-E-Mart": 122904,
     "(LVL 4) CARD - Retirement Castle": 122905,
@@ -497,10 +496,10 @@ LOCATION_NAME_TO_ID = {
     "(LVL 4) WASP - Kwik-E-Mart Rooftop": 122506,
     "(LVL 4) WASP - Gas Station Rooftop": 122507,
     "(LVL 4) WASP - Atop Gasoline Pump": 122508,
-    "(LVL 4) WASP - Mr. Burns Giant ChessBoard 1": 122509,
-    "(LVL 4) WASP - Mr. Burns Giant ChessBoard 2": 122510,
-    "(LVL 4) WASP - Mr. Burns StairCase": 122511,
-    "(LVL 4) WASP - Mr. Burns Library": 122512,
+    "(LVL 4) WASP - Burns Mansion Giant Chessboard 1": 122509,
+    "(LVL 4) WASP - Burns Mansion Giant Chessboard 2": 122510,
+    "(LVL 4) WASP - Burns Mansion Staircase": 122511,
+    "(LVL 4) WASP - Burns Mansion Library": 122512,
     "(LVL 4) WASP - Outside of Homer's Workstation": 122513,
     "(LVL 4) WASP - Atop Trailer Park": 122514,
     "(LVL 4) WASP - In Trailer Park": 122515,
@@ -511,17 +510,17 @@ LOCATION_NAME_TO_ID = {
     "(LVL 4) WASP - Atop Tower Before Broken Bridge": 122520,
 
     # Level 4 Gags
-    "(LVL 4) GAG - Simpson TV": 122528,
-    "(LVL 4) GAG - Simpsons Swings": 122529,
-    "(LVL 4) GAG - Simpsons Grill": 122530,
-    "(LVL 4) GAG - Simpsons Fire Breathing Tiki": 122531,
+    "(LVL 4) GAG - Simpson's TV": 122528,
+    "(LVL 4) GAG - Simpson's Swings": 122529,
+    "(LVL 4) GAG - Simpson's Grill": 122530,
+    "(LVL 4) GAG - Simpson's Fire Breathing Tiki": 122531,
     "(LVL 4) GAG - Krusty Lamp (Bart's Room)": 122532,
     "(LVL 4) GAG - Flanders Bomb Shelter": 122533,
     "(LVL 4) GAG - Tank in Front of Power Plant": 122534,
     "(LVL 4) GAG - Homer's Workstation Meltdown": 122535,
     "(LVL 4) GAG - School Fire Extinguisher ": 122536,
     "(LVL 4) GAG - School Fire Alarm": 122537,
-    "(LVL 4) GAG - Frozen man in Kwik-E-Mart": 122538,
+    "(LVL 4) GAG - Frostillicus in Kwik-E-Mart": 122538,
     "(LVL 4) GAG - Silent Alarm in Kwik-E-Mart": 122539,
     "(LVL 4) GAG - ATM in Kwik-E-Mart": 122540,
     "(LVL 4) GAG - Arcade Cabinet in Kwik-E-Mart": 122541,
@@ -547,9 +546,9 @@ LOCATION_NAME_TO_ID = {
     "(LVL 5) Talk to Homer": 122683,
 
     # Level 5 Races
-    "(LVL 5) Checkpoint Race": 122343,
-    "(LVL 5) Circuit Race": 122342,
-    "(LVL 5) Time Trial Race": 122341,
+    "(LVL 5) RACE - Checkpoint Race": 122343,
+    "(LVL 5) RACE - Circuit Race": 122342,
+    "(LVL 5) RACE - Time Trial Race": 122341,
 
     # Level 5 Cards
     "(LVL 5) CARD - Construction Crane Platforming": 122951,
@@ -559,7 +558,7 @@ LOCATION_NAME_TO_ID = {
     "(LVL 5) CARD - Closed Highway Jump": 122955,
     "(LVL 5) CARD - Downtown Billboard Platforming": 122956,
     "(LVL 5) CARD - Monorail Track": 122957,
-    "(LVL 5) CARD - Courthouse Light Pole": 122958,
+    "(LVL 5) CARD - Light Pole by Court House": 122958,
     "(LVL 5) CARD - Behind Museum Sign": 122959,
     "(LVL 5) CARD - Lion Statue": 122960,
     "(LVL 5) CARD - Park Fountain near Hospital": 122961,
@@ -588,7 +587,6 @@ LOCATION_NAME_TO_ID = {
     "(LVL 5) CARD - Behind Herman's Military Antiques": 122984,
     "(LVL 5) CARD - Above Street Near Helter Shelter": 122985,
     "(LVL 5) CARD - DMV Sign": 122986,
-    "(LVL 5) CARD - DMV Light Pole": 122987,
     "(LVL 5) CARD - Above Street Between DMV and Trainyard": 122988,
     "(LVL 5) CARD - Between Trains": 122989,
     "(LVL 5) CARD - Above Train Crossing": 122990,
@@ -622,11 +620,11 @@ LOCATION_NAME_TO_ID = {
     "(LVL 5) CARD - Coming Soon Construction": 123019,
 
     # Level 5 Wasps
-    "(LVL 5) WASP - Front of Hospital": 122549,
+    "(LVL 5) WASP - Hospital Front Yard": 122549,
     "(LVL 5) WASP - Gazebo Between Museum & Court House": 122550,
     "(LVL 5) WASP - Steps of Town Hall": 122551,
     "(LVL 5) WASP - Museum Steps": 122552,
-    "(LVL 5) WASP - Rooftop Next to Moes": 122553,
+    "(LVL 5) WASP - Rooftop Next to Moe's": 122553,
     "(LVL 5) WASP - Legitimate Businessman's Rooftop 1": 122554,
     "(LVL 5) WASP - Legitimate Businessman's Rooftop 2": 122555,
     "(LVL 5) WASP - Trainyard Stairs": 122556,
@@ -636,10 +634,10 @@ LOCATION_NAME_TO_ID = {
     "(LVL 5) WASP - Police Station Steps": 122560,
     "(LVL 5) WASP - Monorail Stairs": 122561,
     "(LVL 5) WASP - Monorail": 122562,
-    "(LVL 5) WASP - Otherside of Monorail 1": 122563,
-    "(LVL 5) WASP - Otherside of Monorail 2": 122564,
-    "(LVL 5) WASP - Under Giant Purple Beams 1": 122565,
-    "(LVL 5) WASP - Under Giant Purple Beams 2": 122566,
+    "(LVL 5) WASP - Monorail Building 1": 122563,
+    "(LVL 5) WASP - Monorail Building 2": 122564,
+    "(LVL 5) WASP - Sit 'n' Rotate 1": 122565,
+    "(LVL 5) WASP - Sit 'n' Rotate 2": 122566,
     "(LVL 5) WASP - Alleyway Rooftop": 122567,
     "(LVL 5) WASP - Fountain Near Stadium": 122568,
 
@@ -647,7 +645,7 @@ LOCATION_NAME_TO_ID = {
     "(LVL 5) GAG - Pickled Egg in Moe's": 122576,
     "(LVL 5) GAG - Slot Machine in Moe's": 122577,
     "(LVL 5) GAG - Love Tester in Moe's": 122578,
-    "(LVL 5) GAG - Blind Hans Moleman at the DMV": 122579,
+    "(LVL 5) GAG - Camera in DMV": 122579,
     "(LVL 5) GAG - Dumpster Behind Behind Krusty Burger (Near Police Station)": 122580,
     "(LVL 5) GAG - Light Up Drinks in Moe's": 122690,
 
@@ -671,12 +669,12 @@ LOCATION_NAME_TO_ID = {
     "(LVL 6) Talk to Kearney": 122684,
 
     # Level 6 Races
-    "(LVL 6) Checkpoint Race": 122352,
-    "(LVL 6) Time Trial Race": 122353,
-    "(LVL 6) Circuit Race": 122354,
+    "(LVL 6) RACE - Checkpoint Race": 122352,
+    "(LVL 6) RACE - Time Trial Race": 122353,
+    "(LVL 6) RACE - Circuit Race": 122354,
 
     # Level 6 Cards
-    "(LVL 6) CARD - Above Street BallPit House": 123020,
+    "(LVL 6) CARD - Above Street by Ball Pit Gag": 123020,
     "(LVL 6) CARD - Casino Ramp": 123021,
     "(LVL 6) CARD - Planet Hype Sign": 123022,
     "(LVL 6) CARD - Atop Front of Boat": 123023,
@@ -707,7 +705,7 @@ LOCATION_NAME_TO_ID = {
     "(LVL 6) CARD - Stairs Near Krusty and Friends Billboard": 123048,
     "(LVL 6) CARD - Short Wall Down the Street from Gas Station": 123049,
     "(LVL 6) CARD - Concrete Mixer at Gas Station": 123050,
-    "(LVL 6) CARD - Green Building Across From Principal Skinner": 123051,
+    "(LVL 6) CARD - Green Building Near Lumber King Billboard": 123051,
     "(LVL 6) CARD - Lumber King Billboard": 123052,
     "(LVL 6) CARD - Park Across From Android's Dungeon": 123053,
     "(LVL 6) CARD - Behind Krusty Burger Across From Android's Dungeon": 123054,
@@ -751,7 +749,7 @@ LOCATION_NAME_TO_ID = {
     "(LVL 6) WASP - Kamp Krusty 2": 122593,
     "(LVL 6) WASP - Broken Railing Below Dam": 122594,
     "(LVL 6) WASP - Broken Railing Exit": 122595,
-    "(LVL 6) WASP - Motel": 122596,
+    "(LVL 6) WASP - Motel by Observatory": 122596,
     "(LVL 6) WASP - Duff Brewery Krusty Glass": 122597,
     "(LVL 6) WASP - Under Duff Blimp": 122598,
     "(LVL 6) WASP - Krusty Studio Left": 122599,
@@ -762,20 +760,20 @@ LOCATION_NAME_TO_ID = {
     "(LVL 6) WASP - Globex Ship Staircase 2": 122604,
     "(LVL 6) WASP - Lighthouse": 122605,
     "(LVL 6) WASP - Planet Hype Rooftop": 122606,
-    "(LVL 6) WASP - Bowling Rooftop": 122607,
+    "(LVL 6) WASP - Bowlarama Rooftop": 122607,
     "(LVL 6) WASP - Comic Book Guy Rooftop 1": 122608,
     "(LVL 6) WASP - Comic Book Guy Rooftop 2": 122609,
 
     # Level 6 Gags
-    "(LVL 6) GAG - Comic Book Guy Robot": 122617,
-    "(LVL 6) GAG - Comic Book Guy Radioactive Man": 122618,
-    "(LVL 6) GAG - Yellow Dumpster Across Krusty Burger": 122619,
+    "(LVL 6) GAG - Android's Dungeon Robot": 122617,
+    "(LVL 6) GAG - Android's Dungeon Radioactive Man": 122618,
+    "(LVL 6) GAG - Yellow Dumpster at Noiseland Arcade": 122619,
     "(LVL 6) GAG - Kid Drowning in Ball Pit": 122620,
     "(LVL 6) GAG - Crane on Ship": 122621,
     "(LVL 6) GAG - Observatory Alarm": 122622,
     "(LVL 6) GAG - Perpetual Motion Machine at Observatory": 122623,
     "(LVL 6) GAG - Telescope at Observatory": 122624,
-    "(LVL 6) GAG - (Observatory) Monkey": 122625,
+    "(LVL 6) GAG - Monkey in Observatory": 122625,
     "(LVL 6) GAG - Kamp Krusty Flag": 122626,
     "(LVL 6) GAG - Boar's Head at Kamp Krusty": 122627,
 
@@ -799,9 +797,9 @@ LOCATION_NAME_TO_ID = {
     "(LVL 7) Talk to Graveyard Zombie": 122685,
 
     # Level 7 Races
-    "(LVL 7) Time Trial Race": 122363,
-    "(LVL 7) Circuit Race": 122364,
-    "(LVL 7) Checkpoint Race": 122365,
+    "(LVL 7) RACE - Time Trial Race": 122363,
+    "(LVL 7) RACE - Circuit Race": 122364,
+    "(LVL 7) RACE - Checkpoint Race": 122365,
 
     # Level 7 Cards
     "(LVL 7) CARD - Flanders Bomb Shelter": 123087,
@@ -878,8 +876,8 @@ LOCATION_NAME_TO_ID = {
     "(LVL 7) WASP - School Roof 2": 122646,
     "(LVL 7) WASP - Bridge Barricade": 122647,
     "(LVL 7) WASP - Bridge Frame by Cletus": 122648,
-    "(LVL 7) WASP - TrailerPark 1": 122649,
-    "(LVL 7) WASP - TrailerPark 2": 122650,
+    "(LVL 7) WASP - Trailer Park 1": 122649,
+    "(LVL 7) WASP - Trailer Park 2": 122650,
     "(LVL 7) WASP - Barn Silo": 122651,
     "(LVL 7) WASP - Power Plant Parking lot": 122652,
     "(LVL 7) WASP - Mr. Burns Office": 122653,
@@ -921,7 +919,7 @@ location_name_groups = {
         },
         f"Level {level} Races": {
             name for name in LOCATION_NAME_TO_ID
-            if name.startswith(f"(LVL {level})") and "Race" in name
+            if name.startswith(f"(LVL {level}) RACE")
         },
         f"Level {level} Cards": {
             name for name in LOCATION_NAME_TO_ID
@@ -993,7 +991,7 @@ def create_regular_locations(world: SimpsonsHitNRunWorld):
 
         lvl_race_locs = [
             name for name in LOCATION_NAME_TO_ID
-            if re.match(rf"^\(LVL {level_num}\).*Race$", name)
+            if re.match(rf"^\(LVL {level_num}\) RACE - .+", name)
         ]
 
         level_race_regions[i].add_locations(get_location_names_with_ids(lvl_race_locs), SimpsonsHitNRunLocation)

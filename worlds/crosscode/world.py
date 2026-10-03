@@ -1,5 +1,4 @@
 """
-
 This module contains the world class for CrossCode.
 """
 
@@ -21,7 +20,7 @@ from .world_data import static_world_data
 
 from .types.items import ItemData, CrossCodeItem
 from .types.locations import CrossCodeLocation, LocationData
-from .types.condition import LogicDict, Condition, LocationCondition
+from .types.condition import Condition, LocationCondition
 from .types.world import WorldData
 from .types.regions import RegionsData
 from .types.metadata import IncludeOptions
@@ -62,7 +61,6 @@ class CrossCodeWorld(World):
     """
 
     game = NAME
-    author: str = "CodeTriangle"
     web = CrossCodeWebWorld()
 
     world_data: typing.ClassVar[WorldData] = static_world_data
@@ -106,6 +104,10 @@ class CrossCodeWorld(World):
 
     rhombus_hub_unlock: bool
 
+    keyrings: set[str]
+    shop_receive_mode: int | None
+    chest_clearance_levels: dict[int, str]
+
     pre_fill_specific_dungeons_names: dict[str, set[str]]
     pre_fill_any_dungeon_names: set[str]
 
@@ -113,9 +115,7 @@ class CrossCodeWorld(World):
     pre_fill_any_dungeon: list[CrossCodeItem]
 
     dungeon_location_list: dict[str, set[CrossCodeLocation]]
-    dungeon_areas: typing.ClassVar[set[str]] = {"cold-dng", "heat-dng", "shock-dng", "wave-dng", "tree-dng", "final-dng"}
-
-    logic_dict: LogicDict
+    dungeon_areas: typing.ClassVar[list[str]] = ["cold-dng", "heat-dng", "shock-dng", "wave-dng", "tree-dng", "final-dng"]
 
     location_events: dict[str, Location]
 
@@ -430,27 +430,16 @@ class CrossCodeWorld(World):
                 self.pre_fill_any_dungeon_names
             )
 
-        self.logic_dict: LogicDict = {
-            "mode": self.logic_mode,
-            "variables": self.variables,
-            "variable_definitions": self.world_data.variable_definitions,
-            "keyrings": self.world_data.keyring_items if self.options.keyrings.value else set(),
-            "item_progressive_replacements": self.pools.item_progressive_replacements,
-            "chest_clearance_levels": {},
-            "shop_receive_mode": self.options.shop_receive_mode.value if self.options.shop_rando.value else None,
-            "shop_unlock_by_id": self.world_data.shop_unlock_by_id,
-            "shop_unlock_by_shop": self.world_data.shop_unlock_by_shop,
-            "shop_unlock_by_shop_and_id": self.world_data.shop_unlock_by_shop_and_id,
-            "region_botanics_amounts": self.world_data.region_botanics_amounts[self.logic_mode],
-            "botanics_completion_amount": self.options.botanics_completion_amount.value,
-        }
+        self.keyrings = self.world_data.keyring_items if self.options.keyrings.value else set()
+        self.shop_receive_mode = self.options.shop_receive_mode.value if self.options.shop_rando.value else None
+        self.chest_clearance_levels = {}
 
         # Universal Tracker support
         # Anything that is generated in a non-standard fashion on my end has to be brought back into scope here from slot data.
         if hasattr(self.multiworld, "re_gen_passthrough"):
             slot_data: SlotData = self.multiworld.re_gen_passthrough["CrossCode"]
             # Reinterpret the JSON chest clearance levels dict (a string -> string mapping) as an int -> int mapping instead.
-            self.logic_dict["chest_clearance_levels"] = {int(combo_id): clearance for combo_id, clearance in slot_data["options"]["chestClearanceLevels"].items()}
+            self.chest_clearance_levels = {int(combo_id): clearance for combo_id, clearance in slot_data["options"]["chestClearanceLevels"].items()}
 
     @classmethod
     def create_group(cls, multiworld: "MultiWorld", new_player_id: int, players: set[int]) -> World:
@@ -487,7 +476,7 @@ class CrossCodeWorld(World):
                 cum_weights=self._chest_lock_weights
             )[0]
 
-            self.logic_dict["chest_clearance_levels"][data.code] = clearance
+            self.chest_clearance_levels[data.code] = clearance
 
     def create_shops(self):
         # don't filter the shop pool - the regions must always exist to prevent generation errors
@@ -501,7 +490,7 @@ class CrossCodeWorld(World):
                     self.region_dict[from_region].connect(
                         region,
                         f"{from_region} => {shop_name}",
-                        condition_satisfied(self.player, shop.access.cond, None, self.logic_dict) if shop.access.cond else None
+                        condition_satisfied(self.player, shop.access.cond, None, self) if shop.access.cond else None
                     )
 
                     if self.options.shop_send_mode == ShopSendMode.option_per_slot:
@@ -526,7 +515,7 @@ class CrossCodeWorld(World):
             self.region_dict[conn.region_from].connect(
                 self.region_dict[conn.region_to],
                 f"{conn.region_from} => {conn.region_to}",
-                condition_satisfied(self.player, conn.cond, None, self.logic_dict) if conn.cond is not None else None
+                condition_satisfied(self.player, conn.cond, None, self) if conn.cond is not None else None
             )
 
             self.create_event_conditions(conn.cond)
@@ -574,7 +563,7 @@ class CrossCodeWorld(World):
                 self.player,
                 goal.condition if goal.condition is not None else [],
                 None,
-                self.logic_dict
+                self
             )
         )
         self.multiworld.completion_condition[self.player] = lambda state: state.has("Victory", self.player)
@@ -665,14 +654,11 @@ class CrossCodeWorld(World):
                 if not isinstance(loc, CrossCodeLocation):
                     continue
                 if loc.data.access.cond is not None:
-                    add_rule(loc, condition_satisfied(self.player, loc.data.access.cond, loc.data.code, self.logic_dict))
+                    add_rule(loc, condition_satisfied(self.player, loc.data.access.cond, loc.data.code, self))
 
     def get_pre_fill_items(self) -> list[Item]:
         pre_fill_items = self.pre_fill_any_dungeon.copy()
-        # self.dungeon_areas is a set, so sort for deterministic results. This probably isn't necessary in most cases,
-        # but other apworlds could do whatever they like with the returned list, so it is safer to return a list with a
-        # deterministic order.
-        for dungeon in sorted(self.dungeon_areas):
+        for dungeon in self.dungeon_areas:
             pre_fill_items.extend(self.pre_fill_specific_dungeons[dungeon])
         return pre_fill_items
 
@@ -770,7 +756,7 @@ class CrossCodeWorld(World):
     def extend_hint_information(self, hint_data: dict[int, dict[int, str]]):
         ours = hint_data.setdefault(self.player, {})
 
-        for loc, clearance in self.logic_dict["chest_clearance_levels"].items():
+        for loc, clearance in self.chest_clearance_levels.items():
             ours[loc] = clearance
 
     def fill_slot_data(self) -> SlotData:
@@ -805,7 +791,7 @@ class CrossCodeWorld(World):
                 "meteorPassage": bool(self.options.vw_meteor_passage.value),
                 "closedGaia": self.options.closed_gaia.value,
                 "vtSkip": bool(self.options.vt_skip.value),
-                "keyrings": [self.world_data.single_items_dict[name].item_id for name in self.logic_dict["keyrings"]],
+                "keyrings": [self.world_data.single_items_dict[name].item_id for name in self.keyrings],
                 "chestReveal": bool(self.options.chest_reveal.value),
                 "allowBoosterGrinding": bool(self.options.allow_booster_grinding),
                 "questRando": bool(self.options.quest_rando.value),
@@ -816,7 +802,7 @@ class CrossCodeWorld(World):
                 "shopSendMode": shop_send_mode_string,
                 "shopReceiveMode": shop_receive_mode_string,
                 "shopDialogHints": bool(self.options.shop_dialog_hints.value),
-                "chestClearanceLevels": self.logic_dict["chest_clearance_levels"],
+                "chestClearanceLevels": self.chest_clearance_levels,
                 "botanicsCompletionAmount": self.options.botanics_completion_amount.value,
             }
         }

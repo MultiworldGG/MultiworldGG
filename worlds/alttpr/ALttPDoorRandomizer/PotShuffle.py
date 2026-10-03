@@ -909,7 +909,8 @@ def shuffle_pots(world, player):
                     ledge.locations.append(basement.locations.pop())
                 elif new_pot.room == 'Swamp Push Statue':
                     from Rules import set_rule
-                    set_rule(world.get_entrance('Swamp Push Statue NE', player), lambda state: state.has('Cane of Somaria', player))
+                    from source.logic.AccessRule import Has
+                    set_rule(world.get_entrance('Swamp Push Statue NE', player), Has('Cane of Somaria', player))
                     world.get_door('Swamp Push Statue NW', player).blocked = True
                 elif new_pot.room == 'Thieves Attic Hint':
                     # Rule is created based on barrier
@@ -949,7 +950,8 @@ def shuffle_pot_switches(world, player):
                     ledge.locations.append(basement.locations.pop())
                 elif new_pot.room == 'Swamp Push Statue':
                     from Rules import set_rule
-                    set_rule(world.get_entrance('Swamp Push Statue NE', player), lambda state: state.has('Cane of Somaria', player))
+                    from source.logic.AccessRule import Has
+                    set_rule(world.get_entrance('Swamp Push Statue NE', player), Has('Cane of Somaria', player))
                     world.get_door('Swamp Push Statue NW', player).blocked = True
                 elif new_pot.room == 'Thieves Attic Hint':
                     # Rule is created based on barrier

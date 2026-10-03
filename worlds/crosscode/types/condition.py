@@ -1,29 +1,19 @@
+from __future__ import annotations
 import typing
 import abc
-from dataclasses import field, dataclass
+from dataclasses import dataclass, field
 
 from BaseClasses import CollectionState
 from ..options import ShopReceiveMode
 
 from .items import ItemPoolEntry
 
-class LogicDict(typing.TypedDict):
-    mode: str
-    variables: dict[str, list[str]]
-    variable_definitions: dict[str, dict[str, list["Condition"]]]
-    keyrings: set[str]
-    item_progressive_replacements: dict[str, list[tuple[str, int]]]
-    chest_clearance_levels: dict[int, str]
-    shop_receive_mode: int | None
-    shop_unlock_by_id: dict[int, ItemPoolEntry]
-    shop_unlock_by_shop: dict[str, ItemPoolEntry]
-    shop_unlock_by_shop_and_id: dict[tuple[str, int], ItemPoolEntry]
-    region_botanics_amounts: dict[str, int]
-    botanics_completion_amount: int
+if typing.TYPE_CHECKING:
+    from ..world import CrossCodeWorld
 
 class Condition(abc.ABC):
     @abc.abstractmethod
-    def satisfied(self, state: CollectionState, player: int, location: int | None, args: LogicDict) -> bool:
+    def satisfied(self, player: int, location: int | None, world: CrossCodeWorld) -> typing.Callable[[CollectionState], bool]:
         pass
 
 @dataclass
@@ -31,61 +21,69 @@ class ItemCondition(Condition):
     item_name: str
     amount: int = 1
 
-    def satisfied(self, state: CollectionState, player: int, location: int | None, args: LogicDict) -> bool:
+    def satisfied(self, player: int, location: int | None, world: CrossCodeWorld) -> typing.Callable[[CollectionState], bool]:
         target = self.amount
-        if self.item_name in args["keyrings"]:
+        if self.item_name in world.keyrings:
             target = 1
 
-        replacements = args["item_progressive_replacements"]
+        replacements = world.pools.item_progressive_replacements
 
         if self.item_name in replacements:
-            for prog_item_name, quantity in replacements[self.item_name]:
-                if state.has(prog_item_name, player, quantity):
-                    return True
+            def callback(state: CollectionState) -> bool:
+                for prog_item_name, quantity in replacements[self.item_name]:
+                    if state.has(prog_item_name, player, quantity):
+                        return True
+                return  state.has(self.item_name, player, target)
 
-        return state.has(self.item_name, player, target)
+            return callback
+
+        return lambda state: state.has(self.item_name, player, target)
 
 @dataclass
 class QuestCondition(Condition):
     quest_name: str
+    event_name: str = field(init=False)
 
-    def satisfied(self, state: CollectionState, player: int, location: int | None, args: LogicDict) -> bool:
-        return state.has(f"{self.quest_name} (Event)", player)
+    def __post_init__(self):
+        self.event_name = f"{self.quest_name} (Event)"
+
+    def satisfied(self, player: int, location: int | None, world: CrossCodeWorld) -> typing.Callable[[CollectionState], bool]:
+        return lambda state: state.has(self.event_name, player)
 
 @dataclass
 class LocationCondition(Condition):
     location_name: str
+    event_name: str = field(init=False)
 
-    def satisfied(self, state: CollectionState, player: int, location: int | None, args: LogicDict) -> bool:
-        return state.has(f"{self.location_name} (Event)", player)
+    def __post_init__(self):
+        self.event_name = f"{self.location_name} (Event)"
+
+    def satisfied(self, player: int, location: int | None, world: CrossCodeWorld) -> typing.Callable[[CollectionState], bool]:
+        return lambda state: state.has(self.event_name, player)
 
 @dataclass
 class RegionCondition(Condition):
     target_mode: typing.Optional[str]
     region_name: str
 
-    def satisfied(self, state: CollectionState, player: int, location: int | None, args: LogicDict) -> bool:
+    def satisfied(self, player: int, location: int | None, world: CrossCodeWorld) -> typing.Callable[[CollectionState], bool]:
         # target_mode == None means that it matches in all modes.
         # so if target_mode == None, check if we can reach that region.
         # else, if the target mode matches, also check if we can reach that region.
         # otherwise, if the target mode does not match, return true (assume that it's being ANDed with other conditions)
 
-        mode: str = args["mode"]
+        mode: str = world.logic_mode
         if self.target_mode is None or mode == self.target_mode:
-            # BAD BAD BAD
-            # This will check *every time* this condition is called whether the region exists.
-            # I'm only doing this because I know I'm going to optimize it later.
-            # If we still have to check region existence in the refactor we have to calculate it early.
-            if self.region_name not in state.multiworld.regions.region_cache[player]:
-                return False
-            return state.can_reach_region(self.region_name, player)
+            if self.region_name not in world.multiworld.regions.region_cache[player]:
+                return lambda _: False
+            return lambda state: state.can_reach_region(self.region_name, player)
 
-        return True
+        return lambda _: True
 
 @dataclass
 class AnyElementCondition(Condition):
-    def satisfied(self, state: CollectionState, player: int, location: int | None, args: LogicDict) -> bool:
-        return any([
+    def satisfied(self, player: int, location: int | None, world: CrossCodeWorld) -> typing.Callable[[CollectionState], bool]:
+        return lambda state: any([
             state.has("Heat", player),
             state.has("Cold", player),
             state.has("Shock", player),
@@ -96,32 +94,40 @@ class AnyElementCondition(Condition):
 class OrCondition(Condition):
     subconditions: list[Condition]
 
-    def satisfied(self, state: CollectionState, player: int, location: int | None, args: LogicDict) -> bool:
-        return any(map(lambda x: x.satisfied(state, player, location, args), self.subconditions))
+    def satisfied(self, player: int, location: int | None, world: CrossCodeWorld) -> typing.Callable[[CollectionState], bool]:
+        callbacks = [x.satisfied(player, location, world) for x in self.subconditions]
+        return lambda state: any(map(lambda x: x(state), callbacks))
 
 @dataclass
 class AndCondition(Condition):
     subconditions: list[Condition]
 
-    def satisfied(self, state: CollectionState, player: int, location: int | None, args: LogicDict) -> bool:
-        return all(map(lambda x: x.satisfied(state, player, location, args), self.subconditions))
+    def satisfied(self, player: int, location: int | None, world: CrossCodeWorld) -> typing.Callable[[CollectionState], bool]:
+        callbacks = [x.satisfied(player, location, world) for x in self.subconditions]
+        return lambda state: all(map(lambda x: x(state), callbacks))
 
 @dataclass
 class VariableCondition(Condition):
     name: str
 
-    def satisfied(self, state: CollectionState, player: int, location: int | None, args: LogicDict) -> bool:
-        variables = args["variables"]
-        variable_definitions = args["variable_definitions"]
+    def satisfied(self, player: int, location: int | None, world: CrossCodeWorld) -> typing.Callable[[CollectionState], bool]:
+        variables = world.variables
+        variable_definitions = world.world_data.variable_definitions
 
         if self.name not in variables:
-            return True
+            return lambda _: True
 
-        for value in variables[self.name]:
-            if not all(map(lambda c: c.satisfied(state, player, location, args), variable_definitions[self.name][value])):
-                return False
+        callbacks = sum(
+            [
+                [
+                    x.satisfied(player, location, world)
+                    for x in variable_definitions[self.name][value]
+                ] for value in variables[self.name]
+            ],
+            start=[]
+        )
 
-        return True
+        return lambda state: all(map(lambda x: x(state), callbacks))
 
 @dataclass
 class VariableEntryCondition(Condition):
@@ -129,10 +135,9 @@ class VariableEntryCondition(Condition):
     value: str
     desired: bool
 
-    def satisfied(self, state: CollectionState, player: int, location: int | None, args: LogicDict) -> bool:
-        variables = args["variables"]
-
-        return (self.value in variables[self.name]) == self.desired
+    def satisfied(self, player: int, location: int | None, world: CrossCodeWorld) -> typing.Callable[[CollectionState], bool]:
+        valid = (self.value in world.variables[self.name]) == self.desired
+        return lambda _: valid
 
 @dataclass
 class ChestKeyCondition(Condition):
@@ -144,8 +149,8 @@ class ChestKeyCondition(Condition):
         "Gold": "Radiant Key",
     }
 
-    def satisfied(self, state: CollectionState, player: int, location: int | None, args: LogicDict) -> bool:
-        chest_levels = args["chest_clearance_levels"]
+    def satisfied(self, player: int, location: int | None, world: CrossCodeWorld) -> typing.Callable[[CollectionState], bool]:
+        chest_levels = world.chest_clearance_levels
 
         if location is None:
             raise RuntimeError("An event cannot have a chest key condition")
@@ -153,44 +158,50 @@ class ChestKeyCondition(Condition):
         level: str = chest_levels.get(location, self.default_level)
 
         if level == "Default":
-            return True
+            return lambda _: True
 
-        return state.has(ChestKeyCondition.clearance_items[level], player)
+        return lambda state: state.has(ChestKeyCondition.clearance_items[level], player)
 
 @dataclass
 class ShopSlotCondition(Condition):
     shop_name: str
     item_id: int
 
-    def satisfied(self, state: CollectionState, player: int, location: int | None, args: LogicDict) -> bool:
-        if args["shop_receive_mode"] is None:
-            return True
-        if args["shop_receive_mode"] == ShopReceiveMode.option_per_item_type:
-            return state.has(args["shop_unlock_by_id"][self.item_id].item.name, player)
-        if args["shop_receive_mode"] == ShopReceiveMode.option_per_shop:
-            return state.has(args["shop_unlock_by_shop"][self.shop_name].item.name, player)
-        if args["shop_receive_mode"] == ShopReceiveMode.option_per_slot:
-            return state.has(args["shop_unlock_by_shop_and_id"][self.shop_name, self.item_id].item.name, player)
-        return True
+    def satisfied(self, player: int, location: int | None, world: CrossCodeWorld) -> typing.Callable[[CollectionState], bool]:
+        if world.shop_receive_mode is None:
+            return lambda _: True
+        if world.shop_receive_mode == ShopReceiveMode.option_per_item_type:
+            return lambda state: state.has(world.world_data.shop_unlock_by_id[self.item_id].item.name, player)
+        if world.shop_receive_mode == ShopReceiveMode.option_per_shop:
+            return lambda state: state.has(world.world_data.shop_unlock_by_shop[self.shop_name].item.name, player)
+        if world.shop_receive_mode == ShopReceiveMode.option_per_slot:
+            return lambda state: state.has(world.world_data.shop_unlock_by_shop_and_id[self.shop_name, self.item_id].item.name, player)
+        return lambda _: True
 
 @dataclass
 class BotanicsCompletionCondition(Condition):
     amount: float
 
-    def satisfied(self, state: CollectionState, player: int, location: int | None, args: LogicDict) -> bool:
-        collected = sum([
-            amount
-            for region, amount in args["region_botanics_amounts"].items()
-            # See the other comment beginning with "BAD BAD BAD" -- this is bad for the same reason
-            if region in state.multiworld.regions.region_cache[player]
-            and state.can_reach_region(region, player)
-        ])
+    def satisfied(self, player: int, location: int | None, world: CrossCodeWorld) -> typing.Callable[[CollectionState], bool]:
+        regions = {
+            region: amount
+            for region, amount in world.world_data.region_botanics_amounts[world.logic_mode].items()
+            if region in world.multiworld.regions.region_cache[player]
+        }
 
-        return collected / args["botanics_completion_amount"] >= self.amount
+        def satisfied_internal(state: CollectionState):
+            collected = sum([
+                amount
+                for region, amount in regions.items()
+                if state.can_reach_region(region, player)
+            ])
+
+            return collected / world.options.botanics_completion_amount >= self.amount
+        return satisfied_internal
 
 class NeverCondition(Condition):
-    def satisfied(self, state: CollectionState, player: int, location: int | None, args: LogicDict) -> bool:
-        return False
+    def satisfied(self, player: int, location: int | None, world: CrossCodeWorld) -> typing.Callable[[CollectionState], bool]:
+        return lambda _: False
 
 __all__ = [
     "Condition",

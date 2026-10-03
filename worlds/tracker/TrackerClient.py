@@ -2,22 +2,20 @@ import asyncio
 import logging
 import traceback
 from collections.abc import Callable
-
 from CommonClient import CommonContext, get_base_parser, server_loop, ClientCommandProcessor, handle_url_arg
 import os
 import sys
 from typing import Union, TYPE_CHECKING
 
 
-from BaseClasses import CollectionState, Location
-from Utils import __version__, async_start, open_filename, persistent_load, persistent_store, instance_name
-apname = instance_name if instance_name else "AP"
+from BaseClasses import CollectionState, Location, LocationProgressType
+from Utils import __version__, async_start, open_filename, persistent_load, persistent_store
 from worlds import AutoWorld
 from . import TrackerWorld, UTMapTabData, CurrentTrackerState, UT_VERSION
 from .TrackerCore import TrackerCore
 from collections import Counter, defaultdict
 from MultiServer import mark_raw
-from NetUtils import NetworkItem, JSONMessagePart, HintStatus
+from NetUtils import NetworkItem, JSONMessagePart
 
 try:
     from Utils import gui_enabled
@@ -73,9 +71,12 @@ class TrackerCommandProcessor(ClientCommandProcessor):
     def __init__(self, ctx: CommonContext):
         super().__init__(ctx)
         try:
-            from worlds.tracker_addons import UT_FUNCTIONS
+            from worlds import tracker_addons
             from functools import update_wrapper
-            for name, function in UT_FUNCTIONS.items():
+            # Older addon packages expose only the command registry.
+            functions = (tracker_addons.get_functions() if hasattr(tracker_addons, "get_functions")
+                         else tracker_addons.UT_FUNCTIONS)
+            for name, function in functions.items():
                 if name not in self.commands:
                     function.__doc__ = f"Provided by : {function.__module__}\n{function.__doc__}"
                     def temp_lambda(function:Callable=function):
@@ -427,6 +428,7 @@ class TrackerGameContext(CommonContext):
             async_start(self.disconnect(False), name="disconnecting")
             raise e
         if updateTracker_ret.state is None:
+            if self.tracker_page is not None: self.tracker_page.addLine("Something went wrong, run /faris_asked and post the result in the Universal Tracker discord channel", False)
             return updateTracker_ret # core.updateTracker failed, just pass it along
         current_world = self.tracker_core.get_current_world()
         if current_world is None:
@@ -710,8 +712,12 @@ class TrackerGameContext(CommonContext):
         self.ui.loc_border = m["location_border_thickness"] if "location_border_thickness" in m else 8  # default location size per poptracker/src/core/map.h
         temp_locs = [location for location in self.locs]
         map_locs = []
-        hidden_locations = getattr(self.tracker_core.get_current_world(), "ut_map_page_hidden_locations", {})
-        current_hidden_locs = hidden_locations.get(m["name"], [])
+        current_world = self.tracker_core.get_current_world()
+        assert current_world
+        hidden_locations = getattr(current_world, "ut_map_page_hidden_locations", {})
+        current_hidden_locs:list[str] = hidden_locations.get(m["name"], [])
+        if self.hide_excluded:
+            current_hidden_locs.extend([loc.name for loc in current_world.get_locations() if loc.address is not None and loc.progress_type == LocationProgressType.EXCLUDED])
         while temp_locs:
             temp_loc = temp_locs.pop()
             if "map_locations" in temp_loc:
@@ -854,10 +860,52 @@ class TrackerGameContext(CommonContext):
         from kvui import MDRecycleView, HoverBehavior, MDLabel, MDDivider
         from kivymd.uix.tooltip import MDTooltip
         from kivy.uix.widget import Widget
+        from kivy.uix.scatterlayout import ScatterLayout
+        from kivy.uix.stencilview import StencilView
+        from kivy.graphics.transformation import Matrix
         from kivy.properties import StringProperty, NumericProperty, BooleanProperty
         from kivy.metrics import dp
         from kvui import ApAsyncImage, ToolTip
         from .TrackerKivy import SomethingNeatJustToMakePythonHappy
+
+        class BoxStencil(BoxLayout, StencilView):
+            pass
+
+        # ScatterLayout allows for panning with mouse but not scrolling to zoom (only multi-finger pinch)
+        # so we add our own mouse scroll handler
+        class ScrollWheelZoomScatterLayout(ScatterLayout):
+            zoomOutFactor = 1.1
+            zoomInFactor = 1 / zoomOutFactor
+            def on_touch_down(self, touch):
+                if self.parent and not self.parent.collide_point(*touch.pos):
+                    return False
+                # Kind of confusing but mouse scroll is under touch
+                if touch.is_mouse_scrolling:
+                    factor = self.zoomInFactor if touch.button == 'scrollup' else self.zoomOutFactor
+                    # Check if new zoom is within limits so user is less likely to lose the map
+                    if self.scale_min <= self.scale * factor <= self.scale_max:
+                        mat = Matrix().scale(factor, factor, 1)
+                        self.apply_transform(mat, anchor=touch.pos)
+                    return True
+                return super().on_touch_down(touch)
+
+            # We have to overwrite all the touch actions to return False since otherwise it blocks
+            # clicks to other UI elements, even when it's clipped by the stencil view. Not sure
+            # if Kivy has a better way to keep the scatterlayout from escaping its view.
+            def on_touch_move(self, touch):
+                if touch in self._touches:
+                    return super().on_touch_move(touch)
+                return False
+
+            def on_touch_up(self, touch):
+                if touch in self._touches:
+                    return super().on_touch_up(touch)
+                return False
+
+            def recenter_view(self):
+                self.scale = 1.0
+                self.pos = (0, 0)
+                self.transform = Matrix()
 
         class CheckItem(BoxLayout):
             text = StringProperty()
@@ -1197,38 +1245,19 @@ class TrackerGameContext(CommonContext):
             enable_map = BooleanProperty(False)
             current_map = StringProperty("")
             auto_tab = BooleanProperty(True)
-            base_title = f"Tracker {UT_VERSION}{' Addons ' if UT_ADDONS_VERSION else ' '}{UT_ADDONS_VERSION if UT_ADDONS_VERSION else '' } for {apname} version"  # core appends ap version so this works
+            base_title = f"Tracker {UT_VERSION}{' Addons ' if UT_ADDONS_VERSION else ' '}{UT_ADDONS_VERSION if UT_ADDONS_VERSION else '' } for AP version"  # core appends ap version so this works
 
             def build(self):
-                def check_logic(data) -> tuple[bool, bool]:
-                    ctx = ui.get_running_app().ctx
-                    found = data["status"]["hint"]["status"] == HintStatus.HINT_FOUND
-                    in_logic = data["status"]["hint"]["location"] in ctx.tracker_core.locations_available
-                    return found, in_logic
-
-                def get_logic_string(found: bool, in_logic: bool) -> str:
-                    return "Found" if found else "In Logic" if in_logic else "Not Found"
-
-                def sort_hint_by_logic(data: dict) -> int:
-                    found, in_logic = check_logic(data)
-                    if found:
-                        return 2
-                    if in_logic:
-                        return 0
-                    return 1
-
                 class TrackerHintLabel(HintLabel):
                     logic_text = StringProperty("")
 
                     def __init__(self, *args, **kwargs):
                         super().__init__(*args, **kwargs)
                         logic = TooltipLabel(
-                            sort_key="in_logic",
+                            sort_key="finding",  # is lying to computer and player but fixing it will need core changes
                             text="", halign='center', valign='center', pos_hint={"center_y": 0.5},
                             )
                         self.add_widget(logic)
-                        from kivy.weakproxy import WeakProxy
-                        self.ids["in_logic"] = WeakProxy(logic)
 
                         def set_text(_, value):
                             logic.text = value
@@ -1240,12 +1269,23 @@ class TrackerGameContext(CommonContext):
                             self.logic_text = "[u]In Logic[/u]"
                             return
                         ctx = ui.get_running_app().ctx
-                        found, in_logic = check_logic(data)
+                        if "status" in data:
+                            loc = data["status"]["hint"]["location"]
+                            from NetUtils import HintStatus
+                            found = data["status"]["hint"]["status"] == HintStatus.HINT_FOUND
+                        else:
+                            prefix = len("[color=00FF7F]")
+                            suffix = len("[/color]")
+                            loc_name = data["location"]["text"][prefix:-1*suffix]
+                            loc = AutoWorld.AutoWorldRegister.world_types[ctx.game].location_name_to_id.get(loc_name)
+                            found = "Not Found" not in data["found"]["text"]
 
+                        in_logic = loc in ctx.tracker_core.locations_available
                         self.logic_text = rv.parser.handle_node({
-                            "type": "color",
-                            "color": "green" if found else "orange" if in_logic else "red",
-                            "text": get_logic_string(found, in_logic)})
+                            "type": "color", "color": "green" if found else
+                            "orange" if in_logic else "red",
+                            "text": "Found" if found else "In Logic" if in_logic
+                            else "Not Found"})
 
                 def kv_post(self, base_widget):
                     self.viewclass = TrackerHintLabel
@@ -1253,17 +1293,6 @@ class TrackerGameContext(CommonContext):
 
                 container = super().build()
                 self.ctx.build_gui(self)
-
-                from kvui import ColumnSorter, ColumnFilter
-                self.hint_log.column_sorters.append(ColumnSorter(
-                    "in_logic",
-                    sort_hint_by_logic,
-                    False
-                ))
-                hint_filt = ColumnFilter("in_logic",
-                                         lambda element: get_logic_string(*check_logic(element)))
-                hint_filt.option_list = {"Found", "In Logic", "Not Found"}
-                self.hint_log.column_filters.append(hint_filt)
 
                 return container
 

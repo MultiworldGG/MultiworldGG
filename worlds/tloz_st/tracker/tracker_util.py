@@ -615,15 +615,16 @@ def get_hidden_map_icons(world: "SpiritTracksWorld"):
     # Hard coded examples
     if world.options.rabbitsanity.value == 4 and "rabbits" in world.options.extra_events.value:
         realm_lookup = {
-            4: "Forest Realm",
-            5: "Snow Realm",
-            6: "Ocean Realm",
-            7: "Fire Realm"
+            0x400: "Forest Realm",
+            0x500: "Snow Realm",
+            0x600: "Ocean Realm",
+            0x700: "Fire Realm"
         }
         for rabbit_loc in LOCATION_GROUPS["Unique Rabbits"]:
             if rabbit_loc in world.active_rabbit_locations:
                 entr_hidden.setdefault("Overview", []).append(f"EVENT: {rabbit_loc}")
-                entr_hidden.setdefault(realm_lookup[LOCATIONS_DATA[rabbit_loc]["stage_id"]], []).append(f"EVENT: {rabbit_loc}")
+                for scene in LOCATIONS_DATA[rabbit_loc].scenes:
+                    entr_hidden.setdefault(realm_lookup[scene], []).append(f"EVENT: {rabbit_loc}")
 
     # Hide interiors from overview
     for data in interior_data:

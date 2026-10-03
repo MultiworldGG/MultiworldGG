@@ -251,6 +251,7 @@ def make_overworld_logic(player: int, origin_name: str, world):
         ["tos 7f rail map", "event_7f", False, None],
 
         ["tos 3", "tos 8f", True, None],
+        ["tos 8f", "tos 8f n", False, has_bombs | has_boomerang | hard_logic],
         ["tos 8f", "tos 8f bombs", False, has_bombs],
         ["tos 8f", "tos 9f phantom", False, vanilla_tears | can_possess_phantom(3)], #
         ["tos 9f phantom", "tos 9f nw", False, has_whirlwind],
@@ -556,8 +557,8 @@ def make_overworld_logic(player: int, origin_name: str, world):
 
         # =========== Snow Sanctuary ==========
 
-        ["snow realm", "snow sanc tracks", False, Has("Snow Sanctuary Cave Key") & has_cannon],
-        ["snow sanc tracks", "snow realm", False, has_cannon],
+        ["snow realm", "snow sanc tracks", True, Has("Snow Sanctuary Cave Key") & (has_cannon | has_source("Snow"))],
+        # ["snow sanc tracks", "snow realm", False, has_cannon],
         ["blizzard temple tracks", "snow sanc tracks", True, has_temple_tracks("Blizzard") & has_glyph("Snow")],
         ["snow sanc tracks", "snow sanc station", True, has_glyph("Snow")],
         ["snow sanc station", "snow sanc", False, has_glyph("Snow")],
@@ -671,7 +672,8 @@ def make_overworld_logic(player: int, origin_name: str, world):
         ["snowdrift station", "snowdrift", False, has_tracks("Snowdrift Station")],
         ["snowdrift", "snowdrift station", False, None],
         ["snowdrift", "snowdrift cave", True, None],
-        ["snowdrift cave", "snowdrift reward", False, (has_range | (has_sword_beam & hard_logic)) & can_kill_freezards],
+        ["snowdrift cave", "snowdrift reward", False, (has_range | (has_sword_beam & hard_logic))
+         & can_kill_freezards & (hard_logic | (has_boomerang & has_whirlwind))],  # vanilla hint reqs
 
         ["snowdrift cave", "octive arena", True, None],
         ["snowdrift cave", "frostflame cave", True, None],
@@ -1318,10 +1320,11 @@ def make_overworld_logic(player: int, origin_name: str, world):
         ["dt b2 n", "dt b2 s", False, None],
         ["dt b2 n", "dt pre skeldritch", False, None],
         ["dt pre skeldritch", "dt b2 n", False, has_sand_wand & has_good_damage],
-        ["dt pre skeldritch", "dt skeldritch", False, has_sand_wand & has_good_damage],
+        ["dt pre skeldritch", "dt post skeldritch", False, has_sand_wand & has_good_damage],
         # Whip is not good enough damage
-        ["dt skeldritch", "skeldritch event", False, None],
-        ["dt skeldritch", "skeldritch goal", False, None],
+        ["dt post skeldritch", "dt skeldritch safety", False, None],
+        ["dt skeldritch safety", "skeldritch event", False, None],
+        ["dt skeldritch safety", "skeldritch goal", False, None],
 
         ["dt b2 n", "dt blue warp", True, None],
         ["dt blue warp", "desert temple lobby", False, None],

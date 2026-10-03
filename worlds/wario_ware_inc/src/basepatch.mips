@@ -1,0 +1,101 @@
+.gba
+
+.open "WarioWare, Inc. - Mega Microgame$! (USA).gba", "wario.gba", 0x08000000
+
+; Expand to 16MiB
+; Fill with 0xFF because bsdiff plays better with that
+.orga 0x00800000
+.thumb
+    .fill 0x00800000, 0xFF
+
+; Disables unlocking microgames
+.org 0x080090DC
+.thumb
+    nop
+
+; Disables unlocking stages
+.org 0x08000674
+.thumb
+    bx lr
+
+; Disables unlocking special stages
+.org 0x080163b8
+.thumb
+    mov r0, #0x00
+    bx lr
+
+.org 0x08000524
+.thumb
+    ; disables the introduction stage
+    mov r0, #0
+    strb r0, [r4, #0]
+
+    ; enable all intro cutscenes as seen
+    mov r0, #0xFF
+    mov r5, #0x02
+    mov r4, #0x04
+    lsl r5, r5, #0x18
+    lsl r4, r4, #0x08
+    strb r0, [r5, r4]
+    add  r4, #0x01
+    strb r0, [r5, r4]
+
+    ; premature return, skips setting default high scores
+    add sp, #0x04
+    pop {r4, r5}
+    pop {r0}
+    bx r0
+
+; Auto skip cutscenes
+.org 0x0800923A
+.thumb
+    ldr r0, =skip_cutscenes+1
+    mov lr, pc
+    bx r0
+
+.pool
+
+.org 0x08800100
+.thumb
+    skip_cutscenes:
+        ldr r1, =0x03003848
+        ldrb r1, [r1, #0x00]
+        cmp r1, #0x1B
+        bne not_credits
+        ldr r0, =0x03003FF4
+        ldrh r1, [r0, #0x00]
+        mov r0, #0x0B
+        and r0, r1
+        cmp r0, #0x00
+        beq auto_skip
+    not_credits:
+        ldr r1, =0x08009250+1
+        bx r1
+    
+    auto_skip:
+        ldr r1, =0x0800929A+1
+        bx r1
+
+.pool
+
+; Allow skipping ending cutscenes
+;.org 0x08009242
+;    nop 
+
+; Allow accessing microgames even if the stage is not unlocked
+.org 0x08012fe8
+.thumb
+    b 0x08012ff0
+.org 0x080135ec
+.thumb
+    b 0x080135f4
+.org 0x08012d10
+.thumb
+    b 0x08012d18
+.org 0x08013536
+.thumb
+    nop 
+
+
+.close
+

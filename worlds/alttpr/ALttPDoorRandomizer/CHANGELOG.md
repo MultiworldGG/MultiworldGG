@@ -1,5 +1,50 @@
 # Changelog
 
+# 0.8.0.1
+- \~Merged in DR v1.5.7~
+  - Static Key Logic
+- Fixed issue with bunny walking logic
+
+# 0.8.0.0
+- Implemented new balanced flute shuffle algorithm
+- New OW map check tile gfx for Grid OW Layout
+- Adding visual terrain screen changes for disabled edges in Grid OW
+- Implemented a new rules framework
+- Revamped bunny walking logic with new rules framework (fixed memory leak)
+- Fixed loading saved settings that default to enabled
+- Inverted Pyramid Entrance/Hole is removed in favor of base Pyramid Entrance/Hole
+- Fixed Murahdahla escape rule
+- Fix missing mirror connection in EDDM Bottom to EDM
+- Fixed some post-aga and follower gfx to use correct palettes
+- Fix to delete dropped followers on S+Q
+- Fix marking post-aga OW screen as visited on boss defeat
+- Fixed many errors during ER
+  - Fixed ER error by allowing Sanc to properly shuffle to DW
+  - Placing same-world restrictive entrances first to avoid pool depletion
+  - Fix issue with SW placing too late in Lite ER and pool drying up
+  - Fix ER skull_layout issue with follow_linked
+  - Fixed issue with District ER not resolving SW back connector
+  - Fix District ER dropdown placement error
+- Added Test Suite Automation and web service Explorer
+- Fixed test cases from dysfunctional state
+
+# 0.7.1.5
+- Fixed extra 300-Rupee items in item pool
+- Customized item_pool no longer flexibly expands when modes add item locations, use item_pool_adjust instead
+- Added missing shuffleganon setting in Customizer
+- Fixed many potential non-deterministic RNG violators
+- Fixed some issues with forced_enemy: gfx and replacing keydrop enemies
+- Fixed some error placement issues with prize shuffle, follower shuffle under some niche modes
+- Fixed some issues with nearby dungeon items
+- Fixed some issues with district, major_only, and dungeon item fill combining with some of our newer mode additions
+- Fixed various errors while placing entrances in some ER modes
+
+# 0.7.1.4
+- 2026 Easter Festive Fixes
+- Fixed forced_enemy option to abide enemy denials
+- Fixed logic issue with EDM Mirror Clip
+- Fixed broken extra crowd control features (actual CC was fine)
+
 # 0.7.1.1 / 0.7.1.2 / 0.7.1.3
 - 2026 Easter Festive Fixes
 

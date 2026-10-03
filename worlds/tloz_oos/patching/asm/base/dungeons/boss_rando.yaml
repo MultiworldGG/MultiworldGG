@@ -1,0 +1,210 @@
+######## Aquamentus
+
+11/497f/: |
+  /ifdef d1_boss
+  db d1_boss
+  /endif
+
+11/4981/: |
+  /ifdef d1_boss_y
+  db d1_boss_y, d1_boss_x
+  /endif
+
+0e/635f/: |
+  ; Make aquamentus open the room below
+  /ifdef d1_boss_in_d3
+  dw $6a9e ; enemyCode7a@dead
+  /endif
+
+0e/63b3/: |
+  ; Make aquamentus not wait for link to stop walking in d3 (due to the trampoline)
+  /ifdef d1_boss_in_d3
+  nop
+  /endif
+
+######## Dodongo
+
+11/4ab4/: |
+  /ifdef d2_boss
+  db d2_boss
+  /endif
+
+11/49b6/: |
+  /ifdef d2_boss_y
+  db d2_boss_y, d2_boss_x
+  /endif
+
+0e/672b/: |
+  ; Make dodongo open the room below
+  /ifdef d2_boss_in_d3
+  dw $6a9e ; enemyCode7a@dead
+  /endif
+
+0e/6802/: |
+  ; Make dodongo not wait for link to stop walking in d3 (due to the trampoline)
+  /ifdef d2_boss_in_d3
+  nop
+  /endif
+
+# Make dodongo run away from holes
+0e/67d9/: |
+  /ifdef d2_boss_in_d3
+  jp nz, dodongo_reset_movement_in_hole
+  /endif
+
+0e//dodongo_reset_movement_in_hole: |
+  /ifdef d2_boss_in_d3
+  sub $48
+  cp $04
+  jp nc,$68eb ; dodongo_resetMovement
+  jp $67dc ; @in_spikes
+  /endif
+
+# Move the d6 reward
+11/7834/: |
+  /ifdef d2_boss_in_d6
+  db $28
+  /endif
+
+# Accept a different floor
+0e/6923/: |
+  /ifdef d2_boss_in_d1
+  db $3e
+  /endif
+0e/6926/: |
+  /ifdef d2_boss_in_other_dungeons
+  sub $a0
+  cp $10
+  /else
+  /ifdef d2_boss_in_d6
+  sub $54
+  cp $04
+  /endif
+
+######## Mothula
+
+11/4c38/: |
+  /ifdef d3_boss
+  db d3_boss
+  /endif
+
+11/4c3a/: |
+  /ifdef d3_boss_y
+  db d3_boss_y, d3_boss_x
+  /endif
+
+# Jump directly to the jump to regular death, since @dead is reused by other bosses
+0e/6a79/: |
+  /ifdef d3_boss_not_in_d3
+  db $31
+  /endif
+
+######## Gohma
+
+11/4c72/: |
+  /ifdef d4_boss
+  db d4_boss
+  /endif
+
+11/4c74/: |
+  /ifdef d4_boss_y
+  db d4_boss_y, d4_boss_x
+  /endif
+
+# Not allowed in D3
+
+######## Digdogger
+
+11/4ed3/: |
+  /ifdef d5_boss
+  db d5_boss
+  /endif
+
+11/4ed5/: |
+  /ifdef d5_boss_y
+  db d5_boss_y, d5_boss_x
+  /endif
+
+######## Manhandla
+
+11/528e/: |
+  /ifdef d6_boss
+  db d6_boss
+  /endif
+
+11/4290/: |
+  /ifdef d6_boss_y
+  db d6_boss_y, d6_boss_x
+  /endif
+
+0e/77b9/: |
+  ; Make manhandla open the room below
+  /ifdef d6_boss_in_d3
+  dw $6a9e ; enemyCode7a@dead
+  /endif
+
+0e/7892/: |
+  ; Make manhandla not wait for link to stop walking in d3 (due to the trampoline)
+  /ifdef d6_boss_in_d3
+  nop
+  /endif
+
+0e/79c2/: |
+  ; Make manhandla walk over holes
+  /ifdef d6_boss_in_d3
+  dw $42e2 ; ecom_bounceOffWalls
+  /endif
+
+######## Gleeok
+
+11/53a3/: |
+  /ifdef d7_boss
+  db d7_boss
+  /endif
+
+11/53a5/: |
+  /ifdef d7_boss_y
+  db d7_boss_y, d7_boss_x
+  /endif
+
+0f/66e1/: |
+  ; Make gleeok open the room below
+  /ifdef d7_boss_in_d3
+  dw $6a9e ; enemyCode7a@dead
+  /endif
+
+0f/67c4/: |
+  ; Make gleeok not wait for link to stop walking in d3 (due to the trampoline)
+  /ifdef d7_boss_in_d3
+  nop
+  /endif
+
+0f/6894/: |
+  ; Make gleeok walk over holes
+  /ifdef d7_boss_in_d3
+  db $00
+  /endif
+
+######## Medusa head
+
+11/5486/: |
+  /ifdef d8_boss
+  db d8_boss
+  /endif
+
+11/5488/: |
+  /ifdef d8_boss_y
+  db d8_boss_y, d8_boss_x
+  /endif
+
+0e/7b48/: |
+  ; Make medusa open the room below
+  /ifdef d8_boss_in_d3
+  dw $6a9e ; enemyCode7a@dead
+  /endif
+
+0e/7bd0/: |
+  ; Make medusa not wait for link to stop walking in d3 (due to the trampoline)
+  /ifdef d8_boss_in_d3
+  nop
+  /endif

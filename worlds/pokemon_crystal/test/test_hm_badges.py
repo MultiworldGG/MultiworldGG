@@ -1,4 +1,4 @@
-from .bases import PokemonCrystalTestBase, verify_region_access
+from .bases import PokemonCrystalTestBase, verify_region_access, verify_location_access
 
 cut_regions = [
     "REGION_LAKE_OF_RAGE:CUT",
@@ -18,7 +18,7 @@ surf_regions = [
     "REGION_ROUTE_40:WATER",
     "REGION_ROUTE_41",
     "REGION_ROUTE_42:CENTER",
-    "REGION_LAKE_OF_RAGE:WATER",
+    "REGION_LAKE_OF_RAGE:GYARADOS",
     "REGION_ROUTE_43:FRUITTREE",
     "REGION_CINNABAR_ISLAND",
     "REGION_ROUTE_19",
@@ -29,45 +29,41 @@ surf_regions = [
 
 strength_regions = [
     "REGION_RUINS_OF_ALPH_OMANYTE_ITEM_ROOM",
-    "REGION_SLOWPOKE_WELL_B2F",
+    "REGION_SLOWPOKE_WELL_B2F:ISLANDS",
     "REGION_CIANWOOD_GYM:STRENGTH",
-    "REGION_BLACKTHORN_GYM_1F:STRENGTH"
+    "REGION_ICE_PATH_B1F:NORTH:STRENGTH"
 ]
 
+# Regions that still require flash at the entrance level
 flash_regions = [
-    "REGION_DARK_CAVE_VIOLET_ENTRANCE:WEST",
-    "REGION_DARK_CAVE_VIOLET_ENTRANCE:EAST",
-    "REGION_DARK_CAVE_BLACKTHORN_ENTRANCE:NORTH_EAST",
-    "REGION_DARK_CAVE_BLACKTHORN_ENTRANCE:SOUTH_EAST",
-    "REGION_DARK_CAVE_BLACKTHORN_ENTRANCE:NORTH_WEST",
     "REGION_RUINS_OF_ALPH_AERODACTYL_ITEM_ROOM",
-    "REGION_WHIRL_ISLAND_NW",
-    "REGION_WHIRL_ISLAND_NE",
-    "REGION_WHIRL_ISLAND_SW",
-    "REGION_WHIRL_ISLAND_SE",
-    "REGION_WHIRL_ISLAND_B1F",
-    "REGION_WHIRL_ISLAND_B2F",
-    "REGION_ROCK_TUNNEL_1F",
-    "REGION_ROCK_TUNNEL_B1F",
-    "REGION_SILVER_CAVE_ROOM_1",
-    "REGION_SILVER_CAVE_ROOM_2",
-    "REGION_SILVER_CAVE_ROOM_3"
+]
+
+# Locations within dark regions that require flash (region-based flash rules)
+flash_locations = [
+    "Dark Cave Violet Entrance - West Item",
+    "Rock Tunnel 1F - West Item",
+    "Silver Cave 1F - Southwest Item",
 ]
 
 whirlpool_regions = [
-    "REGION_WHIRL_ISLAND_NW",
-    "REGION_WHIRL_ISLAND_NE",
-    "REGION_WHIRL_ISLAND_SW",
+    "REGION_ROUTE_41:NW_ISLAND",
+    "REGION_ROUTE_41:NE_ISLAND",
+    "REGION_ROUTE_41:SW_ISLAND",
+    "REGION_ROUTE_41:SE_ISLAND",
+    "REGION_WHIRL_ISLAND_NW:NORTH",
+    "REGION_WHIRL_ISLAND_NE:WEST",
+    "REGION_WHIRL_ISLAND_SW:NORTHWEST",
     "REGION_WHIRL_ISLAND_SE",
-    "REGION_WHIRL_ISLAND_B1F",
-    "REGION_WHIRL_ISLAND_B2F",
-    "REGION_DRAGONS_DEN_B1F:WHIRLPOOL",
+    "REGION_WHIRL_ISLAND_B1F:NORTH",
+    "REGION_WHIRL_ISLAND_B2F:CENTER",
+    "REGION_DRAGONS_DEN_B1F:SOUTH",
     "REGION_ROUTE_27:EASTWHIRLPOOL"
 ]
 
 waterfall_regions = [
-    "REGION_MOUNT_MORTAR_2F_OUTSIDE",
-    "REGION_MOUNT_MORTAR_1F_INSIDE:BACK"
+    "REGION_MOUNT_MORTAR_1F_OUTSIDE:NORTH",
+    "REGION_MOUNT_MORTAR_1F_INSIDE:NORTH"
 ]
 
 
@@ -90,6 +86,7 @@ class VanillaHMBadgesTest(PokemonCrystalTestBase):
 
     def test_flash_access(self):
         verify_region_access(self, ["Zephyr Badge"], flash_regions)
+        verify_location_access(self, ["Zephyr Badge"], flash_locations)
 
     def test_whirlpool_access(self):
         verify_region_access(self, ["Glacier Badge"], whirlpool_regions)
@@ -111,6 +108,7 @@ class VanillaHMBadgesTest(PokemonCrystalTestBase):
 
     def test_flash_hm_access(self):
         verify_region_access(self, ["HM05 Flash"], flash_regions)
+        verify_location_access(self, ["HM05 Flash"], flash_locations)
 
     def test_whirlpool_hm_access(self):
         verify_region_access(self, ["HM06 Whirlpool"], whirlpool_regions)
@@ -141,6 +139,7 @@ class NoHMBadgesTest(PokemonCrystalTestBase):
 
     def test_flash_access(self):
         verify_region_access(self, ["HM05 Flash", "Zephyr Badge", "Boulder Badge"], flash_regions, ["HM05 Flash"])
+        verify_location_access(self, ["HM05 Flash", "Zephyr Badge", "Boulder Badge"], flash_locations, ["HM05 Flash"])
 
     def test_whirlpool_access(self):
         verify_region_access(self, ["HM06 Whirlpool", "Glacier Badge", "Volcano Badge"], whirlpool_regions,
@@ -172,6 +171,7 @@ class KantoHMBadgesTest(PokemonCrystalTestBase):
 
     def test_flash_access(self):
         verify_region_access(self, ["Zephyr Badge", "Boulder Badge"], flash_regions, ["Boulder Badge"])
+        verify_location_access(self, ["Zephyr Badge", "Boulder Badge"], flash_locations, ["Boulder Badge"])
 
     def test_whirlpool_access(self):
         verify_region_access(self, ["Glacier Badge", "Volcano Badge"], whirlpool_regions, ["Volcano Badge"])
@@ -193,6 +193,7 @@ class KantoHMBadgesTest(PokemonCrystalTestBase):
 
     def test_flash_hm_access(self):
         verify_region_access(self, ["HM05 Flash"], flash_regions)
+        verify_location_access(self, ["HM05 Flash"], flash_locations)
 
     def test_whirlpool_hm_access(self):
         verify_region_access(self, ["HM06 Whirlpool"], whirlpool_regions)

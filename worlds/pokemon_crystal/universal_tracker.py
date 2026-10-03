@@ -2,7 +2,7 @@ from dataclasses import replace
 from typing import TYPE_CHECKING
 
 from .data import data as crystal_data, EncounterKey, EncounterType, EncounterMon, StaticPokemon, EvolutionType, \
-    EvolutionData
+    EvolutionData, Warp
 from .moves import LOGIC_MOVES
 from .pokemon import get_pokemon_id_by_rom_id
 
@@ -19,6 +19,9 @@ def load_ut_slot_data(world: "PokemonCrystalWorld"):
         except AttributeError:
             pass
 
+    # goal arrives as a list; comparisons against it expect a set
+    world.options.goal.value = set(world.ut_slot_data["goal"])
+
     # Correct slot_data keys that collide with option names but store derived values.
     # These _option keys were added after 5.4.0, so guard with `in` for backwards compat.
     if "free_fly_location_option" in world.ut_slot_data:
@@ -27,8 +30,6 @@ def load_ut_slot_data(world: "PokemonCrystalWorld"):
         world.options.dexcountsanity.value = world.ut_slot_data["dexcountsanity_option"]
     if "enable_mischief_option" in world.ut_slot_data:
         world.options.enable_mischief.value = world.ut_slot_data["enable_mischief_option"]
-    if "trap_weights_option" in world.ut_slot_data:
-        world.options.trap_weights.value = world.ut_slot_data["trap_weights_option"]
 
     world.generated_dexcountsanity = world.ut_slot_data["dexcountsanity_counts"]
     world.generated_dexsanity = {get_pokemon_id_by_rom_id(id) for id in world.ut_slot_data["dexsanity_pokemon"]}
@@ -51,7 +52,7 @@ def load_ut_slot_data(world: "PokemonCrystalWorld"):
     request_pokemon = world.ut_slot_data["request_pokemon"]
     world.generated_request_pokemon = [get_pokemon_id_by_rom_id(id) for id in request_pokemon]
 
-    if world.options.trades_required:
+    if world.options.trades_required or world.options.randomize_lucky_number_show:
         for trade_id, trade_data in world.ut_slot_data["trades"].items():
             world.generated_trades[trade_id] = replace(world.generated_trades[trade_id],
                                                        requested_pokemon=get_pokemon_id_by_rom_id(
@@ -107,3 +108,11 @@ def load_ut_slot_data(world: "PokemonCrystalWorld"):
 
     world.grass_location_mapping = world.ut_slot_data["grass_location_mapping"]
     world.generated_unown_signs = world.ut_slot_data["unown_signs"]
+    world.generated_lucky_number_trades = world.ut_slot_data.get("lucky_number_trades", [])
+    world.precollected_tod = world.ut_slot_data.get("precollected_tod")
+
+    if world.ut_slot_data.get("fly_destinations", None) is not None:
+        world.fly_destinations = [Warp(dest[0], dest[1]) for dest in world.ut_slot_data["fly_destinations"]]
+
+    if "battle_tower_trainer_permutation" in world.ut_slot_data:
+        world.battle_tower_trainer_permutation = list(world.ut_slot_data["battle_tower_trainer_permutation"])

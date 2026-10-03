@@ -119,6 +119,7 @@ Currently, the following games are supported:
 * Mega Man 3
 * Mega Man Battle Network 3
 * Mega Man X3
+* Mega Man Zero 3
 * Meritous
 * Metroid Fusion
 * Metroid Prime
@@ -244,6 +245,7 @@ Currently, the following games are supported:
 * Yu-Gi-Oh! Dungeon Dice Monsters
 * Yu-Gi-Oh! Forbidden Memories
 * Yu-Gi-Oh! Ultimate Masters: World Championship Tournament 2006
+* WarioWare, Inc. - Mega Microgame$!
 * Zelda II: The Adventure of Link
 * Zillion
 * Zork: Grand Inquisitor

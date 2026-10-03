@@ -68,10 +68,13 @@ class MarkerGenerator:
         map = self.__load_map(map_name, meta.get("dlc", False))
 
         raw_entity = None
-        for entity in map["entities"]:
-            if entity["settings"].get("mapId", None) == map_id:
-                raw_entity = entity
-                break
+        if "markerOverrides" in raw_loc and "entity" in raw_loc["markerOverrides"]:
+            raw_entity = raw_loc["markerOverrides"]["entity"]
+        else:
+            for entity in map["entities"]:
+                if entity["settings"].get("mapId", None) == map_id:
+                    raw_entity = entity
+                    break
 
         if raw_entity is None:
             return None
@@ -131,10 +134,15 @@ class MarkerGenerator:
         mx = tx * 8
         my = ty * 8
 
+        if "markerOverrides" in raw_loc:
+            mx += raw_loc["markerOverrides"].get("offsetX", 0)
+            my += raw_loc["markerOverrides"].get("offsetY", 0)
+
         settings = {}
 
         if raw_entity["type"] == "Chest":
-            settings["defaultClearance"] = raw_loc.get("clearance", "Default");
+            overrides = raw_loc.get("markerOverrides", raw_loc)
+            settings["defaultClearance"] = overrides.get("clearance", "Default")
 
         return {
             "type": raw_entity["type"],

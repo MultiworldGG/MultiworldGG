@@ -113,8 +113,6 @@ def generate_mod(world: "FactorioSAWS", output_directory: str):
                  for location in world.science_locations + world.craftsanity_locations]
     mod_name = f"AP-{multiworld.seed_name}-P{player}-{multiworld.get_file_safe_player_name(player)}"
     base_info["version"] = world.world_version.as_simple_string()
-    base_info["title"] += f" {world.player_name}"
-    base_info["description"] += f"\nFor player {world.player_name} in slot {player} of world {multiworld.seed_name}"
     versioned_mod_name = mod_name + "_" + world.world_version.as_simple_string()
 
     def flop_random(low, high, base=None):
@@ -205,6 +203,8 @@ def generate_mod(world: "FactorioSAWS", output_directory: str):
 
     info = base_info.copy()
     info["name"] = mod_name
+    info["title"] += f" {world.player_name}"
+    info["description"] += f"\nFor player {world.player_name} in slot {player} of world {multiworld.seed_name}"
     mod.writing_tasks.append(lambda: (versioned_mod_name + "/info.json",
                                       json.dumps(info, indent=4)))
 

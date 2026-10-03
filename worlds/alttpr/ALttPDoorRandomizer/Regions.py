@@ -75,7 +75,7 @@ def create_regions(world, player):
         create_lw_region(player, 'Hyrule Castle Southwest', None, ['Hyrule Castle Southwest Bush (South)', 'Hyrule Castle SW']),
         create_lw_region(player, 'Hyrule Castle Courtyard', None, ['Hyrule Castle Entrance (South)', 'Hyrule Castle Courtyard Bush (South)', 'Hyrule Castle Main Gate (North)', 'Castle Gate Teleporter (Inner)']),
         create_lw_region(player, 'Hyrule Castle Courtyard Northeast', None, ['Hyrule Castle Secret Entrance Stairs', 'Hyrule Castle Courtyard Bush (North)']),
-        create_lw_region(player, 'Hyrule Castle Ledge', None, ['Hyrule Castle Entrance (West)', 'Agahnims Tower', 'Hyrule Castle Entrance (East)', 'Inverted Pyramid Entrance', 'Inverted Pyramid Hole',
+        create_lw_region(player, 'Hyrule Castle Ledge', None, ['Hyrule Castle Entrance (West)', 'Agahnims Tower', 'Hyrule Castle Entrance (East)',
                           'Hyrule Castle Ledge Courtyard Drop', 'Hyrule Castle Ledge Drop'], 'the castle rampart'),
         create_lw_region(player, 'Hyrule Castle East Entry', None, ['Hyrule Castle East Rock (Outer)', 'Hyrule Castle ES']),
         create_lw_region(player, 'Hyrule Castle Water', None, [], 'Light World', Terrain.Water),

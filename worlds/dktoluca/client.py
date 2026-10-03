@@ -32,6 +32,10 @@ DK_BARREL_MAX = 3
 DKC3_ROMHASH_START = 0xFFC0
 ROMHASH_SIZE = 0x15
 
+DKC3_LAST_TEXT = DKC3_SRAM + 0x94
+DKC3_TEXT_DATA = WRAM_START + 0x0A9DE
+DKC3_TEXT_OFFSETS = WRAM_START + 0x0A7BC
+
 DKC3_TRACKED_CLEARS = DKC3_SRAM + 0x50
 DKC3_TRACKED_LEVELS = DKC3_SRAM + 0xF0
 
@@ -64,7 +68,11 @@ class DKC3Memory(Enum):
     tracked_clears = Read(DKC3_TRACKED_CLEARS, 0x10)
     tracked_levels = Read(DKC3_TRACKED_LEVELS, 0x10)
     current_map = Read(WRAM_START + 0x05E5, 0x1)
+    last_text = Read(DKC3_LAST_TEXT, 0x01)
 
+class TextMemory(Enum):
+    text_data = Read(DKC3_TEXT_DATA, 0x1000)
+    text_offsets = Read(DKC3_TEXT_OFFSETS, 0x200)
 
 countable_items = {
     0x05CD: DKC3Memory.banana_bird_count,
@@ -89,6 +97,7 @@ class DKC3SNIClient(SNIClient):
     ctx: "SNIContext"
     memory_reader = SnesReader(DKC3Memory)
     connect_reader = SnesReader(ConnectMemory)
+    text_reader = SnesReader(TextMemory)
 
     def __init__(self):
         super().__init__()
@@ -99,6 +108,7 @@ class DKC3SNIClient(SNIClient):
         self.barrel_count = ""
         self.current_map = 0
         self.barrel_label = None
+        self.game_text = {} 
 
 
     async def validate_rom(self, ctx: "SNIContext"):
@@ -112,6 +122,7 @@ class DKC3SNIClient(SNIClient):
         if rom_name is None or settings is None or rom_name == bytes([0] * ROMHASH_SIZE) or rom_name[:4] != b"DKCT":
             if "request" in ctx.command_processor.commands:
                 ctx.command_processor.commands.pop("request")
+            self.game_text = {}
             return False
 
         ctx.game = self.game
@@ -153,6 +164,7 @@ class DKC3SNIClient(SNIClient):
         if loaded_save == 0:
             self.game_state = False
             self.current_map = 0
+            self.game_text = {}
             return
 
         gameplay_pointer = int.from_bytes(memory_data.get(DKC3Memory.gameplay_pointer), "little")
@@ -443,6 +455,16 @@ class DKC3SNIClient(SNIClient):
             snes_buffered_write(ctx, WRAM_START + 0x642, bytearray(banana_bird_flags))
         if updated_bear_birds:
             snes_buffered_write(ctx, WRAM_START + 0x615, bytearray(bear_flags))
+
+        # TODO: Whenever v1.1.0 releases lol
+        #from .text import extract_text
+        #last_text = int.from_bytes(memory_data.get(DKC3Memory.last_text))
+        #text_memory = await self.text_reader.read(ctx)
+        #if text_memory is not None:
+        #
+        #    if last_text not in self.game_text.keys():
+        #        text_data = extract_text(text_memory)
+        #        self.game_text[last_text] = text_data.copy()
 
         await snes_flush_writes(ctx)        
 

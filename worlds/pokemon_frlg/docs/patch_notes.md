@@ -1,3 +1,7 @@
+# 1.1.4
+## Bug Fixes
+* Fixed an issue where the client could overwrite the entrances in data storage across multiple sessions
+
 # 1.1.3
 ## Bug Fixes
 * Fixed `fly_destination_plando` being completely ignored when randomizing fly destinations

@@ -61,48 +61,6 @@ DUMPSTER_ITEMS = [
 # dumpster item score in-game.
 DUMPSTER_ITEMS.append("Kei Truck")
 
-# Store locations in regions where the Kei Truck is accessible — weight requirements
-# don't apply OOL because the truck can carry heavy items.
-_KT_DUMBBELL_LOCATIONS: frozenset[str] = frozenset({
-    # Trasco Carpark (reachable via Blimbo Village with truck)
-    "Store Trolley", "Store Coffee Shop (closed)", "Store CD Player", "Store Patrice",
-    "Store Fridge", "Store Trasco Sign",
-    # Fridge World
-    "Store Milk Klubnika",
-    # Blimbo Village
-    "Store Blimbo Village Sign", "Store Gas Drum", 'Store "Cow"',
-    "Store CHEESE", "Store Door", "Store Fone", "Store Ougham Stone",
-    # Petrol Station
-    "Store Gas Pumpo", "Store Police Car", "Store Knifedog",
-    "Store Outdoor Chair", "Store Lightning Rod",
-    # Bildal Mines
-    "Store Pickaxe",
-    # Purgatory
-    "Store My Favourite Chair",
-    # Blimbo City
-    "Store Coffee Cup", "Store Radiator", "Store Bin", "Store Suitcase", "Store Bell Boy", "Store Blimbo City Sign",
-    # Pub
-    "Store Cheeky Pint",
-    # The Forklift Problem
-    "Store Robin P. Bobin",
-    # BLMB Reactor Core
-    "Store Demon Core",
-    # Garden World
-    "Store Radio Blimbo", "Store Flowian",
-    # The Forest
-    "Store Eel Can",
-    # Messed Up Canyon
-    "Store BookBlo",
-    # Pharmacy
-    "Store Leeches!", "Store Anti Sads",
-    # The Desert
-    "Store Fridgling",
-    # Municipal Wastes
-    "Store Chairapist", "Store Real Gym", "Store Dumbbell",
-    # The Gully
-    "Store Belgium Waffle",
-})
-
 # Progressive Mystical Dumbbell requirements per store location.
 # TINY (weight 1) items have no requirement and are omitted.
 # SMALL=1, MEDIUM=2, HEAVY=3, CHUNKY=4.
@@ -207,7 +165,7 @@ def _goal_rule(world: FuniRaccoonWorld):
     if "fellowship" in goals:
         rules.append(Has("Priestess") & Has("GREENISH ABOMINATION") & Has("Kei Truck") & Has("Progressive Cooling Rod", 3) & items(world.options.act4_threshold.value))
     if "lugh" in goals:
-        rules.append(Has("Green Mystical Jewel") & Has("Blue Mystical Jewel") & Has("Purple Mystical Jewel") & Has("Red Mystical Jewel") & Has("Kei Truck") & items(world.options.act4_threshold.value))
+        rules.append(Has("Progressive Mystical Jewel", 4) & Has("Kei Truck") & items(world.options.act4_threshold.value))
     if not rules:
         return Has("Progressive Cooling Rod", 3) & Has("Orb") & Has("Kei Truck") & items(world.options.act4_threshold.value)
     result = rules[0]
@@ -230,38 +188,36 @@ def set_all_location_rules(world: FuniRaccoonWorld) -> None:
 
     rule("Victory", _goal_rule(world))
 
-    # Dumbbell size rules for store locations (TINY items have no requirement).
-    # When dumpster_weight_blocking is disabled, having the Kei Truck is in-logic as an
-    # alternative to dumbbells, but only for regions that require the truck to reach.
-    # When enabled, weight is strictly enforced everywhere.
-    weight_blocking = world.options.dumpster_weight_blocking.value
-    for loc_name, count in _DUMBBELL_REQUIREMENTS.items():
-        r = Has("Progressive Mystical Dumbbell", count)
-        if loc_name in _KT_DUMBBELL_LOCATIONS and not weight_blocking:
-            r |= Has("Kei Truck")
-        rule(loc_name, r)
+    def weight(loc_name: str) -> Has:
+        return Has("Progressive Mystical Dumbbell", _DUMBBELL_REQUIREMENTS[loc_name])
 
-    # Store Fridge is mainly in Trasco Carpark but is also reachable by taking the train to Brazil.
-    _fridge = Has("Progressive Mystical Dumbbell", _DUMBBELL_REQUIREMENTS["Store Fridge"])
-    if "Store Fridge" in _KT_DUMBBELL_LOCATIONS and not weight_blocking:
-        _fridge |= Has("Kei Truck")
-    rule("Store Fridge", _fridge & (CanReachRegion("Trasco Carpark") | CanReachRegion("Brazil")))
+    # Dumbbell size rules for store locations (TINY items have no requirement).
+    for loc_name in _DUMBBELL_REQUIREMENTS:
+        rule(loc_name, weight(loc_name))
+
+    rule("Store Fridge", CanReachRegion("Brazil") | (CanReachRegion("Trasco Carpark") & weight("Store Fridge")))
+
+    rule("Store Radio Blimbo",
+         weight("Store Radio Blimbo") & (CanReachRegion("Garden World") | CanReachRegion("BLMB Reactor Core")))
+
+    rule("Store Street Lamp", CanReachRegion("Howth") | CanReachRegion("Petrol Station"))
+
+    rule("Store Fan", CanReachRegion("Da Waaaater Zoooone") | CanReachRegion("Goo Office"))
+
+    rule("Store Plimbo", CanReachRegion("Blimbo Village") | CanReachRegion("Underground Metro"))
 
     # Store Windmill sits in Fields but is also in Blimbo Village
     rule("Store Windmill",
-         Has("Progressive Mystical Dumbbell", _DUMBBELL_REQUIREMENTS["Store Windmill"])
+         weight("Store Windmill")
          & (CanReachRegion("Fields") | CanReachRegion("Blimbo Village")))
 
     # Crack Head normally needs 2 dumbbells, but breaking him lets you store him early
     rule("Store Crack Head",
-         Has("Progressive Mystical Dumbbell", _DUMBBELL_REQUIREMENTS["Store Crack Head"])
+         weight("Store Crack Head")
          | OutOfLogic("Crack Head can be broken and stored without dumbbells"))
 
     # Bell Boy additionally requires the Kei Truck Toaster (on top of its weight rule)
-    _bell_boy = Has("Progressive Mystical Dumbbell", _DUMBBELL_REQUIREMENTS["Store Bell Boy"])
-    if "Store Bell Boy" in _KT_DUMBBELL_LOCATIONS and not weight_blocking:
-        _bell_boy |= Has("Kei Truck")
-    rule("Store Bell Boy", _bell_boy & HasFromList("Kei Truck Toaster", "Kei Truck Boost", count=1))
+    rule("Store Bell Boy", weight("Store Bell Boy") & HasFromList("Kei Truck Toaster", "Kei Truck Boost", count=1))
 
     # The moai head euros are logically gated behind both Kei Truck upgrades.
     _moai_upgrade_rule = Has("Kei Truck") & Has("Kei Truck Toaster") & Has("Kei Truck Boost")
@@ -275,8 +231,7 @@ def set_all_location_rules(world: FuniRaccoonWorld) -> None:
     ):
         rule(moai_location, _moai_upgrade_rule)
 
-    # Within Billdal Mines, boingler and Broken Wall also require the Pickaxe
-    rule("Store boingler Cat",   Has("Pickaxe"))
+    # Within Billdal Mines, Broken Wall also require the Pickaxe
     rule("Store Broken Wall", Has("Pickaxe"))
 
     # You need Beenie HQ access to store Michi Cat
@@ -336,9 +291,6 @@ def set_all_location_rules(world: FuniRaccoonWorld) -> None:
     rule("Purchase Kei Truck Toaster", Has("Kei Truck"))
     rule("Purchase Kei Truck Boost", Has("Kei Truck"))
     rule("Purchase Kei Truck Radio", Has("Kei Truck"))
-   
-    # The Orb shop requires Orb to sent to open up
-    rule("Store Orb", Has("Orb"))
 
 
 def set_completion_condition(world: FuniRaccoonWorld) -> None:

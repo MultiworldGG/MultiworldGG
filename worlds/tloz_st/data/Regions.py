@@ -199,6 +199,7 @@ REGIONS = [
     "event_7f",
 
     "tos 8f",
+    "tos 8f n",
     "tos 8f bombs",
     "tos 9f nw",
     "tos 9f phantom",
@@ -906,7 +907,8 @@ REGIONS = [
     "dt b2 n",
 
     "dt pre skeldritch",
-    "dt skeldritch",
+    "dt post skeldritch",
+    "dt skeldritch safety",
     "skeldritch event",
     "skeldritch goal",
     "dt blue warp",

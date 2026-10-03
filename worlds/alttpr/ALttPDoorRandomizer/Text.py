@@ -837,6 +837,7 @@ class RawMBTextMapper(CharTextMapper):
                 '!': 0xC7,
                 ',': 0xC8,
                 '-': 0xC9,
+                '—': 0xC9,
                 "🡄": 0xCA,
                 "🡆": 0xCB,
                 '…': 0x9F,
@@ -1341,7 +1342,8 @@ class LargeCreditTopMapper(CharTextMapper):
                 '!': 0xE5,
                 '~': 0xE6,
                 ',': 0xE7,
-                '-': 0xE8,}
+                '-': 0xE8,
+                '—': 0xE8,}
     alpha_offset = -0x04
     alpha_lower_offset = -0x04
     number_offset = 0x23
@@ -1365,7 +1367,8 @@ class LargeCreditBottomMapper(CharTextMapper):
                 '!': 0xF8,
                 '~': 0xF9,
                 ',': 0xFA,
-                '-': 0xFB,}
+                '-': 0xFB,
+                '—': 0xFB,}
     alpha_offset = 0x22
     alpha_lower_offset = 0x22
     number_offset = 0x49

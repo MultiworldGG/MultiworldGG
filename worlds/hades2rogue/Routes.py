@@ -4,39 +4,69 @@
 UNDERWORLD = "Underworld"
 SURFACE = "Surface"
 NIGHTMARE = "Nightmare"
+# Dream Dive (Hypnos's vanilla postgame content, extended via the third-party DreamDiveTweaks mod).
+# Unlike the other 3 routes, Dream has no fixed zone count (dream_region_count is a per-seed option,
+# 1-12) and no fixed boss identity per region (DreamDiveTweaks randomizes which biome -- and therefore
+# which native boss -- lands in each region slot, every attempt). It is deliberately NOT added to
+# ROUTES/ROUTE_NAMES below: every consumer of ROUTES[route]["zones"/"bosses"] assumes a static,
+# import-time-fixed 4-zone/4-boss shape (Locations._zone_bounds hardcodes //4, Rules.set_rules's
+# per-route loop walks a fixed 4-entry BOSS_TIER_PERCENT, __init__.py's Progressive-item pool count
+# hardcodes 3 = len(zones)-1) -- none of which fits a variable-length, boss-identity-less route. Dream
+# gets its own dedicated code paths in Locations.py/Rules.py/Regions.py/Items.py instead (see
+# dream_zones() below for the one piece that IS reused generically: goal/victory wiring via
+# _BOSS_ROUTES/GOAL_BOSSES, which only needs a boss-keyword->route mapping and one Victory item, not a
+# zone list).
+DREAM = "Dream"
 
-# Datapackage maximum depth tracked per route in the room-based location systems.
-# (A full Hades 2 run is ~40 rooms; 60 leaves headroom so the ids stay stable.)
-# MAX_ROOMS is the id ceiling for the datapackage; each route's actual room-check
-# count ("room_count" below) must stay <= MAX_ROOMS.
+# Room-check id space reserved per route, per location-multiplier slot, in the room-based
+# systems. Room ids key on (zone index, depth within that zone) -- see
+# Locations.ZONE_ROOM_STRIDE -- so this is really 4 zones * ZONE_ROOM_STRIDE(15), and the
+# binding constraint is per-zone (no zone may exceed ZONE_ROOM_STRIDE), NOT each route's
+# "room_count" total below. Raising either means raising both together and re-checking every
+# route's id range in Locations.py's ID layout map.
 MAX_ROOMS = 60
 # Per-weapon room locations reserve this many ids per weapon, per route.
 WEAPON_ROOM_STRIDE = 100
 
+# Per-zone room checks (2026-09-22 stability pass, user decision). Two numbers per zone:
+#  - "zone_room_counts" (N): how many room checks the zone has -- the most rooms player logs showed
+#    scoring before the zone's boss, +1 for the boss room, capped at Locations.ZONE_ROOM_STRIDE.
+#  - "zone_room_guaranteed" (K): how many rooms every run scores before the boss (the minimum
+#    across player logs -- a safe lower bound; lowering K is always safe, raise it only with
+#    evidence). Rooms 1..K are in logic as soon as the zone is reachable; rooms K+1..N need the
+#    zone's boss to be beatable (Rules._set_room_tail_rules). Beating the zone's boss sends every
+#    unsent room check in that zone (the mod's LocationManager.on_zone_boss_defeated), so the tail
+#    can never be stranded by a short run.
+# Mirrored by hand in the mod's Routes.ZONE_ROOM_COUNTS / Routes.ZONE_ROOM_GUARANTEED
+# (tools/sync_check.py compares them).
 ROUTES = {
     UNDERWORLD: {
         "zones": ["Erebus", "Oceanus", "Fields of Mourning", "Tartarus"],
+        "zone_display": ["Erebus", "Oceanus", "Fields of Mourning", "Tartarus"],
+        "zone_room_counts": [13, 10, 10, 12],
+        "zone_room_guaranteed": [10, 6, 4, 2],
         "bosses": ["Hecate", "Scylla", "Cerberus", "Chronos"],
         "score_prefix": "Underworld Score",      # point-based check-name prefix
-        "room_prefix": "Underworld Room",        # room-based check-name prefix
         "score_id_base": 0,                      # point ids: base + 0..999
         "room_id_base": 7000,                    # room ids: base + 7000..7000+MAX_ROOMS
         "weapon_room_id_base": 10000,            # per-weapon ids: base + 10000 + weapon*stride + depth
         "aspect_room_id_base": 100000,           # per-aspect ids: base + 100000 + lane*stride + depth
-        "room_count": 50,                        # room-based checks for this route (no longer a YAML option)
+        "combined_room_depth": 43,               # combine_pools' shared-pool depth (see Locations._combined_room_count)
         "progressive": "Progressive Underworld",
         "final_boss": "Chronos",
     },
     SURFACE: {
         "zones": ["City of Ephyra", "Rift of Thessaly", "Mount Olympus", "The Summit"],
+        "zone_display": ["City of Ephyra", "Rift of Thessaly", "Mount Olympus", "The Summit"],
+        "zone_room_counts": [10, 14, 10, 10],
+        "zone_room_guaranteed": [8, 12, 9, 3],
         "bosses": ["Cyclops", "Eris", "Prometheus", "Typhon"],
         "score_prefix": "Surface Score",
-        "room_prefix": "Surface Room",
         "score_id_base": 2000,                   # point ids: base + 2000..2999
         "room_id_base": 8000,                    # room ids: base + 8000..8000+MAX_ROOMS
         "weapon_room_id_base": 20000,            # per-weapon ids: base + 20000 + weapon*stride + depth
         "aspect_room_id_base": 130000,           # per-aspect ids: base + 130000 + lane*stride + depth
-        "room_count": 50,                        # room-based checks for this route (no longer a YAML option)
+        "combined_room_depth": 39,
         "progressive": "Progressive Surface",
         "final_boss": "Typhon",
     },
@@ -52,21 +82,28 @@ ROUTES = {
         # must have a globally unique name per player, so an exact duplicate would silently
         # collide (two Region objects sharing one name/entrance-cache key). The other 3
         # zone names (Asphodel/Elysium/Styx) don't collide with anything existing.
+        # zone_display drops the "(Nightmare)" disambiguation suffix -- room-check names are
+        # already prefixed with the route word ("Nightmare Tartarus Room 01"), so it isn't
+        # needed there the way it is for AP's globally-unique Region name.
         "zones": ["Tartarus (Nightmare)", "Asphodel", "Elysium", "Styx"],
+        "zone_display": ["Tartarus", "Asphodel", "Elysium", "Styx"],
+        "zone_room_counts": [13, 10, 11, 12],
+        "zone_room_guaranteed": [10, 6, 8, 8],
         "bosses": ["The Furies", "Bone Hydra", "Theseus and Asterius", "Hades"],
         "score_prefix": "Nightmare Score",
-        "room_prefix": "Nightmare Room",
         "score_id_base": 4000,                   # point ids: base + 4000..4999
         "room_id_base": 8500,                    # room ids: base + 8500..8500+MAX_ROOMS (slots up to +479)
         "weapon_room_id_base": 40000,            # per-weapon ids: base + 40000 + weapon*stride + depth
         "aspect_room_id_base": 160000,           # per-aspect ids: base + 160000 + lane*stride + depth
-        "room_count": 50,
+        "combined_room_depth": 40,
         "progressive": "Progressive Nightmare",
         "final_boss": "Hades",
     },
 }
 
 ROUTE_NAMES = [UNDERWORLD, SURFACE, NIGHTMARE]
+for _route in ROUTE_NAMES:
+    ROUTES[_route]["room_count"] = sum(ROUTES[_route]["zone_room_counts"])
 
 # NPCs who are only ever encountered on one route (Known Bugs/"Logic is all out of
 # whack"). Their "<NPC> Keepsake" and "Met <NPC>" locations only exist in the per-seed
@@ -186,9 +223,15 @@ NPC_RANDOMIZED_ZONE_INDEX = 3
 
 # The bosses whose defeat can be part of the Goal, and (when it's a route's final boss)
 # which route that is. "zagreus" maps to no route -- he's a secret superboss reachable via
-# either route's zone index 1, not tied to a specific route's zone chain.
-GOAL_BOSSES = ["chronos", "typhon", "hades", "zagreus"]
-_BOSS_ROUTES = {"chronos": UNDERWORLD, "typhon": SURFACE, "hades": NIGHTMARE}
+# either route's zone index 1, not tied to a specific route's zone chain. "dream" maps to
+# DREAM the same way chronos/typhon/hades map to their routes -- a single "Beat Dream"/
+# "Dream Victory" event+item pair, exactly mirroring every other route (see manual comment
+# above DREAM's definition for why Dream can't reuse the rest of ROUTES' machinery). This is
+# the one piece of Dream's wiring that generalizes for free: goal_includes/_goal_toggle/
+# _hades2_can_get_victory (Rules.py) only care about a boss-keyword->route mapping and
+# one-time ownership of "<Boss> Victory", never about zone shape.
+GOAL_BOSSES = ["chronos", "typhon", "hades", "zagreus", "dream"]
+_BOSS_ROUTES = {"chronos": UNDERWORLD, "typhon": SURFACE, "hades": NIGHTMARE, "dream": DREAM}
 
 ALL_SELECTED = 0
 ANY_SELECTED = 1
@@ -200,13 +243,21 @@ def _goal_toggle(options, boss: str) -> bool:
     return _BOSS_ROUTES[boss] in options.goals_required.value
 
 
+def zagreus_reachable(routes) -> bool:
+    """Whether Zagreus can be fought on a seed made of `routes`. His contract only spawns from
+    the 4-zone routes (Rules.set_rules' zagreus_final_zones) -- a Dream Dive never offers it --
+    so a seed whose only route is Dream can't have him in its goal."""
+    return any(route in routes for route in ROUTE_NAMES)
+
+
 def _goal_forced_routes(options) -> list:
     """The route(s) the current Goal forces to be included (so the goal stays reachable
     even if the player excluded that route). goal_mode=all_selected forces every route named
     by an entry in Goals Required. goal_mode=any_selected normally forces nothing --
     whichever route the player kept satisfies it -- but only while at least one selected
-    boss is actually achievable: zagreus (tied to no route, reachable from any active one),
-    or a boss whose route the player included. When NONE are (e.g. only "Underworld" in
+    boss is actually achievable: zagreus (tied to no route, reachable from any included
+    4-zone route -- a Dream Dive never meets him, see zagreus_reachable), or a boss whose
+    route the player included. When NONE are (e.g. only "Underworld" in
     Goals Required with the Underworld excluded from Include Regions), the goal is
     impossible and generation used to die deep in fill with an opaque "Game appears as
     unbeatable" -- so force the first selected boss's route in instead, mirroring
@@ -214,9 +265,11 @@ def _goal_forced_routes(options) -> list:
     toggled = [(boss, _BOSS_ROUTES[boss]) for boss in GOAL_BOSSES
                if boss in _BOSS_ROUTES and _goal_toggle(options, boss)]
     if options.goal_mode.value == ANY_SELECTED:
-        if _goal_toggle(options, "zagreus") or not toggled:
+        if not toggled:
             return []
         included = set(options.include_regions.value)
+        if _goal_toggle(options, "zagreus") and zagreus_reachable(included):
+            return []
         if any(route in included for _boss, route in toggled):
             return []
         return [toggled[0][1]]
@@ -225,11 +278,24 @@ def _goal_forced_routes(options) -> list:
 
 def active_routes(options) -> list:
     """The routes actually generated for this seed: the player's Include Regions selection,
-    plus any route the goal forces in (so the goal is always reachable)."""
+    plus any route the goal forces in (so the goal is always reachable). ROUTE_NAMES stays the
+    3 static routes on purpose (see DREAM's definition comment) -- DREAM is appended separately
+    so callers that still need "just the 4-zone routes" can keep iterating ROUTE_NAMES directly."""
     routes = set(options.include_regions.value)
     for route in _goal_forced_routes(options):
         routes.add(route)
-    return [route for route in ROUTE_NAMES if route in routes]
+    return [route for route in ROUTE_NAMES + [DREAM] if route in routes]
+
+
+def dream_zones(options) -> list:
+    """Dream's per-seed synthetic zone list -- one entry per configured region
+    (dream_region_count, 1-12), built fresh from options instead of a static ROUTES entry since
+    the count varies per seed. Named "Dream Region <i>" (1-indexed) rather than a real biome
+    name since DreamDiveTweaks randomizes which biome lands in each slot every attempt -- the
+    slot POSITION is what's stable, not the biome identity (see project memory
+    project_dream_dive_feature_design for the full reasoning). Regions.py creates one real
+    Region per entry and chains them exactly like every other route's zone list."""
+    return [f"Dream Region {i}" for i in range(1, int(options.dream_region_count.value) + 1)]
 
 
 def goal_includes(options, boss: str) -> bool:

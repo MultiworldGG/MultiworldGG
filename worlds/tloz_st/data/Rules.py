@@ -60,7 +60,8 @@ def has_small_keys_er(dungeon, count, _ool=None, er=None):
     _ool = _ool if _ool is not None else count
     er = count if er is None else er
     return Or(Has(f"Keyring ({dungeon})"),  # keyring always works
-        Has(f"Small Key ({dungeon})", count, options=normal_key_options),
+        Has(f"Small Key ({dungeon})", count, options=normal_key_options),  # When bosses, rooms or warps are shuffled, you can get doors from behind
+        Has(f"Small Key ({dungeon})", count, options=vanilla_keys),  # Vanilla keys needs to assume forward tho
         ool & Has(f"Small Key ({dungeon})", _ool, options=normal_key_options),
         Has(f"Small Key ({dungeon})", er),
         option_or(Has(f"Small Key ({dungeon})", 1) & ool, event_key_options),
@@ -185,6 +186,7 @@ def has_cargo(cargo, event):
 vanilla_tears = Filtered(has_sword, options=[OptionFilter(SpiritTracksRandomizeTears, -1)])
 not_vanilla_tears = [OptionFilter(SpiritTracksRandomizeTears, -1, operator="ne")]
 vanilla_boss_keys = [OptionFilter(SpiritTracksRandomizeBossKeys, 0)]
+vanilla_keys = [OptionFilter(SpiritTracksKeyRandomization, 0)]
 randomize_boss_keys = [OptionFilter(SpiritTracksRandomizeBossKeys, 0, "gt")]
 no_passengers = [OptionFilter(SpiritTracksRandomizePassengers, 0)]
 randomize_passengers = [OptionFilter(SpiritTracksRandomizePassengers, 2, operator="ge")]
@@ -293,9 +295,8 @@ def has_rupees(count):
               Has("Rupees", int(count*0.7)),
               Has("Treasure Rupees", int(count*0.7) + 2500) & Has("_can_sell_treasure"))
 
-
 has_dungeon_rewards = ([
-            OptionFilter(SpiritTracksDarkRealmUnlock, SpiritTracksDarkRealmUnlock.option_dungeons, operator="ne")]
+            OptionFilter(SpiritTracksDarkRealmUnlock, [0, 2], operator="in")]
             | Has("_dungeon_reward", count=FromOption(SpiritTracksDungeonCount), options=[OptionFilter(SpiritTracksDarkRealmUnlock, [1, 3], "in")]))
 
 @dataclasses.dataclass

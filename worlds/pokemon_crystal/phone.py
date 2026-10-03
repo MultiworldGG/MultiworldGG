@@ -26,7 +26,7 @@ def generate_phone_traps(world: "PokemonCrystalWorld"):
         if len(remote_locs) > 3 and filler_location is not None:
             break
         if (len(remote_locs) < 3 and location.address is not None and location.item
-                and location.item.player != world.player):
+                and location.item.player not in (world.player, world.generated_rival)):
             if location.item.advancement:
                 remote_locs.append(location)
             if filler_location is None and not (location.item.advancement or location.item.useful):

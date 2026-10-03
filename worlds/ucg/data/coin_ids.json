@@ -718,33 +718,9 @@
                 "Keys"
             ]
         },
-        "Collectibles/Coins/Coin16": {
-            "id": 10201,
-            "name": "1-15: Almost a Cakewalk Coin 23",
-            "type": "coin",
-            "requires": [
-                "Keys"
-            ]
-        },
-        "Collectibles/Coins/Coin17": {
-            "id": 10202,
-            "name": "1-15: Almost a Cakewalk Coin 24",
-            "type": "coin",
-            "requires": [
-                "Keys"
-            ]
-        },
-        "Collectibles/Coins/Coin18": {
-            "id": 10203,
-            "name": "1-15: Almost a Cakewalk Coin 25",
-            "type": "coin",
-            "requires": [
-                "Keys"
-            ]
-        },
         "Collectibles/Coins/Coin19": {
             "id": 10204,
-            "name": "1-15: Almost a Cakewalk Coin 26",
+            "name": "1-15: Almost a Cakewalk Coin 23",
             "type": "coin",
             "requires": [
                 "Keys"
@@ -752,7 +728,7 @@
         },
         "Collectibles/Coins/Coin20": {
             "id": 10205,
-            "name": "1-15: Almost a Cakewalk Coin 27",
+            "name": "1-15: Almost a Cakewalk Coin 24",
             "type": "coin",
             "requires": [
                 "Keys"
@@ -760,7 +736,7 @@
         },
         "Collectibles/Coins/Coin21": {
             "id": 10206,
-            "name": "1-15: Almost a Cakewalk Coin 28",
+            "name": "1-15: Almost a Cakewalk Coin 25",
             "type": "coin",
             "requires": [
                 "Keys"

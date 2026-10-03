@@ -220,4 +220,4 @@ def write_room_data(rom: RomData, room_data: list[bytearray], seasons: bool):
         rom.write_bytes(room_data_current.address_in_rom(), group_data)
         room_data_current += len(group_data)
         assert room_data_current.address_in_rom() <= room_data_end, f"Room data is {hex(room_data_current.address_in_rom() - room_data_end)} bytes too long"
-    print(f"Room data ends at {room_data_current}, {hex(room_data_end - room_data_current.address_in_rom())} bytes left")
+    logging.info(f"Room data ends at {room_data_current}, {hex(room_data_end - room_data_current.address_in_rom())} bytes left")

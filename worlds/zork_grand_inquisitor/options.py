@@ -21,9 +21,10 @@ class Goal(Choice):
     Three Artifacts: Retrieve the Coconut of Quendor, the Cube of Foundation and the Skull of Yoruk
     Artifact of Magic Hunt: Retrieve X artifacts of magic and bring them to the walking castle
     Spell Heist: Acquire all spells and travel to the Port Foozle signpost
-    Zork Tour: Visit all 20 landmarks and travel to the Port Foozle signpost
-    Grim Journey: Experience all 22 player deaths and go beyond the gates of Hades
+    Zork Tour: Visit all 23 landmarks and travel to the Port Foozle signpost
+    Grim Journey: Experience all 31 player deaths and go beyond the gates of Hades
     """
+
     display_name: str = "Goal"
 
     option_three_artifacts: int = 0
@@ -45,9 +46,9 @@ class ArtifactsOfMagicTotal(Range):
     display_name = "Artifacts of Magic Total"
 
     range_start = 5
-    range_end = 15
+    range_end = 20
 
-    default = 15
+    default = 20
 
 
 class ArtifactsOfMagicRequired(Range):
@@ -60,9 +61,9 @@ class ArtifactsOfMagicRequired(Range):
     display_name = "Artifacts of Magic Required"
 
     range_start = 5
-    range_end = 15
+    range_end = 20
 
-    default = 10
+    default = 15
 
 
 class LandmarksRequired(Range):
@@ -75,9 +76,9 @@ class LandmarksRequired(Range):
     display_name = "Landmarks Required"
 
     range_start = 10
-    range_end = 20
+    range_end = 23
 
-    default = 20
+    default = 23
 
 
 class DeathsRequired(Range):
@@ -90,9 +91,9 @@ class DeathsRequired(Range):
     display_name = "Deaths Required"
 
     range_start = 10
-    range_end = 22
+    range_end = 31
 
-    default = 22
+    default = 31
 
 
 class StartingLocation(Choice):
@@ -118,7 +119,7 @@ class StartingLocation(Choice):
     option_monastery_totemizer: int = 8
     option_monastery_exhibit: int = 9
 
-    default = 0
+    default = "random"
 
 
 class Hotspots(Choice):
@@ -184,7 +185,7 @@ class WildVoxamChance(Range):
 
 class Deathsanity(Toggle):
     """
-    If true, adds 22 unique player death locations to the world.
+    If true, adds 31 unique player death locations to the world.
 
     This option will be forced on if your goal is Grim Journey.
     """
@@ -194,12 +195,21 @@ class Deathsanity(Toggle):
 
 class Landmarksanity(DefaultOnToggle):
     """
-    If true, adds 20 landmark locations to the world.
+    If true, adds 23 landmark locations to the world.
 
     This option will be forced on if your goal is Zork Tour.
     """
 
     display_name: str = "Landmarksanity"
+
+
+class ShuffleTimeTunnels(Toggle):
+    """
+    If true, shuffles the destination of the three time tunnels. For example, the time tunnel in the Dungeon Master's
+    Lair could lead to the Dragon Archipelago instead of the White House.
+    """
+
+    display_name: str = "Shuffle Time Tunnels"
 
 
 class EntranceRandomizer(Choice):
@@ -238,7 +248,7 @@ class TrapPercentage(Range):
     - Infinite Corridor Trap: The player is teleported to a random depth in the Infinite Corridor
     - Reverse Controls Trap: The player's panorama controls are reversed for 30 seconds
     - Teleport Trap: The player is teleported to a random location
-    - ZVision Trap: The player's vision is obscured for 30 seconds
+    - ZVision Trap: The player's vision is distorted for 30 seconds
     """
 
     display_name = "Trap Percentage"
@@ -311,15 +321,15 @@ class ZVisionTrapWeight(Range):
 
 class GrantMissableLocationChecks(Toggle):
     """
-    If true, performing an irreversible action will grant the locations checks that would have become unobtainable as a
-    result of that action when you meet the item requirements.
+    If true, performing an irreversible action will grant the location checks that would have become unobtainable as a
+    result of that action as soon as they are in logic.
 
     Otherwise, the player is expected to potentially have to use the save system to reach those location checks. If you
     don't like the idea of rarely having to reload an earlier save to get a location check, make sure this option is
     enabled.
 
-    Note: This option is incompatible with the entrance randomizer and will be forced off in the scenario where
-    entrances are randomized.
+    Note: This option requires Universal Tracker to be installed alongside the client. Without it, no location checks
+    are granted.
     """
 
     display_name: str = "Grant Missable Checks"
@@ -343,6 +353,24 @@ class ClientSeedInformation(Choice):
     default = 2
 
 
+class InGameOverlay(Choice):
+    """
+    Determines what information the client displays on top of the game.
+
+    Disabled: Nothing is displayed
+    Enabled: Goal progress, received and sent item notifications, trap countdowns and death link announcements are displayed
+    Enabled with Tracker: Same as Enabled, plus a list of the locations currently in logic (requires Universal Tracker)
+    """
+
+    display_name: str = "In-Game Overlay"
+
+    option_disabled: int = 0
+    option_enabled: int = 1
+    option_enabled_with_tracker: int = 2
+
+    default = 1
+
+
 @dataclass
 class ZorkGrandInquisitorOptions(PerGameCommonOptions, DeathLinkMixin):
     start_inventory_from_pool: StartInventoryPool
@@ -358,6 +386,7 @@ class ZorkGrandInquisitorOptions(PerGameCommonOptions, DeathLinkMixin):
     wild_voxam_chance: WildVoxamChance
     deathsanity: Deathsanity
     landmarksanity: Landmarksanity
+    shuffle_time_tunnels: ShuffleTimeTunnels
     entrance_randomizer: EntranceRandomizer
     entrance_randomizer_include_subway_destinations: EntranceRandomizerIncludeSubwayDestinations
     trap_percentage: TrapPercentage
@@ -367,6 +396,7 @@ class ZorkGrandInquisitorOptions(PerGameCommonOptions, DeathLinkMixin):
     zvision_trap_weight: ZVisionTrapWeight
     grant_missable_location_checks: GrantMissableLocationChecks
     client_seed_information: ClientSeedInformation
+    in_game_overlay: InGameOverlay
 
 
 option_groups: List[OptionGroup] = [
@@ -390,6 +420,7 @@ option_groups: List[OptionGroup] = [
             WildVoxamChance,
             Deathsanity,
             Landmarksanity,
+            ShuffleTimeTunnels,
             EntranceRandomizer,
             EntranceRandomizerIncludeSubwayDestinations,
         ],
@@ -409,6 +440,7 @@ option_groups: List[OptionGroup] = [
         [
             GrantMissableLocationChecks,
             ClientSeedInformation,
+            InGameOverlay,
         ],
     ),
 ]

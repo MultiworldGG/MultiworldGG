@@ -3238,6 +3238,25 @@
         ],
         "release_date": 1992
     },
+    "Mega Man Zero 3": {
+        "igdb_id": "351805",
+        "world_name": "Mega Man Zero 3",
+        "igdb_name": "Mega Man Zero 3",
+        "us_rating": [],
+        "player_perspectives": [
+            "Side view"
+        ],
+        "genres": [
+            "Shooter",
+            "Platform"
+        ],
+        "themes": [
+            "Action",
+            "Science fiction"
+        ],
+        "keywords": [],
+        "release_date": 2010
+    },
     "MegaMan Battle Network 3": {
         "igdb_id": "1758",
         "world_name": "MegaMan Battle Network 3",
@@ -6934,6 +6953,59 @@
             "sliding down ladders"
         ],
         "release_date": 2001
+    },
+    "WarioWare, Inc. - Mega Microgame$!": {
+        "igdb_id": "1703",
+        "world_name": "WarioWare, Inc. - Mega Microgame$!",
+        "igdb_name": "WarioWare, Inc.: Mega Microgame$!",
+        "us_rating": [],
+        "player_perspectives": [
+            "Third person"
+        ],
+        "genres": [
+            "Arcade"
+        ],
+        "themes": [
+            "Action",
+            "Comedy"
+        ],
+        "keywords": [
+            "aliens",
+            "baseball",
+            "motorcycle",
+            "minigames",
+            "shark",
+            "parody",
+            "cooking",
+            "extreme sports",
+            "time limit",
+            "pixel art",
+            "dog",
+            "high score",
+            "digital distribution",
+            "single-player only",
+            "countdown timer",
+            "boxer",
+            "minigame collection",
+            "cat",
+            "virtual console",
+            "self-referential humor",
+            "video game characters that play video games",
+            "konami code",
+            "harder versions of earlier levels",
+            "auto-scrolling levels",
+            "overweight character",
+            "button mashing",
+            "simon says",
+            "micro games",
+            "gamecube",
+            "nintendo 3ds ambassador program",
+            "game developers choice awards 2004",
+            "wario",
+            "wii u virtual console",
+            "nintendo switch online - expansion pack"
+        ],
+        "release_date": 2003
     },
     "Wordipelago": {
         "igdb_id": "",

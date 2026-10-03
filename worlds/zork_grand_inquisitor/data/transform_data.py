@@ -24,55 +24,55 @@ item_data_transforms: Dict[
     ZorkGrandInquisitorStartingLocations.PORT_FOOZLE: {
         ZorkGrandInquisitorItemTransforms.MAKE_FILLER: (
             ZorkGrandInquisitorItems.TELEPORTER_DESTINATION_CROSSROADS,
-        )
+        ),
     },
     ZorkGrandInquisitorStartingLocations.CROSSROADS: {
         ZorkGrandInquisitorItemTransforms.MAKE_FILLER: (
             ZorkGrandInquisitorItems.TELEPORTER_DESTINATION_CROSSROADS,
-        )
+        ),
     },
     ZorkGrandInquisitorStartingLocations.DM_LAIR: {
         ZorkGrandInquisitorItemTransforms.MAKE_FILLER: (
             ZorkGrandInquisitorItems.TELEPORTER_DESTINATION_CROSSROADS,
             ZorkGrandInquisitorItems.TELEPORTER_DESTINATION_DM_LAIR,
-        )
+        ),
     },
     ZorkGrandInquisitorStartingLocations.DM_LAIR_INTERIOR: {
         ZorkGrandInquisitorItemTransforms.MAKE_FILLER: (
             ZorkGrandInquisitorItems.TELEPORTER_DESTINATION_CROSSROADS,
             ZorkGrandInquisitorItems.TELEPORTER_DESTINATION_DM_LAIR,
-        )
+        ),
     },
     ZorkGrandInquisitorStartingLocations.GUE_TECH: None,
     ZorkGrandInquisitorStartingLocations.SPELL_LAB: {
         ZorkGrandInquisitorItemTransforms.MAKE_FILLER: (
             ZorkGrandInquisitorItems.TELEPORTER_DESTINATION_SPELL_LAB,
-        )
+        ),
     },
     ZorkGrandInquisitorStartingLocations.HADES_SHORE: {
         ZorkGrandInquisitorItemTransforms.MAKE_FILLER: (
             ZorkGrandInquisitorItems.SUBWAY_DESTINATION_HADES,
             ZorkGrandInquisitorItems.TELEPORTER_DESTINATION_HADES,
-        )
+        ),
     },
     ZorkGrandInquisitorStartingLocations.SUBWAY_FLOOD_CONTROL_DAM: {
         ZorkGrandInquisitorItemTransforms.MAKE_FILLER: (
             ZorkGrandInquisitorItems.SUBWAY_DESTINATION_FLOOD_CONTROL_DAM,
-        )
+        ),
     },
     ZorkGrandInquisitorStartingLocations.MONASTERY: {
         ZorkGrandInquisitorItemTransforms.MAKE_FILLER: (
+            ZorkGrandInquisitorItems.MONASTERY_ROPE,
             ZorkGrandInquisitorItems.SUBWAY_DESTINATION_MONASTERY,
             ZorkGrandInquisitorItems.TELEPORTER_DESTINATION_MONASTERY,
-            ZorkGrandInquisitorItems.MONASTERY_ROPE,
-        )
+        ),
     },
     ZorkGrandInquisitorStartingLocations.MONASTERY_EXHIBIT: {
         ZorkGrandInquisitorItemTransforms.MAKE_FILLER: (
+            ZorkGrandInquisitorItems.MONASTERY_ROPE,
             ZorkGrandInquisitorItems.SUBWAY_DESTINATION_MONASTERY,
             ZorkGrandInquisitorItems.TELEPORTER_DESTINATION_MONASTERY,
-            ZorkGrandInquisitorItems.MONASTERY_ROPE,
-        )
+        ),
     },
     ZorkGrandInquisitorGoals.THREE_ARTIFACTS: None,
     ZorkGrandInquisitorGoals.ARTIFACT_OF_MAGIC_HUNT: None,
@@ -83,22 +83,22 @@ item_data_transforms: Dict[
             ZorkGrandInquisitorItems.SPELL_GOLGATEM,
             ZorkGrandInquisitorItems.SPELL_IGRAM,
             ZorkGrandInquisitorItems.SPELL_KENDALL,
-            ZorkGrandInquisitorItems.SPELL_OBIDIL,
             ZorkGrandInquisitorItems.SPELL_NARWILE,
+            ZorkGrandInquisitorItems.SPELL_OBIDIL,
             ZorkGrandInquisitorItems.SPELL_REZROV,
             ZorkGrandInquisitorItems.SPELL_SNAVIG,
             ZorkGrandInquisitorItems.SPELL_THROCK,
             ZorkGrandInquisitorItems.SPELL_YASTARD,
-        )
+        ),
     },
     ZorkGrandInquisitorGoals.ZORK_TOUR: None,
     ZorkGrandInquisitorGoals.GRIM_JOURNEY: None,
     ZorkGrandInquisitorDeathsanity.OFF: {
         ZorkGrandInquisitorItemTransforms.MAKE_FILLER: (
-            ZorkGrandInquisitorItems.TOTEMIZER_DESTINATION_SURFACE_OF_MERZ,
-            ZorkGrandInquisitorItems.TOTEMIZER_DESTINATION_NEWARK_NEW_JERSEY,
             ZorkGrandInquisitorItems.TOTEMIZER_DESTINATION_INFINITY,
-        )
+            ZorkGrandInquisitorItems.TOTEMIZER_DESTINATION_NEWARK_NEW_JERSEY,
+            ZorkGrandInquisitorItems.TOTEMIZER_DESTINATION_SURFACE_OF_MERZ,
+        ),
     },
     ZorkGrandInquisitorDeathsanity.ON: None,
     ZorkGrandInquisitorLandmarksanity.OFF: None,
@@ -158,15 +158,22 @@ location_data_transforms: Dict[
             ZorkGrandInquisitorLocations.DEATH_ARRESTED_WITH_JACK,
             ZorkGrandInquisitorLocations.DEATH_ATTACKED_THE_QUELBEES,
             ZorkGrandInquisitorLocations.DEATH_CLIMBED_OUT_OF_THE_WELL,
+            ZorkGrandInquisitorLocations.DEATH_CUT_THE_POWER_CORD_WITH_THE_SWORD,
+            ZorkGrandInquisitorLocations.DEATH_CUT_THE_RADIO_TOWER_CABLE,
             ZorkGrandInquisitorLocations.DEATH_EATEN_BY_A_GRUE,
+            ZorkGrandInquisitorLocations.DEATH_ENTERED_THE_GUARDS_TENT,
             ZorkGrandInquisitorLocations.DEATH_JUMPED_IN_BOTTOMLESS_PIT,
             ZorkGrandInquisitorLocations.DEATH_LOST_GAME_OF_STRIP_GRUE_FIRE_WATER,
             ZorkGrandInquisitorLocations.DEATH_LOST_SOUL_TO_OLD_SCRATCH,
             ZorkGrandInquisitorLocations.DEATH_OUTSMARTED_BY_THE_QUELBEES,
+            ZorkGrandInquisitorLocations.DEATH_RILED_THE_FISHWIFE,
             ZorkGrandInquisitorLocations.DEATH_SLICED_UP_BY_THE_INVISIBLE_GUARD,
+            ZorkGrandInquisitorLocations.DEATH_SNUCK_PAST_THE_GUARDS_TENT,
             ZorkGrandInquisitorLocations.DEATH_STEPPED_INTO_THE_INFINITE,
             ZorkGrandInquisitorLocations.DEATH_SWALLOWED_BY_A_DRAGON,
             ZorkGrandInquisitorLocations.DEATH_THROCKED_THE_GRASS,
+            ZorkGrandInquisitorLocations.DEATH_TOOK_THE_OMEGA_HAMMER,
+            ZorkGrandInquisitorLocations.DEATH_TOOK_THE_PSI_HAMMER,
             ZorkGrandInquisitorLocations.DEATH_TOTEMIZED_INFINITY,
             ZorkGrandInquisitorLocations.DEATH_TOTEMIZED_NEWARK_NEW_JERSEY,
             ZorkGrandInquisitorLocations.DEATH_TOTEMIZED_PERMANENTLY_HALLS_OF_INQUISITION,
@@ -175,6 +182,8 @@ location_data_transforms: Dict[
             ZorkGrandInquisitorLocations.DEATH_TOTEMIZED_PERMANENTLY_STRAIGHT_TO_HELL,
             ZorkGrandInquisitorLocations.DEATH_TOTEMIZED_PERMANENTLY_SURFACE_OF_MERZ,
             ZorkGrandInquisitorLocations.DEATH_TOTEMIZED_SURFACE_OF_MERZ,
+            ZorkGrandInquisitorLocations.DEATH_TOUCHED_THE_ELECTRIFIED_FENCE,
+            ZorkGrandInquisitorLocations.DEATH_WALKED_INTO_THE_ELECTRICAL_FIELD,
             ZorkGrandInquisitorLocations.DEATH_YOURE_NOT_CHARON,
             ZorkGrandInquisitorLocations.DEATH_ZORK_ROCKS_EXPLODED,
         ),
@@ -184,6 +193,7 @@ location_data_transforms: Dict[
         ZorkGrandInquisitorLocationTransforms.REMOVE: (
             ZorkGrandInquisitorLocations.LANDMARK_DRAGON_ARCHIPELAGO,
             ZorkGrandInquisitorLocations.LANDMARK_DUNGEON_MASTERS_HOUSE,
+            ZorkGrandInquisitorLocations.LANDMARK_FLATHEAD_MESA,
             ZorkGrandInquisitorLocations.LANDMARK_FLOOD_CONTROL_DAM_3,
             ZorkGrandInquisitorLocations.LANDMARK_GATES_OF_HELL,
             ZorkGrandInquisitorLocations.LANDMARK_GREAT_UNDERGROUND_EMPIRE_ENTRANCE,
@@ -194,9 +204,11 @@ location_data_transforms: Dict[
             ZorkGrandInquisitorLocations.LANDMARK_INQUISITION_HEADQUARTERS,
             ZorkGrandInquisitorLocations.LANDMARK_JACKS_SHOP,
             ZorkGrandInquisitorLocations.LANDMARK_MIRROR_ROOM,
+            ZorkGrandInquisitorLocations.LANDMARK_OUTSIDE_THE_MONASTERY_EXHIBIT,
             ZorkGrandInquisitorLocations.LANDMARK_PAST_PORT_FOOZLE,
             ZorkGrandInquisitorLocations.LANDMARK_PORT_FOOZLE,
             ZorkGrandInquisitorLocations.LANDMARK_SPELL_CHECKER,
+            ZorkGrandInquisitorLocations.LANDMARK_TOP_OF_THE_RADIO_TOWER,
             ZorkGrandInquisitorLocations.LANDMARK_TOTEMIZER,
             ZorkGrandInquisitorLocations.LANDMARK_UMBRELLA_TREE,
             ZorkGrandInquisitorLocations.LANDMARK_UNDERGROUND_UNDERGROUND_ENTRANCE,

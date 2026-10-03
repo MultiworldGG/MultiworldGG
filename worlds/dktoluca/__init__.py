@@ -224,8 +224,7 @@ class DKC3World(tracker.UTMxin, World):
                     break
             else:
                 itempool += [self.create_item(Items.cog) for _ in range(5 - loc_count)]
-                player_name = self.multiworld.get_player_name(self.player)
-                print (f"[{player_name}] Couldn't place all Cogs in Krematoa. "
+                print (f"[{self.player_name}] Couldn't place all Cogs in Krematoa. "
                         f"Falling back to placing {5 - loc_count} Cogs anywhere in the multiworld.")
             if self.options.extra_cogs.value:
                 itempool += [self.create_item(Items.cog) for _ in range(self.options.extra_cogs.value)]

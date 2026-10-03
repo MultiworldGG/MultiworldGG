@@ -46,8 +46,8 @@ def create_district_helper(world, player):
 def init_districts(world):
     def exclude_area(world, owid, area, player):
         # area can be a region or entrancecurrently, could potentially be a problem later if name collision
-        std_regions = ['Pyramid Ledge', 'Pyramid Hole', 'Pyramid Entrance']
-        inv_regions = ['Spiral Mimic Ledge Extend', 'Inverted Pyramid Hole', 'Inverted Pyramid Entrance']
+        std_regions = ['Pyramid Ledge']
+        inv_regions = ['Spiral Mimic Ledge Extend']
         if (area in inv_regions and not world.is_tile_swapped(owid, player)) \
             or (area in std_regions and world.is_tile_swapped(owid, player)):
             return True

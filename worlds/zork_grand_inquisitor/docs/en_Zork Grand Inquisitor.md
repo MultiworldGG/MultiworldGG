@@ -14,6 +14,7 @@ Location checks are granted for the following actions:
 - Accessing certain areas for the first time
 - Triggering certain unique interactions, even if they aren't puzzles per se
 - Looking at certain documents
+- Picking up items where they normally lie
 - Visiting landmarks (Optional; Landmarksanity option)
 - Dying in unique ways (Optional; Deathsanity option)
 
@@ -27,11 +28,14 @@ Location checks are granted for the following actions:
 - VOXAM repurposed to always teleport you back to your starting location
 - VOXAM can optionally have a very small chance to go wild and take you somewhere else, enabling out-of-logic gameplay
 - Thematic filler items. Still do nothing. Much funnier than nothing.
+- Shuffle Time Tunnels: Randomize where the three time tunnels lead
 - Entrance Randomizer: Coupled / Uncoupled entrances. Optionally include subway destinations
 - Traps: _Infinite Corridor Trap, Reverse Controls Trap, Teleport Trap_ and _ZVision Trap_
 - Death Link :)
 - Energy Link. Hit the mushroom with the hammer. See what happens. You wouldn't THROCK it
-- Missable location checks can optionally be immediately granted after the requirements are fully met
+- Missable location checks can optionally be granted once they become unobtainable while in logic
+- Death return: After dying, you're sent back to just before the fatal screen, no need to juggle saves
+- In-game overlay: Goal progress, item notifications and locations in logic
 - Mod-free setup, allowing for easy updates and juggling multiple versions
 - A healthy number of locations for a point-and-click game
 - The opportunity to impress family and friends by knowing and playing a randomizer for such an obscure game
@@ -42,12 +46,12 @@ Location checks are granted for the following actions:
 ### In-Client Trackers
 The client that ships with the APWorld includes 2 trackers. All tracker state is persisted server-side and will be fully available for whoever connects to the slot. Having and launching the game is not mandatory to look at the in-client trackers.
 
-First, a typical item / location tracker. It has a unique feature where instead of showing every location in logic instantly, you will need to have gained access to an area in the game before seeing if any of its locations are available to check. This allows for a more focused experience and, perhaps more importantly, will not spoil any entrance randomizer destinations.
+The `Items` tab lists the items you've received, including destinations and hotspots.
 
-If you ever need to know how to check any location in the game, you can click the ? button on the left of any location name to get a full explanation.
-
-Finally, for those braving the entrance randomizer, a fully automated entrance tracker is available. As you go through any entrance in the game, its destination will be permanently annotated in the tracker!
+For those braving the entrance randomizer, the `Entrances` tab is a fully automated entrance tracker. As you go through any entrance in the game, its destination will be permanently annotated in the tracker!
 
 
 ### Universal Tracker
-The APWorld is also fully compatible with Universal Tracker. It is a YAML-free implementation (i.e. you don't need to have the YAML used to generate in your Players directory). It also includes a map view for a more visual tracking experience.
+The APWorld is also fully compatible with Universal Tracker, and its tabs are built right into the client. It is a YAML-free implementation (i.e. you don't need to have the YAML used to generate in your Players directory). It also includes a map view for a more visual tracking experience.
+
+If you ever need to know how to check a location, click the ? button next to its name on the Tracker Page to get a full explanation.

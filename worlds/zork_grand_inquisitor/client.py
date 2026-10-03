@@ -1,10 +1,23 @@
 import asyncio
+import sys
+import urllib.parse
 
 import CommonClient
 import NetUtils
 import Utils
 apname = Utils.instance_name if Utils.instance_name else "Archipelago"
 from typing import Any, Dict, List, Optional, Set
+
+tracker_loaded: bool = False
+
+try:
+    from worlds.tracker.TrackerClient import TrackerGameContext as Context
+    from worlds.tracker.TrackerClient import TrackerCommandProcessor as CommandProcessor
+
+    tracker_loaded = True
+except ModuleNotFoundError:
+    from CommonClient import CommonContext as Context
+    from CommonClient import ClientCommandProcessor as CommandProcessor
 
 from .data_funcs import (
     item_names_to_id,
@@ -15,6 +28,7 @@ from .data_funcs import (
     id_to_deathsanity,
     id_to_entrance_randomizer,
     id_to_hotspots,
+    id_to_in_game_overlay_options,
     id_to_items,
     id_to_landmarksanity,
     id_to_locations,
@@ -22,11 +36,11 @@ from .data_funcs import (
     id_to_starting_locations,
 )
 
-from .enums import ZorkGrandInquisitorItems, ZorkGrandInquisitorLocations
+from .enums import ZorkGrandInquisitorInGameOverlayOptions, ZorkGrandInquisitorItems, ZorkGrandInquisitorLocations
 from .game_controller import GameController
 
 
-class ZorkGrandInquisitorCommandProcessor(CommonClient.ClientCommandProcessor):
+class ZorkGrandInquisitorCommandProcessor(CommandProcessor):
     ctx: "ZorkGrandInquisitorContext"
 
     def _cmd_zork(self) -> None:
@@ -62,8 +76,40 @@ class ZorkGrandInquisitorCommandProcessor(CommonClient.ClientCommandProcessor):
 
         self.ctx.death_link_status = not self.ctx.death_link_status
 
+    def _cmd_overlay(self) -> None:
+        """Toggle the in-game overlay."""
+        if not self.ctx.server or not self.ctx.slot:
+            self.output("You must be connected to an Archipelago server before using /overlay.")
+            return
 
-class ZorkGrandInquisitorContext(CommonClient.CommonContext):
+        self.ctx.game_controller.is_overlay_enabled = not self.ctx.game_controller.is_overlay_enabled
+
+        if self.ctx.game_controller.is_overlay_enabled:
+            self.output("In-game overlay enabled.")
+        else:
+            self.output("In-game overlay disabled.")
+
+    def _cmd_overlay_tracker(self) -> None:
+        """Toggle the in-game list of locations in logic."""
+        if not self.ctx.server or not self.ctx.slot:
+            self.output("You must be connected to an Archipelago server before using /overlay_tracker.")
+            return
+
+        if not tracker_loaded:
+            self.output("The in-game list of locations in logic requires Universal Tracker, which isn't installed.")
+            return
+
+        self.ctx.game_controller.is_in_logic_overlay_enabled = not self.ctx.game_controller.is_in_logic_overlay_enabled
+
+        if self.ctx.game_controller.is_in_logic_overlay_enabled and not self.ctx.game_controller.is_overlay_enabled:
+            self.output("In-game list of locations in logic enabled. It will show when the overlay is turned on with /overlay.")
+        elif self.ctx.game_controller.is_in_logic_overlay_enabled:
+            self.output("In-game list of locations in logic enabled.")
+        else:
+            self.output("In-game list of locations in logic disabled.")
+
+
+class ZorkGrandInquisitorContext(Context):
     tags: Set[str] = {"AP"}
     game: str = "Zork Grand Inquisitor"
     command_processor: CommonClient.ClientCommandProcessor = ZorkGrandInquisitorCommandProcessor
@@ -80,12 +126,13 @@ class ZorkGrandInquisitorContext(CommonClient.CommonContext):
     data_storage_key: Optional[str]
     death_link_status: bool = False
     entrance_randomizer_data_by_name: Optional[Dict[str, str]]
-    ui_locations_checked: Set[ZorkGrandInquisitorLocations]
 
     controller_task: Optional[asyncio.Task]
 
     process_attached_at_least_once: bool
     can_display_process_message: bool
+
+    is_goal_sent: bool
 
     def __init__(self, server_address: Optional[str], password: Optional[str]) -> None:
         super().__init__(server_address, password)
@@ -94,16 +141,23 @@ class ZorkGrandInquisitorContext(CommonClient.CommonContext):
 
         self.data_storage_key = None
         self.entrance_randomizer_data_by_name = None
-        self.ui_locations_checked = set()
 
         self.controller_task = None
 
         self.process_attached_at_least_once = False
         self.can_display_process_message = True
 
+        self.is_goal_sent = False
+
+        if tracker_loaded:
+            def update_locations_in_logic(locations_in_logic: List[str]) -> None:
+                self.game_controller.locations_in_logic = locations_in_logic
+
+            self.update_callback = update_locations_in_logic
+
     def make_gui(self):
-        from .client_gui.client_gui import ZorkGrandInquisitorManager
-        return ZorkGrandInquisitorManager
+        from .client_gui.client_gui import bootstrap_client_gui
+        return bootstrap_client_gui(super().make_gui())
 
     async def server_auth(self, password_requested: bool = False):
         if password_requested and not self.password:
@@ -122,12 +176,20 @@ class ZorkGrandInquisitorContext(CommonClient.CommonContext):
 
         self.data_storage_key = None
 
+        self.is_goal_sent = False
+
         self.items_received = []
         self.locations_info = {}
 
-        self.ui.update_tabs()
+        if self.ui:
+            self.ui.update_tabs()
 
         await super().disconnect(allow_autoreconnect)
+
+    async def shutdown(self):
+        self.game_controller.clear_overlays()
+
+        await super().shutdown()
 
     def on_package(self, cmd: str, _args: Any) -> None:
         if cmd == "Connected":
@@ -175,6 +237,8 @@ class ZorkGrandInquisitorContext(CommonClient.CommonContext):
                 id_to_landmarksanity()[_args["slot_data"]["landmarksanity"]]
             )
 
+            self.game_controller.option_shuffle_time_tunnels = _args["slot_data"]["shuffle_time_tunnels"] == 1
+
             self.game_controller.option_entrance_randomizer = (
                 id_to_entrance_randomizer()[_args["slot_data"]["entrance_randomizer"]]
             )
@@ -189,8 +253,26 @@ class ZorkGrandInquisitorContext(CommonClient.CommonContext):
                 _args["slot_data"]["grant_missable_location_checks"] == 1
             )
 
+            if self.game_controller.option_grant_missable_location_checks and not tracker_loaded:
+                CommonClient.logger.info(
+                    "Grant Missable Location Checks is enabled but requires Universal Tracker, which isn't installed. "
+                    "No missable location checks will be granted."
+                )
+
             self.game_controller.option_client_seed_information = (
                 id_to_client_seed_information()[_args["slot_data"]["client_seed_information"]]
+            )
+
+            self.game_controller.option_in_game_overlay = (
+                id_to_in_game_overlay_options()[_args["slot_data"]["in_game_overlay"]]
+            )
+
+            self.game_controller.is_overlay_enabled = (
+                self.game_controller.option_in_game_overlay != ZorkGrandInquisitorInGameOverlayOptions.DISABLED
+            )
+
+            self.game_controller.is_in_logic_overlay_enabled = (
+                self.game_controller.option_in_game_overlay == ZorkGrandInquisitorInGameOverlayOptions.ENABLED_WITH_TRACKER
             )
 
             is_death_link = _args["slot_data"]["death_link"] == 1
@@ -205,6 +287,9 @@ class ZorkGrandInquisitorContext(CommonClient.CommonContext):
             self.game_controller.initial_totemizer_destination = item_names_to_item()[
                 _args["slot_data"]["initial_totemizer_destination"]
             ]
+
+            # Time Tunnel Destinations
+            self.game_controller.time_tunnel_destinations = _args["slot_data"]["time_tunnel_destinations"]
 
             # Entrance Randomizer Data
             self.game_controller.entrance_randomizer_data = _args["slot_data"]["entrance_randomizer_data"]
@@ -223,7 +308,6 @@ class ZorkGrandInquisitorContext(CommonClient.CommonContext):
                         "key": self.data_storage_key,
                         "want_reply": True,
                         "default": {
-                            "discovered_regions": list(),
                             "discovered_entrances": list(),
                         },
                         "operations": [
@@ -244,24 +328,33 @@ class ZorkGrandInquisitorContext(CommonClient.CommonContext):
                 )
 
                 self.game_controller.completed_locations |= locations_checked
-                self.ui_locations_checked |= locations_checked
 
             # UI Tabs
-            self.ui.update_tabs()
+            if self.ui:
+                self.ui.update_tabs()
         elif cmd == "ReceivedItems":
-            self.ui.update_tabs()
-        elif cmd == "RoomUpdate":
-            if "checked_locations" in _args:
-                ui_locations_checked_update: Set[ZorkGrandInquisitorLocations] = set(
-                    [self.id_to_locations[location_id] for location_id in _args["checked_locations"]]
-                )
-
-                self.ui_locations_checked |= ui_locations_checked_update
-
+            if self.ui:
                 self.ui.update_tabs()
         elif cmd == "SetReply":
-            if _args["key"] == self.data_storage_key:
+            if _args["key"] == self.data_storage_key and self.ui:
                 self.ui.update_tabs()
+
+        super().on_package(cmd, _args)
+
+    def on_print_json(self, args: Dict[str, Any]) -> None:
+        if args.get("type") == "ItemSend" and self.game_controller.is_process_running():
+            network_item: NetUtils.NetworkItem = args["item"]
+            receiving: int = args["receiving"]
+            item_name: str = self.item_names.lookup_in_slot(network_item.item, receiving)
+
+            if network_item.player == self.slot and receiving == self.slot:
+                self.game_controller.show_toast(f"Found {item_name}")
+            elif receiving == self.slot:
+                self.game_controller.show_toast(f"Received {item_name} from {self.player_names[network_item.player]}")
+            elif network_item.player == self.slot:
+                self.game_controller.show_toast(f"Sent {item_name} to {self.player_names[receiving]}")
+
+        super().on_print_json(args)
 
     def on_deathlink(self, data: Dict[str, Any]) -> None:
         self.last_death_link = max(data["time"], self.last_death_link)
@@ -306,11 +399,11 @@ class ZorkGrandInquisitorContext(CommonClient.CommonContext):
                 if self.process_attached_at_least_once:
                     process_message = (
                         "Connection to the Zork Grand Inquisitor process was lost. Ensure you are connected "
-                        f"to your {apname} server and the game is running, then use the /zork command to reconnect."
+                        "to an Archipelago server and the game is running, then use the /zork command to reconnect."
                     )
                 else:
                     process_message = (
-                        f"To start playing, connect to your {apname} server and use the /zork command to "
+                        "To start playing, connect to an Archipelago server and use the /zork command to "
                         "link to an active Zork Grand Inquisitor process."
                     )
 
@@ -332,7 +425,7 @@ class ZorkGrandInquisitorContext(CommonClient.CommonContext):
                 await self.check_locations(checked_location_ids)
 
                 # Check for Goal Completion
-                if self.game_controller.goal_completed:
+                if self.game_controller.goal_completed and not self.is_goal_sent:
                     await self.send_msgs([
                         {
                             "cmd": "StatusUpdate",
@@ -340,20 +433,11 @@ class ZorkGrandInquisitorContext(CommonClient.CommonContext):
                         }
                     ])
 
+                    self.is_goal_sent = True
+
                 # Update Data Storage
                 if self.data_storage_key is not None and self.data_storage_key in self.stored_data:
                     update_dict: Dict[str, Any] = dict()
-
-                    current_discovered_regions: Set[str] = set(
-                        self.stored_data[self.data_storage_key]["discovered_regions"]
-                    )
-
-                    update_discovered_regions: Set[str] = (
-                        current_discovered_regions | self.game_controller.discovered_regions
-                    )
-
-                    if len(update_discovered_regions) > len(current_discovered_regions):
-                        update_dict["discovered_regions"] = sorted(update_discovered_regions)
 
                     current_discovered_entrances: Set[str] = set(
                         self.stored_data[self.data_storage_key]["discovered_entrances"]
@@ -415,14 +499,33 @@ class ZorkGrandInquisitorContext(CommonClient.CommonContext):
                     self.game_controller.outgoing_death_link = (False, None)
 
 
-def main() -> None:
+def main(*args) -> None:
     Utils.init_logging("ZorkGrandInquisitorClient", exception_logger="Client")
 
-    async def _main():
-        ctx: ZorkGrandInquisitorContext = ZorkGrandInquisitorContext(None, None)
+    parser = CommonClient.get_base_parser(description="Zork Grand Inquisitor Client")
+
+    parser.add_argument("url", nargs="?", help="Archipelago Connection URL")
+    parser.add_argument("--name", default=None, help="Archipelago Slot Name")
+
+    args = parser.parse_args(args)
+
+    if args.url:
+        url = urllib.parse.urlparse(args.url)
+        args.connect = url.netloc
+        if url.username:
+            args.name = urllib.parse.unquote(url.username)
+        if url.password:
+            args.password = urllib.parse.unquote(url.password)
+
+    async def _main(_args):
+        ctx: ZorkGrandInquisitorContext = ZorkGrandInquisitorContext(_args.connect, _args.password)
+        ctx.auth = _args.name
 
         ctx.server_task = asyncio.create_task(CommonClient.server_loop(ctx), name="server loop")
         ctx.controller_task = asyncio.create_task(ctx.controller(), name="ZorkGrandInquisitorController")
+
+        if tracker_loaded:
+            ctx.run_generator()
 
         if CommonClient.gui_enabled:
             ctx.run_gui()
@@ -436,10 +539,10 @@ def main() -> None:
 
     colorama.just_fix_windows_console()
 
-    asyncio.run(_main())
+    asyncio.run(_main(args))
 
     colorama.deinit()
 
 
 if __name__ == "__main__":
-    main()
+    main(*sys.argv[1:])

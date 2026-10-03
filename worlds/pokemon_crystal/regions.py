@@ -1,13 +1,19 @@
 import logging
+from collections import defaultdict
 from typing import TYPE_CHECKING
 
 from BaseClasses import Region, ItemClassification
+from entrance_rando import EntranceType
 from .data import data, RegionData, EncounterMon, StaticPokemon, LogicalAccess, EncounterKey, FishingRodType, \
     TreeRarity, EncounterType
+from .fly import flypoint_arrival_connections, get_fly_regions, fly_flag_index
 from .items import PokemonCrystalItem
 from .locations import PokemonCrystalLocation
-from .options import FreeFlyLocation, JohtoOnly, BlackthornDarkCaveAccess, Goal, FlyCheese, Route42Access, LevelCurve
-from .utils import get_fly_regions, should_include_region
+from .options import FreeFlyLocation, JohtoOnly, BlackthornDarkCaveAccess, Goal, Route42Access, LevelCurve, \
+    WildEncounterMethodsRequired
+from .pokemon_data import SWARM_REGISTRATIONS
+from .entrance_rando import build_er_group_lookup, base_category, connection_er_group
+from .utils import should_include_region
 
 if TYPE_CHECKING:
     from .world import PokemonCrystalWorld
@@ -17,23 +23,26 @@ MAP_LOCKED = [
     "BUG_CATCHER_ARNIE_BLACKTHORN", "BUG_CATCHER_ARNIE_LAKE",
     "BUG_CATCHER_WADE_GOLDENROD", "BUG_CATCHER_WADE_MAHOGANY",
     "CAMPER_TODD_BLACKTHORN", "CAMPER_TODD_CIANWOOD",
+    "FISHER_RALPH_ECRUTEAK", "FISHER_RALPH_LAKE",
     "HIKER_ANTHONY_OLIVINE", "LASS_DANA_CIANWOOD",
-    "PICNICKER_GINA_MAHOGANY", "SCHOOLBOY_ALAN_BLACKTHORN",
+    "PICNICKER_GINA_MAHOGANY", "PICNICKER_LIZ_ECRUTEAK",
+    "SCHOOLBOY_ALAN_BLACKTHORN",
     "SCHOOLBOY_ALAN_OLIVINE", "SCHOOLBOY_CHAD_MAHOGANY",
     "SCHOOLBOY_JACK_OLIVINE", "YOUNGSTER_JOEY_GOLDENROD",
     "YOUNGSTER_JOEY_OLIVINE"
 ]
 
 ROCKETHQ_LOCKED = [
-    "FISHER_TULLY_ROCKETHQ", "POKEMANIAC_BRENT_ROCKETHQ"
+    "FISHER_TULLY_ROCKETHQ", "PICNICKER_LIZ_ROCKETHQ",
+    "POKEMANIAC_BRENT_ROCKETHQ"
 ]
 
 RADIO_LOCKED = [
     "BUG_CATCHER_WADE_RADIO", "HIKER_ANTHONY_RADIO",
     "LASS_DANA_RADIO", "PICNICKER_GINA_RADIO",
-    "PICNICKER_TIFFANY_RADIO", "SAILOR_HUEY_RADIO",
-    "SCHOOLBOY_CHAD_RADIO", "SCHOOLBOY_JACK_RADIO",
-    "YOUNGSTER_JOEY_RADIO"
+    "PICNICKER_LIZ_RADIO", "PICNICKER_TIFFANY_RADIO",
+    "SAILOR_HUEY_RADIO", "SCHOOLBOY_CHAD_RADIO",
+    "SCHOOLBOY_JACK_RADIO", "YOUNGSTER_JOEY_RADIO"
 ]
 
 CHAMPION_LOCKED = [
@@ -41,27 +50,28 @@ CHAMPION_LOCKED = [
     "BUG_CATCHER_ARNIE_CHAMPION", "BUG_CATCHER_WADE_CHAMPION",
     "CAMPER_TODD_CHAMPION", "COOLTRAINERF_BETH_CHAMPION",
     "COOLTRAINERF_REENA_CHAMPION", "COOLTRAINERM_GAVEN_CHAMPION",
-    "FISHER_TULLY_CHAMPION", "FISHER_WILTON_CHAMPION",
-    "HIKER_ANTHONY_CHAMPION", "HIKER_PARRY_CHAMPION",
-    "LASS_DANA_CHAMPION", "PICNICKER_ERIN_CHAMPION",
-    "PICNICKER_GINA_CHAMPION", "PICNICKER_TIFFANY_CHAMPION",
-    "POKEMANIAC_BRENT_CHAMPION", "SAILOR_HUEY_CHAMPION",
-    "SCHOOLBOY_ALAN_CHAMPION", "SCHOOLBOY_CHAD_CHAMPION",
-    "SCHOOLBOY_JACK_CHAMPION", "YOUNGSTER_JOEY_CHAMPION",
-    "PICNICKER_LIZ_CHAMPION"
+    "FISHER_RALPH_CHAMPION", "FISHER_TULLY_CHAMPION",
+    "FISHER_WILTON_CHAMPION", "HIKER_ANTHONY_CHAMPION",
+    "HIKER_PARRY_CHAMPION", "LASS_DANA_CHAMPION",
+    "PICNICKER_ERIN_CHAMPION", "PICNICKER_GINA_CHAMPION",
+    "PICNICKER_TIFFANY_CHAMPION", "POKEMANIAC_BRENT_CHAMPION",
+    "SAILOR_HUEY_CHAMPION", "SCHOOLBOY_ALAN_CHAMPION",
+    "SCHOOLBOY_CHAD_CHAMPION", "SCHOOLBOY_JACK_CHAMPION",
+    "YOUNGSTER_JOEY_CHAMPION", "PICNICKER_LIZ_CHAMPION"
 ]
 
 KANTO_LOCKED = [
     "BIRD_KEEPER_JOSE_POWER", "BIRD_KEEPER_VANCE_POWER",
     "BUG_CATCHER_ARNIE_POWER", "CAMPER_TODD_POWER",
     "COOLTRAINERF_BETH_POWER", "COOLTRAINERF_REENA_POWER",
-    "COOLTRAINERM_GAVEN_POWER", "FISHER_TULLY_POWER",
-    "FISHER_WILTON_POWER", "HIKER_ANTHONY_POWER",
-    "HIKER_PARRY_POWER", "LASS_DANA_POWER",
-    "PICNICKER_ERIN_POWER", "PICNICKER_GINA_POWER",
-    "PICNICKER_TIFFANY_POWER", "POKEMANIAC_BRENT_POWER",
-    "SAILOR_HUEY_POWER", "SCHOOLBOY_ALAN_POWER",
-    "SCHOOLBOY_CHAD_POWER", "SCHOOLBOY_JACK_POWER"
+    "COOLTRAINERM_GAVEN_POWER", "FISHER_RALPH_POWER",
+    "FISHER_TULLY_POWER", "FISHER_WILTON_POWER",
+    "HIKER_ANTHONY_POWER", "HIKER_PARRY_POWER",
+    "LASS_DANA_POWER", "PICNICKER_ERIN_POWER",
+    "PICNICKER_GINA_POWER", "PICNICKER_TIFFANY_POWER",
+    "POKEMANIAC_BRENT_POWER", "SAILOR_HUEY_POWER",
+    "SCHOOLBOY_ALAN_POWER", "SCHOOLBOY_CHAD_POWER",
+    "SCHOOLBOY_JACK_POWER"
 ]
 
 LOGIC_EXCLUDE_STATICS = [
@@ -77,8 +87,7 @@ def _generate_curve_levels(n: int, min_level: int, max_level: int, shape: int) -
         return []
     if n == 1:
         return [min_level]
-    lo, hi = min(min_level, max_level), max(min_level, max_level)
-    span = hi - lo
+    span = max_level - min_level
     levels = []
     for i in range(n):
         t = i / (n - 1)
@@ -88,7 +97,7 @@ def _generate_curve_levels(n: int, min_level: int, max_level: int, shape: int) -
             t = t ** 2
         elif shape == LevelCurve.option_s_curve:
             t = t * t * (3 - 2 * t)  # smoothstep
-        levels.append(round(lo + span * t))
+        levels.append(round(min_level + span * t))
     return levels
 
 
@@ -102,36 +111,53 @@ def create_regions(world: "PokemonCrystalWorld") -> dict[str, Region]:
     trainer_name_level_list: list[tuple[str, int]] = []
     static_name_level_list: list[tuple[str, int]] = []
 
-    wild_scaling_locations = set()
+    wild_scaling_locations: set[str] = set()
+    seen_scaling_keys: set[str] = set()
+
+    grass_keys_by_region = defaultdict(list)
+    fish_keys_by_region_rod: dict[tuple[str, FishingRodType], list[EncounterKey]] = defaultdict(list)
+    for k in world.generated_wild:
+        if k.encounter_type is EncounterType.Grass:
+            grass_keys_by_region[k.region_id].append(k)
+        elif k.encounter_type is EncounterType.Fish:
+            fish_keys_by_region_rod[(k.region_id, k.fishing_rod)].append(k)
 
     def exclude_scaling(trainer: str):
         if not rematches and (trainer in REMATCHES):
             return True
         elif johto_only != JohtoOnly.option_off and trainer in KANTO_LOCKED:
             return True
-        elif world.options.goal.value == Goal.option_elite_four and trainer in E4_LOCKED:
+        elif world.options.goal.value == {Goal.ELITE_FOUR} and trainer in E4_LOCKED:
             return True
         else:
             return False
 
     def create_scaling_location(parent_region: Region, wild_key: EncounterKey):
-        if wild_key.region_name() in wild_scaling_locations: return
-        if world.options.level_scaling and wild_key.encounter_type in [EncounterType.Grass,
-                                                                       EncounterType.Water]:
+        if not (world.options.level_scaling and wild_key.encounter_type in [
+            EncounterType.Grass, EncounterType.Water, EncounterType.Swarm,
+            EncounterType.Fish, EncounterType.Tree, EncounterType.RockSmash,
+        ]):
+            return
+
+        key_name = wild_key.region_name()
+        if key_name not in seen_scaling_keys:
+            seen_scaling_keys.add(key_name)
             wild_name_level_list.append((
-                wild_key.region_name(),
+                key_name,
                 [slot.level for slot in world.generated_wild[wild_key]]
             ))
 
-            scaling_event = PokemonCrystalLocation(
-                world.player, wild_key.region_name(), parent_region, None, None, None,
-                frozenset({"wilds scaling"}))
-            scaling_event.show_in_spoiler = False
-            scaling_event.place_locked_item(PokemonCrystalItem(
-                "Wild Pokemon", ItemClassification.filler, None, world.player))
-            scaling_event.encounter_key = wild_key
-            parent_region.locations.append(scaling_event)
-            wild_scaling_locations.add(scaling_event.name)
+        location_name = (f"{key_name} ({parent_region.name})"
+                         if key_name in wild_scaling_locations else key_name)
+        scaling_event = PokemonCrystalLocation(
+            world.player, location_name, parent_region, None, None, None,
+            frozenset({"wilds scaling"}))
+        scaling_event.show_in_spoiler = False
+        scaling_event.place_locked_item(PokemonCrystalItem(
+            "Wild Pokemon", ItemClassification.filler, None, world.player))
+        scaling_event.encounter_key = wild_key
+        parent_region.locations.append(scaling_event)
+        wild_scaling_locations.add(scaling_event.name)
 
     def create_wild_region(parent_region: Region, wild_key: EncounterKey, wilds: list[EncounterMon | StaticPokemon],
                            tags: set[str] | None = None):
@@ -159,21 +185,23 @@ def create_regions(world: "PokemonCrystalWorld") -> dict[str, Region]:
 
         if wild_region_data.wild_encounters:
             if wild_region_data.wild_encounters.grass:
-                encounter_key = EncounterKey.grass(wild_region_data.wild_encounters.grass)
-                create_scaling_location(parent_region, encounter_key)
-                if "Land" in world.options.wild_encounter_methods_required:
-                    world.logic.wild_regions[encounter_key] = LogicalAccess.InLogic
-                    create_wild_region(parent_region, encounter_key, world.generated_wild[encounter_key])
-                else:
-                    if not world.options.enforce_wild_encounter_methods_logic:
-                        world.logic.wild_regions[encounter_key] = LogicalAccess.OutOfLogic
-                    if world.is_universal_tracker:
+                grass_name = wild_region_data.wild_encounters.grass
+                grass_keys = grass_keys_by_region[grass_name]
+                for encounter_key in grass_keys:
+                    create_scaling_location(parent_region, encounter_key)
+                    if WildEncounterMethodsRequired.LAND in world.options.wild_encounter_methods_required:
+                        world.logic.wild_regions[encounter_key] = LogicalAccess.InLogic
                         create_wild_region(parent_region, encounter_key, world.generated_wild[encounter_key])
+                    else:
+                        if not world.options.enforce_wild_encounter_methods_logic:
+                            world.logic.wild_regions[encounter_key] = LogicalAccess.OutOfLogic
+                        if world.is_universal_tracker:
+                            create_wild_region(parent_region, encounter_key, world.generated_wild[encounter_key])
 
             if wild_region_data.wild_encounters.surfing:
                 encounter_key = EncounterKey.water(wild_region_data.wild_encounters.surfing)
                 create_scaling_location(parent_region, encounter_key)
-                if "Surfing" in world.options.wild_encounter_methods_required:
+                if WildEncounterMethodsRequired.SURFING in world.options.wild_encounter_methods_required:
                     world.logic.wild_regions[encounter_key] = LogicalAccess.InLogic
                     create_wild_region(parent_region, encounter_key, world.generated_wild[encounter_key])
                 else:
@@ -183,28 +211,28 @@ def create_regions(world: "PokemonCrystalWorld") -> dict[str, Region]:
                         create_wild_region(parent_region, encounter_key, world.generated_wild[encounter_key])
 
             if wild_region_data.wild_encounters.fishing:
-                if "Fishing" in world.options.wild_encounter_methods_required:
-                    for fishing_rod in (FishingRodType.Old, FishingRodType.Good, FishingRodType.Super):
-                        encounter_key = EncounterKey.fish(wild_region_data.wild_encounters.fishing, fishing_rod)
-                        world.logic.wild_regions[encounter_key] = LogicalAccess.InLogic
-                        create_wild_region(parent_region, encounter_key, world.generated_wild[encounter_key])
-                else:
-                    for fishing_rod in (FishingRodType.Old, FishingRodType.Good, FishingRodType.Super):
-                        encounter_key = EncounterKey.fish(wild_region_data.wild_encounters.fishing, fishing_rod)
-                        if not world.options.enforce_wild_encounter_methods_logic:
-                            world.logic.wild_regions[encounter_key] = LogicalAccess.OutOfLogic
-                        if world.is_universal_tracker:
+                fishing_name = wild_region_data.wild_encounters.fishing
+                for fishing_rod in (FishingRodType.Old, FishingRodType.Good, FishingRodType.Super):
+                    fish_keys = fish_keys_by_region_rod[(fishing_name, fishing_rod)]
+                    for encounter_key in fish_keys:
+                        create_scaling_location(parent_region, encounter_key)
+                        if WildEncounterMethodsRequired.FISHING in world.options.wild_encounter_methods_required:
+                            world.logic.wild_regions[encounter_key] = LogicalAccess.InLogic
                             create_wild_region(parent_region, encounter_key, world.generated_wild[encounter_key])
+                        else:
+                            if not world.options.enforce_wild_encounter_methods_logic:
+                                world.logic.wild_regions[encounter_key] = LogicalAccess.OutOfLogic
+                            if world.is_universal_tracker:
+                                create_wild_region(parent_region, encounter_key, world.generated_wild[encounter_key])
 
             if wild_region_data.wild_encounters.headbutt:
-                if "Headbutt" in world.options.wild_encounter_methods_required:
-                    for rarity in (TreeRarity.Common, TreeRarity.Rare):
-                        encounter_key = EncounterKey.tree(wild_region_data.wild_encounters.headbutt, rarity)
+                for rarity in (TreeRarity.Common, TreeRarity.Rare):
+                    encounter_key = EncounterKey.tree(wild_region_data.wild_encounters.headbutt, rarity)
+                    create_scaling_location(parent_region, encounter_key)
+                    if WildEncounterMethodsRequired.HEADBUTT in world.options.wild_encounter_methods_required:
                         world.logic.wild_regions[encounter_key] = LogicalAccess.InLogic
                         create_wild_region(parent_region, encounter_key, world.generated_wild[encounter_key])
-                else:
-                    for rarity in (TreeRarity.Common, TreeRarity.Rare):
-                        encounter_key = EncounterKey.tree(wild_region_data.wild_encounters.headbutt, rarity)
+                    else:
                         if not world.options.enforce_wild_encounter_methods_logic:
                             world.logic.wild_regions[encounter_key] = LogicalAccess.OutOfLogic
                         if world.is_universal_tracker:
@@ -212,13 +240,35 @@ def create_regions(world: "PokemonCrystalWorld") -> dict[str, Region]:
 
             if wild_region_data.wild_encounters.rock_smash:
                 encounter_key = EncounterKey.rock_smash()
-                if "Rock Smash" in world.options.wild_encounter_methods_required:
+                create_scaling_location(parent_region, encounter_key)
+                if WildEncounterMethodsRequired.ROCK_SMASH in world.options.wild_encounter_methods_required:
                     world.logic.wild_regions[encounter_key] = LogicalAccess.InLogic
                     create_wild_region(parent_region, encounter_key, world.generated_wild[encounter_key])
                 else:
                     if not world.options.enforce_wild_encounter_methods_logic:
                         world.logic.wild_regions[encounter_key] = LogicalAccess.OutOfLogic
                     if world.is_universal_tracker:
+                        create_wild_region(parent_region, encounter_key, world.generated_wild[encounter_key])
+
+            swarms_qualify = WildEncounterMethodsRequired.SWARM in world.options.wild_encounter_methods_required
+
+            for swarm_region_id, cfg in SWARM_REGISTRATIONS.items():
+                if not ((cfg["grass_host"] is not None and wild_region_data.wild_encounters.grass == cfg["grass_host"])
+                        or (cfg["fishing_host"] is not None
+                            and wild_region_data.wild_encounters.fishing == cfg["fishing_host"])):
+                    continue
+                encounter_key = EncounterKey.swarm(swarm_region_id)
+                if encounter_key not in world.generated_wild:
+                    continue
+                if swarms_qualify:
+                    create_scaling_location(parent_region, encounter_key)
+                    world.logic.wild_regions[encounter_key] = LogicalAccess.InLogic
+                    create_wild_region(parent_region, encounter_key, world.generated_wild[encounter_key])
+                else:
+                    if not world.options.enforce_wild_encounter_methods_logic:
+                        world.logic.wild_regions[encounter_key] = LogicalAccess.OutOfLogic
+                    if world.is_universal_tracker:
+                        create_scaling_location(parent_region, encounter_key)
                         create_wild_region(parent_region, encounter_key, world.generated_wild[encounter_key])
 
         for static_id in wild_region_data.statics:
@@ -307,40 +357,101 @@ def create_regions(world: "PokemonCrystalWorld") -> dict[str, Region]:
             for region_exit in region_data.exits:
                 connections.append((f"{region_name} -> {region_exit}", region_name, region_exit))
 
-    for name, source, dest in connections:
-        if should_include_region(data.regions[source], world) and should_include_region(data.regions[dest], world):
-            regions[source].connect(regions[dest], name)
+    randomize = world.options.randomize_entrances.value  # frozenset of category strings
+    mix = world.options.mix_entrances.value              # frozenset of category strings
+    # connect_entrances reassigns every group before ER runs; this is just the initial one.
+    _, group_map = build_er_group_lookup(set(randomize), set(mix))
+
+    # Pin certain pokecenter entrances to vanilla so the player always has pokecenter access.
+    vanilla_pokecenter: set[str] = set()
+    if "Pokecenter" in randomize:
+        if world.options.randomize_starting_town:
+            starting_town = world.starting_town
+        else:
+            starting_town = next(t for t in data.starting_towns if t.region_id == "REGION_NEW_BARK_TOWN")
+
+        # The pokecenter interior has a _1F suffix; every Pokecenter connection has
+        # exactly one such side, so the other one is the town region.
+        town = starting_town.pokecenter_region
+        if town and "POKECENTER_1F" not in town:
+            vanilla_pokecenter = {name for name, conn in data.entrance_connections.items()
+                                  if base_category(conn.category) == "Pokecenter"
+                                  and town in (conn.entrance_region, conn.exit_region)}
+
+    bypassed_vanilla_edges: set[str] = set()
+    if world.options.route_23_restored:
+        bypassed_vanilla_edges = {
+            "REGION_VICTORY_ROAD:1F:ENTRANCE -> REGION_VICTORY_ROAD_GATE:NORTH",
+            "REGION_VICTORY_ROAD_GATE:NORTH -> REGION_VICTORY_ROAD:1F:ENTRANCE",
+        }
 
     if world.options.skip_elite_four:
-        regions["REGION_INDIGO_PLATEAU_POKECENTER_1F"].connect(regions["REGION_LANCES_ROOM"])
+        connections.append(("REGION_INDIGO_PLATEAU_POKECENTER_1F:E4_GATE -> REGION_LANCES_ROOM",
+                            "REGION_INDIGO_PLATEAU_POKECENTER_1F:E4_GATE", "REGION_LANCES_ROOM"))
+        if randomize:
+            connections.append(("REGION_LANCES_ROOM -> REGION_INDIGO_PLATEAU_POKECENTER_1F:E4_GATE",
+                                "REGION_LANCES_ROOM", "REGION_INDIGO_PLATEAU_POKECENTER_1F:E4_GATE"))
+
+    for name, source, dest in connections:
+        if name in bypassed_vanilla_edges:
+            continue
+        if should_include_region(data.regions[source], world) and should_include_region(data.regions[dest], world):
+            entrance = regions[source].connect(regions[dest], name)
+            # Disconnect for ER if this connection's category is in the randomization pool
+            conn = data.entrance_connections.get(name)
+            if (conn
+                    and base_category(conn.category) in randomize
+                    and name not in vanilla_pokecenter):
+                if conn.one_way:
+                    entrance.randomization_type = EntranceType.ONE_WAY
+                else:
+                    entrance.randomization_type = EntranceType.TWO_WAY
+                entrance.randomization_group = connection_er_group(group_map, name, conn.category)
+                world.er_entrances.append((entrance, regions[dest]))
 
     regions["Menu"] = Region("Menu", world.player, world.multiworld)
     if world.options.randomize_starting_town:
         regions["Menu"].connect(regions[world.starting_town.region_id])
+    elif world.options.randomize_entrances:
+        regions["Menu"].connect(regions["REGION_NEW_BARK_TOWN"], "Start Game")
     else:
         regions["Menu"].connect(regions["REGION_PLAYERS_HOUSE_2F"], "Start Game")
 
+    # Fly
+
     regions["Menu"].connect(regions["REGION_FLY"], "Fly")
 
-    if world.options.randomize_fly_unlocks or world.options.remote_items:
-        fly_region = regions["REGION_FLY"]
+    for fr in data.fly_regions:
+        if fr.unlock_region == fr.exit_region or fr.exit_region not in regions:
+            continue
+        fly_unlock = Region(fr.unlock_region, world.player, world.multiworld)
+        regions[fr.unlock_region] = fly_unlock
+        event_name = f"EVENT_VISITED_{fr.base_identifier}"
+        event_location = PokemonCrystalLocation(world.player, event_name, fly_unlock)
+        event_location.show_in_spoiler = False
+        event_location.place_locked_item(world.create_event(event_name))
+        fly_unlock.locations.append(event_location)
+        regions[fr.exit_region].connect(fly_unlock, f"{fr.exit_region} -> {fr.unlock_region}")
+
+    for fr in data.fly_regions:
+        if fr.unlock_region not in regions:
+            continue
+        for src in fr.unlock_sources:
+            if src in regions:
+                regions[src].connect(regions[fr.unlock_region], f"{src} -> {fr.unlock_region}")
+
+    fly_region = regions["REGION_FLY"]
+    if world.options.randomize_fly_destinations:
+        for i, flypoint in enumerate(world.fly_destinations, start=1):
+            dest_region = flypoint_arrival_connections(flypoint)[0].entrance_region
+            fly_region.connect(regions[dest_region], f"Fly Destination {i}")
+    else:
         for region in get_fly_regions(world):
             fly_region.connect(regions[region.exit_region])
 
-    if world.options.fly_cheese == FlyCheese.option_in_logic:
-        regions["REGION_ROUTE_44"].connect(regions["REGION_MAHOGANY_TOWN:FLY"])
-
-        if not world.options.johto_only:
-            regions["REGION_DIGLETTS_CAVE"].connect(regions["REGION_VERMILION_CITY:FLY"])
-            regions["REGION_ROUTE_11"].connect(regions["REGION_VERMILION_CITY:FLY"])
-
-    if world.options.johto_only == JohtoOnly.option_off and world.options.east_west_underground:
-        regions["REGION_ROUTE_7"].connect(regions["REGION_ROUTE_8"])
-        regions["REGION_ROUTE_8"].connect(regions["REGION_ROUTE_7"])
-
     if world.options.blackthorn_dark_cave_access == BlackthornDarkCaveAccess.option_waterfall:
-        regions["REGION_DARK_CAVE_BLACKTHORN_ENTRANCE:SOUTH_WEST"].connect(
-            regions["REGION_DARK_CAVE_BLACKTHORN_ENTRANCE:NORTH_WEST"])
+        regions["REGION_DARK_CAVE_BLACKTHORN_ENTRANCE:SOUTHWEST"].connect(
+            regions["REGION_DARK_CAVE_BLACKTHORN_ENTRANCE:NORTHWEST"])
 
     if world.options.route_42_access != Route42Access.option_blocked:
         regions["REGION_ROUTE_42:WEST"].connect(regions["REGION_ROUTE_42:CENTER"])
@@ -348,17 +459,32 @@ def create_regions(world: "PokemonCrystalWorld") -> dict[str, Region]:
         regions["REGION_ROUTE_42:EAST"].connect(regions["REGION_ROUTE_42:CENTER"])
         regions["REGION_ROUTE_42:CENTER"].connect(regions["REGION_ROUTE_42:EAST"])
 
-    if world.options.route_42_access in \
-            (Route42Access.option_blocked, Route42Access.option_whirlpool_open_mortar):
-        regions["REGION_MOUNT_MORTAR_1F_OUTSIDE:BELOW_WATERFALL"].connect(
-            regions["REGION_MOUNT_MORTAR_1F_INSIDE:FRONT"])
-        regions["REGION_MOUNT_MORTAR_1F_INSIDE:FRONT"].connect(
-            regions["REGION_MOUNT_MORTAR_1F_OUTSIDE:BELOW_WATERFALL"])
-
     if world.options.dexsanity or world.options.dexcountsanity:
         pokedex_region = Region("Pokedex", world.player, world.multiworld)
         regions["Pokedex"] = pokedex_region
         regions["Menu"].connect(regions["Pokedex"])
+    if world.options.battle_tower_sanity or Goal.BATTLE_TOWER in world.options.goal:
+        battle_tower_region = Region("Battle Tower", world.player, world.multiworld)
+        regions["Battle Tower"] = battle_tower_region
+        regions["REGION_BATTLE_TOWER_1F"].connect(regions["Battle Tower"])
+        # Per-tier sub-regions so the sanity location and the logical event share
+        # the same access rule (set on the parent → child entrance in rules.py).
+        for tier_idx in range(10):
+            tier_region = Region(f"Battle Tower Tier {tier_idx + 1}", world.player, world.multiworld)
+            regions[tier_region.name] = tier_region
+            battle_tower_region.connect(tier_region)
+            if Goal.BATTLE_TOWER in world.options.goal:
+                event_name = f"EVENT_BATTLE_TOWER_TIER_{tier_idx + 1}_BEATEN"
+                loc = PokemonCrystalLocation(world.player, event_name, tier_region)
+                loc.show_in_spoiler = False
+                loc.place_locked_item(world.create_event(event_name))
+                tier_region.locations.append(loc)
+        if Goal.BATTLE_TOWER in world.options.goal:
+            goal_event = "EVENT_BEAT_ALL_BATTLE_TOWER_TIERS"
+            loc = PokemonCrystalLocation(world.player, goal_event, battle_tower_region)
+            loc.show_in_spoiler = False
+            loc.place_locked_item(world.create_event(goal_event))
+            battle_tower_region.locations.append(loc)
     if world.options.evolution_methods_required or world.is_universal_tracker:
         evolution_region = Region("Evolutions", world.player, world.multiworld)
         regions["Evolutions"] = evolution_region
@@ -393,16 +519,25 @@ def create_regions(world: "PokemonCrystalWorld") -> dict[str, Region]:
     return regions
 
 
+def _get_fly_dest_region(world: "PokemonCrystalWorld", fly_location: "FlyRegion") -> str:
+    if world.options.randomize_fly_destinations:
+        flypoint = world.fly_destinations[fly_flag_index(world, fly_location)]
+        return flypoint_arrival_connections(flypoint)[0].entrance_region
+    return fly_location.exit_region
+
+
 def setup_free_fly_regions(world: "PokemonCrystalWorld"):
     fly = world.get_region("REGION_FLY")
     if world.options.free_fly_location.value in (FreeFlyLocation.option_free_fly,
                                                  FreeFlyLocation.option_free_fly_and_map_card):
         free_fly_location = world.free_fly_location
-        fly_region = world.get_region(free_fly_location.exit_region)
-        fly.connect(fly_region, f"Free Fly {free_fly_location.exit_region}")
+        dest_region = _get_fly_dest_region(world, free_fly_location)
+        fly_region = world.get_region(dest_region)
+        fly.connect(fly_region, f"Free Fly {dest_region}")
 
     if world.options.free_fly_location.value in (FreeFlyLocation.option_free_fly_and_map_card,
                                                  FreeFlyLocation.option_map_card):
         map_card_fly_location = world.map_card_fly_location
-        map_card_region = world.get_region(map_card_fly_location.exit_region)
-        fly.connect(map_card_region, f"Free Fly {map_card_fly_location.exit_region}")
+        dest_region = _get_fly_dest_region(world, map_card_fly_location)
+        map_card_region = world.get_region(dest_region)
+        fly.connect(map_card_region, f"Free Fly {dest_region}")

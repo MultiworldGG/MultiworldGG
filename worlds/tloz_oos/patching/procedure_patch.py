@@ -2,6 +2,7 @@ import json
 import logging
 import pkgutil
 import random
+from typing import cast
 
 import yaml
 
@@ -14,7 +15,7 @@ from ..common.patching.rooms.encoding import write_room_data
 from ..common.patching.text.encoding import write_text_data
 from ..common.patching.z80asm.Assembler import GameboyAddress, Z80Assembler, Z80Block
 from ..data.Constants import ROM_HASH
-from ..Options import OracleOfSeasonsLinkedHerosCave
+from ..options import OracleOfSeasonsLinkedHerosCave
 from .Constants import CAVE_DATA, DEFINES, DUNGEON_ENTRANCES, DUNGEON_EXITS
 from .data_manager.text import apply_ages_edits, get_modded_seasons_text_data
 from .functions import (
@@ -41,11 +42,12 @@ from .functions import (
     set_fixed_subrosia_seaside_location,
     set_heart_beep_interval_from_settings,
     set_old_men_rupee_values,
-    set_player_start_inventory,
     set_portal_warps,
     write_chest_contents,
 )
+from .functions.boss_rando import place_bosses
 from .functions.room_edits import apply_room_edits
+from .functions.start_inventory import set_player_start_inventory
 from .functions.text_edits import define_dungeon_items_text_constants, make_text_data
 from .puzzle_rando import randomize_puzzles
 
@@ -55,7 +57,7 @@ class OoSPatchExtensions(APPatchExtension):
 
     @staticmethod
     def apply_patches(caller: APProcedurePatch, rom: bytes, patch_file: str) -> bytes:
-        from .. import OracleOfSeasonsWorld
+        from ..world import OracleOfSeasonsWorld
         rom_data = RomData(rom)
         patch_data = json.loads(caller.get_file(patch_file).decode("utf-8"))
 
@@ -81,7 +83,7 @@ class OoSPatchExtensions(APPatchExtension):
         # Initialize random seed with the one used for generation + the player ID, so that cosmetic stuff set
         # to "random" always generate the same for successive patchings for a given slot
         seed: int = patch_data["seed"]
-        random.seed(seed + caller.player)
+        random.seed(seed + cast(int, caller.player))
 
         assembler = Z80Assembler(CAVE_DATA, DEFINES, rom, ages_rom)
         dictionary, texts = get_modded_seasons_text_data(rom_data)
@@ -120,7 +122,8 @@ class OoSPatchExtensions(APPatchExtension):
         define_tree_sprites(assembler, patch_data, item_data)
         set_file_select_text(assembler, caller.player_name)
         set_player_start_inventory(assembler, patch_data)
-        randomize_puzzles(rom_data, assembler, room_data, patch_data)
+        randomize_puzzles(rom_data, texts, assembler, room_data, patch_data)
+        place_bosses(assembler, room_data, patch_data)
         if not hasattr(get_settings().tloz_oos_options, "beat_tutorial"):
             set_faq_trap(assembler)
 
@@ -164,7 +167,7 @@ class OoSPatchExtensions(APPatchExtension):
 
 
 class OoSProcedurePatch(APProcedurePatch, APTokenMixin):
-    hash = (ROM_HASH,)
+    hash: str = ""
     patch_file_ending: str = ".apoos"
     result_file_ending: str = ".gbc"
 

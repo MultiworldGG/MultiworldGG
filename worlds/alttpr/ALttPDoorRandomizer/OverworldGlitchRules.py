@@ -4,6 +4,7 @@ Helper functions to deliver entrance/exit/region sets to OWG rules.
 
 from .BaseClasses import Entrance, Region
 from .OWEdges import OWTileRegions
+from .source.logic.AccessRule import set_rule, add_rule, and_rule, Has, Primitive, Reach
 
 # Cave regions that superbunny can get through - but only with a sword.
 sword_required_superbunny_mirror_regions = ["Spiral Cave (Top)"]
@@ -271,20 +272,20 @@ def create_owg_connections(world, player):
 
 def overworld_glitches_rules(world, player):
     # Boots-accessible locations.
-    set_owg_rules(player, world, get_boots_clip_exits_lw(world, player), lambda state: state.can_boots_clip_lw(player))
-    set_owg_rules(player, world, get_boots_clip_exits_dw(world, player), lambda state: state.can_boots_clip_dw(player))
+    set_owg_rules(player, world, get_boots_clip_exits_lw(world, player), Primitive('can_boots_clip_lw', player))
+    set_owg_rules(player, world, get_boots_clip_exits_dw(world, player), Primitive('can_boots_clip_dw', player))
 
     # Glitched speed drops.
-    #set_owg_rules(player, world, get_glitched_speed_drops_lw(world, player), lambda state: state.can_get_glitched_speed_lw(player))
-    #set_owg_rules(player, world, get_glitched_speed_drops_dw(world, player), lambda state: state.can_get_glitched_speed_dw(player))
+    #set_owg_rules(player, world, get_glitched_speed_drops_lw(world, player), Primitive('can_get_glitched_speed_lw', player))
+    #set_owg_rules(player, world, get_glitched_speed_drops_dw(world, player), Primitive('can_get_glitched_speed_dw', player))
 
     # Mirror clip spots.
     # TODO: Should this also require can_boots_clip
-    set_owg_rules(player, world, get_mirror_clip_spots(world, player), lambda state: state.has_Mirror(player))
+    set_owg_rules(player, world, get_mirror_clip_spots(world, player), Has('Magic Mirror', player))
 
     # Mirror offset spots.
     for data in get_mirror_offset_spots(world, player):
-        set_owg_rules(player, world, [data[0:3]], lambda state: state.has_Mirror(player) and state.can_boots_clip_lw(player) and state.can_reach(data[3], None, player))
+        set_owg_rules(player, world, [data[0:3]], and_rule(Has('Magic Mirror', player), Primitive('can_boots_clip_lw', player), Reach(data[3], None, player)))
 
     # Regions that require the boots and some other stuff.
     # TODO: Revisit below when we can guarantee water walk
@@ -298,33 +299,31 @@ def overworld_glitches_rules(world, player):
 
     # Adding additional item requirements to OWG Clips
     if world.is_tile_swapped(0x18, player) != world.is_tile_swapped(0x28, player):
-        add_additional_rule(world.get_entrance('Kakariko To Dig Game Hook Clip', player), lambda state: state.has('Hookshot', player))
+        add_additional_rule(world.get_entrance('Kakariko To Dig Game Hook Clip', player), Has('Hookshot', player))
     else:
-        add_additional_rule(world.get_entrance('VoO To Dig Game Hook Clip', player), lambda state: state.has('Hookshot', player))
-    add_additional_rule(world.get_entrance('Tree Line Water Clip', player), lambda state: state.has('Flippers', player))
-    add_additional_rule(world.get_entrance('Dark Tree Line Water Clip', player), lambda state: state.has('Flippers', player))
+        add_additional_rule(world.get_entrance('VoO To Dig Game Hook Clip', player), Has('Hookshot', player))
+    add_additional_rule(world.get_entrance('Tree Line Water Clip', player), Has('Flippers', player))
+    add_additional_rule(world.get_entrance('Dark Tree Line Water Clip', player), Has('Flippers', player))
 
     # Bunny pocket
     if not world.is_tile_swapped(0x00, player):
-        add_alternate_rule(world.get_entrance("Skull Woods Final Section", player), lambda state: state.can_bunny_pocket(player) and state.has("Fire Rod", player))
+        add_alternate_rule(world.get_entrance("Skull Woods Final Section", player), and_rule(Primitive('can_bunny_pocket', player), Has('Fire Rod', player)))
     if world.is_tile_swapped(0x05, player):
-        add_alternate_rule(world.get_entrance("DM Hammer Bridge (West)", player), lambda state: state.can_bunny_pocket(player) and state.has("Hammer", player))
-        add_alternate_rule(world.get_entrance("DM Hammer Bridge (East)", player), lambda state: state.can_bunny_pocket(player) and state.has("Hammer", player))
+        add_alternate_rule(world.get_entrance("DM Hammer Bridge (West)", player), and_rule(Primitive('can_bunny_pocket', player), Has('Hammer', player)))
+        add_alternate_rule(world.get_entrance("DM Hammer Bridge (East)", player), and_rule(Primitive('can_bunny_pocket', player), Has('Hammer', player)))
     if not world.is_tile_swapped(0x18, player):
-        add_alternate_rule(world.get_entrance("Bush Yard Pegs (Inner)", player), lambda state: state.can_bunny_pocket(player) and state.has("Hammer", player))
-        add_alternate_rule(world.get_entrance("Bush Yard Pegs (Outer)", player), lambda state: state.can_bunny_pocket(player) and state.has("Hammer", player))
+        add_alternate_rule(world.get_entrance("Bush Yard Pegs (Inner)", player), and_rule(Primitive('can_bunny_pocket', player), Has('Hammer', player)))
+        add_alternate_rule(world.get_entrance("Bush Yard Pegs (Outer)", player), and_rule(Primitive('can_bunny_pocket', player), Has('Hammer', player)))
     if world.is_tile_swapped(0x22, player):
-        add_alternate_rule(world.get_entrance("Blacksmith Ledge Peg (West)", player), lambda state: state.can_bunny_pocket(player) and state.has("Hammer", player))
+        add_alternate_rule(world.get_entrance("Blacksmith Ledge Peg (West)", player), and_rule(Primitive('can_bunny_pocket', player), Has('Hammer', player)))
 
 
 def add_alternate_rule(entrance, rule):
-    old_rule = entrance.access_rule
-    entrance.access_rule = lambda state: old_rule(state) or rule(state)
+    add_rule(entrance, rule, 'or')
 
 
 def add_additional_rule(entrance, rule):
-    old_rule = entrance.access_rule
-    entrance.access_rule = lambda state: old_rule(state) and rule(state)
+    add_rule(entrance, rule, 'and')
 
 
 def create_no_logic_connections(player, world, connections, connect_external=False):
@@ -349,7 +348,7 @@ def set_owg_rules(player, world, connections, default_rule):
     for entrance, _, _, *rule_override in connections:
         connection = world.get_entrance(entrance, player)
         rule = rule_override[0] if len(rule_override) > 0 else default_rule
-        connection.access_rule = rule
+        set_rule(connection, rule)
 
 
 glitch_regions = (['Central Cliffs', 'Eastern Cliff', 'Desert Northern Cliffs'],
@@ -509,7 +508,7 @@ boots_clips = [
 
 mirror_clips_local = [
     ('Desert East Mirror Clip', 'Mire Area', 'Desert Mouth'),
-    ('EDDM Mirror Clip', 'East Dark Death Mountain (Bottom Left)', 'East Dark Death Mountain (Bottom)'),
+    ('EDDM Bridge Mirror Clip', 'East Dark Death Mountain (Bottom Left)', 'East Dark Death Mountain (Bottom)'),
     ('EDDM Mirror Clip', 'East Dark Death Mountain (Top)', 'Dark Death Mountain Ledge')
 ]
 

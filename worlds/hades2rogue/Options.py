@@ -80,8 +80,10 @@ class IncludedAspects(Range):
 class LocationSystem(Choice):
     """
     How to handle base locations.
-    Room_based: Each location is the first time you clear that many rooms/encounters in one
-    run. For example; Room Check 9 sends the first time you clear 9 encounters in one run.
+    Room_based: Each location is the first time you clear that many rooms/encounters in a
+    region in one run. For example; Underworld Erebus Room 09 sends the first time you clear
+    9 encounters in Erebus in one run. Defeating a region's boss sends any room locations
+    you have left in that region.
     Point_based: Each location is a point total you must accumulate, you get points equal
     to a room's depth when you clear it. Use this for much longer APs, and it will likely
     be quite repetitive.
@@ -117,19 +119,14 @@ class SeparateChecks(Choice):
     separate_pools: Every route gets their own locations, meaning you'll have to
     thoroughly explore each of your routes.
     combine_pools: the routes share one pool. Score checks stop being route-specific:
-    there are 200 of them total, every route's rooms bank into the same points pool, and
-    you could earn all 200 without ever leaving one route. Each room check is likewise
+    there's one set of them total, every route's rooms bank into the same points pool, and
+    you could earn all of them without ever leaving one route. Each room check is likewise
     earned the first time you clear that depth on ANY route.
     """
     display_name = "Separate Checks"
     option_separate_pools = 0
     option_combine_pools = 1
     default = 0
-
-
-class EnemyLocations(DefaultOnToggle):
-    """Add locations for the first time you defeat each enemy type."""
-    display_name = "Enemy Locations"
 
 
 class NpcLocations(DefaultOnToggle):
@@ -174,12 +171,48 @@ class KeepsakeSanity(Choice):
     progressive: Adds a location for earning each keepsake, and adds 3 "Progressive
     Keepsake" items. The first unlocks all keepsakes at level one, the next two level
     them up. Normal keepsake leveling is blocked.
+    progressive_per: 3 Progressive <Keepsake> items for each keepsake. This adds by far the most items.
     """
     display_name = "KeepsakeSanity"
     option_false = 0
     option_randomized = 1
     option_progressive = 2
+    option_progressive_per = 3
     default = 1
+
+
+class EnemySanity(Choice):
+    """
+    How do you want enemies handled? There are a few different options that may seem kind of
+    unrelated. Note that enemies are nerfed/buffed based on region number so they should feel
+    relatively balanced to the depth you're at.
+    vanilla: Enemies spawn where they're supposed to, and don't have locations attached to them.
+    vanilla_plus_locations: Enemies spawn where they're supposed to, and a location is sent
+    the first time you kill each enemy.
+    shuffled: (EXPERIMENTAL) Enemies are shuffled, so each time an enemy would spawn, a
+    specific different enemy spawns instead. They don't have locations attached to them.
+    shuffled_plus_locations: (EXPERIMENTAL) Enemies are shuffled, and a location is sent the
+    first time you kill each enemy.
+    pure_random: (EXPERIMENTAL) Each time an enemy spawns, a different random enemy spawns
+    instead. No locations attached to enemies.
+    """
+    display_name = "EnemySanity"
+    option_vanilla = 0
+    option_vanilla_plus_locations = 1
+    option_shuffled = 2
+    option_shuffled_plus_locations = 3
+    option_pure_random = 4
+    default = 1
+
+
+class IncludeMinibosses(Toggle):
+    """
+    (EXPERIMENTAL) Only matters if enemysanity has locations. Adds a location for the first
+    time you defeat each miniboss and boss, and shuffles which miniboss room shows up where.
+    Meaning you might walk into a miniboss room in Erebus and find Charybdis. They're scaled
+    to match the region you find them in.
+    """
+    display_name = "Include Minibosses"
 
 
 class PetSanity(Choice):
@@ -190,11 +223,13 @@ class PetSanity(Choice):
     at maximum bond when you receive its item.
     progressive: a Progressive Familiar item is added - the first unlocks all familiars,
     the rest upgrade their bonds. Normal familiar unlocking/bonding is blocked.
+    progressive_per: Each familiar has it's own progressive items, the first unlocks that familiar, the rest upgrade it. This adds the most items.
     """
     display_name = "PetSanity"
     option_unlocked = 0
     option_randomized = 1
     option_progressive = 2
+    option_progressive_per = 3
     default = 1
 
 
@@ -242,14 +277,15 @@ class GodSanity(Choice):
     will never spawn.
     unlocked: All gods are available from the beginning. Logically all are available at the
     same time, which could lead to some unlucky missed items.
-    onions: Anytime a boon would spawn from a god you haven't unlocked, it is replaced with
-    an Onion. This means that even once you've unlocked some gods, there will be runs where
-    you don't see any of them.
-    no_waste_less_odds: Each time a god is unlocked, the % chance of a boon spawning
-    increases, but every boon that spawns will always be from a god you've unlocked.
-    no_waste_same_odds: Boons spawn at the normal rate no matter how many gods are unlocked,
-    but every one is still guaranteed to be from a god you've unlocked - this makes you very
-    strong early on, since it's easy to get only boons that work very well together.
+    onions: (EXPERIMENTAL) Anytime a boon would spawn from a god you haven't unlocked, it is
+    replaced with an Onion. This means that even once you've unlocked some gods, there will
+    be runs where you don't see any of them.
+    no_waste_less_odds: (EXPERIMENTAL) Each time a god is unlocked, the % chance of a boon
+    spawning increases, but every boon that spawns will always be from a god you've unlocked.
+    no_waste_same_odds: (EXPERIMENTAL) Boons spawn at the normal rate no matter how many gods
+    are unlocked, but every one is still guaranteed to be from a god you've unlocked - this
+    makes you very strong early on, since it's easy to get only boons that work very well
+    together.
     """
     display_name = "GodSanity"
     option_unlocked = 0
@@ -424,15 +460,16 @@ class ReverseRivals(DefaultOnToggle):
 class GoalsRequired(OptionSet):
     """
     Which routes' final bosses should be included in the goal (Chronos for Underworld,
-    Typhon for Surface, Hades for Nightmare -- Zagreus is separate, see Goal Requires
-    Zagreus below). Nightmare requires the "Zagreus Journey" mod by NikkelM, which is a
-    dependency of the Archipelago mod, but will only work if Hades 1 is installed.
-    Meaning don't include Nightmare unless you have Hades 1 installed/available to be
+    Typhon for Surface, Hades for Nightmare, and whichever boss ends up at the end of your
+    Dream Dive for Dream -- Zagreus is separate, see Goal Requires Zagreus below).
+    Nightmare requires the "Zagreus Journey" mod by NikkelM, which is no longer downloaded
+    automatically with the Archipelago mod, and will only work if Hades 1 is installed.
+    Meaning don't include Nightmare unless you have both Zagreus Journey and Hades 1
     installed.
-    Valid options are: Underworld, Surface, and Nightmare.
+    Valid options are: Underworld, Surface, Nightmare, and Dream.
     """
     display_name = "Goals Required"
-    valid_keys = frozenset({"Underworld", "Surface", "Nightmare"})
+    valid_keys = frozenset({"Underworld", "Surface", "Nightmare", "Dream"})
     default = frozenset({"Underworld", "Surface"})
 
 
@@ -490,17 +527,46 @@ class ZagreusDefeatsNeeded(Range):
 class IncludeRegions(OptionSet):
     """
     Which routes will be included: Underworld (Erebus/Oceanus/Fields of Mourning/Tartarus),
-    Surface (City of Ephyra/Rift of Thessaly/Mount Olympus/The Summit), and Nightmare (the
-    original Hades 1 route -- Tartarus/Asphodel/Elysium/Styx).
-    Nightmare requires the "Zagreus Journey" mod by NikkelM, which is a dependency of
-    the Archipelago mod, but will only work if Hades 1 is installed.
-    Meaning don't include Nightmare unless you have Hades 1 installed/available to be installed.
+    Surface (City of Ephyra/Rift of Thessaly/Mount Olympus/The Summit), Nightmare (the
+    original Hades 1 route -- Tartarus/Asphodel/Elysium/Styx), and Dream (The game's built in
+    region randomizer).
+    Nightmare requires the "Zagreus Journey" mod by NikkelM, which is no longer downloaded
+    automatically with the Archipelago mod, and will only work if Hades 1 is installed.
+    Meaning don't include Nightmare unless you have both Zagreus Journey and Hades 1 installed.
 
-    Valid options are: Underworld, Surface, and Nightmare.
+    Valid options are: Underworld, Surface, Nightmare, and Dream.
     """
     display_name = "Include Regions"
-    valid_keys = frozenset({"Underworld", "Surface", "Nightmare"})
+    valid_keys = frozenset({"Underworld", "Surface", "Nightmare", "Dream"})
     default = frozenset({"Underworld", "Surface"})
+
+
+class DreamRegionCount(Range):
+    """
+    How many regions each Dream Dive run has. Normally a Dream Dive is 4 regions, but using
+    zerp's DreamDiveTweaks we can go up to 8, or up to 12 if Nightmare is included. If you
+    set it higher than what's available, it will just be lowered to the max.
+    Keep in mind that logic assumes you need half your resources to make it halfway. If you
+    set it to 12, you better be able to defeat the boss in region 6 with half your items.
+    """
+    display_name = "Dream Region Count"
+    range_start = 1
+    range_end = 12
+    default = 4
+
+
+class DreamEnemyLocations(Range):
+    """
+    Only matters if enemysanity has locations. Dream Dive doesn't have a location for each
+    enemy, instead it has a counter that sends a new location each time you defeat an enemy
+    you haven't defeated in a Dream Dive before. This is how many regions worth of enemies
+    you'll need to defeat to send them all. Bosses get their own counter, and so do
+    minibosses if you included them. The max is 8 unless Nightmare is included.
+    """
+    display_name = "Dream Enemy Locations"
+    range_start = 1
+    range_end = 12
+    default = 8
 
 
 class IncludeZagreusJourney(Toggle):
@@ -518,7 +584,7 @@ class IncludeZagreusJourney(Toggle):
 class LockRoutes(DefaultOnToggle):
     """
     Lock each route's regions behind its progressive route items (Progressive Underworld
-    / Progressive Surface / Progressive Nightmare).
+    / Progressive Surface / Progressive Nightmare / Progressive Dream).
     """
     display_name = "Lock Routes"
 
@@ -534,6 +600,7 @@ class StartingRoute(Choice):
     option_surface = 2
     option_all = 3
     option_nightmare = 4
+    option_dream = 5
     default = 0
 
 
@@ -556,6 +623,14 @@ class SurfaceWinsNeeded(Range):
 class NightmareWinsNeeded(Range):
     """How many times you must win a Nightmare run to mark the goal as complete."""
     display_name = "Nightmare Wins Needed"
+    range_start = 1
+    range_end = 20
+    default = 1
+
+
+class DreamWinsNeeded(Range):
+    """How many times you must win a Dream Dive run to mark the goal as complete."""
+    display_name = "Dream Wins Needed"
     range_start = 1
     range_end = 20
     default = 1
@@ -820,13 +895,14 @@ class Hades2Options(PerGameCommonOptions):
     location_system: LocationSystem
     score_rewards_amount: ScoreRewardsAmount
     separate_checks: SeparateChecks
-    enemy_locations: EnemyLocations
     npc_locations: NpcLocations
     # Item Options
     grasp_count: GraspCount
     grasp_intervals: GraspIntervals
     arcanasanity: ArcanaSanity
     keepsakesanity: KeepsakeSanity
+    enemysanity: EnemySanity
+    include_minibosses: IncludeMinibosses
     petsanity: PetSanity
     helper_room_sanity: HelperRoomSanity
     combat_helper_sanity: CombatHelperSanity
@@ -862,12 +938,15 @@ class Hades2Options(PerGameCommonOptions):
     zagreus_encounter_mode: ZagreusEncounterMode
     zagreus_weaken_tiers: ZagreusWeakenTiers
     include_regions: IncludeRegions
+    dream_region_count: DreamRegionCount
+    dream_enemy_locations: DreamEnemyLocations
     include_zagreus_journey: IncludeZagreusJourney
     lock_routes: LockRoutes
     starting_route: StartingRoute
     underworld_wins_needed: UnderworldWinsNeeded
     surface_wins_needed: SurfaceWinsNeeded
     nightmare_wins_needed: NightmareWinsNeeded
+    dream_wins_needed: DreamWinsNeeded
     zagreus_defeats_needed: ZagreusDefeatsNeeded
     weapons_clears_needed: WeaponsClearsNeeded
     # Misc Options
@@ -911,7 +990,6 @@ hades2_option_groups = [
         LocationSystem,
         ScoreRewardsAmount,
         SeparateChecks,
-        EnemyLocations,
         NpcLocations,
     ]),
     OptionGroup(" Item Options ", [
@@ -919,6 +997,8 @@ hades2_option_groups = [
         GraspIntervals,
         ArcanaSanity,
         KeepsakeSanity,
+        EnemySanity,
+        IncludeMinibosses,
         PetSanity,
         HelperRoomSanity,
         CombatHelperSanity,
@@ -943,12 +1023,15 @@ hades2_option_groups = [
         ZagreusEncounterMode,
         ZagreusWeakenTiers,
         IncludeRegions,
+        DreamRegionCount,
+        DreamEnemyLocations,
         IncludeZagreusJourney,
         LockRoutes,
         StartingRoute,
         UnderworldWinsNeeded,
         SurfaceWinsNeeded,
         NightmareWinsNeeded,
+        DreamWinsNeeded,
         ZagreusDefeatsNeeded,
         WeaponsClearsNeeded,
     ]),

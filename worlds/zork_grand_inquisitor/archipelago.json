@@ -1,10 +1,10 @@
 {
     "authors": ["SerpentAI"],
     "compatible_version": 7,
-    "flags": ["tracker_included"],
+    "flags": [],
     "game": "Zork Grand Inquisitor",
-    "idgb_id": 1955,
+    "igdb_id": 1955,
     "minimum_ap_version": "0.6.7",
     "version": 7,
-    "world_version": "2.2.0"
+    "world_version": "3.0.0"
 }

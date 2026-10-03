@@ -1,5 +1,8 @@
 # Donkey Kong Country 3 Toluca setup guide
 
+## Full Guide
+Info [here](https://thelx5.github.io/dkc3/setup.html).
+
 ## Required Software
 
 - [MultiworldGG](https://github.com/MultiworldGG/MultiworldGG/releases).

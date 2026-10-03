@@ -2849,7 +2849,9 @@ def find_forced_groupings(sector_pool, dungeon_map):
                                     if sector in forced_sectors:
                                         merge_groups.append(group)
                             for merge in merge_groups:
-                                grouping = list(set(grouping).union(set(merge)))
+                                for sector in merge:
+                                    if sector not in grouping:
+                                        grouping.append(sector)
                                 groupings.remove(merge)
                             queue.append(grouping)
                             force_found = True
@@ -3063,9 +3065,7 @@ def split_dungeon_builder(builder, split_list, builder_info):
                         for door in sector.outstanding_doors:
                             if door.direction == Direction.South and door.entrance.parent_region not in chosen_lobbies:
                                 choices[door] = sector
-                door_options = list(choices.keys())
-                door_options.sort()
-                chosen_door = random.choice(list(choices.keys()))
+                chosen_door = random.choice(sorted(choices.keys(), key=lambda d: d.name))
                 split_list['Sewers'].append(chosen_door.entrance.parent_region.name)
                 choices[chosen_door].outstanding_doors.remove(chosen_door)
                 builder.throne_door = chosen_door

@@ -257,7 +257,7 @@ class Z80Assembler:
                     block_name = "unnamed"
                 e.add_note(f"In block {block_name} ({block.addr})")
                 raise e
-        assert self.active
+        assert self.active, f"{block.label} did not get a closing /endif"
         block.precompiled_size = current_offset
 
     def _compile_block(self, block: Z80Block) -> None:

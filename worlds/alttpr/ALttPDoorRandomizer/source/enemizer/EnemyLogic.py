@@ -130,7 +130,8 @@ def defeat_rule_multiple(world, player, enemy_sprite_region_pairs):
         if len(best_rules) == 1:
             vln_option, rule_pair_list = next(iter(best_rules.items()))
         else:
-            vln_option, rule_pair_list = random.choice(list(best_rules.items()))
+            stable_options = sorted(best_rules.items(), key=lambda kv: tuple(sorted(kv[0])))
+            vln_option, rule_pair_list = random.choice(stable_options)
         if best_size == 0:
             raise Exception('Invulnerable enemy? rules seems to be insufficient for this enemy set, please report:'
                             + ', '.join([str(x) for x, y in enemy_sprite_region_pairs]))
@@ -486,6 +487,12 @@ def enemy_vulnerability(world, player, enemy_sprite, region):
                 vulnerability[method] = -1
         elif hits != 0:
             vulnerability[method] = hits
+
+    if world.swords[player] == "swordless":
+        # Can't use medallions to kill enemies without a sword. Ice Palace Bombos logic is handled in swordless_rules
+        for medallion in ["Bombos", "Ether", "Quake"]:
+            if medallion in vulnerability:
+                del vulnerability[medallion]
     return vulnerability
 
 

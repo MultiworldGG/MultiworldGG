@@ -1,0 +1,224 @@
+# Increase the chances of getting rare items as maple is seen more
+05/6355/: |
+  ld e,a
+  call mapleIncreasedChances
+
+05//mapleIncreasedChances: |
+  ld a,($c641) ; wMapleState
+  and $0f
+  cp e
+  ld a,$00
+  ret nc
+  inc a
+  ret
+
+# Forbid Maple from dropping Heart Piece or Gasha Seed
+05/698a/: db $2c,$00    # @rareItems
+05/6998/: db $0c,$00    # @standardItems
+
+# Make Maple trade a randomized item which sets a custom flag, both for client tracking purpose
+# and to prevent from obtaining this item several times (@state3 of INTERACID_GHASTLY_DOLL)
+0a/53cc/: |
+  call interactionIncState
+  
+  # Test flag to skip treasure creation if item has already been obtained (from several Lon Lon Eggs in pool)
+  ld a,(wBoughtShopItems2)
+  bit 3,a
+  ret nz
+  
+  # Create a treasure with a forced collect mode (using multiworld collect override)
+  ld bc,locations.mapleTrade
+  call spawnTreasureOnLink
+  ld l,$71
+  ld (hl),COLLECT_PICKUP_NOFLAG
+  
+  # Set a flag to tell it has been collected
+  ld a,(wBoughtShopItems2)
+  or $08
+  ld (wBoughtShopItems2),a
+  ret
+
+# Remove timer after getting Maple trade item
+0a/540e/: |
+  nop
+  nop
+  nop
+  nop
+
+# Instead of using wMapleState to communicate giving the lon lon egg, use var 03
+05/68f0/: |
+  ld e,$03 ; var 03
+  ld a,h
+  ld (de),a
+  nop
+
+# Now, rely on var03 to know if there's a lon lon egg on the ground
+05/6541/: |
+  ld l,$03 ; var 03
+  ld a,(hl)
+  cp $10
+  db $30 ; jr nc
+
+# Mark the egg for removal instead of using wMapleState
+05/686b/: |
+  call markEgg
+  ld h,a
+  ld (hl),l
+
+05//markEgg: |
+  ld e,$03 ; var 03
+  ld a,(de)
+  ld l,$43
+  ret
+
+# Check if the egg has been flagged
+0a/539a/: |
+  ld e,$43 ; var 03
+  ld a,(de)
+  or a
+  nop
+  db $28 ; jr z
+
+# Check if the egg was given
+05/689d/: |
+  ld h,a
+  ld e,$03 ; var 03
+  ld a,(de)
+  or a
+  ld a,h
+  nop
+
+# Flag all 4 items (id 0, 1, 2, 4)
+05/695e/: | 
+  ld hl,@itemBitMasks
+  rst 10  ; rst_addAToHL
+  ld a,($c641) ; wMapleState
+  and (hl)
+  ret nz ; already gotten the item 
+  ld e,$2b ; invincibilityCounter
+  ld a,(de)
+  and (hl)
+  ret nz ; already spawned the item
+  ld a,(de)
+  or (hl)
+  ld (de),a
+  jr mapleSpawnItemDrop_variant
+  @itemBitMasks:
+  db $80,$40,$20,$00,$10
+# Free between 6976-6983
+
+05/69e3/mapleSpawnItemDrop_variant: ; just a label
+
+# 33 bytes
+10/4eb8/: |
+  ld a,(de)
+  cp $5
+  jr c,@permanentItems
+  ld a,b
+  call giveTreasure
+  jp $3eba ; partDelete
+  @itemBitMasks:
+
+  /ifdef locations.mapleItem4.renewable
+  db $00
+  /else
+  db $80
+  /endif
+  /ifdef locations.mapleItem3.renewable
+  db $00
+  /else
+  db $40
+  /endif
+  /ifdef locations.mapleItem2.renewable
+  db $00
+  /else
+  db $20
+  /endif
+  db $00 ; dupe of ring drop
+  /ifdef locations.mapleItem1.renewable
+  db $00
+  /else
+  db $10
+  /endif
+  
+  @permanentItems:
+  ld hl,@itemBitMasks
+  rst 10  ; rst_addAToHL
+  ld a,(hl)
+  ld hl,$c641 ; wMapleState
+  or (hl)
+  ld (hl),a
+  ld a,b
+  call giveTreasureCustom
+  jp $3eba ; partDelete
+# Free from 4eda-4eea
+
+10/4f2c/: |
+  jp mapleCustomSprite
+  mapleNormalSprite:
+
+10//mapleCustomSprite: |
+  rst 10  ; rst_addAToHL
+  ld e,$dd
+  ld a,(hl)
+  cp $ff
+  jp nz,mapleNormalSprite
+  ret
+
+
+# Overrides the sprite data loaded for certain parts. This is currently only
+# used for Maple's drop, which depicts a treasure
+#
+# @param	hl	Pointer to partData (left untouched)
+# @param[out]	a	Pointer to gfx index to load for the sprite
+3f//partCheckLoadCustomSprite:
+  push hl
+  ld e,Part.id
+  ld a,(de)
+  cp a,$15 ; PARTID_ITEM_FROM_MAPLE_2
+  jp nz,@done
+  inc e
+  ld a,(de) ; subid
+  cp a,$00
+  jp nz,@done
+  
+  push bc
+  ; ld bc,rando.commonSlot_mapleItem
+  callab rando.lookupItemSlot
+  call lookupItemSpriteWithProgression
+  pop bc
+  ldi a,(hl)
+  
+  push af
+  ld e,Part.var36 ; set to oamTileIndexBase to use later
+  ldi a,(hl)
+  res 7,a
+  ld (de),a
+  
+  inc e ; var37, set to oamFlags to use later
+  ld a,(hl)
+  swap a
+  and $0F
+  ld (de),a
+  
+  inc e ; var38, set to animation index to use later
+  ld a,(hl)
+  and $0F
+  ld hl,@mapTreasureToPart
+  rst 10  ; rst_addAToHl
+  ld a,(hl)
+  ld (de),a
+  pop af
+  
+  pop hl
+  inc hl
+  ret
+  
+  @done:
+  pop hl
+  ldi a,(hl)
+  ret
+  
+  @mapTreasureToPart:
+  .db $00 $00 $03 $02 $00 $00 $04 $00
+  .db $00 $00 $05 $00 $00 $04 $00 $00

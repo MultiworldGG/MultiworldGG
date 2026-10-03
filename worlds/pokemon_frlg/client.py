@@ -248,6 +248,8 @@ class PokemonFRLGClient(BizHawkClient):
     previous_death_link: float
     ignore_next_death_link: bool
     current_map: Tuple[int, int]
+    notify_setup_complete: bool
+    stored_entrances_attempts: int
 
     def __init__(self) -> None:
         super().__init__()
@@ -265,6 +267,8 @@ class PokemonFRLGClient(BizHawkClient):
         self.previous_death_link = 0
         self.ignore_next_death_link = False
         self.current_map = (0, 0)
+        self.notify_setup_complete = False
+        self.stored_entrances_attempts = 5
 
     async def validate_rom(self, ctx: "BizHawkClientContext") -> bool:
         from CommonClient import logger
@@ -344,6 +348,18 @@ class PokemonFRLGClient(BizHawkClient):
     async def game_watcher(self, ctx: "BizHawkClientContext") -> None:
         if ctx.server is None or ctx.server.socket.closed or ctx.slot_data is None:
             return
+
+        if not self.notify_setup_complete:
+            ctx.set_notify(f"pokemon_frlg_entrances_{ctx.team}_{ctx.slot}")
+            self.notify_setup_complete = True
+
+        stored_entrances = ctx.stored_data.get(f"pokemon_frlg_entrances_{ctx.team}_{ctx.slot}")
+        if stored_entrances and self.stored_entrances_attempts:
+            for map_id, warp_id in stored_entrances.items():
+                self.local_entrances[int(map_id)] = warp_id
+            self.stored_entrances_attempts = 0
+        elif self.stored_entrances_attempts:
+            self.stored_entrances_attempts -= 1
 
         if self.goal_flag is None:
             if ctx.slot_data["goal"] == Goal.option_champion:
@@ -783,7 +799,7 @@ class PokemonFRLGClient(BizHawkClient):
         Reads the last warp that the player took, adds it to the list of entrances found, and sends the updated list to
         the tracker.
         """
-        if "entrances" not in ctx.slot_data:
+        if "entrances" not in ctx.slot_data or self.stored_entrances_attempts:
             return
 
         sb1_address = int.from_bytes(guards["SAVE BLOCK 1"][1], "little")

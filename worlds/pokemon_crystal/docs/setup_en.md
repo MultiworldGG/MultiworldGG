@@ -6,10 +6,10 @@
 - An English (UE) Pokémon Crystal v1.0 or v1.1 ROM. The Archipelago community cannot provide this.
     - A valid v1.1 ROM can be extracted from the 3DS eShop release of the game.
 - One of the following:
-    - [BizHawk](https://tasvideos.org/BizHawk/ReleaseHistory) 2.7 or later. 2.10 is recommended.
+    - [BizHawk](https://tasvideos.org/BizHawk/ReleaseHistory) 2.7 or later. 2.11.1 is recommended.
     - [mGBA](https://mgba.io) 0.10.3 or later.
         - You will also need
-          the [mGBA to Bizhawk Client connector script](https://gist.github.com/gerbiljames/7b92dc62843794bd5902aad191b65efc).
+          the [mGBA to Bizhawk Client connector script](https://gist.github.com/Zunawe/d41677500b08694c9985f67f41896cc5).
           You should add it to `data/lua/` in your MultiworldGG install.
 
 ### Configuring BizHawk
@@ -35,7 +35,7 @@ Once you have installed mGBA, open `mGBA`, navigate to Settings/Preferences, and
 ## Optional Software
 
 [Pokémon Crystal AP Tracker](https://github.com/palex00/crystal-ap-tracker/releases/latest) for use
-with [PopTracker](https://github.com/black-sliver/PopTracker/releases)
+with [PopTracker](https://github.com/black-sliver/PopTracker/releases/latest)
 
 ## Generating and Patching a Game
 
@@ -44,7 +44,7 @@ with [PopTracker](https://github.com/black-sliver/PopTracker/releases)
 2. Create your options file (YAML). You can make one by choosing Generate Templates
    from the MultiworldGG Launcher. From there, you can edit the `.yaml` in any text editor.
 3. Follow the general MultiworldGG instructions
-   for [generating a game on your local installation](https://multiworld.gg/tutorial/Archipelago/setup/en#on-your-local-installation).
+   for [generating a game on your local installation](/tutorial/Archipelago/setup/en#on-your-local-installation).
    This will generate an output file for you. Your patch file will have the `.apcrystal` file extension and will be
    inside the output file.
 4. Open `MultiworldGGLauncher.exe`
@@ -72,9 +72,10 @@ pokemon_crystal_settings:
 You can then type in the options you would like to override as you would in a player YAML. Option weights and triggers
 are supported.
 
-The following options can always be overridden: `trainer_name`, `trainer_palette`, `game_options`,
-`field_move_menu_order`, `default_pokedex_mode`, `shopsanity_restrict_rare_candies`, `reusable_tms`,
-`minimum_catch_rate`, `skip_elite_four`, `better_marts`, `build_a_mart`, `experience_modifier`, `starting_money`.
+The following options can always be overridden: `trainer_name`, `trainer_gender`, `trainer_palette`, `rival_name`,
+`start_time`, `game_options`, `field_move_menu_order`, `default_pokedex_mode`, `shopsanity_restrict_rare_candies`,
+`reusable_tms`, `minimum_catch_rate`, `skip_elite_four`, `better_marts`, `build_a_mart`, `experience_modifier`,
+`starting_money`, `all_pokemon_seen`.
 
 You can change these settings at any time after patching the ROM and re-apply them by patching the ROM again. Your
 save data will be preserved.
@@ -110,7 +111,7 @@ perfectly safe to make progress offline; everything will re-sync when you reconn
 Pokémon Crystal has a fully functional map tracker that supports auto-tracking.
 
 1. Download [Pokémon Crystal AP Tracker](https://github.com/palex00/crystal-ap-tracker/releases/latest) and
-   [PopTracker](https://github.com/black-sliver/PopTracker/releases).
+   [PopTracker](https://github.com/black-sliver/PopTracker/releases/latest).
 2. Put the tracker pack into `packs/` in your PopTracker install.
 3. Open PopTracker, and load the Pokémon Crystal pack.
 4. For autotracking, click on the "AP" symbol at the top.

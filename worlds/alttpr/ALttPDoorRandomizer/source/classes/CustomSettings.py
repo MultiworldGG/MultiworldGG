@@ -9,7 +9,7 @@ from collections import defaultdict
 from pathlib import Path
 
 from ... import RaceRandom as random
-from ...BaseClasses import LocationType, DoorType
+from ...BaseClasses import LocationType, DoorType, KeyRuleType
 from ..overworld.FluteShuffle import default_flute_connections, flute_data
 from ..tools.MysteryUtils import roll_settings, get_weights
 from ..dungeon.EnemyList import enemy_names, sprite_translation
@@ -198,6 +198,7 @@ class CustomSettings(object):
                 args.shufflepots[p] = get_setting(settings['shufflepots'], args.shufflepots[p])
                 args.bombbag[p] = get_setting(settings['bombbag'], args.bombbag[p])
                 args.shufflelinks[p] = get_setting(settings['shufflelinks'], args.shufflelinks[p])
+                args.shuffleganon[p] = get_setting(settings['shuffleganon'], args.shuffleganon[p])
                 args.shuffletavern[p] = get_setting(settings['shuffletavern'], args.shuffletavern[p])
                 args.skullwoods[p] = get_setting(settings['skullwoods'], args.skullwoods[p])
                 args.linked_drops[p] = get_setting(settings['linked_drops'], args.linked_drops[p])
@@ -322,6 +323,50 @@ class CustomSettings(object):
                 return self.get_rooms()[player]
             else:
                 return self.get_rooms()
+
+    def get_key_logic(self, player):
+        doors = self.get_doors()
+        if not doors or player not in doors or not doors[player] or 'key_logic' not in doors[player]:
+            return None
+        section = doors[player]['key_logic'] or {}
+        counting = section.get('counting', 'all')
+        if counting not in ('all', 'chests'):
+            raise Exception(f'key_logic: counting must be "all" or "chests", found {counting!r}')
+        if 'doors' not in section:
+            raise Exception('key_logic: expected a "doors" mapping of door names to key numbers')
+        result = {'counting': counting, 'doors': {}}
+        for door_name, spec in (section['doors'] or {}).items():
+            result['doors'][door_name] = self.parse_key_rule(door_name, spec)
+        return result
+
+    @staticmethod
+    def parse_key_rule(door_name, spec):
+        def number(key, value):
+            if isinstance(value, bool) or not isinstance(value, int) or value < 0:
+                raise Exception(f'key_logic: {door_name} {key} must be a non-negative integer, found {value!r}')
+            return value
+        if not isinstance(spec, dict):
+            return {'keys': number('keys', spec)}
+        allowed = {'keys', 'big_key_in', 'with_big_key', 'small_key_in', 'with_small_key'}
+        unknown = set(spec) - allowed
+        if unknown or 'keys' not in spec:
+            raise Exception(f'key_logic: {door_name} takes keys, big_key_in, with_big_key, small_key_in, with_small_key')
+        rule = {'keys': number('keys', spec['keys'])}
+        for key, needs in (('with_big_key', 'big_key_in'), ('with_small_key', 'small_key_in')):
+            if key in spec and needs not in spec:
+                raise Exception(f'key_logic: {door_name} {key} needs {needs}')
+        if 'big_key_in' in spec:
+            locs = spec['big_key_in']
+            rule['big_key_in'] = [locs] if isinstance(locs, str) else list(locs)
+            rule['with_big_key'] = number('with_big_key', spec.get('with_big_key', max(rule['keys'] - 1, 0)))
+        if 'small_key_in' in spec:
+            rule['small_key_in'] = spec['small_key_in']
+            rule['with_small_key'] = number('with_small_key', spec.get('with_small_key', max(rule['keys'] - 1, 0)))
+        for key in ('with_big_key', 'with_small_key'):
+            if key in rule and rule[key] > rule['keys']:
+                raise Exception(f'key_logic: {door_name} {key} cannot exceed keys')
+        return rule
+
 
     def get_bosses(self):
         if 'bosses' in self.file_source:
@@ -461,8 +506,8 @@ class CustomSettings(object):
             settings_dict[p]['mixed_travel'] = world.mixed_travel[p]
             settings_dict[p]['standardize_palettes'] = world.standardize_palettes[p]
             settings_dict[p]['dungeon_counters'] = world.dungeon_counters[p]
-            settings_dict[p]['crystals_gt'] = world.crystals_gt_orig[p]
-            settings_dict[p]['crystals_ganon'] = world.crystals_ganon_orig[p]
+            settings_dict[p]['crystals_gt'] = world.crystals_needed_for_gt[p]
+            settings_dict[p]['crystals_ganon'] = world.crystals_needed_for_ganon[p]
             settings_dict[p]['experimental'] = world.experimental[p]
             settings_dict[p]['collection_rate'] = world.collection_rate[p]
             settings_dict[p]['openpyramid'] = world.open_pyramid[p]
@@ -697,6 +742,14 @@ class CustomSettings(object):
                         else:
                             door_value = {'dest': door.dest.name, 'one-way': True}
                         door_map[door.name] = door_value
+            key_rules, chest_counting = {}, False
+            for key_logic in world.key_logic.get(p, {}).values():
+                chest_counting |= key_logic.chest_counting
+                for door_name, rule in key_logic.door_rules.items():
+                    if KeyRuleType.WorstCase in rule.new_rules:
+                        key_rules[door_name] = min(rule.small_key_num, rule.new_rules[KeyRuleType.WorstCase])
+            if key_rules:
+                meta_doors['key_logic'] = {'counting': 'chests' if chest_counting else 'all', 'doors': key_rules}
 
     def record_medallions(self):
         pass

@@ -10,12 +10,20 @@ ADDONS_ERRORS:list[str] = []
 
 from Utils import tuplize_version
 
-UT_ADDONS_VERSION = "v0.1.1"
+UT_ADDONS_VERSION = "v0.1.2"
 
-UT_VERSION_TUPLE = tuplize_version(UT_ADDONS_VERSION[1:].split("-",1)[0])
+UT_ADDONS_TUPLE = tuplize_version(UT_ADDONS_VERSION[1:].split("-",1)[0])
 
 if TYPE_CHECKING:
     from worlds.tracker.TrackerClient import TrackerCommandProcessor
+
+def get_functions() -> dict[str, Callable]:
+    """Check tracker compatibility when commands are installed, after world loading."""
+    from worlds.tracker import UT_VERSION_TUPLE
+
+    if UT_VERSION_TUPLE < (0, 3, 1):
+        raise ImportError(f"UT Addons {UT_ADDONS_VERSION} is missing compatible UT")
+    return UT_FUNCTIONS
 
 def register_function(name:str, func:Callable):
     if name in UT_FUNCTIONS:
@@ -72,8 +80,8 @@ def stupid_thing(self: "TrackerCommandProcessor"):
 def next_progression(self: "TrackerCommandProcessor"):
     """Finds all items that will unlock a check immediately when collected, and a best guess of how many new checks they will unlock."""
     self.ctx.updateTracker()
-    assert self.ctx.tracker_core.multiworld
-    assert self.ctx.tracker_core.player_id
+    if self.ctx.tracker_core is None or self.ctx.tracker_core.multiworld is None or self.ctx.tracker_core.player_id is None:
+        return
     baseLocs = len(self.ctx.tracker_core.locations_available)
     counter = Counter()
     goal_items = []

@@ -8,7 +8,7 @@ class Goal(OptionSet):
     orb: Act 4 access, the Orb, 3 Progressive Cooling Rods. Throw the orb in the pot.
     museum: Act 4 access, 100 dumpster items, the Belgium Waffle, 4 Progressive Mystical Dumbbells, 3 Progressive Cooling Rods. Throw the Belgium Waffle in the pot.
     fellowship: Act 4 access, the GREENISH ABOMINATION, the Priestess, 3 Progressive Cooling Rods. Throw the GREENISH ABOMINATION in the pot.
-    lugh: Act 4 access, all 4 Mystical Jewels. Jump into Lugh's hands at the Gully.
+    lugh: Act 4 access, and all 4 Progressive Mystical Jewels. Jump into Lugh's hands at the Gully.
     """
     display_name = "Goal"
     valid_keys = ["orb", "museum", "fellowship", "lugh"]
@@ -43,17 +43,6 @@ class LughQuestLocking(Toggle):
     display_name = "Lugh Quest Locking"
     
     
-class DumpsterWeightBlocking(DefaultOnToggle):
-    """
-    When enabled (default), the dumpster enforces weight limits strictly: truck weight skips are
-    removed from logic entirely and all dumbbell requirements always apply. You will not
-    be able to use the truck to store heavier objects.
-    When disabled, logic expects you to use the Kei Truck to bypass weight
-    requirements in areas where the truck is accessible.
-    """
-    display_name = "Dumpster Weight Blocking"
-
-
 class TrapToggle(DefaultOnToggle):
     """
     When enabled, trap items (Police Trap, Phone Ratio Trap) may appear in the item pool
@@ -121,7 +110,6 @@ class FuniRaccoonOptions(PerGameCommonOptions):
     gemsanity: Gemsanity
     hatsanity: Hatsanity
     goal: Goal
-    dumpster_weight_blocking: DumpsterWeightBlocking
     lugh_quest_locking: LughQuestLocking
     trap_toggle: TrapToggle
     museum_threshold: MuseumThreshold

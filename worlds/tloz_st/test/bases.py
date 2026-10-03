@@ -25,7 +25,6 @@ options_old = {
         "randomize_boss_keys": "anywhere",
         "keyrings": "all",
 
-
         "shopsanity": {"all"},
         "rupee_farming_logic": "unlimited_farming",
         "excess_random_treasure": "nothing",
@@ -106,8 +105,33 @@ er_options = {
         # ]
     }
 
+starve_rupees = {
+        "randomize_minigames": "all_reasonable",
+        "randomize_cargo": "vanilla_abstract",
+        "rupee_farming_logic": "no_farming",
+        "excess_random_treasure": "convert_to_rupees",
+        "plando_dungeon_pool": ["ToS 6","Lost at Sea", "ToS 2"],
+        "exclude_sections": "remove",
+        "exclude_dungeons": "exclude",
+        "dungeons_required": 12,
+        "require_specific_dungeons": False,
+        "goal": "beat_blizzard_temple"
+}
+
 basic = {
-        "start_with_train": True
+
+        "shopsanity": ["all"],
+
+        "exclude_sections": "include",
+        "exclude_dungeons": "remove",
+        "dungeons_required": 11,
+
+        "randomize_cargo": "vanilla_abstract",
+        "randomize_stamps": "randomize",
+        "randomize_minigames": "everything",
+        "randomize_passengers": "no_passengers",
+        "rabbitsanity": "both",
+        "track_pool": "mixed_large",
 }
 
 class TestGeneration(WorldTestBase):

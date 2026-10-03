@@ -141,10 +141,10 @@ These are now independent of retro mode and have three options: None, Random, an
 
 # Patch Notes
 
-* 1.5.6
-  * Enemy Drops: Pikit are no longer eligible for dropped items due to a vanilla bug where a failed steal can overwrite the assigned drop.
-  * Standard Mode: Reworked spawn refills to be more generous for enemy drop modes.
-  * Customizer: Added `item_pool_adjust` section to apply additive/subtractive deltas to the base item pool rather than replacing it entirely.
-  * Multiworld: Fixed a generation crash when beemizer is active and pottery is enabled. Pot locations are now properly filled with same-player items when the MW limit is hit even when beemizer has replaced native pot items.
-  
-
+* 1.5.7
+  * Key Logic: New `static` algorithm using the entrance randomizer's key rules. Requires vanilla doors and unshuffled key drops and pots. (Thanks homemadebeer!)
+  * Customizer: New `key_logic` section to preset small key requirements on key doors. (Thanks homemadebeer!)
+  * Standard Mode: Escape respawns refill some arrows and magic under enemy shuffle. (Thanks Telethar and clearmouse!)
+  * Standard Mode: If later rupee packs cannot raise an early location and the player cannot farm, money balancing tries one Rupees (300) before it bails. (Thanks homemadebeer!)
+  * Spoiler Log: Drops, prize packs, digging game count, and in-game text added to the debug spoiler. (Thanks clearmouse!)
+  * Text: Updated crosskeys tournament winners. (Thanks clearmouse!)

@@ -109,10 +109,10 @@ class UncannyCatWorld(World):
             "excluded_minigames": sorted(self.options.excluded_minigames.value),
             "rank_check_difficulty": self.options.rank_check_difficulty.value,
             "temp_modifiers": self.options.temp_modifiers.value,
+            "buff_uncanny_cat_spray": self.options.buff_uncanny_cat_spray.value,
             "chill_mode": self.options.chill_mode.value,
             "panic_mode": self.options.panic_mode.value,
             "death_link": self.options.death_link.value,
-            "death_link_amnesty": self.options.death_link_amnesty.value,
         }
 
     @staticmethod

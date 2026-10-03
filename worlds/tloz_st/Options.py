@@ -463,6 +463,7 @@ class SpiritTracksShuffleToSSections(Choice):
     display_name = "Shuffle ToS Sections"
     option_no_shuffle = 0
     option_shuffle_alone = 1
+    alias_shuffle = 1
     option_shuffle_pool_a = 2
     option_shuffle_pool_b = 3
     option_shuffle_pool_c = 4
@@ -476,6 +477,7 @@ class SpiritTracksShuffleStations(Choice):
     display_name = "Shuffle Stations"
     option_no_shuffle = 0
     option_shuffle_alone = 1
+    alias_shuffle = 1
     option_shuffle_pool_a = 2
     option_shuffle_pool_b = 3
     option_shuffle_pool_c = 4
@@ -489,6 +491,7 @@ class SpiritTracksShuffleTrainTransitions(Choice):
     display_name = "Shuffle Train Transitions"
     option_no_shuffle = 0
     option_shuffle_alone = 1
+    alias_shuffle = 1
     option_shuffle_pool_a = 2
     option_shuffle_pool_b = 3
     option_shuffle_pool_c = 4
@@ -502,6 +505,7 @@ class SpiritTracksShuffleHouses(Choice):
     display_name = "Shuffle Houses"
     option_no_shuffle = 0
     option_shuffle_alone = 1
+    alias_shuffle = 1
     option_shuffle_pool_a = 2
     option_shuffle_pool_b = 3
     option_shuffle_pool_c = 4
@@ -515,6 +519,7 @@ class SpiritTracksShuffleCaves(Choice):
     display_name = "Shuffle Caves"
     option_no_shuffle = 0
     option_shuffle_alone = 1
+    alias_shuffle = 1
     option_shuffle_pool_a = 2
     option_shuffle_pool_b = 3
     option_shuffle_pool_c = 4
@@ -527,6 +532,7 @@ class SpiritTracksShuffleTransitions(Choice):
     display_name = "Shuffle Overworld Transitions"
     option_no_shuffle = 0
     option_shuffle_alone = 1
+    alias_shuffle = 1
     option_shuffle_pool_a = 2
     option_shuffle_pool_b = 3
     option_shuffle_pool_c = 4
@@ -540,6 +546,7 @@ class SpiritTracksShuffleHyruleCastle(Choice):
     display_name = "Shuffle Hyrule Castle"
     option_no_shuffle = 0
     option_shuffle_alone = 1
+    alias_shuffle = 1
     option_shuffle_pool_a = 2
     option_shuffle_pool_b = 3
     option_shuffle_pool_c = 4
@@ -554,6 +561,7 @@ class SpiritTracksShuffleDisorientationStation(Choice):
     display_name = "Shuffle Disorientation Station Interior"
     option_no_shuffle = 0
     option_shuffle_alone = 1
+    alias_shuffle = 1
     option_shuffle_pool_a = 2
     option_shuffle_pool_b = 3
     option_shuffle_pool_c = 4
@@ -569,6 +577,7 @@ class SpiritTracksShuffleEotE(Choice):
     display_name = "Shuffle Ends of the Earth Interior"
     option_no_shuffle = 0
     option_shuffle_alone = 1
+    alias_shuffle = 1
     option_shuffle_pool_a = 2
     option_shuffle_pool_b = 3
     option_shuffle_pool_c = 4
@@ -585,6 +594,7 @@ class SpiritTracksShufflePortals(Choice):
     display_name = "Shuffle Train Portals"
     option_no_shuffle = 0
     option_shuffle_alone = 1
+    alias_shuffle = 1
     option_shuffle_pool_a = 2
     option_shuffle_pool_b = 3
     option_shuffle_pool_c = 4
@@ -600,6 +610,7 @@ class SpiritTracksShuffleLas(Choice):
     display_name = "Shuffle Lost at Sea Dungeon"
     option_no_shuffle = 0
     option_shuffle_alone = 1
+    alias_shuffle = 1
     option_shuffle_pool_a = 2
     option_shuffle_pool_b = 3
     option_shuffle_pool_c = 4
@@ -626,6 +637,7 @@ class SpiritTracksShuffleDungeonRooms(Choice):
     display_name = "Shuffle Dungeon Interiors"
     option_no_shuffle = 0
     option_shuffle_alone = 1
+    alias_shuffle = 1
     option_shuffle_pool_a = 2
     option_shuffle_pool_b = 3
     option_shuffle_pool_c = 4
@@ -644,6 +656,7 @@ class SpiritTracksShuffleWarps(Choice):
     display_name = "Shuffle Blue Warps"
     option_no_shuffle = 0
     option_shuffle_alone = 1
+    alias_shuffle = 1
     option_shuffle_pool_a = 2
     option_shuffle_pool_b = 3
     option_shuffle_pool_c = 4
@@ -662,6 +675,7 @@ class SpiritTracksShuffleDungeonEntrances(Choice):
     display_name = "Shuffle Dungeon Entrances"
     option_no_shuffle = 0
     option_shuffle_alone = 1
+    alias_shuffle = 1
     option_shuffle_pool_a = 2
     option_shuffle_pool_b = 3
     option_shuffle_pool_c = 4
@@ -681,6 +695,7 @@ class SpiritTracksShuffleBosses(Choice):
     display_name = "Shuffle Bosses"
     option_no_shuffle = 0
     option_shuffle_alone = 1
+    alias_shuffle = 1
     option_shuffle_pool_a = 2
     option_shuffle_pool_b = 3
     option_shuffle_pool_c = 4
@@ -871,7 +886,7 @@ class SpiritTracksExcludeDungeons(Choice):
     option_include = 0
     option_exclude = 1
     option_remove = 2
-    default = 0
+    default = 1
 
 class SpiritTracksExcludeSections(Choice):
     """

@@ -13,7 +13,8 @@
     "price": 0,
     "tags": [
       "Balls",
-      "Ball"
+      "Ball",
+      "CustomShop"
     ]
   },
   "ULTRA_BALL": {
@@ -64,10 +65,13 @@
   },
   "MOON_STONE": {
     "name": "Moon Stone",
-    "classification": "USEFUL",
+    "classification": "PROGRESSION",
     "price": 2100,
     "tags": [
-      "Evolution Items"
+      "Evolution Items",
+      "Key Items",
+      "KeyItem",
+      "CustomShop"
     ]
   },
   "ANTIDOTE": {
@@ -188,28 +192,37 @@
   },
   "FIRE_STONE": {
     "name": "Fire Stone",
-    "classification": "USEFUL",
+    "classification": "PROGRESSION",
     "price": 2100,
     "tags": [
-      "Evolution Items"
+      "Evolution Items",
+      "Key Items",
+      "KeyItem",
+      "CustomShop"
     ]
   },
   "THUNDERSTONE": {
     "name": "Thunderstone",
-    "classification": "USEFUL",
+    "classification": "PROGRESSION",
     "price": 2100,
     "tags": [
-      "Evolution Items"
+      "Evolution Items",
+      "Key Items",
+      "KeyItem",
+      "CustomShop"
     ]
   },
   "WATER_STONE": {
     "name": "Water Stone",
-    "classification": "USEFUL",
+    "classification": "PROGRESSION",
     "price": 2100,
     "tags": [
       "Tracker",
       "Evolution Items",
-      "Ruins of Alph Chamber Unlocks"
+      "Ruins of Alph Chamber Unlocks",
+      "Key Items",
+      "KeyItem",
+      "CustomShop"
     ]
   },
   "HP_UP": {
@@ -283,10 +296,13 @@
   },
   "LEAF_STONE": {
     "name": "Leaf Stone",
-    "classification": "USEFUL",
+    "classification": "PROGRESSION",
     "price": 2100,
     "tags": [
-      "Evolution Items"
+      "Evolution Items",
+      "Key Items",
+      "KeyItem",
+      "CustomShop"
     ]
   },
   "METAL_POWDER": {
@@ -457,14 +473,33 @@
       "Tracker"
     ]
   },
-  "EXP_SHARE": {
-    "name": "Exp Share",
+  "EXP_ALL": {
+    "name": "Exp All",
     "classification": "USEFUL",
     "price": 0,
     "tags": [
       "Key Items",
       "Unique",
       "KeyItem"
+    ]
+  },
+  "EXP_SHARE": {
+    "name": "Exp Share",
+    "classification": "USEFUL",
+    "price": 3000,
+    "tags": [
+      "Unique"
+    ]
+  },
+  "LINK_CABLE": {
+    "name": "Link Cable",
+    "classification": "PROGRESSION",
+    "price": 2100,
+    "tags": [
+      "Evolution Items",
+      "Key Items",
+      "KeyItem",
+      "CustomShop"
     ]
   },
   "OLD_ROD": {
@@ -696,10 +731,11 @@
   },
   "KINGS_ROCK": {
     "name": "Kings Rock",
-    "classification": "USEFUL",
+    "classification": "PROGRESSION",
     "price": 2100,
     "tags": [
-      "Evolution Items"
+      "Evolution Items",
+      "CustomShop"
     ]
   },
   "BITTER_BERRY": {
@@ -1106,10 +1142,11 @@
   },
   "METAL_COAT": {
     "name": "Metal Coat",
-    "classification": "USEFUL",
+    "classification": "PROGRESSION",
     "price": 2100,
     "tags": [
-      "Evolution Items"
+      "Evolution Items",
+      "CustomShop"
     ]
   },
   "DRAGON_FANG": {
@@ -1135,10 +1172,11 @@
   },
   "DRAGON_SCALE": {
     "name": "Dragon Scale",
-    "classification": "USEFUL",
+    "classification": "PROGRESSION",
     "price": 2100,
     "tags": [
-      "Evolution Items"
+      "Evolution Items",
+      "CustomShop"
     ]
   },
   "BERSERK_GENE": {
@@ -1160,7 +1198,8 @@
     "tags": [
       "Balls",
       "Ball",
-      "Kurt's Balls"
+      "Kurt's Balls",
+      "CustomShop"
     ]
   },
   "FLOWER_MAIL": {
@@ -1178,7 +1217,8 @@
     "tags": [
       "Balls",
       "Kurt's Balls",
-      "Ball"
+      "Ball",
+      "CustomShop"
     ]
   },
   "LURE_BALL": {
@@ -1188,7 +1228,8 @@
     "tags": [
       "Balls",
       "Kurt's Balls",
-      "Ball"
+      "Ball",
+      "CustomShop"
     ]
   },
   "FAST_BALL": {
@@ -1198,7 +1239,8 @@
     "tags": [
       "Balls",
       "Kurt's Balls",
-      "Ball"
+      "Ball",
+      "CustomShop"
     ]
   },
   "LIGHT_BALL": {
@@ -1214,7 +1256,8 @@
     "tags": [
       "Balls",
       "Kurt's Balls",
-      "Ball"
+      "Ball",
+      "CustomShop"
     ]
   },
   "MOON_BALL": {
@@ -1224,7 +1267,8 @@
     "tags": [
       "Balls",
       "Kurt's Balls",
-      "Ball"
+      "Ball",
+      "CustomShop"
     ]
   },
   "LOVE_BALL": {
@@ -1234,7 +1278,8 @@
     "tags": [
       "Balls",
       "Kurt's Balls",
-      "Ball"
+      "Ball",
+      "CustomShop"
     ]
   },
   "GRASS_ITEM": {
@@ -1242,6 +1287,30 @@
     "classification": "FILLER",
     "price": 2,
     "tags": []
+  },
+  "MORN_ITEM": {
+    "name": "Morn",
+    "classification": "PROGRESSION",
+    "price": 0,
+    "tags": [
+      "Time of Day"
+    ]
+  },
+  "DAY_ITEM": {
+    "name": "Day",
+    "classification": "PROGRESSION",
+    "price": 0,
+    "tags": [
+      "Time of Day"
+    ]
+  },
+  "NITE_ITEM": {
+    "name": "Nite",
+    "classification": "PROGRESSION",
+    "price": 0,
+    "tags": [
+      "Time of Day"
+    ]
   },
   "KABUTO_TILE": {
     "name": "Kabuto Tile",
@@ -1255,10 +1324,13 @@
   },
   "SUN_STONE": {
     "name": "Sun Stone",
-    "classification": "USEFUL",
+    "classification": "PROGRESSION",
     "price": 2100,
     "tags": [
-      "Evolution Items"
+      "Evolution Items",
+      "Key Items",
+      "KeyItem",
+      "CustomShop"
     ]
   },
   "POLKADOT_BOW": {
@@ -1269,10 +1341,11 @@
   },
   "UP_GRADE": {
     "name": "Up-Grade",
-    "classification": "USEFUL",
+    "classification": "PROGRESSION",
     "price": 2100,
     "tags": [
-      "Evolution Items"
+      "Evolution Items",
+      "CustomShop"
     ]
   },
   "BERRY": {
@@ -1823,6 +1896,15 @@
       "Trap",
       "Traps",
       "Trap - Move"
+    ]
+  },
+  "SHUFFLE_TRAP": {
+    "name": "Shuffle Trap",
+    "classification": "TRAP",
+    "price": 0,
+    "tags": [
+      "Trap",
+      "Traps"
     ]
   },
   "BLUE_CARD_PT": {
@@ -2508,6 +2590,18 @@
       "Fly Unlocks"
     ]
   },
+  "FLY_UNLOCK_INDIGO_PLATEAU": {
+    "name": "Fly Indigo Plateau",
+    "classification": "PROGRESSION",
+    "price": 0,
+    "fly_id": "INDIGO",
+    "tags": [
+      "Fly",
+      "Unique",
+      "Tracker",
+      "Fly Unlocks"
+    ]
+  },
   "FLY_UNLOCK_NEW_BARK": {
     "name": "Fly New Bark Town",
     "classification": "PROGRESSION",
@@ -2655,11 +2749,63 @@
   "OAKS_PARCEL": {
     "name": "Oak's Parcel",
     "classification": "PROGRESSION",
+    "deprioritized": true,
     "price": 0,
     "tags": [
       "Unique",
       "Key Items",
       "KeyItem"
+    ]
+  },
+  "BATTLE_TOWER_UBER_PASS": {
+    "name": "Battle Tower Ubers Pass",
+    "classification": "PROGRESSION",
+    "price": 0,
+    "tags": [
+      "Unique",
+      "Battle Tower",
+      "Tracker"
+    ]
+  },
+  "BATTLE_TOWER_TIER_UNLOCK": {
+    "name": "Progressive Battle Tower Tier Unlock",
+    "classification": "PROGRESSION",
+    "price": 0,
+    "tags": [
+      "Battle Tower",
+      "Tracker"
+    ]
+  },
+  "DOLL_CHARMANDER": {
+    "name": "Charmander Doll",
+    "classification": "FILLER",
+    "price": 0,
+    "tags": [
+      "Dolls"
+    ]
+  },
+  "DOLL_CLEFAIRY": {
+    "name": "Clefairy Doll",
+    "classification": "FILLER",
+    "price": 0,
+    "tags": [
+      "Dolls"
+    ]
+  },
+  "DOLL_PIKACHU": {
+    "name": "Pikachu Doll",
+    "classification": "FILLER",
+    "price": 0,
+    "tags": [
+      "Dolls"
+    ]
+  },
+  "DOLL_SNORLAX": {
+    "name": "Big Snorlax Doll",
+    "classification": "FILLER",
+    "price": 0,
+    "tags": [
+      "Dolls"
     ]
   }
 }

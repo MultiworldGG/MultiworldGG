@@ -23,6 +23,8 @@ When collecting it, the game will inform you that you just sent an item to anoth
 **How can I warp to start?**
 
 > You can warp to start by pressing A+B while the screen is fading to white into any menu (e.g. after pressing START or SELECT)
+> 
+> (If warping does not work, make sure the controls are correctly mapped)
 
 **I lost my shield, where do I get it back?**
 
@@ -50,7 +52,11 @@ When collecting it, the game will inform you that you just sent an item to anoth
 > 
 > In solo however, after patching your game, you can play it on any emulator or even original hardware. However, since you will be unable to connect, you will not have access to the hint system, a log of what you collected previously and a tracker, unless you switch emulator back to Bizhawk, bringing your save.
 > 
-> \*Zunawe also made a connector to use mgba instead. Instructions on how to download and use it are [here](https://discord.com/channels/731205301247803413/1192236871468711966/1193963132377374762) on the Archipelago Discord server
+> \*Zunawe also made a connector to use mgba instead. Instructions on how to download and use it are [here](https://discord.com/channels/731205301247803413/1501334852556034059/1501334956549472436) on the Archipelago Discord server
+
+**How do I equip rings without going to Vasu?**
+
+> Pressing A on the Ring Box in the second inventory menu opens the ring list as if you opened it at Vasu's
 
 **How can I switch directly to a specific season instead of cycling all seasons everytime?**
 

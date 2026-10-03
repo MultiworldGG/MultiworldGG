@@ -4,6 +4,7 @@ from typing import Any, Callable, Optional
 
 from BaseClasses import CollectionState
 from .ALttPDoorRandomizer.BaseClasses import CrystalBarrier, Door, Entrance, Location, World as DoorRandoWorld
+from.ALttPDoorRandomizer.Rules import eval_alternative_crystal_main, eval_small_key_door_main, eval_small_key_door_partial_main, eval_small_key_door_strict_main
 
 
 dungeon_portals = {
@@ -241,6 +242,22 @@ class StateAdapter:
 
     def can_use_bombs(self, player) -> bool:
         return (not self.world.bombbag[1] or self.has_item('Bomb Upgrade (+10)') or self.has_item('Bomb Upgrade (+5)', 2)) and (self.can_farm_bombs(player))
+
+
+    def eval_alternative_crystal(self, door_name, dungeon, player):
+        return eval_alternative_crystal_main(self, door_name, dungeon, player)
+
+
+    def eval_small_key_door(self, door_name, dungeon, player):
+        return eval_small_key_door_main(self, door_name, dungeon, player)
+
+
+    def eval_small_key_door_partial(self, door_name, dungeon, player):
+        return eval_small_key_door_partial_main(self, door_name, dungeon, player)
+
+
+    def eval_small_key_door_strict(self, door_name, dungeon, player):
+        return eval_small_key_door_strict_main(self, door_name, dungeon, player)
 
 
     def everything(self, player, all_except=0) -> bool:

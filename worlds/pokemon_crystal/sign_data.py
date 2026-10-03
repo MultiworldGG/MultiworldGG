@@ -194,6 +194,8 @@ FRIENDLY_SIGN_NAMES = {
     "Route20CinnabarGym": "Seafoam Islands Gym Sign",
     "Route22VictoryRoadEntrance": "Route 22 Victory Road Entrance Sign",
     "Route23IndigoPlateauSign": "Route 23 Indigo Plateau Sign",
+    "Route23RestoredSign1": "Route 23 Restored Cinnabar Sign",
+    "Route23RestoredSign2": "Route 23 Restored Victory Road Sign",
     "Route25BillsHouse": "Route 25 Bill's House Sign",
     "Route26": "Route 26 Road Sign",
     "Route27TohjoFalls": "Route 27 Tohjo Falls Sign",

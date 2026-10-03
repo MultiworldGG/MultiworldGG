@@ -2,10 +2,8 @@ import base64
 from concurrent.futures import ThreadPoolExecutor, TimeoutError
 import logging
 import os
-import shutil
 import threading
 import typing
-from urllib.request import urlopen
 
 # Imports of base Archipelago modules must be absolute.
 from BaseClasses import CollectionState, Entrance, Item, ItemClassification, Location, MultiWorld, Tutorial
@@ -109,6 +107,32 @@ class ALttPRWorld(World):
     location_name_to_id = Regions.lookup_name_to_id
     item_name_groups = {
         "Bottles": {"Bottle", "Bottle (Green Potion)", "Bottle (Red Potion)", "Bottle (Blue Potion)", "Bottle (Bee)", "Bottle (Good Bee)", "Bottle (Fairy)"},
+        "Compasses": {"Compass (Escape)",
+                      "Compass (Eastern Palace)",
+                      "Compass (Desert Palace)",
+                      "Compass (Tower of Hera)",
+                      "Compass (Agahnims Tower)",
+                      "Compass (Palace of Darkness)",
+                      "Compass (Swamp Palace)",
+                      "Compass (Skull Woods)",
+                      "Compass (Thieves Town)",
+                      "Compass (Ice Palace)",
+                      "Compass (Misery Mire)",
+                      "Compass (Turtle Rock)",
+                      "Compass (Ganons Tower)"},
+        "Maps": {"Map (Escape)",
+                 "Map (Eastern Palace)",
+                 "Map (Desert Palace)",
+                 "Map (Tower of Hera)",
+                 "Map (Agahnims Tower)",
+                 "Map (Palace of Darkness)",
+                 "Map (Swamp Palace)",
+                 "Map (Skull Woods)",
+                 "Map (Thieves Town)",
+                 "Map (Ice Palace)",
+                 "Map (Misery Mire)",
+                 "Map (Turtle Rock)",
+                 "Map (Ganons Tower)"},
         "Ocarina": {"Ocarina", "Ocarina (Activated)"},
         "Progressive Mail": {"Progressive Armor"}
     }
@@ -201,7 +225,22 @@ class ALttPRWorld(World):
                   usefulitempool: typing.List[Item],
                   filleritempool: typing.List[Item],
                   fill_locations: typing.List[Location]) -> None:
-        Items.place_junk_items_in_pots(progitempool, usefulitempool, filleritempool, fill_locations, self)
+        Items.place_junk_items_locally(progitempool, usefulitempool, filleritempool, fill_locations, self)
+
+
+    def post_fill(self):
+        # Nothing and Arrows (5) are very messy if they don't appear in a pot.
+        # Nothing can be easily missed because it's invisible, and 5 Arrows has the wrong graphic
+        # and doesn't give arrows unless found under a pot.
+        replacement_items = {"Nothing": self.create_item("Rupee (1)", ItemClassification.filler),
+                             "Arrows (5)": self.create_item("Arrows (10)", ItemClassification.filler),}
+        locations = self.multiworld.find_items_in_locations(set(replacement_items.keys()), self.player)
+
+        for location in locations:
+            if location.item and location.item.name in replacement_items.keys() and (location.player != self.player or "Pot" not in location.name):
+                item = location.item
+                item.code = replacement_items[item.name].code
+                item.name = replacement_items[item.name].name
 
 
     # Our world class must also have a create_item function that can create any one of our items by name at any time.
@@ -234,11 +273,7 @@ class ALttPRWorld(World):
                     continue
 
                 dr_item_name = location.item.name if location.item.name not in Items.dr_ap_different_names else Items.dr_ap_different_names[location.item.name]
-                dr_items = [item for item in self.door_rando_world.get_items() if item.name == dr_item_name and item.location is None]
-                dr_item = dr_items[0] if dr_items else None
-                if dr_item is None:
-                    logger.error(f"Could not find item {location.item.name} in door rando itempool.")
-                    raise Exception()
+                dr_item = ItemFactory(dr_item_name, 1)
             else:
                 trap_classification = None
                 # If this is trap + another classification, use the other classification
@@ -284,7 +319,7 @@ class ALttPRWorld(World):
             hint_text["Progressive Bow"] = " and ".join(bow_location_names)
 
         # Create a ROM patch
-        rom = ALttPRRom(self.player, self.player_name, self.seed_hash)
+        rom = ALttPRRom(self.player, self.player_name, self.seed_hash, self.options.sprite.value)
         try:
             patch_rom(self.door_rando_world, rom, 1, 1, is_mystery=False, hint_text=hint_text)
         except RuntimeError as e:
@@ -326,7 +361,6 @@ class ALttPRWorld(World):
 
 
     def extend_hint_information(self, hint_data: dict[int, dict[int, str]]):
-        # TODO: Does the hints show vanilla in crosskeys for outdoor locations?
         if self.options.entrance_shuffle == "vanilla" and self.options.door_shuffle == "vanilla":
             return
 
@@ -389,9 +423,10 @@ class ALttPRWorld(World):
 
         self.door_rando_world = DoorRandoWorld(
             1, {1: "vanilla"}, {1: False}, {1: "none"}, {1: False}, {1: self.options.entrance_shuffle.current_key},
-            {1: self.options.door_shuffle.current_key}, {1: "noglitches"}, {1: self.options.world_mode.current_key}, {1: "random"},
-            {1: "normal"}, {1: None}, "none", "on", {1: self.options.goal.current_key},
-            "balanced", {1: "locations"}, {1: True}, False, Items.default_items_dict, {1: False}, "none"
+            {1: self.options.door_shuffle.current_key}, {1: "noglitches"}, {1: self.options.world_mode.current_key},
+            {1: "random" if not self.options.swordless else "swordless"},{1: "normal"}, {1: None},
+            "none", "on", {1: self.options.goal.current_key}, "balanced", {1: "locations"},
+            {1: True}, False, Items.default_items_dict, {1: False}, "none"
         )
 
         # There are sooo many fields that aren't set in the
@@ -551,7 +586,6 @@ class ALttPRWorld(World):
 
     def apply_player_settings(self, rom):
         ow_palettes = "default"
-        quickswap = True
         reduce_flashing = True
         shuffle_sfx = False
         shuffle_sfxinstruments = False
@@ -559,39 +593,13 @@ class ALttPRWorld(World):
         triforce_gfx = None
         uw_palettes = "default"
 
+        # The sprite is set in Rom.py, while running the patch file, so the person generating won't have
+        # any external dependencies.
         apply_rom_settings(rom, alttpr_options.heart_beep_rate_string_from_option(self.options.heart_beep_rate),
-                           self.options.heart_color.current_key, quickswap, self.options.fast_menu.current_key,
-                           self.options.disable_music.value, self.get_sprite_file(), triforce_gfx, ow_palettes,
+                           self.options.heart_color.current_key, self.options.quickswap, self.options.fast_menu.current_key,
+                           self.options.disable_music.value, None, triforce_gfx, ow_palettes,
                            uw_palettes, reduce_flashing, shuffle_sfx, shuffle_sfxinstruments,
                            shuffle_songinstruments, self.options.msu_resume.value)
-
-
-    def get_sprite_file(self) -> str | None:
-        sprite_name = self.options.sprite.value.lower()
-        if sprite_name == "link":
-            return None
-        if not sprite_name in Sprites.sprites:
-            # This should never happen because validate_options also checks this, but better safe than sorry.
-            logger.error(f"Invalid sprite option {self.options.sprite.value}. No custom sprite will be applied.")
-            return None
-
-        world_dir = os.path.dirname(self.zip_path) if self.zip_path else os.path.join(os.path.dirname(self.__file__), "..")
-        sprite_dir = os.path.join(world_dir, "..", "data", "sprites", "alttp", "remote")
-        if not os.path.exists(sprite_dir):
-            logger.warning(f"Sprite directory {sprite_dir} does not exist. No custom sprite will be applied.")
-            return None
-
-        sprite_file = os.path.join(sprite_dir, Sprites.sprites[sprite_name]["filename"])
-        if not os.path.exists(sprite_file):
-            # TODO: Do this asynchronously
-            try:
-                with urlopen(Sprites.sprites[sprite_name]["url"], timeout=10) as response, open(sprite_file, "wb") as out:
-                    shutil.copyfileobj(response, out)
-            except Exception as e:
-                logger.error(f"Could not download sprite {sprite_name} from {Sprites.sprites[sprite_name]['url']}: {e}. No custom sprite will be applied.")
-                return None
-
-        return sprite_file
 
 
     def modify_multidata(self, multidata: dict):
