@@ -194,6 +194,17 @@ def _set_current_loading_world(world_name: str | None) -> None:
     _current_loading_world = world_name
 
 
+def _show_world_load_error(message: str) -> None:
+    from Utils import is_kivy_running
+
+    if is_kivy_running() and threading.current_thread() is not threading.main_thread():
+        # The launcher loads worlds in a worker; Kivy dialogs must open on its UI thread.
+        from kivy.clock import Clock
+        Clock.schedule_once(lambda dt: messagebox("Couldn't load worlds", message, error=True), 0)
+    else:
+        messagebox("Couldn't load worlds", message, error=True)
+
+
 def _load_apworlds(apworlds: list[WorldSource]) -> None:
     from .Files import APWorldContainer, InvalidDataError
 
@@ -218,16 +229,24 @@ def _load_apworlds(apworlds: list[WorldSource]) -> None:
                 )
                 logging.error(e)
             else:
-                raise e
+                err_message = f"{e}\nAffected world source: {apworld_source.resolved_path}"
+                fail_world(apworld_source.name, err_message)
+                if sys.stdout:
+                    e.add_note(f"Affected world source: {apworld_source.resolved_path}")
+                    raise
+                else:
+                    _show_world_load_error(err_message)
+                    sys.exit(1)
         except BadZipFile as e:
             err_message = (f"The world source {apworld_source.resolved_path} is not a valid zip. "
                            "It is likely either corrupted, or was packaged incorrectly.")
 
+            fail_world(apworld_source.name, err_message)
             if sys.stdout:
                 raise RuntimeError(err_message) from e
             else:
-                logger.info(apworld_source.name)
-                add_apworld_spec(apworld_source, apworld)
+                _show_world_load_error(err_message)
+                sys.exit(1)
 
         if apworld.minimum_ap_version and apworld.minimum_ap_version > version_tuple:
             fail_world(apworld.game,

@@ -9,6 +9,7 @@ import bsdiff4
 import Utils
 from BaseClasses import ItemClassification
 from worlds.Files import APProcedurePatch, APTokenMixin, APPatchExtension
+from .Options import DialogSpeed
 
 NA10CHECKSUM = 'd9a1631d5c32d35594b9484862a26cba'  # Headerless ROM hash
 NA10CHECKSUM_HEADERED = '337bd6f1a1163df31bf2633665589ab0'  # Headered ROM hash (with 16-byte iNES header)
@@ -182,6 +183,15 @@ class TLOZPatchExtension(APPatchExtension):
         return rom_data
 
     @staticmethod
+    def apply_client_options(rom_data, meta):
+        dialog_speed_address = 0x4873
+        dialog_speed = meta.get("dialog_speed", DialogSpeed.option_vanilla)
+        if dialog_speed == DialogSpeed.option_fast:
+            rom_data[dialog_speed_address] = 0x02
+        elif dialog_speed == DialogSpeed.option_faster:
+            rom_data[dialog_speed_address] = 0x01
+
+    @staticmethod
     def write_entrances(rom_data, entrance_randomizer_set):
         from worlds.tloz import cave_data_location_start
         warp_caves = []
@@ -214,6 +224,7 @@ class TLOZPatchExtension(APPatchExtension):
                                  item_prices, secret_money_ids)
         placements: dict[str, any] = json.loads(caller.get_file(placement_file))
         rom_data = TLOZPatchExtension.apply_base_patch(rom)
+        TLOZPatchExtension.apply_client_options(rom_data, placements["meta"])
         rom_data = TLOZPatchExtension.write_entrances(rom_data, placements["entrance_randomizer_set"])
         rom_name = bytearray(placements["meta"]["rom_name"][:rom_name_length], "utf8")[:rom_name_length]
         rom_name.extend([0] * (rom_name_length - len(rom_name)))

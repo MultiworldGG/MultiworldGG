@@ -165,6 +165,18 @@ class ShopItems(ItemSet):
     valid_keys = item_names
     default = default_shop_items
 
+class DialogSpeed(Choice):
+    """The speed at which dialog advances.
+    option_vanilla: 6 frames per letter
+    option_fast: 2 frames per letter
+    option_faster: 1 frame per letter
+    """
+    display_name = "Dialog Speed"
+    option_vanilla = 0
+    option_fast = 1
+    option_faster = 2
+    alias_normal = 0
+
 @dataclass
 class TlozOptions(PerGameCommonOptions):
     ExpandedPool: ExpandedPool
@@ -183,7 +195,8 @@ class TlozOptions(PerGameCommonOptions):
     EntranceShuffle: EntranceShuffle
     RandomizeWarpCaves: RandomizeWarpCaves
     ShopItems: ShopItems
-
+    DialogSpeed: DialogSpeed
+    
 def is_open_cave_shuffled(option_value) -> bool:
     # A couple of things care if Starting Sword Cave is in the shuffle. This centralizes the check for that.
     # This also applies for the Blue Ring Shop.

@@ -328,7 +328,7 @@ refresh_components: Callable[[], None] | None = None
 
 def run_gui(launch_components: list["Component"], args: Any) -> None:
     from kvui import ThemedApp, MDFloatLayout, MDGridLayout, ScrollBox
-    from kivy.properties import ObjectProperty
+    from kivy.properties import BooleanProperty, ObjectProperty
     from kivy.core.window import Window
     from kivy.metrics import dp
     from kivymd.uix.button import MDIconButton, MDButton, MDButtonText
@@ -366,7 +366,7 @@ def run_gui(launch_components: list["Component"], args: Any) -> None:
         search_box: MDTextField = ObjectProperty(None)
         cards: list[LauncherCard]
         current_filter: Sequence[str | Type] | None
-        failed_worlds: bool = bool(failed_world_loads)
+        failed_worlds: bool = BooleanProperty(bool(failed_world_loads))
 
         def __init__(self, ctx=None, components=None, args=None):
             self.title = self.base_title + " " + Utils.__version__
@@ -433,6 +433,7 @@ def run_gui(launch_components: list["Component"], args: Any) -> None:
             return button_card
 
         def _rebuild_cards_from_components(self) -> None:
+            self.failed_worlds = bool(failed_world_loads)
             self.cards.clear()
             for component in components:
                 self.cards.append(self.build_card(component))
@@ -535,6 +536,7 @@ def run_gui(launch_components: list["Component"], args: Any) -> None:
                     logging.warning("World loading failed: %s", exc)
                 finally:
                     def _finish_on_main(dt):
+                        self.failed_worlds = bool(worlds.failed_world_loads)
                         if load_ok:
                             self._rebuild_cards_from_components()
                         self._dismiss_loading_overlay()
@@ -604,12 +606,12 @@ def run_gui(launch_components: list["Component"], args: Any) -> None:
                 self.button_layout.layout.add_widget(card)
 
         def build(self):
-            self.set_colors()
             self.top_screen = Builder.load_file(Utils.local_path("data/launcher.kv"))
             self.grid = self.top_screen.ids.grid
             self.navigation = self.top_screen.ids.navigation
             self.button_layout = self.top_screen.ids.button_layout
             self.search_box = self.top_screen.ids.search_box
+            self.set_colors()
             self.top_screen.md_bg_color = self.theme_cls.backgroundColor
 
             global refresh_components

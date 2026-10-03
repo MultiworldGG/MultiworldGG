@@ -258,6 +258,7 @@ class TLoZWorld(World):
             placement_dict["meta"]["rom_name"] = self.rom_name
             placement_dict["meta"]["player_name"] = self.player_name
             placement_dict["meta"]["output_filename"] = output_filename
+            placement_dict["meta"]["dialog_speed"] = self.options.DialogSpeed.value
 
             # We shuffle the tiers of rupee caves. Caves that shared a value before still will.
             # Easiest to do it here so we have the multiworld's random object
