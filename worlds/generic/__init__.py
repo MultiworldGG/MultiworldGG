@@ -14,21 +14,21 @@ class GenericWeb(WebWorld):
     advanced_settings = Tutorial('Advanced YAML Guide',
                                  'A guide to reading YAML files and editing them to fully customize your game.',
                                  'English', 'advanced_settings_en.md', 'advanced_settings/en',
-                                 ['alwaysintreble', 'Alchav'])
+                                 ['alwaysintreble', 'Alchav', 'adapted for Multiworld.gg'])
     commands = Tutorial('MultiworldGG Server and Client Commands',
                         'A guide detailing the commands available to the user when participating in a MultiworldGG session.',
-                        'English', 'commands_en.md', 'commands/en', ['jat2980', 'Ijwu'])
+                        'English', 'commands_en.md', 'commands/en', ['jat2980', 'Ijwu', 'adapted for Multiworld.gg'])
     plando = Tutorial('MultiworldGG Plando Guide', 'A guide to understanding and using plando for your game.',
-                      'English', 'plando_en.md', 'plando/en', ['alwaysintreble', 'Alchav'])
+                      'English', 'plando_en.md', 'plando/en', ['alwaysintreble', 'Alchav', 'adapted for Multiworld.gg'])
     setup = Tutorial('Getting Started',
                      'A guide to setting up the MultiworldGG software, and generating, hosting, and connecting to '
                      'multiworld games.',
-                     'English', 'setup_en.md', 'setup/en', ['alwaysintreble'])
+                     'English', 'setup_en.md', 'setup/en', ['alwaysintreble', 'adapted for Multiworld.gg'])
     triggers = Tutorial('MultiworldGG Triggers Guide', 'A guide to setting up and using triggers in your game settings.',
-                        'English', 'triggers_en.md', 'triggers/en', ['alwaysintreble'])
+                        'English', 'triggers_en.md', 'triggers/en', ['alwaysintreble', 'adapted for Multiworld.gg'])
     other_games = Tutorial('Other Games and Tools',
                            'A guide to additional games and tools that can be used with MultiworldGG.',
-                           'English', 'other_en.md', 'other/en', ['Berserker', 'TreZ'])
+                           'English', 'other_en.md', 'other/en', ['Berserker', 'TreZ', 'adapted for Multiworld.gg'])
     tutorials = [setup, commands, advanced_settings, triggers, plando, other_games]
 
 

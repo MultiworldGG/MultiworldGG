@@ -556,8 +556,7 @@ async def check_locations(ctx: TWWContext) -> None:
                     ctx.locations_checked.add(location_id)
 
     # Send the list of newly-checked locations to the server.
-    if new_locations:
-        await ctx.check_locations(new_locations)
+    await ctx.check_locations(ctx.locations_checked)
 
 
 async def check_current_stage_changed(ctx: TWWContext) -> None:

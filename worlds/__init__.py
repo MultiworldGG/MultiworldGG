@@ -226,8 +226,8 @@ def _load_apworlds(apworlds: list[WorldSource]) -> None:
             if sys.stdout:
                 raise RuntimeError(err_message) from e
             else:
-                messagebox("Couldn't load worlds", err_message, error=True)
-                sys.exit(1)
+                logger.info(apworld_source.name)
+                add_apworld_spec(apworld_source, apworld)
 
         if apworld.minimum_ap_version and apworld.minimum_ap_version > version_tuple:
             fail_world(apworld.game,

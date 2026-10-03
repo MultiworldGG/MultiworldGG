@@ -64,6 +64,50 @@ class TestLauncherCache(unittest.TestCase):
 
         self.assertIsNone(LauncherComponents._load_launcher_cache())
 
+    def test_cached_component_is_replaced_when_worlds_load(self) -> None:
+        self._add_loose_world("launcher_cache_transition", (
+            "from worlds.LauncherComponents import Component, components\n"
+            "components.append(Component('Transition Client', script_name='TransitionClient'))\n"
+        ))
+        self._write_minimal_cache([
+            LauncherComponents.Component("Transition Client", script_name="TransitionClient")])
+        LauncherComponents._hydrate_launcher_components_from_cache()
+        self.assertFalse(worlds._worlds_loaded)
+        self.assertEqual(len(LauncherComponents.components), 1)
+        self.assertEqual(LauncherComponents._component_origin(LauncherComponents.components[0]), "cache_stub")
+
+        worlds.ensure_worlds_loaded()
+
+        self.assertTrue(worlds._worlds_loaded)
+        self.assertEqual(len(LauncherComponents.components), 1)
+        self.assertEqual(LauncherComponents._component_origin(LauncherComponents.components[0]), "world")
+
+    def test_launcher_import_uses_cache_without_loading_worlds(self) -> None:
+        from test.multiserver.test_loading import run_in_fresh_process
+        run_in_fresh_process(self, '''
+            import tempfile
+            from pathlib import Path
+            from unittest.mock import patch
+            import worlds
+            from worlds import LauncherComponents
+            with tempfile.TemporaryDirectory() as folder:
+                with patch.object(LauncherComponents, "_LAUNCHER_CACHE_PATH", str(Path(folder) / "cache.gz")):
+                    component = LauncherComponents.Component("Cached Client", script_name="CachedClient")
+                    LauncherComponents._write_cache_payload({
+                        "schema": LauncherComponents._LAUNCHER_CACHE_SCHEMA,
+                        "components": [LauncherComponents._serialize_component(component)],
+                        "icon_paths": {},
+                        "world_sources": sorted(source.path for source in worlds.world_sources),
+                        "world_source_fingerprints": LauncherComponents._current_world_source_fingerprints(),
+                    })
+                    LauncherComponents._hydrate_launcher_components_from_cache()
+                    with patch.object(worlds, "ensure_worlds_loaded", side_effect=AssertionError("Eager load")):
+                        import Launcher
+                        Launcher.ensure_launcher_components_available()
+                    assert not worlds._worlds_loaded
+                    assert any(c.display_name == "Cached Client" for c in Launcher.components)
+        ''')
+
     def test_previous_schema_is_rejected_even_without_freshness_check(self) -> None:
         self._write_minimal_cache()
         payload = LauncherComponents._load_launcher_cache()
