@@ -46,7 +46,7 @@ class WarioWareWeb(WebWorld):
 
 class WarioWareWorld(World):
     """
-    WarioWare, Inc.: Mega Microgames is the first ever WarioWare series title and release in 2003. It is about rapid completion of "microgames", short minigames given to the player consecutively and with increasing speed per each game complete.
+    WarioWare, Inc.: Mega Microgames is the first ever WarioWare series title, released in 2003. It is about rapid completion of "microgames", short minigames given to the player consecutively and with increasing speed per each game complete.
     """
     game = GAME_NAME
     web = WarioWareWeb()
