@@ -32,6 +32,7 @@ os.makedirs(os.environ["KIVY_HOME"], exist_ok=True)
 
 from kivy.config import Config
 
+Config.set("graphics", "vsync", "0")
 Config.set("input", "mouse", "mouse,disable_multitouch")
 Config.set("kivy", "exit_on_escape", "0")
 #Config.set("kivy", "default_font", "TODO") #I want to put dyslexia safe fonts in
