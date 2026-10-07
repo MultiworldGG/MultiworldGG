@@ -36,6 +36,8 @@ Config.set("input", "mouse", "mouse,disable_multitouch")
 Config.set("kivy", "exit_on_escape", "0")
 #Config.set("kivy", "default_font", "TODO") #I want to put dyslexia safe fonts in
 Config.set("graphics", "multisamples", "0")  # multisamples crash old intel drivers
+# kvui_flip_sync; the NVIDIA vsync stall it works around is Windows-only.
+Config.setdefault("graphics", "sync_after_flip", "1" if sys.platform == "win32" else "0")
 
 # Workaround for Kivy issue #9226.
 # caused by kivy by default using probesysfs,
@@ -58,6 +60,11 @@ for classobj in SoundLoader._classes:
     # .extensions(), which e.g. in audio_sdl2.pyx then calls a function called "mix_init()"
     classobj.extensions()
 
+from kvui_flip_sync import install_flip_sync
+
+install_flip_sync()
+
+from kivymd.uix.divider import MDDivider
 from kivy.core.window import Window
 
 if sys.platform == "win32":
