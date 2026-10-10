@@ -405,6 +405,11 @@ Root: HKCR; Subkey: "{#MyAppName}apwl4patch";                     ValueData: "Mu
 Root: HKCR; Subkey: "{#MyAppName}apwl4patch\DefaultIcon";         ValueData: "{app}\MultiworldGGBizHawkClient.exe,0";                       ValueType: string; ValueName: "";
 Root: HKCR; Subkey: "{#MyAppName}apwl4patch\shell\open\command";  ValueData: """{app}\MultiworldGGBizHawkClient.exe"" ""%1""";              ValueType: string; ValueName: "";
 
+Root: HKCR; Subkey: ".apwariowareinc";                                     ValueData: "{#MyAppName}apwariowareincpatch";    Flags: uninsdeletevalue;          ValueType: string;  ValueName: "";
+Root: HKCR; Subkey: "{#MyAppName}apwariowareincpatch";                     ValueData: "MultiworldGG Wario Ware Inc. Patch"; Flags: uninsdeletekey;      ValueType: string;  ValueName: "";
+Root: HKCR; Subkey: "{#MyAppName}apwariowareincpatch\DefaultIcon";         ValueData: "{app}\MultiworldGGBizHawkClient.exe,0";                       ValueType: string; ValueName: "";
+Root: HKCR; Subkey: "{#MyAppName}apwariowareincpatch\shell\open\command";  ValueData: """{app}\MultiworldGGBizHawkClient.exe"" ""%1""";              ValueType: string; ValueName: "";
+
 Root: HKCR; Subkey: ".apygoddm";                                     ValueData: "{#MyAppName}apygoddmpatch";    Flags: uninsdeletevalue;   ValueType: string;  ValueName: "";
 Root: HKCR; Subkey: "{#MyAppName}apygoddmpatch";                     ValueData: "MultiworldGG Yu-Gi-Oh! Dungeon Dice Monsters Patch"; Flags: uninsdeletekey;  ValueType: string;  ValueName: "";
 Root: HKCR; Subkey: "{#MyAppName}apygoddmpatch\DefaultIcon";         ValueData: "{app}\MultiworldGGBizHawkClient.exe,0";                   ValueType: string; ValueName: "";

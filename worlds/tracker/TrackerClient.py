@@ -18,6 +18,11 @@ from MultiServer import mark_raw
 from NetUtils import NetworkItem, JSONMessagePart
 
 try:
+    from Utils import instance_name as apname
+except ImportError:
+    apname = "Archipelago"
+
+try:
     from Utils import gui_enabled
 except ImportError:
     gui_enabled = not sys.stdout or "--nogui" not in sys.argv #if we fail to find, just guess it ourselves
@@ -921,7 +926,7 @@ class TrackerGameContext(CommonContext):
             def __init__(self, **kwargs):
                 super().__init__(**kwargs)
                 self.data = []
-                self.data.append({"text": f"Tracker {UT_VERSION} Initializing for AP version {__version__}"})
+                self.data.append({"text": f"Tracker {UT_VERSION} Initializing for {apname} version {__version__}"})
 
             def resetData(self):
                 self.data.clear()
@@ -1245,7 +1250,7 @@ class TrackerGameContext(CommonContext):
             enable_map = BooleanProperty(False)
             current_map = StringProperty("")
             auto_tab = BooleanProperty(True)
-            base_title = f"Tracker {UT_VERSION}{' Addons ' if UT_ADDONS_VERSION else ' '}{UT_ADDONS_VERSION if UT_ADDONS_VERSION else '' } for AP version"  # core appends ap version so this works
+            base_title = f"Tracker {UT_VERSION}{' Addons ' if UT_ADDONS_VERSION else ' '}{UT_ADDONS_VERSION if UT_ADDONS_VERSION else '' } for {apname} version"  # core appends ap version so this works
 
             def build(self):
                 class TrackerHintLabel(HintLabel):
@@ -1624,7 +1629,7 @@ def load_json_zip(pack, path):
 def explain_more(ctx: TrackerGameContext, argument: str):
     if ctx.tracker_core.player_id is None or ctx.tracker_core.multiworld is None:
         logger.error("Player YAML not installed of Generator failed")
-        ctx.set_page(f"Check Player YAMLs for error; Tracker {UT_VERSION} for AP version {__version__}")
+        ctx.set_page(f"Check Player YAMLs for error; Tracker {UT_VERSION} for {apname} version {__version__}")
         return
     current_world = ctx.tracker_core.get_current_world()
     assert current_world
@@ -1647,7 +1652,7 @@ def explain_more(ctx: TrackerGameContext, argument: str):
 def explain(ctx: TrackerGameContext, dest_name: str):
     if ctx.tracker_core.player_id is None or ctx.tracker_core.multiworld is None:
         logger.error("Player YAML not installed or Generator failed")
-        ctx.set_page(f"Check Player YAMLs for error; Tracker {UT_VERSION} for AP version {__version__}")
+        ctx.set_page(f"Check Player YAMLs for error; Tracker {UT_VERSION} for {apname} version {__version__}")
         return
     current_world = ctx.tracker_core.get_current_world()
     assert current_world

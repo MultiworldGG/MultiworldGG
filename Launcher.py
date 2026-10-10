@@ -21,6 +21,7 @@ import threading
 import urllib.parse
 import webbrowser
 from collections.abc import Callable, Sequence
+from contextlib import contextmanager
 from os.path import isfile
 from shutil import which
 from typing import Any
@@ -326,8 +327,101 @@ def create_shortcut(button: Any, component: Component) -> None:
 refresh_components: Callable[[], None] | None = None
 
 
+PREFERRED_SIZE = (1100, 920)
+
+
+@contextmanager
+def initial_window_config():
+    """Set process-local startup defaults without passing them to launched clients."""
+    values = {
+        "KCFG_GRAPHICS_WIDTH": str(PREFERRED_SIZE[0]),
+        "KCFG_GRAPHICS_HEIGHT": str(PREFERRED_SIZE[1]),
+    }
+    if sys.platform == "win32":
+        # Fit the native window before displaying it, including on scaled desktops.
+        values["KCFG_GRAPHICS_WINDOW_STATE"] = "hidden"
+    previous = {key: os.environ.get(key) for key in values}
+    try:
+        os.environ.update(values)
+        yield
+    finally:
+        for key, value in previous.items():
+            if value is None:
+                os.environ.pop(key, None)
+            else:
+                os.environ[key] = value
+
+
+def fit_window_to_work_area(window) -> None:
+    """Fit and center the Windows launcher once, before its first visible frame."""
+    if sys.platform != "win32":
+        return
+    try:
+        _fit_windows_window(window)
+    except (AttributeError, OSError) as error:
+        logging.warning("Unable to position launcher window: %s", error)
+
+
+def _fit_windows_window(window) -> None:
+    import ctypes
+    from ctypes import wintypes
+
+    class MonitorInfo(ctypes.Structure):
+        _fields_ = [("cbSize", wintypes.DWORD), ("rcMonitor", wintypes.RECT),
+                    ("rcWork", wintypes.RECT), ("dwFlags", wintypes.DWORD)]
+
+    user32 = ctypes.WinDLL("user32", use_last_error=True)
+    user32.MonitorFromWindow.argtypes = (wintypes.HWND, wintypes.DWORD)
+    user32.MonitorFromWindow.restype = wintypes.HANDLE
+    user32.GetMonitorInfoW.argtypes = (wintypes.HANDLE, ctypes.POINTER(MonitorInfo))
+    user32.GetMonitorInfoW.restype = wintypes.BOOL
+    for name in ("GetWindowRect", "GetClientRect"):
+        function = getattr(user32, name)
+        function.argtypes = (wintypes.HWND, ctypes.POINTER(wintypes.RECT))
+        function.restype = wintypes.BOOL
+    user32.SetWindowPos.argtypes = (wintypes.HWND, wintypes.HWND, ctypes.c_int, ctypes.c_int,
+                                   ctypes.c_int, ctypes.c_int, wintypes.UINT)
+    user32.SetWindowPos.restype = wintypes.BOOL
+
+    hwnd = window.get_window_info().window
+    monitor = user32.MonitorFromWindow(hwnd, 2)  # MONITOR_DEFAULTTONEAREST
+    if not monitor:
+        raise ctypes.WinError(ctypes.get_last_error())
+    info = MonitorInfo(cbSize=ctypes.sizeof(MonitorInfo))
+    outer, client = wintypes.RECT(), wintypes.RECT()
+    if not (user32.GetMonitorInfoW(monitor, ctypes.byref(info))
+            and user32.GetWindowRect(hwnd, ctypes.byref(outer))
+            and user32.GetClientRect(hwnd, ctypes.byref(client))):
+        raise ctypes.WinError(ctypes.get_last_error())
+
+    # Query all rectangles in the launcher's DPI context. Windows virtualizes these
+    # coordinates for the DPI-unaware process used by kvui; do not mix physical pixels in.
+    work = info.rcWork
+    work_width = work.right - work.left
+    work_height = work.bottom - work.top
+    frame_width = outer.right - outer.left - (client.right - client.left)
+    frame_height = outer.bottom - outer.top - (client.bottom - client.top)
+    width = min(PREFERRED_SIZE[0], max(1, work_width - frame_width))
+    height = min(PREFERRED_SIZE[1], max(1, work_height - frame_height))
+    if tuple(window.size) != (width, height):
+        window.size = (width, height)
+        # Apply Kivy's normally deferred resize while the window is still hidden.
+        window.create_window()
+
+    # Center the actual outer frame after Windows has applied the resize.
+    if not user32.GetWindowRect(hwnd, ctypes.byref(outer)):
+        raise ctypes.WinError(ctypes.get_last_error())
+    left = work.left + (work_width - (outer.right - outer.left)) // 2
+    top = work.top + (work_height - (outer.bottom - outer.top)) // 2
+    # SetWindowPos uses the outer frame's origin; SDL's position uses the client origin.
+    flags = 0x0001 | 0x0004 | 0x0010  # SWP_NOSIZE | SWP_NOZORDER | SWP_NOACTIVATE
+    if not user32.SetWindowPos(hwnd, None, left, top, 0, 0, flags):
+        raise ctypes.WinError(ctypes.get_last_error())
+
+
 def run_gui(launch_components: list["Component"], args: Any) -> None:
-    from kvui import ThemedApp, MDFloatLayout, MDGridLayout, ScrollBox
+    with initial_window_config():
+        from kvui import ThemedApp, MDFloatLayout, MDGridLayout, ScrollBox
     from kivy.properties import BooleanProperty, ObjectProperty
     from kivy.core.window import Window
     from kivy.metrics import dp
@@ -618,7 +712,7 @@ def run_gui(launch_components: list["Component"], args: Any) -> None:
             refresh_components = self._refresh_components
             from worlds import LauncherComponents as _lc
             _lc._rebuild_launcher_ui = self._rebuild_cards_from_components
-            Window.size = (1100, 920)
+            fit_window_to_work_area(Window)
             Window.bind(on_drop_file=self._on_drop_file)
             Window.bind(on_keyboard=self._on_keyboard)
 
@@ -632,6 +726,8 @@ def run_gui(launch_components: list["Component"], args: Any) -> None:
             return self.top_screen
 
         def on_start(self):
+            if is_windows:
+                Window.show()
             self._show_loading_overlay("Validating APWorld info...")
             self._start_loading_world_poll()
 
