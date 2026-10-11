@@ -1,0 +1,169 @@
+from __future__ import annotations
+
+from dataclasses import dataclass
+
+from ...constants.shrink_ray import Rac5ShrinkRayGrindrail
+
+ARMOUR_BASE                = 0x??
+ARMOUR_SET_COLLECTED_ADDR  = 0x??
+TITANIUM_BOLT_BASE         = 0x??
+SKILL_POINTS_BASE          = 0x??
+CLANK_CHALLENGE_BASE       = 0x??
+CLANK_CHALLENGE_SIZE       = 42
+SKYBOARD_BASE              = 0x??
+CHEATS                     = 0x??
+CURRENT_PLANET_ADDRESS     = 0x??
+PLAYER_BOLT_COUNT          = 0x??
+BOLT_PICKUP_MASK           = 0x000000FFFFFFFFFF
+PLANET_LOAD_ADDRESS        = 0x??
+NEW_PLANET_START_LOAD_ADDR = 0x??
+PLANET_LOAD_IDLE_VALUE     = 0xFFFFFFFF
+CONTROLLER_PAUSE_SELECT_ADDRESS = 0x??
+CONTROLLER_BUTTONS_ADDRESS      = 0x??
+
+QUICK_SELECT_BASE          = 0x??
+SKIN_BASE                  = 0x??
+CHALLENGE_MODE_BASE        = 0x??
+
+TRANSITION_GATE_ADDRESS    = 0x??
+LOADING_PLANET_ADDRESS     = 0x??
+
+CURRENT_WEAPON_IN_VENDOR   = 0x??
+WEAPON_VENDOR_SLOTS        = 0x??
+WEAPON_VENDOR_ITEMS        = 0x??
+
+POKITARU_RYLLUS_ALT_TRIGGER = 0x??
+
+PLAYER_STATE  = 0x??
+PLAYER_HEALTH = 0x??
+
+@dataclass(frozen=True)
+class GhostRatchetPlanetAddresses:
+    player_position: int
+    ghost_base: int
+    trigger: int
+
+
+GHOST_RATCHET_ADDRESSES: dict[int, GhostRatchetPlanetAddresses] = {
+    0x01: GhostRatchetPlanetAddresses(
+        player_position=0x??,
+        ghost_base=0x??,
+        trigger=0x??,
+    ),
+    0x02: GhostRatchetPlanetAddresses(
+        player_position=0x??,
+        ghost_base=0x??,
+        trigger=0x??,
+    ),
+    0x03: GhostRatchetPlanetAddresses(
+        player_position=0x??,
+        ghost_base=0x??,
+        trigger=0x??,
+    ),
+    0x04: GhostRatchetPlanetAddresses(
+        player_position=0x??,
+        ghost_base=0x??,
+        trigger=0x??,
+    ),
+    0x05: GhostRatchetPlanetAddresses(
+        player_position=0x??,
+        ghost_base=0x??,
+        trigger=0x??,
+    ),
+    0x06: GhostRatchetPlanetAddresses(
+        player_position=0x??,
+        ghost_base=0x??,
+        trigger=0x??,
+    ),
+    0x07: GhostRatchetPlanetAddresses(
+        player_position=0x??,
+        ghost_base=0x??,
+        trigger=0x??,
+    ),
+    0x08: GhostRatchetPlanetAddresses(
+        player_position=0x??,
+        ghost_base=0x??,
+        trigger=0x??,
+    ),
+    0x09: GhostRatchetPlanetAddresses(
+        player_position=0x??,
+        ghost_base=0x??,
+        trigger=0x??,
+    ),
+    0x0A: GhostRatchetPlanetAddresses(
+        player_position=0x??,
+        ghost_base=0x??,
+        trigger=0x??,
+    ),
+    0x17: GhostRatchetPlanetAddresses(
+        player_position=0x??,
+        ghost_base=0x??,
+        trigger=0x??,
+    ),
+}
+
+PLAYER_HEALTH_EXP = 0x??
+
+PLANET_UNLOCK_ADDRESSES: dict[str, int] = {
+    "POKITARU":      0x??,
+    "RYLLUS":        0x??,
+    "KALIDON":       0x??,
+    "METALIS":       0x??,
+    "DREAMTIME":     0x??,
+    "OUTPOST_OMEGA": 0x??,
+    "CHALLAX":       0x??,
+    "DAYNI_MOON":    0x??,
+    "INSIDE_CLANK":  0x??,
+    "QUODRONA":      0x??,
+}
+PLANET_PROGRESS_BASE = PLANET_UNLOCK_ADDRESSES["POKITARU"]
+BRIGHTNESS_ADDRESS = 0x??
+DREAMTIME_EFFECT = 0x??
+
+SHRINK_RAY_GATE_ADDRESS: int = 0x??
+
+SHRINK_RAY_SKIP_ADDRESSES: dict[str, int] = {
+    Rac5ShrinkRayGrindrail.KALIDON_ENTER_FACTORY: 0x??,
+}
+
+STATIC_TEXT_BUFFER: int = 0x??
+
+PLANET_STATE_OFFSET: int = 0x11
+
+
+@dataclass(frozen=True)
+class PlanetAddresses:
+    name:          str
+    player_state:  int
+    player_health: int
+    menu:             int | None = None
+    preload_menu:     int | None = None
+    weapon_array:     int | None = None
+    mission:          int | None = None
+    vendor_prompt_id:     int | None = None
+    clank_challenge_base: int | None = None
+    skyboard_base:        int | None = None
+    small_text_box:       int | None = None
+    multi_line_text_box:  int | None = None
+    controller_pause_select: int | None = None
+    controller_pause_select_v2: int | None = None
+    weapon_cycler_apply:   int | None = None
+    weapon_cycler_state:   int | None = None
+    weapon_cycler_current: int | None = None
+    weapon_cycler_stored:  int | None = None
+    max_health: int | None = None
+
+
+PLANET_ADDRESSES: dict[int, PlanetAddresses] = {
+    0x01: PlanetAddresses("Pokitaru",        0x??, 0x??, menu=0x??, preload_menu=0x??, weapon_array=0x??, mission=0x??, vendor_prompt_id=0x??, small_text_box=0x??, multi_line_text_box=0x??, controller_pause_select=0x??, controller_pause_select_v2=0x??, weapon_cycler_apply=0x??, weapon_cycler_state=0x??, weapon_cycler_current=0x??, weapon_cycler_stored=0x??, max_health=0x??),
+    0x02: PlanetAddresses("Ryllus",          0x??, 0x??, menu=0x??, preload_menu=0x??, weapon_array=0x??, mission=0x??, vendor_prompt_id=0x??, small_text_box=0x??, multi_line_text_box=0x??, controller_pause_select=0x??, controller_pause_select_v2=0x??, weapon_cycler_apply=0x??, weapon_cycler_state=0x??, weapon_cycler_current=0x??, weapon_cycler_stored=0x??, max_health=0x??),
+    0x03: PlanetAddresses("Kalidon",         0x??, 0x??, menu=0x??, preload_menu=0x??, weapon_array=0x??, mission=0x??, vendor_prompt_id=0x??, skyboard_base=0x??, small_text_box=0x??, multi_line_text_box=0x??, controller_pause_select=0x??, controller_pause_select_v2=0x??, weapon_cycler_apply=0x??, weapon_cycler_state=0x??, weapon_cycler_current=0x??, weapon_cycler_stored=0x??, max_health=0x??),
+    0x04: PlanetAddresses("Metalis",         0x??, 0x??, menu=0x??, preload_menu=0x??, weapon_array=0x??, mission=0x??, vendor_prompt_id=0x??, clank_challenge_base=0x??, small_text_box=0x??, multi_line_text_box=0x??, controller_pause_select=0x??, controller_pause_select_v2=0x??, weapon_cycler_apply=0x??, weapon_cycler_state=0x??, weapon_cycler_current=0x??, weapon_cycler_stored=0x??, max_health=0x??),
+    0x05: PlanetAddresses("Dreamtime",       0x??, 0x??, menu=0x??, preload_menu=0x??, weapon_array=0x??, mission=0x??, vendor_prompt_id=0x??, small_text_box=0x??, multi_line_text_box=0x??, controller_pause_select=0x??, controller_pause_select_v2=0x??, weapon_cycler_apply=0x??, weapon_cycler_state=0x??, weapon_cycler_current=0x??, weapon_cycler_stored=0x??, max_health=0x??),
+    0x06: PlanetAddresses("Outpost Omega",   0x??, 0x??, menu=0x??, preload_menu=0x??, weapon_array=0x??, mission=0x??, skyboard_base=0x??, controller_pause_select=0x??, controller_pause_select_v2=0x??, weapon_cycler_apply=0x??, weapon_cycler_state=0x??, weapon_cycler_current=0x??, weapon_cycler_stored=0x??, max_health=0x??),
+    0x07: PlanetAddresses("Challax",         0x??, 0x??, menu=0x??, preload_menu=0x??, weapon_array=0x??, mission=0x??, vendor_prompt_id=0x??, small_text_box=0x??, multi_line_text_box=0x??, controller_pause_select=0x??, controller_pause_select_v2=0x??, weapon_cycler_apply=0x??, weapon_cycler_state=0x??, weapon_cycler_current=0x??, weapon_cycler_stored=0x??, max_health=0x??),
+    0x08: PlanetAddresses("Dayni Moon",      0x??, 0x??, menu=0x??, preload_menu=0x??, weapon_array=0x??, mission=0x??, vendor_prompt_id=0x??, clank_challenge_base=0x??, small_text_box=0x??, multi_line_text_box=0x??, controller_pause_select=0x??, controller_pause_select_v2=0x??, weapon_cycler_apply=0x??, weapon_cycler_state=0x??, weapon_cycler_current=0x??, weapon_cycler_stored=0x??, max_health=0x??),
+    0x09: PlanetAddresses("Inside Clank",    0x??, 0x??, menu=0x??, preload_menu=0x??, weapon_array=0x??, mission=0x??, vendor_prompt_id=0x??, small_text_box=0x??, multi_line_text_box=0x??, controller_pause_select=0x??, controller_pause_select_v2=0x??, weapon_cycler_apply=0x??, weapon_cycler_state=0x??, weapon_cycler_current=0x??, weapon_cycler_stored=0x??, max_health=0x??),
+    0x0A: PlanetAddresses("Quodrona",        0x??, 0x??, menu=0x??, preload_menu=0x??, weapon_array=0x??, mission=0x??, vendor_prompt_id=0x??, small_text_box=0x??, multi_line_text_box=0x??, controller_pause_select=0x??, controller_pause_select_v2=0x??, weapon_cycler_apply=0x??, weapon_cycler_state=0x??, weapon_cycler_current=0x??, weapon_cycler_stored=0x??, max_health=0x??),
+    0x17: PlanetAddresses("Outpost Omega 2", 0x??, 0x??, menu=0x??, preload_menu=0x??, weapon_array=0x??,                      vendor_prompt_id=0x??, small_text_box=0x??, multi_line_text_box=0x??, controller_pause_select=0x??, controller_pause_select_v2=0x??, max_health=0x??),
+}

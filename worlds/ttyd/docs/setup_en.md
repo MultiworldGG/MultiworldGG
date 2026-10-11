@@ -16,6 +16,7 @@ Place the TTYD apworld in the `custom_worlds` folder of your Archipelago install
 
 ## Settings
 
+- In Game Config > General, make sure Enable Cheats is unchecked
 - In Game Config > General, make sure Enable Dual Core is unchecked
 - In Game Config > Graphics, set your Backend to either OpenGL or Vulkan (Direct3D can often cause errors that may lead to crashes)
 - In Game Config > Advanced, make sure that Enable Emulated CPU Clock Override is unchecked

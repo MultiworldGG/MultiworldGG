@@ -22,6 +22,8 @@ class TestTrackerAddons(unittest.TestCase):
             from worlds import tracker_addons
 
             assert "next_progression" in tracker_addons.UT_FUNCTIONS
+            assert "manually_collects" in tracker_addons.UT_FUNCTIONS
+            assert "locations_in_logic" in tracker_addons.UT_FUNCTIONS
             extension = lambda processor: None
             tracker_addons.register_function("extension", extension)
             assert tracker_addons.UT_FUNCTIONS["extension"] is extension
@@ -33,7 +35,7 @@ class TestTrackerAddons(unittest.TestCase):
 
         tracker = ModuleType("worlds.tracker")
         with patch.dict(sys.modules, {"worlds.tracker": tracker}):
-            for version in ((0, 3, 0), (0, 3, 1), (0, 3, 4)):
+            for version in ((0, 3, 0), (0, 3, 1), (0, 3, 5)):
                 with self.subTest(version=version):
                     tracker.UT_VERSION_TUPLE = version
                     if version < (0, 3, 1):
@@ -51,11 +53,12 @@ class TestTrackerAddons(unittest.TestCase):
             from worlds.tracker.TrackerClient import TrackerCommandProcessor
 
             ctx = SimpleNamespace(stored_data={})
-            for version in ((0, 3, 0), (0, 3, 1), (0, 3, 4)):
+            for version in ((0, 3, 0), (0, 3, 1), (0, 3, 5)):
                 with patch.object(tracker, "UT_VERSION_TUPLE", version), \\
                         patch.object(TrackerCommandProcessor, "commands", {}):
                     processor = TrackerCommandProcessor(ctx)
-                    assert ("next_progression" in processor.commands) == (version >= (0, 3, 1))
+                    expected_commands = set(tracker_addons.UT_FUNCTIONS) if version >= (0, 3, 1) else set()
+                    assert set(processor.commands) == expected_commands
 
             legacy_command = lambda processor: "legacy command result"
             legacy_addons = SimpleNamespace(UT_FUNCTIONS={"legacy": legacy_command})

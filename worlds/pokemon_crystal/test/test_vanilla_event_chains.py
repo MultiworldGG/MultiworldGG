@@ -51,7 +51,7 @@ class VanillaMistyOnTest(PokemonCrystalTestBase):
         self.assertTrue(loc.can_reach(swept_state(self, [])))
 
     def test_completable(self):
-        state = self.multiworld.get_all_state(False)
+        state = self.multiworld.get_all_state()
         for location in misty_locations + ["Cerulean Gym - Machine Part in Water", "Route 24 - Grunt"]:
             self.assertTrue(self.multiworld.get_location(location, self.player).can_reach(state),
                             f"{location} unreachable with all items collected (broken chain or cycle).")
@@ -68,7 +68,7 @@ class VanillaMistyTeamRocketGoalTest(PokemonCrystalTestBase):
         completion = self.multiworld.completion_condition[self.player]
         self.assertFalse(completion(swept_state(self, surf_items)),
                          "Team Rocket goal should be incomplete while the Route 24 rocket is unreachable.")
-        self.assertTrue(completion(self.multiworld.get_all_state(False)),
+        self.assertTrue(completion(self.multiworld.get_all_state()),
                         "Team Rocket goal should be completable with everything reachable.")
 
 
@@ -116,7 +116,7 @@ class VanillaJasmineTest(PokemonCrystalTestBase):
         loc = self.multiworld.get_location("Cianwood Pharmacy - Secretpotion", self.player)
         self.assertFalse(loc.access_rule(CollectionState(self.multiworld)),
                          "SecretPotion should require having met Jasmine at the lighthouse.")
-        self.assertTrue(loc.access_rule(self.multiworld.get_all_state(False)))
+        self.assertTrue(loc.access_rule(self.multiworld.get_all_state()))
 
 
 class VanillaJasmineOffTest(PokemonCrystalTestBase):

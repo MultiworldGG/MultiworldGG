@@ -478,8 +478,14 @@ VL_OVERLAP_SAMPLES      = 2
 def _vlink_state(ctx):
     s = getattr(ctx, "_vlink", None)
     if s is None:
+        # Keep this client's identity across reconnects so late self-echoes
+        # cannot appear as another co-op player after playback state resets.
+        cid = getattr(ctx, "_vlink_cid", None)
+        if cid is None:
+            cid = uuid.uuid4().int & 0xFFFFFFFFFFFFFFFF
+            ctx._vlink_cid = cid
         s = {
-            "cid": uuid.uuid4().int & 0xFFFFFFFFFFFFFFFF,
+            "cid": cid,
             "samples": [],
             "sent_t": -1.0,
             "last_sample_t": 0.0,
@@ -693,9 +699,9 @@ def _vlink_on_bounce(ctx, data: dict) -> None:
     s = _vlink_state(ctx)
     if cid == s["cid"]:
         return
-    # A bounce carrying our own slot is always a self-echo (stale cid after a
-    # reconnect, or a duplicate client on the slot); never render ourselves.
-    if slot == getattr(ctx, "slot", None):
+    # Co-op clients share an AP slot, but have distinct client IDs.
+    # Legacy packets without an ID cannot distinguish a same-slot self-echo.
+    if cid == 0 and slot == getattr(ctx, "slot", None):
         return
     if kind == Ghosts.VLINK_PART:
         s["peers"].pop(cid, None)

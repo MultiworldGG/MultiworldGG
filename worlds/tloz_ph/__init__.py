@@ -292,6 +292,7 @@ class PhantomHourglassWorld(CachedRuleBuilderWorld):
                 from .tracker.TrackerUtil import get_hidden_entrances
                 self.ut_map_page_hidden_locations, self.ut_map_page_hidden_entrances = get_hidden_entrances(self)
         else:
+            print(f"masked beedle {self.options.randomize_masked_beedle.value}")
             self.options.shopsanity.value = {s.lower() for s in self.options.shopsanity.value}
             # print(f"Shopsanity {self.options.shopsanity.value}, {self.options.shopsanity.valid_keys_casefold}")
             if 'all' in self.options.shopsanity.value:
@@ -411,7 +412,7 @@ class PhantomHourglassWorld(CachedRuleBuilderWorld):
         for location_name, location_data in LOCATIONS_DATA.items():
             if not self.location_is_active(location_name, location_data):
                 continue
-            is_local = "local" in location_data and location_data["local"] is True
+            is_local = location_data.local
             if location_data.region:
                 self.create_location(location_data.region, location_name, is_local)
 
@@ -435,50 +436,51 @@ class PhantomHourglassWorld(CachedRuleBuilderWorld):
     def location_is_active(self, location_name, location_data):
         if location_name in self.locations_to_remove:
             return False
-        if not location_data.conditional and not location_data.has_slot_data:
-            return True
-
-        if location_data.has_slot_data:
-            for slot, _value, *args in location_data.has_slot_data:
-                slot = getattr(self.options, slot, None).value
-                if isinstance(slot, set):
-                    if _value not in slot:
-                        return False
-                else:
-                    _value = _value if isinstance(_value, list) else [_value]
-                    if slot not in _value:
-                        return False
-
-            if location_data.restock:
-                if 'restocks' not in self.options.shopsanity.value and (
-                        location_data.restock in self.options.shopsanity.value or location_data.restock == "always"):
-                    # print(f"Restock blocked: {location_name}")
-                    return False
-            return True
-
-        if location_name in LOCATION_GROUPS["Golden Frogs"]:
-            return self.options.randomize_frogs != PhantomHourglassFrogRandomization.option_start_with
-        if location_name in LOCATION_GROUPS["Rupee Dig Spots"]:
-            return self.options.randomize_digs
-        if "Archery Minigame 2000" == location_name:
-            return self.options.logic in ["hard", "glitched"] and self.options.randomize_minigames
-        if location_name in LOCATION_GROUPS["Minigames"]:
-            return self.options.randomize_minigames
-        if location_name in LOCATION_GROUPS["Fishing Locations"]:
-            return self.options.randomize_fishing
-        if location_name in LOCATION_GROUPS["Salvage Locations"]:
-            return self.options.randomize_salvage
-        if location_name in LOCATION_GROUPS["Free Standing Locations"]:
-            return self.options.randomize_pedestal_items.value
-        if "Beedle Membership" in location_name:
-            return self.options.randomize_beedle_membership.value > 1
-        if "Harrow Island" in location_name:
-            return self.options.randomize_harrow
-        if "Zauz's House Triforce Crest" == location_name:
-            return self.options.randomize_triforce_crest
-        if location_name == "Man of Smiles' Prize Postcard":  # This it pretty random but whatever...
-            return self.options.randomize_beedle_membership.value > 0
-        return False
+        if location_data.conditional:
+            return location_data.conditional(self, location_data)
+        return True
+        #
+        # if location_data.has_slot_data:
+        #     for slot, _value, *args in location_data.has_slot_data:
+        #         slot = getattr(self.options, slot, None).value
+        #         if isinstance(slot, set):
+        #             if _value not in slot:
+        #                 return False
+        #         else:
+        #             _value = _value if isinstance(_value, list) else [_value]
+        #             if slot not in _value:
+        #                 return False
+        #
+        #     if location_data.restock:
+        #         if 'restocks' not in self.options.shopsanity.value and (
+        #                 location_data.restock in self.options.shopsanity.value or location_data.restock == "always"):
+        #             # print(f"Restock blocked: {location_name}")
+        #             return False
+        #     return True
+        #
+        # if location_name in LOCATION_GROUPS["Golden Frogs"]:
+        #     return self.options.randomize_frogs != PhantomHourglassFrogRandomization.option_start_with
+        # if location_name in LOCATION_GROUPS["Rupee Dig Spots"]:
+        #     return self.options.randomize_digs
+        # if "Archery Minigame 2000" == location_name:
+        #     return self.options.logic in ["hard", "glitched"] and self.options.randomize_minigames
+        # if location_name in LOCATION_GROUPS["Minigames"]:
+        #     return self.options.randomize_minigames
+        # if location_name in LOCATION_GROUPS["Fishing Locations"]:
+        #     return self.options.randomize_fishing
+        # if location_name in LOCATION_GROUPS["Salvage Locations"]:
+        #     return self.options.randomize_salvage
+        # if location_name in LOCATION_GROUPS["Free Standing Locations"]:
+        #     return self.options.randomize_pedestal_items.value
+        # if "Beedle Membership" in location_name:
+        #     return self.options.randomize_beedle_membership.value > 1
+        # if "Harrow Island" in location_name:
+        #     return self.options.randomize_harrow
+        # if "Zauz's House Triforce Crest" == location_name:
+        #     return self.options.randomize_triforce_crest
+        # if location_name == "Man of Smiles' Prize Postcard":  # This it pretty random but whatever...
+        #     return self.options.randomize_beedle_membership.value > 0
+        # return False
 
     def pick_required_dungeons(self):
         implemented_dungeons = DUNGEON_NAMES[1:]
@@ -1261,7 +1263,7 @@ class PhantomHourglassWorld(CachedRuleBuilderWorld):
             # if "Treasure Map" in item_name:
             #     filler_item_count += 1
             #     continue
-            if (item_name in ITEM_GROUPS["Equipment"] |
+            if (item_name in ITEM_GROUPS["Equipment"] | ITEM_GROUPS["Fishing Items"] |
                     ITEM_GROUPS["Technical Items"] |
                     ITEM_GROUPS["Spirits"] |
                     ITEM_GROUPS["Small Keys"] | ITEM_GROUPS["Boss Keys"] |

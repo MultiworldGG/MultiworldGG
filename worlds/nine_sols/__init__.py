@@ -71,7 +71,6 @@ class NineSolsWorld(World):
     following a vengeful hero’s quest to slay the 9 Sols, formidable rulers of this forsaken realm.
     """
     game = "Nine Sols"
-    author: str = "Ixrec"
     web = NineSolsWebWorld()
 
     # Universal Tracker configuration

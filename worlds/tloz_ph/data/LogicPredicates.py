@@ -36,15 +36,15 @@ def ph_has_shovel(state: CollectionState, player: int, *args):
 
 
 def ph_has_bow(state: CollectionState, player: int, *args):
-    return state.has("Bow (Progressive)", player)
+    return state.has("Bow (Progressive)", player) or state.has(f"Bow", player)
 
 
 def ph_has_bombs(state: CollectionState, player: int, *args):
-    return state.has("Bombs (Progressive)", player)
+    return state.has("Bombs (Progressive)", player) or state.has(f"Bomb Bag", player)
 
 
 def ph_has_chus(state: CollectionState, player: int, *args):
-    return state.has("Bombchus (Progressive)", player)
+    return state.has("Bombchus (Progressive)", player) or state.has(f"Bombchu Bag", player)
 
 
 def ph_has_grapple(state: CollectionState, player: int):
@@ -251,26 +251,26 @@ def ph_has_treasure_map(state, player, number):
 # =========== Combined item states ================
 
 def ph_has_explosives(state: CollectionState, player: int, *args):
-    return state.has_any(["Bombs (Progressive)", "Bombchus (Progressive)"], player)
+    return ph_has_bombs(state, player) or ph_has_chus(state, player)
 
 
 def ph_has_damage(state: CollectionState, player: int):
     return any([
-        state.has("Sword (Progressive)", player),
+        ph_has_sword(state, player),
         ph_has_explosives(state, player),
-        state.has("Bow (Progressive)", player),
-        state.has("Grappling Hook", player),
-        state.has("Hammer", player)
+        ph_has_bow(state, player),
+        ph_has_grapple(state, player),
+        ph_has_hammer(state, player)
     ])
 
 
 def ph_has_cave_damage(state: CollectionState, player: int):
     return any([
-        state.has("Sword (Progressive)", player),
+        ph_has_sword(state, player),
         ph_has_bombs(state, player),
-        state.has("Bow (Progressive)", player),
-        state.has("Grappling Hook", player),
-        state.has("Hammer", player)
+        ph_has_bow(state, player),
+        ph_has_grapple(state, player),
+        ph_has_hammer(state, player)
     ])
 
 

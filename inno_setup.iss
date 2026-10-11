@@ -345,6 +345,11 @@ Root: HKCR; Subkey: "{#MyAppName}apmzmpatch";                     ValueData: "Mu
 Root: HKCR; Subkey: "{#MyAppName}apmzmpatch\DefaultIcon";         ValueData: "{app}\MultiworldGGBizHawkClient.exe,0";                        ValueType: string; ValueName: "";
 Root: HKCR; Subkey: "{#MyAppName}apmzmpatch\shell\open\command";  ValueData: """{app}\MultiworldGGBizHawkClient.exe"" ""%1""";               ValueType: string; ValueName: "";
 
+Root: HKCR; Subkey: ".apoddcouple";                                     ValueData: "{#MyAppName}apoddcouplepatch";    Flags: uninsdeletevalue;   ValueType: string;  ValueName: "";
+Root: HKCR; Subkey: "{#MyAppName}apoddcouplepatch";                     ValueData: "MultiworldGG RaC Odd Couple Patch"; Flags: uninsdeletekey;   ValueType: string;  ValueName: "";
+Root: HKCR; Subkey: "{#MyAppName}apoddcouplepatch\DefaultIcon";         ValueData: "{app}\MultiworldGGLauncher.exe,0";                      ValueType: string; ValueName: "";
+Root: HKCR; Subkey: "{#MyAppName}apoddcouplepatch\shell\open\command";  ValueData: """{app}\MultiworldGGLauncher.exe"" ""%1""";             ValueType: string; ValueName: "";
+
 Root: HKCR; Subkey: ".apooa";                                     ValueData: "{#MyAppName}apooapatch";    Flags: uninsdeletevalue;        ValueType: string;  ValueName: "";
 Root: HKCR; Subkey: "{#MyAppName}apooapatch";                     ValueData: "MultiworldGG Oracle of Ages Patch"; Flags: uninsdeletekey;  ValueType: string;  ValueName: "";
 Root: HKCR; Subkey: "{#MyAppName}apooapatch\DefaultIcon";         ValueData: "{app}\MultiworldGGBizHawkClient.exe,0";                     ValueType: string; ValueName: "";
@@ -359,6 +364,11 @@ Root: HKCR; Subkey: ".appm64";                                     ValueData: "{
 Root: HKCR; Subkey: "{#MyAppName}appm64patch";                     ValueData: "MultiworldGG Paper Mario 64 Patch"; Flags: uninsdeletekey;     ValueType: string;  ValueName: "";
 Root: HKCR; Subkey: "{#MyAppName}appm64patch\DefaultIcon";         ValueData: "{app}\MultiworldGGBizHawkClient.exe,0";                        ValueType: string; ValueName: "";
 Root: HKCR; Subkey: "{#MyAppName}appm64patch\shell\open\command";  ValueData: """{app}\MultiworldGGBizHawkClient.exe"" ""%1""";               ValueType: string; ValueName: "";
+
+Root: HKCR; Subkey: ".aprsm";                                     ValueData: "{#MyAppName}aprsmpatch";    Flags: uninsdeletevalue;   ValueType: string;  ValueName: "";
+Root: HKCR; Subkey: "{#MyAppName}aprsmpatch";                     ValueData: "MultiworldGG RaC Size Matters Patch"; Flags: uninsdeletekey;   ValueType: string;  ValueName: "";
+Root: HKCR; Subkey: "{#MyAppName}aprsmpatch\DefaultIcon";         ValueData: "{app}\MultiworldGGLauncher.exe,0";                      ValueType: string; ValueName: "";
+Root: HKCR; Subkey: "{#MyAppName}aprsmpatch\shell\open\command";  ValueData: """{app}\MultiworldGGLauncher.exe"" ""%1""";             ValueType: string; ValueName: "";
 
 Root: HKCR; Subkey: ".apsmmr";                                     ValueData: "{#MyAppName}apsmmrpatch";        Flags: uninsdeletevalue;     ValueType: string;  ValueName: "";
 Root: HKCR; Subkey: "{#MyAppName}apsmmrpatch";                     ValueData: "MultiworldGG SM Map Rando Patch"; Flags: uninsdeletekey;      ValueType: string;  ValueName: "";

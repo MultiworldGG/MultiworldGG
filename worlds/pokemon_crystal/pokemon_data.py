@@ -17,12 +17,15 @@ VANILLA_STARTERS = (
 )
 
 SWARM_REGISTRATIONS = {
-    "Dunsparce_Swarm": {"grass_host": "DARK_CAVE_VIOLET_ENTRANCE", "fishing_host": None,
-                        "registration_event": "EVENT_REGISTERED_ANTHONY"},
-    "Yanma_Swarm":     {"grass_host": "ROUTE_35",                  "fishing_host": None,
-                        "registration_event": "EVENT_REGISTERED_ARNIE"},
-    "Qwilfish_Swarm":  {"grass_host": None,                        "fishing_host": "Qwilfish",
-                        "registration_event": "EVENT_REGISTERED_RALPH"},
+    "Dunsparce_Swarm": {"grass_host": "DARK_CAVE_VIOLET_ENTRANCE", "fishing_region": None,
+                        "registration_event": "EVENT_REGISTERED_ANTHONY",
+                        "friendly_name": "Dark Cave Violet Entrance (Swarm)"},
+    "Yanma_Swarm":     {"grass_host": "ROUTE_35",                  "fishing_region": None,
+                        "registration_event": "EVENT_REGISTERED_ARNIE",
+                        "friendly_name": "Route 35 (Swarm)"},
+    "Qwilfish_Swarm":  {"grass_host": None,                        "fishing_region": "REGION_ROUTE_32:SOUTH",
+                        "registration_event": "EVENT_REGISTERED_RALPH",
+                        "friendly_name": "Route 32 (Swarm)"},
 }
 
 LEGENDARY_STATIC_SLOTS = {"SUICUNE", "LUGIA", "HO_OH", "CELEBI"}

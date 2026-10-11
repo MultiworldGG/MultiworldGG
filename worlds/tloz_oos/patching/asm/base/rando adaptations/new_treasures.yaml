@@ -23,7 +23,7 @@
 # This block changes the fixed definition for Ore Chunks by a pointer to a group of subids.
 15//oreChunksSubidsBlock: |
     db $02,$0b,$6b,$2f  ; Ore Chunks x50 (orange sprite)
-    db $02,$0a,$58,$04  ; Ore Chunks x25 (blue sprite)
+    db $02,$0a,$58,$03  ; Ore Chunks x25 (blue sprite)
     db $02,$04,$4e,$4d  ; Ore Chunks x10 (red sprite)
     db $02,$0c,$95,$4e  ; Ore Chunks x100 (red sprite)
 15/5205/: |

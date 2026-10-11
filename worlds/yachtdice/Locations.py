@@ -76,7 +76,7 @@ def ini_locations(
         include_scores = [str(i) for i in range(1, max_score)]
     else:
         include_scores = [x for x in include_scores if x != "Everything"]
-        include_scores = sorted({int(x) for x in include_scores})[:10]
+        include_scores = sorted({int(x) for x in include_scores})
 
     # Adjust scores to include the values in the "include" list
     include_scores = [int(value) for value in sorted(include_scores)]
@@ -93,7 +93,10 @@ def ini_locations(
                     scores.append(value)
             else:
                 scores.append(value)  # If no candidates remain, just add the value to scores
-
+    for v in range(1, 11):
+        if v not in scores:
+            scores.append(v)
+            
     return sorted(scores)
 
 

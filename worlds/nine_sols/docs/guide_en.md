@@ -4,7 +4,7 @@
 
 - Make sure you have Nine Sols installed
 	- The "speedrun branch" is not supported. Current/latest patch only.
-- Install [r2modman](https://r2modman.net/#Download_R2modman_Latest_Version)
+- Install [r2modman](https://thunderstore.io/c/riskofrain2/p/ebkr/r2modman/)
 - Install the core MultiworldGG tools (at least version 0.7, but preferably the latest version) from [MultiworldGG's Github Releases page](https://github.com/MultiworldGG/MultiworldGG/releases). On that page, scroll down to the "Assets" section for the release you want, click on the appropriate installer for your system to start downloading it (for most Windows users, that will be the file called `Setup.MultiworldGG.X.Y.Z.exe`), then run it.
 - If you are not using MultiworldGG, go to [the Releases page](https://github.com/Ixrec/NineSolsArchipelagoRandomizer/releases) of this repository and look at the latest release. There should be three files: A .zip, an .apworld and a .yaml. Download the .apworld and the .yaml.
 
@@ -45,16 +45,3 @@ Once you have the `.zip` you want:
 - Click "Select file" and navigate to the mod `.zip`
 
 </details>
-
-## Client/Mod Settings
-
-The client-side settings currently in the randomizer mod are:
-
-- Boss Scaling
-- Force True Eigong
-- Death Link
-- Flowerless Death Link
-- Show AP Messages
-- Filter By Player
-
-More details can be found in the settings menu tooltips. Press F1 in-game to bring up the settings menu for all of your Nine Sols mods, including the randomizer. This F1 menu comes from the [BepinExConfigurationManager](https://thunderstore.io/c/nine-sols/p/ninesolsmodding/BepinExConfigurationManager/) mod.

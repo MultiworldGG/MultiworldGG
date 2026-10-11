@@ -196,8 +196,8 @@ def check_entrances(client: "PhantomHourglassClient", ctx: "BizHawkClientContext
         if not (ctx.slot_data["shuffle_caves"] and trans_value in [0x2C, 0x32]):
             return True
 
-    client.visited_entrances |= set(get_stored_data(ctx, "ph_traversed_entrances", []))
-    visited_entrances = client.visited_entrances
+    client.traversed_entrances |= set(get_stored_data(ctx, "ph_traversed_entrances", []))
+    visited_entrances = client.traversed_entrances
     print(f"Visited entrances: {visited_entrances}")
     for entr in safe_entrance_map[trans_value]:
         entr_id = ENTRANCES[entr].id
@@ -248,7 +248,7 @@ async def map_mode(client: "PhantomHourglassClient", ctx: "BizHawkClientContext"
                 quick_entrance_log("ph_checked_entrances")
                 quick_entrance_log("ph_disconnect_entrances")
                 quick_entrance_log("ph_traversed_entrances")
-                logger.info(f"local traverses: {client.visited_entrances}")
+                logger.info(f"local traverses: {client.traversed_entrances}")
 
                 logger.info(f"Currently stored scenes:")
                 for i in set(get_stored_data(ctx, 'ph_visited_scenes', [])) | client.visited_scenes:

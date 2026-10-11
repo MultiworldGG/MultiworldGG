@@ -125,7 +125,6 @@ async def remove_vanilla_throwable_keys(client: "PhantomHourglassClient", ctx: "
         actor_data = actor_table[_i * 8:(_i + 1) * 8]
         if actor_data[1] == "0":  # filter out empty slots
             continue
-        print(actor_data)
         actor_id_addr = Address.from_pointer(int(actor_data, 16) + 8 - 0x2000000, size=4)
         actor_id = await actor_id_addr.read(ctx, silent=True)
         # If you find the boss key, delete its pointer

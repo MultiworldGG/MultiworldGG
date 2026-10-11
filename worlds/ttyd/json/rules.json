@@ -2848,7 +2848,7 @@
   "Rogueport Sewers Black Chest Room: Plane Mode": {
     "has": "Black Key (Plane)"
   },
-  "Rogueport Docks: HP Drain": {
+  "Rogueport Docks: HP Drain (Badge)": {
     "has": "Boat Mode"
   },
   "Rogueport Docks: Star Piece 2": {
@@ -3445,6 +3445,9 @@
   "Twilight Town Leftside: Mayor Dour's Trouble Reward": {
     "and": [
       {
+        "has": "Red Key"
+      },
+      {
         "can_reach": "Creepy Steeple Upper Room: Ruby Star"
       },
       {
@@ -3657,7 +3660,17 @@
         "has": "Honey Syrup"
       },
       {
-        "has": "Volt Shroom"
+        "or": [
+          {
+            "has": "Volt Shroom"
+          },
+          {
+            "has": "Mushroom"
+          },
+          {
+            "has": "Slow Shroom"
+          }
+        ]
       },
       {
         "can_reach": "Creepy Steeple Upper Room: Ruby Star"
@@ -3676,7 +3689,17 @@
         "has": "Maple Syrup"
       },
       {
-        "has": "Volt Shroom"
+        "or": [
+          {
+            "has": "Volt Shroom"
+          },
+          {
+            "has": "Mushroom"
+          },
+          {
+            "has": "Slow Shroom"
+          }
+        ]
       },
       {
         "can_reach": "Creepy Steeple Upper Room: Ruby Star"
@@ -3695,7 +3718,14 @@
         "has": "Jammin' Jelly"
       },
       {
-        "has": "Volt Shroom"
+        "or": [
+          {
+            "has": "Volt Shroom"
+          },
+          {
+            "has": "Mushroom"
+          }
+        ]
       },
       {
         "can_reach": "Creepy Steeple Upper Room: Ruby Star"
@@ -4455,7 +4485,14 @@
         "has": "Cake Mix"
       },
       {
-        "has": "Fire Flower"
+        "or": [
+          {
+            "has": "Fire Flower"
+          },
+          {
+            "has": "Hot Sauce"
+          }
+        ]
       },
       {
         "can_reach": "Creepy Steeple Upper Room: Ruby Star"

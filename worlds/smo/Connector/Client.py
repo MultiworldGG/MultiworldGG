@@ -523,7 +523,7 @@ class SMOContext(SuperContext):
 
     def make_gui(self):
         ui = super().make_gui()
-        ui.base_title = f"Adi's Unofficial Super Mario Odyssey {apname} Client"
+        ui.base_title = f"Super Mario Odyssey {apname} Client"
         return ui
 
 async def ping_loop(ctx : SMOContext):
@@ -716,11 +716,11 @@ async def handle_proxy(reader : asyncio.StreamReader, writer : asyncio.StreamWri
 
             if not ctx.game_connected and not ctx.awaiting_connection:
                 ctx.awaiting_connection = True
-                self.ctx.print_json([{"type": "color", "color": "red", "text": "Invalid connection state, not sending more packets"}])
+                ctx.print_json([{"type": "color", "color": "red", "text": "Invalid connection state, not sending more packets"}])
                 break
     except Exception as e:
-        self.ctx.print_json([{"type": "color", "color": "red", "text": f"Connection Error {e}"}])
-        self.ctx.print_json([{"type": "color", "color": "red", "text": traceback.format_exc()}])
+        ctx.print_json([{"type": "color", "color": "red", "text": f"Connection Error {e}"}])
+        ctx.print_json([{"type": "color", "color": "red", "text": traceback.format_exc()}])
         ctx.player_data.item_index = 0
         ctx.player_data.current_home_stage = ""
         ctx.awaiting_connection = True
@@ -750,16 +750,21 @@ def launch(*launch_args: str):
         ctx.ping_task = asyncio.create_task(ping_loop(ctx), name="PingLoop")
         ctx.server_comm_task = asyncio.create_task(comm_loop(ctx), name="CommLoop")
 
+
         if tracker_loaded:
             ctx.run_generator()
         if gui_enabled:
             ctx.run_gui()
         ctx.run_cli()
 
-        await ctx.proxy
-        await ctx.proxy_chat
-        await ctx.ping_task
-        await ctx.server_comm_task
+        try:
+            await ctx.proxy
+            await ctx.proxy_chat
+            await ctx.ping_task
+            await ctx.server_comm_task
+        except OSError as e:
+            logger.exception(e)
+            ctx.ui.print_json([{"type": "color", "color": "red", "text": "Failed to start internal server. Please close all client instances before opening a new one."}])
         # Make ping task wait 1-second intervals
         # Add counter member to ctx
         # if packet of any kind is read from stream,

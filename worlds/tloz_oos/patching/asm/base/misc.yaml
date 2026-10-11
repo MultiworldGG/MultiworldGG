@@ -179,3 +179,7 @@
 
 # Disables linked protocol initialization because who cares
 00/0c61/: ret
+
+# Disable random position enemy failing, since it causes more issues than it solves
+# (This mostly broke the d11 pool room)
+11/5b09/: nop

@@ -462,11 +462,8 @@ class EncounterKey:
     def friendly_region_name(self, kanto: bool = True, route_23: bool = False):
         qwilfish_routes = "Routes 12, 13, 32" if kanto else "Route 32"
         if self.encounter_type is EncounterType.Swarm:
-            return {
-                "Yanma_Swarm": "Route 35 (Swarm)",
-                "Dunsparce_Swarm": "Dark Cave Violet Entrance (Swarm)",
-                "Qwilfish_Swarm": f"{qwilfish_routes} (Swarm)",
-            }[self.region_id]
+            from .pokemon_data import SWARM_REGISTRATIONS
+            return SWARM_REGISTRATIONS[self.region_id]["friendly_name"]
         if (self.encounter_type is EncounterType.Grass
                 or self.encounter_type is EncounterType.Water):
             from re import search
@@ -774,6 +771,8 @@ class MapEnvironment(IntEnum):
         if map_env_string == "DUNGEON": return MapEnvironment.Dungeon
         raise ValueError(f"Invalid map environment string: {map_env_string}")
 
+
+HM_COMPAT_TMS = ["HEADBUTT", "ROCK_SMASH"]
 
 # Maps the player walks around on outdoors. Everything else is inside a building,
 # cave or gate, which is what tells the two sides of a door apart.
@@ -1731,6 +1730,9 @@ def _init() -> None:
         name: tuple(pair) for name, pair in data_json["map_constants"].items()
     }
 
+    # extracted from vanilla blks; rom.py paints these warp tiles at generation
+    PATCHED_WARP_TYPES = {("CherrygroveCity", 6): "CAVE"}
+
     flypoints: dict[Landmark, list[FlypointWarp]] = defaultdict(list)
     for map_name, map_data in maps.items():
         if data_json["warps"].get(map_name, None) is None: continue
@@ -1738,7 +1740,8 @@ def _init() -> None:
                                                          warp["index"],
                                                          warp["x"],
                                                          warp["y"],
-                                                         warp["warp_type"]
+                                                         PATCHED_WARP_TYPES.get((map_name, warp["index"]),
+                                                                                warp["warp_type"])
                                                          )
                                             for warp in data_json["warps"][map_name]
                                             if map_data.environment in OUTDOOR_ENVIRONMENTS

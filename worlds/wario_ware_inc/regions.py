@@ -44,8 +44,10 @@ def create_regions(world: "WarioWareWorld"):
             continue
         if stage_name not in score_only_games:
             region.locations.append(WarioWareLocation(player, f"{stage_name.value} - Clear", STAGES | (stage_id << 16), region))
-            score = current_game_scores.pop(0)
-            region.locations.append(WarioWareLocation(player, f"{stage_name.value} - {score} Points", SCORE | (stage_id << 16) | score & 0xFFFF, region))
+            if len(current_game_scores) != 0:
+                for _ in range(3):
+                    score = current_game_scores.pop(0)
+                    region.locations.append(WarioWareLocation(player, f"{stage_name.value} - {score} Points", SCORE | (stage_id << 16) | score & 0xFFFF, region))
             if active_hi_scores:
                 for score in current_game_scores:
                     region.locations.append(WarioWareLocation(player, f"{stage_name.value} - {score} Points", SCORE | (stage_id << 16) | score & 0xFFFF, region))

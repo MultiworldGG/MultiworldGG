@@ -68,7 +68,6 @@ default_flip_vsync = install_flip_sync()
 # kvui_flip_sync - grabs any opengl
 Config.set("graphics", "sync_after_flip", "0" if not default_flip_vsync else "1")
 
-from kivymd.uix.divider import MDDivider
 from kivy.core.window import Window
 
 if sys.platform == "win32":
@@ -91,6 +90,8 @@ if sys.platform == "win32":
         Window._win_dpi_watch = None
     _WindowsSysDPIWatch.start = _ignore_windows_dpi_changes
 
+# Import KivyMD only after correcting DPI: a hidden Windows window initially
+# reports 0 DPI, and KivyMD caches sp() font sizes when its theme is imported.
 from kivymd.uix.divider import MDDivider
 from kivy.core.clipboard import Clipboard
 from kivy.core.text.markup import MarkupLabel

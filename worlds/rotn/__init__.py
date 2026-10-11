@@ -46,6 +46,7 @@ class RotNWorld(World):
     item_name_to_id = {name: code for name, code in rift_collection.item_names_to_id.items()}
     location_name_to_id = {name: code for name, code in rift_collection.location_names_to_id.items()}
     item_name_groups = rift_collection.getItemNameGroups()
+    location_name_groups = rift_collection.getLocationNameGroups()
 
     player_mod_data = {}
     player_mod_ids = {}

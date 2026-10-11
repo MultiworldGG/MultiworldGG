@@ -1,0 +1,137 @@
+* { box-sizing: border-box; font-family: sans-serif; }
+body { margin: 0; display: flex; flex-direction: column; height: 100vh; background: #1e1e1e; color: #eee; }
+
+header { padding: 10px 16px; background: #2a2a2a; display: flex; align-items: center; gap: 16px; }
+header h1 { font-size: 18px; margin: 0; }
+.controls { display: flex; align-items: center; gap: 8px; }
+.status { font-size: 12px; padding: 2px 8px; border-radius: 4px; background: #444; }
+.status.ok { background: #2e7d32; }
+.status.bad { background: #b71c1c; }
+
+main { flex: 1; display: flex; overflow: hidden; }
+
+#player-container { flex: 1; display: flex; align-items: center; justify-content: center; background: #000; position: relative; }
+#player-wrapper { width: 100%; height: 100%; }
+#player-wrapper ruffle-player { width: 100%; height: 100%; }
+
+/* Overlay shown while clicks are suppressed for the currently loaded movie */
+#click-blocker {
+  position: absolute; inset: 0; display: none; cursor: not-allowed; z-index: 10;
+}
+#click-blocker.active { display: block; }
+
+/* Items menu: floats over the player instead of taking up its own layout
+   row, so its content can never push/expand the surrounding page. */
+#items-toggle {
+  position: absolute; top: 12px; right: 12px; z-index: 20;
+  background: #2a2a2a; color: #eee; border: 1px solid #444; border-radius: 4px;
+  padding: 6px 14px; font-size: 13px; cursor: pointer;
+}
+#items-toggle:hover { background: #383838; }
+
+#items-panel {
+  position: absolute; top: 52px; right: 12px; z-index: 20;
+  width: 240px; max-height: 320px; overflow-y: auto;
+  background: rgba(38, 38, 38, 0.95); border: 1px solid #3a3a3a; border-radius: 6px;
+  padding: 12px;
+}
+#items-panel.hidden { display: none; }
+#items-panel h2 { font-size: 14px; margin: 0 0 8px; }
+#items-list { list-style: none; margin: 0; padding: 0; font-size: 13px; }
+#items-list li { padding: 4px 0; border-bottom: 1px solid #333; }
+#items-list .locked { color: #666; }
+#items-list .checked { color: #66bb6a; }
+#items-list .unchecked { color: #ef5350; }
+
+/* Chat overlay: same floating pattern as the items panel, offset to the left of it */
+#chat-toggle {
+  position: absolute; top: 12px; right: 92px; z-index: 20;
+  background: #2a2a2a; color: #eee; border: 1px solid #444; border-radius: 4px;
+  padding: 6px 14px; font-size: 13px; cursor: pointer;
+}
+#chat-toggle:hover { background: #383838; }
+
+#chat-panel {
+  position: absolute; top: 52px; right: 12px; z-index: 20;
+  width: 300px; max-height: 380px; display: flex; flex-direction: column;
+  background: rgba(38, 38, 38, 0.95); border: 1px solid #3a3a3a; border-radius: 6px;
+  padding: 12px;
+}
+#chat-panel.hidden { display: none; }
+#chat-panel h2 { font-size: 14px; margin: 0 0 8px; }
+#chat-log {
+  margin: 0 0 8px; padding: 0; font-size: 12px;
+  overflow-y: auto; max-height: 260px; flex: 1;
+}
+#chat-log .chat-line { padding: 3px 0; border-bottom: 1px solid #333; word-wrap: break-word; }
+
+/* Mirrors NetUtils.py's JSONtoTextParser.color_codes, so chat/hint/item
+   lines are colored the same way here as in the reference text client. */
+#chat-log .apc-black { color: #000000; }
+#chat-log .apc-red { color: #EE0000; }
+#chat-log .apc-green { color: #00FF7F; }
+#chat-log .apc-yellow { color: #FAFAD2; }
+#chat-log .apc-blue { color: #6495ED; }
+#chat-log .apc-magenta { color: #EE00EE; }
+#chat-log .apc-cyan { color: #00EEEE; }
+#chat-log .apc-slateblue { color: #6D8BE8; }
+#chat-log .apc-plum { color: #AF99EF; }
+#chat-log .apc-salmon { color: #FA8072; }
+#chat-log .apc-white { color: #FFFFFF; }
+#chat-log .apc-orange { color: #FF7700; }
+#chat-log .apc-bold { font-weight: bold; }
+#chat-log .apc-underline { text-decoration: underline; }
+#chat-log .apc-black_bg { background: #000000; }
+#chat-log .apc-red_bg { background: #EE0000; color: #000; }
+#chat-log .apc-green_bg { background: #00FF7F; color: #000; }
+#chat-log .apc-yellow_bg { background: #FAFAD2; color: #000; }
+#chat-log .apc-blue_bg { background: #6495ED; color: #000; }
+#chat-log .apc-magenta_bg { background: #EE00EE; color: #000; }
+#chat-log .apc-cyan_bg { background: #00EEEE; color: #000; }
+#chat-log .apc-white_bg { background: #FFFFFF; color: #000; }
+
+#chat-form { display: flex; gap: 6px; }
+#chat-input {
+  flex: 1; background: #1e1e1e; color: #eee; border: 1px solid #444; border-radius: 4px;
+  padding: 6px 8px; font-size: 12px;
+}
+#chat-form button {
+  background: #2a2a2a; color: #eee; border: 1px solid #444; border-radius: 4px;
+  padding: 6px 12px; font-size: 12px; cursor: pointer;
+}
+#chat-form button:hover { background: #383838; }
+
+/* Connect overlay: blocks the player until the page has an AP connection */
+#connect-overlay {
+  position: absolute; inset: 0; z-index: 30;
+  display: flex; align-items: center; justify-content: center;
+  background: rgba(0, 0, 0, 0.75);
+}
+#connect-overlay.hidden { display: none; }
+#connect-form.hidden { display: none; }
+#connect-form {
+  background: #2a2a2a; border: 1px solid #444; border-radius: 8px;
+  padding: 24px; width: 280px; display: flex; flex-direction: column; gap: 10px;
+}
+#connect-form h2 { font-size: 16px; margin: 0 0 4px; }
+#connect-form label { display: flex; flex-direction: column; gap: 4px; font-size: 12px; color: #ccc; }
+#connect-form input {
+  background: #1e1e1e; color: #eee; border: 1px solid #444; border-radius: 4px;
+  padding: 6px 8px; font-size: 13px;
+}
+#connect-form button {
+  background: #2e7d32; color: #fff; border: none; border-radius: 4px;
+  padding: 8px; font-size: 13px; cursor: pointer; margin-top: 4px;
+}
+#connect-form button:hover { background: #388e3c; }
+#connect-form .error { color: #ff8a80; font-size: 12px; margin: 0; }
+#connect-form .error.hidden { display: none; }
+
+#no-swf-message {
+  background: #2a2a2a; border: 1px solid #b71c1c; border-radius: 8px;
+  padding: 24px; width: 280px; text-align: center;
+}
+#no-swf-message.hidden { display: none; }
+#no-swf-message h2 { font-size: 16px; margin: 0 0 8px; color: #ff8a80; }
+#no-swf-message p { font-size: 12px; color: #ccc; margin: 0; line-height: 1.5; }
+#no-swf-message code { background: #1e1e1e; padding: 1px 4px; border-radius: 3px; }

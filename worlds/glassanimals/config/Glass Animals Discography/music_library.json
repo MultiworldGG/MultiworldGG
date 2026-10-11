@@ -1,0 +1,92 @@
+{
+  "artist": "Glass Animals",
+  "bonus_locations": [
+    "Welcome to Dreamland",
+    "Heat Wave",
+    "Gooey (Intro)",
+    "Radio Play",
+    "First Listen",
+    "Encore",
+    "A Dreamland Primer"
+  ],
+  "albums": [
+    {
+      "name": "I Love You So F***ing Much",
+      "type": "standard",
+      "full_album_unlock": false,
+      "path": "",
+      "songs": [
+        { "title": "Show Pony", "location": "Show Pony", "type": "normal", "requires": "|Show Pony|" },
+        { "title": "whatthehellishappening?", "location": "whatthehellishappening?", "type": "normal", "requires": "|whatthehellishappening?|" },
+        { "title": "Creatures in Heaven", "location": "Creatures in Heaven", "type": "normal", "requires": "|Creatures in Heaven|" },
+        { "title": "Wonderful Nothing", "location": "Wonderful Nothing", "type": "normal", "requires": "|Wonderful Nothing|" },
+        { "title": "A Tear in Space (Airlock)", "location": "A Tear in Space (Airlock)", "type": "normal", "requires": "|A Tear in Space (Airlock)|" },
+        { "title": "I Can't Make You Fall In Love Again", "location": "I Can't Make You Fall In Love Again", "type": "normal", "requires": "|I Can't Make You Fall In Love Again|" },
+        { "title": "How I Learned To Love The Bomb", "location": "How I Learned To Love The Bomb", "type": "normal", "requires": "|How I Learned To Love The Bomb|" },
+        { "title": "White Roses", "location": "White Roses", "type": "normal", "requires": "|White Roses|" },
+        { "title": "On the Run", "location": "On the Run", "type": "normal", "requires": "|On the Run|" },
+        { "title": "Lost in the Ocean", "location": "Lost in the Ocean", "type": "normal", "requires": "|Lost in the Ocean|" }
+      ]
+    },
+    {
+      "name": "Dreamland",
+      "type": "standard",
+      "full_album_unlock": false,
+      "path": "",
+      "songs": [
+        { "title": "Dreamland", "location": "Dreamland", "type": "normal", "requires": "|Dreamland|" },
+        { "title": "Tangerine", "location": "Tangerine", "type": "normal", "requires": "|Tangerine|" },
+        { "title": "((Home Movie: 1994))", "location": "((Home Movie: 1994))", "type": "short", "requires": "|((Home Movie: 1994))|" },
+        { "title": "Hot Sugar", "location": "Hot Sugar", "type": "normal", "requires": "|Hot Sugar|" },
+        { "title": "((Home Movie: BTX))", "location": "((Home Movie: BTX))", "type": "short", "requires": "|((Home Movie: BTX))|" },
+        { "title": "Space Ghost Coast to Coast", "location": "Space Ghost Coast to Coast", "type": "normal", "requires": "|Space Ghost Coast to Coast|" },
+        { "title": "Tokyo Drifting", "location": "Tokyo Drifting", "type": "normal", "requires": "|Tokyo Drifting|" },
+        { "title": "Melon and the Coconut", "location": "Melon and the Coconut", "type": "normal", "requires": "|Melon and the Coconut|" },
+        { "title": "Your Love (Déjà Vu)", "location": "Your Love (Déjà Vu)", "type": "normal", "requires": "|Your Love (Déjà Vu)|" },
+        { "title": "Waterfalls Coming Out Of Your Mouth", "location": "Waterfalls Coming Out Of Your Mouth", "type": "normal", "requires": "|Waterfalls Coming Out Of Your Mouth|" },
+        { "title": "It's All So Incredibly Loud", "location": "It's All So Incredibly Loud", "type": "normal", "requires": "|It's All So Incredibly Loud|" },
+        { "title": "((Home Movie: Rockets))", "location": "((Home Movie: Rockets))", "type": "short", "requires": "|((Home Movie: Rockets))|" },
+        { "title": "Domestic Bliss", "location": "Domestic Bliss", "type": "normal", "requires": "|Domestic Bliss|" },
+        { "title": "Heat Waves", "location": "Heat Waves", "type": "normal", "requires": "|Heat Waves|" },
+        { "title": "((Home Movie: Shoes On))", "location": "((Home Movie: Shoes On))", "type": "short", "requires": "|((Home Movie: Shoes On))|" },
+        { "title": "Helium", "location": "Helium", "type": "normal", "requires": "|Helium|" }
+      ]
+    },
+    {
+      "name": "How to Be a Human Being",
+      "type": "standard",
+      "full_album_unlock": false,
+      "songs": [
+        { "title": "Life Itself", "location": "Life Itself", "type": "normal", "requires": "|Life Itself|" },
+        { "title": "Youth", "location": "Youth", "type": "normal", "requires": "|Youth|" },
+        { "title": "Season 2 Episode 3", "location": "Season 2 Episode 3", "type": "normal", "requires": "|Season 2 Episode 3|" },
+        { "title": "Pork Soda", "location": "Pork Soda", "type": "normal", "requires": "|Pork Soda|" },
+        { "title": "Mama's Gun", "location": "Mama's Gun", "type": "normal", "requires": "|Mama's Gun|" },
+        { "title": "Cane Shuga", "location": "Cane Shuga", "type": "normal", "requires": "|Cane Shuga|" },
+        { "title": "[Premade Sandwiches]", "location": "[Premade Sandwiches]", "type": "normal", "requires": "|[Premade Sandwiches]|" },
+        { "title": "The Other Side of Paradise", "location": "The Other Side of Paradise", "type": "normal", "requires": "|The Other Side of Paradise|" },
+        { "title": "Take a Slice", "location": "Take a Slice", "type": "normal", "requires": "|Take a Slice|" },
+        { "title": "Poplar St", "location": "Poplar St", "type": "normal", "requires": "|Poplar St|" },
+        { "title": "Agnes", "location": "Agnes", "type": "normal", "requires": "|Agnes|" }
+      ]
+    },
+    {
+      "name": "Zaba",
+      "type": "standard",
+      "full_album_unlock": false,
+      "songs": [
+        { "title": "Flip", "location": "Flip", "type": "normal", "requires": "|Flip|" },
+        { "title": "Black Mambo", "location": "Black Mambo", "type": "normal", "requires": "|Black Mambo|" },
+        { "title": "Pools", "location": "Pools", "type": "normal", "requires": "|Pools|" },
+        { "title": "Gooey", "location": "Gooey", "type": "normal", "requires": "|Gooey|" },
+        { "title": "Walla Walla", "location": "Walla Walla", "type": "normal", "requires": "|Walla Walla|" },
+        { "title": "Intruxx", "location": "Intruxx", "type": "normal", "requires": "|Intruxx|" },
+        { "title": "Hazey", "location": "Hazey", "type": "normal", "requires": "|Hazey|" },
+        { "title": "Toes", "location": "Toes", "type": "normal", "requires": "|Toes|" },
+        { "title": "Wyrd", "location": "Wyrd", "type": "normal", "requires": "|Wyrd|" },
+        { "title": "Cocoa Hooves", "location": "Cocoa Hooves", "type": "normal", "requires": "|Cocoa Hooves|" },
+        { "title": "JDNT", "location": "JDNT", "type": "normal", "requires": "|JDNT|" }
+      ]
+    }
+  ]
+}

@@ -254,8 +254,7 @@ def create_regions(world: "PokemonCrystalWorld") -> dict[str, Region]:
 
             for swarm_region_id, cfg in SWARM_REGISTRATIONS.items():
                 if not ((cfg["grass_host"] is not None and wild_region_data.wild_encounters.grass == cfg["grass_host"])
-                        or (cfg["fishing_host"] is not None
-                            and wild_region_data.wild_encounters.fishing == cfg["fishing_host"])):
+                        or wild_region_data.name == cfg["fishing_region"]):
                     continue
                 encounter_key = EncounterKey.swarm(swarm_region_id)
                 if encounter_key not in world.generated_wild:

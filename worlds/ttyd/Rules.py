@@ -16,7 +16,7 @@ if typing.TYPE_CHECKING:
 
 def set_rules(world: "TTYDWorld"):
     for location, rule in create_lambda_from_json(pkgutil.get_data(__name__, "json/rules.json").decode(), world).items():
-        if location not in world.disabled_locations:
+        if location not in world.disabled_locations or location in world.vanilla_logic_locations:
             if location == "Glitzville Promoter's Office: Jolene's Trouble Reward" and not world.options.troublesanity:
                 add_rule(world.multiworld.get_location(location, world.player), lambda state: state.has("Battle Trunks", world.player, 20))
                 continue
@@ -71,7 +71,8 @@ def set_tattle_rules(world: "TTYDWorld"):
             else:
                 extra_condition = lambda state: state.can_reach("Palace of Shadow Final Staircase: Ultra Shroom", "Location", world.player)
         else:
-            locations = [loc for loc in locations if location_id_to_name[loc] not in world.disabled_locations]
+            locations = [loc for loc in locations if location_id_to_name[loc] not in world.disabled_locations
+                         or location_id_to_name[loc] in world.vanilla_logic_locations]
             if len(locations) == 0:
                 continue
             pit_exclusive_names = {name for names in pit_exclusive_tattle_stars_required.values() for name in names}
@@ -166,11 +167,9 @@ def get_tattle_rules_dict() -> dict[str, typing.List[int]]:
         "Tattle: Spania": [78780145, 78780267, 78780638],
         "Tattle: Fuzzy": [78780170, 78780296, 78780638],
         "Tattle: Koopa Troopa": [78780193, 78780170],
-        # Proxy is the sewers-side Shine Sprite in the pipe room (the fight is on the
-        # sewers side); piece locations make bad proxies — they get DISABLED under
-        # limited chapters, which would remove the tattle entirely.
-        "Tattle: Blooper": [78780133],
+        "Tattle: Blooper": [78780183],
         "Tattle: Lord Crump": [78780511],
+        "Tattle: Gus": [78780047],
         "Tattle: Cleft": [78780216, 78780639],
         "Tattle: Bald Cleft": [78780165],
         "Tattle: Bristle": [78780800, 78780296],
@@ -298,8 +297,8 @@ BOSS_ARENA_INFO: dict[str, tuple[typing.Optional[int], list[str]]] = {
     "btlgrp_jon_jon_100_01_off_1":     (78780647, ["Tattle: Bonetail"]),
     "btlgrp_las_las_09_rampell":       (78780622, ["Tattle: Doopliss", "Tattle: Beldam", "Tattle: Marilyn"]),
     "btlgrp_las_las_bunbaba":          (78780634, ["Tattle: Gloomtail"]),
-    "btlgrp_las_las_28_koopa":         (78780634, ["Tattle: Bowser", "Tattle: Kammy Koopa"]),
-    "btlgrp_las_las_28_batten_leader": (78780634, ["Tattle: Sir Grodus", "Tattle: Grodus X"]),
+    "btlgrp_las_las_28_koopa":         (78780637, ["Tattle: Bowser", "Tattle: Kammy Koopa"]),
+    "btlgrp_las_las_28_batten_leader": (78780637, ["Tattle: Sir Grodus", "Tattle: Grodus X"]),
     "btlgrp_las_las_29_black_peach_1": (None, ["Tattle: Shadow Queen"]),
     "btlgrp_las_las_29_black_peach_2": (None, ["Tattle: Shadow Queen", "Tattle: Beldam", "Tattle: Marilyn",
                                                "Tattle: Vivian"]),
@@ -307,12 +306,14 @@ BOSS_ARENA_INFO: dict[str, tuple[typing.Optional[int], list[str]]] = {
     "btlgrp_muj_muj_kanbu":            (78780511, ["Tattle: Lord Crump"]),
     "btlgrp_muj_muj_cortez":           (78780511, ["Tattle: Cortez"]),
     "btlgrp_rsh_rsh_06_01_off_1":      (78780554, ["Tattle: Smorg"]),
-    "btlgrp_tik_tik_gesso":            (78780133, ["Tattle: Blooper"]),
+    "btlgrp_tik_tik_gesso":            (78780183, ["Tattle: Blooper"]),
     "btlgrp_tou_tou_boss":             (78780287, ["Tattle: Macho Grubba"]),
     "btlgrp_tou_tou_champ":            (78780295, ["Tattle: Rawk Hawk"]),
     "btlgrp_tou_tou_koopa":            (78780287, ["Tattle: Bowser"]),
     "btlgrp_win_win_00_04_off_1":      (78780215, ["Tattle: Vivian", "Tattle: Beldam", "Tattle: Marilyn"]),
 }
+
+PALACE_SKIP_ARENAS = {"btlgrp_las_las_28_koopa", "btlgrp_las_las_28_batten_leader"}
 
 
 def get_random_enemy_tattle_rules_dict(world: "TTYDWorld") -> dict[str, list[int]]:
@@ -339,6 +340,8 @@ def get_random_enemy_tattle_rules_dict(world: "TTYDWorld") -> dict[str, list[int
             if source_name is None:
                 continue
             arena_proxy = BOSS_ARENA_INFO[arena.name][0]
+            if world.options.palace_skip and arena.name in PALACE_SKIP_ARENAS:
+                arena_proxy = None
             for key in BOSS_ARENA_INFO[source_name][1]:
                 boss_overrides.setdefault(key, [])
                 if arena_proxy is not None:

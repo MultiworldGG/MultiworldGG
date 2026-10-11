@@ -20,6 +20,7 @@ class Spyro3LocationCategory(IntEnum):
     LIFE_BOTTLE_HARD = 12,
     GEMSANITY = 13,
     EGG_EOL = 14
+    LIFE_BOTTLE_MIDNIGHT = 15
 
 
 class Spyro3LocationData(NamedTuple):
@@ -357,6 +358,9 @@ location_tables = {
         Spyro3LocationData("Midnight Mountain Home: Stomp the floor. (Buddy)", "Egg", Spyro3LocationCategory.EGG),
         Spyro3LocationData("Midnight Mountain Home: Egg for sale. (Al)", "Egg", Spyro3LocationCategory.EGG),
         Spyro3LocationData("Midnight Mountain Home: Moneybags Chase Complete", "Moneybags Chase Complete", Spyro3LocationCategory.EVENT),
+        Spyro3LocationData("Midnight Mountain Home: Life Bottle on Impossible Island 1", "Filler", Spyro3LocationCategory.LIFE_BOTTLE_MIDNIGHT),
+        Spyro3LocationData("Midnight Mountain Home: Life Bottle on Impossible Island 2", "Filler", Spyro3LocationCategory.LIFE_BOTTLE_MIDNIGHT),
+        Spyro3LocationData("Midnight Mountain Home: Life Bottle on Impossible Island 3", "Filler", Spyro3LocationCategory.LIFE_BOTTLE_MIDNIGHT),
     ],
     "Crystal Islands": [
         Spyro3LocationData("Crystal Islands: Reach the crystal tower. (Lloyd)", "Egg", Spyro3LocationCategory.EGG),

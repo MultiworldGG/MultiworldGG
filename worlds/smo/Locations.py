@@ -494,19 +494,12 @@ sub_area_waves_poison ={
 }
 
 loc_Wooded = {
-    "Wooded Kingdom - Road to Sky Garden": 129,
     "Wooded Kingdom - Rolling Rock in the Woods": 149,
     "Wooded Kingdom - Caught Hopping in the Forest!": 148,
-    "Wooded Kingdom - Atop a Tall Tree": 139,
     "Wooded Kingdom - Tucked Away Inside a Tunnel": 143,
-    "Wooded Kingdom - The Nut ‘Round The Corner": 145,
     "Wooded Kingdom - Climb the Cliff to Get the Nut": 140,
-    "Wooded Kingdom - The Nut in the Red Maze": 141,
-    "Wooded Kingdom - The Nut at the Dead End": 142,
     "Wooded Kingdom - Fire in the Cave": 136,
     "Wooded Kingdom - Shopping in Steam Gardens": 138,
-    "Wooded Kingdom - Nut Planted in the Tower": 180,
-    "Wooded Kingdom - Stretching Your Legs": 179,
     "Wooded Kingdom - Rolling Rock in the Deep Woods": 183,
     "Wooded Kingdom - Glowing in the Deep Woods": 1137,
     "Wooded Kingdom - Past The Peculiar Pipes": 1159,
@@ -520,31 +513,41 @@ loc_Wooded = {
     "Wooded Kingdom - Flooding Pipeway Ceiling Secret": 197,
 }
 
-loc_Wooded_Post_Metro = {
-    "Wooded Kingdom - Secret Path to the Steam Gardens": 137
+loc_Wooded_Post_Maze = {
+    "Wooded Kingdom - Road to Sky Garden": 129,
+    "Wooded Kingdom - Flower Thieves of Sky Garden": 130,
+    "Wooded Kingdom - Atop the Tall Tree": 139,
+    "Wooded Kingdom - The Nut ‘Round The Corner": 145,
+    "Wooded Kingdom - The Nut in the Red Maze": 141,
+    "Wooded Kingdom - The Nut at the Dead End": 142,
 }
 
-loc_Wooded_Post_Story1 = {
-    "Wooded Kingdom - Flower Thieves of Sky Garden": 130,
+loc_Wooded_Post_Metro = {
+    "Wooded Kingdom - Secret Path to Steam Gardens!": 137
+}
+
+loc_Wooded_Post_Spewart = {
+    "Wooded Kingdom - Back Way Up the Mountain": 150,
     "Wooded Kingdom - Path to the Secret Flower Field": 159,
-    "Wooded Kingdom - Cracked Nut on a Crumbling Tower": 144,
+    "Wooded Kingdom - Thanks for the Charge!": 135,
+    "Wooded Kingdom - Over the Cliff's Edge": 146,
     "Wooded Kingdom - The Nut that Grew on the Tall Fence": 147,
     "Wooded Kingdom - Love in the Forest Ruins": 131,
-    "Wooded Kingdom - Thanks for the Charge!": 135,
     "Wooded Kingdom - Spinning-Platforms Treasure": 195,
-    "Wooded Kingdom - Over the Cliff's Edge": 146,
-    "Wooded Kingdom - Behind the Rock Wall": 134,
-    "Wooded Kingdom - Back Way Up the Mountain": 150,
     "Wooded Kingdom - Flower Road Run": 191,
     "Wooded Kingdom - Flower Road Reach": 192,
     "Wooded Kingdom - Elevator Escalation": 190,
-    "Wooded Kingdom - Elevator Blind Spot": 189
+    "Wooded Kingdom - Elevator Blind Spot": 189,
 }
 
 loc_Wooded_Peace = {
+    "Wooded Kingdom - Behind the Rock Wall": 134,
     "Wooded Kingdom - Defend the Secret Flower Field!": 181,
-    "Wooded Kingdom - Inside the Rock in the Forest": 1026,
+    "Wooded Kingdom - Cracked Nut on a Crumbling Tower": 144,
     "Wooded Kingdom - Hey Out There, Captain Toad!": 133,
+    "Wooded Kingdom - Inside a Rock in the Forest": 1026,
+    "Wooded Kingdom - Nut Planted in the Tower": 180,
+    "Wooded Kingdom - Stretching Your Legs": 179,
     "Wooded Kingdom - Make the Secret Flower Field Bloom": 182,
     "Wooded Kingdom - Wooded Kingdom Timer Challenge 1": 157,
     "Wooded Kingdom - Wooded Kingdom Timer Challenge 2": 676,
@@ -604,9 +607,10 @@ loc_Wooded_Captures = {
     "Boulder": 3726,
 }
 
-loc_Wooded_Captures_Post_Story1 = {
+loc_Wooded_Captures_Post_Maze = {
     "Sherm": 3723,
 }
+
 loc_Wooded_Captures_Postgame = {
     "Poison Piranha Plant": 3720,
 }
@@ -1084,7 +1088,7 @@ sub_area_seaside_stretch = {
 }
 
 loc_Seaside_Postgame = {
-    "Seaside Kingdom - Secret Path to Bubblaine": 464,
+    "Seaside Kingdom - Secret Path to Bubblaine!": 464,
     "Seaside Kingdom - Seaside Kingdom Regular Cup": 1028,
     "Seaside Kingdom - Peach in the Seaside Kingdom": 477,
     "Seaside Kingdom - Above the Parasol: Catch!": 780,
@@ -1644,7 +1648,7 @@ loc_Moon_Postgame = {
     "Moon Kingdom - Sphynx's Hidden Vault": 599,
     "Moon Kingdom - A Tourist in the Moon Kingdom": 911,
     "Moon Kingdom - Peach in the Moon Kingdom": 581,
-    "Wooded Kingdom - Found with Moon Kindgom Art": 1165,
+    "Wooded Kingdom - Found with Moon Kingdom Art": 1165,
     "Moon Kingdom - Mysterious Flying Object": 1049,
     "Moon Kingdom - Hidden on the Side of the Cliff": 810,
     "Moon Kingdom - Jumping High as a Frog": 811,
@@ -1958,7 +1962,8 @@ base_locations_table = {
     **loc_Lake_Post_Seaside,
     **loc_Wooded,
     **loc_Wooded_Post_Metro,
-    **loc_Wooded_Post_Story1,
+    **loc_Wooded_Post_Maze,
+    **loc_Wooded_Post_Spewart,
     **loc_Wooded_Peace,
     **loc_Cloud,
     **loc_Lost,
@@ -2046,7 +2051,7 @@ locations_list = [
     {**loc_Cascade, **loc_Cascade_Peace, **loc_Cascade_Revisit, **loc_Cascade_Post_Snow, **loc_Cascade_Post_Metro},
     {**loc_Sand, **loc_Sand_Peace, **loc_Sand_Revisit, **loc_Sand_Pyramid},
     {**loc_Lake, **loc_Lake_Post_Seaside},
-    {**loc_Wooded, **loc_Wooded_Post_Story1, **loc_Wooded_Peace, **loc_Wooded_Post_Metro},
+    {**loc_Wooded, **loc_Wooded_Post_Spewart, **loc_Wooded_Peace, **loc_Wooded_Post_Metro},
     loc_Cloud,
     {**loc_Lost, **loc_Lost_Revisit},
     {**loc_Night_Metro, **loc_Metro, **loc_Metro_Sewer_Access, **loc_Metro_Peace, **loc_Metro_Post_Sand},
@@ -2064,7 +2069,7 @@ full_moon_locations_list = [
     {**loc_Cap, **loc_Cap_Postgame},
     {**loc_Cascade, **loc_Cascade_Peace, **loc_Cascade_Revisit, **loc_Cascade_Post_Snow, **loc_Cascade_Post_Metro, **loc_Cascade_Postgame},
     {**loc_Sand, **loc_Sand_Peace, **loc_Sand_Revisit, **loc_Sand_Pyramid, **loc_Sand_Underground, **loc_Sand_Postgame},
-    {**loc_Wooded, **loc_Wooded_Post_Story1, **loc_Wooded_Peace, **loc_Wooded_Post_Metro, **loc_Wooded_Postgame},
+    {**loc_Wooded, **loc_Wooded_Post_Spewart, **loc_Wooded_Post_Maze, **loc_Wooded_Peace, **loc_Wooded_Post_Metro, **loc_Wooded_Postgame},
     {**loc_Lake, **loc_Lake_Post_Seaside, **loc_Lake_Postgame},
     {**loc_Cloud, **loc_Cloud_Postgame},
     {**loc_Lost, **loc_Lost_Revisit, **loc_Lost_Postgame},
@@ -2074,7 +2079,7 @@ full_moon_locations_list = [
     {**loc_Luncheon, **loc_Luncheon_Post_Spewart, **loc_Luncheon_Post_Cheese_Rocks, **loc_Luncheon_Peace, **loc_Luncheon_Post_Wooded, **loc_Luncheon_Postgame},
     {**loc_Ruined, **loc_Ruined_Postgame},
     {**loc_Bowser, **loc_Bowser_Infiltrate, **loc_Bowser_Post_Bombing, **loc_Bowser_Mecha_Broodal, **loc_Bowser_Peace, **loc_Bowser_Postgame},
-    {**loc_Moon, **loc_Moon_Postgame},
+    {**loc_Moon, **loc_Moon_Postgame, **loc_Doctor_Outfit_Moon},
     {**loc_Mushroom, **loc_Mushroom_Post_Luncheon},
     loc_Dark,
     loc_Darker

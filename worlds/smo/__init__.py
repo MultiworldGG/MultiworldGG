@@ -4,7 +4,7 @@ from math import floor
 from typing import Mapping, Any, TextIO
 from .Items import item_table, SMOItem, filler_item_table, outfits, shop_items, multi_moons, \
     moon_item_table, moon_types, story_moons, world_list, stickers, souvenirs, capture_items, \
-    location_hint_list
+    location_hint_list, item_priorities
 from .Locations import locations_table, SMOLocation, locations_list, post_game_locations_list, \
     special_locations_table, full_moon_locations_list, goals_table
 from .Options import SMOOptions
@@ -21,7 +21,7 @@ def launch_client(*args: str):
     from .Connector.Client import launch
     launch_component(launch, name="SMOClient", args=args)
 
-component = Component("Adi's Unofficial Super Mario Odyssey Client", component_type=component_type.CLIENT,
+component = Component("Super Mario Odyssey (Adi)", component_type=component_type.CLIENT,
                       game_name="Super Mario Odyssey", func=launch_client)
 components.append(component)
 
@@ -160,13 +160,13 @@ class SMOWorld(World):
         "cap": 31,
         "cascade": 42,
         "sand": 93,
-        "lake": 44,
         "wooded": 80,
+        "lake": 44,
         "cloud": 9,
         "lost": 35,
         "metro": 85,
-        "snow": 57,
         "seaside": 73,
+        "snow": 57,
         "luncheon": 72,
         "ruined": 12,
         "bowser": 64,
@@ -284,7 +284,7 @@ class SMOWorld(World):
 
         match self.options.colors.value:
             case self.options.colors.option_off:
-                color_list = [0, 0, 5, 7, 2, 0, 0, 1, 4, 8, 6, 0, 3, 9, -1, 9, 9, 27]
+                color_list = [0, 0, 5, 2, 7, 0, 0, 1, 4, 8, 6, 0, 3, 9, -1, 9, 9, 27]
                 for location in self.get_locations():
                     for kingdom in range(17):
                         if location.name in full_moon_locations_list[kingdom]:
@@ -320,7 +320,16 @@ class SMOWorld(World):
                                 break
 
             case self.options.colors.option_classification:
-                pass
+                for location in self.get_locations():
+                    if self.location_name_to_id[location.name] < 1168:
+                        if location.item.classification.progression:
+                            shine_colors[self.location_name_to_id[location.name]] = 2
+                        if location.item.classification.useful or location.item.classification.trap:
+                            shine_colors[self.location_name_to_id[location.name]] = 7
+                        if location.item.classification.filler:
+                            shine_colors[self.location_name_to_id[location.name]] = 6
+                        else:
+                            shine_colors[self.location_name_to_id[location.name]] = 9
 
             case self.options.colors.option_item_random:
                 colors = list(range(30))
@@ -420,14 +429,9 @@ class SMOWorld(World):
         create_regions(self, self.multiworld, self.player)
 
     def generate_early(self):
-        pass
-        # self.multiworld.early_items[self.player]["Cascade Multi-Moon"] = 1
-        # self.multiworld.early_items[self.player]["Cascade Story Moon"] = 1
-        # self.multiworld.early_items[self.player]["Cascade Power Moon"] = self.moon_counts["cascade"]-4
-        # if self.options.capture_sanity.value == self.options.capture_sanity.option_true:
-        #     self.multiworld.early_items[self.player]["Broode's Chain Chomp"] = 1
-        #     self.multiworld.early_items[self.player]["Chain Chomp"] = 1
-        #     self.multiworld.early_items[self.player]["T-Rex"] = 1
+        if self.options.capture_sanity.value == self.options.capture_sanity.option_true and self.options.common_capture_skips.value == self.options.capture_sanity.option_false:
+            # Frog has to be sphere 1 if frogless isn't in logic
+            self.multiworld.local_early_items[self.player]["Frog"] = 1
 
     def generate_basic(self) -> None:
         pass
@@ -456,8 +460,26 @@ class SMOWorld(World):
                 classification = ItemClassification.filler
             elif name in capture_items:
                 classification = ItemClassification.progression
-            elif name in moon_types:
+            elif name in moon_types and self.options.goal >= self.options.goal.option_dark:
+                classification = ItemClassification.progression # Not sure how to handle filler for dark/darker
+            elif name in moon_types and self.options.progressive_moons:
                 classification = ItemClassification.progression
+            elif name in moon_types:
+                moon_kingdom = name.split(" ")[0]
+
+                moon_kingdom_index = world_list.index(moon_kingdom)
+
+                if "Multi" in name:
+                    classification = ItemClassification.progression
+                elif "Story" in name:
+                    classification = ItemClassification.progression
+                else:
+                    if self.created_moons[moon_kingdom_index] < self.moon_counts[moon_kingdom.lower()]:
+                        classification = ItemClassification.progression
+                    else:
+                        classification = ItemClassification.filler
+
+                self.created_moons[moon_kingdom_index] += 3 if "Multi" in name else 1
 
         item: SMOItem
 
@@ -507,13 +529,33 @@ class SMOWorld(World):
             0,
         ]
 
-        revised_counts = [
+        self.created_moons = [
             0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+        ]
+
+        revised_counts = [
+            0, # Cap
             min(floor(self.moon_counts["cascade"] * self.options.extra_moons.value), self.max_counts["cascade"]),
             min(floor(self.moon_counts["sand"] * self.options.extra_moons.value), self.max_counts["sand"]),
             min(floor(self.moon_counts["wooded"] * self.options.extra_moons.value), self.max_counts["wooded"]),
             min(floor(self.moon_counts["lake"] * self.options.extra_moons.value), self.max_counts["lake"]),
-            0,
+            0, # Cloud
             min(floor(self.moon_counts["lost"] * self.options.extra_moons.value), self.max_counts["lost"]),
             min(floor(self.moon_counts["metro"] * self.options.extra_moons.value), self.max_counts["metro"]),
             min(floor(self.moon_counts["seaside"] * self.options.extra_moons.value), self.max_counts["seaside"]),
@@ -521,11 +563,20 @@ class SMOWorld(World):
             min(floor(self.moon_counts["luncheon"] * self.options.extra_moons.value), self.max_counts["luncheon"]),
             min(floor(self.moon_counts["ruined"] * self.options.extra_moons.value), self.max_counts["ruined"]),
             min(floor(self.moon_counts["bowser"] * self.options.extra_moons.value), self.max_counts["bowser"]),
-            0,
-            0,
-            0,
-            0,
+            0, # Moon
+            0, # Mushrom
+            0, # Dark
+            0, # Darker
         ]
+
+        self.indexed_moon_counts = [0] * 17
+
+        for kingdom_index in range(17):
+            if world_list[kingdom_index].lower() in self.moon_counts:
+                self.indexed_moon_counts[kingdom_index] = self.moon_counts[world_list[kingdom_index].lower()]
+            else:
+                self.indexed_moon_counts[kingdom_index]
+
         if self.options.goal == self.options.goal.option_dark:
             kingdoms : list = list(range(15))
             while sum(revised_counts[0:15]) < self.moon_counts["dark"]:
@@ -551,26 +602,27 @@ class SMOWorld(World):
                         or (world_list[index] in story_moons and location in story_moons[world_list[index]])
                         or (index < 14 and world_list[index] in multi_moons and location in multi_moons[world_list[index]])):
                         # found = True
-                        item: str = world_list[index]
+                        item: str = ""
                         place : bool = False
 
-                        if "Dark" in item:
-                            item += " Side"
+                        if not self.options.progressive_moons:
+                            item += f'{world_list[index]} '
+                            if "Dark" in item:
+                                item += "Side "
                         # Multi
                         if world_list[index] in multi_moons and location in multi_moons[world_list[index]]:
-                            item += " Multi-Moon"
+                            item += "Multi-Moon"
                             # Prevent placement of duplicate goal Multi-Moon
                             if location == goals_table[self.options.goal.value]:
                                 break
                             place = not self.options.story >= 2
                         elif world_list[index] in story_moons and location in story_moons[world_list[index]]:
-                            item += " Story Moon"
+                            item += "Story Moon"
                             place = not (self.options.story == 1 or self.options.story == 3)
+                        elif world_list[index] == "Mushroom" and not self.options.progressive_moons:
+                            item = "Power Star"
                         else:
-                            if world_list[index] == "Mushroom":
-                                item = "Power Star"
-                            else:
-                                item += " Power Moon"
+                            item += "Power Moon"
 
                         placement_counts[index] += 3 if "Multi" in item else 1
 
@@ -585,10 +637,14 @@ class SMOWorld(World):
                     break
             # if not found:
             #     print(location)
+
         for index in range(len(world_list)):
             while placement_counts[index] > revised_counts[index]:
-                if world_list[index] + " Power Moon" in pool:
-                    pool.remove(world_list[index] + " Power Moon")
+                moon_name = "Power Moon"
+                if not self.options.progressive_moons:
+                    moon_name = f'{world_list[index]} Power Moon'
+                if moon_name in pool:
+                    pool.remove(moon_name)
                     placement_counts[index] -= 1
                     pool.append("Coins")
                 else:
@@ -664,7 +720,6 @@ class SMOWorld(World):
         # Reset placed counts so multi worlds support more than one SMO instance
         for key in self.placed_counts.keys():
             self.placed_counts[key] = 0
-
 
     def randomize_moon_amounts(self):
         """ Randomizes the moon requirements for progressing to each kingdom."""
@@ -759,6 +814,21 @@ class SMOWorld(World):
         #     self.outfit_moon_counts[key] = int(self.outfit_moon_counts[key] * (self.moon_counts["dark"]/250))
             # if self.outfit_moon_counts[key] > self.moon_counts["dark"]:
             #     self.outfit_moon_counts[key] = self.moon_counts["dark"] - 1
+
+    @classmethod
+    def stage_fill_hook(cls, multiworld, progitempool, usefulitempool, filleritempool, fill_locations):
+        # Credit to @Mysteryem for this hook and the sort_fuc, and Jake for pointing it out
+        smo_players = multiworld.get_game_players(cls.game)
+
+        def sort_func(item: Item):
+            # Credit once again for @Mysteryem for this function AND very nice description
+            if item.player in smo_players and item.name in item_priorities.keys():
+                return item_priorities[item.name] + multiworld.random.gauss(0, multiworld.worlds[item.player].options.moon_distribution.value)
+            else:
+                # Python sorting is stable, so this will leave everything else in its original order.
+                return 0
+
+        progitempool.sort(key=sort_func)
 
     def write_spoiler_header(self, spoiler_handle: TextIO) -> None:
         if self.options.counts > 0:

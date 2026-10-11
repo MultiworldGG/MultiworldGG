@@ -63,7 +63,7 @@ class HasNPokemon(Rule["PokemonCrystalWorld"], game=GAME):
 
         @override
         def _evaluate(self, state: CollectionState) -> bool:
-            return state.pc_unique_species[self.player] >= self.count
+            return state.pc_unique_species.get(self.player, 0) >= self.count
 
         @override
         def _describe(self, state: CollectionState | None) -> str:
@@ -206,7 +206,7 @@ class HasDexCount(Rule["PokemonCrystalWorld"], game=GAME):
 
         @override
         def _evaluate(self, state: CollectionState) -> bool:
-            return state.pc_dex_species_count[self.player] >= self.count
+            return state.pc_dex_species_count.get(self.player, 0) >= self.count
 
         @override
         def _describe(self, state: CollectionState | None) -> str:

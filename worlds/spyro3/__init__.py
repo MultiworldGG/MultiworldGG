@@ -74,7 +74,7 @@ class Spyro3World(World):
     base_id = 1230000
     required_client_version = (0, 5, 0)
     # TODO: Remember to update this!
-    ap_world_version = "1.3.5"
+    ap_world_version = "1.4.0"
     item_name_to_id = Spyro3Item.get_name_to_id()
     location_name_to_id = Spyro3Location.get_name_to_id()
     item_name_groups = item_name_groups
@@ -282,7 +282,7 @@ class Spyro3World(World):
                 unlocked_levels = self.multiworld.random.sample(all_levels, k=self.generation_options["starting_levels_count"] - 1)
             unlocked_levels.append(open_sunrise_level)
             for req in vanilla_reqs:
-                # 80% to 110% of vanilla requirements.
+                # 85% to 110% of vanilla requirements.
                 random_reqs.append(math.floor(req * (1 + 0.25 * (-0.6 + self.multiworld.random.random()))))
             if self.generation_options["open_world"]:
                 levels = [
@@ -331,7 +331,7 @@ class Spyro3World(World):
                 unlocked_levels = self.multiworld.random.sample(all_levels, k=self.generation_options["starting_levels_count"] - 1)
             unlocked_levels.append(open_sunrise_level)
             for req in vanilla_egg_reqs:
-                # 80% to 110% of vanilla requirements.
+                # 85% to 110% of vanilla requirements.
                 random_reqs.append(math.floor(req * (1 + 0.25 * (-0.6 + self.multiworld.random.random()))))
             full_reqs = []
             for i in range(20):
@@ -408,6 +408,7 @@ class Spyro3World(World):
                 "enable_progressive_sparx_health"]
             self.generation_options["require_sparx_for_max_gems"] = slot_data["options"]["require_sparx_for_max_gems"]
             self.generation_options["percent_extra_eggs"] = slot_data["options"]["percent_extra_eggs"]
+            self.generation_options["enable_midnight_whirlwind"] = slot_data["options"]["enable_midnight_whirlwind"]
             self.generation_options["logic_cloud_backwards"] = slot_data["options"]["logic_cloud_backwards"]
             self.generation_options["logic_sheila_early"] = slot_data["options"]["logic_sheila_early"]
             self.generation_options["max_total_gem_checks"] = slot_data["options"]["max_total_gem_checks"]
@@ -466,6 +467,7 @@ class Spyro3World(World):
             self.generation_options["enable_progressive_sparx_health"] = self.options.enable_progressive_sparx_health.value
             self.generation_options["require_sparx_for_max_gems"] = self.options.require_sparx_for_max_gems.value
             self.generation_options["percent_extra_eggs"] = self.options.percent_extra_eggs.value
+            self.generation_options["enable_midnight_whirlwind"] = self.options.enable_midnight_whirlwind.value
             self.generation_options["logic_cloud_backwards"] = self.options.logic_cloud_backwards.value
             self.generation_options["logic_sheila_early"] = self.options.logic_sheila_early.value
             self.generation_options["max_total_gem_checks"] = self.options.max_total_gem_checks.value
@@ -519,6 +521,8 @@ class Spyro3World(World):
             self.enabled_location_categories.add(Spyro3LocationCategory.SKILLPOINT)
         if self.generation_options["enable_life_bottle_checks"] != LifeBottleOptions.OFF:
             self.enabled_location_categories.add(Spyro3LocationCategory.LIFE_BOTTLE)
+            if self.generation_options["enable_midnight_whirlwind"]:
+                self.enabled_location_categories.add(Spyro3LocationCategory.LIFE_BOTTLE_MIDNIGHT)
         if self.generation_options["enable_life_bottle_checks"] == LifeBottleOptions.HARD:
             self.enabled_location_categories.add(Spyro3LocationCategory.LIFE_BOTTLE_HARD)
         if self.options.enable_gemsanity.value in [GemsanityOptions.FULL, GemsanityOptions.FULL_GLOBAL, GemsanityOptions.FULL_BUNDLES]:
@@ -660,7 +664,8 @@ class Spyro3World(World):
                     ((self.generation_options["egg_count"] <= self.generation_options["sorceress_door_requirement"] and (location.name.startswith("Bugbot ") or
                     location.name.startswith == "Sorceress" or
                     location.name == "Midnight Mountain Home: Moneybags Chase Complete" or
-                    location.name == "Midnight Mountain Home: Egg for sale. (Al)")) or
+                    location.name == "Midnight Mountain Home: Egg for sale. (Al)" or
+                    location.category == Spyro3LocationCategory.LIFE_BOTTLE_MIDNIGHT)) or
                     ((self.generation_options["egg_count"] <= self.generation_options["sbr_door_egg_requirement"] or self.generation_options["egg_count"] <= self.generation_options["sorceress_door_requirement"] and self.generation_options["sbr_door_gem_requirement"] > 14800) and location.name.startswith("Super Bonus Round"))):
                 continue
             if location.category in self.enabled_location_categories and location.category == Spyro3LocationCategory.EGG_EOL and self.generation_options["open_world"]:
@@ -1214,7 +1219,9 @@ class Spyro3World(World):
                 level_gems = 200
                 ignore_sparx_restrictions = True
             elif level == 'Super Bonus Round':
-                if not state.has("Egg", self.player, self.generation_options["sbr_door_egg_requirement"]) or not has_gems_for_sbr(self, state):
+                if (not is_boss_defeated(self, 'Scorch', state) or
+                        not state.has("Egg", self.player, self.generation_options["sbr_door_egg_requirement"]) or
+                        not has_gems_for_sbr(self, state)):
                     return 0
                 level_gems = 3775
                 if self.generation_options["powerup_lock_settings"] == PowerupLockOptions.VANILLA or \
@@ -2295,6 +2302,16 @@ class Spyro3World(World):
         if self.generation_options["goal"] != GoalOptions.EGG_HUNT or self.generation_options["egg_count"] > self.generation_options["sorceress_door_requirement"]:
             set_rule(self.multiworld.get_location("Midnight Mountain Home: Egg for sale. (Al)", self.player), lambda state: is_boss_defeated(self,"Sorceress", state))
             set_rule(self.multiworld.get_location("Midnight Mountain Home: Moneybags Chase Complete", self.player), lambda state: is_boss_defeated(self, "Sorceress", state))
+            if self.generation_options["enable_life_bottle_checks"] != LifeBottleOptions.OFF and self.generation_options["enable_midnight_whirlwind"]:
+                set_rule(self.multiworld.get_location("Midnight Mountain Home: Life Bottle on Impossible Island 1",
+                                                      self.player),
+                         lambda state: is_boss_defeated(self, "Sorceress", state))
+                set_rule(self.multiworld.get_location("Midnight Mountain Home: Life Bottle on Impossible Island 2",
+                                                      self.player),
+                         lambda state: is_boss_defeated(self, "Sorceress", state))
+                set_rule(self.multiworld.get_location("Midnight Mountain Home: Life Bottle on Impossible Island 3",
+                                                      self.player),
+                         lambda state: is_boss_defeated(self, "Sorceress", state))
         if Spyro3LocationCategory.GEMSANITY in self.enabled_location_categories:
             for i in range(105):
                 if len(self.chosen_gem_locations) == 0 or f"Midnight Mountain: Gem {i + 1}" in self.chosen_gem_locations:
@@ -2788,6 +2805,7 @@ class Spyro3World(World):
                 "enable_progressive_sparx_logic": self.options.enable_progressive_sparx_logic.value,
                 "require_sparx_for_max_gems": self.options.require_sparx_for_max_gems.value,
                 "zoe_gives_hints": self.options.zoe_gives_hints.value,
+                "enable_midnight_whirlwind": self.options.enable_midnight_whirlwind.value,
                 "easy_skateboarding_lizards": self.options.easy_skateboarding_lizards.value,
                 "easy_skateboarding_points": self.options.easy_skateboarding_points.value,
                 "easy_skateboarding_lost_fleet": self.options.easy_skateboarding_lost_fleet.value,

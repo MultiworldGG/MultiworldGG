@@ -2267,10 +2267,10 @@ def validate_key_placement(key_layout, world, player):
             missing_items = [l for l in missing_locations if l.item is None or (l.item.name != smallkey_name and l.item.name != bigkey_name) or "- Boss" in l.name]
             # missing_key_only = set(max_counter.key_only_locations.keys()).difference(counter.key_only_locations.keys()) # do freestanding keys matter for locations?
             if len(missing_items) > 0:  # world.accessibility[player]=='locations' and (len(missing_locations)>0 or len(missing_key_only) > 0):
-                logging.getLogger('').error("Keylock - can't open locations: ")
-                logging.getLogger('').error("code: " + code)
-                for i in missing_locations:
-                    logging.getLogger('').error(i)
+                # logging.getLogger('').error("Keylock - can't open locations: ")
+                # logging.getLogger('').error("code: " + code)
+                # for i in missing_locations:
+                #     logging.getLogger('').error(i)
                 return False
 
     return True

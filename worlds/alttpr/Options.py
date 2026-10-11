@@ -35,7 +35,7 @@ class Goal(Choice):
     triforcehunt: Collect the required number of pieces of the Triforce, then talk to Murahdahla outside Hyrule Castle.
     ganonhunt: Collect the required number of pieces of the Triforce, then kill Ganon.
     trinity: Either kill Ganon, pull the pedestal, or collect the required number of Triforce pieces and talk to Murahdahla outside Hyrule Castle.
-    completionist: Collect every check in the game, then kill Ganon."""
+    completionist: Collect every check in the game, obtain all pendants and crystals, defeat both Agahnims, then kill Ganon."""
     display_name = "Goal"
     option_crystals = 0
     option_ganon = 1
@@ -171,7 +171,8 @@ class DoorShuffle(Choice):
     * Killing Blind requires bombing the cracked floor in the attic, which may be in a different dungeon.
     * Bringing the Maiden to the Thieves Town boss room will tell you which dungeon has the attic.
     * Locations will have the name of their original dungeon, not the dungeon they appear in.
-    * Dungeon counters, mirror scroll, and key drop shuffle are enabled regardless of YAML settings. Small keys are shuffled if the door shuffle is partitioned or crossed.
+    * Dungeon counters, mirror scroll, and key drop shuffle are enabled regardless of YAML settings.
+    * Standard mode is currently not allowed with door shuffle
 
     vanilla: Dungeons have their vanilla layout
     basic: Dungeon layouts are shuffled, but each room stays in its own dungeon

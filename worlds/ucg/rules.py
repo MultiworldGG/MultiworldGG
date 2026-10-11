@@ -10,7 +10,7 @@ from rule_builder.rules import CanReachRegion, Has, HasFromList, Rule, And, HasA
 from . import items
 from .items import GOAL_LEVEL
 from .locations import LOCATION_DATA, get_excluded_locations, is_minigame_location, level_item_name
-from .options import RankCheckDifficulty
+from .options import GoalRankRequirement, RankCheckDifficulty
 
 
 if TYPE_CHECKING:
@@ -260,7 +260,14 @@ def set_completion_condition(world: UncannyCatWorld) -> None:
     parts: list[Rule[UncannyCatWorld]] = []
 
     if world.options.gimmick_lock:
-        gimmicks = gimmick_rule(LOCATION_DATA[f"{goal} Complete"][1])
+        requirement = world.options.goal_rank_requirement
+        if requirement == GoalRankRequirement.option_any:
+            suffix = " Complete"
+        elif requirement == GoalRankRequirement.option_peak:
+            suffix = " Peak Rank"
+        else:
+            suffix = " Good Rank"
+        gimmicks = gimmick_rule(LOCATION_DATA[f"{goal}{suffix}"][1])
         if gimmicks is not None:
             parts.append(gimmicks)
 

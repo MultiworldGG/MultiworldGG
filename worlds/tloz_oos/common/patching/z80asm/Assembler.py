@@ -7,10 +7,13 @@ from .Util import *
 
 
 class GameboyAddress:
-    def __init__(self, bank: int, offset: int):
+    def __init__(self, bank: int, offset: int, change_offset = True):
         self.bank = bank
-        self.offset = offset - 0x4000 if 0x8000 > offset >= 0x4000 else offset
-        assert self.offset < 0x4000 or self.offset >= 0xffff, f"Offset out of range: {offset}"
+        self.offset = offset - 0x4000 if (0x8000 > offset >= 0x4000) and change_offset else offset
+        assert (
+            self.offset < 0x4000 if change_offset
+            else self.offset < 0x8000
+        ) or self.offset >= 0xffff, f"Offset out of range: {hex(offset)}"
 
     @staticmethod
     def from_address(address: int) -> "GameboyAddress":

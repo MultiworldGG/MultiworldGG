@@ -1,0 +1,24 @@
+{
+  "slot_data_keys": {
+    "include_dreamland": {
+      "type": "album",
+      "display_name": "Dreamland"
+    },
+    "include_ilysfm": {
+      "type": "album",
+      "display_name": "I Love You So F***ing Much"
+    },
+    "include_htbahb": {
+      "type": "album",
+      "display_name": "How to Be a Human Being"
+    },
+    "include_zaba": {
+      "type": "album",
+      "display_name": "Zaba"
+    },
+    "include_short_songs": {
+      "type": "song_category",
+      "display_name": "short"
+    }
+  }
+}

@@ -690,9 +690,14 @@ connections_data = [
     { "from": "PR (Central) - Building Right of Light Bridge", "to": "PR (Central) - Light Bridge", "requires": [] }, # one-way door
     { "from": "PR (Central) - Light Bridge", "to": "PR (Central) - Backup Control Room", "requires": [] }, # one-way fall
     { "from": "PR (Central) - Backup Control Room", "to": "PR (Central) - Light Bridge", "requires": [] }, # hacking to unlock door right of Backup Control Room
-    { "from": "PR (Central) - Left Transporter", "to": "PR (Central) - Chest Near Left Transporter", "requires": [
-        { "item": "Cloud Leap" }, { "item": "Ledge Grab" }
-    ] },
+    { "from": "PR (Central) - Left Transporter", "to": "PR (Central) - Chest Near Left Transporter", 
+     "requires": [ { "item": "Cloud Leap" }, { "item": "Ledge Grab" }
+        ], 
+        "medium_requires": [ { "anyOf": [ #jump from edge of left transport platform with air dash, t-dash, and charged strike
+             [ { "item": "Air Dash" }, { "item": "Charged Strike" }, { "item": "Ledge Grab" } ],
+             [ { "item": "Cloud Leap" }, { "item": "Trick - Bow Hover" } ] #or hover from left transport platform and jump onto chest platform
+            ] } ] 
+    },
     { "from": "PR (Central) - Chest Near Left Transporter", "to": "PR (Central) - Left Transporter", "requires": [] }, # fall
     { "from": "PR (Central) - Left Transporter", "to": "PR (Central) - Root Node", "requires": [] }, # one-way door
     { "from": "PR (Central) - Backup Control Room", "to": "PR (Central) - Root Node", "requires": [] }, # one-way door
@@ -1452,13 +1457,17 @@ connections_data = [
 
     # Abandoned Mines
     {
-        "from": "AM - Left Exit", "to": "AM - Under First Rope",
+        "from": "AM - Left Exit", "to": "AM - Under Left Exit Rope",
         "requires": [{ "item": "Grapple" }], # for slider
         "medium_requires": [{ "item": "Trick - Bow Hover" }, { "item": "Cloud Leap" }],
         "ls_requires": [{ "item": "Ledge Grab" }, { "item": "Cloud Leap" }] # parry hover
     },
+    { "from": "AM - Under Left Exit Rope", "to": "AM - Left Exit", "requires": [
+        { "item": "Mystic Nymph: Scout Mode" }, # for lights?
+        { "item": "Grapple" } # for slider
+    ] },
     {
-        "from": "AM - Under First Rope", "to": "AM - Above Left Exit",
+        "from": "AM - Under Left Exit Rope", "to": "AM - Spinner Above Left Exit",
         "requires": [
             { "item": "Mystic Nymph: Scout Mode" }, # for rope and lights
             { "anyOf": [ { "item": "Ledge Grab" }, { "item": "Cloud Leap" } ] } # slightly high jump after rope
@@ -1468,28 +1477,60 @@ connections_data = [
             { "item": "Trick - Bow Hover" } # from the rope platform, skipping the slightly high jump
         ]
     },
-    { "from": "AM - Above Left Exit", "to": "AM - Left Exit", "requires": [
-        { "item": "Mystic Nymph: Scout Mode" }, # for lights?
-        { "item": "Grapple" } # for slider
-    ] },
+    { "from": "AM - Spinner Above Left Exit", "to": "AM - Under Left Exit Rope", "requires": [] },  # fall down
     {
-        "from": "AM - Above Left Exit", "to": "AM - Root Node",
-        "requires": [
+        "from": "AM - Spinner Above Left Exit", "to": "AM - Bottom Left Entrance to Central Cavern",
+        "requires": [ { "anyOf": [
             { "item": "Grapple" }, # for slider
-            { "anyOf": [ { "item": "Air Dash" }, { "item": "Cloud Leap" } ] } # for two slightly long jumps over spikes
-        ],
-        "medium_requires": [
-            { "item": "Grapple" }, # for slider
-            { "item": "Trick - Long Jump with Swift Runner" } # for the spike jumps
-        ]
+            # bypass the slider by jumping up to the ledge
+            [ { "item": "Cloud Leap" }, { "item": "Air Dash" }, { "item": "Ledge Grab" } ]
+        ] } ],
+        "medium_requires": [ { "anyOf": [
+            { "item": "Grapple" },  # for slider
+            # From spinner platform: T-dash to replace air dash and jump up to ledge
+            [ { "item": "Cloud Leap" }, { "item": "Ledge Grab" } ],
+            # From slightly higher platform left of the spinner, skipping ledge grab is possible with:
+            [
+                { "item": "Cloud Leap" },
+                { "item": "Air Dash" },  # also T-dash
+                { "anyOf": [ { "item": "Trick - Long Jump with Swift Runner" }, { "item": "Charged Strike" } ] }
+            ]
+        ] } ]
+    },
+    { "from": "AM - Bottom Left Entrance to Central Cavern", "to": "AM - Spinner Above Left Exit", "requires": [] },  # fall down
+    {
+        "from": "AM - Spinner Above Left Exit", "to": "AM - Chest Above Left Exit",
+        "requires": [ { "anyOf": [
+            { "item": "Grapple" },  # use the grapple point as intended (NOT the slider)
+            { "item": "Cloud Leap" }  # or jump up
+        ] } ]
     },
     {
-        "from": "AM - Root Node", "to": "AM - Above Left Exit",
+        "from": "AM - Bottom Left Entrance to Central Cavern", "to": "AM - Chest Above Left Exit",
+        "medium_requires": [{ "item": "Trick - Bow Hover" }],
+        "ls_requires": [{ "item": "Air Dash" }, { "item": "Ledge Grab" }] # parry hover with AD setup
+    },
+    {
+        "from": "AM - Bottom Left Entrance to Central Cavern", "to": "AM - Root Node",
+        # for two slightly long jumps over spikes
+        "requires": [ { "anyOf": [ { "item": "Air Dash" }, { "item": "Cloud Leap" } ] } ],
+        "medium_requires": [ { "anyOf": [
+            { "item": "Trick - Long Jump with Swift Runner" },
+            { "item": "Charged Strike" }
+            # bow hover also works, but is OoL in this direction because you might not have any shots left
+        ] } ]
+    },
+    {
+        "from": "AM - Root Node", "to": "AM - Bottom Left Entrance to Central Cavern",
         "requires": [
-            { "anyOf": [ { "item": "Air Dash" }, { "item": "Cloud Leap" } ] },
-            { "item": "Grapple" }
+            { "item": "Mystic Nymph: Scout Mode" }, # for lights
+            { "anyOf": [ { "item": "Air Dash" }, { "item": "Cloud Leap" } ] } # for two slightly long jumps over spikes
         ],
-        "medium_requires": [{ "item": "Trick - Bow Hover" }]
+        "medium_requires": [ { "anyOf": [
+            { "item": "Trick - Long Jump with Swift Runner" },
+            { "item": "Charged Strike" },
+            { "item": "Trick - Bow Hover" }
+        ] } ]
     }, # LS parry hover works both ways, but no one to parry for T-dash setup, so AD OR CL setup makes it redundant
     { "from": "AM - Root Node", "to": "AM - Platforms Left of Root Node", "requires": [
         { "item": "Mystic Nymph: Scout Mode" }, # for lights
@@ -1579,11 +1620,22 @@ connections_data = [
     { "from": "AM - Bottom Right", "to": "AM - Tao Fruit", "requires": [ { "anyOf": [
         { "item": "Mystic Nymph: Scout Mode" } # to lower rope
     ] } ] },
-    { "from": "AM - Tao Fruit", "to": "AM - After Tao Fruit", "requires": [
-        { "item": "Air Dash" },
-        { "item": "Grapple" }
-    ] }, # this is *possible* with CL (AND grapple) instead, but very annoying
-    # wall slide is possible, but you need Grapple for the slide anyway so it doesn't affect logic
+    { "from": "AM - Tao Fruit", "to": "AM - After Tao Fruit", 
+        "requires": [
+            { "item": "Air Dash" },
+            { "item": "Grapple" }
+        ], # this is *possible* with CL (AND grapple) instead, but very annoying
+        "medium_requires": [ 
+             { "item": "Grapple" } # T-dash replaces air dash, you obtain qi from enemy in bottom right
+        ], 
+        "ls_requires": [ 
+            # Wall slide up with CL then use CL, T-dash, air dash, and either CS or SR to skip the grapple line
+            { "item": "Air Dash" }, 
+            { "item": "Cloud Leap" }, 
+            { "item": "Ledge Grab" }, 
+            { "anyOf": [ { "item": "Charged Strike" }, { "item": "Trick - Long Jump with Swift Runner" } ] }
+        ]
+    }, 
     {
         "from": "AM - Bottom Right", "to": "AM - After Tao Fruit",
         "medium_requires": [{ "item": "Trick - Break One-Way Barrier With Bow" }]
@@ -1950,12 +2002,14 @@ connections_data = [
     # we mostly ignore the logic for *exiting* YJ tomb regions, because this is the only way into any of them
     {
         "from": "GoS (East) - Outside Yin Jifu's Tomb", "to": "GoS (East) - Yin Jifu's Tomb",
-        "requires": [ { "anyOf": [
-            [ { "item": "Air Dash" }, { "item": "Ledge Grab" } ],
-            { "item": "Cloud Leap" }
-        ] } ], # I previously thought we needed combat logic for the worms/lurkers in the locked arena,
-        # but it turns out you can damage them without using TCK OR UC to stun them first.
-        "medium_requires": [{ "item": "Trick - Break One-Way Barrier With Bow" }]
+        "requires": [
+            { "anyOf": [ # jumping over the spikes in the upper right room
+                [ { "item": "Air Dash" }, { "item": "Ledge Grab" } ],
+                { "item": "Cloud Leap" }
+            ] },
+            { "item": "Tai-Chi Kick" } # for fighting the worms in the arena
+        ],
+        "medium_requires": [{ "item": "Trick - Break One-Way Barrier With Bow" }] # skip the arena fight
     },
     # The GG tomb regions have interesting connections from GoSW and YJ's tomb, so these have to be as thorough as usual
     { "from": "GoS (East) - Root Node", "to": "GoS (East) - Outside Guiguzi's Tomb", "requires": [
@@ -2757,29 +2811,55 @@ connections_data = [
     { "from": "FSP - Root Node", "to": "FSP - Kuafu's Shop", "requires": [ { "item": "Event - Kuafu in FSP" } ] },
     { "from": "FSP - Root Node", "to": "FSP - Kuafu's Extra Inventory", "requires": [ { "item": "Event - Kuafu Extra Shop Inventory" } ] },
 
+    # we don't have a good way of expressing "any 2 of these 3 regions"
+    {
+        "from": "FSP - Root Node", "to": "Left-Side Map Access",
+        "requires": [{"anyOf": [
+            [{"region": "Factory (MR) - Root Node"}, {"region": "Factory (PA) - Root Node"}],
+            [{"region": "Factory (MR) - Root Node"}, {"region": "IW - Root Node"}],
+            [{"region": "Factory (PA) - Root Node"}, {"region": "IW - Root Node"}]
+        ]}]
+    },
+    {
+        "from": "FSP - Root Node", "to": "Central Map Access",
+        "requires": [{"anyOf": [
+            [{"region": "AF (Depths) - Root Node"}, {"region": "CTH - Root Node"}],
+            [{"region": "AF (Depths) - Root Node"}, {"region": "PR (Central) - Root Node"}],
+            [{"region": "CTH - Root Node"}, {"region": "PR (Central) - Root Node"}]
+        ]}]
+    },
+    {
+        "from": "FSP - Root Node", "to": "Right-Side Map Access",
+        "requires": [{"anyOf": [
+            [{"region": "ED (Passages) - Root Node"}, {"region": "GoS (East) - Root Node"}],
+            [{"region": "ED (Passages) - Root Node"}, {"region": "W&OS - Root Node"}],
+            [{"region": "GoS (East) - Root Node"}, {"region": "W&OS - Root Node"}]
+        ]}]
+    },
+
     {
         "from": "FSP - Root Node", "to": "FSP Shops & Skill Tree (Low Cost)",
         "requires": [ { "anyOf": [
-            { "region": "Factory (MR) - Root Node" },
-            { "region": "ED (Passages) - Root Node" },
-            { "region": "PR (Central) - Root Node" }
+            { "region": "Left-Side Map Access" },
+            { "region": "Central Map Access" },
+            { "region": "Right-Side Map Access" }
         ] } ]
     },
     {
         "from": "FSP - Root Node", "to": "FSP Shops & Skill Tree (Medium Cost)",
         # we don't have a good way of expressing "any 2 of these 3 regions"
         "requires": [ { "anyOf": [
-            [ { "region": "Factory (MR) - Root Node" }, { "region": "ED (Passages) - Root Node" } ],
-            [ { "region": "Factory (MR) - Root Node" }, { "region": "PR (Central) - Root Node" } ],
-            [ { "region": "ED (Passages) - Root Node" }, { "region": "PR (Central) - Root Node" } ]
+            [ { "region": "Left-Side Map Access" }, { "region": "Right-Side Map Access" } ],
+            [ { "region": "Left-Side Map Access" }, { "region": "Central Map Access" } ],
+            [ { "region": "Right-Side Map Access" }, { "region": "Central Map Access" } ]
         ] } ]
     },
     {
         "from": "FSP - Root Node", "to": "FSP Shops & Skill Tree (High Cost)",
         "requires": [
-            { "region": "Factory (MR) - Root Node" },
-            { "region": "ED (Passages) - Root Node" },
-            { "region": "PR (Central) - Root Node" }
+            { "region": "Left-Side Map Access" },
+            { "region": "Central Map Access" },
+            { "region": "Right-Side Map Access" }
         ]
     },
 

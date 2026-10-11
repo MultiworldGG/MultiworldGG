@@ -474,7 +474,7 @@ class DSZeldaClient(BizHawkClient):
 
                 self._entered_entrance = time.time()  # Triggered first part of loading - setting new room
                 self.entering_dungeon = None
-                if self.delay_reset:
+                if self.delay_reset or self.last_vanilla_item:
                     self.delay_reset = 0
                     await self._remove_vanilla_item(ctx, num_received_items)
 
@@ -1238,10 +1238,12 @@ class DSZeldaClient(BizHawkClient):
     # Processes events defined in data\dynamic_flags.py
 
     async def _set_vanilla_item(self, ctx, location, vanilla_item: str | None = None):
-        item: str | list[str] = vanilla_item or location.get("vanilla_item", None)
+        printl(f"Setting vanilla for {location.name}")
+        item: str | list[str] = vanilla_item or location.vanilla_item
         if item is None:
             return
-        if location.farmable not in ["", "conditional"] and location.id in ctx.checked_locations:
+        if location.farmable and location.farmable not in ["conditional"] and location.id in ctx.checked_locations:
+            printl(f"No vanilla item")
             return
         if isinstance(item, str):
             item_data = self.item_data[item]
@@ -1669,16 +1671,16 @@ class DSZeldaClient(BizHawkClient):
             return True
 
         async def check_entrance(loc):
-            if "from_entrances" in loc:
-                if self.current_entrance not in loc["from_entrances"]:
+            if loc.from_entrances:
+                if self.current_entrance not in loc.from_entrances:
                     printl(f"\tLocation {loc_name} has the wrong entrance {hex_f(self.current_entrance)} {loc['from_entrances']}.")
                     try:
                         self.locations_in_scene.pop(loc_name)
                     except KeyError:
                         pass
                     return False
-            if "from_coords" in loc and self.current_entrance >= 0xFA:
-                coord_data = loc.get("from_coords", {})
+            if loc.from_coords and self.current_entrance >= 0xFA:
+                coord_data = loc.from_coords
                 coords = await self.get_coords(ctx)
                 printl(f"\tLocation Coords: {coords} reqs {coord_data} "
                        f"{coord_data.get('x_max', 0xFFFFFFF) > coords['x'] > coord_data.get('x_min', -0xFFFFFFF)}"

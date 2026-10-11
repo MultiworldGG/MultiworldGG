@@ -1,0 +1,57 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <title>Ratchet &amp; Clank: The Odd Couple</title>
+  <link rel="stylesheet" href="style.css" />
+  <script src="https://unpkg.com/@ruffle-rs/ruffle"></script>
+</head>
+<body>
+  <header>
+    <h1>Ratchet &amp; Clank: The Odd Couple</h1>
+    <div class="controls">
+      <span id="conn-status" class="status">disconnected</span>
+    </div>
+  </header>
+
+  <main>
+    <div id="player-container">
+      <div id="player-wrapper"></div>
+      <div id="click-blocker"></div>
+
+      <button id="items-toggle" type="button">Items</button>
+      <aside id="items-panel" class="hidden">
+        <h2>Unlocked</h2>
+        <ul id="items-list"></ul>
+      </aside>
+
+      <button id="chat-toggle" type="button">Chat</button>
+      <aside id="chat-panel" class="hidden">
+        <h2>Chat</h2>
+        <div id="chat-log" role="log" aria-live="polite"></div>
+        <form id="chat-form">
+          <input id="chat-input" type="text" placeholder="Message..." autocomplete="off" />
+          <button type="submit">Send</button>
+        </form>
+      </aside>
+
+      <div id="connect-overlay">
+        <form id="connect-form">
+          <h2>Connect to AP/MWGG</h2>
+          <label>Server<input id="connect-server" type="text" placeholder="multiworld.gg:38281" required /></label>
+          <label>Slot Name<input id="connect-slot" type="text" required /></label>
+          <label>Password<input id="connect-password" type="password" /></label>
+          <button type="submit">Connect</button>
+          <p id="connect-error" class="error hidden"></p>
+        </form>
+        <div id="no-swf-message" class="hidden">
+          <h2>No patched game found</h2>
+          <p>You can't log in without a patched copy of the game. Open your <code>.apoddcouple</code> patch file first, then relaunch the client.</p>
+        </div>
+      </div>
+    </div>
+  </main>
+
+  <script type="module" src="app.js"></script>
+</body>
+</html>

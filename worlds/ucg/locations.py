@@ -465,6 +465,8 @@ LOCATION_DATA: dict[str, tuple[int, list[str]]] = {
 
 # COIN LOCATIONS
 FULL_CLEAR_ID_OFFSET = 8000
+# levels that specifically can't be full cleared with coins
+NO_FULL_CLEAR_LEVEL_IDS = {"4-4"}
 COIN_LOCATION_LEVELS: dict[str, str] = {}
 COIN_LOCATION_NAMES: list[str] = []
 FULL_CLEAR_LOCATION_NAMES: list[str] = []
@@ -491,6 +493,9 @@ def _load_coin_locations() -> dict[str, tuple[int, list[str]]]:
             COIN_LOCATION_LEVELS[name] = level
             COIN_LOCATION_NAMES.append(name)
             requirements += [req for req in coin["requires"] if req not in requirements]
+
+        if level_id_ in NO_FULL_CLEAR_LEVEL_IDS:
+            continue
 
         # A full clear needs the gimmicks of all coins in the level combined
         name = f"{level} All Coins"

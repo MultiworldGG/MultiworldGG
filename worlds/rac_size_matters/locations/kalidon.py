@@ -1,0 +1,337 @@
+from rule_builder.options import OptionFilter
+from rule_builder.rules import Has, HasAll, True_
+
+from .. import constants as C
+from ..constants import Rac5Gadgets
+from ..items import GLITCHES_ITEM_NAME
+from ..options import (
+    AllCutscenes,
+    AllMissions,
+    ChallengeMode,
+    EnableSkyboardChallengeSkillPoints,
+    ShrinkRayOptions,
+    SkillPoints,
+    SkyboardChallenges,
+)
+from ..rules._helpers import HasChallengeMode,  HasClankPack
+from .model import Completion, LocationOptions, Rac5Categories, Rac5CompletionSources, Rac5Locations
+
+_C = Rac5Categories
+_S = Rac5CompletionSources
+def _glitch(world):
+    return Has(GLITCHES_ITEM_NAME) & Has(Rac5Gadgets.SHRINK_RAY) & Has(Rac5Gadgets.HYPERSHOT)
+
+LOCATIONS = (
+    Rac5Locations(
+        C.Rac5TBolts.KALIDON_SHIP,
+        C.Rac5Planets.KALIDON,
+        lambda world: True_(),
+        Completion(_S.BOLT_BITS, None, 256),
+        categories=frozenset((_C.TITANIUM_BOLT,)),
+        native_planets=(3,),
+        definition_order=4,
+    ),
+    Rac5Locations(
+        C.Rac5TBolts.KALIDON_FACTORY,
+        C.Rac5Planets.KALIDON,
+        lambda world: Has(Rac5Gadgets.HYPERSHOT) | HasAll(GLITCHES_ITEM_NAME, Rac5Gadgets.SHRINK_RAY),
+        Completion(_S.BOLT_BITS, None, 1024),
+        categories=frozenset((_C.TITANIUM_BOLT,)),
+        native_planets=(3,),
+        definition_order=5,
+    ),
+    Rac5Locations(
+        C.Rac5TBolts.KALIDON_RAMP,
+        C.Rac5Planets.KALIDON,
+        lambda world: Has(Rac5Gadgets.HYPERSHOT) & Has(Rac5Gadgets.SHRINK_RAY) & HasClankPack(world) | _glitch(world),
+        Completion(_S.BOLT_BITS, None, 512),
+        categories=frozenset((_C.TITANIUM_BOLT,)),
+        native_planets=(3,),
+        definition_order=6,
+    ),
+    Rac5Locations(
+        C.Rac5Locations.KALIDON_CHESTPLATE,
+        C.Rac5Planets.KALIDON,
+        lambda world: Has(Rac5Gadgets.HYPERSHOT) & Has(Rac5Gadgets.SHRINK_RAY) & HasClankPack(world) | _glitch(world),
+        Completion(_S.ARMOUR, "sludge", 1),
+        categories=frozenset((_C.ARMOUR_PICKUP,)),
+        definition_order=24,
+    ),
+    Rac5Locations(
+        C.Rac5Locations.KALIDON_BOOTS,
+        C.Rac5Planets.KALIDON,
+        lambda world: (
+            Has(Rac5Gadgets.HYPERSHOT) & Has(Rac5Gadgets.SHRINK_RAY)
+            | Has(Rac5Gadgets.SHRINK_RAY) & Has(GLITCHES_ITEM_NAME)
+        ),
+        Completion(_S.ARMOUR, "wildfire", 16),
+        categories=frozenset((_C.ARMOUR_PICKUP,)),
+        definition_order=25,
+    ),
+    Rac5Locations(
+        C.Rac5Locations.KALIDON_CHAMELEON_CHESTPLATE,
+        C.Rac5Planets.KALIDON,
+        lambda world: Has(Rac5Gadgets.HYPERSHOT) & Has(Rac5Gadgets.SHRINK_RAY) & HasChallengeMode(world, 2) & HasClankPack(world),
+        Completion(_S.ARMOUR, "chameleon", 1),
+        options=LocationOptions(requirements=(OptionFilter(ChallengeMode, (2,), "in"),)),
+        categories=frozenset((_C.ARMOUR_PICKUP, _C.CHALLENGE_MODE_2_ARMOUR)),
+        definition_order=38,
+    ),
+    Rac5Locations(
+        C.Rac5Locations.KALIDON_SHRINK,
+        C.Rac5Planets.KALIDON,
+        lambda world: True_(),
+        Completion(_S.EVENTS, C.Rac5Locations.KALIDON_SHRINK),
+        options=LocationOptions(requirements=(OptionFilter(SkyboardChallenges, (1,), "in"),)),
+        categories=frozenset((_C.GADGET_PICKUP,)),
+        definition_order=43,
+    ),
+    Rac5Locations(
+        C.Rac5SkillPoints.KALIDON_EXPLOSIVE,
+        C.Rac5Planets.KALIDON,
+        lambda world: Has(Rac5Gadgets.HYPERSHOT) & Has(Rac5Gadgets.SHRINK_RAY) & HasClankPack(world) | _glitch(world),
+        Completion(_S.SKILL_BITS, None, 256),
+        options=LocationOptions(requirements=(OptionFilter(SkillPoints, (1, 2), "in"),)),
+        categories=frozenset((_C.SKILL_POINT, _C.EASY_SKILL_POINT)),
+        native_planets=(3,),
+        definition_order=50,
+    ),
+    Rac5Locations(
+        C.Rac5SkillPoints.KALIDON_SUPER_LOMBAX,
+        C.Rac5Planets.KALIDON,
+        lambda world: Has(Rac5Gadgets.HYPERSHOT) & Has(Rac5Gadgets.SHRINK_RAY) & HasClankPack(world) | _glitch(world),
+        Completion(_S.SKILL_BITS, None, 512),
+        options=LocationOptions(requirements=(OptionFilter(SkillPoints, (2,), "in"),)),
+        categories=frozenset((_C.SKILL_POINT, _C.HARD_SKILL_POINT)),
+        native_planets=(3,),
+        definition_order=51,
+    ),
+    Rac5Locations(
+        C.Rac5SkillPoints.KALIDON_SKYBOARDER,
+        C.Rac5Planets.KALIDON,
+        lambda world: True_(),
+        Completion(_S.SKILL_BITS, None, 1024),
+        options=LocationOptions(
+            requirements=(
+                OptionFilter(EnableSkyboardChallengeSkillPoints, (1,), "in"),
+                OptionFilter(SkyboardChallenges, (1,), "in"),
+            ),
+        ),
+        categories=frozenset((_C.SKILL_POINT, _C.SKYBOARD_CHALLENGE_SKILL_POINT)),
+        native_planets=(3,),
+        definition_order=52,
+    ),
+    Rac5Locations(
+        C.Rac5CutsceneLocations.KALIDON_WIN,
+        C.Rac5Planets.KALIDON,
+        lambda world: True_(),
+        Completion(_S.MISSIONS, 32814024, 16, 3),
+        options=LocationOptions(
+            requirements=(OptionFilter(AllMissions, (1,), "in"), OptionFilter(SkyboardChallenges, (1,), "in")),
+        ),
+        categories=frozenset((_C.STORY_MISSION, _C.MISSION, _C.SKYBOARD_ITEM)),
+        check_order=6,
+        definition_order=71,
+    ),
+    Rac5Locations(
+        C.Rac5CutsceneLocations.KALIDON_SEARCH,
+        C.Rac5Planets.KALIDON,
+        lambda world: Has(Rac5Gadgets.HYPERSHOT) & Has(Rac5Gadgets.SHRINK_RAY) & HasClankPack(world) | _glitch(world),
+        Completion(_S.MISSIONS, 32814024, 4, 3),
+        options=LocationOptions(requirements=(OptionFilter(AllMissions, (1,), "in"),)),
+        categories=frozenset((_C.STORY_MISSION, _C.MISSION)),
+        reload_planet=3,
+        check_order=1,
+        definition_order=84,
+    ),
+    Rac5Locations(
+        C.Rac5CutsceneLocations.KALIDON_EXPLORE,
+        C.Rac5Planets.KALIDON,
+        lambda world: Has(Rac5Gadgets.HYPERSHOT) & Has(Rac5Gadgets.SHRINK_RAY) & HasClankPack(world) | _glitch(world),
+        Completion(_S.MISSIONS, 32814024, 8, 3),
+        options=LocationOptions(
+            requirements=(OptionFilter(AllCutscenes, (1,), "in"), OptionFilter(SkyboardChallenges, (1,), "in")),
+        ),
+        categories=frozenset((_C.CUTSCENE, _C.MISSION, _C.SKYBOARD_ITEM)),
+        grants_location=C.Rac5Locations.KALIDON_SHRINK,
+        check_order=27,
+        definition_order=87,
+    ),
+    Rac5Locations(
+        C.Rac5CutsceneLocations.KALIDON_ENTER,
+        C.Rac5Planets.KALIDON,
+        lambda world: True_(),
+        Completion(_S.MISSIONS, 32814024, 1, 3),
+        options=LocationOptions(requirements=(OptionFilter(AllCutscenes, (1,), "in"),)),
+        categories=frozenset((_C.CUTSCENE, _C.MISSION)),
+        check_order=19,
+        definition_order=96,
+    ),
+    Rac5Locations(
+        C.Rac5VendorLocations.KALIDON_SCORCHER,
+        C.Rac5Planets.KALIDON,
+        lambda world: True_(),
+        Completion(_S.EVENTS, C.Rac5VendorLocations.KALIDON_SCORCHER),
+        options=LocationOptions(weapon=C.Rac5Weapons.SCORCHER),
+        categories=frozenset((_C.WEAPON_VENDOR,)),
+        weapon="scorcher",
+        definition_order=108,
+    ),
+    Rac5Locations(
+        C.Rac5ModVendorLocations.KALIDON_LACERATOR_LOCK,
+        C.Rac5Planets.KALIDON,
+        lambda world: True_(),
+        Completion(_S.EVENTS, C.Rac5ModVendorLocations.KALIDON_LACERATOR_LOCK),
+        options=LocationOptions(weapon=C.Rac5Weapons.LACERATOR),
+        categories=frozenset((_C.WEAPON_MOD_VENDOR,)),
+        weapon="lacerator",
+        mod_slot="mod_slot_two",
+        definition_order=121,
+    ),
+    Rac5Locations(
+        C.Rac5ModVendorLocations.KALIDON_CONCUSSION_SPLIT,
+        C.Rac5Planets.KALIDON,
+        lambda world: True_(),
+        Completion(_S.EVENTS, C.Rac5ModVendorLocations.KALIDON_CONCUSSION_SPLIT),
+        options=LocationOptions(weapon=C.Rac5Weapons.CONCUSSION_GUN),
+        categories=frozenset((_C.WEAPON_MOD_VENDOR,)),
+        weapon="concussion_gun",
+        mod_slot="mod_slot_one",
+        definition_order=122,
+    ),
+    Rac5Locations(
+        C.Rac5ModVendorLocations.KALIDON_AGENTS_EXPLOSIVE,
+        C.Rac5Planets.KALIDON,
+        lambda world: HasChallengeMode(world, 1),
+        Completion(_S.EVENTS, C.Rac5ModVendorLocations.KALIDON_AGENTS_EXPLOSIVE),
+        options=LocationOptions(
+            requirements=(OptionFilter(ChallengeMode, (1, 2), "in"),), weapon=C.Rac5Weapons.AGENTS_OF_DOOM
+        ),
+        categories=frozenset((_C.WEAPON_MOD_VENDOR, _C.CHALLENGE_MODE_MOD)),
+        weapon="agents_of_doom",
+        mod_slot="mod_slot_one",
+        definition_order=134,
+    ),
+    Rac5Locations(
+        C.Rac5ModVendorLocations.KALIDON_SCORCHER_SUNFLARE,
+        C.Rac5Planets.KALIDON,
+        lambda world: HasChallengeMode(world, 1),
+        Completion(_S.EVENTS, C.Rac5ModVendorLocations.KALIDON_SCORCHER_SUNFLARE),
+        options=LocationOptions(
+            requirements=(OptionFilter(ChallengeMode, (1, 2), "in"),), weapon=C.Rac5Weapons.SCORCHER
+        ),
+        categories=frozenset((_C.WEAPON_MOD_VENDOR, _C.CHALLENGE_MODE_MOD)),
+        weapon="scorcher",
+        mod_slot="mod_slot_one",
+        definition_order=135,
+    ),
+    Rac5Locations(
+        C.Rac5ModVendorLocations.KALIDON_SUCK_CANNON_BOUNCE,
+        C.Rac5Planets.KALIDON,
+        lambda world: HasChallengeMode(world, 1),
+        Completion(_S.EVENTS, C.Rac5ModVendorLocations.KALIDON_SUCK_CANNON_BOUNCE),
+        options=LocationOptions(
+            requirements=(OptionFilter(ChallengeMode, (1, 2), "in"),), weapon=C.Rac5Weapons.SUCK_CANNON
+        ),
+        categories=frozenset((_C.WEAPON_MOD_VENDOR, _C.CHALLENGE_MODE_MOD)),
+        weapon="suck_cannon",
+        mod_slot="mod_slot_one",
+        definition_order=136,
+    ),
+    Rac5Locations(
+        C.Rac5ModVendorLocations.KALIDON_BEE_HIVE_BOMB,
+        C.Rac5Planets.KALIDON,
+        lambda world: HasChallengeMode(world, 1),
+        Completion(_S.EVENTS, C.Rac5ModVendorLocations.KALIDON_BEE_HIVE_BOMB),
+        options=LocationOptions(
+            requirements=(OptionFilter(ChallengeMode, (1, 2), "in"),), weapon=C.Rac5Weapons.BEE_MINE_GLOVE
+        ),
+        categories=frozenset((_C.WEAPON_MOD_VENDOR, _C.CHALLENGE_MODE_MOD)),
+        weapon="bee_mine_glove",
+        mod_slot="mod_slot_two",
+        definition_order=137,
+    ),
+    Rac5Locations(
+        C.Rac5ModVendorLocations.KALIDON_STATIC_REFLECTION,
+        C.Rac5Planets.KALIDON,
+        lambda world: HasChallengeMode(world, 1),
+        Completion(_S.EVENTS, C.Rac5ModVendorLocations.KALIDON_STATIC_REFLECTION),
+        options=LocationOptions(
+            requirements=(OptionFilter(ChallengeMode, (1, 2), "in"),), weapon=C.Rac5Weapons.STATIC_BARRIER
+        ),
+        categories=frozenset((_C.WEAPON_MOD_VENDOR, _C.CHALLENGE_MODE_MOD)),
+        weapon="static_barrier",
+        mod_slot="mod_slot_one",
+        definition_order=140,
+    ),
+    Rac5Locations(
+        C.Rac5TitanVendorLocations.KALIDON_SCORCHER_TITAN,
+        C.Rac5Planets.KALIDON,
+        lambda world: HasChallengeMode(world, 1),
+        Completion(_S.EVENTS, C.Rac5TitanVendorLocations.KALIDON_SCORCHER_TITAN),
+        options=LocationOptions(
+            requirements=(OptionFilter(ChallengeMode, (1, 2), "in"),), weapon=C.Rac5Weapons.SCORCHER
+        ),
+        categories=frozenset((_C.WEAPON_TITAN_VENDOR,)),
+        weapon="scorcher",
+        definition_order=148,
+    ),
+    Rac5Locations(
+        C.Rac5SkyboardChallenges.KALIDON_LEARNER,
+        C.Rac5Planets.KALIDON,
+        lambda world: True_(),
+        Completion(_S.SKYBOARD, 0x1F4B407, 0x03),
+        options=LocationOptions(requirements=(OptionFilter(SkyboardChallenges, (1,), "in"),)),
+        categories=frozenset((_C.SKYBOARD_ITEM,)),
+        check_order=0,
+        definition_order=356,
+    ),
+    Rac5Locations(
+        C.Rac5SkyboardChallenges.KALIDON_MASTER,
+        C.Rac5Planets.KALIDON,
+        lambda world: True_(),
+        Completion(_S.SKYBOARD, 0x1F4B407, 0xC0),
+        options=LocationOptions(requirements=(OptionFilter(SkyboardChallenges, (1,), "in"),)),
+        categories=frozenset((_C.SKYBOARD_ITEM,)),
+        check_order=3,
+        definition_order=357,
+    ),
+    Rac5Locations(
+        C.Rac5SkyboardChallenges.KALIDON_TICKET,
+        C.Rac5Planets.KALIDON,
+        lambda world: True_(),
+        Completion(_S.SKYBOARD, 0x1F4B407, 0x0C),
+        options=LocationOptions(requirements=(OptionFilter(SkyboardChallenges, (1,), "in"),)),
+        categories=frozenset((_C.EXTRA_SKYBOARD,)),
+        check_order=1,
+        definition_order=360,
+    ),
+    Rac5Locations(
+        C.Rac5SkyboardChallenges.KALIDON_TRICKY,
+        C.Rac5Planets.KALIDON,
+        lambda world: True_(),
+        Completion(_S.SKYBOARD, 0x1F4B407, 0x30),
+        options=LocationOptions(requirements=(OptionFilter(SkyboardChallenges, (1,), "in"),)),
+        categories=frozenset((_C.EXTRA_SKYBOARD,)),
+        check_order=2,
+        definition_order=361,
+    ),
+    Rac5Locations(
+        C.Rac5ShrinkRayGrindrail.KALIDON_ENTER_FACTORY,
+        C.Rac5Planets.KALIDON,
+        lambda world: HasAll(Rac5Gadgets.SHRINK_RAY, Rac5Gadgets.HYPERSHOT) ,
+        Completion(_S.EVENTS, C.Rac5ShrinkRayGrindrail.KALIDON_ENTER_FACTORY),
+        options=LocationOptions(requirements=(OptionFilter(ShrinkRayOptions, (1,), "in"),)),
+        categories=frozenset((_C.SHRINK_RAY_SKIP,)),
+        definition_order=364,
+    ),
+    Rac5Locations(
+        C.Rac5ShrinkRayGrindrail.KALIDON_INSIDE_FACTORY,
+        C.Rac5Planets.KALIDON,
+        lambda world: Has(Rac5Gadgets.HYPERSHOT) & Has(Rac5Gadgets.SHRINK_RAY) & HasClankPack(world) | _glitch(world),
+        Completion(_S.EVENTS, C.Rac5ShrinkRayGrindrail.KALIDON_INSIDE_FACTORY),
+        options=LocationOptions(requirements=(OptionFilter(ShrinkRayOptions, (1,), "in"),)),
+        categories=frozenset((_C.SHRINK_RAY_SKIP,)),
+        definition_order=365,
+    ),
+)

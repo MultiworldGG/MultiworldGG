@@ -35,12 +35,12 @@ class RematchsanityOnTest(PokemonCrystalTestBase):
                 label = rematch_location_name(trainer, i)
                 loc = self.multiworld.get_location(label, self.player)
                 self.assertTrue(
-                    loc.access_rule(self.multiworld.get_all_state(False)),
+                    loc.access_rule(self.multiworld.get_all_state()),
                     f"{label}: rule should pass in all-state",
                 )
                 for j in range(i + 1):
                     g = trainer.tier_gates[j]
-                    state = self.multiworld.get_all_state(False)
+                    state = self.multiworld.get_all_state()
                     state.remove(self.world.create_event(g))
                     self.assertFalse(
                         loc.access_rule(state),
@@ -70,7 +70,7 @@ class RematchsanityOnTest(PokemonCrystalTestBase):
                 loc = self.multiworld.get_location(loc_name, self.player)
             except KeyError:
                 continue
-            state = self.multiworld.get_all_state(False)
+            state = self.multiworld.get_all_state()
             for gate in trainer.tier_gates:
                 state.remove(self.world.create_event(gate))
             self.assertTrue(
@@ -111,7 +111,7 @@ class RematchsanityJohtoOnlyTest(PokemonCrystalTestBase):
 
     def test_no_kanto_tier_rematch_locations(self):
         """All-state must be able to reach every rematch location that exists."""
-        all_state = self.multiworld.get_all_state(False)
+        all_state = self.multiworld.get_all_state()
         for label, _id, trainer, idx in all_rematch_locations():
             gate = trainer.tier_gates[idx]
             try:

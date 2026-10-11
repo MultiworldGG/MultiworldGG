@@ -129,6 +129,7 @@ def create_regions(world: "TTYDWorld"):
         if name not in world.excluded_regions:
             create_region(world, name, locations)
         else:
+            world.vanilla_logic_locations.difference_update(loc.name for loc in locations)
             world.disabled_locations.update([loc.name for loc in locations if loc.name not in world.disabled_locations])
 
 
@@ -173,6 +174,13 @@ def create_region(world: "TTYDWorld", name: str, locations: list[LocationData]):
     """Create a region with the given name and locations."""
     reg = Region(name, world.player, world.multiworld)
     reg.add_locations({loc.name: loc.id for loc in locations if loc.name not in world.disabled_locations}, TTYDLocation)
+    for loc in locations:
+        if loc.name in world.vanilla_logic_locations:
+            event = TTYDLocation(world.player, loc.name, None, reg)
+            item = world.create_item(world.item_id_to_name[loc.vanilla_item])
+            item.code = None
+            event.place_locked_item(item)
+            reg.locations.append(event)
     world.multiworld.regions.append(reg)
 
 

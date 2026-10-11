@@ -1,6 +1,6 @@
 from .constants import *
 from .enums import Locations, Regions, Items
-from .stage_data import microgame_data, game_data, game_scores, score_only_games, game_groups
+from .stage_data import microgame_data, game_data, game_scores, score_only_games, game_groups, microgame_flower_data
 
 from typing import TYPE_CHECKING
 if TYPE_CHECKING:
@@ -60,3 +60,13 @@ location_groups = {
     "Kat Microgames": [entry for name in game_groups[Items.kat_bundle] for entry in [f"{name} - Clear", f"{name} - Flower"]],
     "Wario Microgames": [entry for name in game_groups[Items.wario_bundle] for entry in [f"{name} - Clear", f"{name} - Flower"]],
 }
+
+ut_location_id_to_alias: dict[int, str] = {}
+
+for group_name, microgames in game_groups.items():
+    current_group = group_name.replace(" Microgame Bundle", "")
+    for microgame_name in microgames:
+        clear_id = all_locations[f"{microgame_name} - Clear"]
+        flower_id = all_locations[f"{microgame_name} - Flower"]
+        ut_location_id_to_alias[clear_id] = current_group
+        ut_location_id_to_alias[flower_id] = f"{current_group}, {microgame_flower_data[microgame_name]} Points"

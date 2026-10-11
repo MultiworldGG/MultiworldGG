@@ -84,6 +84,7 @@ Currently, the following games are supported:
 * Funi Raccoon Game
 * Gauntlet Legends
 * Getting Over It
+* Glass Animals Discography
 * Golden Sun: The Lost Age
 * Hades
 * Hades II
@@ -159,6 +160,8 @@ Currently, the following games are supported:
 * Quake 1
 * Rabi-Ribi
 * Raft
+* Ratchet & Clank: The Odd Couple
+* Ratchet & Clank: Size Matters
 * Ratchet & Clank 2
 * Ratchet & Clank 3: Up Your Arsenal
 * Refunct
@@ -201,6 +204,7 @@ Currently, the following games are supported:
 * Super Metroid
 * Super Metroid/A Link to the Past Combo
 * Super Smash Bros. Melee
+* Taylor Swift Discography
 * The Binding of Isaac: Rebirth
 * Terraria
 * Tetris Attack

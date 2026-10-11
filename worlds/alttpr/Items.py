@@ -98,17 +98,6 @@ default_items_dict = {
     "rupoorcost": 10
 }
 
-# Some of the internal Door Randomizer names for items are not the community standard names for items (e.g. Ocarina instead of Flute),
-# we should try to keep names as standardized as possible to avoid confusion.
-# TODO: Better name.
-# TODO: Should have two separate dicts/functions, one for dr_to_ap and one for ap_to_dr
-dr_ap_different_names = {
-    "Cape": "Magic Cape",
-    "Magic Cape": "Cape",
-    "Progressive Armor": "Progressive Mail",
-    "Progressive Mail": "Progressive Armor",
-}
-
 progressive_items = [
     "Big Key (Escape)",
     "Big Key (Eastern Palace)",
@@ -135,9 +124,10 @@ progressive_items = [
     "Bottle (Fairy)",
     "Bottle (Bee)",
     "Bottle (Good Bee)",
-    "Cape",
+    "Bow",
     "Cane of Byrna",
     "Cane of Somaria",
+    "Cape",
     "Crystal 1",
     "Crystal 2",
     "Crystal 3",
@@ -146,23 +136,29 @@ progressive_items = [
     "Crystal 6",
     "Crystal 7",
     "Ether",
+    "Fighter Sword",
     "Fire Rod",
     "Flippers",
+    "Golden Sword",
     "Green Pendant",
     "Hammer",
     "Hookshot",
     "Ice Rod",
     "Lamp",
-    "Magic Cape",
     "Magic Mirror",
     "Magic Powder",
     "Magic Upgrade (1/2)",
+    "Magic Upgrade (1/4)",
+    "Master Sword",
+    "Mirror Shield",
     "Moon Pearl",
     "Mushroom",
     "Ocarina",
     "Ocarina (Activated)",
     "Pegasus Boots",
+    "Power Glove",
     "Progressive Bow",
+    "Progressive Bow (Alt)",
     "Progressive Glove",
     "Progressive Shield",
     "Progressive Sword",
@@ -170,6 +166,8 @@ progressive_items = [
     "Red Boomerang",
     "Red Pendant",
     "Shovel",
+    "Silver Arrows",
+    "Small Key (Universal)",
     "Small Key (Escape)",
     "Small Key (Eastern Palace)",
     "Small Key (Desert Palace)",
@@ -183,17 +181,22 @@ progressive_items = [
     "Small Key (Misery Mire)",
     "Small Key (Turtle Rock)",
     "Small Key (Ganons Tower)",
+    "Tempered Sword",
+    "Titans Mitts",
     "Triforce Piece",
     "Green Clock",  # Placeholder for progressive AP items
 ]
 
 useful_items = [
     "Arrow Upgrade (+5)",
+    "Arrow Upgrade (+10)",
+    "Blue Mail",
     "Blue Potion",
     "Bomb Upgrade (+5)",
     "Boss Heart Container",
     "Green Potion",
-    "Progressive Mail",
+    "Progressive Armor",
+    "Red Mail",
     "Red Potion",
     "Rupees (300)",
     "Sanctuary Heart Container",
@@ -201,6 +204,7 @@ useful_items = [
 ]
 
 filler_items = [
+    "Apples",
     "Arrows (5)",
     "Arrows (10)",
     "Bee",
@@ -224,6 +228,7 @@ filler_items = [
     "Compass (Turtle Rock)",
     "Compass (Ganons Tower)",
     "Fairy",
+    "Good Bee",
     "Map (Escape)",
     "Map (Eastern Palace)",
     "Map (Desert Palace)",
@@ -237,8 +242,10 @@ filler_items = [
     "Map (Misery Mire)",
     "Map (Turtle Rock)",
     "Map (Ganons Tower)",
+    "Multi RNG",
     "Nothing",
     "Piece of Heart",
+    "Power Star",
     "Red Clock",  # Placeholder for filler AP items
     "Red Shield",
     "Rupee (1)",
@@ -246,10 +253,16 @@ filler_items = [
     "Rupees (20)",
     "Rupees (50)",
     "Rupees (100)",
+    "Rupoor",
     "Single Arrow",
     "Single Bomb",
+    "Single RNG",
     "Small Heart",
     "Small Magic",
+]
+
+trap_items = [
+    "Bee Trap",
 ]
 
 
@@ -277,7 +290,7 @@ def get_dungeon_items(world: ALttPRWorld) -> List[str]:
 
 
 def get_random_filler_item_name(world: ALttPRWorld) -> str:
-    raise NotImplementedError("get_random_filler_item_name is not implemented yet")
+    return "Rupee (1)"
 
 
 def get_classification(name: str, progressive_bug_net: bool) -> ItemClassification:
@@ -291,6 +304,8 @@ def get_classification(name: str, progressive_bug_net: bool) -> ItemClassificati
             classification = ItemClassification.progression
         else:
             classification = ItemClassification.filler
+    elif name in trap_items:
+        classification = ItemClassification.trap
     else:
         logger.error(f"Item {name} not found in any item list, cannot determine classification.")
         raise Exception()
@@ -302,8 +317,7 @@ def get_classification(name: str, progressive_bug_net: bool) -> ItemClassificati
 def create_item(world: ALttPRWorld, name: str, classification: ItemClassification) -> ALttPRItem:
     door_rando_item = ItemFactory(name, 1)
     item_name_to_id[name] = door_rando_item.code
-    new_name = dr_ap_different_names[name] if name in dr_ap_different_names else name
-    return ALttPRItem(new_name, classification, door_rando_item.code, world.player)
+    return ALttPRItem(name, classification, door_rando_item.code, world.player)
 
 
 def create_all_items(world: ALttPRWorld) -> None:
@@ -331,19 +345,18 @@ def create_all_items(world: ALttPRWorld) -> None:
     # Key drop keys are also not in the item pool unless key drop in enabled.
     itempool = []
     for item in dr_itempool:
-        ap_item_name = item.name if item.name not in dr_ap_different_names else dr_ap_different_names[item.name]
         code = item.code
-        classification = get_classification(ap_item_name, world.options.door_shuffle != "vanilla" or world.options.boss_shuffle != "vanilla")
+        classification = get_classification(item.name, world.options.door_shuffle != "vanilla" or world.options.boss_shuffle != "vanilla")
 
-        if world.options.shopsanity.value and (ap_item_name == "Bee" or (ap_item_name == "Red Potion" and not item.priority)):
+        if world.options.shopsanity.value and (item.name == "Bee" or (item.name == "Red Potion" and not item.priority)):
             # Having bees and potions as randomized items is kinda wonky. Usually when you receive them they
             # show up as rupees, and these items (currently) only appear in Shopsanity, so let's just turn them into rupees.
             # One red potion should always be available for purchase in shops, and it will have True priority.
-            ap_item_name = "Rupees (50)"
+            item.name = "Rupees (50)"
             classification = ItemClassification.filler
-            code = ItemFactory(ap_item_name, 1).code
+            code = ItemFactory(item.name, 1).code
 
-        ap_item = ALttPRItem(ap_item_name, classification, code, world.player)
+        ap_item = ALttPRItem(item.name, classification, code, world.player)
         itempool.append(ap_item)
 
     world.multiworld.itempool += itempool
@@ -367,11 +380,9 @@ def place_pre_fill_items(world: ALttPRWorld) -> None:
             target_location.address = None
 
     for dungeon_item in get_dungeon_items(world):
-        dr_item_name = dungeon_item if dungeon_item not in dr_ap_different_names else dr_ap_different_names[dungeon_item]
-
         # All dungeon items should already be placed in a location. If keysanity is enabled but not key drop shuffle, then
         # small keys dropped by pots/enemies will already be placed, but other small keys won't.
-        item_locations = world.door_rando_world.find_items(dr_item_name, 1)
+        item_locations = world.door_rando_world.find_items(dungeon_item, 1)
         if not item_locations:
                 continue
 

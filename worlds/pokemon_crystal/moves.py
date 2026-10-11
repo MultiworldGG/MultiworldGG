@@ -2,7 +2,7 @@ from collections.abc import Iterable
 from dataclasses import replace
 from typing import TYPE_CHECKING
 
-from .data import data as crystal_data, LearnsetData, TMHMData, MoveCategory, TypeMatchup
+from .data import data as crystal_data, LearnsetData, TMHMData, MoveCategory, TypeMatchup, HM_COMPAT_TMS
 from .move_data import MODERN_MOVE_CHANGES
 from .options import RandomizeLearnsets, PhysicalSpecialSplit, RandomizeTypeChart, RandomizeMoves, ModerniseMovesType
 
@@ -44,7 +44,6 @@ BAD_DAMAGING_MOVES = ["EXPLOSION", "SELFDESTRUCT", "STRUGGLE", "SNORE", "DREAM_E
 DAMAGING_STATUS_MOVES = ["ZAP_CANNON", "DYNAMICPUNCH"]
 
 HM_MOVES = ["CUT", "FLY", "SURF", "STRENGTH", "FLASH", "WHIRLPOOL", "WATERFALL"]
-HM_COMPAT_TMS = ["HEADBUTT", "ROCK_SMASH"]
 LOGIC_MOVES = HM_MOVES + HM_COMPAT_TMS
 
 

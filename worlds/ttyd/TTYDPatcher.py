@@ -62,6 +62,9 @@ def _extract_from_apworld(zip_file_path: str, member_filter: str, cache_name: st
                 os.makedirs(lib_parent, exist_ok=True)
                 with zipfile.ZipFile(io.BytesIO(zip_ref.read(archive_member)), "r") as nested_zip:
                     nested_zip.extractall(lib_parent)
+            elif nested_archive and os.path.basename(zip_file_path) == os.path.basename(nested_archive):
+                # A source checkout ships the same DME ZIP without an outer apworld.
+                zip_ref.extractall(os.path.join(work_dir, "ttyd", "lib"))
             else:
                 for member in zip_ref.namelist():
                     if member_filter in member:
@@ -155,6 +158,12 @@ def setup_dme_path():
         lib_parent = os.path.join(target, "ttyd", "lib")
     else:
         lib_parent = os.path.join(os.path.dirname(__file__), "lib")
+        archive_path = os.path.join(lib_parent, "dolphin_memory_engine_ttyd.zip")
+        if os.path.isfile(archive_path):
+            target = _extract_from_apworld(archive_path, "dolphin_memory_engine", "ttyd_cache_dme",
+                                           _dme_required_files(),
+                                           "ttyd/lib/dolphin_memory_engine_ttyd.zip")
+            lib_parent = os.path.join(target, "ttyd", "lib")
 
     pkg_dir = os.path.join(lib_parent, "dolphin_memory_engine_ttyd")
     _select_native_binary(pkg_dir)

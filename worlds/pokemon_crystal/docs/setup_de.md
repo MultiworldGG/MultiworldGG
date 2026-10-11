@@ -7,7 +7,7 @@
 - Eines der folgenden:
     - [BizHawk](https://tasvideos.org/BizHawk/ReleaseHistory) 2.7 oder neuer. 2.10 wird empfohlen.
     - [mGBA](https://mgba.io) 0.10.3 oder neuer.
-        - Du wirst auch das [mGBA to Bizhawk Client connector script](https://gist.github.com/gerbiljames/7b92dc62843794bd5902aad191b65efc) benötigen.
+        - Du wirst auch das [mGBA to Bizhawk Client connector script](https://github.com/Zunawe/bhc-substitutes/tree/main/mgba) benötigen.
           Füge es zu `data/lua/` deiner MultiworldGG-Installation hinzu.
           
 ## Bizhawk konfigurieren

@@ -507,6 +507,7 @@ DYNAMIC_FLAGS = {
     "Unblock bellum staircase": {
         "on_scenes": [0x2512],
         "goal_requirement": True,
+        "can_defeat_bellum": True,
         "unset_if_true": [(PHAddr.adv_flags_25, 0x2)]
     },
     "Spawn bellum warp": {
@@ -519,16 +520,7 @@ DYNAMIC_FLAGS = {
     "Spawn phantom wreckage progressive": {
         "on_scenes": [0x0],
         "goal_requirement": True,
-        "has_items": [("Sword (Progressive)", 2)],
-        "any_has_items": [("Spirit (Progressive)", 3), ("Spirit of Courage (Progressive)", 1), ("Spirit of Courage", 1)],
-        "set_if_true": [(PHAddr.adv_flags_31, 0x1)],
-        "has_slot_data": [["bellum_access", 3]],
-    },
-    "Spawn phantom wreckage non-progressive": {
-        "on_scenes": [0x0],
-        "goal_requirement": True,
-        "has_items": [("Oshus' Sword", 1), ("Phantom Sword", 1)],
-        "any_has_items": [("Spirit (Progressive)", 3), ("Spirit of Courage (Progressive)", 1), ("Spirit of Courage", 1)],
+        "can_defeat_bellum": True,
         "set_if_true": [(PHAddr.adv_flags_31, 0x1)],
         "has_slot_data": [["bellum_access", 3]],
     },

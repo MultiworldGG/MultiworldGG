@@ -10,7 +10,7 @@ ADDONS_ERRORS:list[str] = []
 
 from Utils import tuplize_version
 
-UT_ADDONS_VERSION = "v0.1.2"
+UT_ADDONS_VERSION = "v0.1.3"
 
 UT_ADDONS_TUPLE = tuplize_version(UT_ADDONS_VERSION[1:].split("-",1)[0])
 
@@ -134,6 +134,28 @@ def get_regions(self: "TrackerCommandProcessor", region_name: str=""):
             continue
         logger.info(region.name)
 
+@mark_raw
+def manually_collects(self: "TrackerCommandProcessor", params: str = ""):
+    """Manually adds an item name to the CollectionState multiple times. Usage: /manually_collects <count> <item name>"""
+    parts = params.split(maxsplit=1)
+    if len(parts) < 2 or not parts[0].isdigit():
+        logger.error("Usage: /manually_collects <count> <item name>")
+        return
+    count = int(parts[0])
+    item_name = parts[1]
+    self.ctx.tracker_core.manual_items.extend([item_name] * count)
+    self.ctx.persist_seed_data()
+    self.ctx.updateTracker()
+    logger.info(f"Added {count}x {item_name} to manually collect.")
+
+@mark_raw
+def locations_in_logic(self: "TrackerCommandProcessor", filter_text: str = ""):
+    """Print the list of locations currently accessible in logic"""
+    currentState = self.ctx.updateTracker()
+    for location in sorted(currentState.in_logic_locations):
+        if filter_text in location:
+            logger.info(location)
+
 
 
 
@@ -142,3 +164,5 @@ register_function("get_depth", stupid_thing)
 register_function("glp", glp)
 register_function("nearest_locations", nearest_location)
 register_function("get_regions", get_regions)
+register_function("manually_collects", manually_collects)
+register_function("locations_in_logic", locations_in_logic)

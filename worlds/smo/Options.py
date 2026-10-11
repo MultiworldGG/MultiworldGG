@@ -1,6 +1,6 @@
 from dataclasses import dataclass
 
-from Options import Toggle, Choice, FreeText, PerGameCommonOptions, DeathLink
+from Options import Toggle, Choice, FreeText, PerGameCommonOptions, DeathLink, Visibility
 
 
 class Goal(Choice):
@@ -70,6 +70,19 @@ class RandomizeMoonCount(Choice):
     option_off = 0
     default = 0
 
+class MoonDistribution(Choice):
+    """
+    Determines how much jitter is added to per-moon sorting.
+    Lower values strictly force moons for early kingdom to appear early in logic
+    Higher values allow moons from later kingdoms to apear earlierin logic
+    """
+    display_name = "Progression Guide Jitter"
+    option_high = 2.5
+    option_normal = 1.5
+    option_low = 0.5
+    option_none = 0
+    default = option_normal
+
 class CaptureSanity(Toggle):
     """Randomizes Captures.
     Warning this is an experimental feature!
@@ -78,6 +91,18 @@ class CaptureSanity(Toggle):
     """
     display_name = "Randomize Captures"
     #visibility = 0b1101
+
+class CommonCaptureSkips(Toggle):
+    """
+    Enables logic for frequently used capture skips
+    Adds the following tricks:
+    Frogless
+    First Moon Skip
+    Impossible Jump
+    Red Maze Skip
+    """
+    display_name = "Common Capture Skips"
+    default = False
 
 class ExtraMoons(Choice):
     """
@@ -92,6 +117,15 @@ class ExtraMoons(Choice):
     option_double = 2.0
 
     default = 1.2  # default to some
+
+class ProgressiveMoons(Toggle):
+    """
+    When enabled, all moons will become generic
+    Significantly reduces BK potential and forces kingdom to unlock one at a time
+    """
+    display_name = "Progressive Moons"
+    default = False
+    visibility = Visibility.none
 
 class TrickJumpLogic(Choice):
     """
@@ -122,11 +156,14 @@ class SMODeathLink(DeathLink):
 class SMOOptions(PerGameCommonOptions):
     goal: Goal
     story : StorySanity
+    progressive_moons : ProgressiveMoons
     extra_moons : ExtraMoons
+    moon_distribution : MoonDistribution
     shop_sanity : ShopSanity
+    capture_sanity : CaptureSanity
+    common_capture_skips : CommonCaptureSkips
     # replace: ReplaceUnneededMoons
     colors : RandomizeMoonColors
     counts : RandomizeMoonCount
-    capture_sanity : CaptureSanity
     death_link : SMODeathLink
 

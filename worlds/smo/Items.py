@@ -50,6 +50,50 @@ moon_types = {
     "Bowser Multi-Moon": 35,
     "Mushroom Multi-Moon": 36,
     "Dark Side Multi-Moon": 38,
+    "Power Moon": 39,
+    "Story Moon": 40,
+    "Multi-Moon": 41,
+}
+
+# The highest number will be placed earliest in logic, and the lowest will be placed latest in logic
+# All other items have a default priority of zero
+item_priorities = {
+    "Chain Chomp": 10, # Chain Chomp should really be in an early sphere
+    "Cascade Power Moon": 5,
+    "Cascade Story Moon": 5,
+    "Cascade Multi-Moon": 5,
+    "Sand Power Moon": 4,
+    "Sand Story Moon": 4,
+    "Sand Multi-Moon": 4,
+    "Wooded Power Moon": 3,
+    "Wooded Story Moon": 3,
+    "Wooded Multi-Moon": 3,
+    "Lake Power Moon": 3,
+    "Lake Multi-Moon": 3,
+    "Lost Power Moon": 2,
+    "Metro Power Moon": 1,
+    "Metro Story Moon": 1,
+    "Metro Multi-Moon": 1,
+    "Seaside Power Moon": 0,
+    "Seaside Story Moon": 0,
+    "Seaside Multi-Moon": 0,
+    "Snow Power Moon": -1,
+    "Snow Story Moon": -1,
+    "Snow Multi-Moon": -1,
+    "Luncheon Power Moon": -2,
+    "Luncheon Story Moon": -2,
+    "Luncheon Multi-Moon": -2,
+    "Ruined Power Moon": -3,
+    "Ruined Multi-Moon": -3,
+    "Bowser Power Moon": -4,
+    "Bowser Story Moon": -4,
+    "Bowser Multi-Moon": -4,
+    "Moon Power Moon": -5,
+    "Power Star": -5,
+    "Mushroom Multi-Moon": -5,
+    "Dark Side Power Moon": -5,
+    "Dark Side Multi-Moon": -5,
+    "Darker Side Multi-Moon": -5,
 }
 
 moon_item_table = {

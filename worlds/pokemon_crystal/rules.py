@@ -1765,7 +1765,7 @@ def set_rules(world: "PokemonCrystalWorld") -> None:
     def swarm_rule(encounter_key: EncounterKey) -> Rule:
         cfg = SWARM_REGISTRATIONS[encounter_key.region_id]
         rule = world.logic.can_phone_call() & Has(cfg["registration_event"])
-        if cfg["fishing_host"] is not None:
+        if cfg["fishing_region"] is not None:
             rule = rule & world.logic.can_fish()
         return rule
 

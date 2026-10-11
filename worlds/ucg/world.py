@@ -107,6 +107,7 @@ class UncannyCatWorld(World):
             "coinsanity": self.options.coinsanity.value,
             "excluded_levels": sorted(self.options.excluded_levels.value),
             "excluded_minigames": sorted(self.options.excluded_minigames.value),
+            "goal_rank_requirement": self.options.goal_rank_requirement.value,
             "rank_check_difficulty": self.options.rank_check_difficulty.value,
             "temp_modifiers": self.options.temp_modifiers.value,
             "buff_uncanny_cat_spray": self.options.buff_uncanny_cat_spray.value,

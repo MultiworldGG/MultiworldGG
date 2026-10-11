@@ -142,9 +142,9 @@ class WildSwarmRegistrationGatingTest(PokemonCrystalTestBase):
                     swarm_loc, registration_event = loc, cfg["registration_event"]
                     break
         self.assertIsNotNone(swarm_loc, "expected a swarm wild-encounter location with a registration event")
-        self.assertTrue(swarm_loc.access_rule(self.multiworld.get_all_state(False)),
+        self.assertTrue(swarm_loc.access_rule(self.multiworld.get_all_state()),
                         "swarm location should be reachable in all-state")
-        state = self.multiworld.get_all_state(False)
+        state = self.multiworld.get_all_state()
         state.remove(self.world.create_event(registration_event))
         self.assertFalse(swarm_loc.access_rule(state),
                          "removing the registration event should gate the swarm location")
@@ -207,7 +207,7 @@ class UnownGateFollowsFinalSpeciesTest(unittest.TestCase):
         world.generated_wild[gains_unown] = [replace(gained[0], pokemon="UNOWN")] + gained[1:]
         call_all(multiworld, "connect_entrances")
 
-        state = multiworld.get_all_state(False)
+        state = multiworld.get_all_state()
         for unlock in self.UNLOCKS:
             while state.has(unlock, world.player):
                 state.remove(world.create_event(unlock))

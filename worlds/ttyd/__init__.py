@@ -1,5 +1,7 @@
 import logging
 import os
+import json
+import pkgutil
 
 from Fill import fill_restrictive, fast_fill
 from typing import List, Dict, ClassVar, Any, Set
@@ -29,7 +31,7 @@ def launch_client(*args):
 
 components.append(
     Component(
-        "TTYD Client",
+        "TTYDClient",
         func=launch_client,
         component_type=Type.CLIENT,
         file_identifier=SuffixIdentifier(".apttyd"),
@@ -44,7 +46,7 @@ class TTYDWebWorld(WebWorld):
     tutorials = [
         Tutorial(
             tutorial_name='Setup Guide',
-            description='A guide to setting up Paper Mario: The Thousand-Year Door for MultiworldGG.',
+            description='A guide to setting up Paper Mario: The Thousand-Year Door for Archipelago.',
             language='English',
             file_name='setup_en.md',
             link='setup/en',
@@ -88,6 +90,7 @@ class TTYDWorld(World):
     location_name_to_id = {loc_data.name: loc_data.id for loc_data in all_locations}
     required_client_version = (0, 6, 2)
     disabled_locations: set
+    vanilla_logic_locations: set[str]
     excluded_regions: set
     required_chapters: List[int]
     limited_chapters: List[int]
@@ -107,6 +110,7 @@ class TTYDWorld(World):
 
     def generate_early(self) -> None:
         self.disabled_locations = set()
+        self.vanilla_logic_locations = set()
         self.excluded_regions = set()
         self.required_chapters = []
         self.limited_chapters = []
@@ -141,9 +145,12 @@ class TTYDWorld(World):
                 self.options.shinesanity.value = slot_data["shinesanity"]
                 self.options.blue_pipe_toggle.value = slot_data["blue_pipe_toggle"]
                 self.options.enemy_randomizer.value = slot_data["enemy_randomizer"]
+                self.options.enemy_formations.value = slot_data.get("enemy_formations", 0)
                 self.options.boss_randomizer.value = slot_data["boss_randomizer"]
                 self.options.cooksanity.value = slot_data["cooksanity"]
                 self.options.troublesanity.value = slot_data["troublesanity"]
+                self.configure_vanilla_locations()
+                self.retain_required_vanilla_logic()
                 return
         if self.options.limit_chapter_eight and self.options.palace_skip:
             logging.warning(f"{self.player_name}'s has enabled both Palace Skip and Limit Chapter 8. "
@@ -185,17 +192,12 @@ class TTYDWorld(World):
             all_piece_locations = get_locations_by_tags(["star_piece", "panel"])
             limited_piece_locations = [location for location in all_piece_locations
                                        if limited_area_tags & set(location.tags)]
-            for location in limited_piece_locations:
-                self.disabled_locations.add(location.name)
-                self.rom_fallback_locations[location.name] = location.vanilla_item
+            self.disable_remove_from_pool(limited_piece_locations)
             self.unavailable_star_pieces = len(limited_piece_locations)
-            self.locked_item_frequencies["Star Piece"] = (
-                self.locked_item_frequencies.get("Star Piece", 0) + self.unavailable_star_pieces)
             available_pieces = len(all_piece_locations) - self.unavailable_star_pieces
-            for i, location_name in enumerate(dazzle_location_names):
-                if dazzle_counts[i] > available_pieces:
-                    self.disabled_locations.add(location_name)
-                    self.rom_fallback_locations[location_name] = locationName_to_data[location_name].vanilla_item
+            self.disable_remove_from_pool([locationName_to_data[location_name]
+                                           for i, location_name in enumerate(dazzle_location_names)
+                                           if dazzle_counts[i] > available_pieces])
         if self.options.palace_skip:
             self.excluded_regions.update(["Palace of Shadow", "Palace of Shadow (Post-Riddle Tower)"])
             self.disabled_locations.update([
@@ -204,12 +206,6 @@ class TTYDWorld(World):
                 "Poshley Heights Station: Bub's Trouble Reward",
                 "Fahr Outpost Town: Swob's Trouble Reward",
             ])
-        if not self.options.cooksanity:
-            self.disabled_locations.update(
-                location.name for location in get_locations_by_tags("cooking"))
-        if not self.options.troublesanity:
-            self.disabled_locations.update(
-                location.name for location in get_locations_by_tags("trouble"))
         if not self.options.tattlesanity:
             self.excluded_regions.update(["Tattlesanity"])
         if self.options.goal != Goal.option_shadow_queen:
@@ -225,6 +221,7 @@ class TTYDWorld(World):
             randomize_encounters(self)
         if self.options.boss_randomizer != BossRandomizer.option_vanilla:
             randomize_bosses(self)
+        self.configure_vanilla_locations()
         if self.options.tattlesanity:
             extra_disabled = [location.name for name, locations in get_regions_dict().items()
                               if name in self.excluded_regions for location in locations]
@@ -242,10 +239,87 @@ class TTYDWorld(World):
                     if "Palace of Shadow (Post-Riddle Tower)" in self.excluded_regions:
                         self.disabled_locations.update([location_name])
                 else:
-                    if all([location_id_to_name[location] in self.disabled_locations or location_id_to_name[
+                    if all([(location_id_to_name[location] in self.disabled_locations and
+                             location_id_to_name[location] not in self.vanilla_logic_locations) or location_id_to_name[
                         location] in extra_disabled or (pit_out_of_logic and location in limit_pit)
                             for location in locations]):
                         self.disabled_locations.update([location_name])
+
+        self.retain_required_vanilla_logic()
+
+    def retain_required_vanilla_logic(self) -> None:
+        rules = json.loads(pkgutil.get_data(__name__, "json/rules.json").decode("utf-8"))
+        needed_items: set[str] = set()
+        needed_locations: set[str] = set()
+
+        def read_requirements(requirements):
+            if isinstance(requirements, dict):
+                if "has" in requirements:
+                    item = requirements["has"]
+                    needed_items.add(item if isinstance(item, str) else item["item"])
+                if "can_reach" in requirements:
+                    needed_locations.add(requirements["can_reach"])
+                for value in requirements.values():
+                    read_requirements(value)
+            elif isinstance(requirements, list):
+                for value in requirements:
+                    read_requirements(value)
+
+        for name, requirements in rules.items():
+            if name not in self.disabled_locations:
+                read_requirements(requirements)
+        if self.options.goal == Goal.option_bonetail:
+            needed_locations.add("Pit of 100 Trials Floor 100: Return Postage")
+        if self.options.tattlesanity:
+            tattle_rules = (get_random_enemy_tattle_rules_dict(self)
+                            if self.options.enemy_randomizer != EnemyRandomizer.option_vanilla
+                            or self.options.boss_randomizer != BossRandomizer.option_vanilla
+                            else get_tattle_rules_dict())
+            for name, locations in tattle_rules.items():
+                if name not in self.disabled_locations:
+                    needed_locations.update(location_id_to_name[loc] for loc in locations
+                                            if self.options.pit_items == PitItems.option_all or loc not in limit_pit)
+
+        # Follow dependencies of vanilla rewards that enabled checks actually use.
+        remaining = self.vanilla_logic_locations.copy()
+        retained: set[str] = set()
+        while remaining:
+            required = {name for name in remaining
+                        if name in needed_locations or
+                        items_by_id[locationName_to_data[name].vanilla_item].item_name in needed_items}
+            if not required:
+                break
+            remaining.difference_update(required)
+            retained.update(required)
+            for name in required:
+                read_requirements(rules.get(name, {}))
+        self.vanilla_logic_locations = retained
+
+    def configure_vanilla_locations(self) -> None:
+        if self.options.pit_items == PitItems.option_vanilla:
+            self.disable_remove_from_pool(get_locations_by_tags("pit_floor"), keep_in_logic=True)
+        if not self.options.shinesanity:
+            self.disable_remove_from_pool(get_locations_by_tags("shine"), keep_in_logic=True)
+        if not self.options.shopsanity:
+            self.disable_remove_from_pool(get_locations_by_tags("shop"), keep_in_logic=True)
+        if not self.options.cooksanity:
+            for location in get_locations_by_tags("cooking"):
+                item_name = items_by_id[location.vanilla_item].item_name
+                if (self.options.shopsanity and self.options.troublesanity
+                        and item_name in self.trouble_cooked_progression):
+                    self.disabled_locations.add(location.name)
+                    self.rom_fallback_locations[location.name] = location.vanilla_item
+                else:
+                    self.disable_remove_from_pool(location, keep_in_logic=True)
+        if not self.options.troublesanity:
+            self.disable_remove_from_pool(get_locations_by_tags("trouble"))
+            for item_name in self.trouble_only_items:
+                self.locked_item_frequencies[item_name] = self.locked_item_frequencies.get(item_name, 0) + 1
+        if self.options.dazzle_rewards == DazzleRewards.option_vanilla:
+            self.disable_remove_from_pool(get_locations_by_tags("dazzle"), keep_in_logic=True)
+            if self.options.piecesanity == Piecesanity.option_vanilla:
+                self.disable_remove_from_pool(get_locations_by_tags(["star_piece", "panel"]), keep_in_logic=True)
+
 
     def create_regions(self) -> None:
         create_regions(self)
@@ -274,23 +348,13 @@ class TTYDWorld(World):
             self.locked_item_frequencies["Palace Key"] = 3
             self.locked_item_frequencies["Palace Key (Tower)"] = 8
             self.locked_item_frequencies["Star Key"] = 1
-        if self.options.pit_items == PitItems.option_vanilla:
-            self.lock_vanilla_items_remove_from_pool(get_locations_by_tags("pit_floor"))
-        if self.options.piecesanity == Piecesanity.option_vanilla:
+        if (self.options.dazzle_rewards != DazzleRewards.option_vanilla and self.options.piecesanity == Piecesanity.option_vanilla):
             self.lock_vanilla_items_remove_from_pool(get_locations_by_tags(["star_piece", "panel"]))
         if self.options.piecesanity == Piecesanity.option_nonpanel_only:
             self.lock_vanilla_items_remove_from_pool(get_locations_by_tags("panel"))
-        if not self.options.shinesanity:
-            self.lock_vanilla_items_remove_from_pool(get_locations_by_tags("shine"))
-        if not self.options.shopsanity:
-            self.lock_vanilla_items_remove_from_pool(get_locations_by_tags("shop"))
-        if not self.options.troublesanity:
-            self.lock_vanilla_items_remove_from_pool(get_locations_by_tags("trouble"))
         if self.options.pit_items == PitItems.option_filler:
             self.lock_filler_items_remove_from_pool(get_locations_by_tags("pit_floor"))
-        if self.options.dazzle_rewards == DazzleRewards.option_vanilla:
-            self.lock_vanilla_items_remove_from_pool(get_locations_by_tags("dazzle"))
-        elif self.options.dazzle_rewards == DazzleRewards.option_filler:
+        if self.options.dazzle_rewards == DazzleRewards.option_filler:
             self.lock_filler_items_remove_from_pool(get_locations_by_tags("dazzle"))
         if self.options.pit_items != PitItems.option_all:
             # These troubles require pit dives to complete (Pine T. is rescued on floor 18,
@@ -368,6 +432,7 @@ class TTYDWorld(World):
                 loc_id
                 for loc_id in locations
                 if location_id_to_name[loc_id] not in self.disabled_locations
+                or location_id_to_name[loc_id] in self.vanilla_logic_locations
             ]
             if not enabled_locations:
                 continue
@@ -404,6 +469,12 @@ class TTYDWorld(World):
         "Turtley Leaf", "Ultra Shroom", "Volt Shroom", "Whacka Bump",
     })
 
+    trouble_only_items = frozenset({
+        "Battle Trunk Pack", "Courage Shell Pack", "Walrus Whiskers",
+    })
+
+    trouble_cooked_progression = frozenset({"Honey Candy"})
+
     def create_items(self) -> None:
         required_items = []
         useful_items = []
@@ -418,7 +489,11 @@ class TTYDWorld(World):
         single_progression_seen = set()
         for item_name in item_names:
             item = self.create_item(item_name)
-            if not self.options.cooksanity and item_name in self.cooking_only_progression:
+            # With vanilla shops, Gob's Honey Candy is obtained through vanilla cooking.
+            honey_candy_ingredient = (self.options.troublesanity and not self.options.shopsanity
+                                     and item_name == "Honey Syrup")
+            if (not self.options.cooksanity and item_name in self.cooking_only_progression
+                    and not honey_candy_ingredient):
                 item.classification = ItemClassification.filler
             elif item_name in self.single_progression_copy_consumables:
                 if item_name in single_progression_seen:
@@ -497,16 +572,20 @@ class TTYDWorld(World):
                      locations.keys() if chapters != chapter for item in self.limited_items[chapters][tag]}
                 if len(self.limited_items[chapter][tag]) == 0:
                     continue
+                fill_locations = sorted(locs, key=lambda loc: loc.name)
+                self.random.shuffle(fill_locations)
                 fill_restrictive(
                     self.multiworld,
                     state,
-                    list(locs),
+                    fill_locations,
                     self.limited_items[chapter][tag],
                     single_player_placement=True,
                     lock=True
                 )
         self.in_pre_fill = False
-        fast_fill(self.multiworld, self.limited_misc_items, list(self.limited_misc_locations))
+        misc_locations = sorted(self.limited_misc_locations, key=lambda loc: loc.name)
+        self.random.shuffle(misc_locations)
+        fast_fill(self.multiworld, self.limited_misc_items, misc_locations)
 
     def fill_hook(self, progitempool: List[Item], usefulitempool: List[Item],
                   filleritempool: List[Item], fill_locations: List[Location]) -> None:
@@ -560,6 +639,7 @@ class TTYDWorld(World):
             "shinesanity": self.options.shinesanity.value,
             "blue_pipe_toggle": self.options.blue_pipe_toggle.value,
             "enemy_randomizer": self.options.enemy_randomizer.value,
+            "enemy_formations": self.options.enemy_formations.value,
             "boss_randomizer": self.options.boss_randomizer.value,
             "tattle_rules": get_random_enemy_tattle_rules_dict(self)
             if self.options.enemy_randomizer != EnemyRandomizer.option_vanilla
@@ -625,6 +705,20 @@ class TTYDWorld(World):
             item = self.create_item(item_name)
             item.location = self.get_location(location)
             self.get_location(location).place_locked_item(item)
+
+    def disable_remove_from_pool(self, locations: LocationData | List[LocationData],
+                                 *, keep_in_logic: bool = False) -> None:
+        if isinstance(locations, LocationData):
+            locations = [locations]
+        for location in locations:
+            if location.name not in self.disabled_locations:
+                self.locked_item_frequencies[
+                    items_by_id[location.vanilla_item].item_name] = self.locked_item_frequencies.get(
+                    items_by_id[location.vanilla_item].item_name, 0) + 1
+                self.disabled_locations.add(location.name)
+                self.rom_fallback_locations[location.name] = location.vanilla_item
+                if keep_in_logic:
+                    self.vanilla_logic_locations.add(location.name)
 
     def get_filler_item_name(self) -> str:
         return self.random.choice(

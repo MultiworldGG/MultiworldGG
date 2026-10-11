@@ -1,0 +1,4 @@
+GAME_NAME = "Ratchet & Clank: Size Matters"
+POLL_INTERVAL = 0.1
+
+PINE_CONNECT_SETTLE_DELAY_S = 3.0

@@ -10,8 +10,9 @@ from typing import Union, TYPE_CHECKING
 
 from BaseClasses import CollectionState, Location, LocationProgressType
 from Utils import __version__, async_start, open_filename, persistent_load, persistent_store
+import Utils
 from worlds import AutoWorld
-from . import TrackerWorld, UTMapTabData, CurrentTrackerState, UT_VERSION
+from . import ItemLayoutSection, TrackerWorld, UTMapTabData, CurrentTrackerState, UT_VERSION
 from .TrackerCore import TrackerCore
 from collections import Counter, defaultdict
 from MultiServer import mark_raw
@@ -44,29 +45,29 @@ UT_MAP_TAB_KEY = "UT_MAP"
 def get_ut_color(color: str)->str:
     if not gui_enabled:
         return "DD00FF"
-    from kvui import Widget
-    from typing import ClassVar
-    from kivy.properties import StringProperty
-    class UTTextColor(Widget):
-        in_logic: ClassVar[str] = StringProperty("")
-        glitched: ClassVar[str] = StringProperty("")
-        out_of_logic: ClassVar[str] = StringProperty("")
-        collected: ClassVar[str] = StringProperty("")
-        in_logic_glitched: ClassVar[str] = StringProperty("")
-        out_of_logic_glitched: ClassVar[str] = StringProperty("")
-        mixed_logic: ClassVar[str] = StringProperty("")
-        collected_light: ClassVar[str] = StringProperty("")
-        hinted: ClassVar[str] = StringProperty("")
-        hinted_in_logic: ClassVar[str] = StringProperty("")
-        hinted_out_of_logic: ClassVar[str] = StringProperty("")
-        hinted_glitched: ClassVar[str] = StringProperty("")
-        excluded: ClassVar[str] = StringProperty("")
-        excluded_glitched: ClassVar[str] = StringProperty("")
-        unconnected: ClassVar[str] = StringProperty("")
-        error: ClassVar[str] = StringProperty("")
-        default: ClassVar[str] = StringProperty("")
-        ut_status: ClassVar[str] = StringProperty("")
     if not hasattr(get_ut_color,"utTextColor"):
+        from kvui import Widget
+        from typing import ClassVar
+        from kivy.properties import StringProperty
+        class UTTextColor(Widget):
+            in_logic: ClassVar[str] = StringProperty("")
+            glitched: ClassVar[str] = StringProperty("")
+            out_of_logic: ClassVar[str] = StringProperty("")
+            collected: ClassVar[str] = StringProperty("")
+            in_logic_glitched: ClassVar[str] = StringProperty("")
+            out_of_logic_glitched: ClassVar[str] = StringProperty("")
+            mixed_logic: ClassVar[str] = StringProperty("")
+            collected_light: ClassVar[str] = StringProperty("")
+            hinted: ClassVar[str] = StringProperty("")
+            hinted_in_logic: ClassVar[str] = StringProperty("")
+            hinted_out_of_logic: ClassVar[str] = StringProperty("")
+            hinted_glitched: ClassVar[str] = StringProperty("")
+            excluded: ClassVar[str] = StringProperty("")
+            excluded_glitched: ClassVar[str] = StringProperty("")
+            unconnected: ClassVar[str] = StringProperty("")
+            error: ClassVar[str] = StringProperty("")
+            default: ClassVar[str] = StringProperty("")
+            ut_status: ClassVar[str] = StringProperty("")
         get_ut_color.utTextColor = UTTextColor()
     return str(getattr(get_ut_color.utTextColor,color,"DD00FF"))
 
@@ -339,11 +340,13 @@ class TrackerGameContext(CommonContext):
     command_processor = TrackerCommandProcessor
     tracker_page = None
     map_page = None
+    item_page = None
     tracker_world: UTMapTabData | None = None
     coord_dict: dict[int, list] = {}
     deferred_dict: dict[str, list] = {}
     ldeferred_dict: dict[str,list] = {}
     map_page_coords_func = lambda *args: {}
+    item_page_funcs: list[Callable[[CommonContext, list], None]] = []
     watcher_task = None
     update_callback: Callable[[list[str]], bool] | None = None
     region_callback: Callable[[list[str]], bool] | None = None
@@ -356,6 +359,7 @@ class TrackerGameContext(CommonContext):
     re_gen_passthrough = None
     local_items: list[NetworkItem] = []
     waiting_on_entrances = False
+    logical_path_entrances: list[str] = []
 
     _auto_tab = True
 
@@ -477,7 +481,9 @@ class TrackerGameContext(CommonContext):
                 if not relevent_coords:
                     continue
                 temp_entrance = current_world.get_entrance(entrance_name)
-                if temp_entrance.can_reach(updateTracker_ret.state):
+                if temp_entrance.name in self.logical_path_entrances:
+                    status = "path"
+                elif temp_entrance.can_reach(updateTracker_ret.state):
                     if temp_entrance.connected_region:
                         status = "passed"
                     else:
@@ -500,6 +506,10 @@ class TrackerGameContext(CommonContext):
                     status = "impassable"
                 for coord in relevent_coords:
                     coord.update_status(loc.name, status)
+        if self.map_page:
+            self.map_page.update_items(updateTracker_ret.all_items.items(), self.tracker_core.manual_items)
+        if self.item_page:
+            self.item_page.update_items(updateTracker_ret.all_items.items(), self.tracker_core.manual_items)
         if self.quit_after_update and not self.waiting_on_entrances:
             name = self.player_names[self.slot]
             if self.print_count:
@@ -610,6 +620,7 @@ class TrackerGameContext(CommonContext):
         self.maps = []
         self.locs = []
         self.layouts = []
+        items = []
         if self.tracker_world.external_pack_key:
             assert current_world.settings
             try:
@@ -632,6 +643,9 @@ class TrackerGameContext(CommonContext):
                                 self.locs += load_json(PACK_NAME, f"/{self.tracker_world.map_page_folder}/{loc_page}")
                             for layout_page in self.tracker_world.map_page_layouts:
                                 self.layouts.append(load_json(PACK_NAME, f"/{self.tracker_world.map_page_folder}/{layout_page}"))
+                            for item_page in self.tracker_world.item_page_items:
+                                if item_page:
+                                    items += load_json(PACK_NAME, f"/{self.tracker_world.map_page_folder}/{item_page}")
                         else:
                             for map_page in self.tracker_world.map_page_maps:
                                 self.maps += load_json_zip(packRef, f"{map_page}")
@@ -639,6 +653,9 @@ class TrackerGameContext(CommonContext):
                                 self.locs += load_json_zip(packRef, f"{loc_page}")
                             for layout_page in self.tracker_world.map_page_layouts:
                                 self.layouts.append(load_json_zip(packRef, f"{layout_page}"))
+                            for item_page in self.tracker_world.item_page_items:
+                                if item_page:
+                                    items += load_json_zip(packRef, f"{item_page}")
                     else:
                         current_world.settings.update({self.tracker_world.external_pack_key: ""}) #failed to find a pack, prompt next launch
                         current_world.settings._changed = True
@@ -662,8 +679,26 @@ class TrackerGameContext(CommonContext):
                 self.locs += load_json(PACK_NAME, f"/{self.tracker_world.map_page_folder}/{loc_page}")
             for layout_page in self.tracker_world.map_page_layouts:
                 self.layouts.append(load_json(PACK_NAME, f"/{self.tracker_world.map_page_folder}/{layout_page}"))
+            for item_page in self.tracker_world.item_page_items:
+                if item_page:
+                    items += load_json(PACK_NAME, f"/{self.tracker_world.map_page_folder}/{item_page}")
         self.parse_map_groups()
         self.load_map(None)
+        for func in self.item_page_funcs:
+            func(self, { item["name"]: item for item in items })
+
+    def set_root_pack_path(self):
+        if self.tracker_world.external_pack_key:
+            from zipfile import is_zipfile
+            packRef = self.tracker_core.get_current_world().settings[self.tracker_world.external_pack_key]
+            if packRef and is_zipfile(packRef):
+                self.root_pack_path = f"ap:zip:{packRef}"
+            else:
+                logger.error("Player poptracker doesn't seem to exist :< (must be a zip file)")
+                return
+        else:
+            PACK_NAME = self.tracker_core.get_current_world().__class__.__module__
+            self.root_pack_path = f"ap:{PACK_NAME}/{self.tracker_world.map_page_folder}"
 
     def load_map(self, map_id: Union[int, str, None]):
         """REMEMBER TO RUN UPDATE_TRACKER!"""
@@ -673,6 +708,8 @@ class TrackerGameContext(CommonContext):
             key = self.tracker_world.map_page_setting_key or f"{self.slot}_{self.team}_{UT_MAP_TAB_KEY}"
             map_id = self.tracker_world.map_page_index(self.stored_data.get(key, ""))
             if not self.auto_tab or map_id < 0 or map_id >= len(self.maps):
+                if self.tracker_world.item_page_items and self.tracker_world.item_page_item_layouts:
+                    self.set_root_pack_path() # ugh, even when there are no maps, we need the root pack path for the item tracker. This feels messy though (...but it works)
                 return  # special case, don't load a new map
         if self.map_id is not None and self.map_id == map_id:
             return  # map already loaded
@@ -700,17 +737,9 @@ class TrackerGameContext(CommonContext):
             self.ui.current_map = m["name"]
         location_name_to_id = AutoWorld.AutoWorldRegister.world_types[self.game].location_name_to_id
         # m = [m for m in self.maps if m["name"] == map_name]
-        if self.tracker_world.external_pack_key:
-            from zipfile import is_zipfile
-            packRef = self.tracker_core.get_current_world().settings[self.tracker_world.external_pack_key]
-            if packRef and is_zipfile(packRef):
-                self.root_pack_path = f"ap:zip:{packRef}"
-            else:
-                logger.error("Player poptracker doesn't seem to exist :< (must be a zip file)")
-                return
-        else:
-            PACK_NAME = self.tracker_core.get_current_world().__class__.__module__
-            self.root_pack_path = f"ap:{PACK_NAME}/{self.tracker_world.map_page_folder}"
+        
+        self.set_root_pack_path()
+
         self.ui.source = f"{self.root_pack_path}/{m['img']}"
         self.ui.loc_size = m["location_size"] if "location_size" in m else 65  # default location size per poptracker/src/core/map.h
         self.ui.loc_icon_size = m["location_icon_size"] if "location_icon_size" in m else self.ui.loc_size
@@ -862,7 +891,12 @@ class TrackerGameContext(CommonContext):
 
     def build_gui(self, manager: "GameManager"):
         from kivy.uix.boxlayout import BoxLayout
+        from kivy.uix.relativelayout import RelativeLayout
+        from kivy.uix.stacklayout import StackLayout
+        from kivy.uix.label import Label
+        from kivy.uix.effectwidget import EffectWidget, MonochromeEffect
         from kvui import MDRecycleView, HoverBehavior, MDLabel, MDDivider
+        from kivy.uix.behaviors import ButtonBehavior
         from kivymd.uix.tooltip import MDTooltip
         from kivy.uix.widget import Widget
         from kivy.uix.scatterlayout import ScatterLayout
@@ -1010,9 +1044,12 @@ class TrackerGameContext(CommonContext):
 
             @staticmethod
             def update_color(self, entranceDict):
+                path = any(status == "path" for status in entranceDict.values())
                 passable = any(status == "passable" for status in entranceDict.values())
                 impassable = any(status == "impassable" for status in entranceDict.values())
-                if passable:
+                if path:
+                    self.color = "#"+get_ut_color("hinted") #This shouldn't happen for locations, but entrances will have them
+                elif passable:
                     self.color = "#"+get_ut_color("in_logic")
                 elif impassable:
                     self.color = "#"+get_ut_color("out_of_logic")
@@ -1025,7 +1062,9 @@ class TrackerGameContext(CommonContext):
                 sReturn = []
                 for entrance, status in self.locationDict.items():
                     color = get_ut_color("out_of_logic")
-                    if status == "passed":
+                    if status == "path":
+                        color = get_ut_color("hinted")
+                    elif status == "passed":
                         color = get_ut_color("collected_light")
                     elif status == "passable":
                         color = get_ut_color("in_logic")
@@ -1119,7 +1158,301 @@ class TrackerGameContext(CommonContext):
                     self.color_3="#"+get_ut_color("collected")
                     self.color_4="#"+get_ut_color("collected")
 
-        class VisualTracker(BoxLayout):
+        class ApItemGridHeader(Label):
+            pass
+
+        class ApItemGrid(StackLayout):
+            pass
+
+        class ApItemIcon(HoverBehavior, ButtonBehavior, MDTooltip):
+            from kivy.properties import ColorProperty
+            item_id: int
+            item_name: str
+            grid: ApItemGrid
+            modified: bool
+            marker_alpha = NumericProperty(0)
+            marker_color = ColorProperty("#"+get_ut_color("mixed_logic"))
+
+            manual_collect_callback: Callable[[str], None] = lambda *_: {}
+            manual_uncollect_callback: Callable[[str], None] = lambda *_: {}
+            manual_reset_callback: Callable[[str], None] = lambda *_: {}
+
+            def __init__(self, grid, id, name, **kwargs):
+                super().__init__(**kwargs)
+                self.grid = grid
+                self.item_id = id
+                self.item_name = name
+                self._tooltip = TrackerTooltip(text=name)
+                self._tooltip_display_delay = 0
+                self.modified = False
+
+            def set_modified(self, modified: bool):
+                if self.modified != modified:
+                    self.modified = modified
+                    if modified:
+                        self._tooltip.text = self.item_name + " (modified)"
+                        self.marker_alpha = 1
+                    else:
+                        self._tooltip.text = self.item_name
+                        self.marker_alpha = 0
+
+            def to_widget(self, x, y):
+                return self.grid.to_widget(x,y)
+
+            def on_enter(self):
+                self.display_tooltip()
+
+            def on_leave(self):
+                self.animation_tooltip_dismiss()
+
+        class ApItemToggleIcon(ApItemIcon, EffectWidget):
+            enabled: bool
+
+            def __init__(self, grid, source, id, name, **kwargs):
+                super().__init__(grid, id, name, **kwargs)
+                img = ApAsyncImage(fit_mode="contain", source=source, **kwargs)
+                self.add_widget(img)
+                self.effects = [MonochromeEffect()]
+                self.enabled = False
+
+            def enable(self):
+                if not self.enabled:
+                    self.enabled = True
+                    self.effects = []
+
+            def disable(self):
+                if self.enabled:
+                    self.enabled = False
+                    self.effects = [MonochromeEffect()]
+
+            def on_press(self):
+                if self.last_touch.button == 'left':
+                    if not self.enabled:
+                        self.manual_collect_callback(self.item_name)
+                    elif self.enabled and self.modified:
+                        self.manual_uncollect_callback(self.item_name)
+                elif self.last_touch.button == 'right':
+                    if self.enabled and self.modified:
+                        self.manual_uncollect_callback(self.item_name)
+                elif self.last_touch.button == 'middle':
+                    self.manual_reset_callback(self.item_name)
+                
+                return super().on_press()
+
+        class ApCounter(Label):
+            pass
+
+        class ApItemCounterIcon(ApItemIcon, RelativeLayout):
+            amount: int = 0
+            max: int = 1
+
+            counter: ApCounter
+
+            def __init__(self, grid, source, id, name, max, **kwargs):
+                super().__init__(grid, id, name, **kwargs)
+                self.max = max
+                img = ApAsyncImage(fit_mode="contain", source=source, **kwargs)
+                img.size = self.size
+                self.add_widget(img)
+
+                self.counter = ApCounter()
+                self.add_widget(self.counter)
+
+            def update(self, amount: int):
+                self.amount = amount
+                self.counter.text = str(amount)
+                if amount == 0:
+                    self.counter.color = get_ut_color('out_of_logic')
+                elif amount >= self.max:
+                    self.counter.color = get_ut_color('in_logic')
+                else:
+                    self.counter.color = get_ut_color('mixed_logic')
+
+            def on_press(self):
+                if self.last_touch.button == 'left':
+                    if self.amount < self.max:
+                        self.manual_collect_callback(self.item_name)
+                elif self.last_touch.button == 'right':
+                    if self.modified:
+                        self.manual_uncollect_callback(self.item_name)
+                elif self.last_touch.button == 'middle':
+                    self.manual_reset_callback(self.item_name)
+                
+                return super().on_press()
+
+        class ApItemProgressiveIcon(ApItemIcon, EffectWidget):
+            amount: int = 0
+            max: int = 1
+            images: list[ApAsyncImage] = []
+
+            def __init__(self, grid, sources, id, name, max, **kwargs):
+                super().__init__(grid, id, name, **kwargs)
+                self.max = max
+                self.images = []
+                for source in sources:
+                    img = ApAsyncImage(fit_mode="contain", source=source, **kwargs)
+                    self.images.append(img)
+                self.add_widget(self.images[0])
+                self.effects = [MonochromeEffect()]
+
+            def update(self, amount: int):
+                if self.amount != amount:
+                    self.amount = amount
+                    self.clear_widgets()
+
+                    if amount == 0:
+                        self.add_widget(self.images[0])
+                        self.effects = [MonochromeEffect()]
+                    elif amount - 1 >= len(self.images):
+                        self.add_widget(self.images[-1])
+                        self.effects = []
+                    else:
+                        self.add_widget(self.images[amount - 1])
+                        self.effects = []
+
+            def on_press(self):
+                if self.last_touch.button == 'left':
+                    if self.amount < self.max:
+                        self.manual_collect_callback(self.item_name)
+                elif self.last_touch.button == 'right':
+                    if self.modified:
+                        self.manual_uncollect_callback(self.item_name)
+                elif self.last_touch.button == 'middle':
+                    self.manual_reset_callback(self.item_name)
+                
+                return super().on_press()
+            
+        class ItemGrid():
+            item_icons: list[ApItemIcon]
+
+            def reset_grid(self):
+                self.item_icons = []
+
+            def init_grid(self, layout_id: str, layout_configs: list[ItemLayoutSection], ctx: TrackerGameContext, items: dict[str], vert: bool = True):
+                item_tracker_groups: StackLayout = self.ids.get(layout_id)
+                item_tracker_groups.clear_widgets()
+
+                item_groups_lookup = Utils.persistent_load().get("groups_by_checksum", {}).get(ctx.checksums[ctx.game], {}).get(ctx.game, {}).get("item_name_groups", {})
+                grids: dict[ItemLayoutSection, ApItemGrid] = {}
+
+                for layout_config in layout_configs:
+                    grids[layout_config] = ApItemGrid()
+
+                itempool = ctx.tracker_core.multiworld.itempool
+
+                added_items = set()
+
+                for layout_config, grid in grids.items():
+
+                    for item_group in layout_config.items:
+                        items_to_add = [ item_group ]
+
+                        if item_group in item_groups_lookup:
+                            items_to_add = item_groups_lookup[item_group]
+
+                    for item in items_to_add:
+                        if item in added_items:
+                            continue
+                        pop_name = next((pop_name for pop_name, item_name in ctx.tracker_world.poptracker_item_mapping.items() if item_name == item), item)
+                        if pop_name not in items.keys():
+                            continue
+                        pool_item = next((pool_item for pool_item in itempool if pool_item.name == item), None)
+                        if pool_item == None:
+                            continue
+
+                        icon: ApItemToggleIcon | ApItemCounterIcon | None = None
+                        if items[pop_name]["type"] == "toggle":
+                            if "img" in items[pop_name].keys():
+                                icon = ApItemToggleIcon(size=layout_config.item_size,
+                                                        grid=grid, id=pool_item.code, name=item,
+                                                        source=f"{ctx.root_pack_path}/{items[pop_name]['img']}")
+                        elif items[pop_name]["type"] == "consumable":
+                            if "img" in items[pop_name].keys():
+                                occurences_in_pool = sum(pool_item.name == item for pool_item in itempool)
+                                icon = ApItemCounterIcon(size=layout_config.item_size,
+                                                        grid=grid, id=pool_item.code, name=item,
+                                                        source=f"{ctx.root_pack_path}/{items[pop_name]['img']}", max=occurences_in_pool)
+                        elif items[pop_name]["type"] == "progressive":
+                            if "stages" in items[pop_name].keys():
+                                occurences_in_pool = sum(pool_item.name == item for pool_item in itempool)
+                                sources: list[str] = []
+                                for stage in items[pop_name]["stages"]:
+                                    if "img" in stage.keys():
+                                        sources.append(f"{ctx.root_pack_path}/{stage['img']}")
+                                icon = ApItemProgressiveIcon(size=layout_config.item_size,
+                                                            grid=grid, id=pool_item.code, name=item,
+                                                            sources=sources, max=occurences_in_pool)
+                        if icon:
+                            icon.manual_collect_callback = ctx.manually_collect_item
+                            icon.manual_uncollect_callback = ctx.manually_uncollect_item
+                            icon.manual_reset_callback = ctx.manually_reset_item
+                            self.item_icons.append(icon)
+                            grid.add_widget(icon)
+                            added_items.add(item)
+
+                for layout_config, grid in grids.items():
+                    if layout_config.orientation == "lr":
+                        grid.orientation = "lr-tb"
+                        grid.width = layout_config.item_width * layout_config.cols
+                    else:
+                        grid.orientation = "tb-lr"
+                        grid.height = layout_config.item_height * layout_config.rows
+
+                    if len(grid.children) > 0:
+                        grid_container = BoxLayout(orientation='vertical', size_hint=(None, None))
+                        header = ApItemGridHeader(text=layout_config.name)
+                        
+                        grid_container.add_widget(header)
+                        grid_container.add_widget(grid)
+
+                        item_tracker_groups.add_widget(grid_container)
+
+                        grid.do_layout()
+                        if layout_config.orientation == "lr":
+                            grid.height = grid.minimum_height
+                        else:
+                            grid.width = grid.minimum_width
+                        header.texture_update()
+                        grid_container.do_layout()
+                        grid_container.size = grid_container.minimum_size
+
+
+                max_size = 0
+                for grid_container in item_tracker_groups.children:
+                    if vert:
+                        if grid_container.width > max_size:
+                            max_size = grid_container.width
+                    else:
+                        if grid_container.height > max_size:
+                            max_size = grid_container.height
+
+                if vert:
+                    item_tracker_groups.parent.width = max_size
+                else:
+                    item_tracker_groups.parent.height = max_size
+                
+            def update_items(self, inventory: dict[any, int], manual_items: list[str]):
+                for item_icon in self.item_icons:
+                    collected = next((amount for inv_item, amount in inventory if inv_item == item_icon.item_name), 0)
+                    manually_collected = next((manual_item for manual_item in manual_items if manual_item == item_icon.item_name), None) != None
+                    if isinstance(item_icon, ApItemToggleIcon):
+                        if collected > 0:
+                            item_icon.enable()
+                        else:
+                            item_icon.disable()
+                    elif isinstance(item_icon, ApItemCounterIcon):
+                        item_icon.update(collected)
+                    elif isinstance(item_icon, ApItemProgressiveIcon):
+                        item_icon.update(collected)
+                    item_icon.set_modified(manually_collected)
+
+        class ItemTracker(BoxLayout, ItemGrid):
+            def load_items(self, ctx: TrackerGameContext, items: dict[str]):
+                self.reset_grid()
+                if (ctx.tracker_world.item_page_item_layouts and len(ctx.tracker_world.item_page_item_layouts) > 0):
+                    self.init_grid("item_tracker_full", ctx.tracker_world.item_page_item_layouts, ctx, items)
+
+        class VisualTracker(BoxLayout, ItemGrid):
             location_icons: list[ApLocationIcon]
 
             def load_coords(self, coords: dict[tuple, tuple[list[int], int | None]], defered_coords: dict[tuple, tuple[list[str], int | None]],
@@ -1170,6 +1503,15 @@ class TrackerGameContext(CommonContext):
                         self.ids.location_canvas.remove_widget(icon)
                     del self.location_icons[len(location_icons):]
 
+            def load_items(self, ctx: TrackerGameContext, items: list):
+                self.reset_grid()
+                if (ctx.tracker_world.map_page_item_layouts_left and len(ctx.tracker_world.map_page_item_layouts_left) > 0):
+                    self.init_grid("item_tracker_left", ctx.tracker_world.map_page_item_layouts_left, ctx, items)
+                if (ctx.tracker_world.map_page_item_layouts_right and len(ctx.tracker_world.map_page_item_layouts_right) > 0):
+                    self.init_grid("item_tracker_right", ctx.tracker_world.map_page_item_layouts_right, ctx, items)
+                if (ctx.tracker_world.map_page_item_layouts_bottom and len(ctx.tracker_world.map_page_item_layouts_bottom) > 0):
+                    self.init_grid("item_tracker_bottom", ctx.tracker_world.map_page_item_layouts_bottom, ctx, items, False)
+
         try:
             tracker = TrackerLayout(orientation="vertical")
             tracker_view = TrackerView()
@@ -1201,12 +1543,20 @@ class TrackerGameContext(CommonContext):
 
             map_content = VisualTracker()
             self.map_page_coords_func = map_content.load_coords
+            self.item_page_funcs.append(map_content.load_items)
+
+            item_content = ItemTracker()
+            self.item_page_funcs.append(item_content.load_items)
+
             if self.gen_error is not None:
                 for line in self.gen_error.split("\n"):
                     self.log_to_tab(line, False)
+
+            manager.clear_path = self.clear_path #pipe forward the clearing of the GLP generated path
         except Exception as e:
             # TODO back compat, fail gracefully if a kivy app doesn't have our properties
             self.map_page_coords_func = lambda *args: {}
+            self.item_page_funcs = []
             tb = traceback.format_exc()
             print(tb)
         manager.add_client_tab("Tracker Page", tracker)
@@ -1223,11 +1573,43 @@ class TrackerGameContext(CommonContext):
                     map_tab.content.parent = None
                     self.remove_client_tab(map_tab)
 
-
         manager.apply_property(show_map=BooleanProperty(True))
         manager.fbind("show_map",set_map_tab)
         manager.show_map = False
 
+        @staticmethod
+        def set_item_tab(self, value, *args, item_content=item_content, test=[]):
+            if value:
+                if not test:
+                    test.append(self.add_client_tab("Item Page", item_content))
+                    self.ctx.item_page = item_content
+            else:
+                if test:
+                    item_tab = test.pop()
+                    item_tab.content.parent = None
+                    self.remove_client_tab(item_tab)
+
+        manager.apply_property(show_items=BooleanProperty(True))
+        manager.fbind("show_items",set_item_tab)
+        manager.show_items = False
+
+    def manually_collect_item(self, item_name: str):
+        self.tracker_core.manual_items.append(item_name)
+        self.persist_seed_data()
+        self.updateTracker()
+
+    def manually_uncollect_item(self, item_name: str):
+        if item_name in self.tracker_core.manual_items:
+            self.tracker_core.manual_items.remove(item_name)
+            self.persist_seed_data()
+            self.updateTracker()
+
+    def manually_reset_item(self, item_name: str):
+        if item_name in self.tracker_core.manual_items:
+            while(item_name in self.tracker_core.manual_items):
+                self.tracker_core.manual_items.remove(item_name)
+            self.persist_seed_data()
+            self.updateTracker()
 
     def make_gui(self):
         ui = super().make_gui()  # before the kivy imports so kvui gets loaded first
@@ -1436,7 +1818,10 @@ class TrackerGameContext(CommonContext):
                 if self.tracker_world:
                     self.load_pack()
                     if self.tracker_world:  # don't show the map if loading failed
-                        self.ui.show_map = True
+                        if self.tracker_world.map_page_maps and self.tracker_world.map_page_locations:
+                            self.ui.show_map = True
+                        if self.tracker_world.item_page_items and self.tracker_world.item_page_item_layouts:
+                            self.ui.show_items = True
                         if self.tracker_world.map_page_index:
                             key = self.tracker_world.map_page_setting_key or f"{self.slot}_{self.team}_{UT_MAP_TAB_KEY}"
                             self.set_notify(key)
@@ -1533,6 +1918,7 @@ class TrackerGameContext(CommonContext):
             self.seed_name = None
             if self.ui:
                 self.ui.show_map = False
+                self.ui.show_items = False
             if self.tracker_world:
                 if "load_map" in self.command_processor.commands:
                     del self.command_processor.commands["load_map"]
@@ -1546,6 +1932,7 @@ class TrackerGameContext(CommonContext):
             self.tracker_world = None
             self.defered_entrance_callback = None
             self.defered_entrance_datastorage_keys = []
+            self.logical_path_entrances = []
             self.set_page("Connect to a slot to start tracking!")
             if hasattr(self, "tracker_total_locs_label"):
                 self.tracker_total_locs_label.text = f"Locations: 0/0"
@@ -1598,19 +1985,24 @@ class TrackerGameContext(CommonContext):
         current_world = self.tracker_core.get_current_world()
         if not current_world:
             return ""
+        nl = "\n"  # py 3.11 compat
         sReturn = ""
         if hasattr(current_world,"explain_rule"):
             docstring = inspect.getdoc(current_world.explain_rule)
             if docstring:
-                sReturn += f"explain overrides:\n    {'\n    '.join(docstring.split('\n'))}"
+                sReturn += f"explain overrides:{nl}    {f'{nl}    '.join(docstring.split(nl))}"
         if hasattr(current_world,"get_logical_path"):
             docstring = inspect.getdoc(current_world.get_logical_path)
             if docstring:
                 if sReturn:
                     sReturn += "\n"
-                sReturn += f"get_logical_path overrides:\n    {'\n    '.join(docstring.split('\n'))}"
+                sReturn += f"get_logical_path overrides:{nl}    {f'{nl}    '.join(docstring.split(nl))}"
 
         return sReturn
+
+    def clear_path(self):
+        self.logical_path_entrances.clear()
+        self.updateTracker() # Refresh the entrance colors the lazy way
 
 
 def load_json(pack, path):
@@ -1805,6 +2197,9 @@ def get_logical_path(ctx: TrackerGameContext, dest_name: str):
         return
     if state:
         if relevent_region:
+
+            ctx.logical_path_entrances.clear()
+
             # stolen from core
             from BaseClasses import Region
             from typing import Tuple, Iterator
@@ -1827,6 +2222,7 @@ def get_logical_path(ctx: TrackerGameContext, dest_name: str):
             for k, v in paths:
                 if v:
                     ent = current_world.get_entrance(v)
+                    ctx.logical_path_entrances.append(v)
                     if hasattr(current_world,"explain_path"):
                         returned_json = current_world.explain_path(ent,state)
                         if returned_json is None:
@@ -1873,7 +2269,7 @@ def get_logical_path(ctx: TrackerGameContext, dest_name: str):
                     returned_json.append({"type":"text","text":":\n    "})
                     returned_json.extend(relevent_entrance.access_rule.explain_json(state))
                 ctx.print_json(returned_json)
-
+            ctx.updateTracker() #Lazy way to update the colors of the path entrances
         else:
             logger.info(f"{dest_name} not in logic")
 

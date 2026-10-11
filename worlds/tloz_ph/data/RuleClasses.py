@@ -374,6 +374,8 @@ class HasRequiredSpirits(Rule[PhantomHourglassWorld], game=tloz_ph):
             world: "PhantomHourglassWorld" = state.multiworld.worlds[self.player]
             required_items = world.boss_reward_items_pool
             spirit_items = [i for i in required_items if i in ITEM_GROUPS["Spirits"]]
+            if not spirit_items:
+                return True
             # print(f"spirit pool: {spirit_items}")
             if "Spirit (Progressive)" in spirit_items:
                 if len(spirit_items) == 3:

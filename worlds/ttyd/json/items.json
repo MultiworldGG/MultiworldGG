@@ -214,7 +214,7 @@
     "id": 77772221,
     "progression": "filler",
     "rom_id": 214,
-    "frequency": 1
+    "frequency": 2
   },
   {
     "item_name": "Chuckola Cola",
@@ -270,7 +270,7 @@
     "id": 77772223,
     "progression": "progression",
     "rom_id": 219,
-    "frequency": 1
+    "frequency": 2
   },
   {
     "item_name": "Courage Shell",
@@ -655,7 +655,7 @@
     "id": 77772225,
     "progression": "filler",
     "rom_id": 183,
-    "frequency": 1
+    "frequency": 2
   },
   {
     "item_name": "Honey Syrup",
@@ -851,7 +851,7 @@
     "id": 77772227,
     "progression": "filler",
     "rom_id": 217,
-    "frequency": 1
+    "frequency": 2
   },
   {
     "item_name": "Mini Mr. Mini",
@@ -935,7 +935,7 @@
     "id": 77772125,
     "progression": "filler",
     "rom_id": 221,
-    "frequency": 1
+    "frequency": 2
   },
   {
     "item_name": "P-Down, D-Up",
@@ -1292,7 +1292,7 @@
     "id": 77772228,
     "progression": "progression",
     "rom_id": 201,
-    "frequency": 1
+    "frequency": 2
   },
   {
     "item_name": "Soft Stomp",
@@ -1306,7 +1306,7 @@
     "id": 77772173,
     "progression": "filler",
     "rom_id": 198,
-    "frequency": 1
+    "frequency": 2
   },
   {
     "item_name": "Spike Shield",

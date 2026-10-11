@@ -11,7 +11,7 @@ from Options import Toggle, Choice, DefaultOnToggle, Range, PerGameCommonOptions
     OptionCounter, PlandoConnections, TextChoice
 from Utils import is_iterable_except_str
 from .data import data, MapPalette, MiscOption, friendly_entrance_name, FRIENDLY_CONNECTION_NAMES, \
-    OUTDOOR_WARP_MAP_FRIENDLY_NAMES, OUTDOOR_ENVIRONMENTS
+    OUTDOOR_WARP_MAP_FRIENDLY_NAMES, OUTDOOR_ENVIRONMENTS, HM_COMPAT_TMS
 from .maps import FLASH_MAP_GROUPS
 from .pokemon_data import LEGENDARY_POKEMON, NON_LEGENDARY_POKEMON
 from .entrance_rando import ENTRANCE_CATEGORIES
@@ -1956,8 +1956,8 @@ class HMCompatibilityOverride(OptionDict):
     default = {}
     schema = Schema(
         {
-            Optional(move.name.title()): And(Use(int), lambda n: 0 < n <= 100) for move in
-            data.moves.values() if move.is_hm
+            Optional(move.name.title()): And(Use(int), lambda n: 0 <= n <= 100) for move_id, move in
+            data.moves.items() if move.is_hm or move_id in HM_COMPAT_TMS
         },
     )
 

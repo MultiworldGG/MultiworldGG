@@ -96,6 +96,46 @@ dungeon_portals = {
     "Ganons Tower": ["Ganons Tower Portal"],
 }
 
+glitched_only_entrances = [
+    "Ice Lake Iceberg Bomb Jump",
+]
+
+# Regions that can only be reached in glitched modes
+glitched_only_regions = [
+    "Central Cliffs",
+    "Chris Houlihan Room",
+    "Dark Central Cliffs",
+    "Darkness Cliff",
+    "Desert Northern Cliffs",
+    "Eastern Cliff",
+    "Hyrule Castle Water",
+    "Mire Northern Cliffs",
+    "Pyramid Water",
+]
+
+glitched_or_inverted_only_regions = [
+    "Ice Lake Iceberg",
+]
+
+inverted_only_regions = [
+    "Spiral Mimic Ledge Extend",
+]
+
+unreachable_entrances = [
+    "PoD Arena Right to Ranged Crystal",
+    "PoD Arena Ledge to Ranged Crystal",
+    "GT Double Switch Entry to Ranged Switches",
+    "GT Double Switch Pot Corners to Ranged Switches",
+]
+
+# ??????????
+unreachable_regions = [
+    "PoD Arena Ledge - Ranged Crystal",
+    "PoD Arena Right - Ranged Crystal",
+    "GT Double Switch Entry - Ranged Switches",
+    "GT Double Switch Pot Corners - Ranged Switches",
+]
+
 
 def create_and_connect_regions(world: ALttPRWorld) -> None:
     # First define every region, then loop through a second time to connect them.
@@ -105,6 +145,9 @@ def create_and_connect_regions(world: ALttPRWorld) -> None:
     event_locations = get_event_locations(world)
 
     for region in world.door_rando_world.regions:
+        if region_is_inaccessible(world, region):
+            continue
+
         ap_region = ALttPRRegion(region.name, world.player, world.multiworld)
         ap_region.type = region.type
         ap_region.is_in_dungeon = region.type == RegionType.Dungeon
@@ -145,9 +188,12 @@ def create_and_connect_regions(world: ALttPRWorld) -> None:
 
     # Now make all the connections
     for region in world.door_rando_world.regions:
+        if region_is_inaccessible(world, region):
+            continue
+
         ap_region = ap_regions[region.name]
         for exit in region.exits:
-            if exit.connected_region is None:
+            if exit.connected_region is None or entrance_is_inaccessible(world, exit):
                 continue
 
             # Need to check for always impassible doors, other door logic like keys is handled in access_rule
@@ -164,6 +210,19 @@ def create_and_connect_regions(world: ALttPRWorld) -> None:
     world.multiworld.regions += list(ap_regions.values())
     handle_ice_cross(world)
     handle_big_bomb_logic(world)
+
+
+def region_is_inaccessible(world: ALttPRWorld, region) -> bool:
+    # Some regions are always inaccessible, such as out of bounds regions in non-glitched modes
+    return region.name in glitched_only_regions or \
+           (world.options.world_mode != "inverted" and region.name in inverted_only_regions) or \
+           (world.options.world_mode != "inverted" and region.name in glitched_or_inverted_only_regions) or \
+           region.name in unreachable_regions
+
+
+def entrance_is_inaccessible(world: ALttPRWorld, entrance) -> bool:
+    # Some entrances are always inaccessible, such as paths that require glitches in non-glitched modes
+    return entrance.name in glitched_only_entrances or entrance.name in unreachable_entrances
 
 
 def handle_ice_cross(world: ALttPRWorld) -> None:

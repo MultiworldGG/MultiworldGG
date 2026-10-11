@@ -1,7 +1,66 @@
 
+from typing import TYPE_CHECKING
 from worlds.tloz_ph.data.Constants import *
 from ..DSZeldaClient.subclasses import SRAM
 from ..DSZeldaClient.LocationClass import DSLocation
+from ..Options import PhantomHourglassFrogRandomization
+
+if TYPE_CHECKING:
+    from .. import PhantomHourglassWorld
+
+def conditional_slot_data(self: "PhantomHourglassWorld", location_data: DSLocation) -> bool:
+    for slot, _value, *args in location_data.has_slot_data:
+        slot = getattr(self.options, slot, None).value
+        if isinstance(slot, set):
+            if _value not in slot:
+                return False
+        else:
+            _value = _value if isinstance(_value, list) else [_value]
+            if slot not in _value:
+                return False
+    return True
+
+def conditional_restocks(self: "PhantomHourglassWorld", location_data: DSLocation):
+    if 'restocks' not in self.options.shopsanity.value and (
+            location_data.restock in self.options.shopsanity.value or location_data.restock == "always"):
+        return False
+    return True
+
+def conditional_frogs(self: "PhantomHourglassWorld", location_data: DSLocation):
+    return self.options.randomize_frogs != PhantomHourglassFrogRandomization.option_start_with
+
+def conditional_digs(self: "PhantomHourglassWorld", location_data: DSLocation):
+    return self.options.randomize_digs
+
+def conditional_archery_2000(self: "PhantomHourglassWorld", location_data: DSLocation):
+    return self.options.logic in ["hard", "glitched"] and self.options.randomize_minigames.value
+
+def conditional_minigames(self: "PhantomHourglassWorld", location_data: DSLocation):
+    return self.options.randomize_minigames.value
+
+def conditional_fishing(self: "PhantomHourglassWorld", location_data: DSLocation):
+    return self.options.randomize_fishing.value
+
+def conditional_phantom_items(self: "PhantomHourglassWorld", location_data: DSLocation):
+    return self.options.randomize_pedestal_items.value
+
+def conditional_beedle_membership(self: "PhantomHourglassWorld", location_data: DSLocation):
+    return self.options.randomize_beedle_membership.value > 1
+
+def conditional_harrow(self: "PhantomHourglassWorld", location_data: DSLocation):
+    return self.options.randomize_harrow.value
+
+def conditional_zauz_crest(self: "PhantomHourglassWorld", location_data: DSLocation):
+    return self.options.randomize_triforce_crest.value
+
+def conditional_man_of_smiles_3(self: "PhantomHourglassWorld", location_data: DSLocation):
+    return self.options.randomize_beedle_membership.value > 0
+
+def conditional_salvage(self: "PhantomHourglassWorld", location_data: DSLocation):
+    return self.options.randomize_salvage.value
+
+def conditional_dummy(*args):
+    return False
 
 LOCATION_LIST: list[DSLocation] = [
     DSLocation("Sword Cave Chest",
@@ -13,7 +72,8 @@ LOCATION_LIST: list[DSLocation] = [
                id=1,
                hint_entrance="Sword Cave Exit",
                chest_offset=0x1,
-               scenes=0xb13
+               scenes=0xb13,
+               location_groups=["Mercay Island"],
                ),
     DSLocation("Mercay SW Clear Rocks",
                region="Mercay SW",
@@ -24,7 +84,8 @@ LOCATION_LIST: list[DSLocation] = [
                sram_value=0x40,
                id=2,
                gift_addr=Address(0x2152CC),
-               scenes=0xb00
+               scenes=0xb00,
+               location_groups=["Mercay Island"],
                ),
     DSLocation("Mercay SW Tree Dig",
                region="Mercay SW Dig Spot",
@@ -33,6 +94,7 @@ LOCATION_LIST: list[DSLocation] = [
                item_override="Nothing!",
                dig_spot=True,
                id=3,
+               location_groups=["Mercay Island"],
                scenes=0xb00
                ),
     DSLocation("Mercay SE Cucco Chest",
@@ -42,6 +104,7 @@ LOCATION_LIST: list[DSLocation] = [
                sram_addr=PHSRAM.mercay_se_chests,
                sram_value=0x8,
                id=4,
+               location_groups=["Mercay Island"],
                chest_offset=0x72,
                scenes=0xb03
                ),
@@ -52,6 +115,7 @@ LOCATION_LIST: list[DSLocation] = [
                sram_value=0x1,
                vanilla_item="Big Green Rupee (100)",
                id=5,
+               location_groups=["Mercay Island"],
                scenes=0xb02
                ),
     DSLocation("Eye Bridge Cave Chest",
@@ -62,6 +126,7 @@ LOCATION_LIST: list[DSLocation] = [
                id=6,
                hint_entrance="Eye Bridge Cave North Exit",
                chest_offset=0x2,
+               location_groups=["Mercay Island"],
                scenes=0xb10
                ),
     DSLocation("Mercay SE Ledge Chest West",
@@ -75,6 +140,7 @@ LOCATION_LIST: list[DSLocation] = [
                hint_entrance=['Mercay SE Ledge North', 'Mercay SE OOB West', 'Mercay SE OOB North'],
                hint_entrance_secondary="Mercay NE Ledge Cave",
                chest_offset=0x62,
+               location_groups=["Mercay Island"],
                scenes=0xb03
                ),
     DSLocation("Mercay SE Ledge Chest East",
@@ -88,6 +154,7 @@ LOCATION_LIST: list[DSLocation] = [
                hint_entrance=['Mercay SE Ledge North', 'Mercay SE OOB West', 'Mercay SE OOB North'],
                hint_entrance_secondary="Mercay NE Ledge Cave",
                chest_offset=0x63,
+               location_groups=["Mercay Island"],
                scenes=0xb03
                ),
     DSLocation("TotOK Lobby Phantom Hourglass",
@@ -98,6 +165,7 @@ LOCATION_LIST: list[DSLocation] = [
                vanilla_item="Nothing!",
                id=9,
                hint_entrance="TotOK Lobby Exit",
+               location_groups=["Temple of the Ocean King", "Temple of the Ocean King Lobby"],
                scenes=0x2600
                ),
     DSLocation("Long Bridge Cave Chest",
@@ -108,6 +176,7 @@ LOCATION_LIST: list[DSLocation] = [
                id=10,
                hint_entrance=['Long Bridge Cave West', 'Long Bridge Cave East'],
                chest_offset=0x4,
+               location_groups=["Mercay Island"],
                scenes=0xb12
                ),
     DSLocation("Mercay NE Freedle Island Chest",
@@ -120,6 +189,7 @@ LOCATION_LIST: list[DSLocation] = [
                id=11,
                hint_entrance="Mercay NE Freedle Island Cave",
                chest_offset=0x36,
+               location_groups=["Mercay Island"],
                scenes=0xb02
                ),
     DSLocation("Mercay NE Freedle Gift Item",
@@ -131,6 +201,7 @@ LOCATION_LIST: list[DSLocation] = [
                id=12,
                hint_entrance="Mercay NE Freedle Island Cave",
                gift_addr=Address(0x21618c),
+               location_groups=["Mercay Island"],
                scenes=0xb02
                ),
     DSLocation("Mercay SE Ojibe (Docks Guy) Item",
@@ -141,6 +212,7 @@ LOCATION_LIST: list[DSLocation] = [
                item_override="Nothing!",
                id=13,
                persistent=True,
+               location_groups=["Mercay Island"],
                scenes=0xb03
                ),
     DSLocation("Shipyard Chest",
@@ -149,6 +221,7 @@ LOCATION_LIST: list[DSLocation] = [
                id=14,
                hint_entrance="Shipyard Exit",
                chest_offset=0x1,
+               location_groups=["Mercay Island"],
                scenes=0xb0d
                ),
     DSLocation("Oshus Spirit Gem",
@@ -157,10 +230,11 @@ LOCATION_LIST: list[DSLocation] = [
                address=PHAddr.adv_flags_41,
                value=0x2,
                delay_reset=True,
-               conditional=True,
+               conditional=conditional_dummy,
                id=15,
                hint_entrance="Oshus' Exit",
                gift_addr=Address(0x2153FC),
+               location_groups=["Mercay Island", "Oshus"],
                scenes=0xb0a
                ),
     DSLocation("Oshus Phantom Sword",
@@ -172,6 +246,7 @@ LOCATION_LIST: list[DSLocation] = [
                id=16,
                hint_entrance="Oshus' Exit",
                reload_chests=True,
+               location_groups=["Mercay Island", "Oshus"],
                scenes=0xb0a
                ),
     DSLocation("Mountain Passage 1F Entrance Chest",
@@ -188,6 +263,7 @@ LOCATION_LIST: list[DSLocation] = [
                hint_entrance_secondary=['Mountain Passage 1F Staircase', 'Mountain Passage 2F Staircase',
                                         'Mountain Passage 2F Exit'],
                chest_offset=0x15,
+               location_groups=["Mercay Island", "Mountain Passage"],
                scenes=0x2700
                ),
     DSLocation("Mountain Passage 1F Side Chest",
@@ -203,6 +279,7 @@ LOCATION_LIST: list[DSLocation] = [
                hint_entrance=['Mountain Passage 1F Exit', 'Mountain Passage 1F Staircase'],
                hint_entrance_secondary=['Mountain Passage 2F Staircase', 'Mountain Passage 2F Exit'],
                chest_offset=0x13,
+               location_groups=["Mercay Island", "Mountain Passage"],
                scenes=0x2700
                ),
     DSLocation("Mountain Passage 1F Key Drop",
@@ -215,6 +292,7 @@ LOCATION_LIST: list[DSLocation] = [
                dungeon="Mountain Passage",
                id=19,
                do_special="keylock",
+               location_groups=["Mercay Island", "Mountain Passage"],
                hint_entrance=['Mountain Passage 1F Exit', 'Mountain Passage 1F Staircase'],
                hint_entrance_secondary=['Mountain Passage 2F Staircase', 'Mountain Passage 2F Exit'],
                scenes=0x2700
@@ -227,6 +305,7 @@ LOCATION_LIST: list[DSLocation] = [
                dungeon="Mountain Passage",
                id=20,
                do_special="keylock",
+               location_groups=["Mercay Island", "Mountain Passage"],
                hint_entrance="Mountain Passage 2F Staircase",
                hint_entrance_secondary="Mountain Passage 2F Exit",
                scenes=0x2701
@@ -238,6 +317,7 @@ LOCATION_LIST: list[DSLocation] = [
                # value=0x2,
                value=0x1,
                id=21,
+               location_groups=["Mercay Island", "Island Shop"],
                hint_entrance=['Mercay Shop Exit', 'Molida Shop Exit', 'Goron Shop Exit'],
                shop_model=True,
                has_slot_data=[['shopsanity', 'uniques']],
@@ -254,6 +334,7 @@ LOCATION_LIST: list[DSLocation] = [
                has_slot_data=[['shopsanity', 'uniques']],
                shop_model=True,
                restock="always",
+               location_groups=["Mercay Island", "Island Shop"],
                # scenes={0xc0e, 0x1014, 0xb11}
                ),
     DSLocation("Island Shop Bombchu Bag",
@@ -267,6 +348,7 @@ LOCATION_LIST: list[DSLocation] = [
                hint_entrance=['Mercay Shop Exit', 'Molida Shop Exit', 'Goron Shop Exit'],
                has_slot_data=[['shopsanity', 'uniques']],
                restock="always",
+               location_groups=["Mercay Island", "Island Shop"],
                # scenes={0xc0e, 0x1014, 0xb11}
                ),
     DSLocation("Island Shop Heart Container",
@@ -280,6 +362,7 @@ LOCATION_LIST: list[DSLocation] = [
                restock="always",
                hint_entrance=['Mercay Shop Exit', 'Molida Shop Exit', 'Goron Shop Exit'],
                has_slot_data=[['shopsanity', 'uniques']],
+               location_groups=["Mercay Island", "Island Shop"],
                # scenes={0xc0e, 0x1014, 0xb11}
                ),
     DSLocation("Beedle Shop Bomb Bag",
@@ -291,6 +374,7 @@ LOCATION_LIST: list[DSLocation] = [
                shop_model=True,
                id=25,
                has_slot_data=[['shopsanity', 'uniques']],
+               location_groups=["Beedle's Ship", "Beedle Shop"],
                # scenes=0x500
                ),
     DSLocation("Beedle Shop Wisdom Gem",
@@ -303,6 +387,7 @@ LOCATION_LIST: list[DSLocation] = [
                id=26,
                shop_model=True,
                has_slot_data=[['shopsanity', 'uniques']],
+               location_groups=["Beedle's Ship", "Beedle Shop"],
                # scenes=0x500
                ),
     DSLocation("Masked Beedle Heart Container",
@@ -313,6 +398,7 @@ LOCATION_LIST: list[DSLocation] = [
                value=0x1,
                id=27,
                shop_model=True,
+               location_groups=["Beedle's Ship", "Masked Beedle Shop"],
                has_slot_data=[['shopsanity', 'uniques'], ['randomize_masked_beedle', 1]],
                # scenes=0x500
                ),
@@ -324,6 +410,7 @@ LOCATION_LIST: list[DSLocation] = [
                value=0x1,
                id=28,
                shop_model=True,
+               location_groups=["Beedle's Ship", "Masked Beedle Shop"],
                has_slot_data=[['shopsanity', 'uniques'], ['randomize_masked_beedle', 1]],
                # scenes=0x500
                ),
@@ -332,8 +419,9 @@ LOCATION_LIST: list[DSLocation] = [
                vanilla_item="Nothing!",
                address=PHAddr.adv_flags_12,
                value=0x40,
-               conditional=True,
+               conditional=conditional_beedle_membership,
                id=322,
+               location_groups=["Beedle's Ship", "Beedle Memberships"],
                scenes=0x500
                ),
     DSLocation("Beedle Membership Silver",
@@ -341,8 +429,9 @@ LOCATION_LIST: list[DSLocation] = [
                vanilla_item="Nothing!",
                address=PHAddr.adv_flags_18,
                value=0x20,
-               conditional=True,
+               conditional=conditional_beedle_membership,
                id=323,
+               location_groups=["Beedle's Ship", "Beedle Memberships"],
                scenes=0x500
                ),
     DSLocation("Beedle Membership Gold",
@@ -350,8 +439,9 @@ LOCATION_LIST: list[DSLocation] = [
                vanilla_item="Nothing!",
                address=PHAddr.adv_flags_18,
                value=0x40,
-               conditional=True,
+               conditional=conditional_beedle_membership,
                id=324,
+               location_groups=["Beedle's Ship", "Beedle Memberships"],
                scenes=0x500
                ),
     DSLocation("Beedle Membership Platinum",
@@ -359,8 +449,9 @@ LOCATION_LIST: list[DSLocation] = [
                vanilla_item="Nothing!",
                address=PHAddr.adv_flags_18,
                value=0x80,
-               conditional=True,
+               conditional=conditional_beedle_membership,
                id=325,
+               location_groups=["Beedle's Ship", "Beedle Memberships"],
                scenes=0x500
                ),
     DSLocation("Beedle Membership VIP",
@@ -368,8 +459,9 @@ LOCATION_LIST: list[DSLocation] = [
                vanilla_item="Nothing!",
                address=PHAddr.adv_flags_19,
                value=0x1,
-               conditional=True,
+               conditional=conditional_beedle_membership,
                id=326,
+               location_groups=["Beedle's Ship", "Beedle Memberships"],
                scenes=0x500
                ),
     DSLocation("TotOK 1F Sea Chart Chest",
@@ -382,6 +474,7 @@ LOCATION_LIST: list[DSLocation] = [
                do_special="ut_event",
                hint_entrance="TotOK Lobby Exit",
                chest_offset=0x17,
+               location_groups=["Temple of the Ocean King", "TotOK"],
                scenes=0x2500
                ),
     DSLocation("TotOK 1F Linebeck Key",
@@ -395,6 +488,7 @@ LOCATION_LIST: list[DSLocation] = [
                id=30,
                hint_entrance="TotOK Lobby Exit",
                gift_addr=Address(0x208a54),
+               location_groups=["Temple of the Ocean King", "TotOK"],
                scenes=0x2500
                ),
     DSLocation("TotOK 1F Empty Chest",
@@ -405,6 +499,7 @@ LOCATION_LIST: list[DSLocation] = [
                id=31,
                hint_entrance="TotOK Lobby Exit",
                chest_offset=0x22,
+               location_groups=["Temple of the Ocean King", "TotOK"],
                scenes=0x2500
                ),
     DSLocation("TotOK B1 Small Key",
@@ -414,6 +509,7 @@ LOCATION_LIST: list[DSLocation] = [
                dungeon="Temple of the Ocean King",
                id=32,
                hint_entrance="TotOK Lobby Exit",
+               location_groups=["Temple of the Ocean King", "TotOK"],
                scenes=0x2501
                ),
     DSLocation("TotOK B1 Shoot Eye Chest",
@@ -425,6 +521,7 @@ LOCATION_LIST: list[DSLocation] = [
                id=33,
                hint_entrance="TotOK Lobby Exit",
                chest_offset=0x9,
+               location_groups=["Temple of the Ocean King", "TotOK"],
                scenes=0x2501
                ),
     DSLocation("TotOK B1 Phantom Chest",
@@ -438,6 +535,7 @@ LOCATION_LIST: list[DSLocation] = [
                id=34,
                hint_entrance="TotOK Lobby Exit",
                chest_offset=0xa,
+               location_groups=["Temple of the Ocean King", "TotOK"],
                scenes=0x2501
                ),
     DSLocation("TotOK B2 Bombchu Chest",
@@ -450,6 +548,7 @@ LOCATION_LIST: list[DSLocation] = [
                id=35,
                hint_entrance="TotOK Lobby Exit",
                chest_offset=0x11,
+               location_groups=["Temple of the Ocean King", "TotOK"],
                scenes=0x2502
                ),
     DSLocation("TotOK B2 Phantom Chest",
@@ -463,6 +562,7 @@ LOCATION_LIST: list[DSLocation] = [
                id=36,
                hint_entrance="TotOK Lobby Exit",
                chest_offset=0x12,
+               location_groups=["Temple of the Ocean King", "TotOK"],
                scenes=0x2502
                ),
     DSLocation("TotOK B2 Small Key",
@@ -483,6 +583,7 @@ LOCATION_LIST: list[DSLocation] = [
                id=38,
                hint_entrance="TotOK Lobby Exit",
                chest_offset=0x14,
+               location_groups=["Temple of the Ocean King", "TotOK"],
                scenes=0x2503
                ),
     DSLocation("TotOK B3 Phantom Chest",
@@ -496,6 +597,7 @@ LOCATION_LIST: list[DSLocation] = [
                id=39,
                hint_entrance="TotOK Lobby Exit",
                chest_offset=0x15,
+               location_groups=["Temple of the Ocean King", "TotOK"],
                scenes=0x2503
                ),
     DSLocation("TotOK B3 NW Chest",
@@ -509,6 +611,7 @@ LOCATION_LIST: list[DSLocation] = [
                id=40,
                hint_entrance="TotOK Lobby Exit",
                chest_offset=0x6,
+               location_groups=["Temple of the Ocean King", "TotOK"],
                scenes=0x2503
                ),
     DSLocation("TotOK B3 SW Chest",
@@ -523,6 +626,7 @@ LOCATION_LIST: list[DSLocation] = [
                id=41,
                hint_entrance="TotOK Lobby Exit",
                chest_offset=0x8,
+               location_groups=["Temple of the Ocean King", "TotOK"],
                scenes=0x2503
                ),
     DSLocation("TotOK B3 SE Chest",
@@ -536,6 +640,7 @@ LOCATION_LIST: list[DSLocation] = [
                id=42,
                hint_entrance="TotOK Lobby Exit",
                chest_offset=0x7,
+               location_groups=["Temple of the Ocean King", "TotOK"],
                scenes=0x2503
                ),
     DSLocation("TotOK B3 Small Key",
@@ -553,6 +658,7 @@ LOCATION_LIST: list[DSLocation] = [
                id=44,
                hint_entrance="TotOK Lobby Exit",
                chest_offset=0x3,
+               location_groups=["Temple of the Ocean King", "TotOK"],
                scenes=0x2504
                ),
     DSLocation("TotOK B4 Phantom Eye Chest",
@@ -565,6 +671,7 @@ LOCATION_LIST: list[DSLocation] = [
                id=45,
                hint_entrance="TotOK Lobby Exit",
                chest_offset=0x3,
+               location_groups=["Temple of the Ocean King", "TotOK"],
                scenes=0x2505
                ),
     DSLocation("TotOK B4 Phantom Chest",
@@ -577,6 +684,7 @@ LOCATION_LIST: list[DSLocation] = [
                id=46,
                hint_entrance="TotOK Lobby Exit",
                chest_offset=0x4,
+               location_groups=["Temple of the Ocean King", "TotOK"],
                scenes=0x2505
                ),
     DSLocation("TotOK B4 Small Key",
@@ -586,6 +694,7 @@ LOCATION_LIST: list[DSLocation] = [
                delay_pickup="TotOK B4 Small Key",
                id=47,
                hint_entrance="TotOK Lobby Exit",
+               location_groups=["Temple of the Ocean King", "TotOK"],
                scenes=0x2505
                ),
     DSLocation("TotOK B5 Alt Path Chest",
@@ -597,6 +706,7 @@ LOCATION_LIST: list[DSLocation] = [
                id=48,
                hint_entrance="TotOK Lobby Exit",
                chest_offset=0xc,
+               location_groups=["Temple of the Ocean King", "TotOK"],
                scenes=0x2506
                ),
     DSLocation("TotOK B5 Chest",
@@ -608,6 +718,7 @@ LOCATION_LIST: list[DSLocation] = [
                id=49,
                hint_entrance="TotOK Lobby Exit",
                chest_offset=0xb,
+               location_groups=["Temple of the Ocean King", "TotOK"],
                scenes=0x2506
                ),
     DSLocation("TotOK B6 Phantom Chest",
@@ -620,6 +731,7 @@ LOCATION_LIST: list[DSLocation] = [
                id=50,
                hint_entrance="TotOK Lobby Exit",
                chest_offset=0x3,
+               location_groups=["Temple of the Ocean King", "TotOK"],
                scenes=0x2507
                ),
     DSLocation("TotOK B6 Bow Chest",
@@ -631,6 +743,7 @@ LOCATION_LIST: list[DSLocation] = [
                id=51,
                hint_entrance="TotOK Lobby Exit",
                chest_offset=0x2,
+               location_groups=["Temple of the Ocean King", "TotOK"],
                scenes=0x2507
                ),
     DSLocation("TotOK B6 Courage Crest",
@@ -642,6 +755,7 @@ LOCATION_LIST: list[DSLocation] = [
                dungeon="Temple of the Ocean King",
                id=52,
                hint_entrance="TotOK Lobby Exit",
+               location_groups=["Temple of the Ocean King", "TotOK"],
                scenes=0x2508
                ),
     DSLocation("TotOK B7 North Chest",
@@ -654,6 +768,7 @@ LOCATION_LIST: list[DSLocation] = [
                id=53,
                hint_entrance="TotOK Lobby Exit",
                chest_offset=0x4,
+               location_groups=["Temple of the Ocean King", "TotOK"],
                scenes=0x250a
                ),
     DSLocation("TotOK B7 Peg Chest",
@@ -666,6 +781,7 @@ LOCATION_LIST: list[DSLocation] = [
                id=54,
                hint_entrance="TotOK Lobby Exit",
                chest_offset=0x5,
+               location_groups=["Temple of the Ocean King", "TotOK"],
                scenes=0x250a
                ),
     DSLocation("TotOK B7 Phantom Chest",
@@ -678,6 +794,7 @@ LOCATION_LIST: list[DSLocation] = [
                id=55,
                hint_entrance="TotOK Lobby Exit",
                chest_offset=0x3,
+               location_groups=["Temple of the Ocean King", "TotOK"],
                scenes=0x250a
                ),
     DSLocation("TotOK B8 2 Crystals Chest",
@@ -689,6 +806,7 @@ LOCATION_LIST: list[DSLocation] = [
                id=56,
                hint_entrance="TotOK Lobby Exit",
                chest_offset=0x5,
+               location_groups=["Temple of the Ocean King", "TotOK"],
                scenes=0x250b
                ),
     DSLocation("TotOK B8 Phantom Chest",
@@ -703,6 +821,7 @@ LOCATION_LIST: list[DSLocation] = [
                id=57,
                hint_entrance="TotOK Lobby Exit",
                chest_offset=0x4,
+               location_groups=["Temple of the Ocean King", "TotOK"],
                scenes=0x250b
                ),
     DSLocation("TotOK B9 NW Chest",
@@ -714,6 +833,7 @@ LOCATION_LIST: list[DSLocation] = [
                id=58,
                hint_entrance="TotOK Lobby Exit",
                chest_offset=0x21,
+               location_groups=["Temple of the Ocean King", "TotOK"],
                scenes=0x250c
                ),
     DSLocation("TotOK B9 Wizzrobe Chest",
@@ -727,11 +847,12 @@ LOCATION_LIST: list[DSLocation] = [
                id=59,
                hint_entrance="TotOK Lobby Exit",
                chest_offset=0x22,
+               location_groups=["Temple of the Ocean King", "TotOK"],
                scenes=0x250c
                ),
     DSLocation("TotOK B9 Square Crystal",
                region="TotOK B9 Crystal",
-               conditional=True,
+               conditional=conditional_phantom_items,
                id=333,
                dungeon="Temple of the Ocean King",
                vanilla_item="Square Crystal (Temple of the Ocean King)",
@@ -746,6 +867,7 @@ LOCATION_LIST: list[DSLocation] = [
                id=60,
                hint_entrance="TotOK Lobby Exit",
                chest_offset=0x23,
+               location_groups=["Temple of the Ocean King", "TotOK"],
                scenes=0x250c
                ),
     DSLocation("TotOK B9.5 Sea Chart Chest",
@@ -772,6 +894,7 @@ LOCATION_LIST: list[DSLocation] = [
                id=62,
                hint_entrance="TotOK Lobby Exit",
                chest_offset=0x1c,
+               location_groups=["Temple of the Ocean King", "TotOK"],
                scenes=0x250e
                ),
     DSLocation("TotOK B10 Phantom Chest",
@@ -788,6 +911,7 @@ LOCATION_LIST: list[DSLocation] = [
                id=63,
                hint_entrance="TotOK Lobby Exit",
                chest_offset=0x17,
+               location_groups=["Temple of the Ocean King", "TotOK"],
                scenes=0x250e
                ),
     DSLocation("TotOK B10 Phantom Eye Chest",
@@ -798,6 +922,7 @@ LOCATION_LIST: list[DSLocation] = [
                id=64,
                hint_entrance="TotOK Lobby Exit",
                chest_offset=0x1f,
+               location_groups=["Temple of the Ocean King", "TotOK"],
                scenes=0x250e
                ),
     DSLocation("TotOK B10 Small Key",
@@ -817,6 +942,7 @@ LOCATION_LIST: list[DSLocation] = [
                id=66,
                hint_entrance="TotOK Lobby Exit",
                chest_offset=0x50,
+               location_groups=["Temple of the Ocean King", "TotOK"],
                scenes=0x250f
                ),
     DSLocation("TotOK B11 Phantom Chest",
@@ -829,6 +955,7 @@ LOCATION_LIST: list[DSLocation] = [
                id=67,
                hint_entrance="TotOK Lobby Exit",
                chest_offset=0xf,
+               location_groups=["Temple of the Ocean King", "TotOK"],
                scenes=0x250f
                ),
     DSLocation("TotOK B12 NE Chest",
@@ -840,6 +967,7 @@ LOCATION_LIST: list[DSLocation] = [
                id=68,
                hint_entrance="TotOK Lobby Exit",
                chest_offset=0x9,
+               location_groups=["Temple of the Ocean King", "TotOK"],
                scenes=0x2510
                ),
     DSLocation("TotOK B12 NW Chest",
@@ -851,11 +979,12 @@ LOCATION_LIST: list[DSLocation] = [
                id=69,
                hint_entrance="TotOK Lobby Exit",
                chest_offset=0x8,
+               location_groups=["Temple of the Ocean King", "TotOK"],
                scenes=0x2510
                ),
     DSLocation("TotOK B12 Warp Phantom Force Gem",
                region="TotOK B12 Gem",
-               conditional=True,
+               conditional=conditional_phantom_items,
                id=334,
                dungeon="Temple of the Ocean King",
                vanilla_item="Force Gem (B12)",
@@ -869,6 +998,7 @@ LOCATION_LIST: list[DSLocation] = [
                id=70,
                hint_entrance="TotOK Lobby Exit",
                chest_offset=0x21,
+               location_groups=["Temple of the Ocean King", "TotOK"],
                scenes=0x2510
                ),
     DSLocation("TotOK B12 Kill Everything Chest",
@@ -880,6 +1010,7 @@ LOCATION_LIST: list[DSLocation] = [
                id=71,
                hint_entrance="TotOK Lobby Exit",
                chest_offset=0x22,
+               location_groups=["Temple of the Ocean King", "TotOK"],
                scenes=0x2510
                ),
     DSLocation("TotOK B12 Phantom Chest",
@@ -894,6 +1025,7 @@ LOCATION_LIST: list[DSLocation] = [
                id=72,
                hint_entrance="TotOK Lobby Exit",
                chest_offset=0xa,
+               location_groups=["Temple of the Ocean King", "TotOK"],
                scenes=0x2510
                ),
     DSLocation("TotOK B13 Sea Chart Chest",
@@ -905,6 +1037,7 @@ LOCATION_LIST: list[DSLocation] = [
                id=73,
                hint_entrance="TotOK Lobby Exit",
                chest_offset=0x3,
+               location_groups=["Temple of the Ocean King", "TotOK"],
                scenes=0x2511
                ),
     DSLocation("TotOK Flooded Chamber Left Chest",
@@ -916,6 +1049,7 @@ LOCATION_LIST: list[DSLocation] = [
                id=331,
                hint_entrance="TotOK Lobby Exit",
                chest_offset=0xe,
+               location_groups=["Temple of the Ocean King", "TotOK"],
                scenes=0x2512
                ),
     DSLocation("TotOK Flooded Chamber Right Chest",
@@ -927,6 +1061,7 @@ LOCATION_LIST: list[DSLocation] = [
                id=332,
                hint_entrance="TotOK Lobby Exit",
                chest_offset=0xf,
+               location_groups=["Temple of the Ocean King", "TotOK"],
                scenes=0x2512
                ),
     DSLocation("Ocean SW Salvage Courage Crest",
@@ -941,7 +1076,7 @@ LOCATION_LIST: list[DSLocation] = [
                region="SW Ocean Frog X",
                vanilla_item="Golden Frog Glyph X",
                x_min=125000,
-               conditional=True,
+               conditional=conditional_frogs,
                id=75,
                scenes=0x0
                ),
@@ -949,7 +1084,7 @@ LOCATION_LIST: list[DSLocation] = [
                region="SW Ocean Frog Phi",
                vanilla_item="Golden Frog Glyph Phi",
                x_max=-120000,
-               conditional=True,
+               conditional=conditional_frogs,
                id=76,
                scenes=0x0
                ),
@@ -982,7 +1117,7 @@ LOCATION_LIST: list[DSLocation] = [
                dig_spot=True,
                x_max=-50000,
                y=4915,
-               conditional=True,
+               conditional=conditional_digs,
                persistent=True,
                id=79,
                hint_entrance=['Cannon Bomb Garden Cave', 'Cannon Bee Cave', 'Cannon Workshop East',
@@ -1013,7 +1148,7 @@ LOCATION_LIST: list[DSLocation] = [
                y=4915,
                x_max=27000,
                z_min=37000,
-               conditional=True,
+               conditional=conditional_digs,
                persistent=True,
                dig_spot=True,
                id=82,
@@ -1042,7 +1177,7 @@ LOCATION_LIST: list[DSLocation] = [
                z_max=12300,
                sram_addr=SRAM(0x190),
                sram_value=0x2,
-               conditional=True,
+               conditional=conditional_digs,
                persistent=True,
                dig_spot=True,
                id=84,
@@ -1217,6 +1352,7 @@ LOCATION_LIST: list[DSLocation] = [
                boss_room="Temple of Fire",
                boss_reward_location=True,
                delay_reset=True,
+               local=True,
                id=100,
                do_special={'event_type': 'ut_connect', 'event_name': 'EVENT: Defeat Blaaz'},
                hint_entrance="Blaaz Exit",
@@ -1240,7 +1376,7 @@ LOCATION_LIST: list[DSLocation] = [
                x_min=40000,
                y=0,
                dig_spot=True,
-               conditional=True,
+               conditional=conditional_digs,
                id=102,
                scenes=0xc00
                ),
@@ -1272,7 +1408,7 @@ LOCATION_LIST: list[DSLocation] = [
                vanilla_item="Big Green Rupee (100)",
                y=0,
                x_min=15000,
-               conditional=True,
+               conditional=conditional_digs,
                id=105,
                dig_spot=True,
                hint_entrance=['Sun Lake Cave South Drop', 'Sun Lake Cave Chest Drop', 'Sun Lake Cave Sun Staircase',
@@ -1296,7 +1432,7 @@ LOCATION_LIST: list[DSLocation] = [
                vanilla_item="Big Green Rupee (100)",
                sram_addr=SRAM(0x158),
                sram_value=0x100,
-               conditional=True,
+               conditional=conditional_digs,
                dig_spot=True,
                id=107,
                hint_entrance="Shovel Hideout Exit",
@@ -1331,7 +1467,7 @@ LOCATION_LIST: list[DSLocation] = [
                z_min=58000,
                y=0,
                x_min=40000,
-               conditional=True,
+               conditional=conditional_digs,
                id=110,
                dig_spot=True,
                hint_entrance="Molida South Cliff North",
@@ -1365,7 +1501,7 @@ LOCATION_LIST: list[DSLocation] = [
                value=0x8,
                post_dungeon="Temple of Courage",
                delay_reset=True,
-               conditional=True,
+               conditional=conditional_minigames,
                id=113,
                hint_entrance="Romanos' Exit",
                gift_addr=Address(0x20b674),
@@ -1378,7 +1514,7 @@ LOCATION_LIST: list[DSLocation] = [
                value=0x10,
                post_dungeon="Temple of Courage",
                delay_reset=True,
-               conditional=True,
+               conditional=conditional_archery_2000,
                id=114,
                hint_entrance="Romanos' Exit",
                gift_addr=Address(0x20b684),
@@ -1546,6 +1682,7 @@ LOCATION_LIST: list[DSLocation] = [
                boss_room="Temple of Courage",
                boss_reward_location=True,
                delay_reset=True,
+               local=True,
                id=129,
                do_special={'event_type': 'ut_connect', 'event_name': 'EVENT: Defeat Crayk'},
                hint_entrance="Crayk Exit",
@@ -1657,7 +1794,7 @@ LOCATION_LIST: list[DSLocation] = [
     DSLocation("Ocean NW Golden Frog N",
                region="NW Ocean Frog N",
                vanilla_item="Golden Frog Glyph N",
-               conditional=True,
+               conditional=conditional_frogs,
                id=140,
                scenes=0x1
                ),
@@ -1667,7 +1804,7 @@ LOCATION_LIST: list[DSLocation] = [
                address=PHAddr.adv_flags_40,
                value=0x40,
                delay_reset=True,
-               conditional=True,
+               conditional=conditional_minigames,
                id=141,
                gift_addr=Address(0x216c3c),
                scenes=0x700
@@ -1703,7 +1840,7 @@ LOCATION_LIST: list[DSLocation] = [
                region="Gust South Cliffs Dig",
                vanilla_item="Big Green Rupee (100)",
                y=19661,
-               conditional=True,
+               conditional=conditional_digs,
                id=145,
                dig_spot=True,
                scenes=0xe00
@@ -1721,7 +1858,7 @@ LOCATION_LIST: list[DSLocation] = [
                vanilla_item="Big Green Rupee (100)",
                y=9830,
                x_max=-85000,
-               conditional=True,
+               conditional=conditional_digs,
                id=147,
                dig_spot=True,
                hint_entrance="Gust NW Coast South",
@@ -1829,6 +1966,7 @@ LOCATION_LIST: list[DSLocation] = [
                boss_reward_location=True,
                boss_room="Temple of Wind",
                delay_reset=True,
+               local=True,
                id=157,
                do_special={'event_type': 'ut_connect', 'event_name': 'EVENT: Defeat Cyclok'},
                hint_entrance="Cyclok Exit",
@@ -1886,7 +2024,7 @@ LOCATION_LIST: list[DSLocation] = [
                address=PHAddr.adv_flags_40,
                value=0x1,
                delay_reset=True,
-               conditional=True,
+               conditional=conditional_fishing,
                id=162,
                hint_entrance="Wayfarer's Exit",
                hint_entrance_secondary=['Bannan West Cave', 'Bannan West Board Ship'],
@@ -1900,7 +2038,7 @@ LOCATION_LIST: list[DSLocation] = [
                address=PHAddr.adv_flags_39,
                value=0x80,
                delay_reset=True,
-               conditional=True,
+               conditional=conditional_fishing,
                id=163,
                hint_entrance="Wayfarer's Exit",
                hint_entrance_secondary=['Bannan West Cave', 'Bannan West Board Ship'],
@@ -1913,7 +2051,7 @@ LOCATION_LIST: list[DSLocation] = [
                address=PHAddr.adv_flags_39,
                value=0x40,
                delay_reset=True,
-               conditional=True,
+               conditional=conditional_fishing,
                id=164,
                hint_entrance="Wayfarer's Exit",
                hint_entrance_secondary=['Bannan West Cave', 'Bannan West Board Ship'],
@@ -1927,7 +2065,7 @@ LOCATION_LIST: list[DSLocation] = [
                address=PHAddr.adv_flags_45,
                value=0x4,
                delay_reset=True,
-               conditional=True,
+               conditional=conditional_fishing,
                id=165,
                hint_entrance="Wayfarer's Exit",
                hint_entrance_secondary=['Bannan West Cave', 'Bannan West Board Ship'],
@@ -1995,7 +2133,7 @@ LOCATION_LIST: list[DSLocation] = [
                address=PHAddr.adv_flags_46,
                value=0x40,
                delay_reset=True,
-               conditional=True,
+               conditional=conditional_minigames,
                farmable=True,
                id=169,
                hint_entrance="Bannan East Cave",
@@ -2067,7 +2205,7 @@ LOCATION_LIST: list[DSLocation] = [
                vanilla_item="Nothing!",
                item_override="Triforce Crest",
                address=PHAddr.adv_flags_47,
-               conditional=True,
+               conditional=conditional_zauz_crest,
                value=0x10,
                id=176,
                hint_entrance="Zauz' Exit",
@@ -2162,6 +2300,7 @@ LOCATION_LIST: list[DSLocation] = [
                do_special={'event_type': 'ut_connect', 'event_name': 'EVENT: Defeat Cubus Sisters'},
                hint_entrance="Cubus Sisters Blue Warp",
                hint_entrance_secondary="GS Exit",
+               local=True,
                scenes=0x3000
                ),
     DSLocation("Cubus Sisters Heart Container",
@@ -2186,12 +2325,13 @@ LOCATION_LIST: list[DSLocation] = [
                id=186,
                do_special={'event_type': 'ut_connect', 'event_name': 'EVENT: Rescue Tetra'},
                hint_entrance=['GS Exit', 'Ghost Ship Cubus Sisters Reunion'],
+               local=True,
                scenes=0x400
                ),
     DSLocation("Ocean SE Golden Frog Omega",
                region="SE Ocean Frogs",
                vanilla_item="Golden Frog Glyph Omega",
-               conditional=True,
+               conditional=conditional_frogs,
                z_min=250000,
                id=187,
                scenes=0x2
@@ -2199,7 +2339,7 @@ LOCATION_LIST: list[DSLocation] = [
     DSLocation("Ocean SE Golden Frog W",
                region="SE Ocean Frogs",
                vanilla_item="Golden Frog Glyph W",
-               conditional=True,
+               conditional=conditional_frogs,
                z_max=250000,
                id=188,
                scenes=0x2
@@ -2324,6 +2464,7 @@ LOCATION_LIST: list[DSLocation] = [
                vanilla_item="Treasure",
                y=0,
                z_min=30000,
+               x_max=0,
                dungeon="Goron Temple",
                id=200,
                hint_entrance=['GT Exit', 'GT Enter Boss'],
@@ -2388,6 +2529,7 @@ LOCATION_LIST: list[DSLocation] = [
                item_override="Rare Metal",
                boss_reward_location=True,
                boss_room="Goron Temple",
+               local=True,
                id=206,
                do_special={'event_type': 'ut_connect', 'event_name': 'EVENT: Defeat Dongorongo'},
                hint_entrance="Dongo Exit",
@@ -2400,7 +2542,7 @@ LOCATION_LIST: list[DSLocation] = [
                vanilla_item="Nothing!",
                address=PHAddr.treasure_maps_2,
                value=0x1,
-               conditional=True,
+               conditional=conditional_harrow,
                id=207,
                hint_entrance="Harrow Board Ship",
                scenes=0x1800
@@ -2411,7 +2553,7 @@ LOCATION_LIST: list[DSLocation] = [
                vanilla_item="Nothing!",
                address=PHAddr.treasure_maps_2,
                value=0x2,
-               conditional=True,
+               conditional=conditional_harrow,
                id=208,
                hint_entrance="Harrow Board Ship",
                scenes=0x1800
@@ -2422,7 +2564,7 @@ LOCATION_LIST: list[DSLocation] = [
                vanilla_item="Nothing!",
                address=PHAddr.treasure_maps_3,
                value=0x2,
-               conditional=True,
+               conditional=conditional_harrow,
                id=209,
                hint_entrance="Harrow Board Ship",
                scenes=0x1800
@@ -2433,7 +2575,7 @@ LOCATION_LIST: list[DSLocation] = [
                vanilla_item="Nothing!",
                address=PHAddr.treasure_maps_3,
                value=0x4,
-               conditional=True,
+               conditional=conditional_harrow,
                id=210,
                hint_entrance="Harrow Board Ship",
                scenes=0x1800
@@ -2467,7 +2609,7 @@ LOCATION_LIST: list[DSLocation] = [
                y=9830,
                x_min=-67500,
                x_max=-50000,
-               conditional=True,
+               conditional=conditional_digs,
                id=213,
                hint_entrance="Dee Ess Board Ship",
                scenes=0x1b00
@@ -2477,7 +2619,7 @@ LOCATION_LIST: list[DSLocation] = [
                vanilla_item="Big Green Rupee (100)",
                y=9830,
                x_min=45000,
-               conditional=True,
+               conditional=conditional_digs,
                id=214,
                hint_entrance="Dee Ess Board Ship",
                scenes=0x1b00
@@ -2487,7 +2629,7 @@ LOCATION_LIST: list[DSLocation] = [
                vanilla_item="Big Red Rupee (200)",
                y=9830,
                x_max=-67500,
-               conditional=True,
+               conditional=conditional_digs,
                id=215,
                hint_entrance="Dee Ess Board Ship",
                gift_addr=Address(0x207294),
@@ -2500,7 +2642,7 @@ LOCATION_LIST: list[DSLocation] = [
                value=0x20,
                post_dungeon="Goron Temple",
                delay_reset=True,
-               conditional=True,
+               conditional=conditional_minigames,
                id=216,
                hint_entrance="Dee Ess Board Ship",
                reload_chests=True,
@@ -2529,7 +2671,7 @@ LOCATION_LIST: list[DSLocation] = [
                region="Frost SW Dig",
                vanilla_item="Big Green Rupee (100)",
                y=9830,
-               conditional=True,
+               conditional=conditional_digs,
                id=219,
                dig_spot=True,
                scenes=0xf00
@@ -2538,7 +2680,7 @@ LOCATION_LIST: list[DSLocation] = [
                region="Frost NW Dig",
                vanilla_item="Big Red Rupee (200)",
                z_min=-20000,
-               conditional=True,
+               conditional=conditional_digs,
                dig_spot=True,
                id=220,
                scenes=0xf02
@@ -2551,7 +2693,7 @@ LOCATION_LIST: list[DSLocation] = [
                x_min=-115000,
                x_max=-85000,
                dig_spot=True,
-               conditional=True,
+               conditional=conditional_digs,
                id=221,
                scenes=0xf02
                ),
@@ -2563,7 +2705,7 @@ LOCATION_LIST: list[DSLocation] = [
                x_min=-175000,
                x_max=-145000,
                dig_spot=True,
-               conditional=True,
+               conditional=conditional_digs,
                id=222,
                scenes=0xf02
                ),
@@ -2580,7 +2722,7 @@ LOCATION_LIST: list[DSLocation] = [
                region="Frost NW Grapple Dig",
                vanilla_item="Gold Rupee (300)",
                x_min=-60000,
-               conditional=True,
+               conditional=conditional_digs,
                dig_spot=True,
                id=224,
                scenes=0xf02
@@ -2763,6 +2905,7 @@ LOCATION_LIST: list[DSLocation] = [
                item_override="Rare Metal",
                boss_reward_location=True,
                boss_room="Temple of Ice",
+               local=True,
                id=241,
                do_special={'event_type': 'ut_connect', 'event_name': 'EVENT: Defeat Gleeok'},
                hint_entrance="Gleeok Exit",
@@ -2772,7 +2915,7 @@ LOCATION_LIST: list[DSLocation] = [
     DSLocation("Ocean NE Golden Frog Square",
                region="NE Ocean Frog",
                vanilla_item="Golden Frog Glyph Square",
-               conditional=True,
+               conditional=conditional_frogs,
                id=242,
                scenes=0x3
                ),
@@ -2875,7 +3018,7 @@ LOCATION_LIST: list[DSLocation] = [
                x_max=-200000,
                z_max=-40000,
                dig_spot=True,
-               conditional=True,
+               conditional=conditional_digs,
                id=250,
                delay_pickup=['Isle of Ruins NW Like-Like Dig Shield'],
                scenes={0x1201, 0x1101}
@@ -2886,7 +3029,7 @@ LOCATION_LIST: list[DSLocation] = [
                y=4915,
                x_max=-200000,
                z_max=-40000,
-               conditional=True,
+               conditional=conditional_dummy,
                id=330,
                scenes={0x1201, 0x1101}
                ),
@@ -3075,6 +3218,7 @@ LOCATION_LIST: list[DSLocation] = [
                item_override="Rare Metal",
                boss_reward_location=True,
                boss_room="Mutoh's Temple",
+               local=True,
                id=268,
                do_special={'event_type': 'ut_connect', 'event_name': 'EVENT: Defeat Eox'},
                hint_entrance="Eox Exit",
@@ -3100,7 +3244,7 @@ LOCATION_LIST: list[DSLocation] = [
                x_min=80000,
                z_min=70000,
                dig_spot=True,
-               conditional=True,
+               conditional=conditional_digs,
                sram_addr=PHSRAM.maze,
                sram_value=0x8,
                id=270,
@@ -3114,7 +3258,7 @@ LOCATION_LIST: list[DSLocation] = [
                x_min=40000,
                z_max=-60000,
                dig_spot=True,
-               conditional=True,
+               conditional=conditional_digs,
                sram_addr=PHSRAM.maze,
                sram_value=0x10,
                id=271,
@@ -3128,7 +3272,7 @@ LOCATION_LIST: list[DSLocation] = [
                x_max=-15000,
                z_max=-60000,
                dig_spot=True,
-               conditional=True,
+               conditional=conditional_digs,
                sram_addr=PHSRAM.maze,
                sram_value=0x80,
                id=272,
@@ -3140,7 +3284,7 @@ LOCATION_LIST: list[DSLocation] = [
                vanilla_item="Wisdom Gem",
                address=PHAddr.adv_flags_18,
                value=0x1,
-               conditional=True,
+               conditional=conditional_minigames,
                id=273,
                hint_entrance="Maze Board Ship",
                chest_offset=0x21,
@@ -3153,7 +3297,7 @@ LOCATION_LIST: list[DSLocation] = [
                item_override="Nothing!",
                address=PHAddr.adv_flags_28,
                value=0x40,
-               conditional=True,
+               conditional=conditional_minigames,
                id=274,
                hint_entrance="Maze Board Ship",
                chest_offset=0x22,
@@ -3165,7 +3309,7 @@ LOCATION_LIST: list[DSLocation] = [
                vanilla_item="Heart Container",
                address=PHAddr.adv_flags_28,
                value=0x80,
-               conditional=True,
+               conditional=conditional_minigames,
                id=275,
                hint_entrance="Maze Board Ship",
                chest_offset=0x23,
@@ -3177,7 +3321,7 @@ LOCATION_LIST: list[DSLocation] = [
                vanilla_item="Gold Rupee (300)",
                x_max=-50000,
                z_min=50000,
-               conditional=True,
+               conditional=conditional_minigames,
                id=276,
                hint_entrance="Maze Board Ship",
                chest_offset=0x64,
@@ -3210,7 +3354,7 @@ LOCATION_LIST: list[DSLocation] = [
                address=PHAddr.adv_flags_19,
                value=0x8,
                id=327,
-               conditional=True,
+               conditional=conditional_man_of_smiles_3,
                delay_reset=True,
                gift_addr=Address(0x215fe4),
                scenes=0x600
@@ -3247,7 +3391,7 @@ LOCATION_LIST: list[DSLocation] = [
                vanilla_item="Fish: Skippyjack",
                address=PHAddr.skippyjack_count,
                value=0x1,
-               conditional=True,
+               conditional=conditional_fishing,
                id=284,
                scenes=0x200
                ),
@@ -3256,7 +3400,7 @@ LOCATION_LIST: list[DSLocation] = [
                vanilla_item="Fish: Toona",
                address=PHAddr.toona_count,
                value=0x1,
-               conditional=True,
+               conditional=conditional_fishing,
                id=285,
                scenes=0x200
                ),
@@ -3265,7 +3409,7 @@ LOCATION_LIST: list[DSLocation] = [
                vanilla_item="Fish: Loovar",
                address=PHAddr.loovar_count,
                value=0x1,
-               conditional=True,
+               conditional=conditional_fishing,
                id=286,
                scenes=0x200
                ),
@@ -3274,7 +3418,7 @@ LOCATION_LIST: list[DSLocation] = [
                vanilla_item="Fish: Rusty Swordfish",
                address=PHAddr.rsf_count,
                value=0x1,
-               conditional=True,
+               conditional=conditional_fishing,
                id=287,
                scenes=0x200
                ),
@@ -3283,7 +3427,7 @@ LOCATION_LIST: list[DSLocation] = [
                vanilla_item="Fish: Legendary Neptoona",
                address=PHAddr.neptoona_count,
                value=0x1,
-               conditional=True,
+               conditional=conditional_fishing,
                id=288,
                scenes=0x200
                ),
@@ -3292,13 +3436,13 @@ LOCATION_LIST: list[DSLocation] = [
                vanilla_item="Fish: Stowfish",
                address=PHAddr.stowfish_count,
                value=0x1,
-               conditional=True,
+               conditional=conditional_fishing,
                id=289,
                scenes=0x200
                ),
     DSLocation("Ocean SW Salvage #1 Molida SW",
                region="Salvage 1",
-               conditional=True,
+               conditional=conditional_salvage,
                address=PHAddr.getting_salvage,
                value=0x80,
                id=290,
@@ -3308,7 +3452,7 @@ LOCATION_LIST: list[DSLocation] = [
                ),
     DSLocation("Ocean SW Salvage #2 Mercay NE",
                region="Salvage 2",
-               conditional=True,
+               conditional=conditional_salvage,
                address=PHAddr.getting_salvage,
                value=0x10,
                id=291,
@@ -3318,7 +3462,7 @@ LOCATION_LIST: list[DSLocation] = [
                ),
     DSLocation("Ocean NW Salvage #3 Gusts SW",
                region="Salvage 3",
-               conditional=True,
+               conditional=conditional_salvage,
                address=PHAddr.getting_salvage_1,
                value=0x20,
                id=292,
@@ -3328,7 +3472,7 @@ LOCATION_LIST: list[DSLocation] = [
                ),
     DSLocation("Ocean NW Salvage #4 Bannan SE",
                region="Salvage 4",
-               conditional=True,
+               conditional=conditional_salvage,
                address=PHAddr.getting_salvage_1,
                value=0x80,
                id=293,
@@ -3338,7 +3482,7 @@ LOCATION_LIST: list[DSLocation] = [
                ),
     DSLocation("Ocean SW Salvage #5 Molida N",
                region="Salvage 5",
-               conditional=True,
+               conditional=conditional_salvage,
                address=PHAddr.getting_salvage,
                value=0x40,
                id=294,
@@ -3348,7 +3492,7 @@ LOCATION_LIST: list[DSLocation] = [
                ),
     DSLocation("Ocean NW Salvage #6 Bannan W",
                region="Salvage 6",
-               conditional=True,
+               conditional=conditional_salvage,
                address=PHAddr.getting_salvage_1,
                value=0x1,
                id=295,
@@ -3358,7 +3502,7 @@ LOCATION_LIST: list[DSLocation] = [
                ),
     DSLocation("Ocean NW Salvage #7 Gusts E",
                region="Salvage 7",
-               conditional=True,
+               conditional=conditional_salvage,
                address=PHAddr.getting_salvage_1,
                value=0x8,
                id=296,
@@ -3368,7 +3512,7 @@ LOCATION_LIST: list[DSLocation] = [
                ),
     DSLocation("Ocean SW Salvage #8 Mercay SE",
                region="Salvage 8",
-               conditional=True,
+               conditional=conditional_salvage,
                address=PHAddr.getting_salvage,
                value=0x8,
                id=297,
@@ -3378,7 +3522,7 @@ LOCATION_LIST: list[DSLocation] = [
                ),
     DSLocation("Ocean SW Salvage #9 Cannon W",
                region="Salvage 9",
-               conditional=True,
+               conditional=conditional_salvage,
                address=PHAddr.getting_salvage,
                value=0x2,
                id=298,
@@ -3388,7 +3532,7 @@ LOCATION_LIST: list[DSLocation] = [
                ),
     DSLocation("Ocean NW Salvage #10 Gusts SE",
                region="Salvage 10",
-               conditional=True,
+               conditional=conditional_salvage,
                address=PHAddr.getting_salvage_1,
                value=0x10,
                id=299,
@@ -3398,7 +3542,7 @@ LOCATION_LIST: list[DSLocation] = [
                ),
     DSLocation("Ocean NW Salvage #11 Gusts N",
                region="Salvage 11",
-               conditional=True,
+               conditional=conditional_salvage,
                address=PHAddr.getting_salvage_1,
                value=0x2,
                id=300,
@@ -3408,7 +3552,7 @@ LOCATION_LIST: list[DSLocation] = [
                ),
     DSLocation("Ocean SE Salvage #12 Dee Ess N",
                region="Salvage 12",
-               conditional=True,
+               conditional=conditional_salvage,
                address=PHAddr.getting_salvage_2,
                value=0x20,
                id=301,
@@ -3418,7 +3562,7 @@ LOCATION_LIST: list[DSLocation] = [
                ),
     DSLocation("Ocean SE Salvage #13 Harrow E",
                region="Salvage 13",
-               conditional=True,
+               conditional=conditional_salvage,
                address=PHAddr.getting_salvage_2,
                value=0x4,
                id=302,
@@ -3428,7 +3572,7 @@ LOCATION_LIST: list[DSLocation] = [
                ),
     DSLocation("Ocean SE Salvage #14 Goron NW",
                region="Salvage 14",
-               conditional=True,
+               conditional=conditional_salvage,
                address=PHAddr.getting_salvage_2,
                value=0x1,
                id=303,
@@ -3438,7 +3582,7 @@ LOCATION_LIST: list[DSLocation] = [
                ),
     DSLocation("Ocean SE Salvage #15 Goron W",
                region="Salvage 15",
-               conditional=True,
+               conditional=conditional_salvage,
                address=PHAddr.getting_salvage_2,
                value=0x2,
                id=304,
@@ -3450,7 +3594,7 @@ LOCATION_LIST: list[DSLocation] = [
                vanilla_item="Ship Part",
                item_override="Treasure Map #16 (Goron NE)",
                region="Salvage 16",
-               conditional=True,
+               conditional=conditional_salvage,
                address=PHAddr.getting_salvage_2,
                value=0x10,
                id=305,
@@ -3458,7 +3602,7 @@ LOCATION_LIST: list[DSLocation] = [
                ),
     DSLocation("Ocean SE Salvage #17 Frost S",
                region="Salvage 17",
-               conditional=True,
+               conditional=conditional_salvage,
                address=PHAddr.getting_salvage_2,
                value=0x40,
                id=306,
@@ -3468,7 +3612,7 @@ LOCATION_LIST: list[DSLocation] = [
                ),
     DSLocation("Ocean SW Salvage #18 Cannon S",
                region="Salvage 18",
-               conditional=True,
+               conditional=conditional_salvage,
                address=PHAddr.getting_salvage,
                value=0x4,
                id=307,
@@ -3478,7 +3622,7 @@ LOCATION_LIST: list[DSLocation] = [
                ),
     DSLocation("Ocean NW Salvage #19 Gusts NE",
                region="Salvage 19",
-               conditional=True,
+               conditional=conditional_salvage,
                address=PHAddr.getting_salvage_1,
                value=0x4,
                id=308,
@@ -3488,7 +3632,7 @@ LOCATION_LIST: list[DSLocation] = [
                ),
     DSLocation("Ocean NW Salvage #20 Bannan E",
                region="Salvage 20",
-               conditional=True,
+               conditional=conditional_salvage,
                address=PHAddr.getting_salvage_1,
                value=0x40,
                id=309,
@@ -3498,7 +3642,7 @@ LOCATION_LIST: list[DSLocation] = [
                ),
     DSLocation("Ocean SW Salvage #21 Molida NW",
                region="Salvage 21",
-               conditional=True,
+               conditional=conditional_salvage,
                address=PHAddr.getting_salvage,
                value=0x20,
                id=310,
@@ -3508,7 +3652,7 @@ LOCATION_LIST: list[DSLocation] = [
                ),
     DSLocation("Ocean SE Salvage #22 Harrow S",
                region="Salvage 22",
-               conditional=True,
+               conditional=conditional_salvage,
                address=PHAddr.getting_salvage_2,
                value=0x8,
                id=311,
@@ -3518,7 +3662,7 @@ LOCATION_LIST: list[DSLocation] = [
                ),
     DSLocation("Ocean SE Salvage #23 Frost NW",
                region="Salvage 23",
-               conditional=True,
+               conditional=conditional_salvage,
                address=PHAddr.getting_salvage_2,
                value=0x80,
                id=312,
@@ -3528,7 +3672,7 @@ LOCATION_LIST: list[DSLocation] = [
                ),
     DSLocation("Ocean NE Salvage #24 Ruins W",
                region="Salvage 24",
-               conditional=True,
+               conditional=conditional_salvage,
                address=PHAddr.getting_salvage_3,
                value=0x20,
                id=313,
@@ -3538,7 +3682,7 @@ LOCATION_LIST: list[DSLocation] = [
                ),
     DSLocation("Ocean NE Salvage #25 Dead E",
                region="Salvage 25",
-               conditional=True,
+               conditional=conditional_salvage,
                address=PHAddr.getting_salvage_3,
                value=0x4,
                id=314,
@@ -3548,7 +3692,7 @@ LOCATION_LIST: list[DSLocation] = [
                ),
     DSLocation("Ocean NE Salvage #26 Ruins SW",
                region="Salvage 26",
-               conditional=True,
+               conditional=conditional_salvage,
                address=PHAddr.getting_salvage_3,
                value=0x2,
                id=315,
@@ -3558,7 +3702,7 @@ LOCATION_LIST: list[DSLocation] = [
                ),
     DSLocation("Ocean NE Salvage #27 Maze E",
                region="Salvage 27",
-               conditional=True,
+               conditional=conditional_salvage,
                address=PHAddr.getting_salvage_3,
                value=0x8,
                id=316,
@@ -3568,7 +3712,7 @@ LOCATION_LIST: list[DSLocation] = [
                ),
     DSLocation("Ocean NE Salvage #28 Ruins NW",
                region="Salvage 28",
-               conditional=True,
+               conditional=conditional_salvage,
                address=PHAddr.getting_salvage_3,
                value=0x1,
                id=317,
@@ -3578,7 +3722,7 @@ LOCATION_LIST: list[DSLocation] = [
                ),
     DSLocation("Ocean NE Salvage #29 Maze W",
                region="Salvage 29",
-               conditional=True,
+               conditional=conditional_salvage,
                address=PHAddr.getting_salvage_3,
                value=0x10,
                id=318,
@@ -3588,7 +3732,7 @@ LOCATION_LIST: list[DSLocation] = [
                ),
     DSLocation("Ocean NE Salvage #30 Ruins S",
                region="Salvage 30",
-               conditional=True,
+               conditional=conditional_salvage,
                address=PHAddr.getting_salvage_3,
                value=0x40,
                id=319,
@@ -3598,7 +3742,7 @@ LOCATION_LIST: list[DSLocation] = [
                ),
     DSLocation("Ocean NE Salvage #31 Dead S",
                region="Salvage 31",
-               conditional=True,
+               conditional=conditional_salvage,
                address=PHAddr.getting_salvage_3,
                value=0x80,
                id=320,
@@ -3866,7 +4010,7 @@ LOCATION_LIST: list[DSLocation] = [
     DSLocation("Sun Lake Cave OOB Sun Key Chest",
                region="Sun Lake Cave Upper",
                vanilla_item="Nothing!",
-               conditional = True,
+               conditional = conditional_dummy,
                x_min=300000,  # far oob
                id=361,
                chest_offset=0x5,  # this is needed for chest ordering to be correct

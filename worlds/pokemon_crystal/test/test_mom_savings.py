@@ -17,7 +17,7 @@ class MomsanityTest(PokemonCrystalTestBase):
         # Mystery Egg returned to Elm), reachable once everything is collected.
         location = self.multiworld.get_location("Mom's Savings - 900", self.player)
         self.assertFalse(location.can_reach(CollectionState(self.multiworld)))
-        self.assertTrue(location.can_reach(self.multiworld.get_all_state(False)))
+        self.assertTrue(location.can_reach(self.multiworld.get_all_state()))
 
 
 class MomsanityOffTest(PokemonCrystalTestBase):

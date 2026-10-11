@@ -223,7 +223,7 @@ special_rules_check = {
     'Swamp Waterway': None,
     'Hera Back': [5, 6],
     'GT Petting Zoo': [5, 8, 9, 11],
-    'Mimic Cave': [4, 5, 6, 7],
+    'Mimic Cave': [5, 6, 7, 8],
     'Ice Hookshot Ledge': None,
     'TR Hub Ledges': [3, 4, 5, 6, 7],
     'TR Dark Ride': [1, 2, 3],
@@ -246,7 +246,7 @@ def special_rules_for_region(world, player, region_name, location, original_rule
     elif region_name in ['Hera Back', 'GT Petting Zoo', 'Mimic Cave']:
         enemy_number = int(location.name.split('#')[1])
         if region_name == 'Mimic Cave':
-            if enemy_number in [4, 5]:  # these are behind hammer blocks potentially
+            if enemy_number in [5, 6]:  # these are behind hammer blocks potentially
                 return and_rule(original_rule, has('Hammer', player))
             elif enemy_number in special_rules_check[region_name]:   # these are behind rails
                 return and_rule(original_rule, has_boomerang(player))

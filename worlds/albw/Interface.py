@@ -3,6 +3,7 @@ import enum
 import socket
 import struct
 import asyncio
+from CommonClient import logger
 
 class ConnectionError(Exception):
     pass
@@ -15,13 +16,13 @@ class RequestType(enum.IntEnum):
     SetGetProcess = 4
 
 class N3DSInterface:
-    PACKET_VERSION: int = 1
     HEADER_SIZE: int = 0x10
     MAX_PACKET_SIZE: int = 0x410
     TIMEOUT: float = 1.0
 
     sock: socket.socket
     max_request_size: int
+    packet_version: int
     id: int
 
     def __init__(self):
@@ -41,7 +42,7 @@ class N3DSInterface:
             try:
                 request_id = self.id
                 self.id = (self.id + 1) & 0xffffffff
-                request = struct.pack("=IIII", self.PACKET_VERSION, request_id, request_type, len(request_data))
+                request = struct.pack("=IIII", self.packet_version, request_id, request_type, len(request_data))
                 request += request_data
                 await asyncio.wait_for(loop.sock_sendall(self.sock, request), self.TIMEOUT)
                 for _ in range(16):
@@ -49,7 +50,7 @@ class N3DSInterface:
                     if not response or len(response) < self.HEADER_SIZE:
                         break
                     version, id, response_type, size = struct.unpack("=IIII", response[:self.HEADER_SIZE])
-                    if version == self.PACKET_VERSION and id == request_id and response_type == request_type:
+                    if version == self.packet_version and id == request_id and response_type == request_type:
                         return response[self.HEADER_SIZE:]
             except Exception as e:
                 continue
@@ -85,11 +86,20 @@ class N3DSInterface:
         self.sock = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
         self.sock.connect((address, 45987))
         self.sock.setblocking(False)
-        try:
-            await self._send_packet(RequestType.Ping, b"", 0)
-            return await self._set_process(title)
-        except ConnectionError:
-            return False
+        self.packet_version = 2
+        while self.packet_version > 0:
+            try:
+                if address == "127.0.0.1":
+                    test = await self._send_packet(RequestType.SetGetProcess, struct.pack("=II", 0, 0))
+                    if len(test) > 0:
+                        return await self._set_process(title)
+                else:
+                    await self._send_packet(RequestType.Ping, b"")
+                    return await self._set_process(title)
+            except ConnectionError:
+                pass
+            self.packet_version -= 1
+        return False
 
     def disconnect(self):
         if hasattr(self, 'sock'):

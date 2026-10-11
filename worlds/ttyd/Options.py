@@ -221,6 +221,7 @@ class LimitChapterLogic(Toggle):
     """
     Progression items will only appear in required chapters, and in common areas. You will not need to
     check the chapters that are out of logic whatsoever. You can still visit them for local items (badges, consumables, etc) if you want or need to.
+    To view what chapters are expected of you, you're able to check what stars are illuminated on the Thousand-Year Door.
     """
     display_name = "Limit Chapter Logic"
 
@@ -309,6 +310,18 @@ class EnemyRandomizer(Choice):
     option_within_chapter = 1
     option_randomize = 2
     default = 0
+
+
+class EnemyFormations(Choice):
+    """
+    Determines how many formations each fight can use when Enemy Randomizer is enabled.
+    Multiple: Randomize every formation separately.
+    Singular: Enemy encounters will be reduced to 1 singular, randomized formation.
+    """
+    display_name = "Enemy Formations"
+    option_multiple = 0
+    option_singular = 1
+    default = 1
 
 
 class EncounterShuffleType(Choice):
@@ -527,12 +540,12 @@ class BlockVisibility(Choice):
 
 class ExperienceMultiplier(Range):
     """
-    Multiplies the experience you gain from battles.
+    Multiplies the experience you gain from battles by percentage.
     """
     display_name = "Experience Multiplier"
     range_start = 0
-    range_end = 10
-    default = 1
+    range_end = 1000
+    default = 100
 
 
 class StartingHP(Range):
@@ -674,6 +687,7 @@ class TTYDOptions(PerGameCommonOptions):
     grubba_bribe_direction: GrubbaBribeDirection
     grubba_bribe_cost: GrubbaBribeCost
     enemy_randomizer: EnemyRandomizer
+    enemy_formations: EnemyFormations
     encounter_shuffle_type: EncounterShuffleType
     enemy_stat_scaling: EnemyStatScaling
     shuffle_chapter_stats: ShuffleChapterStats

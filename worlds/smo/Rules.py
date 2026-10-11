@@ -97,35 +97,33 @@ def set_rules(self, options : SMOOptions) -> None:
             #         (count_moons(self, state, "", self.player) and
             #         count_moons(self, state, "", self.player)))
 
-    if self.options.goal > self.options.goal.option_moon and self.options.shop_sanity != 'off':
-        set_rule(self.multiworld.get_location("Cascade Kingdom - Caveman Cave-Fan", self.player),
-                 lambda state: state.has("Caveman Headwear", self.player) and state.has("Caveman Outfit", self.player))
-        set_rule(self.multiworld.get_location("Lake Kingdom - That Trendy “Pirate” Look", self.player),
-                 lambda state: state.has("Pirate Hat", self.player) and state.has("Pirate Outfit", self.player))
-        set_rule(self.multiworld.get_location("Lake Kingdom - Space Is “In” Right Now", self.player),
-                 lambda state: state.has("Space Helmet", self.player) and state.has("Space Suit", self.player))
-        set_rule(self.multiworld.get_location("Lake Kingdom - That “Old West” Style", self.player),
-                 lambda state: state.has("Cowboy Hat", self.player) and state.has("Cowboy Outfit", self.player))
-        set_rule(self.multiworld.get_location("Luncheon Kingdom - Mechanic: Repairs Complete!", self.player),
-                 lambda state: state.has("Mechanic Cap", self.player) and state.has("Mechanic Outfit", self.player))
-        set_rule(self.multiworld.get_location("Mushroom Kingdom - Totally Classic", self.player),
-                 lambda state: (state.has("Mario 64 Cap", self.player) and state.has("Mario 64 Suit", self.player)) or (
-                             state.has("Metal Mario Cap", self.player) and state.has("Metal Mario Clothes", self.player)))
-        set_rule(self.multiworld.get_location("Mushroom Kingdom - Courtyard Chest Trap", self.player),
-                 lambda state: (state.has("Mario 64 Cap", self.player) and state.has("Mario 64 Suit", self.player)) or (
-                             state.has("Metal Mario Cap", self.player) and state.has("Metal Mario Clothes", self.player)))
-        set_rule(self.multiworld.get_location("Metro Kingdom - Surprise Clown!", self.player),
-                 lambda state: state.has("Clown Hat", self.player) and state.has("Clown Suit", self.player))
+        if self.options.goal > self.options.goal.option_moon:
+            set_rule(self.multiworld.get_location("Cascade Kingdom - Caveman Cave-Fan", self.player),
+                     lambda state: state.has("Caveman Headwear", self.player) and state.has("Caveman Outfit", self.player))
+            set_rule(self.multiworld.get_location("Lake Kingdom - That Trendy “Pirate” Look", self.player),
+                     lambda state: state.has("Pirate Hat", self.player) and state.has("Pirate Outfit", self.player))
+            set_rule(self.multiworld.get_location("Lake Kingdom - Space Is “In” Right Now", self.player),
+                     lambda state: state.has("Space Helmet", self.player) and state.has("Space Suit", self.player))
+            set_rule(self.multiworld.get_location("Lake Kingdom - That “Old West” Style", self.player),
+                     lambda state: state.has("Cowboy Hat", self.player) and state.has("Cowboy Outfit", self.player))
+            set_rule(self.multiworld.get_location("Luncheon Kingdom - Mechanic: Repairs Complete!", self.player),
+                     lambda state: state.has("Mechanic Cap", self.player) and state.has("Mechanic Outfit", self.player))
+            set_rule(self.multiworld.get_location("Mushroom Kingdom - Totally Classic", self.player),
+                     lambda state: (state.has("Mario 64 Cap", self.player) and state.has("Mario 64 Suit", self.player)) or (
+                                 state.has("Metal Mario Cap", self.player) and state.has("Metal Mario Clothes", self.player)))
+            set_rule(self.multiworld.get_location("Mushroom Kingdom - Courtyard Chest Trap", self.player),
+                     lambda state: (state.has("Mario 64 Cap", self.player) and state.has("Mario 64 Suit", self.player)) or (
+                                 state.has("Metal Mario Cap", self.player) and state.has("Metal Mario Clothes", self.player)))
+            set_rule(self.multiworld.get_location("Metro Kingdom - Surprise Clown!", self.player),
+                     lambda state: state.has("Clown Hat", self.player) and state.has("Clown Suit", self.player))
 
-        goal_moons = self.moon_counts["dark"] if self.options.goal == 'dark' else self.moon_counts["darker"]
-    
-        if self.outfit_moon_counts["Doctor Outfit"] < goal_moons:
-            set_rule(self.multiworld.get_location("Moon Kingdom - Doctor in the House", self.player),
-                     lambda state: state.has("Doctor Headwear", self.player) and state.has("Doctor Outfit", self.player))
+            goal_moons = self.moon_counts["dark"] if self.options.goal == 'dark' else self.moon_counts["darker"]
+        
+            if self.outfit_moon_counts["Doctor Outfit"] < goal_moons:
+                set_rule(self.multiworld.get_location("Moon Kingdom - Doctor in the House", self.player),
+                         lambda state: state.has("Doctor Headwear", self.player) and state.has("Doctor Outfit", self.player))
 
-    # if options.goal > 15 or (options.shops != 0 and options.shops != 3):
-    if options.shop_sanity != 'off':
-        set_rule(self.multiworld.get_location("Sand Kingdom - Dancing with New Friends", self.player), lambda state: (state.has("Sombrero", self.player) and state.has("Poncho", self.player)) or state.has("Skeleton Suit", self.player))
+            set_rule(self.multiworld.get_location("Sand Kingdom - Dancing with New Friends", self.player), lambda state: (state.has("Sombrero", self.player) and state.has("Poncho", self.player)) or state.has("Skeleton Suit", self.player))
         if self.options.goal > self.options.goal.option_lake:
             set_rule(self.multiworld.get_location("Lake Kingdom - I Feel Underdressed", self.player), lambda state: (state.has(
                 "Swim Goggles", self.player) and state.has("Swimwear", self.player)) or state.has("Boxer Shorts",
@@ -148,31 +146,31 @@ def set_rules(self, options : SMOOptions) -> None:
             set_rule(self.multiworld.get_location("Snow Kingdom - I'm Not Cold!", self.player),
                      lambda state: state.has("Boxer Shorts", self.player))
 
-        if self.options.goal > self.options.goal.option_metro:
-            set_rule(self.multiworld.get_location("Luncheon Kingdom - A Strong Simmer", self.player),
-                     lambda state: state.has("Chef Hat", self.player) and state.has("Chef Suit", self.player))
-            set_rule(self.multiworld.get_location("Luncheon Kingdom - An Extreme Simmer", self.player),
-                     lambda state: state.has("Chef Hat", self.player) and state.has("Chef Suit", self.player))
+            if self.options.goal > self.options.goal.option_metro:
+                set_rule(self.multiworld.get_location("Luncheon Kingdom - A Strong Simmer", self.player),
+                         lambda state: state.has("Chef Hat", self.player) and state.has("Chef Suit", self.player))
+                set_rule(self.multiworld.get_location("Luncheon Kingdom - An Extreme Simmer", self.player),
+                         lambda state: state.has("Chef Hat", self.player) and state.has("Chef Suit", self.player))
 
-        if self.options.goal > self.options.goal.option_luncheon:
-            set_rule(self.multiworld.get_location("Bowser Kingdom - Scene of Crossing the Poison Swamp", self.player),
-                     lambda state: state.has("Samurai Helmet", self.player) and state.has("Samurai Armor", self.player))
-            set_rule(self.multiworld.get_location("Bowser Kingdom - Taking Notes: In the Folding Screen", self.player),
-                     lambda state: state.has("Samurai Helmet", self.player) and state.has("Samurai Armor", self.player))
+            if self.options.goal > self.options.goal.option_luncheon:
+                set_rule(self.multiworld.get_location("Bowser Kingdom - Scene of Crossing the Poison Swamp", self.player),
+                         lambda state: state.has("Samurai Helmet", self.player) and state.has("Samurai Armor", self.player))
+                set_rule(self.multiworld.get_location("Bowser Kingdom - Taking Notes: In the Folding Screen", self.player),
+                         lambda state: state.has("Samurai Helmet", self.player) and state.has("Samurai Armor", self.player))
 
-    # Post Game Outfits
-    if self.options.goal > self.options.goal.option_moon and self.options.shop_sanity != 'off':
-        for outfit in self.outfit_moon_counts.keys():
-            if self.options.goal > self.options.goal.option_dark:
-                if self.outfit_moon_counts[outfit] < self.moon_counts["dark"]:
-                    set_rule(self.multiworld.get_location(outfit, self.player),
-                         lambda state: total_moons(self, state, self.player) >= self.outfit_moon_counts[
-                             outfit] or state.has(outfit, self.player))
-            elif self.options.goal > self.options.goal.option_darker:
-                if self.outfit_moon_counts[outfit] < self.moon_counts["darker"]:
-                    set_rule(self.multiworld.get_location(outfit, self.player),
-                             lambda state: total_moons(self, state, self.player) >= self.outfit_moon_counts[
-                                 outfit] or state.has(outfit, self.player))
+        # Post Game Outfits
+        if self.options.goal > self.options.goal.option_moon:
+            for outfit in self.outfit_moon_counts.keys():
+                if self.options.goal == self.options.goal.option_darker:
+                    if self.outfit_moon_counts[outfit] < self.moon_counts["darker"]:
+                        outfit_moon_count = self.outfit_moon_counts[outfit]
+                        set_rule(self.multiworld.get_location(outfit, self.player),
+                             lambda state: total_moons(self, state, self.player) >= outfit_moon_count)
+                elif self.options.goal == self.options.goal.option_dark:
+                    if self.outfit_moon_counts[outfit] < self.moon_counts["dark"]:
+                        outfit_moon_count = self.outfit_moon_counts[outfit]
+                        set_rule(self.multiworld.get_location(outfit, self.player),
+                             lambda state: total_moons(self, state, self.player) >= outfit_moon_count)
 
         # set_rule(self.multiworld.get_location("Luigi Cap", self.player),
         #          lambda state: total_moons(self, state, self.player) >= self.outfit_moon_counts[
@@ -234,20 +232,20 @@ def set_rules(self, options : SMOOptions) -> None:
 
     # Completion State
     if options.goal == options.goal.option_sand:
-        self.multiworld.completion_condition[self.player] = lambda state: state.count("Sand Multi-Moon", self.player) >= 2
+        self.multiworld.completion_condition[self.player] = lambda state: state.can_reach_location("Sand Kingdom - The Hole in the Desert", self.player)
     if options.goal == options.goal.option_lake:
-        self.multiworld.completion_condition[self.player] = lambda state: state.has("Lake Multi-Moon", self.player)
+        self.multiworld.completion_condition[self.player] = lambda state: state.can_reach_location("Lake Kingdom - Broodals Over the Lake", self.player)
     if options.goal == options.goal.option_metro:
-        self.multiworld.completion_condition[self.player] = lambda state: state.count("Metro Multi-Moon", self.player) >= 2
+        self.multiworld.completion_condition[self.player] = lambda state: state.can_reach_location("Metro Kingdom - A Traditional Festival!", self.player)
     if options.goal == options.goal.option_luncheon:
-        self.multiworld.completion_condition[self.player] = lambda state: state.count("Luncheon Multi-Moon", self.player) >= 2
+        self.multiworld.completion_condition[self.player] = lambda state: state.can_reach_location("Luncheon Kingdom - Cookatiel Showdown!", self.player)
     if options.goal == options.goal.option_moon:
-        self.multiworld.completion_condition[self.player] = lambda state: state.has("Beat the Game", self.player)
+        self.multiworld.completion_condition[self.player] = lambda state: state.can_reach_location("Beat the Game", self.player)
         self.multiworld.get_location("Beat the Game", self.player).place_locked_item(self.create_item("Beat the Game"))
     if options.goal == options.goal.option_dark:
-        self.multiworld.completion_condition[self.player] = lambda state: state.has("Dark Side Multi-Moon", self.player)
+        self.multiworld.completion_condition[self.player] = lambda state: state.can_reach_location("Dark Side - Arrival at Rabbit Ridge!", self.player)
     if options.goal == options.goal.option_darker:
-        self.multiworld.completion_condition[self.player] = lambda state: state.has("Darker Side Multi-Moon", self.player)
+        self.multiworld.completion_condition[self.player] = lambda state: state.can_reach_location("Darker Side - A Long Journey's End!", self.player)
 
     # Place Goal moon at location
     if options.goal == "sand":
@@ -266,16 +264,18 @@ def set_rules(self, options : SMOOptions) -> None:
         self.multiworld.get_location("Dark Side - Arrival at Rabbit Ridge!", self.player).place_locked_item(
             self.create_item("Dark Side Multi-Moon"))
     if options.goal == "darker":
-        self.multiworld.get_location("Darker Side - A Long Journey's End!", self.player).place_locked_item(self.create_item("Darker Side Multi-Moon"))
+        self.multiworld.get_location("Darker Side - A Long Journey's End!", self.player).place_locked_item(
+            self.create_item("Darker Side Multi-Moon"))
 
 
     # Captures
     if options.capture_sanity.value == options.capture_sanity.option_true:
         # Intro Sequence
-        set_rule(self.multiworld.get_location("Spark Pylon", self.player),
-                 lambda state: state.has("Frog", self.player) or state.has("Glitch Logic", self.player))
-        set_rule(self.multiworld.get_location("Chain Chomp", self.player),
-                 lambda state: state.has("Frog", self.player) or state.has("Glitch Logic", self.player))
+        if options.common_capture_skips.value == options.common_capture_skips.option_false:
+            set_rule(self.multiworld.get_location("Spark Pylon", self.player),
+                     lambda state: state.has("Frog", self.player) or state.has("Glitch Logic", self.player))
+            set_rule(self.multiworld.get_location("Chain Chomp", self.player),
+                     lambda state: state.has("Frog", self.player) or state.has("Glitch Logic", self.player))
 
         # Cascade Story
         set_rule(self.multiworld.get_location("Cascade Kingdom - Our First Power Moon", self.player),
@@ -298,7 +298,7 @@ def set_rules(self, options : SMOOptions) -> None:
         if self.options.goal > self.options.goal.option_lake:
             # Wooded Story
             set_rule(self.multiworld.get_location("Wooded Kingdom - Path to the Secret Flower Field", self.player),
-                     lambda state: state.has("Sherm", self.player))
+                     lambda state: state.has("Sherm", self.player) or state.has("Glitch Logic", self.player))
             set_rule(self.multiworld.get_location("Wooded Kingdom - Defend the Secret Flower Field!", self.player),
                      lambda state: state.has("Uproot", self.player) and state.has("Sherm", self.player))
 
@@ -441,17 +441,34 @@ def set_rules(self, options : SMOOptions) -> None:
                      lambda state: state.has("Goomba", self.player))
             set_rule(self.multiworld.get_location("Wooded Kingdom - Elevator Blind Spot", self.player),
                      lambda state: state.has("Sherm", self.player))
-            set_rule(self.multiworld.get_location("Wooded Kingdom - Inside the Rock in the Forest", self.player),
+            set_rule(self.multiworld.get_location("Wooded Kingdom - Inside a Rock in the Forest", self.player),
                      lambda state: state.has("Coin Coffer", self.player) or state.has("Sherm", self.player))
             set_rule(self.multiworld.get_location("Wooded Kingdom - Stretching Your Legs", self.player),
                      lambda state: state.has("Uproot", self.player))
-            # Add vine sub area uproot req if trick jump not possible
-            # Change when entrance rando implemented
+
+            # Wooded Peace
+            set_rule(self.multiworld.get_location("Wooded Kingdom - Hey Out There, Captain Toad!", self.player),
+                     lambda state: state.has("Glydon", self.player) or state.has("Glitch Logic", self.player))
+
             set_rule(self.multiworld.get_location("Wooded Kingdom - Wandering in the Fog", self.player),
-                     lambda state: state.has("Paragoomba", self.player) and state.has("Mini Rocket", self.player))
+                     lambda state: state.has("Mini Rocket", self.player) and (state.has("Paragoomba", self.player) or state.has("Glitch Logic", self.player)))
             set_rule(self.multiworld.get_location("Wooded Kingdom - Nut Hidden in the Fog", self.player),
                      lambda state: state.has("Mini Rocket", self.player))
+
+            set_rule(self.multiworld.get_location("Wooded Kingdom - Walking on Clouds", self.player),
+                     lambda state: state.has("Uproot", self.player) or state.has("Glitch Logic", self.player))
+            set_rule(self.multiworld.get_location("Wooded Kingdom - Above the Clouds", self.player),
+                     lambda state: state.has("Uproot", self.player) or state.has("Glitch Logic", self.player))
+
             if self.options.shop_sanity != 'off':
+                set_rule(self.multiworld.get_location("Scientist Outfit", self.player),
+                         lambda state: state.has("Uproot", self.player) or state.has("Glitch Logic", self.player))
+
+                set_rule(self.multiworld.get_location("Wooded Kingdom Sticker", self.player),
+                         lambda state: state.has("Uproot", self.player) and state.has("Sherm", self.player))
+                set_rule(self.multiworld.get_location("Flowers from Steam Gardens", self.player),
+                         lambda state: state.has("Uproot", self.player) and state.has("Sherm", self.player))
+
                 set_rule(self.multiworld.get_location("Steam Gardener Watering Can", self.player),
                          lambda state: state.has("Boulder", self.player) and state.has("Uproot", self.player) and state.has("Sherm", self.player))
 

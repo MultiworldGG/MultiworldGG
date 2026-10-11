@@ -4,7 +4,7 @@ import os
 
 class BabelFish():
 	def __init__(self,subpath=["resources","app","meta"],lang=None):
-		localization_string = locale.getdefaultlocale()[0] #get set localization
+		localization_string = locale.getlocale()[0] #get set localization
 		if localization_string is None:
 			localization_string = "en"
 		self.locale = localization_string[:2] if lang is None else lang #let caller override localization

@@ -120,6 +120,8 @@ class ALttPRWorld(World):
                       "Compass (Misery Mire)",
                       "Compass (Turtle Rock)",
                       "Compass (Ganons Tower)"},
+        "Flute": {"Ocarina", "Ocarina (Activated)"},
+        "Magic Cape": {"Cape"},
         "Maps": {"Map (Escape)",
                  "Map (Eastern Palace)",
                  "Map (Desert Palace)",
@@ -133,7 +135,6 @@ class ALttPRWorld(World):
                  "Map (Misery Mire)",
                  "Map (Turtle Rock)",
                  "Map (Ganons Tower)"},
-        "Ocarina": {"Ocarina", "Ocarina (Activated)"},
         "Progressive Mail": {"Progressive Armor"}
     }
 
@@ -272,8 +273,7 @@ class ALttPRWorld(World):
                     # This is a prefilled location, probably a dungeon item
                     continue
 
-                dr_item_name = location.item.name if location.item.name not in Items.dr_ap_different_names else Items.dr_ap_different_names[location.item.name]
-                dr_item = ItemFactory(dr_item_name, 1)
+                dr_item = ItemFactory(location.item.name, 1)
             else:
                 trap_classification = None
                 # If this is trap + another classification, use the other classification
@@ -451,7 +451,7 @@ class ALttPRWorld(World):
             1: False}  # This makes you a bunny if your spawn point is in the dark world
         self.door_rando_world.flute_mode = {1: "active" if self.options.pre_activated_flute.value else "normal"}
         self.door_rando_world.intensity = {1: 2 if not self.options.lobby_shuffle.value else 3}  # No door shuffle
-        self.door_rando_world.keyshuffle = {1: "none" if not (self.options.small_key_shuffle.value or self.options.door_shuffle in ["partitioned", "crossed"]) else "wild"}
+        self.door_rando_world.keyshuffle = {1: "none" if not self.options.small_key_shuffle.value else "wild"}
         self.door_rando_world.linked_drops = {
             1: "unset"}  # In entrance shuffle, whether dropdowns link with their matching exit is determined by the entrance setting
         self.door_rando_world.lock_aga_door_in_escape = True
@@ -614,16 +614,48 @@ class ALttPRWorld(World):
 
 
     def is_excluded_key_drop_location(self, location):
-        return self.door_rando_world.dropshuffle[1] == "none" and ("Key Drop" in location.name or "Pot Key" in location.name)
+        return (self.door_rando_world.dropshuffle[1] == "none" and ("Key Drop" in location.name and location.name != "Ice Palace - Hammer Block Key Drop")) or \
+               (self.door_rando_world.pottery[1] in ["none", "cave"] and ("Pot Key" in location.name or location.name == "Ice Palace - Hammer Block Key Drop"))
 
 
     def validate_options(self) -> None:
+        always_invalid_starting_items = [
+            "Apples",
+            "Arrows (5)",
+            "Bee",
+            "Bee Trap",
+            "Blue Clock",
+            "Blue Potion",
+            "Bow",
+            "Chicken",
+            "Fairy",
+            "Fighter Sword",
+            "Golden Sword",
+            "Good Bee",
+            "Green Clock",
+            "Green Potion",
+            "Master Sword",
+            "Multi RNG",
+            "Nothing",
+            "Power Glove",
+            "Power Star",
+            "Red Clock",
+            "Red Potion",
+            "Rupoor",
+            "Silver Arrows",
+            "Single RNG",
+            "Small Heart",
+            "Tempered Sword",
+            "Titans Mitts",
+            "Triforce Piece",
+        ]
+        always_invalid_starting_items.extend([item for item in Items.progressive_items if item.startswith("Small Key")])
         errors = []
 
         if self.options.goal in ["triforcehunt", "ganonhunt", "trinity"] and self.options.triforce_hunt_goal.value > self.options.triforce_hunt_total.value:
             errors.append("Triforce Hunt Goal cannot be greater than Triforce Hunt Total.")
 
-        sprite = self.options.sprite.value.lower()
+        sprite = self.options.sprite.value.lower() if self.options.sprite else "link"
         if sprite != "link" and sprite not in Sprites.sprites:
             errors.append(f"{self.options.sprite.value} is not a valid sprite.")
 
@@ -632,8 +664,6 @@ class ALttPRWorld(World):
             self.options.start_inventory.value["Ocarina (Activated)"] = 1
             del self.options.start_inventory.value["Ocarina"]
 
-        always_invalid_starting_items = ["Triforce Piece", "Green Clock", "Blue Clock", "Red Clock"]
-        always_invalid_starting_items.extend([item for item in Items.progressive_items if item.startswith("Small Key")])
         invalid_items = []
         for item in start_inventory:
             if item in always_invalid_starting_items or item not in self.item_name_to_id:

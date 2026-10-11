@@ -1024,9 +1024,7 @@ locations_data = [
     # Abandoned Mines
     {
         "address": 2301, "name": "AM: Above Left Exit",
-        "region": "AM - Above Left Exit", "requires": [
-            { "anyOf": [ { "item": "Grapple" }, { "item": "Cloud Leap" } ] }
-        ]
+        "region": "AM - Chest Above Left Exit", "requires": []
     },
     {
         "address": 2302, "name": "AM: Defeat Celestial Warden: Yinyue",

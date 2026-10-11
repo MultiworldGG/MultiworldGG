@@ -1,6 +1,6 @@
 [
   {
-    "name": "Rogueport Docks: HP Drain",
+    "name": "Rogueport Docks: HP Drain (Badge)",
     "id": 78780000,
     "rel": "gor",
     "offsets": [
@@ -2305,7 +2305,7 @@
     "offsets": [
       "0x40FA8"
     ],
-    "vanilla_item": 77772092,
+    "vanilla_item": 77772091,
     "tags": [
       "great_tree",
       "chapter_2",
@@ -2768,7 +2768,7 @@
     "offsets": [
       "0x21CE0"
     ],
-    "vanilla_item": 77772178,
+    "vanilla_item": 77772183,
     "tags": [
       "glitzville",
       "chapter_3"
@@ -2837,7 +2837,7 @@
       "0x27C20",
       "0x26A88"
     ],
-    "vanilla_item": 77772179,
+    "vanilla_item": 77772184,
     "tags": [
       "glitzville",
       "chapter_3"
@@ -5784,7 +5784,7 @@
     "offsets": [
       "0x31370"
     ],
-    "vanilla_item": 77772092,
+    "vanilla_item": 77772091,
     "tags": [
       "xnaut_fortress",
       "chapter_7"
@@ -5956,7 +5956,7 @@
     "offsets": [
       "0x251E8"
     ],
-    "vanilla_item": 77772130,
+    "vanilla_item": 77772131,
     "tags": [
       "palace",
       "chapter_8",
@@ -5970,7 +5970,7 @@
     "offsets": [
       "0x25690"
     ],
-    "vanilla_item": 77772130,
+    "vanilla_item": 77772131,
     "tags": [
       "palace",
       "chapter_8",
@@ -5984,7 +5984,7 @@
     "offsets": [
       "0x25AC0"
     ],
-    "vanilla_item": 77772130,
+    "vanilla_item": 77772131,
     "tags": [
       "palace",
       "chapter_8",
@@ -5998,7 +5998,7 @@
     "offsets": [
       "0x26008"
     ],
-    "vanilla_item": 77772130,
+    "vanilla_item": 77772131,
     "tags": [
       "palace",
       "chapter_8",
@@ -6012,7 +6012,7 @@
     "offsets": [
       "0x26438"
     ],
-    "vanilla_item": 77772130,
+    "vanilla_item": 77772131,
     "tags": [
       "palace",
       "chapter_8",
@@ -6026,7 +6026,7 @@
     "offsets": [
       "0x268E0"
     ],
-    "vanilla_item": 77772130,
+    "vanilla_item": 77772131,
     "tags": [
       "palace",
       "chapter_8",
@@ -6040,7 +6040,7 @@
     "offsets": [
       "0x26F40"
     ],
-    "vanilla_item": 77772130,
+    "vanilla_item": 77772131,
     "tags": [
       "palace",
       "chapter_8",
@@ -6054,7 +6054,7 @@
     "offsets": [
       "0x27600"
     ],
-    "vanilla_item": 77772130,
+    "vanilla_item": 77772131,
     "tags": [
       "palace",
       "chapter_8",

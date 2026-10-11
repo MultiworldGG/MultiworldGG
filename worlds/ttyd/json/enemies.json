@@ -1,6 +1,7 @@
 [
   {
     "name": "btlgrp_aji_aji_zako",
+    "formation": 1,
     "rel": "aji",
     "location_id": 78780584,
     "enemy_count": 2,
@@ -11,6 +12,7 @@
   },
   {
     "name": "btlgrp_aji_aji_01_01_off_1",
+    "formation": 1,
     "rel": "aji",
     "location_id": 78780584,
     "enemy_count": 2,
@@ -21,6 +23,7 @@
   },
   {
     "name": "btlgrp_aji_aji_01_02_off_1",
+    "formation": 1,
     "rel": "aji",
     "location_id": 78780584,
     "enemy_count": 3,
@@ -32,6 +35,7 @@
   },
   {
     "name": "btlgrp_aji_aji_01_03_off_1",
+    "formation": 1,
     "rel": "aji",
     "location_id": 78780584,
     "enemy_count": 4,
@@ -44,6 +48,7 @@
   },
   {
     "name": "btlgrp_aji_aji_01_04_off_1",
+    "formation": 1,
     "rel": "aji",
     "location_id": 78780584,
     "enemy_count": 2,
@@ -54,6 +59,7 @@
   },
   {
     "name": "btlgrp_aji_aji_01_05_off_1",
+    "formation": 1,
     "rel": "aji",
     "location_id": 78780584,
     "enemy_count": 2,
@@ -64,6 +70,7 @@
   },
   {
     "name": "btlgrp_aji_aji_01_06_off_1",
+    "formation": 1,
     "rel": "aji",
     "location_id": 78780584,
     "enemy_count": 4,
@@ -76,6 +83,7 @@
   },
   {
     "name": "btlgrp_aji_aji_01_07_off_1",
+    "formation": 1,
     "rel": "aji",
     "location_id": 78780584,
     "enemy_count": 3,
@@ -87,6 +95,7 @@
   },
   {
     "name": "btlgrp_aji_aji_01_08_off_1",
+    "formation": 1,
     "rel": "aji",
     "location_id": 78780584,
     "enemy_count": 4,
@@ -99,6 +108,7 @@
   },
   {
     "name": "btlgrp_aji_aji_04_01_off_1",
+    "formation": 1,
     "rel": "aji",
     "location_id": 78780595,
     "enemy_count": 2,
@@ -109,6 +119,7 @@
   },
   {
     "name": "btlgrp_aji_aji_06_01_off_1",
+    "formation": 1,
     "rel": "aji",
     "location_id": 78780596,
     "enemy_count": 2,
@@ -119,6 +130,7 @@
   },
   {
     "name": "btlgrp_aji_aji_08_01_off_1",
+    "formation": 1,
     "rel": "aji",
     "location_id": 78780599,
     "enemy_count": 3,
@@ -130,6 +142,7 @@
   },
   {
     "name": "btlgrp_aji_aji_09_01_off_1",
+    "formation": 1,
     "rel": "aji",
     "location_id": 78780598,
     "enemy_count": 5,
@@ -143,6 +156,7 @@
   },
   {
     "name": "btlgrp_aji_aji_10_01_off_1",
+    "formation": 1,
     "rel": "aji",
     "location_id": 78780600,
     "enemy_count": 1,
@@ -152,6 +166,7 @@
   },
   {
     "name": "btlgrp_aji_aji_13_01_off_1",
+    "formation": 1,
     "rel": "aji",
     "location_id": 78780602,
     "enemy_count": 4,
@@ -164,6 +179,7 @@
   },
   {
     "name": "btlgrp_aji_aji_13_02_off_1",
+    "formation": 1,
     "rel": "aji",
     "location_id": 78780602,
     "enemy_count": 2,
@@ -174,6 +190,7 @@
   },
   {
     "name": "btlgrp_aji_aji_15_01_off_1",
+    "formation": 1,
     "rel": "aji",
     "location_id": 78780601,
     "enemy_count": 1,
@@ -183,6 +200,7 @@
   },
   {
     "name": "btlgrp_bom_bom_03_01_off_1",
+    "formation": 1,
     "rel": "bom",
     "location_id": 78780575,
     "enemy_count": 2,
@@ -193,6 +211,7 @@
   },
   {
     "name": "btlgrp_bom_bom_03_01_off_2",
+    "formation": 2,
     "rel": "bom",
     "location_id": 78780575,
     "enemy_count": 3,
@@ -204,6 +223,7 @@
   },
   {
     "name": "btlgrp_bom_bom_03_03_off_1",
+    "formation": 1,
     "rel": "bom",
     "location_id": 78780575,
     "enemy_count": 2,
@@ -214,6 +234,7 @@
   },
   {
     "name": "btlgrp_bom_bom_03_03_off_2",
+    "formation": 2,
     "rel": "bom",
     "location_id": 78780575,
     "enemy_count": 3,
@@ -225,6 +246,7 @@
   },
   {
     "name": "btlgrp_bom_bom_04_01_off_1",
+    "formation": 1,
     "rel": "bom",
     "location_id": 78780577,
     "enemy_count": 2,
@@ -235,6 +257,7 @@
   },
   {
     "name": "btlgrp_bom_bom_04_01_off_2",
+    "formation": 2,
     "rel": "bom",
     "location_id": 78780577,
     "enemy_count": 3,
@@ -246,6 +269,7 @@
   },
   {
     "name": "btlgrp_bom_bom_04_02_off_1",
+    "formation": 1,
     "rel": "bom",
     "location_id": 78780577,
     "enemy_count": 2,
@@ -256,6 +280,7 @@
   },
   {
     "name": "btlgrp_bom_bom_04_02_off_2",
+    "formation": 2,
     "rel": "bom",
     "location_id": 78780577,
     "enemy_count": 3,
@@ -267,6 +292,7 @@
   },
   {
     "name": "btlgrp_bom_bom_04_03_off_1",
+    "formation": 1,
     "rel": "bom",
     "location_id": 78780577,
     "enemy_count": 4,
@@ -279,6 +305,7 @@
   },
   {
     "name": "btlgrp_dou_dou_01_01_off_01",
+    "formation": 1,
     "rel": "dou",
     "location_id": 78780493,
     "enemy_count": 3,
@@ -290,6 +317,7 @@
   },
   {
     "name": "btlgrp_dou_dou_02_01_off_01",
+    "formation": 1,
     "rel": "dou",
     "location_id": 78780494,
     "enemy_count": 2,
@@ -300,6 +328,7 @@
   },
   {
     "name": "btlgrp_dou_dou_02_02_off_01",
+    "formation": 1,
     "rel": "dou",
     "location_id": 78780494,
     "enemy_count": 4,
@@ -312,6 +341,7 @@
   },
   {
     "name": "btlgrp_dou_dou_03_01_off_01",
+    "formation": 1,
     "rel": "dou",
     "location_id": 78780497,
     "enemy_count": 2,
@@ -322,6 +352,7 @@
   },
   {
     "name": "btlgrp_dou_dou_03_99_off_01",
+    "formation": 1,
     "rel": "dou",
     "location_id": 78780497,
     "enemy_count": 2,
@@ -332,6 +363,7 @@
   },
   {
     "name": "btlgrp_dou_dou_03_02_off_01",
+    "formation": 1,
     "rel": "dou",
     "location_id": 78780497,
     "enemy_count": 2,
@@ -342,6 +374,7 @@
   },
   {
     "name": "btlgrp_dou_dou_03_03_off_01",
+    "formation": 1,
     "rel": "dou",
     "location_id": 78780497,
     "enemy_count": 3,
@@ -353,6 +386,7 @@
   },
   {
     "name": "btlgrp_dou_dou_05_01_off_01",
+    "formation": 1,
     "rel": "dou",
     "location_id": 78780501,
     "enemy_count": 2,
@@ -363,6 +397,7 @@
   },
   {
     "name": "btlgrp_dou_dou_05_02_off_01",
+    "formation": 1,
     "rel": "dou",
     "location_id": 78780501,
     "enemy_count": 2,
@@ -373,6 +408,7 @@
   },
   {
     "name": "btlgrp_dou_dou_06_01_off_01",
+    "formation": 1,
     "rel": "dou",
     "location_id": 78780504,
     "enemy_count": 3,
@@ -384,6 +420,7 @@
   },
   {
     "name": "btlgrp_dou_dou_06_02_off_01",
+    "formation": 1,
     "rel": "dou",
     "location_id": 78780504,
     "enemy_count": 4,
@@ -396,6 +433,7 @@
   },
   {
     "name": "btlgrp_dou_dou_06_03_off_01",
+    "formation": 1,
     "rel": "dou",
     "location_id": 78780504,
     "enemy_count": 1,
@@ -405,6 +443,7 @@
   },
   {
     "name": "btlgrp_dou_dou_07_01_off_01",
+    "formation": 1,
     "rel": "dou",
     "location_id": 78780505,
     "enemy_count": 3,
@@ -416,6 +455,7 @@
   },
   {
     "name": "btlgrp_dou_dou_08_01_off_01",
+    "formation": 1,
     "rel": "dou",
     "location_id": 78780505,
     "enemy_count": 4,
@@ -428,6 +468,7 @@
   },
   {
     "name": "btlgrp_dou_dou_09_01_off_01",
+    "formation": 1,
     "rel": "dou",
     "location_id": 78780508,
     "enemy_count": 3,
@@ -439,6 +480,7 @@
   },
   {
     "name": "btlgrp_dou_dou_09_02_off_01",
+    "formation": 1,
     "rel": "dou",
     "location_id": 78780508,
     "enemy_count": 3,
@@ -450,6 +492,7 @@
   },
   {
     "name": "btlgrp_dou_dou_12_01_off_01",
+    "formation": 1,
     "rel": "dou",
     "location_id": 78780510,
     "enemy_count": 2,
@@ -460,6 +503,7 @@
   },
   {
     "name": "btlgrp_dou_dou_12_99_off_01",
+    "formation": 1,
     "rel": "dou",
     "location_id": 78780510,
     "enemy_count": 2,
@@ -470,6 +514,7 @@
   },
   {
     "name": "btlgrp_dou_dou_13_01_off_01",
+    "formation": 1,
     "rel": "dou",
     "location_id": 78780510,
     "enemy_count": 2,
@@ -480,6 +525,7 @@
   },
   {
     "name": "btlgrp_dou_dou_13_99_off_01",
+    "formation": 1,
     "rel": "dou",
     "location_id": 78780510,
     "enemy_count": 2,
@@ -490,6 +536,7 @@
   },
   {
     "name": "btlgrp_eki_eki_06_01_off_1",
+    "formation": 1,
     "rel": "eki",
     "location_id": 78780547,
     "enemy_count": 3,
@@ -501,6 +548,7 @@
   },
   {
     "name": "btlgrp_eki_eki_02_01_off_1",
+    "formation": 1,
     "rel": "eki",
     "location_id": 78780538,
     "enemy_count": 2,
@@ -511,6 +559,7 @@
   },
   {
     "name": "btlgrp_eki_eki_02_02_off_1",
+    "formation": 1,
     "rel": "eki",
     "location_id": 78780538,
     "enemy_count": 3,
@@ -522,6 +571,7 @@
   },
   {
     "name": "btlgrp_eki_eki_02_03_off_1",
+    "formation": 1,
     "rel": "eki",
     "location_id": 78780538,
     "enemy_count": 2,
@@ -532,6 +582,7 @@
   },
   {
     "name": "btlgrp_eki_eki_03_01_off_1",
+    "formation": 1,
     "rel": "eki",
     "location_id": 78780540,
     "enemy_count": 2,
@@ -542,6 +593,7 @@
   },
   {
     "name": "btlgrp_eki_eki_03_02_off_1",
+    "formation": 1,
     "rel": "eki",
     "location_id": 78780540,
     "enemy_count": 3,
@@ -553,6 +605,7 @@
   },
   {
     "name": "btlgrp_eki_eki_03_03_off_1",
+    "formation": 1,
     "rel": "eki",
     "location_id": 78780540,
     "enemy_count": 3,
@@ -564,6 +617,7 @@
   },
   {
     "name": "btlgrp_eki_eki_03_05_off_1",
+    "formation": 1,
     "rel": "eki",
     "location_id": 78780540,
     "enemy_count": 2,
@@ -574,6 +628,7 @@
   },
   {
     "name": "btlgrp_eki_eki_03_07_off_1",
+    "formation": 1,
     "rel": "eki",
     "location_id": 78780540,
     "enemy_count": 4,
@@ -586,6 +641,7 @@
   },
   {
     "name": "btlgrp_eki_eki_04_01_off_1",
+    "formation": 1,
     "rel": "eki",
     "location_id": 78780543,
     "enemy_count": 3,
@@ -597,6 +653,7 @@
   },
   {
     "name": "btlgrp_eki_eki_04_02_off_1",
+    "formation": 1,
     "rel": "eki",
     "location_id": 78780543,
     "enemy_count": 3,
@@ -608,6 +665,7 @@
   },
   {
     "name": "btlgrp_eki_eki_04_06_off_1",
+    "formation": 1,
     "rel": "eki",
     "location_id": 78780543,
     "enemy_count": 2,
@@ -618,6 +676,7 @@
   },
   {
     "name": "btlgrp_eki_eki_04_03_off_1",
+    "formation": 1,
     "rel": "eki",
     "location_id": 78780543,
     "enemy_count": 2,
@@ -628,6 +687,7 @@
   },
   {
     "name": "btlgrp_eki_eki_04_04_off_1",
+    "formation": 1,
     "rel": "eki",
     "location_id": 78780543,
     "enemy_count": 4,
@@ -640,6 +700,7 @@
   },
   {
     "name": "btlgrp_eki_eki_04_05_off_1",
+    "formation": 1,
     "rel": "eki",
     "location_id": 78780543,
     "enemy_count": 2,
@@ -650,6 +711,7 @@
   },
   {
     "name": "btlgrp_gon_gon_02_02_off_1",
+    "formation": 1,
     "rel": "gon",
     "location_id": 78780193,
     "enemy_count": 3,
@@ -661,6 +723,7 @@
   },
   {
     "name": "btlgrp_gon_gon_02_03_off_1",
+    "formation": 1,
     "rel": "gon",
     "location_id": 78780193,
     "enemy_count": 2,
@@ -671,6 +734,7 @@
   },
   {
     "name": "btlgrp_gon_gon_02_04_off_1",
+    "formation": 1,
     "rel": "gon",
     "location_id": 78780193,
     "enemy_count": 3,
@@ -682,6 +746,7 @@
   },
   {
     "name": "btlgrp_gon_gon_03_01_off_1",
+    "formation": 1,
     "rel": "gon",
     "location_id": 78780194,
     "enemy_count": 5,
@@ -695,6 +760,7 @@
   },
   {
     "name": "btlgrp_gon_gon_04_01_off_1",
+    "formation": 1,
     "rel": "gon",
     "location_id": 78780196,
     "enemy_count": 2,
@@ -705,6 +771,7 @@
   },
   {
     "name": "btlgrp_gon_gon_04_02_off_1",
+    "formation": 1,
     "rel": "gon",
     "location_id": 78780196,
     "enemy_count": 4,
@@ -717,6 +784,7 @@
   },
   {
     "name": "btlgrp_gon_gon_04_03_off_1",
+    "formation": 1,
     "rel": "gon",
     "location_id": 78780196,
     "enemy_count": 3,
@@ -728,6 +796,7 @@
   },
   {
     "name": "btlgrp_gon_gon_06_03_off_1",
+    "formation": 1,
     "rel": "gon",
     "location_id": 78780204,
     "enemy_count": 3,
@@ -739,6 +808,7 @@
   },
   {
     "name": "btlgrp_gon_gon_06_04_off_1",
+    "formation": 1,
     "rel": "gon",
     "location_id": 78780204,
     "enemy_count": 3,
@@ -750,6 +820,7 @@
   },
   {
     "name": "btlgrp_gon_gon_08_01_off_1",
+    "formation": 1,
     "rel": "gon",
     "location_id": 78780207,
     "enemy_count": 2,
@@ -760,6 +831,7 @@
   },
   {
     "name": "btlgrp_gon_gon_08_03_off_1",
+    "formation": 1,
     "rel": "gon",
     "location_id": 78780207,
     "enemy_count": 2,
@@ -770,6 +842,7 @@
   },
   {
     "name": "btlgrp_gon_gon_08_05_off_1",
+    "formation": 1,
     "rel": "gon",
     "location_id": 78780207,
     "enemy_count": 2,
@@ -780,6 +853,7 @@
   },
   {
     "name": "btlgrp_gon_gon_09_01_off_1",
+    "formation": 1,
     "rel": "gon",
     "location_id": 78780208,
     "enemy_count": 3,
@@ -791,6 +865,7 @@
   },
   {
     "name": "btlgrp_gon_gon_09_02_off_1",
+    "formation": 1,
     "rel": "gon",
     "location_id": 78780208,
     "enemy_count": 3,
@@ -802,6 +877,7 @@
   },
   {
     "name": "btlgrp_gon_gon_09_04_off_1",
+    "formation": 1,
     "rel": "gon",
     "location_id": 78780208,
     "enemy_count": 4,
@@ -814,6 +890,7 @@
   },
   {
     "name": "btlgrp_gon_gon_10_01_off_1",
+    "formation": 1,
     "rel": "gon",
     "location_id": 78780210,
     "enemy_count": 4,
@@ -826,6 +903,7 @@
   },
   {
     "name": "btlgrp_gon_gon_10_02_off_1",
+    "formation": 1,
     "rel": "gon",
     "location_id": 78780210,
     "enemy_count": 3,
@@ -837,6 +915,7 @@
   },
   {
     "name": "btlgrp_gon_gon_10_03_off_1",
+    "formation": 1,
     "rel": "gon",
     "location_id": 78780210,
     "enemy_count": 4,
@@ -849,6 +928,7 @@
   },
   {
     "name": "btlgrp_gra_gra_01_01_off_1",
+    "formation": 1,
     "rel": "gra",
     "location_id": 78780321,
     "enemy_count": 3,
@@ -860,6 +940,7 @@
   },
   {
     "name": "btlgrp_gra_gra_01_01_on_1",
+    "formation": 2,
     "rel": "gra",
     "location_id": 78780321,
     "enemy_count": 3,
@@ -871,6 +952,7 @@
   },
   {
     "name": "btlgrp_gra_gra_01_01_on_2",
+    "formation": 3,
     "rel": "gra",
     "location_id": 78780321,
     "enemy_count": 3,
@@ -882,6 +964,7 @@
   },
   {
     "name": "btlgrp_gra_gra_01_01_on_3",
+    "formation": 4,
     "rel": "gra",
     "location_id": 78780321,
     "enemy_count": 3,
@@ -893,6 +976,7 @@
   },
   {
     "name": "btlgrp_gra_gra_01_03_off_1",
+    "formation": 1,
     "rel": "gra",
     "location_id": 78780321,
     "enemy_count": 3,
@@ -904,6 +988,7 @@
   },
   {
     "name": "btlgrp_gra_gra_01_03_on_1",
+    "formation": 2,
     "rel": "gra",
     "location_id": 78780321,
     "enemy_count": 3,
@@ -915,6 +1000,7 @@
   },
   {
     "name": "btlgrp_gra_gra_01_03_on_2",
+    "formation": 3,
     "rel": "gra",
     "location_id": 78780321,
     "enemy_count": 4,
@@ -927,6 +1013,7 @@
   },
   {
     "name": "btlgrp_gra_gra_01_03_on_3",
+    "formation": 4,
     "rel": "gra",
     "location_id": 78780321,
     "enemy_count": 4,
@@ -939,6 +1026,7 @@
   },
   {
     "name": "btlgrp_gra_gra_01_04_off_1",
+    "formation": 1,
     "rel": "gra",
     "location_id": 78780321,
     "enemy_count": 3,
@@ -950,6 +1038,7 @@
   },
   {
     "name": "btlgrp_gra_gra_01_04_on_1",
+    "formation": 2,
     "rel": "gra",
     "location_id": 78780321,
     "enemy_count": 3,
@@ -961,6 +1050,7 @@
   },
   {
     "name": "btlgrp_gra_gra_01_04_on_2",
+    "formation": 3,
     "rel": "gra",
     "location_id": 78780321,
     "enemy_count": 4,
@@ -973,6 +1063,7 @@
   },
   {
     "name": "btlgrp_gra_gra_01_04_on_3",
+    "formation": 4,
     "rel": "gra",
     "location_id": 78780321,
     "enemy_count": 3,
@@ -984,6 +1075,7 @@
   },
   {
     "name": "btlgrp_gra_gra_03_01_off_1",
+    "formation": 1,
     "rel": "gra",
     "location_id": 78780327,
     "enemy_count": 2,
@@ -994,6 +1086,7 @@
   },
   {
     "name": "btlgrp_gra_gra_03_01_off_2",
+    "formation": 2,
     "rel": "gra",
     "location_id": 78780327,
     "enemy_count": 3,
@@ -1005,6 +1098,7 @@
   },
   {
     "name": "btlgrp_gra_gra_03_04_off_1",
+    "formation": 1,
     "rel": "gra",
     "location_id": 78780327,
     "enemy_count": 2,
@@ -1015,6 +1109,7 @@
   },
   {
     "name": "btlgrp_gra_gra_03_04_off_2",
+    "formation": 2,
     "rel": "gra",
     "location_id": 78780327,
     "enemy_count": 3,
@@ -1026,6 +1121,7 @@
   },
   {
     "name": "btlgrp_gra_gra_03_04_off_3",
+    "formation": 3,
     "rel": "gra",
     "location_id": 78780327,
     "enemy_count": 3,
@@ -1037,6 +1133,7 @@
   },
   {
     "name": "btlgrp_gra_gra_03_05_off_1",
+    "formation": 1,
     "rel": "gra",
     "location_id": 78780327,
     "enemy_count": 4,
@@ -1049,6 +1146,7 @@
   },
   {
     "name": "btlgrp_gra_gra_03_05_off_2",
+    "formation": 2,
     "rel": "gra",
     "location_id": 78780327,
     "enemy_count": 3,
@@ -1060,6 +1158,7 @@
   },
   {
     "name": "btlgrp_gra_gra_03_05_off_3",
+    "formation": 3,
     "rel": "gra",
     "location_id": 78780327,
     "enemy_count": 4,
@@ -1072,6 +1171,7 @@
   },
   {
     "name": "btlgrp_gra_gra_04_02_off_1",
+    "formation": 1,
     "rel": "gra",
     "location_id": 78780329,
     "enemy_count": 3,
@@ -1083,6 +1183,7 @@
   },
   {
     "name": "btlgrp_gra_gra_04_02_off_2",
+    "formation": 2,
     "rel": "gra",
     "location_id": 78780329,
     "enemy_count": 2,
@@ -1093,6 +1194,7 @@
   },
   {
     "name": "btlgrp_gra_gra_04_02_off_3",
+    "formation": 3,
     "rel": "gra",
     "location_id": 78780329,
     "enemy_count": 3,
@@ -1104,6 +1206,7 @@
   },
   {
     "name": "btlgrp_gra_gra_05_01_off_1",
+    "formation": 1,
     "rel": "gra",
     "location_id": 78780330,
     "enemy_count": 2,
@@ -1114,6 +1217,7 @@
   },
   {
     "name": "btlgrp_gra_gra_05_01_off_2",
+    "formation": 2,
     "rel": "gra",
     "location_id": 78780330,
     "enemy_count": 3,
@@ -1125,6 +1229,7 @@
   },
   {
     "name": "btlgrp_gra_gra_05_03_off_1",
+    "formation": 1,
     "rel": "gra",
     "location_id": 78780330,
     "enemy_count": 3,
@@ -1136,6 +1241,7 @@
   },
   {
     "name": "btlgrp_gra_gra_05_03_off_2",
+    "formation": 2,
     "rel": "gra",
     "location_id": 78780330,
     "enemy_count": 3,
@@ -1147,6 +1253,7 @@
   },
   {
     "name": "btlgrp_gra_gra_05_03_off_3",
+    "formation": 3,
     "rel": "gra",
     "location_id": 78780330,
     "enemy_count": 4,
@@ -1159,6 +1266,7 @@
   },
   {
     "name": "btlgrp_hei_hei_01_01_off_1",
+    "formation": 1,
     "rel": "hei",
     "location_id": 78780161,
     "enemy_count": 4,
@@ -1171,6 +1279,7 @@
   },
   {
     "name": "btlgrp_hei_hei_02_02_off_1",
+    "formation": 1,
     "rel": "hei",
     "location_id": 78780163,
     "enemy_count": 2,
@@ -1181,6 +1290,7 @@
   },
   {
     "name": "btlgrp_hei_hei_02_03_off_1",
+    "formation": 1,
     "rel": "hei",
     "location_id": 78780163,
     "enemy_count": 2,
@@ -1191,6 +1301,7 @@
   },
   {
     "name": "btlgrp_hei_hei_02_04_off_1",
+    "formation": 1,
     "rel": "hei",
     "location_id": 78780163,
     "enemy_count": 2,
@@ -1201,6 +1312,7 @@
   },
   {
     "name": "btlgrp_hei_hei_03_01_off_1",
+    "formation": 1,
     "rel": "hei",
     "location_id": 78780163,
     "enemy_count": 2,
@@ -1211,6 +1323,7 @@
   },
   {
     "name": "btlgrp_hei_hei_04_01_off_1",
+    "formation": 1,
     "rel": "hei",
     "location_id": 78780166,
     "enemy_count": 3,
@@ -1222,6 +1335,7 @@
   },
   {
     "name": "btlgrp_hei_hei_04_01_off_2",
+    "formation": 2,
     "rel": "hei",
     "location_id": 78780166,
     "enemy_count": 2,
@@ -1232,6 +1346,7 @@
   },
   {
     "name": "btlgrp_hei_hei_04_02_off_1",
+    "formation": 1,
     "rel": "hei",
     "location_id": 78780166,
     "enemy_count": 2,
@@ -1242,6 +1357,7 @@
   },
   {
     "name": "btlgrp_hei_hei_04_02_off_2",
+    "formation": 2,
     "rel": "hei",
     "location_id": 78780166,
     "enemy_count": 3,
@@ -1253,6 +1369,7 @@
   },
   {
     "name": "btlgrp_hei_hei_05_01_off_1",
+    "formation": 1,
     "rel": "hei",
     "location_id": 78780166,
     "enemy_count": 2,
@@ -1263,6 +1380,7 @@
   },
   {
     "name": "btlgrp_hei_hei_06_02_off_1",
+    "formation": 1,
     "rel": "hei",
     "location_id": 78780801,
     "enemy_count": 2,
@@ -1273,6 +1391,7 @@
   },
   {
     "name": "btlgrp_hei_hei_06_03_off_1",
+    "formation": 1,
     "rel": "hei",
     "location_id": 78780801,
     "enemy_count": 3,
@@ -1284,6 +1403,7 @@
   },
   {
     "name": "btlgrp_hei_hei_06_03_off_2",
+    "formation": 2,
     "rel": "hei",
     "location_id": 78780801,
     "enemy_count": 3,
@@ -1295,6 +1415,7 @@
   },
   {
     "name": "btlgrp_hei_hei_07_01_off_1",
+    "formation": 1,
     "rel": "hei",
     "location_id": 78780161,
     "enemy_count": 4,
@@ -1307,6 +1428,7 @@
   },
   {
     "name": "btlgrp_hei_hei_08_01_off_1",
+    "formation": 1,
     "rel": "hei",
     "location_id": 78780169,
     "enemy_count": 4,
@@ -1319,6 +1441,7 @@
   },
   {
     "name": "btlgrp_hei_hei_09_01_off_1",
+    "formation": 1,
     "rel": "hei",
     "location_id": 78780170,
     "enemy_count": 2,
@@ -1329,6 +1452,7 @@
   },
   {
     "name": "btlgrp_hei_hei_09_01_off_2",
+    "formation": 2,
     "rel": "hei",
     "location_id": 78780170,
     "enemy_count": 3,
@@ -1340,6 +1464,7 @@
   },
   {
     "name": "btlgrp_hei_hei_09_03_off_1",
+    "formation": 1,
     "rel": "hei",
     "location_id": 78780170,
     "enemy_count": 2,
@@ -1350,6 +1475,7 @@
   },
   {
     "name": "btlgrp_hei_hei_09_03_off_2",
+    "formation": 2,
     "rel": "hei",
     "location_id": 78780170,
     "enemy_count": 3,
@@ -1361,6 +1487,7 @@
   },
   {
     "name": "btlgrp_hei_hei_11_01_off_1",
+    "formation": 1,
     "rel": "hei",
     "location_id": 78780170,
     "enemy_count": 2,
@@ -1371,6 +1498,7 @@
   },
   {
     "name": "btlgrp_hei_hei_11_01_off_2",
+    "formation": 2,
     "rel": "hei",
     "location_id": 78780170,
     "enemy_count": 3,
@@ -1382,6 +1510,7 @@
   },
   {
     "name": "btlgrp_hei_hei_11_03_off_1",
+    "formation": 1,
     "rel": "hei",
     "location_id": 78780170,
     "enemy_count": 2,
@@ -1392,6 +1521,7 @@
   },
   {
     "name": "btlgrp_hei_hei_11_03_off_2",
+    "formation": 2,
     "rel": "hei",
     "location_id": 78780170,
     "enemy_count": 3,
@@ -1403,6 +1533,7 @@
   },
   {
     "name": "btlgrp_hei_hei_12_01_off_1",
+    "formation": 1,
     "rel": "hei",
     "location_id": 78780171,
     "enemy_count": 4,
@@ -1415,6 +1546,7 @@
   },
   {
     "name": "btlgrp_hei_hei_13_02_off_1",
+    "formation": 1,
     "rel": "hei",
     "location_id": 78780182,
     "enemy_count": 2,
@@ -1425,6 +1557,7 @@
   },
   {
     "name": "btlgrp_hei_hei_13_02_on_1",
+    "formation": 2,
     "rel": "hei",
     "location_id": 78780182,
     "enemy_count": 3,
@@ -1436,6 +1569,7 @@
   },
   {
     "name": "btlgrp_hei_hei_13_02_on_2",
+    "formation": 3,
     "rel": "hei",
     "location_id": 78780182,
     "enemy_count": 4,
@@ -1448,6 +1582,7 @@
   },
   {
     "name": "btlgrp_hei_hei_13_02_on_3",
+    "formation": 4,
     "rel": "hei",
     "location_id": 78780182,
     "enemy_count": 5,
@@ -1461,6 +1596,7 @@
   },
   {
     "name": "btlgrp_hei_hei_13_03_off_1",
+    "formation": 1,
     "rel": "hei",
     "location_id": 78780182,
     "enemy_count": 2,
@@ -1471,6 +1607,7 @@
   },
   {
     "name": "btlgrp_hei_hei_13_03_on_1",
+    "formation": 2,
     "rel": "hei",
     "location_id": 78780182,
     "enemy_count": 2,
@@ -1481,6 +1618,7 @@
   },
   {
     "name": "btlgrp_hei_hei_13_03_on_2",
+    "formation": 3,
     "rel": "hei",
     "location_id": 78780182,
     "enemy_count": 3,
@@ -1492,6 +1630,7 @@
   },
   {
     "name": "btlgrp_hei_hei_13_04_off_1",
+    "formation": 1,
     "rel": "hei",
     "location_id": 78780182,
     "enemy_count": 2,
@@ -1502,6 +1641,7 @@
   },
   {
     "name": "btlgrp_hei_hei_13_04_on_1",
+    "formation": 2,
     "rel": "hei",
     "location_id": 78780182,
     "enemy_count": 2,
@@ -1512,6 +1652,7 @@
   },
   {
     "name": "btlgrp_hei_hei_13_04_on_2",
+    "formation": 3,
     "rel": "hei",
     "location_id": 78780182,
     "enemy_count": 4,
@@ -1524,6 +1665,7 @@
   },
   {
     "name": "btlgrp_jin_jin_00_01_off_1",
+    "formation": 1,
     "rel": "jin",
     "location_id": 78780434,
     "enemy_count": 1,
@@ -1533,6 +1675,7 @@
   },
   {
     "name": "btlgrp_jin_jin_00_01_off_2",
+    "formation": 2,
     "rel": "jin",
     "location_id": 78780434,
     "enemy_count": 2,
@@ -1543,6 +1686,7 @@
   },
   {
     "name": "btlgrp_jin_jin_00_01_off_3",
+    "formation": 3,
     "rel": "jin",
     "location_id": 78780434,
     "enemy_count": 3,
@@ -1554,6 +1698,7 @@
   },
   {
     "name": "btlgrp_jin_jin_00_01_off_4",
+    "formation": 4,
     "rel": "jin",
     "location_id": 78780434,
     "enemy_count": 4,
@@ -1566,6 +1711,7 @@
   },
   {
     "name": "btlgrp_jin_jin_01_01_off_1",
+    "formation": 1,
     "rel": "jin",
     "location_id": 78780436,
     "enemy_count": 2,
@@ -1576,6 +1722,7 @@
   },
   {
     "name": "btlgrp_jin_jin_01_01_off_2",
+    "formation": 2,
     "rel": "jin",
     "location_id": 78780436,
     "enemy_count": 3,
@@ -1587,6 +1734,7 @@
   },
   {
     "name": "btlgrp_jin_jin_01_01_off_3",
+    "formation": 3,
     "rel": "jin",
     "location_id": 78780436,
     "enemy_count": 3,
@@ -1598,6 +1746,7 @@
   },
   {
     "name": "btlgrp_jin_jin_01_03_off_1",
+    "formation": 1,
     "rel": "jin",
     "location_id": 78780436,
     "enemy_count": 2,
@@ -1608,6 +1757,7 @@
   },
   {
     "name": "btlgrp_jin_jin_01_03_off_2",
+    "formation": 2,
     "rel": "jin",
     "location_id": 78780436,
     "enemy_count": 4,
@@ -1620,6 +1770,7 @@
   },
   {
     "name": "btlgrp_jin_jin_01_03_off_3",
+    "formation": 3,
     "rel": "jin",
     "location_id": 78780436,
     "enemy_count": 2,
@@ -1630,6 +1781,7 @@
   },
   {
     "name": "btlgrp_jin_jin_03_01_off_1",
+    "formation": 1,
     "rel": "jin",
     "location_id": 78780805,
     "enemy_count": 2,
@@ -1640,6 +1792,7 @@
   },
   {
     "name": "btlgrp_jin_jin_03_02_off_1",
+    "formation": 1,
     "rel": "jin",
     "location_id": 78780805,
     "enemy_count": 2,
@@ -1650,6 +1803,7 @@
   },
   {
     "name": "btlgrp_jin_jin_07_01_off_1",
+    "formation": 1,
     "rel": "jin",
     "location_id": 78780443,
     "enemy_count": 2,
@@ -1660,6 +1814,7 @@
   },
   {
     "name": "btlgrp_jin_jin_07_01_off_2",
+    "formation": 2,
     "rel": "jin",
     "location_id": 78780443,
     "enemy_count": 3,
@@ -1671,6 +1826,7 @@
   },
   {
     "name": "btlgrp_jin_jin_07_02_off_1",
+    "formation": 1,
     "rel": "jin",
     "location_id": 78780443,
     "enemy_count": 2,
@@ -1681,6 +1837,7 @@
   },
   {
     "name": "btlgrp_jin_jin_07_02_off_2",
+    "formation": 2,
     "rel": "jin",
     "location_id": 78780443,
     "enemy_count": 3,
@@ -1692,6 +1849,7 @@
   },
   {
     "name": "btlgrp_jin_jin_09_01_off_1",
+    "formation": 1,
     "rel": "jin",
     "location_id": 78780450,
     "enemy_count": 1,
@@ -1701,6 +1859,7 @@
   },
   {
     "name": "btlgrp_jin_jin_10_01_off_1",
+    "formation": 1,
     "rel": "jin",
     "location_id": 78780451,
     "enemy_count": 2,
@@ -1711,6 +1870,7 @@
   },
   {
     "name": "btlgrp_jin_jin_10_02_off_1",
+    "formation": 1,
     "rel": "jin",
     "location_id": 78780451,
     "enemy_count": 1,
@@ -1720,6 +1880,7 @@
   },
   {
     "name": "btlgrp_jin_jin_10_03_off_1",
+    "formation": 1,
     "rel": "jin",
     "location_id": 78780451,
     "enemy_count": 1,
@@ -1729,6 +1890,7 @@
   },
   {
     "name": "btlgrp_jin_jin_10_04_off_1",
+    "formation": 1,
     "rel": "jin",
     "location_id": 78780451,
     "enemy_count": 4,
@@ -1741,6 +1903,7 @@
   },
   {
     "name": "btlgrp_jin_jin_10_05_off_1",
+    "formation": 1,
     "rel": "jin",
     "location_id": 78780451,
     "enemy_count": 2,
@@ -1751,6 +1914,7 @@
   },
   {
     "name": "btlgrp_jin_jin_10_06_off_1",
+    "formation": 1,
     "rel": "jin",
     "location_id": 78780451,
     "enemy_count": 3,
@@ -1762,6 +1926,7 @@
   },
   {
     "name": "btlgrp_jon_jon_01_01_off_1",
+    "formation": 1,
     "rel": "jon",
     "location_id": 78780642,
     "enemy_count": 1,
@@ -1771,6 +1936,7 @@
   },
   {
     "name": "btlgrp_jon_jon_01_01_off_2",
+    "formation": 2,
     "rel": "jon",
     "location_id": 78780642,
     "enemy_count": 2,
@@ -1781,6 +1947,7 @@
   },
   {
     "name": "btlgrp_jon_jon_01_01_off_3",
+    "formation": 3,
     "rel": "jon",
     "location_id": 78780642,
     "enemy_count": 2,
@@ -1791,6 +1958,7 @@
   },
   {
     "name": "btlgrp_jon_jon_01_02_off_1",
+    "formation": 1,
     "rel": "jon",
     "location_id": 78780642,
     "enemy_count": 5,
@@ -1804,6 +1972,7 @@
   },
   {
     "name": "btlgrp_jon_jon_01_02_off_2",
+    "formation": 2,
     "rel": "jon",
     "location_id": 78780642,
     "enemy_count": 2,
@@ -1814,6 +1983,7 @@
   },
   {
     "name": "btlgrp_jon_jon_01_02_off_3",
+    "formation": 3,
     "rel": "jon",
     "location_id": 78780642,
     "enemy_count": 5,
@@ -1827,6 +1997,7 @@
   },
   {
     "name": "btlgrp_jon_jon_01_03_off_1",
+    "formation": 1,
     "rel": "jon",
     "location_id": 78780642,
     "enemy_count": 4,
@@ -1839,6 +2010,7 @@
   },
   {
     "name": "btlgrp_jon_jon_01_03_off_2",
+    "formation": 2,
     "rel": "jon",
     "location_id": 78780642,
     "enemy_count": 2,
@@ -1849,6 +2021,7 @@
   },
   {
     "name": "btlgrp_jon_jon_01_03_off_3",
+    "formation": 3,
     "rel": "jon",
     "location_id": 78780642,
     "enemy_count": 4,
@@ -1861,6 +2034,7 @@
   },
   {
     "name": "btlgrp_jon_jon_01_04_off_1",
+    "formation": 1,
     "rel": "jon",
     "location_id": 78780642,
     "enemy_count": 4,
@@ -1873,6 +2047,7 @@
   },
   {
     "name": "btlgrp_jon_jon_01_04_off_2",
+    "formation": 2,
     "rel": "jon",
     "location_id": 78780642,
     "enemy_count": 2,
@@ -1883,6 +2058,7 @@
   },
   {
     "name": "btlgrp_jon_jon_01_04_off_3",
+    "formation": 3,
     "rel": "jon",
     "location_id": 78780642,
     "enemy_count": 3,
@@ -1894,6 +2070,7 @@
   },
   {
     "name": "btlgrp_jon_jon_01_05_off_1",
+    "formation": 1,
     "rel": "jon",
     "location_id": 78780642,
     "enemy_count": 5,
@@ -1907,6 +2084,7 @@
   },
   {
     "name": "btlgrp_jon_jon_01_05_off_2",
+    "formation": 2,
     "rel": "jon",
     "location_id": 78780642,
     "enemy_count": 3,
@@ -1918,6 +2096,7 @@
   },
   {
     "name": "btlgrp_jon_jon_01_05_off_3",
+    "formation": 3,
     "rel": "jon",
     "location_id": 78780642,
     "enemy_count": 4,
@@ -1930,6 +2109,7 @@
   },
   {
     "name": "btlgrp_jon_jon_11_01_off_1",
+    "formation": 1,
     "rel": "jon",
     "location_id": 78780638,
     "enemy_count": 2,
@@ -1940,6 +2120,7 @@
   },
   {
     "name": "btlgrp_jon_jon_11_01_off_2",
+    "formation": 2,
     "rel": "jon",
     "location_id": 78780638,
     "enemy_count": 3,
@@ -1951,6 +2132,7 @@
   },
   {
     "name": "btlgrp_jon_jon_11_01_off_3",
+    "formation": 3,
     "rel": "jon",
     "location_id": 78780638,
     "enemy_count": 3,
@@ -1962,6 +2144,7 @@
   },
   {
     "name": "btlgrp_jon_jon_11_02_off_1",
+    "formation": 1,
     "rel": "jon",
     "location_id": 78780638,
     "enemy_count": 4,
@@ -1974,6 +2157,7 @@
   },
   {
     "name": "btlgrp_jon_jon_11_02_off_2",
+    "formation": 2,
     "rel": "jon",
     "location_id": 78780638,
     "enemy_count": 3,
@@ -1985,6 +2169,7 @@
   },
   {
     "name": "btlgrp_jon_jon_11_02_off_3",
+    "formation": 3,
     "rel": "jon",
     "location_id": 78780638,
     "enemy_count": 3,
@@ -1996,6 +2181,7 @@
   },
   {
     "name": "btlgrp_jon_jon_11_03_off_1",
+    "formation": 1,
     "rel": "jon",
     "location_id": 78780638,
     "enemy_count": 4,
@@ -2008,6 +2194,7 @@
   },
   {
     "name": "btlgrp_jon_jon_11_03_off_2",
+    "formation": 2,
     "rel": "jon",
     "location_id": 78780638,
     "enemy_count": 2,
@@ -2018,6 +2205,7 @@
   },
   {
     "name": "btlgrp_jon_jon_11_03_off_3",
+    "formation": 3,
     "rel": "jon",
     "location_id": 78780638,
     "enemy_count": 4,
@@ -2030,6 +2218,7 @@
   },
   {
     "name": "btlgrp_jon_jon_11_04_off_1",
+    "formation": 1,
     "rel": "jon",
     "location_id": 78780638,
     "enemy_count": 3,
@@ -2041,6 +2230,7 @@
   },
   {
     "name": "btlgrp_jon_jon_11_04_off_2",
+    "formation": 2,
     "rel": "jon",
     "location_id": 78780638,
     "enemy_count": 3,
@@ -2052,6 +2242,7 @@
   },
   {
     "name": "btlgrp_jon_jon_11_04_off_3",
+    "formation": 3,
     "rel": "jon",
     "location_id": 78780638,
     "enemy_count": 2,
@@ -2062,6 +2253,7 @@
   },
   {
     "name": "btlgrp_jon_jon_11_05_off_1",
+    "formation": 1,
     "rel": "jon",
     "location_id": 78780638,
     "enemy_count": 4,
@@ -2074,6 +2266,7 @@
   },
   {
     "name": "btlgrp_jon_jon_11_05_off_2",
+    "formation": 2,
     "rel": "jon",
     "location_id": 78780638,
     "enemy_count": 2,
@@ -2084,6 +2277,7 @@
   },
   {
     "name": "btlgrp_jon_jon_11_05_off_3",
+    "formation": 3,
     "rel": "jon",
     "location_id": 78780638,
     "enemy_count": 4,
@@ -2096,6 +2290,7 @@
   },
   {
     "name": "btlgrp_jon_jon_21_01_off_1",
+    "formation": 1,
     "rel": "jon",
     "location_id": 78780639,
     "enemy_count": 3,
@@ -2107,6 +2302,7 @@
   },
   {
     "name": "btlgrp_jon_jon_21_01_off_2",
+    "formation": 2,
     "rel": "jon",
     "location_id": 78780639,
     "enemy_count": 4,
@@ -2119,6 +2315,7 @@
   },
   {
     "name": "btlgrp_jon_jon_21_01_off_3",
+    "formation": 3,
     "rel": "jon",
     "location_id": 78780639,
     "enemy_count": 4,
@@ -2131,6 +2328,7 @@
   },
   {
     "name": "btlgrp_jon_jon_21_02_off_1",
+    "formation": 1,
     "rel": "jon",
     "location_id": 78780639,
     "enemy_count": 5,
@@ -2144,6 +2342,7 @@
   },
   {
     "name": "btlgrp_jon_jon_21_02_off_2",
+    "formation": 2,
     "rel": "jon",
     "location_id": 78780639,
     "enemy_count": 2,
@@ -2154,6 +2353,7 @@
   },
   {
     "name": "btlgrp_jon_jon_21_02_off_3",
+    "formation": 3,
     "rel": "jon",
     "location_id": 78780639,
     "enemy_count": 5,
@@ -2167,6 +2367,7 @@
   },
   {
     "name": "btlgrp_jon_jon_21_03_off_1",
+    "formation": 1,
     "rel": "jon",
     "location_id": 78780639,
     "enemy_count": 4,
@@ -2179,6 +2380,7 @@
   },
   {
     "name": "btlgrp_jon_jon_21_03_off_2",
+    "formation": 2,
     "rel": "jon",
     "location_id": 78780639,
     "enemy_count": 2,
@@ -2189,6 +2391,7 @@
   },
   {
     "name": "btlgrp_jon_jon_21_03_off_3",
+    "formation": 3,
     "rel": "jon",
     "location_id": 78780639,
     "enemy_count": 4,
@@ -2201,6 +2404,7 @@
   },
   {
     "name": "btlgrp_jon_jon_21_04_off_1",
+    "formation": 1,
     "rel": "jon",
     "location_id": 78780639,
     "enemy_count": 4,
@@ -2213,6 +2417,7 @@
   },
   {
     "name": "btlgrp_jon_jon_21_04_off_2",
+    "formation": 2,
     "rel": "jon",
     "location_id": 78780639,
     "enemy_count": 3,
@@ -2224,6 +2429,7 @@
   },
   {
     "name": "btlgrp_jon_jon_21_04_off_3",
+    "formation": 3,
     "rel": "jon",
     "location_id": 78780639,
     "enemy_count": 4,
@@ -2236,6 +2442,7 @@
   },
   {
     "name": "btlgrp_jon_jon_21_05_off_1",
+    "formation": 1,
     "rel": "jon",
     "location_id": 78780639,
     "enemy_count": 4,
@@ -2248,6 +2455,7 @@
   },
   {
     "name": "btlgrp_jon_jon_21_05_off_2",
+    "formation": 2,
     "rel": "jon",
     "location_id": 78780639,
     "enemy_count": 3,
@@ -2259,6 +2467,7 @@
   },
   {
     "name": "btlgrp_jon_jon_21_05_off_3",
+    "formation": 3,
     "rel": "jon",
     "location_id": 78780639,
     "enemy_count": 4,
@@ -2271,6 +2480,7 @@
   },
   {
     "name": "btlgrp_jon_jon_31_01_off_1",
+    "formation": 1,
     "rel": "jon",
     "location_id": 78780640,
     "enemy_count": 2,
@@ -2281,6 +2491,7 @@
   },
   {
     "name": "btlgrp_jon_jon_31_01_off_2",
+    "formation": 2,
     "rel": "jon",
     "location_id": 78780640,
     "enemy_count": 3,
@@ -2292,6 +2503,7 @@
   },
   {
     "name": "btlgrp_jon_jon_31_01_off_3",
+    "formation": 3,
     "rel": "jon",
     "location_id": 78780640,
     "enemy_count": 3,
@@ -2303,6 +2515,7 @@
   },
   {
     "name": "btlgrp_jon_jon_31_02_off_1",
+    "formation": 1,
     "rel": "jon",
     "location_id": 78780640,
     "enemy_count": 3,
@@ -2314,6 +2527,7 @@
   },
   {
     "name": "btlgrp_jon_jon_31_02_off_2",
+    "formation": 2,
     "rel": "jon",
     "location_id": 78780640,
     "enemy_count": 3,
@@ -2325,6 +2539,7 @@
   },
   {
     "name": "btlgrp_jon_jon_31_02_off_3",
+    "formation": 3,
     "rel": "jon",
     "location_id": 78780640,
     "enemy_count": 3,
@@ -2336,6 +2551,7 @@
   },
   {
     "name": "btlgrp_jon_jon_31_03_off_1",
+    "formation": 1,
     "rel": "jon",
     "location_id": 78780640,
     "enemy_count": 4,
@@ -2348,6 +2564,7 @@
   },
   {
     "name": "btlgrp_jon_jon_31_03_off_2",
+    "formation": 2,
     "rel": "jon",
     "location_id": 78780640,
     "enemy_count": 4,
@@ -2360,6 +2577,7 @@
   },
   {
     "name": "btlgrp_jon_jon_31_03_off_3",
+    "formation": 3,
     "rel": "jon",
     "location_id": 78780640,
     "enemy_count": 2,
@@ -2370,6 +2588,7 @@
   },
   {
     "name": "btlgrp_jon_jon_31_04_off_1",
+    "formation": 1,
     "rel": "jon",
     "location_id": 78780640,
     "enemy_count": 4,
@@ -2382,6 +2601,7 @@
   },
   {
     "name": "btlgrp_jon_jon_31_04_off_2",
+    "formation": 2,
     "rel": "jon",
     "location_id": 78780640,
     "enemy_count": 3,
@@ -2393,6 +2613,7 @@
   },
   {
     "name": "btlgrp_jon_jon_31_04_off_3",
+    "formation": 3,
     "rel": "jon",
     "location_id": 78780640,
     "enemy_count": 3,
@@ -2404,6 +2625,7 @@
   },
   {
     "name": "btlgrp_jon_jon_31_05_off_1",
+    "formation": 1,
     "rel": "jon",
     "location_id": 78780640,
     "enemy_count": 5,
@@ -2417,6 +2639,7 @@
   },
   {
     "name": "btlgrp_jon_jon_31_05_off_2",
+    "formation": 2,
     "rel": "jon",
     "location_id": 78780640,
     "enemy_count": 3,
@@ -2428,6 +2651,7 @@
   },
   {
     "name": "btlgrp_jon_jon_31_05_off_3",
+    "formation": 3,
     "rel": "jon",
     "location_id": 78780640,
     "enemy_count": 2,
@@ -2438,6 +2662,7 @@
   },
   {
     "name": "btlgrp_jon_jon_41_01_off_1",
+    "formation": 1,
     "rel": "jon",
     "location_id": 78780641,
     "enemy_count": 4,
@@ -2450,6 +2675,7 @@
   },
   {
     "name": "btlgrp_jon_jon_41_01_off_2",
+    "formation": 2,
     "rel": "jon",
     "location_id": 78780641,
     "enemy_count": 3,
@@ -2461,6 +2687,7 @@
   },
   {
     "name": "btlgrp_jon_jon_41_01_off_3",
+    "formation": 3,
     "rel": "jon",
     "location_id": 78780641,
     "enemy_count": 3,
@@ -2472,6 +2699,7 @@
   },
   {
     "name": "btlgrp_jon_jon_41_02_off_1",
+    "formation": 1,
     "rel": "jon",
     "location_id": 78780641,
     "enemy_count": 4,
@@ -2484,6 +2712,7 @@
   },
   {
     "name": "btlgrp_jon_jon_41_02_off_2",
+    "formation": 2,
     "rel": "jon",
     "location_id": 78780641,
     "enemy_count": 2,
@@ -2494,6 +2723,7 @@
   },
   {
     "name": "btlgrp_jon_jon_41_02_off_3",
+    "formation": 3,
     "rel": "jon",
     "location_id": 78780641,
     "enemy_count": 3,
@@ -2505,6 +2735,7 @@
   },
   {
     "name": "btlgrp_jon_jon_41_03_off_1",
+    "formation": 1,
     "rel": "jon",
     "location_id": 78780641,
     "enemy_count": 3,
@@ -2516,6 +2747,7 @@
   },
   {
     "name": "btlgrp_jon_jon_41_03_off_2",
+    "formation": 2,
     "rel": "jon",
     "location_id": 78780641,
     "enemy_count": 3,
@@ -2527,6 +2759,7 @@
   },
   {
     "name": "btlgrp_jon_jon_41_03_off_3",
+    "formation": 3,
     "rel": "jon",
     "location_id": 78780641,
     "enemy_count": 4,
@@ -2539,6 +2772,7 @@
   },
   {
     "name": "btlgrp_jon_jon_41_04_off_1",
+    "formation": 1,
     "rel": "jon",
     "location_id": 78780641,
     "enemy_count": 4,
@@ -2551,6 +2785,7 @@
   },
   {
     "name": "btlgrp_jon_jon_41_04_off_2",
+    "formation": 2,
     "rel": "jon",
     "location_id": 78780641,
     "enemy_count": 4,
@@ -2563,6 +2798,7 @@
   },
   {
     "name": "btlgrp_jon_jon_41_04_off_3",
+    "formation": 3,
     "rel": "jon",
     "location_id": 78780641,
     "enemy_count": 2,
@@ -2573,6 +2809,7 @@
   },
   {
     "name": "btlgrp_jon_jon_41_05_off_1",
+    "formation": 1,
     "rel": "jon",
     "location_id": 78780641,
     "enemy_count": 2,
@@ -2583,6 +2820,7 @@
   },
   {
     "name": "btlgrp_jon_jon_41_05_off_2",
+    "formation": 2,
     "rel": "jon",
     "location_id": 78780641,
     "enemy_count": 4,
@@ -2595,6 +2833,7 @@
   },
   {
     "name": "btlgrp_jon_jon_41_05_off_3",
+    "formation": 3,
     "rel": "jon",
     "location_id": 78780641,
     "enemy_count": 4,
@@ -2607,6 +2846,7 @@
   },
   {
     "name": "btlgrp_jon_jon_51_01_off_1",
+    "formation": 1,
     "rel": "jon",
     "location_id": 78780642,
     "enemy_count": 3,
@@ -2618,6 +2858,7 @@
   },
   {
     "name": "btlgrp_jon_jon_51_01_off_2",
+    "formation": 2,
     "rel": "jon",
     "location_id": 78780642,
     "enemy_count": 3,
@@ -2629,6 +2870,7 @@
   },
   {
     "name": "btlgrp_jon_jon_51_01_off_3",
+    "formation": 3,
     "rel": "jon",
     "location_id": 78780642,
     "enemy_count": 3,
@@ -2640,6 +2882,7 @@
   },
   {
     "name": "btlgrp_jon_jon_51_02_off_1",
+    "formation": 1,
     "rel": "jon",
     "location_id": 78780642,
     "enemy_count": 4,
@@ -2652,6 +2895,7 @@
   },
   {
     "name": "btlgrp_jon_jon_51_02_off_2",
+    "formation": 2,
     "rel": "jon",
     "location_id": 78780642,
     "enemy_count": 3,
@@ -2663,6 +2907,7 @@
   },
   {
     "name": "btlgrp_jon_jon_51_02_off_3",
+    "formation": 3,
     "rel": "jon",
     "location_id": 78780642,
     "enemy_count": 2,
@@ -2673,6 +2918,7 @@
   },
   {
     "name": "btlgrp_jon_jon_51_03_off_1",
+    "formation": 1,
     "rel": "jon",
     "location_id": 78780642,
     "enemy_count": 4,
@@ -2685,6 +2931,7 @@
   },
   {
     "name": "btlgrp_jon_jon_51_03_off_2",
+    "formation": 2,
     "rel": "jon",
     "location_id": 78780642,
     "enemy_count": 3,
@@ -2696,6 +2943,7 @@
   },
   {
     "name": "btlgrp_jon_jon_51_03_off_3",
+    "formation": 3,
     "rel": "jon",
     "location_id": 78780642,
     "enemy_count": 3,
@@ -2707,6 +2955,7 @@
   },
   {
     "name": "btlgrp_jon_jon_51_04_off_1",
+    "formation": 1,
     "rel": "jon",
     "location_id": 78780642,
     "enemy_count": 3,
@@ -2718,6 +2967,7 @@
   },
   {
     "name": "btlgrp_jon_jon_51_04_off_2",
+    "formation": 2,
     "rel": "jon",
     "location_id": 78780642,
     "enemy_count": 3,
@@ -2729,6 +2979,7 @@
   },
   {
     "name": "btlgrp_jon_jon_51_04_off_3",
+    "formation": 3,
     "rel": "jon",
     "location_id": 78780642,
     "enemy_count": 3,
@@ -2740,6 +2991,7 @@
   },
   {
     "name": "btlgrp_jon_jon_51_05_off_1",
+    "formation": 1,
     "rel": "jon",
     "location_id": 78780642,
     "enemy_count": 4,
@@ -2752,6 +3004,7 @@
   },
   {
     "name": "btlgrp_jon_jon_51_05_off_2",
+    "formation": 2,
     "rel": "jon",
     "location_id": 78780642,
     "enemy_count": 3,
@@ -2763,6 +3016,7 @@
   },
   {
     "name": "btlgrp_jon_jon_51_05_off_3",
+    "formation": 3,
     "rel": "jon",
     "location_id": 78780642,
     "enemy_count": 3,
@@ -2774,6 +3028,7 @@
   },
   {
     "name": "btlgrp_jon_jon_61_01_off_1",
+    "formation": 1,
     "rel": "jon",
     "location_id": 78780643,
     "enemy_count": 3,
@@ -2785,6 +3040,7 @@
   },
   {
     "name": "btlgrp_jon_jon_61_01_off_2",
+    "formation": 2,
     "rel": "jon",
     "location_id": 78780643,
     "enemy_count": 3,
@@ -2796,6 +3052,7 @@
   },
   {
     "name": "btlgrp_jon_jon_61_01_off_3",
+    "formation": 3,
     "rel": "jon",
     "location_id": 78780643,
     "enemy_count": 2,
@@ -2806,6 +3063,7 @@
   },
   {
     "name": "btlgrp_jon_jon_61_02_off_1",
+    "formation": 1,
     "rel": "jon",
     "location_id": 78780643,
     "enemy_count": 4,
@@ -2818,6 +3076,7 @@
   },
   {
     "name": "btlgrp_jon_jon_61_02_off_2",
+    "formation": 2,
     "rel": "jon",
     "location_id": 78780643,
     "enemy_count": 2,
@@ -2828,6 +3087,7 @@
   },
   {
     "name": "btlgrp_jon_jon_61_02_off_3",
+    "formation": 3,
     "rel": "jon",
     "location_id": 78780643,
     "enemy_count": 3,
@@ -2839,6 +3099,7 @@
   },
   {
     "name": "btlgrp_jon_jon_61_03_off_1",
+    "formation": 1,
     "rel": "jon",
     "location_id": 78780643,
     "enemy_count": 3,
@@ -2850,6 +3111,7 @@
   },
   {
     "name": "btlgrp_jon_jon_61_03_off_2",
+    "formation": 2,
     "rel": "jon",
     "location_id": 78780643,
     "enemy_count": 3,
@@ -2861,6 +3123,7 @@
   },
   {
     "name": "btlgrp_jon_jon_61_03_off_3",
+    "formation": 3,
     "rel": "jon",
     "location_id": 78780643,
     "enemy_count": 3,
@@ -2872,6 +3135,7 @@
   },
   {
     "name": "btlgrp_jon_jon_61_04_off_1",
+    "formation": 1,
     "rel": "jon",
     "location_id": 78780643,
     "enemy_count": 4,
@@ -2884,6 +3148,7 @@
   },
   {
     "name": "btlgrp_jon_jon_61_04_off_2",
+    "formation": 2,
     "rel": "jon",
     "location_id": 78780643,
     "enemy_count": 3,
@@ -2895,6 +3160,7 @@
   },
   {
     "name": "btlgrp_jon_jon_61_04_off_3",
+    "formation": 3,
     "rel": "jon",
     "location_id": 78780643,
     "enemy_count": 2,
@@ -2905,6 +3171,7 @@
   },
   {
     "name": "btlgrp_jon_jon_61_05_off_1",
+    "formation": 1,
     "rel": "jon",
     "location_id": 78780643,
     "enemy_count": 3,
@@ -2916,6 +3183,7 @@
   },
   {
     "name": "btlgrp_jon_jon_61_05_off_2",
+    "formation": 2,
     "rel": "jon",
     "location_id": 78780643,
     "enemy_count": 2,
@@ -2926,6 +3194,7 @@
   },
   {
     "name": "btlgrp_jon_jon_61_05_off_3",
+    "formation": 3,
     "rel": "jon",
     "location_id": 78780643,
     "enemy_count": 2,
@@ -2936,6 +3205,7 @@
   },
   {
     "name": "btlgrp_jon_jon_71_01_off_1",
+    "formation": 1,
     "rel": "jon",
     "location_id": 78780644,
     "enemy_count": 3,
@@ -2947,6 +3217,7 @@
   },
   {
     "name": "btlgrp_jon_jon_71_01_off_2",
+    "formation": 2,
     "rel": "jon",
     "location_id": 78780644,
     "enemy_count": 3,
@@ -2958,6 +3229,7 @@
   },
   {
     "name": "btlgrp_jon_jon_71_01_off_3",
+    "formation": 3,
     "rel": "jon",
     "location_id": 78780644,
     "enemy_count": 3,
@@ -2969,6 +3241,7 @@
   },
   {
     "name": "btlgrp_jon_jon_71_02_off_1",
+    "formation": 1,
     "rel": "jon",
     "location_id": 78780644,
     "enemy_count": 3,
@@ -2980,6 +3253,7 @@
   },
   {
     "name": "btlgrp_jon_jon_71_02_off_2",
+    "formation": 2,
     "rel": "jon",
     "location_id": 78780644,
     "enemy_count": 3,
@@ -2991,6 +3265,7 @@
   },
   {
     "name": "btlgrp_jon_jon_71_02_off_3",
+    "formation": 3,
     "rel": "jon",
     "location_id": 78780644,
     "enemy_count": 3,
@@ -3002,6 +3277,7 @@
   },
   {
     "name": "btlgrp_jon_jon_71_03_off_1",
+    "formation": 1,
     "rel": "jon",
     "location_id": 78780644,
     "enemy_count": 5,
@@ -3015,6 +3291,7 @@
   },
   {
     "name": "btlgrp_jon_jon_71_03_off_2",
+    "formation": 2,
     "rel": "jon",
     "location_id": 78780644,
     "enemy_count": 4,
@@ -3027,6 +3304,7 @@
   },
   {
     "name": "btlgrp_jon_jon_71_03_off_3",
+    "formation": 3,
     "rel": "jon",
     "location_id": 78780644,
     "enemy_count": 4,
@@ -3039,6 +3317,7 @@
   },
   {
     "name": "btlgrp_jon_jon_71_04_off_1",
+    "formation": 1,
     "rel": "jon",
     "location_id": 78780644,
     "enemy_count": 4,
@@ -3051,6 +3330,7 @@
   },
   {
     "name": "btlgrp_jon_jon_71_04_off_2",
+    "formation": 2,
     "rel": "jon",
     "location_id": 78780644,
     "enemy_count": 4,
@@ -3063,6 +3343,7 @@
   },
   {
     "name": "btlgrp_jon_jon_71_04_off_3",
+    "formation": 3,
     "rel": "jon",
     "location_id": 78780644,
     "enemy_count": 4,
@@ -3075,6 +3356,7 @@
   },
   {
     "name": "btlgrp_jon_jon_71_05_off_1",
+    "formation": 1,
     "rel": "jon",
     "location_id": 78780644,
     "enemy_count": 4,
@@ -3087,6 +3369,7 @@
   },
   {
     "name": "btlgrp_jon_jon_71_05_off_2",
+    "formation": 2,
     "rel": "jon",
     "location_id": 78780644,
     "enemy_count": 3,
@@ -3098,6 +3381,7 @@
   },
   {
     "name": "btlgrp_jon_jon_71_05_off_3",
+    "formation": 3,
     "rel": "jon",
     "location_id": 78780644,
     "enemy_count": 3,
@@ -3109,6 +3393,7 @@
   },
   {
     "name": "btlgrp_jon_jon_81_01_off_1",
+    "formation": 1,
     "rel": "jon",
     "location_id": 78780645,
     "enemy_count": 4,
@@ -3121,6 +3406,7 @@
   },
   {
     "name": "btlgrp_jon_jon_81_01_off_2",
+    "formation": 2,
     "rel": "jon",
     "location_id": 78780645,
     "enemy_count": 4,
@@ -3133,6 +3419,7 @@
   },
   {
     "name": "btlgrp_jon_jon_81_01_off_3",
+    "formation": 3,
     "rel": "jon",
     "location_id": 78780645,
     "enemy_count": 3,
@@ -3144,6 +3431,7 @@
   },
   {
     "name": "btlgrp_jon_jon_81_02_off_1",
+    "formation": 1,
     "rel": "jon",
     "location_id": 78780645,
     "enemy_count": 2,
@@ -3154,6 +3442,7 @@
   },
   {
     "name": "btlgrp_jon_jon_81_02_off_2",
+    "formation": 2,
     "rel": "jon",
     "location_id": 78780645,
     "enemy_count": 4,
@@ -3166,6 +3455,7 @@
   },
   {
     "name": "btlgrp_jon_jon_81_02_off_3",
+    "formation": 3,
     "rel": "jon",
     "location_id": 78780645,
     "enemy_count": 3,
@@ -3177,6 +3467,7 @@
   },
   {
     "name": "btlgrp_jon_jon_81_03_off_1",
+    "formation": 1,
     "rel": "jon",
     "location_id": 78780645,
     "enemy_count": 4,
@@ -3189,6 +3480,7 @@
   },
   {
     "name": "btlgrp_jon_jon_81_03_off_2",
+    "formation": 2,
     "rel": "jon",
     "location_id": 78780645,
     "enemy_count": 3,
@@ -3200,6 +3492,7 @@
   },
   {
     "name": "btlgrp_jon_jon_81_03_off_3",
+    "formation": 3,
     "rel": "jon",
     "location_id": 78780645,
     "enemy_count": 3,
@@ -3211,6 +3504,7 @@
   },
   {
     "name": "btlgrp_jon_jon_81_04_off_1",
+    "formation": 1,
     "rel": "jon",
     "location_id": 78780645,
     "enemy_count": 4,
@@ -3223,6 +3517,7 @@
   },
   {
     "name": "btlgrp_jon_jon_81_04_off_2",
+    "formation": 2,
     "rel": "jon",
     "location_id": 78780645,
     "enemy_count": 3,
@@ -3234,6 +3529,7 @@
   },
   {
     "name": "btlgrp_jon_jon_81_04_off_3",
+    "formation": 3,
     "rel": "jon",
     "location_id": 78780645,
     "enemy_count": 4,
@@ -3246,6 +3542,7 @@
   },
   {
     "name": "btlgrp_jon_jon_81_05_off_1",
+    "formation": 1,
     "rel": "jon",
     "location_id": 78780645,
     "enemy_count": 4,
@@ -3258,6 +3555,7 @@
   },
   {
     "name": "btlgrp_jon_jon_81_05_off_2",
+    "formation": 2,
     "rel": "jon",
     "location_id": 78780645,
     "enemy_count": 3,
@@ -3269,6 +3567,7 @@
   },
   {
     "name": "btlgrp_jon_jon_81_05_off_3",
+    "formation": 3,
     "rel": "jon",
     "location_id": 78780645,
     "enemy_count": 5,
@@ -3282,6 +3581,7 @@
   },
   {
     "name": "btlgrp_jon_jon_91_01_off_1",
+    "formation": 1,
     "rel": "jon",
     "location_id": 78780646,
     "enemy_count": 5,
@@ -3295,6 +3595,7 @@
   },
   {
     "name": "btlgrp_jon_jon_91_01_off_2",
+    "formation": 2,
     "rel": "jon",
     "location_id": 78780646,
     "enemy_count": 3,
@@ -3306,6 +3607,7 @@
   },
   {
     "name": "btlgrp_jon_jon_91_01_off_3",
+    "formation": 3,
     "rel": "jon",
     "location_id": 78780646,
     "enemy_count": 3,
@@ -3317,6 +3619,7 @@
   },
   {
     "name": "btlgrp_jon_jon_91_02_off_1",
+    "formation": 1,
     "rel": "jon",
     "location_id": 78780646,
     "enemy_count": 4,
@@ -3329,6 +3632,7 @@
   },
   {
     "name": "btlgrp_jon_jon_91_02_off_2",
+    "formation": 2,
     "rel": "jon",
     "location_id": 78780646,
     "enemy_count": 4,
@@ -3341,6 +3645,7 @@
   },
   {
     "name": "btlgrp_jon_jon_91_02_off_3",
+    "formation": 3,
     "rel": "jon",
     "location_id": 78780646,
     "enemy_count": 4,
@@ -3353,6 +3658,7 @@
   },
   {
     "name": "btlgrp_jon_jon_91_03_off_1",
+    "formation": 1,
     "rel": "jon",
     "location_id": 78780646,
     "enemy_count": 4,
@@ -3365,6 +3671,7 @@
   },
   {
     "name": "btlgrp_jon_jon_91_03_off_2",
+    "formation": 2,
     "rel": "jon",
     "location_id": 78780646,
     "enemy_count": 3,
@@ -3376,6 +3683,7 @@
   },
   {
     "name": "btlgrp_jon_jon_91_03_off_3",
+    "formation": 3,
     "rel": "jon",
     "location_id": 78780646,
     "enemy_count": 4,
@@ -3388,6 +3696,7 @@
   },
   {
     "name": "btlgrp_jon_jon_91_04_off_1",
+    "formation": 1,
     "rel": "jon",
     "location_id": 78780646,
     "enemy_count": 5,
@@ -3401,6 +3710,7 @@
   },
   {
     "name": "btlgrp_jon_jon_91_04_off_2",
+    "formation": 2,
     "rel": "jon",
     "location_id": 78780646,
     "enemy_count": 3,
@@ -3412,6 +3722,7 @@
   },
   {
     "name": "btlgrp_jon_jon_91_04_off_3",
+    "formation": 3,
     "rel": "jon",
     "location_id": 78780646,
     "enemy_count": 4,
@@ -3424,6 +3735,7 @@
   },
   {
     "name": "btlgrp_jon_jon_91_05_off_1",
+    "formation": 1,
     "rel": "jon",
     "location_id": 78780646,
     "enemy_count": 5,
@@ -3437,6 +3749,7 @@
   },
   {
     "name": "btlgrp_jon_jon_91_05_off_2",
+    "formation": 2,
     "rel": "jon",
     "location_id": 78780646,
     "enemy_count": 5,
@@ -3450,6 +3763,7 @@
   },
   {
     "name": "btlgrp_jon_jon_91_05_off_3",
+    "formation": 3,
     "rel": "jon",
     "location_id": 78780646,
     "enemy_count": 5,
@@ -3463,6 +3777,7 @@
   },
   {
     "name": "btlgrp_las_las_05_01",
+    "formation": 1,
     "rel": "las",
     "location_id": 78780609,
     "enemy_count": 5,
@@ -3476,6 +3791,7 @@
   },
   {
     "name": "btlgrp_las_las_17_01_off_1",
+    "formation": 1,
     "rel": "las",
     "location_id": 78780620,
     "enemy_count": 1,
@@ -3485,6 +3801,7 @@
   },
   {
     "name": "btlgrp_las_las_17_02_off_1",
+    "formation": 1,
     "rel": "las",
     "location_id": 78780620,
     "enemy_count": 1,
@@ -3494,6 +3811,7 @@
   },
   {
     "name": "btlgrp_las_las_17_03_off_1",
+    "formation": 1,
     "rel": "las",
     "location_id": 78780620,
     "enemy_count": 1,
@@ -3503,6 +3821,7 @@
   },
   {
     "name": "btlgrp_las_las_17_04_off_1",
+    "formation": 1,
     "rel": "las",
     "location_id": 78780620,
     "enemy_count": 1,
@@ -3512,6 +3831,7 @@
   },
   {
     "name": "btlgrp_las_las_01_01_off_1",
+    "formation": 1,
     "rel": "las",
     "location_id": 78780605,
     "enemy_count": 2,
@@ -3522,6 +3842,7 @@
   },
   {
     "name": "btlgrp_las_las_01_02_off_1",
+    "formation": 1,
     "rel": "las",
     "location_id": 78780605,
     "enemy_count": 3,
@@ -3533,6 +3854,7 @@
   },
   {
     "name": "btlgrp_las_las_01_03_off_1",
+    "formation": 1,
     "rel": "las",
     "location_id": 78780605,
     "enemy_count": 4,
@@ -3545,6 +3867,7 @@
   },
   {
     "name": "btlgrp_las_las_01_01_off_2",
+    "formation": 2,
     "rel": "las",
     "location_id": 78780605,
     "enemy_count": 2,
@@ -3555,6 +3878,7 @@
   },
   {
     "name": "btlgrp_las_las_01_02_off_2",
+    "formation": 2,
     "rel": "las",
     "location_id": 78780605,
     "enemy_count": 3,
@@ -3566,6 +3890,7 @@
   },
   {
     "name": "btlgrp_las_las_01_03_off_2",
+    "formation": 2,
     "rel": "las",
     "location_id": 78780605,
     "enemy_count": 4,
@@ -3578,6 +3903,7 @@
   },
   {
     "name": "btlgrp_las_las_02_01_off_1",
+    "formation": 1,
     "rel": "las",
     "location_id": 78780606,
     "enemy_count": 2,
@@ -3588,6 +3914,7 @@
   },
   {
     "name": "btlgrp_las_las_02_02_off_1",
+    "formation": 1,
     "rel": "las",
     "location_id": 78780606,
     "enemy_count": 3,
@@ -3599,6 +3926,7 @@
   },
   {
     "name": "btlgrp_las_las_02_03_off_1",
+    "formation": 1,
     "rel": "las",
     "location_id": 78780606,
     "enemy_count": 3,
@@ -3610,6 +3938,7 @@
   },
   {
     "name": "btlgrp_las_las_02_04_off_1",
+    "formation": 1,
     "rel": "las",
     "location_id": 78780606,
     "enemy_count": 4,
@@ -3622,6 +3951,7 @@
   },
   {
     "name": "btlgrp_las_las_02_05_off_1",
+    "formation": 1,
     "rel": "las",
     "location_id": 78780606,
     "enemy_count": 2,
@@ -3632,6 +3962,7 @@
   },
   {
     "name": "btlgrp_las_las_02_06_off_1",
+    "formation": 1,
     "rel": "las",
     "location_id": 78780606,
     "enemy_count": 2,
@@ -3642,6 +3973,7 @@
   },
   {
     "name": "btlgrp_las_las_02_99_off_1",
+    "formation": 1,
     "rel": "las",
     "location_id": 78780606,
     "enemy_count": 2,
@@ -3652,6 +3984,7 @@
   },
   {
     "name": "btlgrp_las_las_03_01_off_1",
+    "formation": 1,
     "rel": "las",
     "location_id": 78780607,
     "enemy_count": 1,
@@ -3661,6 +3994,7 @@
   },
   {
     "name": "btlgrp_las_las_03_02_off_1",
+    "formation": 1,
     "rel": "las",
     "location_id": 78780607,
     "enemy_count": 1,
@@ -3670,6 +4004,7 @@
   },
   {
     "name": "btlgrp_las_las_03_03_off_1",
+    "formation": 1,
     "rel": "las",
     "location_id": 78780607,
     "enemy_count": 1,
@@ -3679,6 +4014,7 @@
   },
   {
     "name": "btlgrp_las_las_03_01_off_2",
+    "formation": 2,
     "rel": "las",
     "location_id": 78780607,
     "enemy_count": 1,
@@ -3688,6 +4024,7 @@
   },
   {
     "name": "btlgrp_las_las_03_02_off_2",
+    "formation": 2,
     "rel": "las",
     "location_id": 78780607,
     "enemy_count": 1,
@@ -3697,6 +4034,7 @@
   },
   {
     "name": "btlgrp_las_las_03_03_off_2",
+    "formation": 2,
     "rel": "las",
     "location_id": 78780607,
     "enemy_count": 1,
@@ -3706,6 +4044,7 @@
   },
   {
     "name": "btlgrp_las_las_04_01_off_1",
+    "formation": 1,
     "rel": "las",
     "location_id": 78780608,
     "enemy_count": 1,
@@ -3715,6 +4054,7 @@
   },
   {
     "name": "btlgrp_las_las_06_01_off_1",
+    "formation": 1,
     "rel": "las",
     "location_id": 78780610,
     "enemy_count": 2,
@@ -3725,6 +4065,7 @@
   },
   {
     "name": "btlgrp_las_las_06_02_off_1",
+    "formation": 1,
     "rel": "las",
     "location_id": 78780610,
     "enemy_count": 2,
@@ -3735,6 +4076,7 @@
   },
   {
     "name": "btlgrp_las_las_06_03_off_1",
+    "formation": 1,
     "rel": "las",
     "location_id": 78780610,
     "enemy_count": 2,
@@ -3745,6 +4087,7 @@
   },
   {
     "name": "btlgrp_las_las_06_04_off_1",
+    "formation": 1,
     "rel": "las",
     "location_id": 78780610,
     "enemy_count": 4,
@@ -3757,6 +4100,7 @@
   },
   {
     "name": "btlgrp_las_las_06_05_off_1",
+    "formation": 1,
     "rel": "las",
     "location_id": 78780610,
     "enemy_count": 2,
@@ -3767,6 +4111,7 @@
   },
   {
     "name": "btlgrp_las_las_06_06_off_1",
+    "formation": 1,
     "rel": "las",
     "location_id": 78780610,
     "enemy_count": 2,
@@ -3777,6 +4122,7 @@
   },
   {
     "name": "btlgrp_las_las_06_99_off_1",
+    "formation": 1,
     "rel": "las",
     "location_id": 78780610,
     "enemy_count": 2,
@@ -3787,6 +4133,7 @@
   },
   {
     "name": "btlgrp_las_las_07_01_off_1",
+    "formation": 1,
     "rel": "las",
     "location_id": 78780611,
     "enemy_count": 3,
@@ -3798,6 +4145,7 @@
   },
   {
     "name": "btlgrp_las_las_07_02_off_1",
+    "formation": 1,
     "rel": "las",
     "location_id": 78780611,
     "enemy_count": 3,
@@ -3809,6 +4157,7 @@
   },
   {
     "name": "btlgrp_las_las_07_03_off_1",
+    "formation": 1,
     "rel": "las",
     "location_id": 78780611,
     "enemy_count": 3,
@@ -3820,6 +4169,7 @@
   },
   {
     "name": "btlgrp_las_las_09_01_off_1",
+    "formation": 1,
     "rel": "las",
     "location_id": 78780614,
     "enemy_count": 2,
@@ -3830,6 +4180,7 @@
   },
   {
     "name": "btlgrp_las_las_09_02_off_1",
+    "formation": 1,
     "rel": "las",
     "location_id": 78780614,
     "enemy_count": 3,
@@ -3841,6 +4192,7 @@
   },
   {
     "name": "btlgrp_las_las_19_01_off_1",
+    "formation": 1,
     "rel": "las",
     "location_id": 78780622,
     "enemy_count": 1,
@@ -3850,6 +4202,7 @@
   },
   {
     "name": "btlgrp_las_las_19_02_off_1",
+    "formation": 1,
     "rel": "las",
     "location_id": 78780622,
     "enemy_count": 2,
@@ -3860,6 +4213,7 @@
   },
   {
     "name": "btlgrp_las_las_19_03_off_1",
+    "formation": 1,
     "rel": "las",
     "location_id": 78780622,
     "enemy_count": 3,
@@ -3871,6 +4225,7 @@
   },
   {
     "name": "btlgrp_las_las_20_01_off_1",
+    "formation": 1,
     "rel": "las",
     "location_id": 78780623,
     "enemy_count": 1,
@@ -3880,6 +4235,7 @@
   },
   {
     "name": "btlgrp_las_las_21_01_off_1",
+    "formation": 1,
     "rel": "las",
     "location_id": 78780625,
     "enemy_count": 2,
@@ -3890,6 +4246,7 @@
   },
   {
     "name": "btlgrp_las_las_21_02_off_1",
+    "formation": 1,
     "rel": "las",
     "location_id": 78780625,
     "enemy_count": 2,
@@ -3900,6 +4257,7 @@
   },
   {
     "name": "btlgrp_las_las_22_01_off_1",
+    "formation": 1,
     "rel": "las",
     "location_id": 78780625,
     "enemy_count": 2,
@@ -3910,6 +4268,7 @@
   },
   {
     "name": "btlgrp_las_las_22_02_off_1",
+    "formation": 1,
     "rel": "las",
     "location_id": 78780625,
     "enemy_count": 4,
@@ -3922,6 +4281,7 @@
   },
   {
     "name": "btlgrp_las_las_22_03_off_1",
+    "formation": 1,
     "rel": "las",
     "location_id": 78780625,
     "enemy_count": 2,
@@ -3932,6 +4292,7 @@
   },
   {
     "name": "btlgrp_las_las_24_01_off_1",
+    "formation": 1,
     "rel": "las",
     "location_id": 78780628,
     "enemy_count": 2,
@@ -3942,6 +4303,7 @@
   },
   {
     "name": "btlgrp_las_las_25_01_off_1",
+    "formation": 1,
     "rel": "las",
     "location_id": 78780631,
     "enemy_count": 1,
@@ -3951,6 +4313,7 @@
   },
   {
     "name": "btlgrp_las_las_25_02_off_1",
+    "formation": 1,
     "rel": "las",
     "location_id": 78780631,
     "enemy_count": 3,
@@ -3962,6 +4325,7 @@
   },
   {
     "name": "btlgrp_las_las_25_03_off_1",
+    "formation": 1,
     "rel": "las",
     "location_id": 78780631,
     "enemy_count": 4,
@@ -3974,6 +4338,7 @@
   },
   {
     "name": "btlgrp_las_las_25_04_off_1",
+    "formation": 1,
     "rel": "las",
     "location_id": 78780631,
     "enemy_count": 2,
@@ -3984,6 +4349,7 @@
   },
   {
     "name": "btlgrp_las_las_25_05_off_1",
+    "formation": 1,
     "rel": "las",
     "location_id": 78780631,
     "enemy_count": 3,
@@ -3995,6 +4361,7 @@
   },
   {
     "name": "btlgrp_las_las_25_06_off_1",
+    "formation": 1,
     "rel": "las",
     "location_id": 78780631,
     "enemy_count": 3,
@@ -4006,6 +4373,7 @@
   },
   {
     "name": "btlgrp_moo_moo_01_01_off_1",
+    "formation": 1,
     "rel": "moo",
     "location_id": 78780807,
     "enemy_count": 2,
@@ -4016,6 +4384,7 @@
   },
   {
     "name": "btlgrp_moo_moo_01_02_off_1",
+    "formation": 1,
     "rel": "moo",
     "location_id": 78780807,
     "enemy_count": 2,
@@ -4026,6 +4395,7 @@
   },
   {
     "name": "btlgrp_moo_moo_01_02_off_2",
+    "formation": 2,
     "rel": "moo",
     "location_id": 78780807,
     "enemy_count": 3,
@@ -4037,6 +4407,7 @@
   },
   {
     "name": "btlgrp_moo_moo_01_03_off_1",
+    "formation": 1,
     "rel": "moo",
     "location_id": 78780807,
     "enemy_count": 3,
@@ -4048,6 +4419,7 @@
   },
   {
     "name": "btlgrp_moo_moo_01_04_off_1",
+    "formation": 1,
     "rel": "moo",
     "location_id": 78780807,
     "enemy_count": 2,
@@ -4058,6 +4430,7 @@
   },
   {
     "name": "btlgrp_moo_moo_01_04_off_2",
+    "formation": 2,
     "rel": "moo",
     "location_id": 78780807,
     "enemy_count": 3,
@@ -4069,6 +4442,7 @@
   },
   {
     "name": "btlgrp_moo_moo_01_04_off_3",
+    "formation": 3,
     "rel": "moo",
     "location_id": 78780807,
     "enemy_count": 4,
@@ -4081,6 +4455,7 @@
   },
   {
     "name": "btlgrp_moo_moo_01_05_off_1",
+    "formation": 1,
     "rel": "moo",
     "location_id": 78780807,
     "enemy_count": 4,
@@ -4093,6 +4468,7 @@
   },
   {
     "name": "btlgrp_moo_moo_02_01_off_1",
+    "formation": 1,
     "rel": "moo",
     "location_id": 78780580,
     "enemy_count": 2,
@@ -4103,6 +4479,7 @@
   },
   {
     "name": "btlgrp_moo_moo_02_02_off_1",
+    "formation": 1,
     "rel": "moo",
     "location_id": 78780580,
     "enemy_count": 2,
@@ -4113,6 +4490,7 @@
   },
   {
     "name": "btlgrp_moo_moo_02_03_off_1",
+    "formation": 1,
     "rel": "moo",
     "location_id": 78780580,
     "enemy_count": 2,
@@ -4123,6 +4501,7 @@
   },
   {
     "name": "btlgrp_moo_moo_02_04_off_1",
+    "formation": 1,
     "rel": "moo",
     "location_id": 78780580,
     "enemy_count": 3,
@@ -4134,6 +4513,7 @@
   },
   {
     "name": "btlgrp_moo_moo_02_05_off_1",
+    "formation": 1,
     "rel": "moo",
     "location_id": 78780580,
     "enemy_count": 2,
@@ -4144,6 +4524,7 @@
   },
   {
     "name": "btlgrp_moo_moo_05_01_off_1",
+    "formation": 1,
     "rel": "moo",
     "location_id": 78780582,
     "enemy_count": 2,
@@ -4154,6 +4535,7 @@
   },
   {
     "name": "btlgrp_moo_moo_05_01_off_2",
+    "formation": 2,
     "rel": "moo",
     "location_id": 78780582,
     "enemy_count": 3,
@@ -4165,6 +4547,7 @@
   },
   {
     "name": "btlgrp_moo_moo_05_01_off_3",
+    "formation": 3,
     "rel": "moo",
     "location_id": 78780582,
     "enemy_count": 4,
@@ -4177,6 +4560,7 @@
   },
   {
     "name": "btlgrp_moo_moo_05_02_off_1",
+    "formation": 1,
     "rel": "moo",
     "location_id": 78780582,
     "enemy_count": 2,
@@ -4187,6 +4571,7 @@
   },
   {
     "name": "btlgrp_moo_moo_05_03_off_1",
+    "formation": 1,
     "rel": "moo",
     "location_id": 78780582,
     "enemy_count": 2,
@@ -4197,6 +4582,7 @@
   },
   {
     "name": "btlgrp_moo_moo_05_03_off_2",
+    "formation": 2,
     "rel": "moo",
     "location_id": 78780582,
     "enemy_count": 3,
@@ -4208,6 +4594,7 @@
   },
   {
     "name": "btlgrp_moo_moo_05_04_off_1",
+    "formation": 1,
     "rel": "moo",
     "location_id": 78780582,
     "enemy_count": 3,
@@ -4219,6 +4606,7 @@
   },
   {
     "name": "btlgrp_moo_moo_05_05_off_1",
+    "formation": 1,
     "rel": "moo",
     "location_id": 78780582,
     "enemy_count": 2,
@@ -4229,6 +4617,7 @@
   },
   {
     "name": "btlgrp_moo_moo_05_05_off_2",
+    "formation": 2,
     "rel": "moo",
     "location_id": 78780582,
     "enemy_count": 3,
@@ -4240,6 +4629,7 @@
   },
   {
     "name": "btlgrp_moo_moo_05_05_off_3",
+    "formation": 3,
     "rel": "moo",
     "location_id": 78780582,
     "enemy_count": 4,
@@ -4252,6 +4642,7 @@
   },
   {
     "name": "btlgrp_mri_mri_01_01",
+    "formation": 1,
     "rel": "mri",
     "location_id": 78780231,
     "enemy_count": 2,
@@ -4262,6 +4653,7 @@
   },
   {
     "name": "btlgrp_mri_mri_04_01",
+    "formation": 1,
     "rel": "mri",
     "location_id": 78780237,
     "enemy_count": 1,
@@ -4271,6 +4663,7 @@
   },
   {
     "name": "btlgrp_mri_mri_05_01",
+    "formation": 1,
     "rel": "mri",
     "location_id": 78780241,
     "enemy_count": 2,
@@ -4281,6 +4674,7 @@
   },
   {
     "name": "btlgrp_mri_mri_06_2F_02",
+    "formation": 1,
     "rel": "mri",
     "location_id": 78780243,
     "enemy_count": 3,
@@ -4292,6 +4686,7 @@
   },
   {
     "name": "btlgrp_mri_mri_06_2F_03",
+    "formation": 1,
     "rel": "mri",
     "location_id": 78780243,
     "enemy_count": 4,
@@ -4304,6 +4699,7 @@
   },
   {
     "name": "btlgrp_mri_mri_12_01",
+    "formation": 1,
     "rel": "mri",
     "location_id": 78780256,
     "enemy_count": 2,
@@ -4314,6 +4710,7 @@
   },
   {
     "name": "btlgrp_mri_mri_12_02",
+    "formation": 1,
     "rel": "mri",
     "location_id": 78780256,
     "enemy_count": 4,
@@ -4326,6 +4723,7 @@
   },
   {
     "name": "btlgrp_mri_mri_15_01",
+    "formation": 1,
     "rel": "mri",
     "location_id": 78780259,
     "enemy_count": 2,
@@ -4336,6 +4734,7 @@
   },
   {
     "name": "btlgrp_mri_mri_17_01",
+    "formation": 1,
     "rel": "mri",
     "location_id": 78780263,
     "enemy_count": 2,
@@ -4346,6 +4745,7 @@
   },
   {
     "name": "btlgrp_mri_mri_18_02",
+    "formation": 1,
     "rel": "mri",
     "location_id": 78780264,
     "enemy_count": 3,
@@ -4357,6 +4757,7 @@
   },
   {
     "name": "btlgrp_mri_mri_18_03",
+    "formation": 1,
     "rel": "mri",
     "location_id": 78780264,
     "enemy_count": 3,
@@ -4368,6 +4769,7 @@
   },
   {
     "name": "btlgrp_mri_mri_19_01",
+    "formation": 1,
     "rel": "mri",
     "location_id": 78780265,
     "enemy_count": 2,
@@ -4378,6 +4780,7 @@
   },
   {
     "name": "btlgrp_mri_mri_19_02",
+    "formation": 1,
     "rel": "mri",
     "location_id": 78780265,
     "enemy_count": 2,
@@ -4388,6 +4791,7 @@
   },
   {
     "name": "btlgrp_mri_mri_19_04",
+    "formation": 1,
     "rel": "mri",
     "location_id": 78780265,
     "enemy_count": 4,
@@ -4400,6 +4804,7 @@
   },
   {
     "name": "btlgrp_mri_mri_20_02",
+    "formation": 1,
     "rel": "mri",
     "location_id": 78780266,
     "enemy_count": 2,
@@ -4410,6 +4815,7 @@
   },
   {
     "name": "btlgrp_mri_mri_20_03",
+    "formation": 1,
     "rel": "mri",
     "location_id": 78780266,
     "enemy_count": 3,
@@ -4421,6 +4827,7 @@
   },
   {
     "name": "btlgrp_muj_muj_01_01",
+    "formation": 1,
     "rel": "muj",
     "location_id": 78780461,
     "enemy_count": 3,
@@ -4432,6 +4839,7 @@
   },
   {
     "name": "btlgrp_muj_muj_05_01",
+    "formation": 1,
     "rel": "muj",
     "location_id": 78780488,
     "enemy_count": 3,
@@ -4443,6 +4851,7 @@
   },
   {
     "name": "btlgrp_muj_muj_05_02",
+    "formation": 1,
     "rel": "muj",
     "location_id": 78780488,
     "enemy_count": 3,
@@ -4454,6 +4863,7 @@
   },
   {
     "name": "btlgrp_muj_muj_02_01_off_01",
+    "formation": 1,
     "rel": "muj",
     "location_id": 78780470,
     "enemy_count": 1,
@@ -4463,6 +4873,7 @@
   },
   {
     "name": "btlgrp_muj_muj_02_01_off_02",
+    "formation": 2,
     "rel": "muj",
     "location_id": 78780470,
     "enemy_count": 2,
@@ -4473,6 +4884,7 @@
   },
   {
     "name": "btlgrp_muj_muj_02_01_off_03",
+    "formation": 3,
     "rel": "muj",
     "location_id": 78780470,
     "enemy_count": 3,
@@ -4484,6 +4896,7 @@
   },
   {
     "name": "btlgrp_muj_muj_02_01_off_04",
+    "formation": 4,
     "rel": "muj",
     "location_id": 78780470,
     "enemy_count": 4,
@@ -4496,6 +4909,7 @@
   },
   {
     "name": "btlgrp_muj_muj_02_04_off_01",
+    "formation": 1,
     "rel": "muj",
     "location_id": 78780470,
     "enemy_count": 1,
@@ -4505,6 +4919,7 @@
   },
   {
     "name": "btlgrp_muj_muj_02_04_off_02",
+    "formation": 2,
     "rel": "muj",
     "location_id": 78780470,
     "enemy_count": 2,
@@ -4515,6 +4930,7 @@
   },
   {
     "name": "btlgrp_muj_muj_02_04_off_03",
+    "formation": 3,
     "rel": "muj",
     "location_id": 78780470,
     "enemy_count": 3,
@@ -4526,6 +4942,7 @@
   },
   {
     "name": "btlgrp_muj_muj_02_07_off_01",
+    "formation": 1,
     "rel": "muj",
     "location_id": 78780470,
     "enemy_count": 2,
@@ -4536,6 +4953,7 @@
   },
   {
     "name": "btlgrp_muj_muj_02_07_off_02",
+    "formation": 2,
     "rel": "muj",
     "location_id": 78780470,
     "enemy_count": 3,
@@ -4547,6 +4965,7 @@
   },
   {
     "name": "btlgrp_muj_muj_02_07_off_03",
+    "formation": 3,
     "rel": "muj",
     "location_id": 78780470,
     "enemy_count": 4,
@@ -4559,6 +4978,7 @@
   },
   {
     "name": "btlgrp_muj_muj_03_01_off_01",
+    "formation": 1,
     "rel": "muj",
     "location_id": 78780475,
     "enemy_count": 2,
@@ -4569,6 +4989,7 @@
   },
   {
     "name": "btlgrp_muj_muj_03_01_off_02",
+    "formation": 2,
     "rel": "muj",
     "location_id": 78780475,
     "enemy_count": 3,
@@ -4580,6 +5001,7 @@
   },
   {
     "name": "btlgrp_muj_muj_03_01_off_03",
+    "formation": 3,
     "rel": "muj",
     "location_id": 78780475,
     "enemy_count": 3,
@@ -4591,6 +5013,7 @@
   },
   {
     "name": "btlgrp_muj_muj_03_02_off_01",
+    "formation": 1,
     "rel": "muj",
     "location_id": 78780475,
     "enemy_count": 2,
@@ -4601,6 +5024,7 @@
   },
   {
     "name": "btlgrp_muj_muj_03_02_off_02",
+    "formation": 2,
     "rel": "muj",
     "location_id": 78780475,
     "enemy_count": 3,
@@ -4612,6 +5036,7 @@
   },
   {
     "name": "btlgrp_muj_muj_03_02_off_03",
+    "formation": 3,
     "rel": "muj",
     "location_id": 78780475,
     "enemy_count": 3,
@@ -4623,6 +5048,7 @@
   },
   {
     "name": "btlgrp_muj_muj_03_04_off_01",
+    "formation": 1,
     "rel": "muj",
     "location_id": 78780475,
     "enemy_count": 2,
@@ -4633,6 +5059,7 @@
   },
   {
     "name": "btlgrp_muj_muj_03_04_off_02",
+    "formation": 2,
     "rel": "muj",
     "location_id": 78780475,
     "enemy_count": 3,
@@ -4644,6 +5071,7 @@
   },
   {
     "name": "btlgrp_muj_muj_03_04_off_03",
+    "formation": 3,
     "rel": "muj",
     "location_id": 78780475,
     "enemy_count": 3,
@@ -4655,6 +5083,7 @@
   },
   {
     "name": "btlgrp_pik_pik_06_01_off_1",
+    "formation": 1,
     "rel": "pik",
     "location_id": 78780553,
     "enemy_count": 2,
@@ -4665,6 +5094,7 @@
   },
   {
     "name": "btlgrp_pik_pik_06_02_off_1",
+    "formation": 1,
     "rel": "pik",
     "location_id": 78780553,
     "enemy_count": 3,
@@ -4676,6 +5106,7 @@
   },
   {
     "name": "btlgrp_pik_pik_06_03_off_1",
+    "formation": 1,
     "rel": "pik",
     "location_id": 78780553,
     "enemy_count": 1,
@@ -4685,6 +5116,7 @@
   },
   {
     "name": "btlgrp_pik_pik_06_04_off_1",
+    "formation": 1,
     "rel": "pik",
     "location_id": 78780553,
     "enemy_count": 2,
@@ -4695,6 +5127,7 @@
   },
   {
     "name": "btlgrp_pik_pik_06_05_off_1",
+    "formation": 1,
     "rel": "pik",
     "location_id": 78780553,
     "enemy_count": 2,
@@ -4705,6 +5138,7 @@
   },
   {
     "name": "btlgrp_pik_pik_06_06_off_1",
+    "formation": 1,
     "rel": "pik",
     "location_id": 78780553,
     "enemy_count": 4,
@@ -4717,6 +5151,7 @@
   },
   {
     "name": "btlgrp_pik_pik_06_07_off_1",
+    "formation": 1,
     "rel": "pik",
     "location_id": 78780553,
     "enemy_count": 1,
@@ -4726,6 +5161,7 @@
   },
   {
     "name": "btlgrp_pik_pik_06_08_off_1",
+    "formation": 1,
     "rel": "pik",
     "location_id": 78780553,
     "enemy_count": 3,
@@ -4737,6 +5173,7 @@
   },
   {
     "name": "btlgrp_pik_pik_06_09_off_1",
+    "formation": 1,
     "rel": "pik",
     "location_id": 78780553,
     "enemy_count": 4,
@@ -4749,6 +5186,7 @@
   },
   {
     "name": "btlgrp_tik_tik_01_02_off_1",
+    "formation": 1,
     "rel": "tik",
     "location_id": 78780136,
     "enemy_count": 2,
@@ -4759,6 +5197,7 @@
   },
   {
     "name": "btlgrp_tik_tik_04_01_off_1",
+    "formation": 1,
     "rel": "tik",
     "location_id": 78780136,
     "enemy_count": 1,
@@ -4768,6 +5207,7 @@
   },
   {
     "name": "btlgrp_tik_tik_04_01_on_1",
+    "formation": 2,
     "rel": "tik",
     "location_id": 78780136,
     "enemy_count": 1,
@@ -4777,6 +5217,7 @@
   },
   {
     "name": "btlgrp_tik_tik_04_01_on_2",
+    "formation": 3,
     "rel": "tik",
     "location_id": 78780136,
     "enemy_count": 2,
@@ -4787,6 +5228,7 @@
   },
   {
     "name": "btlgrp_tik_tik_04_02_off_1",
+    "formation": 1,
     "rel": "tik",
     "location_id": 78780136,
     "enemy_count": 2,
@@ -4797,6 +5239,7 @@
   },
   {
     "name": "btlgrp_tik_tik_04_02_on_1",
+    "formation": 2,
     "rel": "tik",
     "location_id": 78780136,
     "enemy_count": 2,
@@ -4807,6 +5250,7 @@
   },
   {
     "name": "btlgrp_tik_tik_04_02_on_2",
+    "formation": 3,
     "rel": "tik",
     "location_id": 78780136,
     "enemy_count": 3,
@@ -4818,6 +5262,7 @@
   },
   {
     "name": "btlgrp_tik_tik_07_01_off_1",
+    "formation": 1,
     "rel": "tik",
     "location_id": 78780145,
     "enemy_count": 3,
@@ -4829,6 +5274,7 @@
   },
   {
     "name": "btlgrp_tik_tik_07_01_off_2",
+    "formation": 2,
     "rel": "tik",
     "location_id": 78780145,
     "enemy_count": 2,
@@ -4839,6 +5285,7 @@
   },
   {
     "name": "btlgrp_tik_tik_07_02_off_1",
+    "formation": 1,
     "rel": "tik",
     "location_id": 78780145,
     "enemy_count": 2,
@@ -4849,6 +5296,7 @@
   },
   {
     "name": "btlgrp_tik_tik_07_02_off_2",
+    "formation": 2,
     "rel": "tik",
     "location_id": 78780145,
     "enemy_count": 3,
@@ -4860,6 +5308,7 @@
   },
   {
     "name": "btlgrp_tik_tik_15_01_off_1",
+    "formation": 1,
     "rel": "tik",
     "location_id": 78780147,
     "enemy_count": 1,
@@ -4869,6 +5318,7 @@
   },
   {
     "name": "btlgrp_tik_tik_15_02_off_1",
+    "formation": 1,
     "rel": "tik",
     "location_id": 78780147,
     "enemy_count": 1,
@@ -4878,6 +5328,7 @@
   },
   {
     "name": "btlgrp_tik_tik_15_03_off_1",
+    "formation": 1,
     "rel": "tik",
     "location_id": 78780147,
     "enemy_count": 1,
@@ -4887,6 +5338,7 @@
   },
   {
     "name": "btlgrp_tik_tik_18_01_off_1",
+    "formation": 1,
     "rel": "tik",
     "location_id": 78780151,
     "enemy_count": 2,
@@ -4897,6 +5349,7 @@
   },
   {
     "name": "btlgrp_tik_tik_18_01_off_2",
+    "formation": 2,
     "rel": "tik",
     "location_id": 78780151,
     "enemy_count": 3,
@@ -4908,6 +5361,7 @@
   },
   {
     "name": "btlgrp_tik_tik_18_02_off_1",
+    "formation": 1,
     "rel": "tik",
     "location_id": 78780151,
     "enemy_count": 4,
@@ -4920,6 +5374,7 @@
   },
   {
     "name": "btlgrp_tik_tik_18_02_off_2",
+    "formation": 2,
     "rel": "tik",
     "location_id": 78780151,
     "enemy_count": 2,
@@ -4930,6 +5385,7 @@
   },
   {
     "name": "btlgrp_tik_tik_20_01_off_1",
+    "formation": 1,
     "rel": "tik",
     "location_id": 78780156,
     "enemy_count": 5,
@@ -4943,6 +5399,7 @@
   },
   {
     "name": "btlgrp_tik_tik_20_02_off_1",
+    "formation": 1,
     "rel": "tik",
     "location_id": 78780156,
     "enemy_count": 4,
@@ -4955,6 +5412,7 @@
   },
   {
     "name": "btlgrp_tik_tik_20_03_off_1",
+    "formation": 1,
     "rel": "tik",
     "location_id": 78780156,
     "enemy_count": 3,
@@ -4966,6 +5424,7 @@
   },
   {
     "name": "btlgrp_tik_tik_20_04_off_1",
+    "formation": 1,
     "rel": "tik",
     "location_id": 78780156,
     "enemy_count": 4,
@@ -4978,6 +5437,7 @@
   },
   {
     "name": "btlgrp_tik_tik_20_05_off_1",
+    "formation": 1,
     "rel": "tik",
     "location_id": 78780156,
     "enemy_count": 5,
@@ -4991,6 +5451,7 @@
   },
   {
     "name": "btlgrp_tik_tik_20_06_off_1",
+    "formation": 1,
     "rel": "tik",
     "location_id": 78780156,
     "enemy_count": 5,
@@ -5004,6 +5465,7 @@
   },
   {
     "name": "btlgrp_tou_tou_rank_19",
+    "formation": 1,
     "rel": "tou",
     "location_id": 78780267,
     "enemy_count": 5,
@@ -5017,6 +5479,7 @@
   },
   {
     "name": "btlgrp_tou_tou_rank_18",
+    "formation": 1,
     "rel": "tou",
     "location_id": 78780267,
     "enemy_count": 3,
@@ -5028,6 +5491,7 @@
   },
   {
     "name": "btlgrp_tou_tou_rank_17",
+    "formation": 1,
     "rel": "tou",
     "location_id": 78780267,
     "enemy_count": 3,
@@ -5039,6 +5503,7 @@
   },
   {
     "name": "btlgrp_tou_tou_rank_16",
+    "formation": 1,
     "rel": "tou",
     "location_id": 78780267,
     "enemy_count": 3,
@@ -5050,6 +5515,7 @@
   },
   {
     "name": "btlgrp_tou_tou_rank_15",
+    "formation": 1,
     "rel": "tou",
     "location_id": 78780267,
     "enemy_count": 3,
@@ -5061,6 +5527,7 @@
   },
   {
     "name": "btlgrp_tou_tou_rank_14",
+    "formation": 1,
     "rel": "tou",
     "location_id": 78780267,
     "enemy_count": 3,
@@ -5072,6 +5539,7 @@
   },
   {
     "name": "btlgrp_tou_tou_rank_13",
+    "formation": 1,
     "rel": "tou",
     "location_id": 78780267,
     "enemy_count": 3,
@@ -5083,6 +5551,7 @@
   },
   {
     "name": "btlgrp_tou_tou_rank_12",
+    "formation": 1,
     "rel": "tou",
     "location_id": 78780267,
     "enemy_count": 4,
@@ -5095,6 +5564,7 @@
   },
   {
     "name": "btlgrp_tou_tou_rank_11",
+    "formation": 1,
     "rel": "tou",
     "location_id": 78780267,
     "enemy_count": 4,
@@ -5107,6 +5577,7 @@
   },
   {
     "name": "btlgrp_tou_tou_rank_9",
+    "formation": 1,
     "rel": "tou",
     "location_id": 78780296,
     "enemy_count": 2,
@@ -5117,6 +5588,7 @@
   },
   {
     "name": "btlgrp_tou_tou_rank_8",
+    "formation": 1,
     "rel": "tou",
     "location_id": 78780296,
     "enemy_count": 2,
@@ -5127,6 +5599,7 @@
   },
   {
     "name": "btlgrp_tou_tou_rank_7",
+    "formation": 1,
     "rel": "tou",
     "location_id": 78780296,
     "enemy_count": 3,
@@ -5138,6 +5611,7 @@
   },
   {
     "name": "btlgrp_tou_tou_rank_6",
+    "formation": 1,
     "rel": "tou",
     "location_id": 78780296,
     "enemy_count": 3,
@@ -5149,6 +5623,7 @@
   },
   {
     "name": "btlgrp_tou_tou_rank_5",
+    "formation": 1,
     "rel": "tou",
     "location_id": 78780296,
     "enemy_count": 3,
@@ -5160,6 +5635,7 @@
   },
   {
     "name": "btlgrp_tou_tou_rank_4",
+    "formation": 1,
     "rel": "tou",
     "location_id": 78780296,
     "enemy_count": 1,
@@ -5169,6 +5645,7 @@
   },
   {
     "name": "btlgrp_tou_tou_rank_3",
+    "formation": 1,
     "rel": "tou",
     "location_id": 78780296,
     "enemy_count": 3,
@@ -5180,6 +5657,7 @@
   },
   {
     "name": "btlgrp_tou_tou_rank_2",
+    "formation": 1,
     "rel": "tou",
     "location_id": 78780296,
     "enemy_count": 2,
@@ -5190,6 +5668,7 @@
   },
   {
     "name": "btlgrp_tou_tou_rank_1",
+    "formation": 1,
     "rel": "tou",
     "location_id": 78780296,
     "enemy_count": 1,
@@ -5199,6 +5678,7 @@
   },
   {
     "name": "btlgrp_tou_tou_add_1",
+    "formation": 1,
     "rel": "tou",
     "location_id": 78780296,
     "enemy_count": 4,
@@ -5211,6 +5691,7 @@
   },
   {
     "name": "btlgrp_tou_tou_add_2",
+    "formation": 1,
     "rel": "tou",
     "location_id": 78780267,
     "enemy_count": 4,
@@ -5223,6 +5704,7 @@
   },
   {
     "name": "btlgrp_win_win_00_01_off_1",
+    "formation": 1,
     "rel": "win",
     "location_id": 78780215,
     "enemy_count": 2,
@@ -5233,6 +5715,7 @@
   },
   {
     "name": "btlgrp_win_win_00_01_on_1",
+    "formation": 2,
     "rel": "win",
     "location_id": 78780215,
     "enemy_count": 2,
@@ -5243,6 +5726,7 @@
   },
   {
     "name": "btlgrp_win_win_00_01_on_2",
+    "formation": 3,
     "rel": "win",
     "location_id": 78780215,
     "enemy_count": 3,
@@ -5254,6 +5738,7 @@
   },
   {
     "name": "btlgrp_win_win_00_01_on_3",
+    "formation": 4,
     "rel": "win",
     "location_id": 78780215,
     "enemy_count": 4,
@@ -5266,6 +5751,7 @@
   },
   {
     "name": "btlgrp_win_win_00_02_off_1",
+    "formation": 1,
     "rel": "win",
     "location_id": 78780215,
     "enemy_count": 2,
@@ -5276,6 +5762,7 @@
   },
   {
     "name": "btlgrp_win_win_00_02_on_1",
+    "formation": 2,
     "rel": "win",
     "location_id": 78780215,
     "enemy_count": 2,
@@ -5286,6 +5773,7 @@
   },
   {
     "name": "btlgrp_win_win_00_02_on_2",
+    "formation": 3,
     "rel": "win",
     "location_id": 78780215,
     "enemy_count": 3,
@@ -5297,6 +5785,7 @@
   },
   {
     "name": "btlgrp_win_win_00_03_off_1",
+    "formation": 1,
     "rel": "win",
     "location_id": 78780215,
     "enemy_count": 3,
@@ -5308,6 +5797,7 @@
   },
   {
     "name": "btlgrp_win_win_00_03_on_1",
+    "formation": 2,
     "rel": "win",
     "location_id": 78780215,
     "enemy_count": 2,
@@ -5318,6 +5808,7 @@
   },
   {
     "name": "btlgrp_win_win_00_03_on_2",
+    "formation": 3,
     "rel": "win",
     "location_id": 78780215,
     "enemy_count": 2,
@@ -5328,6 +5819,7 @@
   },
   {
     "name": "btlgrp_win_win_02_01_off_1",
+    "formation": 1,
     "rel": "win",
     "location_id": 78780220,
     "enemy_count": 2,
@@ -5338,6 +5830,7 @@
   },
   {
     "name": "btlgrp_win_win_02_01_on_1",
+    "formation": 2,
     "rel": "win",
     "location_id": 78780220,
     "enemy_count": 2,
@@ -5348,6 +5841,7 @@
   },
   {
     "name": "btlgrp_win_win_02_01_on_2",
+    "formation": 3,
     "rel": "win",
     "location_id": 78780220,
     "enemy_count": 3,
@@ -5359,6 +5853,7 @@
   },
   {
     "name": "btlgrp_win_win_02_01_on_3",
+    "formation": 4,
     "rel": "win",
     "location_id": 78780220,
     "enemy_count": 3,
@@ -5370,6 +5865,7 @@
   },
   {
     "name": "btlgrp_win_win_02_02_off_1",
+    "formation": 1,
     "rel": "win",
     "location_id": 78780220,
     "enemy_count": 2,
@@ -5380,6 +5876,7 @@
   },
   {
     "name": "btlgrp_win_win_02_02_on_1",
+    "formation": 2,
     "rel": "win",
     "location_id": 78780220,
     "enemy_count": 2,
@@ -5390,6 +5887,7 @@
   },
   {
     "name": "btlgrp_win_win_02_02_on_2",
+    "formation": 3,
     "rel": "win",
     "location_id": 78780220,
     "enemy_count": 3,
@@ -5401,6 +5899,7 @@
   },
   {
     "name": "btlgrp_win_win_02_02_on_3",
+    "formation": 4,
     "rel": "win",
     "location_id": 78780220,
     "enemy_count": 3,
@@ -5412,6 +5911,7 @@
   },
   {
     "name": "btlgrp_win_win_03_01_off_1",
+    "formation": 1,
     "rel": "win",
     "location_id": 78780224,
     "enemy_count": 4,
@@ -5424,6 +5924,7 @@
   },
   {
     "name": "btlgrp_win_win_03_01_on_1",
+    "formation": 2,
     "rel": "win",
     "location_id": 78780224,
     "enemy_count": 2,
@@ -5434,6 +5935,7 @@
   },
   {
     "name": "btlgrp_win_win_03_01_on_2",
+    "formation": 3,
     "rel": "win",
     "location_id": 78780224,
     "enemy_count": 3,
@@ -5445,6 +5947,7 @@
   },
   {
     "name": "btlgrp_win_win_03_01_on_3",
+    "formation": 4,
     "rel": "win",
     "location_id": 78780224,
     "enemy_count": 3,
@@ -5456,6 +5959,7 @@
   },
   {
     "name": "btlgrp_win_win_03_01_on_4",
+    "formation": 5,
     "rel": "win",
     "location_id": 78780224,
     "enemy_count": 4,

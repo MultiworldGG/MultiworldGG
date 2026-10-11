@@ -1966,7 +1966,7 @@ idents_0: dict[int, str] = {
     0x170ff0: "Door",  # Sun door
     0x185ce8: "Door", # Courage temple
     0x263d20: "Door",  # Man of smiles arena door
-    0x16c188: "Door",  # Wireframe, in gt
+    0x16c188: "Wireframe Door",  # Wireframe, in gt
     0x17a9b8: "Door",  # Dongorongo's room
     0x17aa70: "Door", # Dongorongo's room
 

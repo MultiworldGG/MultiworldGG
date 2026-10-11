@@ -2,7 +2,7 @@
     "game": "Zelda II: The Adventure of Link",
     "authors": ["Pink Switch"],
     "minimum_ap_version": "0.5.0",
-    "world_version": "1.0.1",
+    "world_version": "1.1.0",
     "compatible_version": 7,
     "version": 7
 }

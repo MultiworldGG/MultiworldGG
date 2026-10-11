@@ -14,6 +14,7 @@ from .Items import items_by_id, ItemData
 from .Locations import locationName_to_data, location_table, location_id_to_name
 from .Data import Rels, shop_items, item_prices, rel_filepaths, location_to_unit, shop_names, SEED_OBFUSCATION_KEY
 from .TTYDPatcher import TTYDPatcher
+from .Options import EnemyFormations, EnemyRandomizer
 
 if TYPE_CHECKING:
     from . import TTYDWorld
@@ -105,8 +106,6 @@ class TTYDPatchExtension(APPatchExtension):
         caller.patcher.dol.data.write(seed_options.get("succeed_conditions", 0).to_bytes(1, "big"))
         caller.patcher.dol.data.seek(0x23C)
         caller.patcher.dol.data.write(seed_options.get("cutscene_skip", 0).to_bytes(1, "big"))
-        caller.patcher.dol.data.seek(0x23D)
-        caller.patcher.dol.data.write(seed_options.get("experience_multiplier", 1).to_bytes(1, "big"))
         caller.patcher.dol.data.seek(0x23E)
         caller.patcher.dol.data.write(seed_options.get("starting_level", 1).to_bytes(1, "big"))
         caller.patcher.dol.data.seek(0x241)
@@ -180,6 +179,8 @@ class TTYDPatchExtension(APPatchExtension):
         caller.patcher.dol.data.write(seed_options.get("mirror_mode", 0).to_bytes(1, "big"))
         caller.patcher.dol.data.seek(0x28F)
         caller.patcher.dol.data.write(seed_options.get("panel_hints", 0).to_bytes(1, "big"))
+        caller.patcher.dol.data.seek(0x290)
+        caller.patcher.dol.data.write(seed_options.get("experience_multiplier", 1).to_bytes(2, "big"))
         caller.patcher.dol.data.seek(0x260)
         caller.patcher.dol.data.write(seed_options.get("yoshi_name", "Yoshi").encode("utf-8")[0:8] + b"\x00")
         caller.patcher.dol.data.seek(0xEB6B6)
@@ -471,6 +472,7 @@ def write_files(world: "TTYDWorld", patch: TTYDProcedurePatch) -> None:
         "grubba_bribe_cost": world.options.grubba_bribe_cost.value,
         "blue_pipe_toggle": world.options.blue_pipe_toggle.value,
         "enemy_randomizer": world.options.enemy_randomizer.value,
+        "enemy_formations": world.options.enemy_formations.value,
         "boss_randomizer": world.options.boss_randomizer.value,
         "boss_stat_scaling": world.options.boss_stat_scaling.value,
         "boss_scaling_nerfs": world.options.boss_scaling_nerfs.value,
@@ -489,14 +491,15 @@ def write_files(world: "TTYDWorld", patch: TTYDProcedurePatch) -> None:
     }
 
     buffer = io.BytesIO()
-    for i in range(len(shop_items)):
-        location = world.get_location(location_id_to_name[shop_items[i]])
-        player_name = sanitize_string(world.multiworld.player_name[location.item.player]) if location.item is not None else "Unknown Player"
-        item_name = sanitize_string(location.item.name)
-        buffer.write(f"ap_{shop_names[i // 6]}_{i % 6}".encode('utf-8'))
-        buffer.write(b'\x00')
-        buffer.write(f"{player_name}'s\n<col {classification_to_color(location.item.classification)}ff>{item_name}</col>".encode('utf-8'))
-        buffer.write(b'\x00')
+    if world.options.shopsanity:
+        for i in range(len(shop_items)):
+            location = world.get_location(location_id_to_name[shop_items[i]])
+            player_name = sanitize_string(world.multiworld.player_name[location.item.player]) if location.item is not None else "Unknown Player"
+            item_name = sanitize_string(location.item.name)
+            buffer.write(f"ap_{shop_names[i // 6]}_{i % 6}".encode('utf-8'))
+            buffer.write(b'\x00')
+            buffer.write(f"{player_name}'s\n<col {classification_to_color(location.item.classification)}ff>{item_name}</col>".encode('utf-8'))
+            buffer.write(b'\x00')
     buffer.write(b'\x00')  # null terminator for the end of the table
 
     enemy_buffer = io.BytesIO()
@@ -507,6 +510,17 @@ def write_files(world: "TTYDWorld", patch: TTYDProcedurePatch) -> None:
         enemy_buffer.write(struct.pack("B", len(ids)))
         for eid in ids:
             enemy_buffer.write(struct.pack("B", eid))
+
+    if (world.options.enemy_formations == EnemyFormations.option_singular
+            and world.options.enemy_randomizer != EnemyRandomizer.option_vanilla):
+        # Optional trailer: vanilla stat-template source for each formation.
+        # Keeping the original lineup table intact preserves older mod readers.
+        first_formations = {(entry.rel, entry.formation_group): index
+                            for index, entry in enumerate(encounters) if entry.formation == 1}
+        enemy_buffer.write(b"EFM1")
+        for entry in encounters:
+            source = first_formations[(entry.rel, entry.formation_group)]
+            enemy_buffer.write(struct.pack(">H", source))
 
     boss_buffer = io.BytesIO()
     bosses = world.bosses
@@ -563,6 +577,8 @@ def classification_to_color(classification: ItemClassification = ItemClassificat
 def locations_to_dict(locations: Iterable[Location]) -> Dict[str, Tuple]:
     result = {}
     for location in locations:
+        if location.address is None:
+            continue
         if location.item is not None:
             item_code = location.item.code
             item_player = location.item.player

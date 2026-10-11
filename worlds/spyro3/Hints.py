@@ -58,6 +58,7 @@ def generateHints(player_slot, number_of_hints, s3_world):
         "Zoe says that Hunter can be found in Sunrise Spring home, even while he has been captured by the Sorceress.",
         "Zoe says that doing a full backflip, then a twisted lemon or lime, is a good trick for skateboarding.",
         "Zoe says that it is possible to rescue Farley in Enchanted Towers without ever using his rubber ball.",
+        "Zoe says that it is possible for Farley to cause you to crash in Enchanted Towers with his rubber ball."
         "Zoe says that it is possible to skip paying Moneybags entirely.",
         "Zoe says that it is possible to skip talking to her in this location.",
         "Zoe says that the maximum flying speed is different in each speedway.",
@@ -83,7 +84,9 @@ def generateHints(player_slot, number_of_hints, s3_world):
         "Zoe says that you can defeat the Sorceress in Super Bonus Round without letting her attack once.",
         "Zoe says that there are no Burger Kings in the Forgotten Realm.",
         "Zoe says that when fighting Bluto, be sure to stay away from the shark end.",
-        "Zoe says that Saltwater Sportfishing has more realistic fishing than Spyro 2's Idol Springs."
+        "Zoe says that Saltwater Sportfishing has more realistic fishing than Spyro 2's Idol Springs.",
+        "Zoe says that the Reignited Trilogy will have an Archipelago integration soon!",
+        "Zoe says that if you like this game, you may also like Spyro: A Realm Beyond."
     ]
 
     for location in s3_world.multiworld.get_filled_locations():

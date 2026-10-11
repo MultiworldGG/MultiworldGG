@@ -793,7 +793,7 @@ class PhantomHourglassUTBlockedEntrances(Choice):
     option_mark_on_check = 0
     option_mark_on_pass = 1
     option_unmark_when_opened = 2
-    default = 0
+    default = 2
 
 class PhantomHourglassMapWarp(Choice):
     """

@@ -41,7 +41,7 @@ class LuckyNumberShowTest(PokemonCrystalTestBase):
         # Each trade-access event is gated on the requested species: unreachable from empty
         # state, reachable once everything is collected.
         empty = CollectionState(self.multiworld)
-        all_state = self.multiworld.get_all_state(False)
+        all_state = self.multiworld.get_all_state()
         for event in EVENT_NAMES:
             location = self.world.get_location(event)
             self.assertFalse(location.access_rule(empty))
@@ -97,7 +97,7 @@ def assert_vanilla_trades_disabled(test: PokemonCrystalTestBase):
 def assert_vanilla_trades_reachable(test: PokemonCrystalTestBase):
     test.assertTrue(test.world.options.randomize_lucky_number_show)
     test.assertTrue(test.world.options.trades_required)
-    all_state = test.multiworld.get_all_state(False)
+    all_state = test.multiworld.get_all_state()
     locations = [loc for loc in test.multiworld.get_locations(test.player)
                  if loc.name.startswith("TRADE_") or loc.name in EVENT_NAMES]
     test.assertTrue(locations)

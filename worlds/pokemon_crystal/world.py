@@ -92,9 +92,11 @@ class PokemonCrystalCollectionState(metaclass=AutoLogicRegister):
     def init_mixin(self, parent: MultiWorld) -> None:
         game = crystal_data.manifest.game
         pc_ids = parent.get_game_players(game) + parent.get_game_groups(game)
-        self.pc_unique_species = {player: 0 for player in pc_ids}
-        self.pc_dex_species_count = {player: 0 for player in pc_ids}
-        self.pc_dex_species_seen: dict[int, set[str]] = {player: set() for player in pc_ids}
+        # Merge rather than assign: other Crystal packages (e.g. prerelease) share these attribute names
+        self.pc_unique_species = getattr(self, "pc_unique_species", {}) | {player: 0 for player in pc_ids}
+        self.pc_dex_species_count = getattr(self, "pc_dex_species_count", {}) | {player: 0 for player in pc_ids}
+        self.pc_dex_species_seen: dict[int, set[str]] = (
+            getattr(self, "pc_dex_species_seen", {}) | {player: set() for player in pc_ids})
 
     def copy_mixin(self, ret: CollectionState) -> CollectionState:
         ret.pc_unique_species = dict(self.pc_unique_species)
@@ -1371,12 +1373,14 @@ class PokemonCrystalWorld(EntranceRandoMixin, World):
             pi = state.prog_items[player]
             pi[source_key] += 1
             if pi[item_name] == 1:
-                state.pc_unique_species[player] += 1
+                state.pc_unique_species[player] = state.pc_unique_species.get(player, 0) + 1
             if item.source in self.dex_sources:
-                seen = state.pc_dex_species_seen[player]
+                seen = state.pc_dex_species_seen.get(player)
+                if seen is None:
+                    seen = state.pc_dex_species_seen[player] = set()
                 if item_name not in seen:
                     seen.add(item_name)
-                    state.pc_dex_species_count[player] += 1
+                    state.pc_dex_species_count[player] = state.pc_dex_species_count.get(player, 0) + 1
         return True
 
     def remove(self, state: CollectionState, item: Item) -> bool:

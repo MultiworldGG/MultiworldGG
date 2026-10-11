@@ -3,9 +3,7 @@ from enum import Enum
 
 from BaseClasses import ItemClassification
 
-# XOR key for the seed name stored in the ISO at 0x80003210 (mod protocol >= 2), so the
-# seed can't be casually read out of RAM until the mod reveals it on the credits.
-# Keep in sync with kSeedObfuscationKey in the mod's rel/source/OWR.cpp.
+
 SEED_OBFUSCATION_KEY = bytes([0xA5, 0x1C, 0x7E, 0x33, 0xC9, 0x58, 0xE2, 0x0F,
                               0x96, 0x41, 0xDB, 0x6A, 0x24, 0xB7, 0x5D, 0xF0])
 
@@ -855,7 +853,6 @@ location_gsw_info = {
 }
 
 INGREDIENT_UNLOCK_FLAGS = {
-    # Mirrors kIngredientIds in the mod: index order defines GSWF(6460+k).
     130: 6460,  # Shooting Star
     131: 6461,  # Ice Storm
     132: 6462,  # Fire Flower
@@ -1288,9 +1285,6 @@ location_to_unit = {
     78780965: [0x93],  # Tattle: Grodus X -> unit_boss_batten_satellite
     78780966: [0x22, 0x23],  # Tattle: Magnus von Grapple -> unit_boss_magnum_battender
     78780967: [0x79, 0x7A],  # Tattle: Magnus von Grapple 2.0 -> unit_boss_magnum_battender_mkII
-    # Prologue Crump (0x06) and Keelhaul deck Crump (0x63) are NOT vanilla-aliased
-    # (battleSetUnitMonosiriFlag's alias table has no group for them), so the
-    # location must fire on either kind's tattle flag.
     78780968: [0x06, 0x63],  # Tattle: Lord Crump -> unit_boss_kanbu1 / unit_kanbu2
     78780969: [0x92],  # Tattle: Sir Grodus -> unit_boss_batten_leader
     78780970: [0x1f, 0xBD, 0xC0, 0x85],  # Tattle: Beldam -> unit_boss_majolyne

@@ -1,7 +1,8 @@
+import re
 import typing
 from collections import defaultdict
 
-from .Options import EnemyRandomizer
+from .Options import EnemyFormations, EnemyRandomizer
 
 if typing.TYPE_CHECKING:
     from . import TTYDWorld
@@ -13,13 +14,20 @@ class Encounter:
     location_id: int | None
     enemy_count: int
     enemy_ids: list[int]
+    formation: int
+    formation_group: str
 
-    def __init__(self, name: str, rel: str, location_id: int | None, enemy_count: int, enemy_ids: list[str]):
+    def __init__(self, name: str, rel: str, location_id: int | None, enemy_count: int,
+                 enemy_ids: list[str], formation: int = 1):
         self.name = name
         self.rel = rel
         self.location_id = location_id
         self.enemy_count = enemy_count
         self.enemy_ids = [int(_id, 0) for _id in enemy_ids]
+        self.formation = formation
+        # On/off variants belong to the same fight. Names without this suffix
+        # (such as Glitz Pit ranks) are independent, single-formation fights.
+        self.formation_group = re.sub(r"_(?:off|on)_\d+$", "", name)
 
 def parse_json_encounters() -> list[Encounter]:
     import json
@@ -30,6 +38,8 @@ def parse_json_encounters() -> list[Encounter]:
 
 def randomize_encounters(world: "TTYDWorld") -> None:
     encounter_shuffle_type = world.options.encounter_shuffle_type.value
+    singular = world.options.enemy_formations == EnemyFormations.option_singular
+    encounters = [enc for enc in world.encounters if enc.formation == 1] if singular else world.encounters
 
     # rel -> list[list[enemy_id]]
     rel_groups: dict[str, list[list[int]]] = defaultdict(list)
@@ -37,7 +47,7 @@ def randomize_encounters(world: "TTYDWorld") -> None:
     if world.options.enemy_randomizer == EnemyRandomizer.option_within_chapter:
         # Build buckets from existing encounters
         by_rel = defaultdict(list)
-        for enc in world.encounters:
+        for enc in encounters:
             by_rel[enc.rel].append(enc)
 
         for rel, encs in by_rel.items():
@@ -61,12 +71,12 @@ def randomize_encounters(world: "TTYDWorld") -> None:
         rel = "__ALL__"
 
         if encounter_shuffle_type == 0:
-            groups = [e.enemy_ids[:] for e in world.encounters]
+            groups = [e.enemy_ids[:] for e in encounters]
             world.random.shuffle(groups)
         elif encounter_shuffle_type == 1:
-            enemies = [_id for e in world.encounters for _id in e.enemy_ids]
+            enemies = [_id for e in encounters for _id in e.enemy_ids]
             world.random.shuffle(enemies)
-            groups = [[enemies.pop() for _ in range(e.enemy_count)] for e in world.encounters]
+            groups = [[enemies.pop() for _ in range(e.enemy_count)] for e in encounters]
             world.random.shuffle(groups)
         else:
             raise ValueError(f"Invalid encounter_shuffle_type: {encounter_shuffle_type}")
@@ -77,7 +87,7 @@ def randomize_encounters(world: "TTYDWorld") -> None:
         raise ValueError(f"Invalid enemy randomizer option: {world.options.enemy_randomizer}")
 
     # Assign back
-    for encounter in world.encounters:
+    for encounter in encounters:
         key = encounter.rel if world.options.enemy_randomizer == EnemyRandomizer.option_within_chapter else "__ALL__"
         bucket = rel_groups[key]
 
@@ -90,3 +100,12 @@ def randomize_encounters(world: "TTYDWorld") -> None:
             )
 
         encounter.enemy_ids = bucket.pop(idx)
+
+    if singular:
+        first_formations = {(enc.rel, enc.formation_group): enc for enc in encounters}
+        for encounter in world.encounters:
+            if encounter.formation == 1:
+                continue
+            first = first_formations[(encounter.rel, encounter.formation_group)]
+            encounter.enemy_ids = first.enemy_ids[:]
+            encounter.enemy_count = first.enemy_count

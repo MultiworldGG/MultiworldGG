@@ -373,6 +373,12 @@ class ZoeGivesHints(Range):
     range_end = 13
     default = 0
 
+class EnableMidnightWhirlwind(Toggle):
+    """Adds a whirlwind outside the Sorceress' Lair leading to the impossible
+    island with 3 life bottles, once the Sorceress has been defeated.
+    Puts these bottles into the item pool if life bottles are enabled."""
+    display_name = "Enable Midnight Whirlwind"
+
 class EasySkateboardingLizards(Toggle):
     """The Sunny Villa lizard skateboarding challenges require only 1 lizard.
     Results in minor graphical glitches."""
@@ -608,6 +614,7 @@ class Spyro3Option(PerGameCommonOptions):
     enable_progressive_sparx_logic: ProgressiveSparxHealthLogic
     require_sparx_for_max_gems: RequireSparxForMaxGems
     zoe_gives_hints: ZoeGivesHints
+    enable_midnight_whirlwind: EnableMidnightWhirlwind
     easy_skateboarding_lizards: EasySkateboardingLizards
     easy_skateboarding_points: EasySkateboardingPoints
     easy_skateboarding_lost_fleet: EasySkateboardingLostFleet
@@ -679,7 +686,8 @@ spyro_options_groups = [
             SBRDoorGemRequirement,
             MoneybagsSettings,
             PowerupLockSettings,
-            EnableWorldKeys
+            EnableWorldKeys,
+            EnableMidnightWhirlwind
         ],
         False
     ),

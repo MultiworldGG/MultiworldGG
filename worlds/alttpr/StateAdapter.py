@@ -80,9 +80,6 @@ class StateAdapter:
         elif item == "Silver Arrows":
             item = "Progressive Bow"
             count = 2
-        elif item == "Cape":
-            # TODO: I don't know why I thought changing the name of "Cape" was a good idea, I should undo that
-            item = "Magic Cape"
 
         return self.state.has(item, self.player, count)
 
@@ -102,7 +99,7 @@ class StateAdapter:
 
 
     def can_avoid_lasers(self, player) -> bool:
-        return self.has_item("Progressive Shield", 3) or self.has_item("Cane of Byrna") or self.has_item("Magic Cape")
+        return self.has_item("Progressive Shield", 3) or self.has_item("Cane of Byrna") or self.has_item("Cape")
 
 
     def can_buy_unlimited(self, item, player):

@@ -15,7 +15,7 @@ from .regions import create_regions
 from .rom import patch_rom, WarioWareProcedurePatch, HASH_US
 from .enums import Items
 from .items import WarioWareItem, all_items, item_groups, game_items, microgame_items
-from .locations import all_locations, count_locations_active, location_groups
+from .locations import all_locations, count_locations_active, location_groups, ut_location_id_to_alias
 from .constants import *
 from .stage_data import microgame_data, game_groups
 
@@ -36,7 +36,7 @@ class WarioWareWeb(WebWorld):
 
     setup_en = Tutorial(
         "Multiworld Setup Guide",
-        f"A guide to playing {GAME_NAME} with MultiworldGG",
+        f"A guide to playing {GAME_NAME} with Archipelago",
         "English",
         "setup_en.md",
         "setup/en",
@@ -46,7 +46,7 @@ class WarioWareWeb(WebWorld):
 
 class WarioWareWorld(World):
     """
-    WarioWare, Inc.: Mega Microgames is the first ever WarioWare series title, released in 2003. It is about rapid completion of "microgames", short minigames given to the player consecutively and with increasing speed per each game complete.
+    wa.
     """
     game = GAME_NAME
     web = WarioWareWeb()
@@ -65,6 +65,7 @@ class WarioWareWorld(World):
     #origin_region_name = Regions.intro_stage.value
     rule_macros: dict[str, Rule.Resolved]
 
+    location_id_to_alias = ut_location_id_to_alias
     ut_can_gen_without_yaml: ClassVar = True
     glitches_item_name: str = Items.glitched
     is_ut: bool = False
@@ -103,6 +104,7 @@ class WarioWareWorld(World):
                     itempool.append(self.create_item(stage))
 
         # Force initial microgames
+        starting_microgames_ids = []
         if not self.is_ut:
             starting_microgames_ids = self.random.choices(self.microgames, k=self.options.starting_microgames)
             for microgame in sorted(item_groups["Microgames"]):
@@ -117,7 +119,7 @@ class WarioWareWorld(World):
         else:
             for microgame in sorted(item_groups["Microgames"]):
                 microgame_id = microgame_data[microgame.replace(" Microgame", "")]
-                if microgame_id in self.microgames:
+                if microgame_id in self.microgames and microgame_id not in starting_microgames_ids:
                     itempool.append(self.create_item(microgame))
 
         # Submit flowers to item pool
@@ -206,28 +208,33 @@ class WarioWareWorld(World):
             
             count_per_group = total_count // len(game_groups_copy.keys())
             leftovers = total_count % len(game_groups_copy.keys())
+            processed_microgames = self.options.excluded_microgames.value.copy()
             for group_name, microgame_list in game_groups_copy.items():
-                microgame_list = [microgame for microgame in  microgame_list if microgame not in self.options.excluded_microgames.value]
+                microgame_list = [microgame for microgame in  microgame_list if microgame not in processed_microgames]
                 self.random.shuffle(microgame_list)
                 for x in range(count_per_group):
                     if len(microgame_list) != 0:
                         microgame_name = microgame_list.pop(0)
                         microgame_id = microgame_data[microgame_name]
                         self.microgames.append(microgame_id)
+                        processed_microgames.add(microgame_name)
                     else:
                         leftovers += 1
 
             # Fill microgame leftovers
             while leftovers != 0:
                 for group_name, microgame_list in game_groups_copy.items():
-                    microgame_list = [microgame for microgame in  microgame_list if microgame not in self.options.excluded_microgames.value]
+                    microgame_list = [microgame for microgame in microgame_list if microgame not in processed_microgames]
                     if leftovers == 0:
                         break
                     if len(microgame_list) != 0:
                         microgame_name = microgame_list.pop(0)
                         microgame_id = microgame_data[microgame_name]
                         self.microgames.append(microgame_id)
+                        processed_microgames.add(microgame_name)
                         leftovers -= 1
+                    else:
+                        continue
 
             self.included_games = []
             self.included_games.extend(self.options.included_stages.value)
@@ -248,6 +255,22 @@ class WarioWareWorld(World):
     
     def write_spoiler_header(self, spoiler_handle: TextIO) -> None:
         spoiler_handle.write(f"\nRequired Flowers: {self.required_flowers}")
+
+
+    def extend_hint_information(self, hint_data: dict[int, dict[int, str]]):
+        microgame_hint_data: dict[int, str] = {}
+
+        for location in self.get_locations():
+            if location.is_event:
+                continue
+            loc_type = location.address & TYPE_MASK
+            microgame_id = location.address & DATA_MASK
+            if loc_type not in [MICROGAME, FLOWER] or microgame_id not in self.microgames:
+                continue
+            hint_text = ut_location_id_to_alias[location.address]
+            microgame_hint_data[location.address] = hint_text.split(",")[0]
+
+        hint_data[self.player] = microgame_hint_data
 
 
     def generate_output(self, output_directory: str):

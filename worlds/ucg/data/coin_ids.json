@@ -2027,7 +2027,8 @@
             "name": "2-8: Dimlit District Coin 1",
             "type": "coin",
             "requires": [
-                "Breakable Tiles"
+                "Breakable Tiles",
+                "Stop Markers"
             ]
         },
         "Collectibles/Coin11": {
@@ -2035,7 +2036,8 @@
             "name": "2-8: Dimlit District Coin 2",
             "type": "coin",
             "requires": [
-                "Breakable Tiles"
+                "Breakable Tiles",
+                "Stop Markers"
             ]
         },
         "Collectibles/Coin3": {
@@ -2099,7 +2101,8 @@
             "name": "2-8: Dimlit District Coin 10",
             "type": "coin",
             "requires": [
-                "Breakable Tiles"
+                "Breakable Tiles",
+                "Stop Markers"
             ]
         },
         "Collectibles/Coin10": {
@@ -2107,7 +2110,8 @@
             "name": "2-8: Dimlit District Coin 11",
             "type": "coin",
             "requires": [
-                "Breakable Tiles"
+                "Breakable Tiles",
+                "Stop Markers"
             ]
         },
         "Collectibles/Coin8": {
@@ -3282,98 +3286,6 @@
             "type": "coin",
             "requires": [
                 "Jump Pads"
-            ]
-        }
-    },
-    "2-16": {
-        "Collectibles/Coin": {
-            "id": 10582,
-            "name": "2-16: Trickshot! Coin 1",
-            "type": "coin",
-            "requires": [
-                "Jump Pads",
-                "Go Markers",
-                "Stop Markers"
-            ]
-        },
-        "Collectibles/Coin2": {
-            "id": 10583,
-            "name": "2-16: Trickshot! Coin 2",
-            "type": "coin",
-            "requires": [
-                "Jump Pads",
-                "Go Markers",
-                "Stop Markers"
-            ]
-        },
-        "Collectibles/Coin6": {
-            "id": 10584,
-            "name": "2-16: Trickshot! Coin 3",
-            "type": "coin",
-            "requires": [
-                "Jump Pads",
-                "Go Markers",
-                "Stop Markers"
-            ]
-        },
-        "Collectibles/Coin7": {
-            "id": 10585,
-            "name": "2-16: Trickshot! Coin 4",
-            "type": "coin",
-            "requires": [
-                "Jump Pads",
-                "Go Markers",
-                "Stop Markers"
-            ]
-        },
-        "Collectibles/Coin8": {
-            "id": 10586,
-            "name": "2-16: Trickshot! Coin 5",
-            "type": "coin",
-            "requires": [
-                "Jump Pads",
-                "Go Markers",
-                "Stop Markers"
-            ]
-        },
-        "Collectibles/Coin9": {
-            "id": 10587,
-            "name": "2-16: Trickshot! Coin 6",
-            "type": "coin",
-            "requires": [
-                "Jump Pads",
-                "Go Markers",
-                "Stop Markers"
-            ]
-        },
-        "Collectibles/Coin3": {
-            "id": 10588,
-            "name": "2-16: Trickshot! Coin 7",
-            "type": "coin",
-            "requires": [
-                "Jump Pads",
-                "Go Markers",
-                "Stop Markers"
-            ]
-        },
-        "Collectibles/Coin4": {
-            "id": 10589,
-            "name": "2-16: Trickshot! Coin 8",
-            "type": "coin",
-            "requires": [
-                "Jump Pads",
-                "Go Markers",
-                "Stop Markers"
-            ]
-        },
-        "Collectibles/Coin5": {
-            "id": 10590,
-            "name": "2-16: Trickshot! Coin 9",
-            "type": "coin",
-            "requires": [
-                "Jump Pads",
-                "Go Markers",
-                "Stop Markers"
             ]
         }
     },
@@ -4681,33 +4593,6 @@
                 "Switch Tiles"
             ]
         },
-        "Collectibles/Coin28": {
-            "id": 10757,
-            "name": "4-4: Wholesome DIY Coin 28",
-            "type": "coin",
-            "requires": [
-                "Portals",
-                "Switch Tiles"
-            ]
-        },
-        "Collectibles/Coin29": {
-            "id": 10758,
-            "name": "4-4: Wholesome DIY Coin 29",
-            "type": "coin",
-            "requires": [
-                "Portals",
-                "Switch Tiles"
-            ]
-        },
-        "Collectibles/Coin30": {
-            "id": 10759,
-            "name": "4-4: Wholesome DIY Coin 30",
-            "type": "coin",
-            "requires": [
-                "Portals",
-                "Switch Tiles"
-            ]
-        },
         "Collectibles/Coin31": {
             "id": 10760,
             "name": "4-4: Wholesome DIY Coin 31",
@@ -4831,15 +4716,6 @@
         "Collectibles/Coin45": {
             "id": 10774,
             "name": "4-4: Wholesome DIY Coin 45",
-            "type": "coin",
-            "requires": [
-                "Portals",
-                "Switch Tiles"
-            ]
-        },
-        "Collectibles/Coin46": {
-            "id": 10775,
-            "name": "4-4: Wholesome DIY Coin 46",
             "type": "coin",
             "requires": [
                 "Portals",

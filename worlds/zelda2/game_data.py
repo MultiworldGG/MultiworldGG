@@ -1,4 +1,4 @@
-world_version = "1.0.1"
+world_version = "1.1"
 
 spell_text = {
     "Sage of Rauru": 0xE553

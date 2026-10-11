@@ -152,9 +152,13 @@ def encode_group_data_big(room_data: list[bytearray], first_room: int, seasons: 
             path = os.path.join(
                 os.path.dirname(rooms.__file__),
                 "compression_dict",
-                ("seasons" if seasons else "ages"),
-                f"dict_{simple_hex(first_room, 3)}.bin"
             )
+            if not os.path.exists(path):
+                os.mkdir(path)
+            path = os.path.join(path, ("seasons" if seasons else "ages"))
+            if not os.path.exists(path):
+                os.mkdir(path)
+            path = os.path.join(path, f"dict_{simple_hex(first_room, 3)}.bin")
             with open(path, "wb") as f:
                 f.write(compression_dict)
             logging.info(f"Saved a compression dict to {path} for future use.")

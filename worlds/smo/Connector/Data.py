@@ -1319,7 +1319,10 @@ inverse_moon_items = {
     34 : "Ruined Multi-Moon",
     35 : "Bowser Multi-Moon",
     36 : "Mushroom Multi-Moon",
-    38 : "Dark Side Multi-Moon"
+    38 : "Dark Side Multi-Moon",
+    39 : "Power Moon",
+    40 : "Story Moon",
+    41 : "Multi-Moon",
 }
 
 inverse_filler_items = {

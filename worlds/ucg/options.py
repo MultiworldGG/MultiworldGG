@@ -163,6 +163,23 @@ class ExcludedMinigames(OptionSet):
     """
     display_name = "Excluded Minigames"
     valid_keys = {"Bort Bash", "UNCANNY_DASH", "Meowls"}
+    
+class GoalRankRequirement(Choice):
+    """
+    Which in-game rank is required to unlock the goal.
+
+    Any: Any rank is allowed to unlock the goal.
+    OK: An "OK" (3 prism) rank or better is required.
+    Good: A "GOOD" (4 prism) rank or better is required.
+    Peak: A "PEAK" (5 prism) rank or better is required.
+    """
+    display_name = "Goal Rank Requirement"
+
+    default = 0
+    option_any = 0
+    option_ok = 1
+    option_good = 2
+    option_peak = 3
 
 class RankCheckDifficulty(Choice):
     """
@@ -233,6 +250,7 @@ class UncannyCatOptions(PerGameCommonOptions):
     coinsanity: Coinsanity
     excluded_levels: ExcludedLevels
     excluded_minigames: ExcludedMinigames
+    goal_rank_requirement: GoalRankRequirement
     rank_check_difficulty: RankCheckDifficulty
     temp_modifiers: TemporaryModifiers
     buff_uncanny_cat_spray: BuffCatSpray
