@@ -433,6 +433,12 @@ class Hint(typing.NamedTuple):
     hidden: bool = False
     item_hidden: bool = False
 
+    def __reduce_ex__(self, protocol):
+        # Starting hints use AP's eight-field schema. Keep hiding
+        # flags in MWGG saves when either flag is set.
+        fields = tuple(self) if self.hidden or self.item_hidden else self[:8]
+        return self.__class__, fields
+
     def re_check(self, ctx, team) -> Hint:
         if self.found and self.status == HintStatus.HINT_FOUND and not self.hidden and not self.item_hidden:
             return self

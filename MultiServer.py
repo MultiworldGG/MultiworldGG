@@ -1945,11 +1945,6 @@ class ClientMessageProcessor(CommonCommandProcessor):
             hidden_old_hints = [hint for hint in old_hints if hint.hidden or hint.item_hidden]
             truly_old_hints = [hint for hint in old_hints if not hint.hidden and not hint.item_hidden]
             if new_hints or hidden_old_hints:
-                # Remove hidden old hints from store so they can be re-added as fully revealed
-                for hint in hidden_old_hints:
-                    self.ctx.hints[self.client.team, hint.finding_player].discard(hint)
-                    for player in self.ctx.slot_set(hint.receiving_player):
-                        self.ctx.hints[self.client.team, player].discard(hint)
                 revealed_hints = [hint._replace(hidden=False, item_hidden=False) for hint in hidden_old_hints]
 
                 found_hints = [hint for hint in new_hints if hint.found]
@@ -1968,7 +1963,13 @@ class ClientMessageProcessor(CommonCommandProcessor):
 
                 hints = found_hints + truly_old_hints
                 while can_pay > 0 and not_found_hints:
-                    hints.append(not_found_hints.pop())
+                    hint = not_found_hints.pop()
+                    # Replace concealed hints only after the player can afford the reveal.
+                    previous = self.ctx.get_hint(self.client.team, hint.finding_player, hint.location)
+                    if previous and (previous.hidden or previous.item_hidden):
+                        for slot in self.ctx.slot_set(hint.receiving_player) | {hint.finding_player}:
+                            self.ctx.hints[self.client.team, slot].discard(previous)
+                    hints.append(hint)
                     can_pay -= 1
                     self.ctx.hints_used[self.client.team, self.client.slot] += 1
 
