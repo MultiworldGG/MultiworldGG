@@ -2527,6 +2527,68 @@
         ],
         "release_date": 2017
     },
+    "Hollow Knight: Silksong": {
+        "igdb_id": "115289",
+        "world_name": "Hollow Knight: Silksong",
+        "igdb_name": "Hollow Knight: Silksong",
+        "us_rating": [],
+        "player_perspectives": [
+            "Side view"
+        ],
+        "genres": [
+            "Platform",
+            "Adventure",
+            "Indie"
+        ],
+        "themes": [
+            "Action",
+            "Fantasy"
+        ],
+        "keywords": [
+            "exploration",
+            "sword",
+            "2d",
+            "metroidvania",
+            "insects",
+            "female protagonist",
+            "side-scrolling",
+            "achievements",
+            "steam trading cards",
+            "atmospheric",
+            "bugs",
+            "sequel",
+            "melee combat",
+            "hand-drawn",
+            "2d platformer",
+            "steam achievements",
+            "xbox controller support for pc",
+            "steam cloud",
+            "dualshock 4 support for pc",
+            "controller recommendation",
+            "melee",
+            "text dialogue",
+            "remote play",
+            "the game awards - best score or music - nominee",
+            "controller support",
+            "steam deck",
+            "the game awards - best action-adventure game - winner",
+            "the game awards - best art direction - nominee",
+            "the game awards - best independent game - nominee",
+            "the game awards - game of the year - nominee",
+            "interconnected-world",
+            "health",
+            "steam families",
+            "money",
+            "cloud saves",
+            "dualsense support for pc",
+            "save anytime",
+            "playable without timed input",
+            "stereo sound",
+            "keyboard only option",
+            "camera comfort"
+        ],
+        "release_date": 2025
+    },
     "Hunie Pop": {
         "igdb_id": "9655",
         "world_name": "Hunie Pop",

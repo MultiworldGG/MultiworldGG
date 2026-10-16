@@ -13,6 +13,12 @@ class RAC3BOXFORMAT:
                  background: int = RAC3BOXCOLOR.DEFAULT_BACKGROUND,
                  box: int = RAC3BOXCOLOR.DEFAULT_BOX,
                  text: int = RAC3BOXCOLOR.DEFAULT_TEXT):
+        """
+        :param background: Color of the background of the box
+        :param box: Color of the box borders
+        :param text: Color of the text
+        :rtype: RAC3BOXFORMAT
+        """
         self.BACKGROUND: int = background
         self.BOX: int = box
         self.TEXT: int = text

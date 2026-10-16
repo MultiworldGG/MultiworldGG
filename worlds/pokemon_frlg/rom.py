@@ -727,7 +727,7 @@ def write_tokens(world: "PokemonFRLGWorld") -> None:
 
 
 def _set_shuffled_entrances(world: "PokemonFRLGWorld") -> None:
-    if world.er_pairings is None:
+    if len(world.er_pairings) == 0:
         return
 
     patch = world.patch_data

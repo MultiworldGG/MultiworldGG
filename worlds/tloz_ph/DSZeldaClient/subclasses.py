@@ -60,7 +60,7 @@ def compare_slot_data(ctx, data):
                 slot, value, *args = a
 
             slot_value = ctx.slot_data.get(slot, None)
-            # printl(f"\t\tTesting slot {slot} {slot_value} {value}")
+            # printl(f"\t\tTesting slot {data.get('name', 'NO_NAME')} {slot} {slot_value} {value}")
             if isinstance(value, list):
                 if slot_value not in value:
                     return False

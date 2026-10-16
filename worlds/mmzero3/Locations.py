@@ -2,7 +2,7 @@ from typing import Callable, Dict, List, NamedTuple, Optional, Set, TYPE_CHECKIN
 
 from BaseClasses import Location
 
-from . import Data
+from .data import Data
 
 if TYPE_CHECKING:
     from . import MMZero3World

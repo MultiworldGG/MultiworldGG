@@ -1,0 +1,632 @@
+[
+  {
+    "name": "Groal the Great",
+    "record": "Swamp Shaman",
+    "sources": [
+      {
+        "boss": "Boss: Groal the Great",
+        "events": [
+          "Room Event: event:mapper/c072b5f9-82a5-469b-8bf6-b91bb53e5180"
+        ],
+        "act": 1
+      }
+    ],
+    "kills_required": 1
+  },
+  {
+    "name": "Moss Mother",
+    "record": "Mossbone Mother",
+    "sources": [
+      {
+        "boss": "Boss: Moss Mother",
+        "events": [
+          "Room Event: event:mapper/c1c40522-825e-4744-a8c8-a6ea83f47f32"
+        ],
+        "act": 1,
+        "scene": "Tut_03",
+        "persistent": "Battle Scene"
+      },
+      {
+        "boss": "Boss: Moss Mother",
+        "events": [
+          "Room Event: event:mapper/62c0e376-c2a5-4c12-bb6e-cc265721ee5f"
+        ],
+        "act": 1,
+        "scene": "Weave_03",
+        "persistent": "Boss Scene"
+      }
+    ],
+    "kills_required": 3,
+    "completion_events": [
+      "Room Event: event:mapper/c1c40522-825e-4744-a8c8-a6ea83f47f32",
+      "Room Event: event:mapper/62c0e376-c2a5-4c12-bb6e-cc265721ee5f"
+    ]
+  },
+  {
+    "name": "Broodmother",
+    "record": "Slab Fly Broodmother",
+    "sources": [
+      {
+        "boss": "Boss: Broodmother",
+        "events": [
+          "Room Event: event:mapper/reviewed:broodmother-defeated"
+        ],
+        "act": 1
+      }
+    ],
+    "kills_required": 1
+  },
+  {
+    "name": "Crawfather",
+    "record": "Crawfather",
+    "sources": [
+      {
+        "boss": "Boss: Crawfather",
+        "events": [
+          "Room Event: event:mapper/reviewed:crawfather-defeated"
+        ],
+        "act": 1
+      }
+    ],
+    "kills_required": 1
+  },
+  {
+    "name": "Disgraced Chef Lugoli",
+    "record": "Roachkeeper Chef",
+    "sources": [
+      {
+        "boss": "Boss: Disgraced Chef Lugoli",
+        "events": [
+          "Room Event: event:mapper/ece84bf2-8875-4350-8d8a-a8cd071e0b5e"
+        ],
+        "act": 1
+      }
+    ],
+    "kills_required": 1
+  },
+  {
+    "name": "Skull Tyrant",
+    "record": "Skull King",
+    "sources": [
+      {
+        "boss": "Boss: Skull Tyrant (The Marrow)",
+        "events": [
+          "Room Event: event:mapper/2dba90b5-6ec3-4ec9-8016-60c859aecbd7"
+        ],
+        "act": 1,
+        "scene": "Bone_15",
+        "defeated_flag": "skullKingDefeated"
+      },
+      {
+        "boss": "Boss: Skull Tyrant (Bone Bottom)",
+        "events": [
+          "Room Event: event:mapper/f09ff4af-eadc-4167-ac83-aa27cf52e966"
+        ],
+        "act": 1,
+        "scene": "Bonetown",
+        "defeated_flag": "skullKingKilled"
+      }
+    ],
+    "kills_required": 1
+  },
+  {
+    "name": "Great Conchflies",
+    "record": "Coral Conch Driller Giant",
+    "sources": [
+      {
+        "boss": "Boss: Raging Conchfly",
+        "events": [
+          "Room Event: event:mapper/44adf080-8baa-4759-99b4-65c923940cc5"
+        ],
+        "act": 1,
+        "scene": "Coral_27",
+        "defeated_flag": "defeatedCoralDrillerSolo"
+      },
+      {
+        "boss": "Boss: Great Conchflies",
+        "events": [
+          "Room Event: event:mapper/fbf3657a-2635-4a32-9fb0-ed48e114846c"
+        ],
+        "act": 1,
+        "scene": "Coral_11",
+        "defeated_flag": "defeatedCoralDrillers"
+      }
+    ],
+    "kills_required": 2,
+    "completion_events": [
+      "Room Event: event:mapper/44adf080-8baa-4759-99b4-65c923940cc5",
+      "Room Event: event:mapper/fbf3657a-2635-4a32-9fb0-ed48e114846c"
+    ]
+  },
+  {
+    "name": "Bell Beast",
+    "record": "Bone Beast",
+    "sources": [
+      {
+        "boss": "Boss: Bell Beast",
+        "events": [
+          "Room Event: event:mapper/95f1f75b-e452-4709-9fbc-ad8785ac520a"
+        ],
+        "act": 1
+      }
+    ],
+    "kills_required": 1
+  },
+  {
+    "name": "Bell Eater",
+    "record": "Giant Centipede",
+    "sources": [
+      {
+        "boss": "Boss: Bell Eater",
+        "events": [
+          "Room Event: event:mapper/reviewed:bell-eater-defeated"
+        ],
+        "act": 1
+      }
+    ],
+    "kills_required": 1
+  },
+  {
+    "name": "Cogwork Dancers",
+    "record": "Clockwork Dancer",
+    "sources": [
+      {
+        "boss": "Boss: Cogwork Dancers",
+        "events": [
+          "Room Event: event:mapper/282aae6f-3964-4935-93ea-5beaa6ef9fa4"
+        ],
+        "act": 1
+      }
+    ],
+    "kills_required": 1
+  },
+  {
+    "name": "Crust King Khann",
+    "record": "Coral King",
+    "sources": [
+      {
+        "boss": "Boss: Crust King Khann",
+        "events": [
+          "Room Event: event:mapper/reviewed:khann-memory-heart"
+        ],
+        "act": 1
+      }
+    ],
+    "kills_required": 1
+  },
+  {
+    "name": "Father of the Flame",
+    "record": "Wisp Pyre Effigy",
+    "sources": [
+      {
+        "boss": "Boss: Father of the Flame",
+        "events": [
+          "Room Event: event:mapper/697f2d8b-d1f3-46c2-b8b3-e602e25ed870"
+        ],
+        "act": 1
+      }
+    ],
+    "kills_required": 1
+  },
+  {
+    "name": "First Sinner",
+    "record": "First Weaver",
+    "sources": [
+      {
+        "boss": "Boss: First Sinner",
+        "events": [],
+        "act": 1
+      }
+    ],
+    "kills_required": 1
+  },
+  {
+    "name": "Forebrothers Signis & Gron",
+    "record": "Dock Guard Thrower",
+    "sources": [
+      {
+        "boss": "Boss: Forebrothers Signis & Gron",
+        "events": [
+          "Room Event: event:mapper/e3836a7a-fb8a-4ee0-a080-f1e550b07168"
+        ],
+        "act": 1
+      }
+    ],
+    "kills_required": 1
+  },
+  {
+    "name": "Fourth Chorus",
+    "record": "Song Golem",
+    "sources": [
+      {
+        "boss": "Boss: Fourth Chorus",
+        "events": [
+          "Room Event: event:mapper/e6e6d899-9def-42c2-ab77-53db34ced41d"
+        ],
+        "act": 1
+      }
+    ],
+    "kills_required": 1
+  },
+  {
+    "name": "Grand Mother Silk",
+    "record": "Silk Boss",
+    "sources": [
+      {
+        "boss": "Boss: Grand Mother Silk",
+        "events": [
+          "Room Event: event:mapper/94d7df86-0362-407d-b3e7-5b3b02cd64f5"
+        ],
+        "act": 1
+      }
+    ],
+    "kills_required": 1
+  },
+  {
+    "name": "Gurr the Outcast",
+    "record": "Bone Hunter Trapper",
+    "sources": [
+      {
+        "boss": "Boss: Gurr the Outcast",
+        "events": [
+          "Room Event: event:mapper/2c331ca8-045d-44ef-8ce7-09b8e35a8041"
+        ],
+        "act": 1
+      }
+    ],
+    "kills_required": 1
+  },
+  {
+    "name": "Lace",
+    "record": "Lace",
+    "sources": [
+      {
+        "boss": "Boss: Lace (Cradle)",
+        "events": [
+          "Room Event: event:mapper/0ecf7e04-42c8-48f7-a444-bb46478a58ad"
+        ],
+        "act": 1,
+        "scene": "Song_Tower_01",
+        "defeated_flag": "defeatedLaceTower"
+      },
+      {
+        "boss": "Boss: Lace (Deep Docks)",
+        "events": [
+          "Room Event: event:mapper/4092e48f-ea2e-4d19-9a3a-71fa7b4fcbda"
+        ],
+        "act": 1,
+        "scene": "Bone_East_12",
+        "defeated_flag": "defeatedLace1"
+      }
+    ],
+    "kills_required": 2,
+    "completion_boss": "Boss: Lace (Cradle)"
+  },
+  {
+    "name": "Last Judge",
+    "record": "Last Judge",
+    "sources": [
+      {
+        "boss": "Boss: Last Judge",
+        "events": [
+          "Room Event: event:mapper/2149c0f6-3492-4a11-96c3-0fcbe57abc38"
+        ],
+        "act": 1
+      }
+    ],
+    "kills_required": 1
+  },
+  {
+    "name": "Lost Garmond",
+    "record": "Garmond",
+    "sources": [
+      {
+        "boss": "Boss: Lost Garmond",
+        "events": [
+          "Room Event: event:mapper/reviewed:lost-garmond-defeated"
+        ],
+        "act": 1
+      }
+    ],
+    "kills_required": 1
+  },
+  {
+    "name": "Moorwing",
+    "record": "Vampire Gnat",
+    "sources": [
+      {
+        "boss": "Boss: Moorwing",
+        "events": [
+          "Room Event: event:mapper/4127289c-12aa-4bb2-84ca-ef581aa3941c"
+        ],
+        "act": 1
+      }
+    ],
+    "kills_required": 1
+  },
+  {
+    "name": "Nyleth",
+    "record": "Flower Queen",
+    "sources": [
+      {
+        "boss": "Boss: Nyleth",
+        "events": [
+          "Room Event: event:mapper/29d0cefc-ffa4-455c-bb21-acfe20c70ed6"
+        ],
+        "act": 1
+      }
+    ],
+    "kills_required": 1
+  },
+  {
+    "name": "Phantom",
+    "record": "Phantom",
+    "sources": [
+      {
+        "boss": "Boss: Phantom",
+        "events": [
+          "Room Event: event:mapper/reviewed:phantom-defeated"
+        ],
+        "act": 1
+      }
+    ],
+    "kills_required": 1
+  },
+  {
+    "name": "Pinstress",
+    "record": "Pinstress Boss",
+    "sources": [
+      {
+        "boss": "Boss: Pinstress",
+        "events": [
+          "Room Event: event:mapper/reviewed:pinstress-defeated"
+        ],
+        "act": 1
+      }
+    ],
+    "kills_required": 1
+  },
+  {
+    "name": "Plasmified Zango",
+    "record": "Blue Assistant",
+    "sources": [
+      {
+        "boss": "Boss: Plasmified Zango",
+        "events": [
+          "Room Event: event:mapper/b94cbf57-5e84-4771-8178-ddcff1955087"
+        ],
+        "act": 1
+      }
+    ],
+    "kills_required": 1
+  },
+  {
+    "name": "Second Sentinel",
+    "record": "Song Knight",
+    "sources": [
+      {
+        "boss": "Boss: Second Sentinel",
+        "events": [
+          "Room Event: event:mapper/ee149de1-e2ea-47b1-b0b7-4bacbc14c856"
+        ],
+        "act": 1
+      }
+    ],
+    "kills_required": 1
+  },
+  {
+    "name": "Shrine Guardian Seth",
+    "record": "Seth",
+    "sources": [
+      {
+        "boss": "Boss: Shrine Guardian Seth",
+        "events": [
+          "Room Event: event:mapper/66c01078-89ad-4aeb-ab46-a4ac05424109"
+        ],
+        "act": 1
+      }
+    ],
+    "kills_required": 1
+  },
+  {
+    "name": "Sister Splinter",
+    "record": "Splinter Queen",
+    "sources": [
+      {
+        "boss": "Boss: Sister Splinter",
+        "events": [
+          "Room Event: event:mapper/eb552bbd-ae4b-4341-a4d6-07c0d6509d9c"
+        ],
+        "act": 1
+      }
+    ],
+    "kills_required": 1
+  },
+  {
+    "name": "Skarrsinger Karmelita",
+    "record": "Hunter Queen",
+    "sources": [
+      {
+        "boss": "Boss: Skarrsinger Karmelita",
+        "events": [
+          "Room Event: event:mapper/61ba8ef0-8610-4b13-8ca4-854de0780bd5"
+        ],
+        "act": 1
+      }
+    ],
+    "kills_required": 1
+  },
+  {
+    "name": "Summoned Saviour",
+    "record": "Abyss Mass",
+    "sources": [
+      {
+        "boss": "Boss: Summoned Saviour",
+        "events": [
+          "Room Event: event:mapper/aa48b17e-dd99-40c9-8d5f-dfaa642a64a4"
+        ],
+        "act": 1
+      }
+    ],
+    "kills_required": 1
+  },
+  {
+    "name": "The Unravelled",
+    "record": "Conductor Boss",
+    "sources": [
+      {
+        "boss": "Boss: The Unravelled",
+        "events": [
+          "Room Event: event:mapper/f31b5676-bea3-44e9-94fe-92fd0ac174e6"
+        ],
+        "act": 1
+      }
+    ],
+    "kills_required": 1
+  },
+  {
+    "name": "Tormented Trobbio",
+    "record": "Tormented Trobbio",
+    "sources": [
+      {
+        "boss": "Boss: Tormented Trobbio",
+        "events": [
+          "Room Event: event:mapper/1a759608-03d6-44b1-9bed-2a7fd7d2cabf"
+        ],
+        "act": 1
+      }
+    ],
+    "kills_required": 1
+  },
+  {
+    "name": "Trobbio",
+    "record": "Trobbio",
+    "sources": [
+      {
+        "boss": "Boss: Trobbio",
+        "events": [
+          "Room Event: event:mapper/e05edf84-e794-4703-a549-993f7209643c"
+        ],
+        "act": 1
+      },
+      {
+        "boss": "Boss: Tormented Trobbio",
+        "events": [
+          "Room Event: event:mapper/1a759608-03d6-44b1-9bed-2a7fd7d2cabf"
+        ],
+        "act": 1
+      }
+    ],
+    "kills_required": 1
+  },
+  {
+    "name": "Voltvyrm",
+    "record": "Zap Core Enemy",
+    "sources": [
+      {
+        "boss": "Boss: Voltvyrm",
+        "events": [
+          "Room Event: event:mapper/c245a3a8-e4da-44e6-96bf-329e94ea8298"
+        ],
+        "act": 1
+      }
+    ],
+    "kills_required": 1
+  },
+  {
+    "name": "Watcher at the Edge",
+    "record": "Coral Warrior Grey",
+    "sources": [
+      {
+        "boss": "Boss: Watcher at the Edge",
+        "events": [
+          "Room Event: event:mapper/07fd5367-62c5-40b4-b9f9-c83c12d4a99b"
+        ],
+        "act": 1
+      }
+    ],
+    "kills_required": 1
+  },
+  {
+    "name": "Widow",
+    "record": "Spinner Boss",
+    "sources": [
+      {
+        "boss": "Boss: Widow",
+        "events": [
+          "Room Event: event:mapper/f00c4d34-3d84-4746-b034-961203e08150"
+        ],
+        "act": 1
+      }
+    ],
+    "kills_required": 1
+  },
+  {
+    "name": "Lost Lace",
+    "record": "Lost Lace",
+    "sources": [
+      {
+        "boss": "Boss: Lost Lace",
+        "events": [
+          "Room Event: event:mapper/a4febb13-a6cc-49c4-a655-a40e40ea43b5"
+        ],
+        "act": 3
+      }
+    ],
+    "kills_required": 1
+  },
+  {
+    "name": "Savage Beastfly",
+    "record": "Bone Flyer Giant",
+    "sources": [
+      {
+        "boss": "Boss: Savage Beastfly (Chapel of the Beast)",
+        "events": [
+          "Room Event: event:mapper/2d005e67-8f66-4a7d-ad7e-55bf8e697953"
+        ],
+        "act": 1,
+        "scene": "Ant_19",
+        "defeated_flag": "defeatedBoneFlyerGiant"
+      },
+      {
+        "boss": "Boss: Savage Beastfly (Far Fields)",
+        "events": [
+          "Room Event: event:mapper/reviewed:savage-beastfly-remains"
+        ],
+        "act": 2,
+        "scene": "Bone_East_08",
+        "defeated_flag": "defeatedBoneFlyerGiantGolemScene"
+      }
+    ],
+    "kills_required": 2,
+    "completion_events": [
+      "Room Event: event:mapper/2d005e67-8f66-4a7d-ad7e-55bf8e697953",
+      "Room Event: event:mapper/reviewed:savage-beastfly-remains"
+    ],
+    "completion_act": 2
+  },
+  {
+    "name": "Clover Dancers",
+    "record": "Clover Dancer",
+    "sources": [
+      {
+        "boss": "Boss: Clover Dancers",
+        "events": [],
+        "act": 3
+      }
+    ],
+    "kills_required": 1
+  },
+  {
+    "name": "Palestag",
+    "record": "Cloverstag White",
+    "sources": [
+      {
+        "boss": "Boss: Palestag",
+        "events": [],
+        "act": 3
+      }
+    ],
+    "kills_required": 1
+  }
+]

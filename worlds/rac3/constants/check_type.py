@@ -6,6 +6,7 @@ from enum import IntFlag
 class CHECKTYPE(IntFlag):
     """
     What memory size are we checking when reading memory:
+    - SKIP: ignore this comparison
     - BIT: a single bit, either 0 or 1
     - BYTE: 8 bits, 0x00 to 0xFF
     - SHORT: 16 bits, 2 bytes, 0x0000 to 0xFFFF
@@ -14,6 +15,7 @@ class CHECKTYPE(IntFlag):
     - set or unset for individual bits
     - Equal, Not Equal, Greater Than, Less Than, Greater or Equal, Less than or Equal
     """
+    SKIP = 0b00000000
     BIT = 0b00000001
     BYTE = 0b00000010
     SHORT = 0b00000100

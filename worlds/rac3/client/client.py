@@ -46,6 +46,7 @@ class CommandProcessor(ClientCommandProcessor):
         Level 2: Client is connected to a multiworld server
         Level 3: Client is connected to the game
         Level 4: Player is in game
+        :param level: level of connection
         """
         if isinstance(self.ctx, Rac3Context):
             if level == 1:
@@ -73,7 +74,7 @@ class CommandProcessor(ClientCommandProcessor):
         return "-dev" in RAC3OPTION.VERSION_NUMBER or RAC3OPTION.VERSION_NUMBER.count(".") >= 3
 
     # This is not mandatory for the game. Just a client command implementation.
-    def _cmd_kill(self):
+    def _cmd_kill(self) -> None:
         """Kill the player."""
         if not self.verify():
             return
@@ -83,7 +84,7 @@ class CommandProcessor(ClientCommandProcessor):
             else:
                 self.output("Death Link is not enabled. You can toggle Death Link with /deathlink")
 
-    def _cmd_connect_rac3(self):
+    def _cmd_connect_rac3(self) -> None:
         """Attempt to connect the client to the emulator"""
         if not self.verify(1):
             return
@@ -104,7 +105,7 @@ class CommandProcessor(ClientCommandProcessor):
     #     else:
     #         logger.info("Somehow this client isn't for Ratchet and Clank 3, delete this build and try again")
 
-    def _cmd_weapon_exp_test(self):
+    def _cmd_weapon_exp_test(self) -> None:
         """Give weapon exp for testing purposes."""
         if not self.verify():
             return
@@ -119,7 +120,7 @@ class CommandProcessor(ClientCommandProcessor):
                                                       self.ctx.player_names.get(self.ctx.slot, None), "Test Command", 0)
                 self.output("Weapon EXP Received")
 
-    def _cmd_bolt_test(self):
+    def _cmd_bolt_test(self) -> None:
         """Give bolts for testing purposes."""
         if not self.verify():
             return
@@ -130,14 +131,14 @@ class CommandProcessor(ClientCommandProcessor):
                                                   self.ctx.player_names[self.ctx.slot], "Test Command", 0)
             self.output("Bolts Received")
 
-    def _cmd_rac3_info(self):
+    def _cmd_rac3_info(self) -> None:
         """Dump Rac3 info for debugging purposes."""
         if not self.verify():
             return
         if isinstance(self.ctx, Rac3Context):
             self.ctx.game_interface.dump_info(self.ctx.slot_data)
 
-    def _cmd_force_update(self):
+    def _cmd_force_update(self) -> None:
         """Force an update to the game state by running all update cycle methods."""
         if not self.verify():
             return
@@ -147,7 +148,7 @@ class CommandProcessor(ClientCommandProcessor):
             self.ctx.code_cave_setup = False
             self.output("Forcing reset of code cave")
 
-    def _cmd_deathlink(self):
+    def _cmd_deathlink(self) -> None:
         """Toggles Death Link on and off."""
         if not self.verify(2):
             return
@@ -163,7 +164,26 @@ class CommandProcessor(ClientCommandProcessor):
             else:
                 self.output("Death Link not found in slot_data. Please report this")
 
-    def _cmd_respawn(self):
+    def _cmd_track_deaths(self) -> None:
+        """Toggles death count popup messages after every death."""
+        if not self.verify():
+            return
+        if isinstance(self.ctx, Rac3Context):
+            self.ctx.game_interface.track_deaths = not self.ctx.game_interface.track_deaths
+            self.output(f"Track Deaths set to {self.ctx.game_interface.track_deaths}")
+            if self.ctx.game_interface.track_deaths:
+                status_msg = (
+                    f"{RAC3TEXTFORMATSTRING.WHITE}Enabled.\n"
+                    f"The number of deaths will appear every time you die.\n"
+                    f"You have already died {RAC3TEXTFORMATSTRING.WHITE}{self.ctx.game_interface.death_count} "
+                    f"{RAC3TEXTFORMATSTRING.NORMAL}times."
+                )
+            else:
+                status_msg = "Disabled."
+            self.ctx.game_interface.enqueue_notification(
+                f"{RAC3TEXTFORMATSTRING.NORMAL}Death Tracker {status_msg}", RAC3BOXTHEME.DEATHLINK)
+
+    def _cmd_respawn(self) -> None:
         """Teleports Ratchet back to the ship. If used in an unusual place, forces a respawn instead.
         You can also pause the game and hold Square on the pause menu to run this command from in-game."""
         if not self.verify():
@@ -171,7 +191,7 @@ class CommandProcessor(ClientCommandProcessor):
         if isinstance(self.ctx, Rac3Context):
             create_task(handle_respawn(self.ctx, True))
 
-    def _cmd_homewarp(self):
+    def _cmd_homewarp(self) -> None:
         """Loads Ratchet back on the Phoenix. Does nothing if used during the intro before reaching the Phoenix.
         Also activated with the following button combo: L2 + R2 + L1 + R1 + SELECT"""
         if not self.verify():
@@ -180,8 +200,9 @@ class CommandProcessor(ClientCommandProcessor):
             self.output("Attempting to homewarp to the Phoenix...")
             create_task(handle_respawn(self.ctx, force_load=True))
 
-    def _cmd_ryno(self, *args):
-        """Allows you to set the maximum upgrade level for the RYNO"""
+    def _cmd_ryno(self, *args: str) -> None:
+        """Allows you to set the maximum upgrade level for the RYNO
+        :param args: Max RYNO upgrade level chosen"""
         if not self.verify():
             return
         if isinstance(self.ctx, Rac3Context):
@@ -189,15 +210,16 @@ class CommandProcessor(ClientCommandProcessor):
                 self.output("Please type a number after the command")
                 return
             if int(args[0]) not in range(1, 6):
-                self.output(f"Please type a valid number")
+                self.output("Please type a valid number")
                 return
             self.ctx.game_interface.ryno = int(args[0])
             self.output(f"RY3NO max upgrade set to Lv{args[0]}")
             if self.verify():
                 self.ctx.game_interface.enqueue_notification(f"RY3NO max upgrade set to Lv{args[0]}")
 
-    def _cmd_messagebox(self, *args):
-        """Displays a message box in-game with the specified message."""
+    def _cmd_messagebox(self, *args: str) -> None:
+        """Displays a message box in-game with the specified message.
+        :param args: Message to be displayed in game"""
         if not self.verify():
             return
         if isinstance(self.ctx, Rac3Context):
@@ -207,8 +229,9 @@ class CommandProcessor(ClientCommandProcessor):
                 self.output("Message longer than 250 characters, truncated to fit in message box.")
             self.output(f"Message box displayed with message: {message[:250:]}")
 
-    def _cmd_one_hp(self, *args):
-        """Toggles One HP Challenge for the specified character."""
+    def _cmd_one_hp(self, *args: str) -> None:
+        """Toggles One HP Challenge for the specified character.
+        :param args: Name of character to toggle One HP Challenge"""
         if not self.verify():
             return
         if isinstance(self.ctx, Rac3Context):
@@ -216,48 +239,44 @@ class CommandProcessor(ClientCommandProcessor):
             valid_characters = {name.lower(): name for name in ONE_HP_CHALLENGE_CHARACTERS}
             if character in valid_characters:
                 char_name = valid_characters[character]
-                current_state = self.ctx.game_interface.one_hp_challenge.get(char_name, 0)
+                current_state = self.ctx.game_interface.options.one_hp_challenge.get(char_name, 0)
                 new_state = 0 if current_state else 1
-                self.ctx.game_interface.one_hp_challenge[char_name] = new_state
+                self.ctx.game_interface.options.one_hp_challenge[char_name] = new_state
                 self.output(f'One HP Challenge for {char_name} set to {"Enabled" if new_state else "Disabled"}')
                 self.ctx.game_interface.enqueue_notification(
                     f'One HP Challenge for {char_name} {"Enabled" if new_state else "Disabled"}')
             else:
                 self.output(f'Invalid character name. Valid options are: {", ".join(ONE_HP_CHALLENGE_CHARACTERS)}')
 
-    def _cmd_print_vendor(self):
+    def _cmd_print_vendor(self) -> None:
         """Print all items sold by the current planet's vendor to the log."""
         if not self.verify():
             return
         if isinstance(self.ctx, Rac3Context):
             self.ctx.game_interface.print_all_vendor_items()
 
-    def _cmd_load_level(self, *args):
+    def _cmd_load_level(self, *args: str) -> None:
         """Loads the specified level by ID. This is not intended for normal use, but can be used for testing or to
-        recover from softlocks."""
+        recover from softlocks.
+        :param args: ID of level to load"""
         if not self.verify():
             return
         if isinstance(self.ctx, Rac3Context):
             if not self.is_development_build():
-                self.default(f'Development command "/load_level {" ".join(str(x) for x in args)}" was used in a non-development build.')
+                self.default(f'Development command "/load_level {" ".join(str(x) for x in args)}" was used in a '
+                             f'non-development build.')
             if not args:
                 self.output("No level specified. Provide an integer ID or region name.")
                 return
 
-            arg = args[0]
-            # If the argument is already an int, call directly
-            if isinstance(arg, int):
-                self.ctx.game_interface.homewarp(arg)
-                return
-
-            # Try to parse as integer string first
+            arg = " ".join(args).strip()
             try:
                 level_id = int(arg)
                 self.ctx.game_interface.homewarp(level_id)
                 return
             except ValueError:
-                # Not an integer string — treat as a region key/name and look up its ID (case-insensitive)
-                key = str(arg).strip()
+                # Not an integer string, so try to look it up in the region data table
+                key = arg.strip()
                 region = RAC3_REGION_DATA_TABLE.get(key)
                 if region is None:
                     lower_key = key.lower()
@@ -271,14 +290,16 @@ class CommandProcessor(ClientCommandProcessor):
                     return
                 self.output("Invalid level ID or region name. Provide an integer or valid region key.")
 
-    def _cmd_traversal(self, *args):
-        """Test command for moby table linked list traversal purposes."""
+    def _cmd_traversal(self, *args: str) -> None:
+        """Test command for moby table linked list traversal purposes.
+        :param args: Hex value of target ID"""
         if not self.verify():
             return
         if isinstance(self.ctx, Rac3Context):
             if not self.is_development_build():
                 # let everyone know that a development command was used in a release build.
-                self.default(f'Development command "/traversal {" ".join(str(x) for x in args)}" was used in a non-development build.')
+                self.default(f'Development command "/traversal {" ".join(str(x) for x in args)}" was used in a '
+                             f'non-development build.')
 
             # convert the hex input to an int and then do traversal with that as the target id
             try:
@@ -294,14 +315,16 @@ class CommandProcessor(ClientCommandProcessor):
             else:
                 self.output(f"Could not find moby with ID {hex(target_id)}")
 
-    def _cmd_iteration(self, *args):
-        """Test command for moby table iteration purposes."""
+    def _cmd_iteration(self, *args: str) -> None:
+        """Test command for moby table iteration purposes.
+        :param args: Hex value of target ID"""
         if not self.verify():
             return
         if isinstance(self.ctx, Rac3Context):
             if not self.is_development_build():
                 # let everyone know that a development command was used in a release build.
-                self.default(f'Development command "/iteration {" ".join(str(x) for x in args)}" was used in a non-development build.')
+                self.default(f'Development command "/iteration {" ".join(str(x) for x in args)}" was used in a '
+                             f'non-development build.')
 
             # convert the hex input to an int and then do iteration with that as the target id
             try:
@@ -314,6 +337,42 @@ class CommandProcessor(ClientCommandProcessor):
                 self.output(f"Found moby with ID {hex(target_id)} at address {hex(moby_addr)}")
             else:
                 self.output(f"Could not find moby with ID {hex(target_id)}")
+
+    def _cmd_translate_address(self, *args: str) -> None:
+        """Takes the input address and runs it through address convert function to see what current game version
+        would treat it as
+        :param args: Hex value of Address"""
+        if not self.verify(3):
+            return
+        if isinstance(self.ctx, Rac3Context):
+            if not self.is_development_build():
+                # let everyone know that a development command was used in a release build.
+                self.default(f'Development command "/translate_address {" ".join(str(x) for x in args)}" was used in '
+                             f'a non-development build.')
+
+            try:
+                input_address = int(args[0], 16)
+            except ValueError:
+                self.output("Invalid address. Please provide a valid hexadecimal number.")
+                return
+
+            translated_address = self.ctx.game_interface.address_convert(input_address)
+            self.output(f"Input Address: {hex(input_address)} Translated Address: {hex(translated_address)} "
+                        f"Offset: {hex(translated_address - input_address)}")
+
+    def _cmd_update_speed(self, *args: str) -> None:
+        """Update the refresh speed of the client using the provided number of updates per second"""
+        if not self.verify(1):
+            return
+        if isinstance(self.ctx, Rac3Context):
+            if not args:
+                self.output("Please type a number after the command")
+                return
+            if int(args[0]) not in range(1, 61):
+                self.output("Please type a valid number between 1 and 60")
+                return
+            self.ctx.fps = 1 / float(args[0])
+            self.output(f"Client update set to every {self.ctx.fps}s")
 
 
 class Rac3Context(CommonContext):
@@ -344,14 +403,23 @@ class Rac3Context(CommonContext):
     data_package: int = 0
     data_received: bool = False
     save_data: dict[int, tuple[int, int]] = {}
+    last_saved: float = 0.0
+    skip_save_cooldown: bool = False
+    fps: float = 0.1
 
     def __init__(self, server_address: str, password: str):
+        """
+        :param server_address:
+        :param password:
+        :rtype: Rac3Context
+        """
         super().__init__(server_address, password)
         self.game_interface = Rac3Interface()
         self.uuid = Utils.get_unique_identifier()
         self.save_data = {data.ADDRESS: (data.TYPE, data.VALUE) for data in SAVE_DATA}
 
     def on_deathlink(self, data: dict[str, Any]) -> None:
+        """:param data:"""
         text = data.get("cause", "")
         if text:
             logger.info(f"Death Link: {text}")
@@ -369,17 +437,22 @@ class Rac3Context(CommonContext):
             ui.base_title += f" | Universal Tracker {UT_VERSION}"
 
         # AP version is added behind this automatically
-        ui.base_title += f" | {apname}"
+        ui.base_title += " | {apname}"
         return ui
 
     async def server_auth(self, password_requested: bool = False) -> None:
-        """Authenticate with the Multiworld server."""
+        """Authenticate with the Multiworld server.
+        :param password_requested:"""
         if password_requested and not self.password:
             await super().server_auth(password_requested)
         await self.get_username()
         await self.send_connect()
 
-    def on_package(self, cmd: str, args: dict):
+    def on_package(self, cmd: str, args: dict) -> None:
+        """Handle receiving a package from the server.
+        :param cmd: Package Command
+        :param args: Package Contents
+        """
         super().on_package(cmd, args)
         if cmd == "Connected":
             self.slot_data: dict[str, Any] = args["slot_data"]
@@ -391,7 +464,7 @@ class Rac3Context(CommonContext):
             async_start(self.send_msgs([{"cmd": "GetDataPackage", "games": [RAC3OPTION.GAME_TITLE_FULL]}]))
             self.data_received = False
             async_start(self.send_msgs([ClientMessage.get_save(self.uuid)]))
-            logger.debug(f"Requested Save Data on Connection")
+            logger.debug("Requested Save Data on Connection")
             # Set death link tag if it was requested in options
             if RAC3OPTION.DEATHLINK in self.slot_data:
                 if self.slot_data[RAC3OPTION.DEATHLINK]:
@@ -414,7 +487,7 @@ class Rac3Context(CommonContext):
             logger.debug(f"{cmd} server packet: {args}")
             if args["keys"]:
                 if f"{self.uuid}_save_data" in args["keys"]:
-                    logger.debug(f"Save Data recieved")
+                    logger.debug("Save Data received")
                     self.data_received = True
                     if args["keys"][f"{self.uuid}_save_data"]:
                         logger.debug(f"Valid Save data from Server {args['keys'][f'{self.uuid}_save_data']}")
@@ -428,7 +501,7 @@ class Rac3Context(CommonContext):
             logger.debug(f"{cmd} server packet: {args}")
             if args["key"]:
                 if f"{self.uuid}_save_data" == args["key"]:
-                    logger.debug(f"Save Data recieved by the server")
+                    logger.debug("Save Data received by the server")
                     self.data_received = True
 
         if cmd == "PrintJSON":
@@ -456,11 +529,11 @@ class Rac3Context(CommonContext):
                 self.game_interface.enqueue_notification(hint_text, RAC3BOXTHEME.HINT)
 
 
-def launch_client():
+def launch_client() -> None:
     """Launch an instance of the Ratchet and Clank 3 client"""
     init_logging(f"{RAC3OPTION.GAME_TITLE}_Client")
 
-    async def main():
+    async def main() -> None:
         """The main client process"""
         freeze_support()
         logger.info("main")

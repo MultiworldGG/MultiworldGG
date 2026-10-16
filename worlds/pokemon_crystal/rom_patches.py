@@ -105,4 +105,21 @@ ROM_PATCHES: list[RomPatch] = [
         # _FindPartyMonThatSpeciesYourTrainerID: ld hl, wPartyMon1Species -> jp $72d7
         RomPatchEntry(0x13, 0x5a7e, [0xc3, 0xd7, 0x72], expected=[0x21, 0xe5, 0xdc]),
     ]),
+    # Psywave's damage roll loops forever at level 1 (range is 1 to 1), hanging trainer AI scoring
+    RomPatch("Psywave level 1 hang", [
+        # bank $0d free space: b = max(level * 1.5, 2)
+        RomPatchEntry(0x0d, 0x7ff3, [
+            0x78,              # ld a, b
+            0xcb, 0x3f,        # srl a
+            0x80,              # add b
+            0xfe, 0x02,        # cp 2
+            0x30, 0x02,        # jr nc, .ok
+            0x3e, 0x02,        # ld a, 2
+            0x47,              # .ok: ld b, a
+            0xc9,              # ret
+        ], expected=[0x00] * 12),
+        # BattleCommand_ConstantDamage.psywave: ld a, b / srl a / add b / ld b, a -> call $7ff3 / nop x2
+        RomPatchEntry(0x0d, 0x5606, [0xcd, 0xf3, 0x7f, 0x00, 0x00],
+                      expected=[0x78, 0xcb, 0x3f, 0x80, 0x47]),
+    ]),
 ]

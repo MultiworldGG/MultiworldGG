@@ -130,6 +130,7 @@ def set_rules(world: "MomodoraWorld"):
         set_rule(multiworld.get_location(*item("Dotted Berry 1 - Lun Tree Roots")), lambda state: state.has(*item("Awakened Sacred Leaf")))
         set_rule(multiworld.get_location(*item("Dotted Berry 1 - Demon Frontier")), lambda state: state.has(*item("Crescent Moonflower")))
         set_rule(multiworld.get_location(*item("Dotted Berry 2 - Ashen Hinterlands")), lambda state: state.has(*item("Crescent Moonflower")) and (state.has(*item("Spiral Shell"))) or state.has(*item("Lunar Attunement")))
+        set_rule(multiworld.get_location(*item("Dotted Berry 1 - Meikan Village")), lambda state: state.has(*item("Spiral Shell")) and (world.options.BellHoverGeneration.value or state.has(*item("Crescent Moonflower"))))
         set_rule(multiworld.get_location(*item("Dotted Berry 3 - Meikan Village")), lambda state: state.can_reach("Fount of Rebirth", "Region", player))
         set_rule(multiworld.get_location(*item("Dotted Berry - Moonlight Repose")), lambda state: state.can_reach_location("Remnant of an Unknown Phantasm", player))
         set_rule(multiworld.get_location(*item("Lun Berry - Koho Village")), lambda state: state.has(*item("Crescent Moonflower")) or state.has(*item("Spiral Shell")))
@@ -163,7 +164,7 @@ def set_rules(world: "MomodoraWorld"):
     if world.options.Companionsanity:
         set_rule(multiworld.get_location(*item("Bakman")), lambda state: state.has(*item("Crescent Moonflower")) or state.has(*item("Spiral Shell")))
         set_rule(multiworld.get_location(*item("Simple Cube")), lambda state: state.has(*item("Spiral Shell")) or (state.has(*item("Crescent Moonflower")) and (state.has(*item("Lunar Attunement")) or (world.options.BellHoverGeneration.value and (state.has(*item("Progressive Magic Upgrade"), 3) if world.options.Berrysanity.value else True)))))
-        set_rule(multiworld.get_location(*item("Nun")), lambda state: state.has(*item("Chrysanth")) and state.has(*item("Fallen hero")) and state.has(*item("Magic Blade")))
+        set_rule(multiworld.get_location(*item("Nun")), lambda state: state.has(*item("Magic Blade")))
 
     #LunarCrystalBranchShuffle rules
     if world.options.LunarCrystalBranchShuffle:

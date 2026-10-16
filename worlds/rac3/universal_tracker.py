@@ -18,9 +18,11 @@ def setup_options_from_slot_data(world: "RaC3World") -> None:
             world.using_ut = True
             world.passthrough = world.multiworld.re_gen_passthrough[world.game]
             world.options.start_inventory_from_pool.value = world.passthrough[RAC3OPTION.START_INVENTORY_FROM_POOL]
+            world.options.generation_behavior.value = world.passthrough[RAC3OPTION.GENERATION_BEHAVIOR]
             world.options.starting_weapons.value = world.passthrough[RAC3OPTION.STARTING_WEAPONS]
             world.options.bolt_and_xp_multiplier.value = world.passthrough[RAC3OPTION.BOLT_AND_XP_MULTIPLIER]
             world.options.progressive_weapons.value = world.passthrough[RAC3OPTION.PROGRESSIVE_WEAPONS]
+            world.options.weapon_mods.value = world.passthrough[RAC3OPTION.WEAPON_MODS]
             world.options.armor_upgrade.value = world.passthrough[RAC3OPTION.ARMOR_UPGRADE]
             world.options.skill_points.value = world.passthrough[RAC3OPTION.SKILL_POINTS]
             world.options.trophies.value = world.passthrough[RAC3OPTION.TROPHIES]
@@ -32,6 +34,8 @@ def setup_options_from_slot_data(world: "RaC3World") -> None:
             world.options.player_skin.value = world.passthrough[RAC3OPTION.PLAYER_SKIN]
             world.options.traps_enabled.value = world.passthrough[RAC3OPTION.ENABLE_TRAPS]
             world.options.trap_weight.value = world.passthrough[RAC3OPTION.TRAP_WEIGHT]
+            world.options.trap_magnitude.value = world.passthrough[RAC3OPTION.TRAP_MAGNITUDE]
+            world.options.filler_magnitude.value = world.passthrough[RAC3OPTION.FILLER_MAGNITUDE]
             world.options.rangers.value = world.passthrough[RAC3OPTION.RANGERS]
             world.options.arena.value = world.passthrough[RAC3OPTION.ARENA]
             world.options.vidcomics.value = world.passthrough[RAC3OPTION.VIDCOMICS]
@@ -56,6 +60,9 @@ def setup_options_from_slot_data(world: "RaC3World") -> None:
             world.options.helpdesk.value = world.passthrough[RAC3OPTION.HELP_DESK]
             world.options.weapon_level_locations.value = world.passthrough[RAC3OPTION.WEAPON_LEVEL_LOCATIONS]
             world.options.vendor_access.value = world.passthrough[RAC3OPTION.VENDOR_ACCESS]
+            world.options.bonus_vidcomic_health.value = world.passthrough[RAC3OPTION.BONUS_VIDCOMIC_HEALTH]
+            world.options.vidcomic_health_upgrades.value = world.passthrough[RAC3OPTION.VIDCOMIC_HEALTH_UPGRADES]
+            world.options.deathlink_behavior.value = world.passthrough[RAC3OPTION.DEATHLINK_BEHAVIOR]
         else:
             world.using_ut = False
     else:

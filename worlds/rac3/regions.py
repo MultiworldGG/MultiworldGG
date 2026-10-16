@@ -26,7 +26,19 @@ class GameLocation(Location):
     game = RAC3OPTION.GAME_TITLE_FULL
 
 
-all_nanotech: list[str] = [getattr(RAC3NANOTECH, f"LEVEL_{level}") for level in range(11, 201)]
+def get_regions() -> set[str]:
+    """Returns a set containing the planet names"""
+    return {name for name in REGIONS_WITH_LOCATIONS}
+
+
+# Generation Begins
+
+# generate_early()
+
+def get_nanotech_locations(options: type[RaC3Options]) -> list[str]:
+    """Get a list of nanotech locations based on the provided options."""
+    all_nanotech: list[str] = [getattr(RAC3NANOTECH, f"LEVEL_{level}") for level in range(11, 201)]
+    return [location for location in all_nanotech if not should_skip_nanotech_location(location, options)]
 
 
 def should_skip_nanotech_location(location: str, options: type[RaC3Options]) -> bool:
@@ -46,265 +58,7 @@ def should_skip_nanotech_location(location: str, options: type[RaC3Options]) -> 
     return nanotech_level % nanotech_step != 0
 
 
-def get_nanotech_locations(options: type[RaC3Options]) -> list[str]:
-    """Get a list of nanotech locations based on the provided options."""
-    return [location for location in all_nanotech if not should_skip_nanotech_location(location, options)]
-
-
-def should_skip_skill_master(options: type[RaC3Options]) -> bool:
-    """Determine if the skill master trophy location should be skipped based on options."""
-    if options.skill_points.value < 2:
-        return True
-    if options.sewer_limitation.value < 100:
-        return True
-    if options.vidcomics.value == 0:
-        return True
-    if options.vr_challenges.value == 0:
-        return True
-    if options.armor_vendor.value == 0:
-        return True
-    if options.arena.value < 3:
-        return True
-    if options.rangers.value == 0 or options.rangers.value == 2:
-        return True
-    return False
-
-
-every_sewer_crystals: list[str] = [
-    RAC3SEWER.TRADE_1,
-    RAC3SEWER.TRADE_2,
-    RAC3SEWER.TRADE_3,
-    RAC3SEWER.TRADE_4,
-    RAC3SEWER.TRADE_5,
-    RAC3SEWER.TRADE_6,
-    RAC3SEWER.TRADE_7,
-    RAC3SEWER.TRADE_8,
-    RAC3SEWER.TRADE_9,
-    RAC3SEWER.TRADE_10,
-    RAC3SEWER.TRADE_11,
-    RAC3SEWER.TRADE_12,
-    RAC3SEWER.TRADE_13,
-    RAC3SEWER.TRADE_14,
-    RAC3SEWER.TRADE_15,
-    RAC3SEWER.TRADE_16,
-    RAC3SEWER.TRADE_17,
-    RAC3SEWER.TRADE_18,
-    RAC3SEWER.TRADE_19,
-    RAC3SEWER.TRADE_20,
-    RAC3SEWER.TRADE_21,
-    RAC3SEWER.TRADE_22,
-    RAC3SEWER.TRADE_23,
-    RAC3SEWER.TRADE_24,
-    RAC3SEWER.TRADE_25,
-    RAC3SEWER.TRADE_26,
-    RAC3SEWER.TRADE_27,
-    RAC3SEWER.TRADE_28,
-    RAC3SEWER.TRADE_29,
-    RAC3SEWER.TRADE_30,
-    RAC3SEWER.TRADE_31,
-    RAC3SEWER.TRADE_32,
-    RAC3SEWER.TRADE_33,
-    RAC3SEWER.TRADE_34,
-    RAC3SEWER.TRADE_35,
-    RAC3SEWER.TRADE_36,
-    RAC3SEWER.TRADE_37,
-    RAC3SEWER.TRADE_38,
-    RAC3SEWER.TRADE_39,
-    RAC3SEWER.TRADE_40,
-    RAC3SEWER.TRADE_41,
-    RAC3SEWER.TRADE_42,
-    RAC3SEWER.TRADE_43,
-    RAC3SEWER.TRADE_44,
-    RAC3SEWER.TRADE_45,
-    RAC3SEWER.TRADE_46,
-    RAC3SEWER.TRADE_47,
-    RAC3SEWER.TRADE_48,
-    RAC3SEWER.TRADE_49,
-    RAC3SEWER.TRADE_50,
-    RAC3SEWER.TRADE_51,
-    RAC3SEWER.TRADE_52,
-    RAC3SEWER.TRADE_53,
-    RAC3SEWER.TRADE_54,
-    RAC3SEWER.TRADE_55,
-    RAC3SEWER.TRADE_56,
-    RAC3SEWER.TRADE_57,
-    RAC3SEWER.TRADE_58,
-    RAC3SEWER.TRADE_59,
-    RAC3SEWER.TRADE_60,
-    RAC3SEWER.TRADE_61,
-    RAC3SEWER.TRADE_62,
-    RAC3SEWER.TRADE_63,
-    RAC3SEWER.TRADE_64,
-    RAC3SEWER.TRADE_65,
-    RAC3SEWER.TRADE_66,
-    RAC3SEWER.TRADE_67,
-    RAC3SEWER.TRADE_68,
-    RAC3SEWER.TRADE_69,
-    RAC3SEWER.TRADE_70,
-    RAC3SEWER.TRADE_71,
-    RAC3SEWER.TRADE_72,
-    RAC3SEWER.TRADE_73,
-    RAC3SEWER.TRADE_74,
-    RAC3SEWER.TRADE_75,
-    RAC3SEWER.TRADE_76,
-    RAC3SEWER.TRADE_77,
-    RAC3SEWER.TRADE_78,
-    RAC3SEWER.TRADE_79,
-    RAC3SEWER.TRADE_80,
-    RAC3SEWER.TRADE_81,
-    RAC3SEWER.TRADE_82,
-    RAC3SEWER.TRADE_83,
-    RAC3SEWER.TRADE_84,
-    RAC3SEWER.TRADE_85,
-    RAC3SEWER.TRADE_86,
-    RAC3SEWER.TRADE_87,
-    RAC3SEWER.TRADE_88,
-    RAC3SEWER.TRADE_89,
-    RAC3SEWER.TRADE_90,
-    RAC3SEWER.TRADE_91,
-    RAC3SEWER.TRADE_92,
-    RAC3SEWER.TRADE_93,
-    RAC3SEWER.TRADE_94,
-    RAC3SEWER.TRADE_95,
-    RAC3SEWER.TRADE_96,
-    RAC3SEWER.TRADE_97,
-    RAC3SEWER.TRADE_98,
-    RAC3SEWER.TRADE_99,
-    RAC3SEWER.TRADE_100,
-    RAC3SEWER.TRADE_101,
-    RAC3SKILLPOINT.SEWER_MOTHERLOAD,
-]
-every_5_sewer_crystals: list[str] = [
-    RAC3SEWER.TRADE_5,
-    RAC3SEWER.TRADE_10,
-    RAC3SEWER.TRADE_15,
-    RAC3SEWER.TRADE_20,
-    RAC3SEWER.TRADE_25,
-    RAC3SEWER.TRADE_30,
-    RAC3SEWER.TRADE_35,
-    RAC3SEWER.TRADE_40,
-    RAC3SEWER.TRADE_45,
-    RAC3SEWER.TRADE_50,
-    RAC3SEWER.TRADE_55,
-    RAC3SEWER.TRADE_60,
-    RAC3SEWER.TRADE_65,
-    RAC3SEWER.TRADE_70,
-    RAC3SEWER.TRADE_75,
-    RAC3SEWER.TRADE_80,
-    RAC3SEWER.TRADE_85,
-    RAC3SEWER.TRADE_90,
-    RAC3SEWER.TRADE_95,
-    RAC3SEWER.TRADE_100,
-    RAC3SKILLPOINT.SEWER_MOTHERLOAD,
-]
-every_10_sewer_crystals: list[str] = [
-    RAC3SEWER.TRADE_10,
-    RAC3SEWER.TRADE_20,
-    RAC3SEWER.TRADE_30,
-    RAC3SEWER.TRADE_40,
-    RAC3SEWER.TRADE_50,
-    RAC3SEWER.TRADE_60,
-    RAC3SEWER.TRADE_70,
-    RAC3SEWER.TRADE_80,
-    RAC3SEWER.TRADE_90,
-    RAC3SEWER.TRADE_100,
-    RAC3SKILLPOINT.SEWER_MOTHERLOAD,
-]
-every_20_sewer_crystals: list[str] = [
-    RAC3SEWER.TRADE_20,
-    RAC3SEWER.TRADE_40,
-    RAC3SEWER.TRADE_60,
-    RAC3SEWER.TRADE_80,
-    RAC3SEWER.TRADE_100,
-    RAC3SKILLPOINT.SEWER_MOTHERLOAD,
-]
-
-annihilation_nation_1: list[str] = [
-    RAC3TBOLT.NATION_CLIFF,
-    RAC3SKILLPOINT.NATION_CAMERA,
-    RAC3SKILLPOINT.NATION_FLEE,
-    RAC3LOCATION.NATION_TYHRRA_GUISE,
-    RAC3LOCATION.NATION_GRAND_PRIZE_BOUT,
-    RAC3LOCATION.NATION_THE_TERRIBLE_TWO,
-    RAC3LOCATION.NATION_ROBOT_RAMPAGE,
-    RAC3LOCATION.NATION_TWO_MINUTE_WARNING,
-    RAC3LOCATION.NATION_90_SECONDS,
-    RAC3LOCATION.NATION_ONSLAUGHT,
-    RAC3LOCATION.NATION_WHIP_IT_GOOD,
-    RAC3LOCATION.NATION_HYDRA_N_SEEK,
-    RAC3LOCATION.NATION_CHAMPIONSHIP_BOUT,
-    RAC3LOCATION.NATION_HEAT_STREET,
-    RAC3LOCATION.NATION_CRISPY_CRITTER,
-    RAC3LOCATION.NATION_PYRO_PLAYGROUND,
-    RAC3LOCATION.NATION_SUICIDE_RUN,
-]
-annihilation_nation_2: list[str] = [
-    RAC3TBOLT.NATION_CLIFF,
-    RAC3SKILLPOINT.NATION_CAMERA,
-    RAC3SKILLPOINT.NATION_FLEE,
-    # These 3 are doable on the second part of the challenges as well
-    RAC3SKILLPOINT.NATION_BASH,
-    RAC3LOCATION.NATION_MEET_COURTNEY,
-    RAC3LOCATION.NATION_INFOBOT_HOLOSTAR,
-    RAC3LOCATION.NATION_NINJA_CHALLENGE,
-    RAC3LOCATION.NATION_COUNTING_DUCKS,
-    RAC3LOCATION.NATION_CYCLING_WEAPONS,
-    RAC3LOCATION.NATION_ONE_HIT_WONDER,
-    RAC3LOCATION.NATION_TIME_TO_SUCK,
-    RAC3LOCATION.NATION_NAPTIME,
-    RAC3LOCATION.NATION_MORE_CYCLING_WEAPONS,
-    RAC3LOCATION.NATION_DODGE_THE_TWINS,
-    RAC3LOCATION.NATION_CHOP_CHOP,
-    RAC3LOCATION.NATION_SLEEP_INDUCER,
-    RAC3LOCATION.NATION_THE_OTHER_WHITE_MEAT,
-    RAC3LOCATION.NATION_CHAMPIONSHIP_BOUT_II,
-    RAC3LOCATION.NATION_QWARKTASTIC_BATTLE,
-    RAC3LOCATION.NATION_BBQ_BOULEVARD,
-    RAC3LOCATION.NATION_MAZE_OF_BLAZE,
-    RAC3TBOLT.NATION_PLATFORM,
-    RAC3LOCATION.NATION_CREMATION_STATION,
-    RAC3LOCATION.NATION_THE_ANNIHILATOR,
-]
-
-extra_ranger: list[str] = [
-    RAC3LOCATION.TYHRRANOSIS_RANGERS_1,
-    RAC3LOCATION.TYHRRANOSIS_RANGERS_2,
-    RAC3LOCATION.TYHRRANOSIS_RANGERS_3,
-    RAC3LOCATION.TYHRRANOSIS_RANGERS_4,
-    RAC3TBOLT.METROPOLIS_RANGERS,
-    RAC3LOCATION.METROPOLIS_RANGERS_1,
-    RAC3LOCATION.METROPOLIS_RANGERS_2,
-    RAC3LOCATION.METROPOLIS_RANGERS_3,
-    RAC3LOCATION.METROPOLIS_RANGERS_4,
-    RAC3LOCATION.METROPOLIS_RANGERS_5,
-    RAC3LOCATION.METROPOLIS_MAP_O_MATIC,
-]
-
-veldin_weapons: list[str] = [
-    RAC3LOCATION.VELDIN_FIRST_RANGER,
-    RAC3LOCATION.VELDIN_SECOND_RANGER,
-]
-
-simple_skillpoints: list[str] = [
-    RAC3SKILLPOINT.ARIDIA_HANG_TIME,
-    RAC3SKILLPOINT.PHOENIX_VR_TRAINING,
-    RAC3SKILLPOINT.PHOENIX_ARMOR,
-    RAC3SKILLPOINT.PHOENIX_MONKEY,
-    RAC3SKILLPOINT.MARCADIA_REFLECT,
-    RAC3SKILLPOINT.DAXX_BUGS,
-    RAC3SKILLPOINT.NATION_CAMERA,
-    RAC3SKILLPOINT.AQUATOS_SUNKEN,
-    RAC3SKILLPOINT.TYHRRANOSIS_SHARPSHOOTER,
-    RAC3SKILLPOINT.GEMINI_BELT,
-    RAC3SKILLPOINT.BLACKWATER_BASH,
-    RAC3SKILLPOINT.KOROS_BREAK,
-    RAC3SKILLPOINT.METROPOLIS_GOOD_YEAR,
-    RAC3SKILLPOINT.CRASH_SITE_AIM_HIGH,
-    RAC3SKILLPOINT.ARIDIA_ZAP,
-    RAC3SKILLPOINT.HIDEOUT_DAN,
-    RAC3SKILLPOINT.COMMAND_CENTER_GERMS,
-]
-
+# Start inventory, local, non-local, and early items are finalised
 
 def create_regions(world: "RaC3World"):
     """Creates each region and connects them together"""
@@ -391,66 +145,6 @@ def create_regions(world: "RaC3World"):
     assert missing_regions == [], f"Regions: {missing_regions} were declared but not created."
     assert regions_missing == [], f"Regions: {regions_missing} were created but not declared."
 
-    # shock_blaster_upgrades = create_region(world, f"{RAC3ITEM.SHOCK_BLASTER} Upgrades")
-    # menu.connect(shock_blaster_upgrades, rule=lambda state: state.has(RAC3ITEM.SHOCK_BLASTER, world.player)),
-    #
-    # nitro_launcher_upgrades = create_region(world, f"{RAC3ITEM.NITRO_LAUNCHER} Upgrades")
-    # menu.connect(nitro_launcher_upgrades, rule=lambda state: state.has(RAC3ITEM.NITRO_LAUNCHER, world.player)),
-    #
-    # n60_storm_upgrades = create_region(world, f"{RAC3ITEM.N60_STORM} Upgrades")
-    # menu.connect(n60_storm_upgrades, rule=lambda state: state.has(RAC3ITEM.N60_STORM, world.player)),
-    #
-    # plasma_whip_upgrades = create_region(world, f"{RAC3ITEM.PLASMA_WHIP} Upgrades")
-    # menu.connect(plasma_whip_upgrades, rule=lambda state: state.has(RAC3ITEM.PLASMA_WHIP, world.player)),
-    #
-    # infector_upgrades = create_region(world, f"{RAC3ITEM.INFECTOR} Upgrades")
-    # menu.connect(infector_upgrades, rule=lambda state: state.has(RAC3ITEM.INFECTOR, world.player)),
-    #
-    # suck_cannon_upgrades = create_region(world, f"{RAC3ITEM.SUCK_CANNON} Upgrades")
-    # menu.connect(suck_cannon_upgrades, rule=lambda state: state.has(RAC3ITEM.SUCK_CANNON, world.player)),
-    #
-    # spitting_hydra_upgrades = create_region(world, f"{RAC3ITEM.SPITTING_HYDRA} Upgrades")
-    # menu.connect(spitting_hydra_upgrades, rule=lambda state: state.has(RAC3ITEM.SPITTING_HYDRA, world.player)),
-    #
-    # agents_of_doom_upgrades = create_region(world, f"{RAC3ITEM.AGENTS_OF_DOOM} Upgrades")
-    # menu.connect(agents_of_doom_upgrades, rule=lambda state: state.has(RAC3ITEM.AGENTS_OF_DOOM, world.player)),
-    #
-    # flux_rifle_upgrades = create_region(world, f"{RAC3ITEM.FLUX_RIFLE} Upgrades")
-    # menu.connect(flux_rifle_upgrades, rule=lambda state: state.has(RAC3ITEM.FLUX_RIFLE, world.player)),
-    #
-    # annihilator_upgrades = create_region(world, f"{RAC3ITEM.ANNIHILATOR} Upgrades")
-    # menu.connect(annihilator_upgrades, rule=lambda state: state.has(RAC3ITEM.ANNIHILATOR, world.player)),
-    #
-    # holo_shield_glove_upgrades = create_region(world, f"{RAC3ITEM.HOLO_SHIELD} Upgrades")
-    # menu.connect(holo_shield_glove_upgrades, rule=lambda state: state.has(RAC3ITEM.HOLO_SHIELD, world.player)),
-    #
-    # disc_blade_gun_upgrades = create_region(world, f"{RAC3ITEM.DISC_BLADE} Upgrades")
-    # menu.connect(disc_blade_gun_upgrades, rule=lambda state: state.has(RAC3ITEM.DISC_BLADE, world.player)),
-    #
-    # rift_inducer_upgrades = create_region(world, f"{RAC3ITEM.RIFT_INDUCER} Upgrades")
-    # menu.connect(rift_inducer_upgrades, rule=lambda state: state.has(RAC3ITEM.RIFT_INDUCER, world.player)),
-    #
-    # qwack_o_ray_upgrades = create_region(world, f"{RAC3ITEM.QWACK_O_RAY} Upgrades")
-    # menu.connect(qwack_o_ray_upgrades, rule=lambda state: state.has(RAC3ITEM.QWACK_O_RAY, world.player)),
-    #
-    # ry3no_upgrades = create_region(world, f"{RAC3ITEM.RY3N0} Upgrades")
-    # menu.connect(ry3no_upgrades, rule=lambda state: state.has(RAC3ITEM.RY3N0, world.player)),
-    #
-    # mega_turret_glove_upgrades = create_region(world, f"{RAC3ITEM.MINI_TURRET} Upgrades")
-    # menu.connect(mega_turret_glove_upgrades, rule=lambda state: state.has(RAC3ITEM.MINI_TURRET, world.player)),
-    #
-    # lava_gun_upgrades = create_region(world, f"{RAC3ITEM.LAVA_GUN} Upgrades")
-    # menu.connect(lava_gun_upgrades, rule=lambda state: state.has(RAC3ITEM.LAVA_GUN, world.player)),
-    #
-    # tesla_barrier_upgrades = create_region(world, f"{RAC3ITEM.SHIELD_CHARGER} Upgrades")
-    # menu.connect(tesla_barrier_upgrades, rule=lambda state: state.has(RAC3ITEM.SHIELD_CHARGER, world.player)),
-    #
-    # bouncer_upgrades = create_region(world, f"{RAC3ITEM.BOUNCER} Upgrades")
-    # menu.connect(bouncer_upgrades, rule=lambda state: state.has(RAC3ITEM.BOUNCER, world.player)),
-    #
-    # plasma_coil_upgrades = create_region(world, f"{RAC3ITEM.PLASMA_COIL} Upgrades")
-    # menu.connect(plasma_coil_upgrades, rule=lambda state: state.has(RAC3ITEM.PLASMA_COIL, world.player))
-
 
 def create_region(world: "RaC3World", name: str) -> Region:
     """Returns a new Region object already populated with its item locations"""
@@ -474,7 +168,261 @@ def create_region_and_connect(world: "RaC3World", name: str, entrance_name: str,
 
 def should_skip_location(data: RAC3LOCATIONDATA, options: type[RaC3Options]) -> bool:
     """Return False if the location should be skipped based on options."""
+
+    every_sewer_crystals: list[str] = [
+        RAC3SEWER.TRADE_1,
+        RAC3SEWER.TRADE_2,
+        RAC3SEWER.TRADE_3,
+        RAC3SEWER.TRADE_4,
+        RAC3SEWER.TRADE_5,
+        RAC3SEWER.TRADE_6,
+        RAC3SEWER.TRADE_7,
+        RAC3SEWER.TRADE_8,
+        RAC3SEWER.TRADE_9,
+        RAC3SEWER.TRADE_10,
+        RAC3SEWER.TRADE_11,
+        RAC3SEWER.TRADE_12,
+        RAC3SEWER.TRADE_13,
+        RAC3SEWER.TRADE_14,
+        RAC3SEWER.TRADE_15,
+        RAC3SEWER.TRADE_16,
+        RAC3SEWER.TRADE_17,
+        RAC3SEWER.TRADE_18,
+        RAC3SEWER.TRADE_19,
+        RAC3SEWER.TRADE_20,
+        RAC3SEWER.TRADE_21,
+        RAC3SEWER.TRADE_22,
+        RAC3SEWER.TRADE_23,
+        RAC3SEWER.TRADE_24,
+        RAC3SEWER.TRADE_25,
+        RAC3SEWER.TRADE_26,
+        RAC3SEWER.TRADE_27,
+        RAC3SEWER.TRADE_28,
+        RAC3SEWER.TRADE_29,
+        RAC3SEWER.TRADE_30,
+        RAC3SEWER.TRADE_31,
+        RAC3SEWER.TRADE_32,
+        RAC3SEWER.TRADE_33,
+        RAC3SEWER.TRADE_34,
+        RAC3SEWER.TRADE_35,
+        RAC3SEWER.TRADE_36,
+        RAC3SEWER.TRADE_37,
+        RAC3SEWER.TRADE_38,
+        RAC3SEWER.TRADE_39,
+        RAC3SEWER.TRADE_40,
+        RAC3SEWER.TRADE_41,
+        RAC3SEWER.TRADE_42,
+        RAC3SEWER.TRADE_43,
+        RAC3SEWER.TRADE_44,
+        RAC3SEWER.TRADE_45,
+        RAC3SEWER.TRADE_46,
+        RAC3SEWER.TRADE_47,
+        RAC3SEWER.TRADE_48,
+        RAC3SEWER.TRADE_49,
+        RAC3SEWER.TRADE_50,
+        RAC3SEWER.TRADE_51,
+        RAC3SEWER.TRADE_52,
+        RAC3SEWER.TRADE_53,
+        RAC3SEWER.TRADE_54,
+        RAC3SEWER.TRADE_55,
+        RAC3SEWER.TRADE_56,
+        RAC3SEWER.TRADE_57,
+        RAC3SEWER.TRADE_58,
+        RAC3SEWER.TRADE_59,
+        RAC3SEWER.TRADE_60,
+        RAC3SEWER.TRADE_61,
+        RAC3SEWER.TRADE_62,
+        RAC3SEWER.TRADE_63,
+        RAC3SEWER.TRADE_64,
+        RAC3SEWER.TRADE_65,
+        RAC3SEWER.TRADE_66,
+        RAC3SEWER.TRADE_67,
+        RAC3SEWER.TRADE_68,
+        RAC3SEWER.TRADE_69,
+        RAC3SEWER.TRADE_70,
+        RAC3SEWER.TRADE_71,
+        RAC3SEWER.TRADE_72,
+        RAC3SEWER.TRADE_73,
+        RAC3SEWER.TRADE_74,
+        RAC3SEWER.TRADE_75,
+        RAC3SEWER.TRADE_76,
+        RAC3SEWER.TRADE_77,
+        RAC3SEWER.TRADE_78,
+        RAC3SEWER.TRADE_79,
+        RAC3SEWER.TRADE_80,
+        RAC3SEWER.TRADE_81,
+        RAC3SEWER.TRADE_82,
+        RAC3SEWER.TRADE_83,
+        RAC3SEWER.TRADE_84,
+        RAC3SEWER.TRADE_85,
+        RAC3SEWER.TRADE_86,
+        RAC3SEWER.TRADE_87,
+        RAC3SEWER.TRADE_88,
+        RAC3SEWER.TRADE_89,
+        RAC3SEWER.TRADE_90,
+        RAC3SEWER.TRADE_91,
+        RAC3SEWER.TRADE_92,
+        RAC3SEWER.TRADE_93,
+        RAC3SEWER.TRADE_94,
+        RAC3SEWER.TRADE_95,
+        RAC3SEWER.TRADE_96,
+        RAC3SEWER.TRADE_97,
+        RAC3SEWER.TRADE_98,
+        RAC3SEWER.TRADE_99,
+        RAC3SEWER.TRADE_100,
+        RAC3SEWER.TRADE_101,
+        RAC3SKILLPOINT.SEWER_MOTHERLOAD,
+    ]
+    every_5_sewer_crystals: list[str] = [
+        RAC3SEWER.TRADE_5,
+        RAC3SEWER.TRADE_10,
+        RAC3SEWER.TRADE_15,
+        RAC3SEWER.TRADE_20,
+        RAC3SEWER.TRADE_25,
+        RAC3SEWER.TRADE_30,
+        RAC3SEWER.TRADE_35,
+        RAC3SEWER.TRADE_40,
+        RAC3SEWER.TRADE_45,
+        RAC3SEWER.TRADE_50,
+        RAC3SEWER.TRADE_55,
+        RAC3SEWER.TRADE_60,
+        RAC3SEWER.TRADE_65,
+        RAC3SEWER.TRADE_70,
+        RAC3SEWER.TRADE_75,
+        RAC3SEWER.TRADE_80,
+        RAC3SEWER.TRADE_85,
+        RAC3SEWER.TRADE_90,
+        RAC3SEWER.TRADE_95,
+        RAC3SEWER.TRADE_100,
+        RAC3SKILLPOINT.SEWER_MOTHERLOAD,
+    ]
+    every_10_sewer_crystals: list[str] = [
+        RAC3SEWER.TRADE_10,
+        RAC3SEWER.TRADE_20,
+        RAC3SEWER.TRADE_30,
+        RAC3SEWER.TRADE_40,
+        RAC3SEWER.TRADE_50,
+        RAC3SEWER.TRADE_60,
+        RAC3SEWER.TRADE_70,
+        RAC3SEWER.TRADE_80,
+        RAC3SEWER.TRADE_90,
+        RAC3SEWER.TRADE_100,
+        RAC3SKILLPOINT.SEWER_MOTHERLOAD,
+    ]
+    every_20_sewer_crystals: list[str] = [
+        RAC3SEWER.TRADE_20,
+        RAC3SEWER.TRADE_40,
+        RAC3SEWER.TRADE_60,
+        RAC3SEWER.TRADE_80,
+        RAC3SEWER.TRADE_100,
+        RAC3SKILLPOINT.SEWER_MOTHERLOAD,
+    ]
+
+    annihilation_nation_1: list[str] = [
+        RAC3TBOLT.NATION_CLIFF,
+        RAC3SKILLPOINT.NATION_CAMERA,
+        RAC3SKILLPOINT.NATION_FLEE,
+        RAC3LOCATION.NATION_TYHRRA_GUISE,
+        RAC3LOCATION.NATION_GRAND_PRIZE_BOUT,
+        RAC3LOCATION.NATION_THE_TERRIBLE_TWO,
+        RAC3LOCATION.NATION_ROBOT_RAMPAGE,
+        RAC3LOCATION.NATION_TWO_MINUTE_WARNING,
+        RAC3LOCATION.NATION_90_SECONDS,
+        RAC3LOCATION.NATION_ONSLAUGHT,
+        RAC3LOCATION.NATION_WHIP_IT_GOOD,
+        RAC3LOCATION.NATION_HYDRA_N_SEEK,
+        RAC3LOCATION.NATION_CHAMPIONSHIP_BOUT,
+        RAC3LOCATION.NATION_HEAT_STREET,
+        RAC3LOCATION.NATION_CRISPY_CRITTER,
+        RAC3LOCATION.NATION_PYRO_PLAYGROUND,
+        RAC3LOCATION.NATION_SUICIDE_RUN,
+    ]
+    annihilation_nation_2: list[str] = [
+        RAC3TBOLT.NATION_CLIFF,
+        RAC3SKILLPOINT.NATION_CAMERA,
+        RAC3SKILLPOINT.NATION_FLEE,
+        # These 3 are doable on the second part of the challenges as well
+        RAC3SKILLPOINT.NATION_BASH,
+        RAC3LOCATION.NATION_MEET_COURTNEY,
+        RAC3LOCATION.NATION_INFOBOT_HOLOSTAR,
+        RAC3LOCATION.NATION_NINJA_CHALLENGE,
+        RAC3LOCATION.NATION_COUNTING_DUCKS,
+        RAC3LOCATION.NATION_CYCLING_WEAPONS,
+        RAC3LOCATION.NATION_ONE_HIT_WONDER,
+        RAC3LOCATION.NATION_TIME_TO_SUCK,
+        RAC3LOCATION.NATION_NAPTIME,
+        RAC3LOCATION.NATION_MORE_CYCLING_WEAPONS,
+        RAC3LOCATION.NATION_DODGE_THE_TWINS,
+        RAC3LOCATION.NATION_CHOP_CHOP,
+        RAC3LOCATION.NATION_SLEEP_INDUCER,
+        RAC3LOCATION.NATION_THE_OTHER_WHITE_MEAT,
+        RAC3LOCATION.NATION_CHAMPIONSHIP_BOUT_II,
+        RAC3LOCATION.NATION_QWARKTASTIC_BATTLE,
+        RAC3LOCATION.NATION_BBQ_BOULEVARD,
+        RAC3LOCATION.NATION_MAZE_OF_BLAZE,
+        RAC3TBOLT.NATION_PLATFORM,
+        RAC3LOCATION.NATION_CREMATION_STATION,
+        RAC3LOCATION.NATION_THE_ANNIHILATOR,
+    ]
+
+    extra_ranger: list[str] = [
+        RAC3LOCATION.TYHRRANOSIS_RANGERS_1,
+        RAC3LOCATION.TYHRRANOSIS_RANGERS_2,
+        RAC3LOCATION.TYHRRANOSIS_RANGERS_3,
+        RAC3LOCATION.TYHRRANOSIS_RANGERS_4,
+        RAC3TBOLT.METROPOLIS_RANGERS,
+        RAC3LOCATION.METROPOLIS_RANGERS_1,
+        RAC3LOCATION.METROPOLIS_RANGERS_2,
+        RAC3LOCATION.METROPOLIS_RANGERS_3,
+        RAC3LOCATION.METROPOLIS_RANGERS_4,
+        RAC3LOCATION.METROPOLIS_RANGERS_5,
+        RAC3LOCATION.METROPOLIS_MAP_O_MATIC,
+    ]
+
+    veldin_weapons: list[str] = [
+        RAC3LOCATION.VELDIN_FIRST_RANGER,
+        RAC3LOCATION.VELDIN_SECOND_RANGER,
+    ]
+
+    simple_skillpoints: list[str] = [
+        RAC3SKILLPOINT.ARIDIA_HANG_TIME,
+        RAC3SKILLPOINT.PHOENIX_VR_TRAINING,
+        RAC3SKILLPOINT.PHOENIX_ARMOR,
+        RAC3SKILLPOINT.PHOENIX_MONKEY,
+        RAC3SKILLPOINT.MARCADIA_REFLECT,
+        RAC3SKILLPOINT.DAXX_BUGS,
+        RAC3SKILLPOINT.NATION_CAMERA,
+        RAC3SKILLPOINT.AQUATOS_SUNKEN,
+        RAC3SKILLPOINT.TYHRRANOSIS_SHARPSHOOTER,
+        RAC3SKILLPOINT.GEMINI_BELT,
+        RAC3SKILLPOINT.BLACKWATER_BASH,
+        RAC3SKILLPOINT.KOROS_BREAK,
+        RAC3SKILLPOINT.METROPOLIS_GOOD_YEAR,
+        RAC3SKILLPOINT.CRASH_SITE_AIM_HIGH,
+        RAC3SKILLPOINT.ARIDIA_ZAP,
+        RAC3SKILLPOINT.HIDEOUT_DAN,
+        RAC3SKILLPOINT.COMMAND_CENTER_GERMS,
+    ]
     loc = LOCATION_FROM_AP_CODE[data.AP_CODE]
+
+    def should_skip_skill_master() -> bool:
+        """Determine if the skill master trophy location should be skipped based on options."""
+        if options.skill_points.value < 2:
+            return True
+        if options.sewer_limitation.value < 100:
+            return True
+        if options.vidcomics.value == 0:
+            return True
+        if options.vr_challenges.value == 0:
+            return True
+        if options.armor_vendor.value == 0:
+            return True
+        if options.arena.value < 3:
+            return True
+        if options.rangers.value == 0 or options.rangers.value == 2:
+            return True
+        return False
+
     for tag in data.TAGS:
         match tag:
             case RAC3TAG.NOT_IMPLEMENTED:  # Skip all locations not yet implemented
@@ -485,7 +433,7 @@ def should_skip_location(data: RAC3LOCATIONDATA, options: type[RaC3Options]) -> 
             case RAC3TAG.LONG_TROPHY:
                 if options.trophies.value < 2:  # Skip long term trophies if not set to every trophy
                     return True
-                if should_skip_skill_master(options) and loc == RAC3TROPHY.PHOENIX_SKILL_MASTER:
+                if should_skip_skill_master() and loc == RAC3TROPHY.PHOENIX_SKILL_MASTER:
                     return True
                 if options.ngplus_start.value < 1:
                     if loc == RAC3TROPHY.PHOENIX_NANO_FINDER or loc == RAC3TROPHY.PHOENIX_OMEGA_ARSENAL:
@@ -524,6 +472,9 @@ def should_skip_location(data: RAC3LOCATIONDATA, options: type[RaC3Options]) -> 
             case RAC3TAG.VIDCOMIC:
                 if options.vidcomics.value == 0:
                     return True  # Skips vidcomic locations if vidcomics option is disabled
+            case RAC3TAG.VIDCOMIC_HEALTH_UPGRADE:
+                if options.vidcomic_health_upgrades.value == 0:
+                    return True  # Skips vidcomic health upgrade locations if vidcomic_health_upgrade option is disabled
             case RAC3TAG.VR:
                 if options.vr_challenges.value == 0:
                     return True  # Skips vr challenges locations if vr_challenges option is disabled
@@ -555,10 +506,8 @@ def should_skip_location(data: RAC3LOCATIONDATA, options: type[RaC3Options]) -> 
                 if options.armor_vendor.value == 0:
                     return True  # Skip all armor upgrade locations if armor upgrades are disabled
             case RAC3TAG.WEAPON_LEVEL:
-                if options.weapon_level_locations.value == 0:
-                    return True  # Skip all weapon level locations if weapon levels are disabled
-                if options.weapon_level_locations.value == 1 and "V5" not in loc:
-                    return True  # Skip all weapon level locations that are not V5 if weapon levels are set to V5 only
+                if all(key not in loc for key in options.weapon_level_locations.value):
+                    return True  # Skip weapon level location if all levels chosen by the player do not match
                 if options.ngplus_items.value == 0 and ("RY3N0" in loc or "V6" in loc or "V7" in loc or "V8" in loc):
                     return True  # Skip all weapon level locations that are V6 or higher if NG+ items are disabled
                 if options.one_hp_challenge.value.get(RAC3PLAYERTYPE.RATCHET, False) and "Shield Charger" in loc:
@@ -566,7 +515,7 @@ def should_skip_location(data: RAC3LOCATIONDATA, options: type[RaC3Options]) -> 
             # Add more conditions here if needed in the future
     return False
 
-
-def get_regions() -> set[str]:
-    """Returns a set containing the planet names"""
-    return {name for name in REGIONS_WITH_LOCATIONS}
+# place_starting_items()
+# create_items()
+# set_rules()
+# Generation continues...

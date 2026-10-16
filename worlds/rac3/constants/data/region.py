@@ -27,6 +27,15 @@ class RAC3REGIONDATA:
                  planet_special_offset: int = 0,
                  respawn_coords_address: int | None = None,
                  vendor_offset: int | None = 0):
+        """
+        :param idx: Plant's ID
+        :param planet_to_load_address: Address of the planet to be loaded into
+        :param pause_address: Address of the pause menu data for the current planet
+        :param planet_special_offset: Special offset used for specific planets
+        :param respawn_coords_address: Address of the respawn coordinate data for the current planet
+        :param vendor_offset: Address of the vendor data for the current planet
+        :rtype: RAC3REGIONDATA
+        """
         self.ID: int = idx
         self.PLANET_TO_LOAD: int = planet_to_load_address
         self.PAUSE_ADDRESS: int = pause_address
@@ -37,7 +46,7 @@ class RAC3REGIONDATA:
         self.ACCESS_ADDRESS: int = RAC3STATUS.INFOBOT_BASE + idx
 
     @staticmethod
-    def construct_planet(idx: int):
+    def construct_planet(idx: int) -> "RAC3REGIONDATA":
         """
         Generic planet constructor, makes each planet into region data given the data in the RAC3_REGION_DATA_TABLE
         """

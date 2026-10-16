@@ -12,7 +12,7 @@ class TestRandomWarpDeterminism(OuterWildsTestBase):
         super().world_setup(self.seed)
 
     def test_determinism(self):
-        self.assertListEqual(self.world.warps, [
+        self.assertListEqual(self.world.warps.mappings, [
             ('SS', 'ATT'),
             ('ATP', 'ET'),
             ('BHF', 'BHT'),

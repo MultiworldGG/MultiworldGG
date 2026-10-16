@@ -1,3 +1,7 @@
+# 1.1.5
+## Bug Fixes
+* Fixed an issue where the `seafoam` option for `shuffle_dungeons` did not actually reverse the seafoam entrances in game
+
 # 1.1.4
 ## Bug Fixes
 * Fixed an issue where the client could overwrite the entrances in data storage across multiple sessions

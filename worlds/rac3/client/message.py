@@ -18,7 +18,7 @@ class ClientMessage:
     locations: list[int] | None = None
 
     def __init__(self,
-                 cmd,
+                 cmd: str,
                  key: str | None = None,
                  keys: list[str] | None = None,
                  default: Any | None = None,
@@ -26,6 +26,17 @@ class ClientMessage:
                  operations: list[dict[str, Any]] | None = None,
                  status: ClientStatus | None = None,
                  locations: list[int] | None = None):
+        """Packages data into the message structure to be sent to the server.
+        :param cmd: Server Command
+        :param key: Data package Dictionary Key
+        :param keys: Data package Dictionary Keys
+        :param default: Default value to send if the operation fails
+        :param want_reply: request reply from the server
+        :param operations: numerical operation on the server data
+        :param status: Client Status
+        :param locations: Location List
+        :rtype: ClientMessage
+        """
         self.cmd = cmd
         self.key = key
         self.keys = keys

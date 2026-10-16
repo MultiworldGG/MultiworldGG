@@ -13,7 +13,8 @@ from .Locations import (MMZero3Location, location_data_table, location_name_grou
 from .Options import MMZero3Options, mmzero3_option_groups
 from .Regions import region_data_table
 from .Rom import MMZero3ProcedurePatch, MMZero3Settings, write_tokens
-from . import Data, Palettes
+from .data import Data
+from .randomizers import EnemyRando, Palettes
 from .Client import MMZero3Client
 
 import pkgutil
@@ -22,7 +23,7 @@ import os
 from worlds.Files import APProcedurePatch
 
 class MMZero3WebWorld(WebWorld):
-    bug_report_page = "https://github.com/brodieberger/ZeroArchipelago/"
+    bug_report_page = "https://github.com/brodieberger/MMZero3Archipelago/issues"
     option_groups = mmzero3_option_groups
     setup_en = Tutorial(
         "Multiworld Setup Guide",
@@ -36,7 +37,7 @@ class MMZero3WebWorld(WebWorld):
 
 class MMZero3World(World):
     """
-    Play as Zero, kill the robots and save the day
+    Play as Zero and fight through Neo Arcadia's Mutos Reploids to defeat Omega and stop Dr. Weil.
     """
 
     game = "Mega Man Zero 3"
@@ -58,6 +59,9 @@ class MMZero3World(World):
     def generate_early(self) -> None:
         self.roll_shop_prices()
         self.roll_palettes()
+        difficulty = (1.0, 1.5, 2.0)[self.options.enemy_difficulty.value]
+        self.enemies = EnemyRando.randomize(self.random, difficulty) \
+            if self.options.randomize_enemies else {}
 
         # Inform the Universal Tracker what the starting items are
         passthrough = None
@@ -67,6 +71,7 @@ class MMZero3World(World):
 
         if passthrough:
             self.starting_weapons = set(passthrough["starting_weapons"])
+            self.options.randomize_enemies.value = passthrough.get("randomize_enemies", 0)
         else:
             self.starting_weapons = set(self.options.starting_weapons.value)
 
@@ -146,6 +151,9 @@ class MMZero3World(World):
             self.get_location(location_name).place_locked_item(locked_item)
 
     def get_filler_item_name(self) -> str:
+        traps = sorted(self.options.enabled_traps.value)
+        if traps and self.random.randrange(100) < self.options.trap_percentage.value:
+            return f"{self.random.choice(traps)} Trap"
         return "100 Energy Crystals"
     
     def fill_slot_data(self) -> Dict[str, Any]:
@@ -157,6 +165,7 @@ class MMZero3World(World):
             "itemsanity": self.options.itemsanity.value,
             "extra_life_sanity": self.options.extra_life_sanity.value,
             "death_link": self.options.death_link.value,
+            "randomize_enemies": self.options.randomize_enemies.value,
         }
 
     ELF_PRICE_COSTS = (70, 100, 150, 200, 250, 300, 400, 500, 700)
@@ -239,6 +248,9 @@ class MMZero3World(World):
             self.multiworld.get_entrance("To Abandoned Research Laboratory", self.player),
             lambda state: state.has_all(stage_access_names, self.player),
         )
+        # Since its lame that important items could spawn here, prevent progressive items
+        for location in self.multiworld.get_region("Abandoned Research Laboratory", self.player).locations:
+            add_item_rule(location, lambda item: not item.advancement)
 
         # Location rules: Recoil Rod required
         for loc_name in [
@@ -311,6 +323,15 @@ class MMZero3World(World):
         self.add_location_rule("Giant Elevator (1) 045: 1st Passage High Ledges",
                                lambda state: state.has("Double Jump Foot Chip", self.player) and has_rod(state))
 
+        # You need to pogo off enemies for these ones.
+        if self.options.randomize_enemies:
+            for loc_name in [
+                "Old Residential Subtank: Top Left Past Bombers",
+                "Old Residential E-Crystal (13): Top Left Past Bombers",
+            ]:
+                self.add_location_rule(
+                    loc_name, lambda state: state.has("Double Jump Foot Chip", self.player) and has_rod(state))
+
         # Collectable 1-UP spawns in the new room
         self.add_location_rule("Resistance Base 1-UP: In Locked Room by Andrew",
                                lambda state: state.has("Disk 120: New Room Near Andrew", self.player))
@@ -320,7 +341,7 @@ class MMZero3World(World):
         
     def generate_output(self, output_directory: str) -> None:
         patch = MMZero3ProcedurePatch(player=self.player, player_name=self.player_name)
-        patch.write_file("basepatch.bsdiff4", pkgutil.get_data(__name__, "basepatch.bsdiff4"))
+        patch.write_file("basepatch.bsdiff4", pkgutil.get_data(__name__, "data/basepatch.bsdiff4"))
         write_tokens(self, patch)
         out_file_name = self.multiworld.get_out_file_name_base(self.player)
         patch.write(os.path.join(output_directory, f"{out_file_name}{patch.patch_file_ending}"))

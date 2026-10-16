@@ -165,7 +165,7 @@ class PokemonFRLGWorld(World):
     itempool: List[PokemonFRLGItem]
     pre_fill_items: List[PokemonFRLGItem]
     fly_destination_data: Dict[str, FlyData]
-    er_pairings: List[Tuple[str, str]] | None
+    er_pairings: List[Tuple[str, str]]
     er_entrances: List[Tuple[Entrance, Region]]
     moves_by_type: Dict[int, Set[int]]
     cerulean_cave_included: bool
@@ -201,7 +201,7 @@ class PokemonFRLGWorld(World):
         self.itempool = []
         self.pre_fill_items = []
         self.fly_destination_data = {}
-        self.er_pairings = None
+        self.er_pairings = []
         self.er_entrances = []
         self.moves_by_type = {}
         self.cerulean_cave_included = True
@@ -530,7 +530,7 @@ class PokemonFRLGWorld(World):
 
     def write_spoiler(self, spoiler_handle: TextIO) -> None:
         # Add entrances to the spoiler log if they are shuffled
-        if self.er_pairings:
+        if entrances_randomized(self):
             spoiler_handle.write(f"\n\nEntrances ({self.multiworld.player_name[self.player]}):\n\n")
             for entrance_name, exit_name in sorted(self.er_pairings):
                 entrance = self.get_entrance(entrance_name)
@@ -585,7 +585,7 @@ class PokemonFRLGWorld(World):
             for species, maps in species_locations.items():
                 hint_data[self.player][self.location_name_to_id[f"Pokedex - {species}"]] = ", ".join(sorted(maps))
 
-        if self.er_pairings is not None:
+        if entrances_randomized(self):
             set_hint_entrances(self)
             for region in self.get_regions():
                 assert isinstance(region, PokemonFRLGRegion)
@@ -718,7 +718,7 @@ class PokemonFRLGWorld(World):
 
                 slot_data["fly_destinations"][exit.name] = exit.connected_region.name
 
-        if self.er_pairings is not None:
+        if entrances_randomized(self):
             slot_data["entrances"] = {}
             for source, dest in self.er_pairings:
                 slot_data["entrances"][source] = self.get_entrance(source).connected_region.name

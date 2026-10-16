@@ -18,6 +18,8 @@ from ...constants import (
     MAX_NORMAL_CRATE_DROP_GROUPS,
     MAX_NORMAL_CRATE_DROPS,
     MAX_REQUIRED_RUN_WINS,
+    MINIMUM_ELITE_WAVE,
+    NUM_WAVES,
 )
 from ...loot_crates import BrotatoLootCrateGroup
 from .base import BrotatoTestDataSet
@@ -36,6 +38,7 @@ class BrotatoLootCrateTestOptions:
     num_legendary_crate_drops: int
     num_legendary_crate_drop_groups: int
     num_victories: int = 20
+    include_elites_in_logic: bool = False
 
     @property
     def options_dict(self) -> dict[str, Any]:
@@ -110,6 +113,7 @@ class BrotatoLootCrateTestDataSet(BrotatoTestDataSet):
                 f"LD={self.options.num_legendary_crate_drops}",
                 f"LG={self.options.num_legendary_crate_drop_groups}",
                 f"NV={self.options.num_victories}",
+                f"EL={self.options.include_elites_in_logic}",
             ]
         )
         if self.description:
@@ -123,6 +127,14 @@ class BrotatoLootCrateTestDataSet(BrotatoTestDataSet):
     def options_dict(self) -> dict[str, Any]:
         return self.options.options_dict
 
+    @property
+    def required_wave_for_common_crates(self) -> int:
+        return 1
+
+    @property
+    def required_wave_for_legendary_crates(self) -> int:
+        return MINIMUM_ELITE_WAVE if self.options.include_elites_in_logic else NUM_WAVES
+
 
 LOOT_CRATE_GROUP_DATA_SETS: list[BrotatoLootCrateTestDataSet] = [
     BrotatoLootCrateTestDataSet(
@@ -132,6 +144,30 @@ LOOT_CRATE_GROUP_DATA_SETS: list[BrotatoLootCrateTestDataSet] = [
             num_common_crate_drop_groups=5,
             num_legendary_crate_drops=10,
             num_legendary_crate_drop_groups=5,
+        ),
+        expected_common_groups=[
+            BrotatoLootCrateGroup(1, 2, 0),
+            BrotatoLootCrateGroup(2, 2, 4),
+            BrotatoLootCrateGroup(3, 2, 8),
+            BrotatoLootCrateGroup(4, 2, 12),
+            BrotatoLootCrateGroup(5, 2, 16),
+        ],
+        expected_legendary_groups=[
+            BrotatoLootCrateGroup(1, 2, 0),
+            BrotatoLootCrateGroup(2, 2, 4),
+            BrotatoLootCrateGroup(3, 2, 8),
+            BrotatoLootCrateGroup(4, 2, 12),
+            BrotatoLootCrateGroup(5, 2, 16),
+        ],
+    ),
+    BrotatoLootCrateTestDataSet(
+        description="Easily divisible, common and legendary same (10 crates), elites enabled",
+        options=BrotatoLootCrateTestOptions(
+            num_common_crate_drops=10,
+            num_common_crate_drop_groups=5,
+            num_legendary_crate_drops=10,
+            num_legendary_crate_drop_groups=5,
+            include_elites_in_logic=True,
         ),
         expected_common_groups=[
             BrotatoLootCrateGroup(1, 2, 0),

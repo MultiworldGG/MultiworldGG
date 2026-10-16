@@ -91,7 +91,7 @@ class TestFQ(OuterWildsTestBase):
     }
 
     def test_fq(self):
-        self.assertEqual(self.getLocationCount(), 108)  # 87(+3V) base game + 18 FQ locations
+        self.assertEqual(self.getLocationCount(), 110)  # 87(+3V) base game + 20 FQ locations
 
 
 class TestFQLogsanity(OuterWildsTestBase):
@@ -102,8 +102,8 @@ class TestFQLogsanity(OuterWildsTestBase):
 
     def test_fq_logsanity(self):
         # 87(+3V) base game default locations + 176 base game logsanity locations +
-        # 18 FQ default locations + 38 FQ logsanity locations
-        self.assertEqual(self.getLocationCount(), 322)
+        # 20 FQ default locations + 38 FQ logsanity locations
+        self.assertEqual(self.getLocationCount(), 324)
 
 
 class TestFC(OuterWildsTestBase):
@@ -165,10 +165,10 @@ class TestAllMods(OuterWildsTestBase):
         # 21 TO default locations +
         # 21 AC locations +
         # 18 HN2 locations +
-        # 18 FQ default locations +
+        # 20 FQ default locations +
         # 54 FC default locations +
         # 3 EH default locations
-        self.assertEqual(self.getLocationCount(), 245)
+        self.assertEqual(self.getLocationCount(), 247)
 
 
 class TestAllModsLogsanity(OuterWildsTestBase):
@@ -189,10 +189,10 @@ class TestAllModsLogsanity(OuterWildsTestBase):
         # 21 TO default locations + 44 TO logsanity locations +
         # 21 AC default locations + 39 AC logsanity locations +
         # 18 HN2 default locations + 30 HN2 logsanity locations +
-        # 18 FQ default locations + 38 FQ logsanity locations +
+        # 20 FQ default locations + 38 FQ logsanity locations +
         # 54 FC default locations + 118 FC logsanity locations +
         # 3 EH default locations + 8 EH logsanity locations
-        self.assertEqual(self.getLocationCount(), 739)
+        self.assertEqual(self.getLocationCount(), 741)
 
 
 # this is just to get an assertion on the maximum possible location count
@@ -216,10 +216,10 @@ class TestAllModsAndDLCLogsanity(OuterWildsTestBase):
         # 21 TO default locations + 44 TO logsanity locations +
         # 21 AC default locations + 39 AC logsanity locations +
         # 18 HN2 default locations + 30 HN2 logsanity locations +
-        # 18 FQ default locations + 38 FQ logsanity locations +
+        # 20 FQ default locations + 38 FQ logsanity locations +
         # 54 FC default locations + 118 FC logsanity locations
         # 3 EH default locations + 8 EH logsanity locations
-        self.assertEqual(self.getLocationCount(), 849)
+        self.assertEqual(self.getLocationCount(), 851)
 
 
 class RegressionTestACAndWarpRando(OuterWildsTestBase):

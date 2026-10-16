@@ -3,6 +3,7 @@
 {% block head %}
     <title>Game Lobbies</title>
     <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename="styles/lobby.css") }}" />
+    <script defer src="{{ url_for('static', filename='assets/lobbyList.js') }}"></script>
 {% endblock %}
 
 {% block body %}
@@ -99,6 +100,18 @@
         <div id="lobby-list-table" class="grass-island">
             <h2>Open Lobbies</h2>
             {% if lobbies %}
+                <div id="lobby-filters" hidden>
+                    <div class="lobby-title-search">
+                        <label for="lobby-title-search">Search by title</label>
+                        <input id="lobby-title-search" type="search" placeholder="Search lobbies…"
+                               aria-controls="lobby-table" />
+                    </div>
+                    <button type="button" id="hide-full-lobbies" class="lobby-filter-button"
+                            aria-pressed="false" aria-controls="lobby-table">Hide full lobbies</button>
+                    <button type="button" id="hide-password-lobbies" class="lobby-filter-button"
+                            aria-pressed="false" aria-controls="lobby-table">Hide password-protected lobbies</button>
+                </div>
+                <p id="lobby-filter-empty" class="no-lobbies" role="status" hidden>No lobbies match your search and filters.</p>
                 <table id="lobby-table">
                     <thead>
                         <tr>
@@ -120,7 +133,8 @@
                             {% set g = meta.get('generator_options', {}) %}
                             {% set hm = s.get('hint_mode', 'default') %}
                             {% set hc = s.get('hint_cost', 10) %}
-                            <tr>
+                            <tr data-full="{{ 'true' if lobby.max_players > 0 and player_counts.get(lobby.id, 0) >= lobby.max_players else 'false' }}"
+                                data-password="{{ 'true' if lobby.password_hash else 'false' }}">
                                 <td data-label="Lobby">{{ lobby.title }}</td>
                                 <td data-label="Host">{{ owner_names.get(lobby.id, '?') }}</td>
                                 <td data-label="Players">

@@ -1,0 +1,492 @@
+{
+  "schema": 1,
+  "bosses": [
+    "Boss: Bell Beast",
+    "Boss: Bell Eater",
+    "Boss: Broodmother",
+    "Boss: Cogwork Dancers",
+    "Boss: Crawfather",
+    "Boss: Crust King Khann",
+    "Boss: Disgraced Chef Lugoli",
+    "Boss: Father of the Flame",
+    "Boss: First Sinner",
+    "Boss: Forebrothers Signis & Gron",
+    "Boss: Fourth Chorus",
+    "Boss: Grand Mother Silk",
+    "Boss: Great Conchflies",
+    "Boss: Groal the Great",
+    "Boss: Gurr the Outcast",
+    "Boss: Lace (Cradle)",
+    "Boss: Last Judge",
+    "Boss: Lost Garmond",
+    "Boss: Moorwing",
+    "Boss: Moss Mother",
+    "Boss: Nyleth",
+    "Boss: Phantom",
+    "Boss: Pinstress",
+    "Boss: Plasmified Zango",
+    "Boss: Raging Conchfly",
+    "Boss: Second Sentinel",
+    "Boss: Shrine Guardian Seth",
+    "Boss: Sister Splinter",
+    "Boss: Skarrsinger Karmelita",
+    "Boss: Skull Tyrant (Bone Bottom)",
+    "Boss: Skull Tyrant (The Marrow)",
+    "Boss: The Unravelled",
+    "Boss: Tormented Trobbio",
+    "Boss: Trobbio",
+    "Boss: Voltvyrm",
+    "Boss: Watcher at the Edge",
+    "Boss: Widow",
+    "Boss: Summoned Saviour",
+    "Boss: Lace (Deep Docks)"
+  ],
+  "wishes": [
+    "Building Materials",
+    "Building Materials (Bridge)",
+    "Belltown House Start",
+    "Belltown House Mid",
+    "Songclave Donation 1",
+    "Songclave Donation 2",
+    "Building Materials (Statue)",
+    "Fine Pins",
+    "Song Pilgrim Cloaks",
+    "Shiny Bell Goomba",
+    "Rock Rollers",
+    "Skull King",
+    "Beastfly Hunt",
+    "Ant Trapper",
+    "Broodmother Hunt",
+    "Save City Merchant",
+    "Save City Merchant Bridge",
+    "Save Sherma",
+    "Save Courier Short",
+    "Save Courier Tall",
+    "Garmond Black Threaded",
+    "Tormented Trobbio",
+    "Song Knight",
+    "Shakra Final Quest",
+    "Save the Fleas Pre",
+    "Mossberry Collection Pre",
+    "Pinstress Battle Pre",
+    "Flea Games Pre",
+    "Crow Feathers Pre",
+    "Courier Delivery Bonebottom",
+    "Courier Delivery Pilgrims Rest",
+    "Courier Delivery Songclave",
+    "Courier Delivery Fleatopia",
+    "Courier Delivery Fixer",
+    "Courier Delivery Dustpens Slave",
+    "Courier Delivery Mask Maker",
+    "Great Gourmand",
+    "A Pinsmiths Tools",
+    "Brolly Get",
+    "Mr Mushroom",
+    "Steel Sentinel",
+    "Shell Flowers",
+    "Extractor Blue",
+    "Extractor Blue Worms",
+    "Huntress Quest",
+    "Wood Witch Curse",
+    "Doctor Curse Cure"
+  ],
+  "wish_stage_aliases": {
+    "Steel Sentinel Pt2": "Steel Sentinel",
+    "Huntress Quest Runt": "Huntress Quest",
+    "Save the Fleas": "Save the Fleas Pre",
+    "Mossberry Collection 1": "Mossberry Collection Pre",
+    "Pinstress Battle": "Pinstress Battle Pre",
+    "Flea Games": "Flea Games Pre",
+    "Crow Feathers": "Crow Feathers Pre"
+  },
+  "wish_notices": [
+    "Save the Fleas Pre",
+    "Mossberry Collection Pre",
+    "Pinstress Battle Pre",
+    "Flea Games Pre",
+    "Crow Feathers Pre"
+  ],
+  "npc_wishes": [
+    "Steel Sentinel",
+    "Steel Sentinel Pt2",
+    "Great Gourmand",
+    "Wood Witch Curse",
+    "Doctor Curse Cure",
+    "Huntress Quest",
+    "Huntress Quest Runt",
+    "Extractor Blue",
+    "Extractor Blue Worms",
+    "A Pinsmiths Tools",
+    "Brolly Get",
+    "Mr Mushroom",
+    "Shell Flowers",
+    "Courier Delivery Bonebottom",
+    "Courier Delivery Pilgrims Rest",
+    "Courier Delivery Songclave",
+    "Courier Delivery Fleatopia",
+    "Courier Delivery Fixer",
+    "Courier Delivery Dustpens Slave",
+    "Courier Delivery Mask Maker"
+  ],
+  "fixed_wish_finishes": [
+    "Save City Merchant",
+    "Save City Merchant Bridge",
+    "Save Sherma",
+    "Save Courier Short",
+    "Save Courier Tall",
+    "Garmond Black Threaded",
+    "Tormented Trobbio",
+    "Song Knight",
+    "Shakra Final Quest"
+  ],
+  "boss_flags": {
+    "DefeatedSwampShaman": "Boss: Groal the Great",
+    "defeatedAntQueen": "Boss: Skarrsinger Karmelita",
+    "defeatedAntTrapper": "Boss: Gurr the Outcast",
+    "defeatedBellBeast": "Boss: Bell Beast",
+    "defeatedBroodMother": "Boss: Broodmother",
+    "defeatedCogworkDancers": "Boss: Cogwork Dancers",
+    "defeatedCoralDrillerSolo": "Boss: Raging Conchfly",
+    "defeatedCoralDrillers": "Boss: Great Conchflies",
+    "defeatedCoralKing": "Boss: Crust King Khann",
+    "defeatedCrowCourt": "Boss: Crawfather",
+    "defeatedDockForemen": "Boss: Forebrothers Signis & Gron",
+    "defeatedFirstWeaver": "Boss: First Sinner",
+    "defeatedFlowerQueen": "Boss: Nyleth",
+    "defeatedGreyWarrior": "Boss: Watcher at the Edge",
+    "defeatedLaceTower": "Boss: Lace (Cradle)",
+    "defeatedLastJudge": "Boss: Last Judge",
+    "defeatedMossMother": "Boss: Moss Mother",
+    "defeatedPhantom": "Boss: Phantom",
+    "defeatedRoachkeeperChef": "Boss: Disgraced Chef Lugoli",
+    "defeatedSeth": "Boss: Shrine Guardian Seth",
+    "defeatedSongChevalierBoss": "Boss: Second Sentinel",
+    "defeatedSongGolem": "Boss: Fourth Chorus",
+    "defeatedSplinterQueen": "Boss: Sister Splinter",
+    "defeatedTormentedTrobbio": "Boss: Tormented Trobbio",
+    "defeatedTrobbio": "Boss: Trobbio",
+    "defeatedVampireGnatBoss": "Boss: Moorwing",
+    "defeatedWispPyreEffigy": "Boss: Father of the Flame",
+    "defeatedZapCoreEnemy": "Boss: Voltvyrm",
+    "garmondBlackThreadDefeated": "Boss: Lost Garmond",
+    "skullKingDefeated": "Boss: Skull Tyrant (The Marrow)",
+    "skullKingKilled": "Boss: Skull Tyrant (Bone Bottom)",
+    "spinnerDefeated": "Boss: Widow",
+    "wardBossDefeated": "Boss: The Unravelled",
+    "defeatedLace1": "Boss: Lace (Deep Docks)"
+  },
+  "boss_story_components": {
+    "belltown|hanging_bell_house 2|spinnerDefeated": "Boss: Widow",
+    "belltown|Black Thread States Thread Only Variant/Normal World/Song Region Haunted|spinnerDefeated": "Boss: Widow",
+    "belltown|Cutscene Loader|spinnerDefeated": "Boss: Widow",
+    "belltown|Town States/Spinner Undefeated/Illuminated Thread Group|spinnerDefeated": "Boss: Widow",
+    "belltown|Mapper Control/Mapper Scenery/Mapper_lamp|spinnerDefeated": "Boss: Widow",
+    "belltown|Cutscene States|spinnerDefeated": "Boss: Widow",
+    "belltown|Cutscene States/No Cutscene/Area Title Controller|spinnerDefeated": "Boss: Widow",
+    "belltown|Cutscene States/No Cutscene/Area Title Controller (1)|spinnerDefeated": "Boss: Widow",
+    "belltown|Black Thread States Thread Only Variant/Normal World/Song Region Standard|spinnerDefeated": "Boss: Widow",
+    "belltown|Black Thread States Thread Only Variant/Normal World/silkflys|spinnerDefeated": "Boss: Widow",
+    "belltown|hanging_bell_house_Pinsmith|spinnerDefeated": "Boss: Widow",
+    "belltown|Town States|spinnerDefeated": "Boss: Widow",
+    "belltown|Mapper Control/Mapper Scenery/Mapper_Hang_Rings|spinnerDefeated": "Boss: Widow",
+    "belltown|bell_store|spinnerDefeated": "Boss: Widow",
+    "belltown|_SceneManager|spinnerDefeated": "Boss: Widow",
+    "belltown_04|Audio Widow distant harp|spinnerDefeated": "Boss: Widow",
+    "belltown_06|Black Thread States Thread Only Variant/Normal World/Illuminated Thread Group|spinnerDefeated": "Boss: Widow",
+    "belltown_07|Black Thread States Thread Only Variant/Normal World/Illuminated Thread Group|spinnerDefeated": "Boss: Widow",
+    "bone_06|Shell Fossil Mimic AppearVariant|defeatedLaceTower": "Boss: Lace (Cradle)",
+    "bone_11|Pilgrim 03 (4)|defeatedBellBeast": "Boss: Bell Beast",
+    "bone_11|Pilgrim 03 (2)|defeatedBellBeast": "Boss: Bell Beast",
+    "bone_12|Black Thread States/Normal World/Jail Scene 2|spinnerDefeated": "Boss: Widow",
+    "bone_12|Black Thread States/Normal World/Pin Gallery States|IsPinGallerySetup": "Boss: Widow",
+    "bonetown|Black Thread States/Normal World/Citadel Song Pilgrim Corpses|spinnerDefeated": "Boss: Widow",
+    "bonetown|Black Thread States/Normal World/bonebottom_quest_board|defeatedBellBeast": "Boss: Bell Beast",
+    "dock_02|Bone Circler Vicious (2)|defeatedDockForemen": "Boss: Forebrothers Signis & Gron",
+    "dock_02|Shield Dockworker (1)|spinnerDefeated": "Boss: Widow",
+    "dock_02|Bone Circler Vicious (1)|defeatedDockForemen": "Boss: Forebrothers Signis & Gron",
+    "dock_02b|Dock Guard Control/Dock Guard Scene|defeatedDockForemen": "Boss: Forebrothers Signis & Gron",
+    "dock_02b|Dock Guard Control/Enemy Scene|defeatedDockForemen": "Boss: Forebrothers Signis & Gron",
+    "greymoor_05|Garmond Scene|defeatedVampireGnatBoss": "Boss: Moorwing",
+    "halfway_01|Black Thread States Thread Only Variant/Normal World/Patrons/HH Patron Right|spinnerDefeated": "Boss: Widow",
+    "mosstown_02|Black Thread States Thread Only Variant/Normal World/Thick Silk Vines|defeatedBellBeast": "Boss: Bell Beast",
+    "mosstown_02|Black Thread States Thread Only Variant/Normal World/Thick Silk Vines (1)|defeatedBellBeast": "Boss: Bell Beast",
+    "shadow_23|Rosary Pilgrim|DefeatedSwampShaman": "Boss: Groal the Great",
+    "shellwood_15|Audio Widow distant harp|spinnerDefeated": "Boss: Widow",
+    "song_24|Black Thread States/Normal World/Enemy Control|defeatedCogworkDancers": "Boss: Cogwork Dancers",
+    "tut_01|Citadel Song Pilgrim Corpses|spinnerDefeated": "Boss: Widow",
+    "tut_03|Black Thread States/Black Thread World/Snails Act 3 Whispers|spinnerDefeated": "Boss: Widow",
+    "wisp_02|Wisp Farmers/Farmer Wisp (2)|defeatedWispPyreEffigy": "Boss: Father of the Flame",
+    "wisp_02|Wisp Farmers/Farmer Wisp|defeatedWispPyreEffigy": "Boss: Father of the Flame",
+    "wisp_02|Wisp Farmers/Farmer Wisp (1)|defeatedWispPyreEffigy": "Boss: Father of the Flame",
+    "wisp_02|Wisp Farmers/Farmer Wisp Immolater Variant (2)|defeatedWispPyreEffigy": "Boss: Father of the Flame",
+    "wisp_02|Wisp Farmers/Farmer Wisp Immolater Variant (3)|defeatedWispPyreEffigy": "Boss: Father of the Flame",
+    "wisp_02|Wisp Farmers/Farmer Wisp Immolater Variant|defeatedWispPyreEffigy": "Boss: Father of the Flame",
+    "wisp_07|Wisp Farmers (1)/Farmer Wisp|defeatedWispPyreEffigy": "Boss: Father of the Flame",
+    "wisp_07|Wisp Farmers (1)/Farmer Wisp (1)|defeatedWispPyreEffigy": "Boss: Father of the Flame",
+    "wisp_07|Wisp Farmers (1)/Farmer Wisp Immolater Variant|defeatedWispPyreEffigy": "Boss: Father of the Flame",
+    "wisp_07|Wisp Farmers (1)/Farmer Wisp Immolater Variant (1)|defeatedWispPyreEffigy": "Boss: Father of the Flame"
+  },
+  "boss_story_actions": {
+    "ant_04_mid|Black Thread States Thread Only Variant/Normal World/Battle Scene/Mapper NPC|Dialogue|Shellwood State?|spinnerDefeated": "Boss: Widow",
+    "ant_20|Mapper States/Here/Mapper Sit NPC|Dialogue|Shellwood Generic|spinnerDefeated": "Boss: Widow",
+    "belltown|Mapper Control|Control|Check|spinnerDefeated": "Boss: Widow",
+    "belltown|Music Control|Control|Check|spinnerDefeated": "Boss: Widow",
+    "belltown|Webbed Hero|Web Control|Init|spinnerDefeated": "Boss: Widow",
+    "belltown|Mapper Control/Shakra Away/Mapper NPC|Dialogue|Shellwood State?|spinnerDefeated": "Boss: Widow",
+    "belltown|Mapper Control/Shakra Resting/Mapper Sit NPC|Dialogue|Shellwood Generic|spinnerDefeated": "Boss: Widow",
+    "belltown|Town States/Spinner Defeated/Bagpipers Not Here/Belltown Shop NPC|Dialogue|Meet Dialogue|spinnerDefeated": "Boss: Widow",
+    "belltown|Town States/Spinner Defeated/Bagpipers Not Here/Belltown Greeter NPC|Dialogue|Meet|spinnerDefeated": "Boss: Widow",
+    "belltown_basement_03|Group/Bell Hermit|Dialogue|Branch Check|spinnerDefeated": "Boss: Widow",
+    "belltown_room_pinsmith|Plinney Inside|Dialogue|Meet Dialogue|spinnerDefeated": "Boss: Widow",
+    "belltown_room_relic|relic_dealer/Relic Dealer NPC|Dialogue|Meet Dlg|spinnerDefeated": "Boss: Widow",
+    "bellway_01|Black Thread States Thread Only Variant/Normal World/Bellway Pilgrim Stuff/Bellway Pilgrim|Behaviour|Marrow Dlg|defeatedBellBeast": "Boss: Bell Beast",
+    "bone_04|Mapper NPC|Dialogue|Shellwood State?|spinnerDefeated": "Boss: Widow",
+    "bone_east_01|Mapper NPC|Dialogue|Shellwood State?|spinnerDefeated": "Boss: Widow",
+    "bone_east_10|Black Thread States Thread Only Variant/Normal World/Pilgrim NPC Scene|Control|Check|spinnerDefeated": "Boss: Widow",
+    "bone_east_21|Mapper Sit NPC|Dialogue|Shellwood Generic|spinnerDefeated": "Boss: Widow",
+    "bonetown|Churchkeeper Intro Scene|Control|Killed Mossmother?|defeatedMossMother": "Boss: Moss Mother",
+    "bonetown|Churchkeeper Intro Scene|Control|Init|spinnerDefeated": "Boss: Widow",
+    "bonetown|Mapper Control|Control|Check|defeatedBellBeast": "Boss: Bell Beast",
+    "bonetown|Mapper Control|Control|Check|spinnerDefeated": "Boss: Widow",
+    "bonetown|Black Thread States/Normal World/bonebottom_quest_board/complete/Fixer NPC Standing|Conversation|Init|defeatedBellBeast": "Boss: Bell Beast",
+    "bonetown|Churchkeeper Intro Scene/Churchkeeper|Conversation|Talk 03|defeatedBellBeast": "Boss: Bell Beast",
+    "bonetown|Churchkeeper Intro Scene/Churchkeeper|Conversation|Face Hero Init?|defeatedBellBeast": "Boss: Bell Beast",
+    "bonetown|Mapper Control/Shakra Resting/Mapper Sit NPC|Dialogue|Shellwood Generic|spinnerDefeated": "Boss: Widow",
+    "bonetown|Mapper Control/Shakra Away/Mapper NPC|Dialogue|Shellwood State?|spinnerDefeated": "Boss: Widow",
+    "coral_12|Mapper NPC (1)|Dialogue|Shellwood State?|spinnerDefeated": "Boss: Widow",
+    "coral_40|Mapper Sit NPC|Dialogue|Shellwood Generic|spinnerDefeated": "Boss: Widow",
+    "crawl_01|Mapper NPC|Dialogue|Shellwood State?|spinnerDefeated": "Boss: Widow",
+    "dust_10|Mapper Sit NPC|Dialogue|Shellwood Generic|spinnerDefeated": "Boss: Widow",
+    "greymoor_02|Mapper Sit NPC|Dialogue|Shellwood Generic|spinnerDefeated": "Boss: Widow",
+    "greymoor_05|Garmond Scene/Garmond Sleep NPC|Behaviour|Talk State?|defeatedVampireGnatBoss": "Boss: Moorwing",
+    "greymoor_07|Black Thread States Thread Only Variant/Normal World/Garmond Scene|Control|Check|defeatedVampireGnatBoss": "Boss: Moorwing",
+    "greymoor_08_caravan|Caravan/Caravan Troupe Leader Greymoor NPC|Dialogue|Convo Choice|spinnerDefeated": "Boss: Widow",
+    "halfway_01|_NPCs/HH Bartender|Dialogue|General Convos|spinnerDefeated": "Boss: Widow",
+    "halfway_01|_NPCs/Hunter Fan Control/Nuu|Dialogue|Journal Hint|defeatedGreyWarrior": "Boss: Watcher at the Edge",
+    "halfway_01|_NPCs/Hunter Fan Control/Nuu|Dialogue|Journal Hint|defeatedZapCoreEnemy": "Boss: Voltvyrm",
+    "mosstown_02c|moss_hut_set/NPC Scene/Moss Creep NPC|Conversation Control|Meet|spinnerDefeated": "Boss: Widow",
+    "peak_02|Mapper NPC|Dialogue|Shellwood State?|spinnerDefeated": "Boss: Widow",
+    "room_forge|_NPCs/Forge Daughter|Dialogue|Talk Dlg 3|spinnerDefeated": "Boss: Widow",
+    "shadow_23|Mapper Sit NPC|Dialogue|Shellwood Generic|spinnerDefeated": "Boss: Widow",
+    "shellwood_16|Scene Control/Mapper NPC|Dialogue|Shellwood State?|spinnerDefeated": "Boss: Widow",
+    "song_enclave|Black Thread States/Normal World/Enclave States/States/Level 1/Enclave Simple NPC Tall|State Control|Check|defeatedLaceTower": "Boss: Lace (Cradle)",
+    "song_enclave|Black Thread States/Normal World/Enclave States/States/Level 2/Enclave Simple NPC Short Horned|Met State|Check|defeatedLaceTower": "Boss: Lace (Cradle)",
+    "song_enclave|Black Thread States/Normal World/Enclave States/States/Level 1/Enclave Caretaker|Dialogue|Dlg Choice|defeatedLaceTower": "Boss: Lace (Cradle)",
+    "song_enclave|Black Thread States/Normal World/Enclave States/States/Level 2/Garmond Control/Garmond Scene/Garmond Sleep NPC|Behaviour|Talk State?|defeatedVampireGnatBoss": "Boss: Moorwing"
+  },
+  "donations": [
+    [
+      "Building Materials",
+      "Wish: Bone Bottom Repairs",
+      "Room Event: event:mapper/reviewed:bone-bottom-repairs-completed",
+      [
+        "Room Event: event:mapper/reviewed:bone-bottom-shards-farmable",
+        "Room Event: event:mapper/reviewed:bone-bottom-repairs-capacity"
+      ]
+    ],
+    [
+      "Building Materials (Bridge)",
+      "Wish: A Lifesaving Bridge",
+      "Room Event: event:mapper/reviewed:bone-bottom-bridge-completed",
+      [
+        "Room Event: event:mapper/reviewed:bone-bottom-shards-farmable",
+        "Room Event: event:mapper/reviewed:bone-bottom-bridge-capacity"
+      ]
+    ],
+    [
+      "Building Materials (Statue)",
+      "Wish: An Icon of Hope",
+      "Room Event: event:mapper/reviewed:bone-bottom-statue-completed",
+      [
+        "Room Event: event:mapper/reviewed:bone-bottom-shards-farmable",
+        "Room Event: event:mapper/reviewed:bone-bottom-statue-capacity"
+      ]
+    ],
+    [
+      "Belltown House Start",
+      "Wish: Restoration of Bellhart",
+      "Room Event: event:mapper/9bc588fb-af09-44b2-b174-6d3412d5bd5c",
+      []
+    ],
+    [
+      "Belltown House Mid",
+      "Wish: Bellhart's Glory",
+      "Room Event: event:mapper/7f55d1a9-b427-462d-a1f8-40653ea100f8",
+      []
+    ],
+    [
+      "Songclave Donation 1",
+      "Wish: Building Up Songclave",
+      "Room Event: event:mapper/reviewed:songclave-first-donation-completed",
+      []
+    ],
+    [
+      "Songclave Donation 2",
+      "Wish: Strengthening Songclave",
+      "Room Event: event:mapper/reviewed:songclave-second-donation-completed",
+      []
+    ]
+  ],
+  "collections": [
+    [
+      "Fine Pins",
+      "Wish: Fine Pins",
+      "fine-pins"
+    ],
+    [
+      "Song Pilgrim Cloaks",
+      "Wish: Cloaks of the Choir",
+      "choir-cloaks"
+    ]
+  ],
+  "npc_deliveries": [
+    [
+      "Courier Delivery Bonebottom",
+      "Wish: Bone Bottom Supplies",
+      "bonebottom"
+    ],
+    [
+      "Courier Delivery Pilgrims Rest",
+      "Wish: Pilgrim's Rest Supplies",
+      "pilgrims-rest"
+    ],
+    [
+      "Courier Delivery Songclave",
+      "Wish: Songclave Supplies",
+      "songclave"
+    ],
+    [
+      "Courier Delivery Fleatopia",
+      "Wish: Fleatopia Supplies",
+      "fleatopia"
+    ],
+    [
+      "Courier Delivery Fixer",
+      "Wish: Survivor's Camp Supplies",
+      "fixer"
+    ],
+    [
+      "Courier Delivery Dustpens Slave",
+      "Wish: Queen's Egg",
+      "queens-egg"
+    ],
+    [
+      "Courier Delivery Mask Maker",
+      "Wish: Liquid Lacquer",
+      "liquid-lacquer"
+    ]
+  ],
+  "story_gates": [
+    [
+      "Boss: Summoned Saviour",
+      [
+        "aa48b17e-dd99-40c9-8d5f-dfaa642a64a4"
+      ],
+      [
+        "da476bc2-0b8d-4b9c-b040-2e0f75c197b8"
+      ],
+      []
+    ],
+    [
+      "Boss: Cogwork Dancers",
+      [
+        "282aae6f-3964-4935-93ea-5beaa6ef9fa4"
+      ],
+      [
+        "b271d4ca-faa9-4104-b801-dec2e1914ba5",
+        "75b9d46a-1a7f-4f87-9ac9-4651468dcb1d",
+        "7f55d1a9-b427-462d-a1f8-40653ea100f8"
+      ],
+      [
+        "Magnetite Dice",
+        "Wish: Bellhart's Glory"
+      ]
+    ],
+    [
+      "Boss: Bell Beast",
+      [
+        "95f1f75b-e452-4709-9fbc-ad8785ac520a",
+        "Event: Bell Beast Defeated"
+      ],
+      [
+        "Room Node: wish-menus/bone-bottom-wish-wall#room",
+        "reviewed:courier-bonebottom-accepted",
+        "85191ff4-7a5c-4364-ab2c-0f4821b21a7e",
+        "Event: Other Courier Delivery Completed"
+      ],
+      [
+        "Pin Purchase: Bellway Pins"
+      ]
+    ],
+    [
+      "Boss: Fourth Chorus",
+      [
+        "e6e6d899-9def-42c2-ab77-53db34ced41d"
+      ],
+      [
+        "reviewed:savage-beastfly-accepted"
+      ],
+      []
+    ],
+    [
+      "Boss: Skull Tyrant (The Marrow)",
+      [
+        "2dba90b5-6ec3-4ec9-8016-60c859aecbd7"
+      ],
+      [
+        "f09ff4af-eadc-4167-ac83-aa27cf52e966"
+      ],
+      [
+        "Boss: Skull Tyrant (Bone Bottom)"
+      ]
+    ],
+    [
+      "Boss: Widow",
+      [
+        "f00c4d34-3d84-4746-b034-961203e08150",
+        "Event: Widow Defeated"
+      ],
+      [
+        "Room Node: wish-menus/bellhart-wish-wall#room",
+        "Room Node: bellhart/bellhart-relic-shop#room",
+        "Room Node: bellhart/bellhart-pinsmith#room",
+        "381b6434-4c93-41ff-ad14-61d7bcf173f8",
+        "51824349-6447-4014-a1f1-eb98e51edca7",
+        "47e3b04b-3045-499b-8ed5-17c759d4aa5d",
+        "014f9eaa-443a-4ba0-88df-061b2e12f71b",
+        "d85ceaa1-6ce6-483f-8f82-cb6b72ad15ff",
+        "reviewed:missing-brother-accepted",
+        "reviewed:bellhart-greeter-met",
+        "reviewed:silver-bells-accepted",
+        "reviewed:savage-beastfly-accepted",
+        "reviewed:shakra-shop-belltown",
+        "reviewed:courier-service-ready",
+        "reviewed:crawbug-clearing-accepted",
+        "432aada0-750e-4d30-a37f-bc522aa000b6",
+        "d847827f-61c9-4864-a5c1-e793e8f5e5b6",
+        "9bc588fb-af09-44b2-b174-6d3412d5bd5c",
+        "7f55d1a9-b427-462d-a1f8-40653ea100f8",
+        "Event: Rite of Rebirth Completed"
+      ],
+      [
+        "Multibinder",
+        "Frey (Bellhart) - Spool Fragment",
+        "Bellhart Shop - Memory Locket",
+        "Wish: Restoration of Bellhart",
+        "Wish: Bellhart's Glory",
+        "Bellhart - Map Purchase",
+        "Loddie - Tool Pouch"
+      ]
+    ],
+    [
+      "Boss: Groal the Great",
+      [
+        "c072b5f9-82a5-469b-8bf6-b91bb53e5180"
+      ],
+      [
+        "c376d00f-e0b5-40e2-8235-4adf83525a32"
+      ],
+      []
+    ]
+  ]
+}

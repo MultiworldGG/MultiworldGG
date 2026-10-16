@@ -36,7 +36,7 @@ class WarioWareWeb(WebWorld):
 
     setup_en = Tutorial(
         "Multiworld Setup Guide",
-        f"A guide to playing {GAME_NAME} with Archipelago",
+        f"A guide to playing {GAME_NAME} with MultiworldGG",
         "English",
         "setup_en.md",
         "setup/en",
@@ -46,7 +46,7 @@ class WarioWareWeb(WebWorld):
 
 class WarioWareWorld(World):
     """
-    wa.
+    WarioWare, Inc.: Mega Microgames is the first ever WarioWare series title, released in 2003. It is about rapid completion of "microgames", short minigames given to the player consecutively and with increasing speed per each game complete.
     """
     game = GAME_NAME
     web = WarioWareWeb()

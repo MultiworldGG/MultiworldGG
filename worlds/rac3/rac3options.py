@@ -7,11 +7,15 @@ from worlds.rac3.constants.options import RAC3OPTION
 from worlds.rac3.options.arena_options import Arena
 from worlds.rac3.options.armor_upgrade_options import ArmorUpgrade
 from worlds.rac3.options.armor_vendor_options import ArmorVendors
+from worlds.rac3.options.bonus_vidcomic_health_options import BonusVidComicHealthUpgrades
 from worlds.rac3.options.clank_options import ClankOptions
 from worlds.rac3.options.exclude_options import RAC3ExcludeLocations
+from worlds.rac3.options.filler_magnitude_options import FillerMagnitude
 from worlds.rac3.options.filler_weight_options import FillerWeight
+from worlds.rac3.options.generation_behavior_options import GenerationBehavior
 from worlds.rac3.options.helpdesk_options import HelpDesk
 from worlds.rac3.options.multiplier_options import BoltAndXPMultiplier
+from worlds.rac3.options.deathlink_behavior_options import DeathlinkBehavior
 from worlds.rac3.options.nanotech_limitation_options import NanotechLimitation
 from worlds.rac3.options.nanotech_options import NanotechMilestones
 from worlds.rac3.options.ngplus_item_options import NGPlusItems
@@ -33,13 +37,16 @@ from worlds.rac3.options.skillpoints_options import SkillPoints
 from worlds.rac3.options.speedups_options import Speedups
 from worlds.rac3.options.starting_weapons_options import StartingWeapons
 from worlds.rac3.options.titanium_bolts_options import TitaniumBolts
+from worlds.rac3.options.trap_magitude_options import TrapMagnitude
 from worlds.rac3.options.trap_weight_options import TrapWeight
 from worlds.rac3.options.traps_options import EnableTraps
 from worlds.rac3.options.trophies_options import Trophies
 from worlds.rac3.options.vendor_access_options import VendorAccess
+from worlds.rac3.options.vidcomic_health_options import VidComicHealthUpgrades
 from worlds.rac3.options.vidcomics_options import VidComics
 from worlds.rac3.options.vr_challenges_options import VRChallenges
 from worlds.rac3.options.weapon_level_options import WeaponLevels
+from worlds.rac3.options.weapon_mods_options import WeaponMods
 from worlds.rac3.options.weapon_vendors_options import WeaponVendors
 
 
@@ -57,13 +64,17 @@ class RaC3Options(PerGameCommonOptions):
     """YAML Options for RAC3"""
     deathlink: DeathLink
     start_inventory_from_pool: StartInventoryPool
+    generation_behavior: GenerationBehavior
     starting_weapons: StartingWeapons
     bolt_and_xp_multiplier: BoltAndXPMultiplier
     progressive_weapons: ProgressiveWeapons
+    weapon_mods: WeaponMods
     armor_upgrade: ArmorUpgrade
     filler_weight: FillerWeight
     traps_enabled: EnableTraps
     trap_weight: TrapWeight
+    trap_magnitude: TrapMagnitude
+    filler_magnitude: FillerMagnitude
     weapon_vendors: WeaponVendors
     skill_points: SkillPoints
     trophies: Trophies
@@ -94,13 +105,18 @@ class RaC3Options(PerGameCommonOptions):
     helpdesk: HelpDesk
     vendor_access: VendorAccess
     weapon_level_locations: WeaponLevels
+    bonus_vidcomic_health: BonusVidComicHealthUpgrades
+    vidcomic_health_upgrades: VidComicHealthUpgrades
+    deathlink_behavior: DeathlinkBehavior
 
 
 rac3_option_groups = [
-    OptionGroup("Generic Options", [
+    OptionGroup("Game Options", [
         ProgressionBalancing,
         Accessibility,
         DeathLink,
+        DeathlinkBehavior,
+        GenerationBehavior,
     ]),
     OptionGroup("RAC3 Game Options", [
         Shortcuts,
@@ -113,10 +129,14 @@ rac3_option_groups = [
         StartingWeapons,
         NGPlusItems,
         ProgressiveWeapons,
+        WeaponMods,
         ArmorUpgrade,
+        BonusVidComicHealthUpgrades,
         ClankOptions,
         EnableTraps,
+        TrapMagnitude,
         TrapWeight,
+        FillerMagnitude,
         FillerWeight,
     ]),
     OptionGroup("RAC3 Location Options", [
@@ -131,6 +151,7 @@ rac3_option_groups = [
         WeaponLevels,
         Rangers,
         VidComics,
+        VidComicHealthUpgrades,
         VRChallenges,
         Arena,
         SewerCrystals,
@@ -156,9 +177,11 @@ rac3_option_groups = [
 slot_data_options: list[str] = [
     RAC3OPTION.DEATHLINK,
     RAC3OPTION.START_INVENTORY_FROM_POOL,
+    RAC3OPTION.GENERATION_BEHAVIOR,
     RAC3OPTION.STARTING_WEAPONS,
     RAC3OPTION.BOLT_AND_XP_MULTIPLIER,
     RAC3OPTION.PROGRESSIVE_WEAPONS,
+    RAC3OPTION.WEAPON_MODS,
     RAC3OPTION.NGPLUS_ITEMS,
     RAC3OPTION.NGPLUS_START,
     RAC3OPTION.ARMOR_UPGRADE,
@@ -174,6 +197,8 @@ slot_data_options: list[str] = [
     RAC3OPTION.PLAYER_SKIN,
     RAC3OPTION.ENABLE_TRAPS,
     RAC3OPTION.TRAP_WEIGHT,
+    RAC3OPTION.TRAP_MAGNITUDE,
+    RAC3OPTION.FILLER_MAGNITUDE,
     RAC3OPTION.RANGERS,
     RAC3OPTION.ARENA,
     RAC3OPTION.VIDCOMICS,
@@ -193,4 +218,7 @@ slot_data_options: list[str] = [
     RAC3OPTION.HELP_DESK,
     RAC3OPTION.WEAPON_LEVEL_LOCATIONS,
     RAC3OPTION.VENDOR_ACCESS,
+    RAC3OPTION.BONUS_VIDCOMIC_HEALTH,
+    RAC3OPTION.VIDCOMIC_HEALTH_UPGRADES,
+    RAC3OPTION.DEATHLINK_BEHAVIOR
 ]

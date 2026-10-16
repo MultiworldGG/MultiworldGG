@@ -1,0 +1,2195 @@
+[
+  {
+    "name": "Greyroot",
+    "actors": [
+      {
+        "scene": "room_witch",
+        "path": "Wood Witch"
+      }
+    ],
+    "checks": [
+      "Pollip Pouch"
+    ],
+    "events": [
+      "Room Event: event:mapper/27c9f587-ce44-47a5-8a93-494bdf16f46b",
+      "Room Event: event:mapper/fe8b52a9-f154-4a76-b35b-be05595cd934",
+      "Room Event: event:mapper/6931a35b-36d4-4584-a44c-fd30ed0f29d2",
+      "Room Event: event:mapper/0579d689-67d7-443a-a85b-916aa61ccabe",
+      "Room Event: event:mapper/d6230e21-4fd9-496e-8296-2a7630bbfce5",
+      "Room Event: event:mapper/f56aa12e-e8c8-4b9c-b38c-e7e30e40b694"
+    ],
+    "item_id": 839000
+  },
+  {
+    "name": "Pinmaster Plinney",
+    "actors": [
+      {
+        "scene": "belltown_room_pinsmith",
+        "path": "Plinney Inside"
+      },
+      {
+        "scene": "shellgrave",
+        "path": "Event Control/Plinney Rescue Scene/Plinney Outside"
+      }
+    ],
+    "checks": [
+      "Pinmaster Plinney: Sharpened Needle",
+      "Pinmaster Plinney: Shining Needle",
+      "Wish: Pinmaster's Oil",
+      "Pinmaster Plinney: Hivesteel Needle",
+      "Pinmaster Plinney: Pale Steel Needle"
+    ],
+    "events": [
+      "Room Event: event:mapper/419069f7-4bcf-42b1-a112-08cab969636a",
+      "Room Event: event:mapper/94878b19-5d6f-411a-8f23-bd42aae74ca0",
+      "Room Event: event:mapper/74d0f980-877c-481a-a540-39d85e8627ab",
+      "Room Event: event:mapper/b90fe2a9-e80c-45a8-8514-9338db6bf23f",
+      "Room Event: event:mapper/33fc0209-2a45-4288-a993-c1aa336d6b8f"
+    ],
+    "item_id": 839001
+  },
+  {
+    "name": "Scrounge",
+    "actors": [
+      {
+        "scene": "belltown_room_relic",
+        "path": "relic_dealer/Relic Dealer NPC"
+      }
+    ],
+    "checks": [
+      "Relic Turn-in: Weaver Effigy (Keelal, Shellwood)",
+      "Relic Turn-in: Bone Scroll (Wisp Thicket)",
+      "Relic Turn-in: Weaver Effigy (Camora, Moss Grotto)",
+      "Relic Turn-in: Choral Commandment (Jubilana)",
+      "Relic Turn-in: Rune Harp (High Halls)",
+      "Relic Turn-in: Choral Commandment (Western Whiteward)",
+      "Relic Turn-in: Rune Harp (Weavenest Cindril)",
+      "Relic Turn-in: Rune Harp (Weavenest Atla)",
+      "Relic Turn-in: Bone Scroll (Underworks)",
+      "Relic Turn-in: Bone Scroll (Far Fields)",
+      "Relic Turn-in: Choral Commandment (Moss Grotto)",
+      "Relic Turn-in: Choral Commandment (Eastern Whiteward)",
+      "Relic Turn-in: Bone Scroll (Greymoor)",
+      "Relic Turn-in: Weaver Effigy (Atla, The Slab)",
+      "Relic Turn-in: Arcane Egg"
+    ],
+    "events": [
+      "Room Event: event:mapper/reviewed:scrounge-first-relic-sold"
+    ],
+    "item_id": 839002
+  },
+  {
+    "name": "Forge Daughter",
+    "actors": [
+      {
+        "scene": "room_forge",
+        "path": "_NPCs/Forge Daughter"
+      }
+    ],
+    "checks": [
+      "Silkshot (Forge Daughter)",
+      "Sting Shard",
+      "Magma Bell",
+      "Forge Daughter - Crafting Kit"
+    ],
+    "events": [],
+    "item_id": 839003
+  },
+  {
+    "name": "Twelfth Architect",
+    "actors": [
+      {
+        "scene": "under_17",
+        "path": "Architect Scene/Chair/pillar E/pillar D/pillar C/pillar B/pillar A/seat/Architect NPC"
+      }
+    ],
+    "checks": [
+      "Silkshot (Twelfth Architect)",
+      "Cogwork Wheel",
+      "Sawtooth Circlet",
+      "Scuttlebrace",
+      "Twelfth Architect - Crafting Kit",
+      "Architect's Key"
+    ],
+    "events": [
+      "Room Event: event:mapper/d56f2454-0d3f-4dd5-b05f-d6895d341ddc",
+      "Room Event: event:mapper/16fe9f9d-a853-4479-99ff-c95f1ab18257",
+      "Room Event: event:mapper/17c01caf-87ec-4cfc-bb7d-8d1337c41dd5",
+      "Room Event: event:mapper/6788ad43-199e-442f-a16b-15f1aa8412f9"
+    ],
+    "item_id": 839004
+  },
+  {
+    "name": "Shakra",
+    "actors": [
+      {
+        "scene": "ant_04_mid",
+        "path": "Black Thread States Thread Only Variant/Normal World/Battle Scene/Mapper NPC"
+      },
+      {
+        "scene": "ant_20",
+        "path": "Mapper States/Here/Mapper Sit NPC"
+      },
+      {
+        "scene": "belltown",
+        "path": "Mapper Control/Black Thread World/Mapper Rest NPC"
+      },
+      {
+        "scene": "belltown",
+        "path": "Mapper Control/Shakra Away/Mapper NPC"
+      },
+      {
+        "scene": "belltown",
+        "path": "Mapper Control/Shakra Resting/Mapper Sit NPC"
+      },
+      {
+        "scene": "bone_04",
+        "path": "Mapper NPC"
+      },
+      {
+        "scene": "bone_east_01",
+        "path": "Mapper NPC"
+      },
+      {
+        "scene": "bone_east_21",
+        "path": "Mapper Sit NPC"
+      },
+      {
+        "scene": "bonetown",
+        "path": "Mapper Control/Shakra Away/Mapper NPC"
+      },
+      {
+        "scene": "bonetown",
+        "path": "Mapper Control/Shakra Resting/Mapper Sit NPC"
+      },
+      {
+        "scene": "coral_12",
+        "path": "Mapper NPC (1)"
+      },
+      {
+        "scene": "coral_40",
+        "path": "Mapper Sit NPC"
+      },
+      {
+        "scene": "crawl_01",
+        "path": "Mapper NPC"
+      },
+      {
+        "scene": "dust_10",
+        "path": "Mapper Sit NPC"
+      },
+      {
+        "scene": "greymoor_02",
+        "path": "Mapper Sit NPC"
+      },
+      {
+        "scene": "greymoor_08",
+        "path": "Black Thread States Thread Only Variant/Black Thread World/Shakra Guard Scene/Scene Folder/Mapper StandGuard NPC"
+      },
+      {
+        "scene": "greymoor_08_mapper",
+        "path": "Mapper Spar NPC"
+      },
+      {
+        "scene": "hang_06",
+        "path": "Aid NPC Control/Shakra Aid NPC"
+      },
+      {
+        "scene": "peak_02",
+        "path": "Mapper NPC"
+      },
+      {
+        "scene": "shadow_23",
+        "path": "Mapper Sit NPC"
+      },
+      {
+        "scene": "shadow_24",
+        "path": "Mapper Scene/Mapper Master NPC"
+      },
+      {
+        "scene": "shellwood_01",
+        "path": "Black Thread States/Black Thread World/Shakra Guard Scene/Scene Folder/Mapper StandGuard NPC"
+      },
+      {
+        "scene": "shellwood_16",
+        "path": "Scene Control/Mapper NPC"
+      }
+    ],
+    "checks": [
+      "Throwing Ring",
+      "Mosslands - Map Purchase",
+      "The Marrow - Map Purchase",
+      "Deep Docks - Map Purchase",
+      "Far Fields - Map Purchase",
+      "Wormways - Map Purchase",
+      "Hunter's March - Map Purchase",
+      "Greymoor - Map Purchase",
+      "Bellhart - Map Purchase",
+      "Shellwood - Map Purchase",
+      "Sands of Karak - Map Purchase",
+      "Sinner's Road - Map Purchase",
+      "Mount Fay - Map Purchase",
+      "Blasted Steps - Map Purchase",
+      "Bilewater - Map Purchase",
+      "Pin Purchase: Bench Pins",
+      "Pin Purchase: Ventrica Pins",
+      "Pin Purchase: Bellway Pins",
+      "Pin Purchase: Vendor Pins",
+      "Item: Quill",
+      "Compass"
+    ],
+    "events": [
+      "Room Event: event:mapper/reviewed:shakra-shop-the-marrow-map-shop",
+      "Room Event: event:mapper/reviewed:shakra-shop-wormways-upper-east",
+      "Room Event: event:mapper/reviewed:shakra-shop-deep-docks-map-shop",
+      "Room Event: event:mapper/reviewed:shakra-shop-far-fields-map-shop",
+      "Room Event: event:mapper/reviewed:shakra-shop-chapel-passage",
+      "Room Event: event:mapper/reviewed:shakra-shop-hunters-march-map-shop",
+      "Room Event: event:mapper/reviewed:shakra-shop-shellwood-shakra",
+      "Room Event: event:mapper/reviewed:shakra-shop-belltown",
+      "Room Event: event:mapper/reviewed:shakra-shop-greymoor-east-bellshrine-room",
+      "Room Event: event:mapper/reviewed:shakra-shop-blasted-steps-shakra-map-room",
+      "Room Event: event:mapper/reviewed:shakra-shop-sinner-s-road-bench",
+      "Room Event: event:mapper/reviewed:shakra-shop-bilewater-shakra-room",
+      "Room Event: event:mapper/reviewed:shakra-shop-sands-of-shakra",
+      "Room Event: event:mapper/reviewed:shakra-shop-mount-fay-shakra",
+      "Room Event: event:mapper/c376d00f-e0b5-40e2-8235-4adf83525a32",
+      "Room Event: event:mapper/12bb5519-6e56-48c3-b0e1-5e937bcbd48a"
+    ],
+    "item_id": 839005
+  },
+  {
+    "name": "Pavo",
+    "actors": [
+      {
+        "scene": "belltown",
+        "path": "Town States/Spinner Defeated/Bagpipers Here/Belltown Greeter Scared NPC"
+      },
+      {
+        "scene": "belltown",
+        "path": "Town States/Spinner Defeated/Bagpipers Not Here/Belltown Greeter Act3"
+      },
+      {
+        "scene": "belltown",
+        "path": "Town States/Spinner Defeated/Bagpipers Not Here/Belltown Greeter NPC"
+      }
+    ],
+    "checks": [],
+    "events": [
+      "Room Event: event:mapper/reviewed:bellhart-greeter-met",
+      "Room Event: event:mapper/reviewed:bellhart-full-house-conversation"
+    ],
+    "item_id": 839006
+  },
+  {
+    "name": "Moss Druid",
+    "actors": [
+      {
+        "scene": "mosstown_02c",
+        "path": "moss_hut_set/NPC Scene/Moss Creep NPC"
+      }
+    ],
+    "checks": [
+      "Druid's Eye",
+      "Druid's Eyes"
+    ],
+    "events": [
+      "Room Event: event:mapper/e5299e8f-a6da-40fe-a48b-beccdd59d096",
+      "Room Event: event:mapper/82399cd2-c16b-42ad-b615-e698dae6245d",
+      "Room Event: event:mapper/527f1cd6-dbbc-48e8-86d5-bc4f0766d7c1",
+      "Room Event: event:mapper/157edc2f-fb59-415e-af4e-2674b8d18d74",
+      "Room Event: event:mapper/3f9b38d1-3ab5-45ad-9414-4316121db75e",
+      "Room Event: event:mapper/reviewed:gourmand-mossberry-stew"
+    ],
+    "item_id": 839007
+  },
+  {
+    "name": "Seamstress",
+    "actors": [
+      {
+        "scene": "bone_east_umbrella",
+        "path": "_NPCs/Seamstress"
+      }
+    ],
+    "checks": [
+      "Drifter's Cloak"
+    ],
+    "events": [
+      "Room Event: event:mapper/f2723e3f-610b-4bc9-920e-282f7157719c",
+      "Room Event: event:mapper/2073ea77-7260-4926-b66e-28a57fe0a4c4",
+      "Room Event: event:mapper/88ab2f59-9e0c-41a1-ab62-d18f910e4f88",
+      "Room Event: event:mapper/d77be0b6-0e8a-489a-a583-f9c1f81aeea3"
+    ],
+    "item_id": 839008
+  },
+  {
+    "name": "Alchemist Zylotol",
+    "actors": [
+      {
+        "scene": "crawl_08",
+        "path": "Area_States/Infected/Infected States/Sitting/Blue Scientist Sit"
+      },
+      {
+        "scene": "crawl_08",
+        "path": "Area_States/Uninfected/Scientist_set/Blue Scientist"
+      }
+    ],
+    "checks": [
+      "Needle Phial",
+      "Plasmium Phial",
+      "Wish: Advanced Alchemy"
+    ],
+    "events": [
+      "Room Event: event:mapper/3d9fe91e-cdc7-4e50-abe5-627563550f32",
+      "Room Event: event:mapper/9730064b-fd6c-40d9-a7d9-7ec9ed669b96",
+      "Room Event: event:mapper/92179acc-052d-4562-894b-c345512cd620",
+      "Room Event: event:mapper/355cb2bc-56b7-45b8-b18a-50969993ca44",
+      "Room Event: event:mapper/c9579399-71cb-4b9c-8001-d117b38e8d1e",
+      "Room Event: event:mapper/reviewed:alchemist-assistant-completed",
+      "Room Event: event:mapper/reviewed:advanced-alchemy-accepted",
+      "Room Event: event:mapper/reviewed:advanced-alchemy-completed"
+    ],
+    "item_id": 839009
+  },
+  {
+    "name": "Mort",
+    "actors": [
+      {
+        "scene": "bone_east_10_room",
+        "path": "Black Thread States/Normal World/Pilgrims Rest Shop"
+      }
+    ],
+    "checks": [
+      "Weighted Belt",
+      "Wish: Pilgrim's Rest Supplies"
+    ],
+    "events": [
+      "Room Event: event:mapper/875d2981-67b8-4998-936e-88a8575ab882",
+      "Room Event: event:mapper/7348fc90-fd71-4444-aef6-734afb7b5984",
+      "Room Event: event:mapper/d9d1cfb2-bf89-4b1b-a645-8b425c5e30ec",
+      "Room Event: event:mapper/f9050875-6be0-4bd8-92ee-e6b438df621f",
+      "Room Event: event:mapper/reviewed:courier-pilgrims-rest-delivered"
+    ],
+    "item_id": 839010,
+    "alternatives": {
+      "Pilgrim's Rest - Tool Pouch": [
+        "Room Event: event:mapper/d9d1cfb2-bf89-4b1b-a645-8b425c5e30ec"
+      ],
+      "Pilgrim's Rest Shop - Memory Locket": [
+        "Room Event: event:mapper/7348fc90-fd71-4444-aef6-734afb7b5984"
+      ]
+    }
+  },
+  {
+    "name": "Creige",
+    "actors": [
+      {
+        "scene": "halfway_01",
+        "path": "_NPCs/HH Bartender"
+      }
+    ],
+    "checks": [
+      "Crawbug Clearing (Creige) - Crafting Kit"
+    ],
+    "events": [
+      "Room Event: event:mapper/4be4d6cc-c718-4000-a3dd-44b3ec4ff1d7",
+      "Room Event: event:mapper/4f66a42c-e93a-4e09-94b0-7472e1b77d14",
+      "Room Event: event:mapper/a971b12f-e117-4992-ac74-355e22e8540c",
+      "Room Event: event:mapper/reviewed:crawbug-clearing-completed"
+    ],
+    "item_id": 839011
+  },
+  {
+    "name": "Nuu",
+    "actors": [
+      {
+        "scene": "halfway_01",
+        "path": "_NPCs/Hunter Fan Control/Nuu"
+      },
+      {
+        "scene": "coral_11",
+        "path": "Hunter Fan Outside Rummage"
+      },
+      {
+        "scene": "coral_29",
+        "path": "Hunter Fan Outside"
+      },
+      {
+        "scene": "shellwood_18",
+        "path": "Boss Scene Parent/Boss Return Scene/Hunter Fan Outside"
+      },
+      {
+        "scene": "bone_15",
+        "path": "Hunter Fan Outside Rummage (1)"
+      }
+    ],
+    "checks": [
+      "Bugs of Pharloom - Tool Pouch",
+      "Wish: Bugs of Pharloom",
+      "Nuu - Hunter's Journal"
+    ],
+    "events": [
+      "Room Event: event:mapper/fa19fa7a-af1f-40f1-9497-d4b12b97bb63",
+      "Room Event: event:mapper/c95c65e1-a721-4281-a8d3-85d93198ea31"
+    ],
+    "item_id": 839012
+  },
+  {
+    "name": "Pebb",
+    "actors": [
+      {
+        "scene": "bonetown",
+        "path": "Black Thread States/Normal World/Bonechurch_Shop"
+      }
+    ],
+    "checks": [],
+    "events": [
+      "Room Event: event:mapper/e6555f0f-e4bc-44cf-848b-e7fdcd4569e1",
+      "Room Event: event:mapper/7790f847-5f31-4156-b252-258dba9db17e",
+      "Room Event: event:mapper/049c9f4d-7eb0-4e3d-aa51-02cade3abab4",
+      "Room Event: event:mapper/8a42ddaa-1c1f-4971-bd30-215bef96b3b0"
+    ],
+    "item_id": 839013,
+    "act": 1,
+    "alternatives": {
+      "Magnetite Brooch": [
+        "Room Event: event:mapper/e6555f0f-e4bc-44cf-848b-e7fdcd4569e1"
+      ],
+      "Pebb (Bone Bottom) / Grindle (Act 3) - Mask Shard": [
+        "Room Event: event:mapper/7790f847-5f31-4156-b252-258dba9db17e"
+      ],
+      "Bone Bottom Shop - Craftmetal": [
+        "Room Event: event:mapper/049c9f4d-7eb0-4e3d-aa51-02cade3abab4"
+      ],
+      "Bone Bottom Shop - Simple Key": [
+        "Room Event: event:mapper/8a42ddaa-1c1f-4971-bd30-215bef96b3b0"
+      ]
+    }
+  },
+  {
+    "name": "Frey",
+    "actors": [
+      {
+        "scene": "belltown",
+        "path": "Town States/Spinner Defeated/Bagpipers Here/Belltown Shop Scared NPC"
+      },
+      {
+        "scene": "belltown",
+        "path": "Town States/Spinner Defeated/Bagpipers Not Here/Belltown Shop NPC"
+      }
+    ],
+    "checks": [
+      "Bellhart Shop - Memory Locket",
+      "Frey (Bellhart) - Spool Fragment",
+      "Multibinder"
+    ],
+    "events": [
+      "Room Event: event:mapper/47e3b04b-3045-499b-8ed5-17c759d4aa5d",
+      "Room Event: event:mapper/014f9eaa-443a-4ba0-88df-061b2e12f71b",
+      "Room Event: event:mapper/d85ceaa1-6ce6-483f-8f82-cb6b72ad15ff",
+      "Room Event: event:mapper/reviewed:missing-brother-accepted"
+    ],
+    "item_id": 839014,
+    "act": 1
+  },
+  {
+    "name": "Jubilana",
+    "actors": [
+      {
+        "scene": "arborium_11",
+        "path": "Merchant Quest Parent/Quest Active/City Merchant Bridge"
+      },
+      {
+        "scene": "hang_04",
+        "path": "Black Thread States/Normal World/Aftermath Control/Battle Aftermath/City Merchant Scavenge Generic"
+      },
+      {
+        "scene": "library_03",
+        "path": "City Merchant Scavenge Generic"
+      },
+      {
+        "scene": "song_07",
+        "path": "City Merchant Scene/Scene/City Merchant Meet"
+      },
+      {
+        "scene": "song_enclave",
+        "path": "Black Thread States/Black Thread World/City Merchant Enclave"
+      },
+      {
+        "scene": "song_enclave",
+        "path": "Black Thread States/Normal World/Enclave States/States/Level 1/City Merchant Enclave"
+      }
+    ],
+    "checks": [
+      "Ascendant's Grip",
+      "Spool Extender",
+      "Jubilana (Songclave) - Mask Shard",
+      "Songclave Shop - Simple Key",
+      "Relic: Choral Commandment (Jubilana)",
+      "Jubilana (Songclave) - Spool Fragment",
+      "Songclave Shop - Craftmetal",
+      "Spider Strings",
+      "Wish: The Wandering Merchant",
+      "Wish: The Lost Merchant"
+    ],
+    "events": [
+      "Room Event: event:mapper/reviewed:wandering-merchant-shop-met",
+      "Room Event: event:mapper/reviewed:wandering-merchant-completed"
+    ],
+    "item_id": 839015,
+    "act": 2
+  },
+  {
+    "name": "Grindle",
+    "actors": [
+      {
+        "scene": "bone_12",
+        "path": "Black Thread States/Normal World/Jail Scene 2/Thief Dummy"
+      },
+      {
+        "scene": "bone_12",
+        "path": "Black Thread States/Normal World/Jail Scene 2/Thief NPC Save"
+      },
+      {
+        "scene": "bone_12",
+        "path": "Black Thread States/Normal World/Jail Scene 2/Thief NPC Saved"
+      },
+      {
+        "scene": "coral_42",
+        "path": "Thief NPC Shop"
+      },
+      {
+        "scene": "slab_14",
+        "path": "Thief NPC Scene/Thief NPC Slab Hopaway"
+      },
+      {
+        "scene": "slab_20",
+        "path": "Thief NPC Slab Saferoom"
+      },
+      {
+        "scene": "song_08",
+        "path": "Black Thread States/Normal World/City Merchant Scene/Thief NPC Rummage"
+      },
+      {
+        "scene": "song_08",
+        "path": "Black Thread States/Normal World/City Merchant Scene/Grindle Citadel Barrel Meet"
+      }
+    ],
+    "checks": [
+      "Thief's Mark",
+      "Snitch Pick",
+      "Relic: Psalm Cylinder (Grindle)",
+      "Grindle - Crafting Kit",
+      "Grindle (Blasted Steps) - Spool Fragment"
+    ],
+    "events": [
+      "Room Event: event:mapper/cff7361d-f97c-4abe-937f-fc5b0759b2b7",
+      "Room Event: event:mapper/a248dd82-62b6-4c88-ad1a-8bdc642d26dc",
+      "Room Event: event:mapper/d004c0f3-8b78-4236-b5fe-56580c92f7db",
+      "Room Event: event:mapper/e9d2f016-f671-4396-b4b7-63efcf32cf80",
+      "Room Event: event:mapper/0ede6380-155c-4e62-9698-c1ad1b4a9a37",
+      "Room Event: event:mapper/84a51128-445c-4f80-bcc0-2651d6378ca1",
+      "Room Event: event:mapper/22fa10f2-f4d5-4911-b727-50889602d7aa",
+      "Room Event: event:mapper/36ff4778-2502-4ea1-b5b8-60ed2c3197c3",
+      "Room Event: event:mapper/0f83ac9d-e2ba-4280-b538-9cf2a2612b7a",
+      "Room Event: event:mapper/25b01feb-9972-467c-87b8-d263b5d0c001",
+      "Room Event: event:mapper/5d0c984a-77a6-4c1e-8cd5-a0c827bbec78",
+      "Room Event: event:mapper/70d1f087-9a3a-4788-95a4-843e3e490ce5"
+    ],
+    "item_id": 839016,
+    "act": 1,
+    "alternatives": {
+      "Magnetite Brooch": [
+        "Room Event: event:mapper/84a51128-445c-4f80-bcc0-2651d6378ca1"
+      ],
+      "Pebb (Bone Bottom) / Grindle (Act 3) - Mask Shard": [
+        "Room Event: event:mapper/22fa10f2-f4d5-4911-b727-50889602d7aa"
+      ],
+      "Bone Bottom Shop - Craftmetal": [
+        "Room Event: event:mapper/36ff4778-2502-4ea1-b5b8-60ed2c3197c3"
+      ],
+      "Bone Bottom Shop - Simple Key": [
+        "Room Event: event:mapper/0f83ac9d-e2ba-4280-b538-9cf2a2612b7a"
+      ],
+      "Pilgrim's Rest - Tool Pouch": [
+        "Room Event: event:mapper/25b01feb-9972-467c-87b8-d263b5d0c001"
+      ],
+      "Pilgrim's Rest Shop - Memory Locket": [
+        "Room Event: event:mapper/5d0c984a-77a6-4c1e-8cd5-a0c827bbec78"
+      ],
+      "Magnetite Dice": [
+        "Room Event: event:mapper/70d1f087-9a3a-4788-95a4-843e3e490ce5"
+      ]
+    }
+  },
+  {
+    "name": "Mottled Skarr",
+    "actors": [
+      {
+        "scene": "ant_merchant",
+        "path": "_NPCs/Ant Merchant States/Ant Merchant"
+      }
+    ],
+    "checks": [
+      "Fractured Mask",
+      "Curveclaw"
+    ],
+    "events": [
+      "Room Event: event:mapper/20f484dd-60cf-4c6f-abcb-000b66a38b02",
+      "Room Event: event:mapper/1544d4bd-ae8d-46fc-a845-44e7fb82fa9e"
+    ],
+    "item_id": 839017,
+    "act": 1
+  },
+  {
+    "name": "Loddie",
+    "actors": [
+      {
+        "scene": "bone_12",
+        "path": "Black Thread States/Normal World/Pin Gallery States/Here/Lady Bug Large"
+      }
+    ],
+    "checks": [
+      "Loddie - Tool Pouch",
+      "Straight Pin",
+      "Loddie - Heavy Rosary Necklace"
+    ],
+    "events": [
+      "Room Event: event:mapper/381b6434-4c93-41ff-ad14-61d7bcf173f8",
+      "Room Event: event:mapper/bb722371-5624-4a76-b335-a989e6677a1b",
+      "Room Event: event:mapper/161c072b-cdcd-4419-a8d7-07827756985d"
+    ],
+    "item_id": 839018,
+    "act": 1
+  },
+  {
+    "name": "Lumble",
+    "actors": [
+      {
+        "scene": "coral_33",
+        "path": "Black Thread States/Normal World/Dice Game Control/Dice Game/Dice Pilgrim"
+      }
+    ],
+    "checks": [],
+    "events": [
+      "Room Event: event:mapper/cd7f4fd2-944d-4c5a-a62e-e81ddb926741",
+      "Room Event: event:mapper/b271d4ca-faa9-4104-b801-dec2e1914ba5"
+    ],
+    "item_id": 839019,
+    "act": 1,
+    "alternatives": {
+      "Magnetite Dice": [
+        "Room Event: event:mapper/b271d4ca-faa9-4104-b801-dec2e1914ba5"
+      ]
+    }
+  },
+  {
+    "name": "Ballow",
+    "actors": [
+      {
+        "scene": "dock_10",
+        "path": "Forge_Friend/Forge Worker Sauna NPC"
+      },
+      {
+        "scene": "dock_12",
+        "path": "Diving Bell/States/Repair/Half_Upgraded/Ballow Diving Bell Repair NPC"
+      },
+      {
+        "scene": "dock_12",
+        "path": "Diving Bell/States/Repair/Upgraded/Ballow Diving Bell NPC"
+      },
+      {
+        "scene": "dock_12",
+        "path": "Diving Bell/States/Standard/Ballow Diving Bell NPC"
+      },
+      {
+        "scene": "room_forge",
+        "path": "_NPCs/Forge Worker"
+      }
+    ],
+    "checks": [],
+    "events": [
+      "Room Event: event:mapper/095b74aa-2341-4319-9ca6-b84639264967",
+      "Room Event: event:mapper/bba25430-0885-40d0-9f99-283a852119d9"
+    ],
+    "item_id": 839020,
+    "act": 1
+  },
+  {
+    "name": "Conductor Ballador",
+    "actors": [
+      {
+        "scene": "hang_12",
+        "path": "Black Thread States/Normal World/Last Conductor NPC"
+      }
+    ],
+    "checks": [
+      "Conductor's Melody"
+    ],
+    "events": [],
+    "item_id": 839021,
+    "act": 2
+  },
+  {
+    "name": "Vaultkeeper Cardinius",
+    "actors": [
+      {
+        "scene": "library_08",
+        "path": "Librarian Scene Simple 1/Librarian"
+      },
+      {
+        "scene": "library_08",
+        "path": "Librarian Scene Simple 2/Librarian"
+      },
+      {
+        "scene": "library_08",
+        "path": "Librarian Scene/Librarian"
+      }
+    ],
+    "checks": [
+      "Relic Turn-in: Psalm Cylinder (East Whispering Vaults)",
+      "Relic Turn-in: Sacred Cylinder",
+      "Relic Turn-in: Psalm Cylinder (Underworks)",
+      "Relic Turn-in: Psalm Cylinder (Vaultkeeper Cardinius)",
+      "Relic Turn-in: Psalm Cylinder (High Halls)",
+      "Relic Turn-in: Psalm Cylinder (Grindle)",
+      "Vaultkeeper's Melody",
+      "Relic: Psalm Cylinder (Vaultkeeper Cardinius)"
+    ],
+    "events": [
+      "Room Event: event:mapper/05efede5-240a-4d89-bb34-beda9a392d0c"
+    ],
+    "item_id": 839022,
+    "act": 2
+  },
+  {
+    "name": "Caretaker",
+    "actors": [
+      {
+        "scene": "cradle_03",
+        "path": "Boss Scene/Soul_Snare/Snare/Enclave Caretaker SoulSnare"
+      },
+      {
+        "scene": "song_enclave",
+        "path": "Black Thread States/Normal World/Enclave States/Meet Caretaker/Enclave Caretaker FirstMeet"
+      },
+      {
+        "scene": "song_enclave",
+        "path": "Black Thread States/Normal World/Enclave States/States/Level 1/Enclave Caretaker"
+      },
+      {
+        "scene": "tut_04",
+        "path": "@Snail Shamans Set"
+      }
+    ],
+    "checks": [
+      "White Key",
+      "Wish: Building Up Songclave",
+      "Wish: Strengthening Songclave",
+      "Wish: Fine Pins",
+      "Wish: Songclave Supplies",
+      "Elegy of the Deep",
+      "Crest: Shaman",
+      "Everbloom"
+    ],
+    "events": [
+      "Room Event: event:mapper/reviewed:dark-below-accepted",
+      "Room Event: event:mapper/reviewed:everbloom-ritual",
+      "Room Event: event:mapper/6a7145ad-c2f5-478e-8904-1eae838e7c8a",
+      "Room Event: event:mapper/reviewed:songclave-caretaker-met",
+      "Room Event: event:mapper/reviewed:songclave-first-donation-completed",
+      "Room Event: event:mapper/reviewed:fine-pins-accepted",
+      "Room Event: event:mapper/reviewed:fine-pins-completed",
+      "Room Event: event:mapper/reviewed:songclave-second-donation-completed",
+      "Room Event: event:mapper/reviewed:courier-songclave-delivered",
+      "Event: Silk and Soul Completed",
+      "Event: Grand Mother Silk Snared"
+    ],
+    "item_id": 839023,
+    "act": 2,
+    "states": [
+      {
+        "scene": "tut_04",
+        "path": "@Snail Shamans Set",
+        "fsm": "Dialogue",
+        "states": [
+          "Init",
+          "Wait For Enter",
+          "Take Control",
+          "Crest Convo",
+          "Melody Active Init",
+          "Melody Active Init Alt",
+          "Memory Bench Sit",
+          "Play Ritual"
+        ]
+      }
+    ]
+  },
+  {
+    "name": "Sherma",
+    "actors": [
+      {
+        "scene": "belltown",
+        "path": "Town States/Spinner Defeated/Sherma Bellhart NPC"
+      },
+      {
+        "scene": "bellway_08",
+        "path": "Bell Bench Scene/Sherma BellBench NPC"
+      },
+      {
+        "scene": "bone_01",
+        "path": "Great Bone Gate Scene/Sherma Bone Gate NPC"
+      },
+      {
+        "scene": "bone_05_boss",
+        "path": "Sherma Bell Beast NPC"
+      },
+      {
+        "scene": "bone_east_10",
+        "path": "Black Thread States Thread Only Variant/Normal World/Pilgrim NPC Scene/2 Brolly Revisit/Sherma Docks NPC"
+      },
+      {
+        "scene": "coral_10",
+        "path": "Sherma Citadel NPC"
+      },
+      {
+        "scene": "song_10",
+        "path": "Sherma Citadel Spa NPC"
+      },
+      {
+        "scene": "song_enclave",
+        "path": "Black Thread States/Black Thread World/Enclave Act 3/Sherma Caretaker"
+      },
+      {
+        "scene": "song_enclave",
+        "path": "Black Thread States/Normal World/Enclave States/States/Level 2/Sherma Enclave NPC"
+      },
+      {
+        "scene": "song_enclave",
+        "path": "Black Thread States/Normal World/Enclave States/States/Level 2/Songlave_healer_set/Sherma Healer"
+      },
+      {
+        "scene": "ward_09",
+        "path": "Sherma Rescue Scene/Activation Folder/Sherma Rescue NPC"
+      }
+    ],
+    "checks": [
+      "Wish: Cloaks of the Choir",
+      "Wish: Balm for the Wounded"
+    ],
+    "events": [
+      "Room Event: event:mapper/f4772359-62b9-43df-aa68-6162da70fb50",
+      "Room Event: event:mapper/reviewed:sherma-enclave-met",
+      "Room Event: event:mapper/reviewed:choir-cloaks-accepted",
+      "Room Event: event:mapper/reviewed:choir-cloaks-completed",
+      "Room Event: event:mapper/1f53c165-7afb-4362-9607-d334f05dd642"
+    ],
+    "item_id": 839024,
+    "act": 1
+  },
+  {
+    "name": "Huntress",
+    "actors": [
+      {
+        "scene": "room_huntress",
+        "path": "scene/Huntress_set/pre/Huntress"
+      }
+    ],
+    "checks": [
+      "Longclaw"
+    ],
+    "events": [
+      "Room Event: event:mapper/reviewed:huntress-quest-accepted",
+      "Room Event: event:mapper/reviewed:huntress-quest-completed",
+      "Room Event: event:mapper/8adce595-fdaf-40e6-b1ca-baab540582ef"
+    ],
+    "item_id": 839025,
+    "act": 2
+  },
+  {
+    "name": "Mask Maker",
+    "actors": [
+      {
+        "scene": "peak_mask_maker",
+        "path": "Peak Mask Maker"
+      }
+    ],
+    "checks": [
+      "Wish: Liquid Lacquer"
+    ],
+    "events": [
+      "Room Event: event:mapper/reviewed:courier-liquid-lacquer-delivered"
+    ],
+    "item_id": 839026,
+    "act": 2
+  },
+  {
+    "name": "Sprintmaster Swift",
+    "actors": [
+      {
+        "scene": "sprintmaster_cave",
+        "path": "Race Group/Sprintmaster Runner"
+      }
+    ],
+    "checks": [
+      "Sprintmaster - Beast Shard",
+      "Fastest in Pharloom - Mask Shard"
+    ],
+    "events": [
+      "Room Event: event:mapper/76f21728-ac12-4739-8104-2dcac43574e6",
+      "Room Event: event:mapper/3588d569-97cb-4c44-995b-aa7888d25be9",
+      "Room Event: event:mapper/0954b8c6-25e1-4067-9604-228efb28a29f",
+      "Room Event: event:mapper/6f562e18-a149-46f9-aec5-a08f718293d7",
+      "Room Event: event:mapper/ca8bc076-0a61-46b2-9065-38137eeaa41e",
+      "Room Event: event:mapper/56324a8a-170a-487c-9ddc-a52ab98df1c5",
+      "Room Event: event:mapper/89aab9a5-1d44-4533-ac71-1c6d82d82b82",
+      "Room Event: event:mapper/4e7d7773-67a3-4862-9861-349cdb0ed746",
+      "Room Event: event:mapper/4d8402fc-b70a-469d-a143-8e0e7e864a82",
+      "Room Event: event:mapper/2f7fc2d2-c957-4dfc-982b-1e4f40df8250"
+    ],
+    "item_id": 839027,
+    "act": 1,
+    "alternatives": {
+      "Sprintmaster's Memento": [
+        "Room Event: event:mapper/2f7fc2d2-c957-4dfc-982b-1e4f40df8250"
+      ]
+    }
+  },
+  {
+    "name": "Mr Mushroom",
+    "actors": [
+      {
+        "scene": "bone_east_14b",
+        "path": "Mr Mushroom NPC"
+      },
+      {
+        "scene": "bonetown",
+        "path": "Mr Mushroom NPC"
+      },
+      {
+        "scene": "cradle_destroyed_challenge_01",
+        "path": "Mr Mushroom NPC"
+      },
+      {
+        "scene": "greymoor_06",
+        "path": "Mr Mushroom NPC"
+      },
+      {
+        "scene": "peak_08b",
+        "path": "Mr Mushroom NPC"
+      },
+      {
+        "scene": "slab_10c",
+        "path": "Mr Mushroom NPC"
+      },
+      {
+        "scene": "tut_03",
+        "path": "Mr Mushroom NPC"
+      }
+    ],
+    "checks": [],
+    "events": [
+      "Room Event: event:mapper/f2776bae-525b-49a3-834d-54bf40d4c347",
+      "Room Event: event:mapper/53854fef-f387-40ce-b4c3-1cb8451d9116",
+      "Room Event: event:mapper/c5fc9095-edd9-4228-a2dc-899833c115b8",
+      "Room Event: event:mapper/f279fd42-b44a-4f75-b0c0-1f994b378d52",
+      "Room Event: event:mapper/2d04ae0c-d9a8-4ada-b104-dd5f494dd25f",
+      "Room Event: event:mapper/e1527a0b-50cb-4261-a93d-c8782090ad4d",
+      "Room Event: event:mapper/023fc748-69fa-495c-b1ea-1523ff0922a2"
+    ],
+    "item_id": 839028,
+    "act": 1
+  },
+  {
+    "name": "Mooshka",
+    "actors": [
+      {
+        "scene": "aqueduct_05_caravan",
+        "path": "Caravan_States/Fleatopia/Caravan Troupe Leader Fleatopia NPC"
+      },
+      {
+        "scene": "aqueduct_05_festival",
+        "path": "Caravan_States/Flea_Festival_Intro/Caravan Troupe Leader Festival Intro"
+      },
+      {
+        "scene": "bone_10",
+        "path": "Black Thread States Thread Only Variant/Normal World/Caravan/Caravan State Regular/Caravan Troupe Leader Bone NPC"
+      },
+      {
+        "scene": "coral_judge_arena",
+        "path": "Caravan_Set/Caravan/Active/Caravan Troupe Leader Judge NPC"
+      },
+      {
+        "scene": "greymoor_08_caravan",
+        "path": "Caravan/Caravan Troupe Leader Greymoor NPC"
+      },
+      {
+        "scene": "aqueduct_05_festival",
+        "path": "Caravan_States/Flea Festival/Flea Game - Juggling/Flea Games Host NPC"
+      }
+    ],
+    "checks": [
+      "Fleatopia - Tool Pouch",
+      "Egg of Flealia",
+      "Ecstasy of the End - Pale Oil",
+      "Wish: Fleatopia Supplies"
+    ],
+    "events": [
+      "Room Event: event:mapper/5f0154a5-b85b-4b7d-b18f-8108ca7de17f",
+      "Room Event: event:mapper/cd40450e-6bdd-4098-b74f-4d7badd9fafb",
+      "Room Event: event:mapper/4bd95899-f90e-47f9-bc51-40ba084b1c1c",
+      "Room Event: event:mapper/reviewed:lost-fleas-completed",
+      "Room Event: event:mapper/123d9710-aa70-4bea-8091-c648ad232aad",
+      "Room Event: event:mapper/7b955c23-423d-441a-a521-07dae8454a02",
+      "Room Event: event:mapper/f6399093-5512-4340-a532-f1f6cb24b45b",
+      "Room Event: event:mapper/2b3c2d69-7749-429d-b1df-0b1690ec4d40",
+      "Room Event: event:mapper/reviewed:flea-festival-started",
+      "Room Event: event:mapper/reviewed:courier-fleatopia-delivered",
+      "Room Event: event:mapper/6e848e78-c196-477b-9a86-d2ad1bb53a43",
+      "Room Event: event:mapper/6d3048ed-02ef-47f5-9efe-e49f50f37e11",
+      "Room Event: event:mapper/66774f19-233f-4382-a524-1a3a0501b443",
+      "Room Event: event:mapper/84ab1749-3afa-4713-ada6-9e92a183cb3b"
+    ],
+    "item_id": 839029,
+    "act": 1
+  },
+  {
+    "name": "Gilly",
+    "actors": [
+      {
+        "scene": "ant_05c",
+        "path": "Gilly"
+      },
+      {
+        "scene": "ant_17",
+        "path": "Gilly"
+      },
+      {
+        "scene": "ant_queen",
+        "path": "Gilly"
+      },
+      {
+        "scene": "bone_east_04c",
+        "path": "Scene Control/Bone Hunters Scene/Gilly"
+      },
+      {
+        "scene": "bone_east_14b",
+        "path": "Gilly"
+      },
+      {
+        "scene": "bone_east_18",
+        "path": "Gilly"
+      },
+      {
+        "scene": "bone_east_24",
+        "path": "Gilly"
+      }
+    ],
+    "checks": [],
+    "events": [],
+    "item_id": 839030,
+    "act": 1
+  },
+  {
+    "name": "Tipp",
+    "actors": [
+      {
+        "scene": "aspid_01",
+        "path": "Courier Quest Scene/Courier Scene/Courier Short"
+      },
+      {
+        "scene": "belltown",
+        "path": "Couriers States/Here/Couriers Quest Giver/Courier Short"
+      },
+      {
+        "scene": "belltown",
+        "path": "Couriers States/Not Here/Courier Short Bellhart"
+      }
+    ],
+    "checks": [
+      "Wish: My Missing Courier"
+    ],
+    "events": [
+      "Room Event: event:mapper/6f548027-ef2e-40aa-80cc-c73ae72a91a3",
+      "Event: Missing Courier Rescued",
+      "Room Event: event:mapper/48f190c6-4af9-4daf-af8e-a617abba9603",
+      "Room Event: event:mapper/reviewed:gourmand-courier-meat",
+      "Room Event: event:mapper/reviewed:courier-service-ready",
+      "Room Event: event:mapper/reviewed:missing-brother-accepted"
+    ],
+    "item_id": 839031,
+    "act": 1,
+    "interactions": [
+      {
+        "scene": "belltown",
+        "path": "Couriers States/Here/Couriers Quest Giver"
+      }
+    ]
+  },
+  {
+    "name": "Pill",
+    "actors": [
+      {
+        "scene": "belltown",
+        "path": "Couriers States/Here/Couriers Quest Giver/Courier Tall"
+      },
+      {
+        "scene": "dust_04",
+        "path": "Courier Quest Scene/Courier Scene/Courier Tall"
+      }
+    ],
+    "checks": [
+      "Wish: My Missing Brother"
+    ],
+    "events": [
+      "Room Event: event:mapper/0fcbb574-ecbe-403c-a48c-f28ddf2a99fe",
+      "Event: Missing Brother Rescued",
+      "Room Event: event:mapper/48f190c6-4af9-4daf-af8e-a617abba9603",
+      "Room Event: event:mapper/reviewed:gourmand-courier-meat",
+      "Room Event: event:mapper/reviewed:courier-service-ready"
+    ],
+    "item_id": 839032,
+    "act": 1,
+    "interactions": [
+      {
+        "scene": "belltown",
+        "path": "Couriers States/Here/Couriers Quest Giver"
+      }
+    ]
+  },
+  {
+    "name": "Chapel Maid",
+    "actors": [
+      {
+        "scene": "bonetown",
+        "path": "Churchkeeper Intro Scene/Churchkeeper"
+      },
+      {
+        "scene": "tut_03",
+        "path": "Churchkeeper Basement"
+      },
+      {
+        "scene": "tut_04",
+        "path": "@Snail Shamans Set"
+      }
+    ],
+    "checks": [
+      "Maiden Soul",
+      "Elegy of the Deep",
+      "Crest: Shaman",
+      "Everbloom"
+    ],
+    "events": [
+      "Room Event: event:mapper/reviewed:dark-below-accepted",
+      "Room Event: event:mapper/reviewed:everbloom-ritual"
+    ],
+    "item_id": 839033,
+    "act": 1,
+    "interactions": [
+      {
+        "scene": "bonetown",
+        "path": "Churchkeeper Intro Scene"
+      }
+    ],
+    "states": [
+      {
+        "scene": "bonetown",
+        "path": "Churchkeeper Intro Scene",
+        "fsm": "Control",
+        "states": [
+          "Idle",
+          "Wait for Hero Grounded"
+        ]
+      },
+      {
+        "scene": "tut_04",
+        "path": "@Snail Shamans Set",
+        "fsm": "Dialogue",
+        "states": [
+          "Init",
+          "Wait For Enter",
+          "Take Control",
+          "Crest Convo",
+          "Melody Active Init",
+          "Melody Active Init Alt",
+          "Memory Bench Sit",
+          "Play Ritual"
+        ]
+      }
+    ]
+  },
+  {
+    "name": "Bell Hermit",
+    "actors": [
+      {
+        "scene": "belltown_basement_03",
+        "path": "Group/Bell Hermit"
+      },
+      {
+        "scene": "tut_04",
+        "path": "@Snail Shamans Set"
+      }
+    ],
+    "checks": [
+      "Hermit Soul",
+      "Elegy of the Deep",
+      "Crest: Shaman",
+      "Everbloom"
+    ],
+    "events": [
+      "Room Event: event:mapper/reviewed:dark-below-accepted",
+      "Room Event: event:mapper/reviewed:everbloom-ritual"
+    ],
+    "item_id": 839034,
+    "act": 1,
+    "states": [
+      {
+        "scene": "tut_04",
+        "path": "@Snail Shamans Set",
+        "fsm": "Dialogue",
+        "states": [
+          "Init",
+          "Wait For Enter",
+          "Take Control",
+          "Crest Convo",
+          "Melody Active Init",
+          "Melody Active Init Alt",
+          "Memory Bench Sit",
+          "Play Ritual"
+        ]
+      }
+    ]
+  },
+  {
+    "name": "Crull",
+    "actors": [
+      {
+        "scene": "dust_shack",
+        "path": "Black Thread States Thread Only Variant/Normal World/_NPCs/Dust Traders/Dust Trader Large"
+      }
+    ],
+    "checks": [
+      "Tacks"
+    ],
+    "events": [
+      "Room Event: event:mapper/ceb6f527-6467-42f8-9532-fe58380612ef",
+      "Room Event: event:mapper/4fa492bc-a6d2-416b-8242-87f887d7a01a",
+      "Room Event: event:mapper/reviewed:roach-guts-accepted",
+      "Room Event: event:mapper/reviewed:steel-spines-collected",
+      "Room Event: event:mapper/53ee1a92-4b79-47f7-a519-13d0059cff2e"
+    ],
+    "item_id": 839035,
+    "act": 1,
+    "interactions": [
+      {
+        "scene": "dust_shack",
+        "path": "Black Thread States Thread Only Variant/Normal World/_NPCs/Dust Traders"
+      }
+    ],
+    "act_3_fallbacks": [
+      "Tacks",
+      "Room Event: event:mapper/53ee1a92-4b79-47f7-a519-13d0059cff2e"
+    ]
+  },
+  {
+    "name": "Benjin",
+    "actors": [
+      {
+        "scene": "dust_shack",
+        "path": "Black Thread States Thread Only Variant/Normal World/_NPCs/Dust Traders/Dust Trader Small"
+      }
+    ],
+    "checks": [
+      "Tacks"
+    ],
+    "events": [
+      "Room Event: event:mapper/ceb6f527-6467-42f8-9532-fe58380612ef",
+      "Room Event: event:mapper/4fa492bc-a6d2-416b-8242-87f887d7a01a",
+      "Room Event: event:mapper/reviewed:roach-guts-accepted",
+      "Room Event: event:mapper/reviewed:steel-spines-collected",
+      "Room Event: event:mapper/53ee1a92-4b79-47f7-a519-13d0059cff2e"
+    ],
+    "item_id": 839036,
+    "act": 1,
+    "interactions": [
+      {
+        "scene": "dust_shack",
+        "path": "Black Thread States Thread Only Variant/Normal World/_NPCs/Dust Traders"
+      }
+    ],
+    "act_3_fallbacks": [
+      "Tacks",
+      "Room Event: event:mapper/53ee1a92-4b79-47f7-a519-13d0059cff2e"
+    ]
+  },
+  {
+    "name": "Flick",
+    "actors": [
+      {
+        "scene": "bone_10",
+        "path": "Black Thread States Thread Only Variant/Black Thread World/Fixer Sitting Bone_10"
+      },
+      {
+        "scene": "bonetown",
+        "path": "Black Thread States/Normal World/RestBench Control/Bench Getting Repaired/Fixer Pilgrim Bench Repair"
+      },
+      {
+        "scene": "bonetown",
+        "path": "Black Thread States/Normal World/bonebottom_quest_board/complete/Fixer NPC Standing"
+      },
+      {
+        "scene": "bonetown",
+        "path": "Black Thread States/Normal World/bonebottom_quest_board/unassembled/Fixer Pilgrim"
+      }
+    ],
+    "checks": [
+      "Wish: Bone Bottom Repairs",
+      "Wish: A Lifesaving Bridge",
+      "Wish: An Icon of Hope",
+      "Wish: Survivor's Camp Supplies",
+      "Wish: Bone Bottom Supplies"
+    ],
+    "events": [
+      "Room Event: event:mapper/reviewed:bone-bottom-repairs-completed",
+      "Room Event: event:mapper/reviewed:bone-bottom-bridge-completed",
+      "Room Event: event:mapper/reviewed:bone-bottom-statue-completed",
+      "Room Event: event:mapper/reviewed:bone-bottom-bridge-constructed",
+      "Room Event: event:mapper/reviewed:bone-bottom-statue-constructed",
+      "Room Event: event:mapper/04c1ce1a-f0c1-464e-8000-971f77978cef",
+      "Room Event: event:mapper/reviewed:courier-fixer-delivered",
+      "Room Event: event:mapper/reviewed:courier-bonebottom-delivered"
+    ],
+    "item_id": 839037,
+    "act": 1
+  },
+  {
+    "name": "Green Prince",
+    "actors": [
+      {
+        "scene": "clover_01",
+        "path": "Memory Scene Control/Memory Scene/Green Prince Stand"
+      },
+      {
+        "scene": "clover_01b",
+        "path": "Green Prince Stand"
+      },
+      {
+        "scene": "clover_04b",
+        "path": "palace_control/palace_missing/Green Prince Sit"
+      },
+      {
+        "scene": "clover_06",
+        "path": "Green Prince Kneel"
+      },
+      {
+        "scene": "clover_10",
+        "path": "Boss Scene/Green Prince Boss NPC"
+      },
+      {
+        "scene": "clover_18",
+        "path": "Fountains Group/Memory Orb Scene/Green Prince Sit"
+      },
+      {
+        "scene": "cog_dancers",
+        "path": "Green Prince Kneel"
+      },
+      {
+        "scene": "dust_02",
+        "path": "Green Prince Caged/Green Prince Sit"
+      },
+      {
+        "scene": "song_04",
+        "path": "Black Thread States/Normal World/Scene States/Green Prince Stand Song_04"
+      }
+    ],
+    "checks": [],
+    "events": [
+      "Combat: Clover Dancers"
+    ],
+    "item_id": 839038,
+    "act": 1,
+    "states": [
+      {
+        "scene": "clover_10",
+        "path": "Boss Scene/Dancer Control",
+        "fsm": "Control",
+        "states": [
+          "Dormant",
+          "Gate Close"
+        ]
+      }
+    ]
+  },
+  {
+    "name": "Kratt",
+    "actors": [
+      {
+        "scene": "aqueduct_05_caravan",
+        "path": "Caravan_States/Fleatopia/Caravan Lech"
+      },
+      {
+        "scene": "bone_10",
+        "path": "Black Thread States Thread Only Variant/Normal World/Caravan/Caravan State Regular/Caravan Lech"
+      },
+      {
+        "scene": "coral_judge_arena",
+        "path": "Caravan_Set/Caravan/Active/Caravan Lech"
+      },
+      {
+        "scene": "greymoor_08_caravan",
+        "path": "Caravan/Caravan Lech"
+      },
+      {
+        "scene": "greymoor_24",
+        "path": "Black Thread States/Black Thread World/Caravan Lech"
+      },
+      {
+        "scene": "aqueduct_05_festival",
+        "path": "Caravan_States/Flea Festival/Flea Game - Bouncing/Flea Games Host NPC"
+      }
+    ],
+    "checks": [
+      "Flea: Greymoor - Kratt"
+    ],
+    "events": [
+      "Room Event: event:mapper/f9c80fa4-3dca-448c-a508-27c9257f30cd",
+      "Room Event: event:mapper/41133206-b008-4501-8c55-9f9440e2728b",
+      "Room Event: event:mapper/0d8438fa-157f-4192-8b6a-3b6ac91bf8b3"
+    ],
+    "item_id": 839039,
+    "act": 1
+  },
+  {
+    "name": "Vog",
+    "actors": [
+      {
+        "scene": "aqueduct_05_caravan",
+        "path": "Caravan_States/Fleatopia/Caravan Troupe Hunter"
+      },
+      {
+        "scene": "bellway_aqueduct",
+        "path": "Caravan Troupe Hunter Wild"
+      },
+      {
+        "scene": "bone_10",
+        "path": "Black Thread States Thread Only Variant/Normal World/Caravan/Caravan State Regular/Caravan Troupe Hunter"
+      },
+      {
+        "scene": "coral_judge_arena",
+        "path": "Caravan_Set/Caravan/Active/Caravan Troupe Hunter"
+      },
+      {
+        "scene": "greymoor_08_caravan",
+        "path": "Caravan/Caravan Troupe Hunter"
+      },
+      {
+        "scene": "aqueduct_05_festival",
+        "path": "Caravan_States/Flea Festival/Flea Game - Dodging/Flea Games Host NPC"
+      }
+    ],
+    "checks": [
+      "Flea: Putrified Ducts - Vog"
+    ],
+    "events": [
+      "Room Event: event:mapper/3ceea514-6141-4540-8362-7861c67a138d",
+      "Room Event: event:mapper/1d494539-e87e-425a-9924-8d49592db7bf",
+      "Room Event: event:mapper/72aa38b8-7ca7-4642-8c2a-9d44dca06a61",
+      "Room Event: event:mapper/e24cf0d2-046f-494d-89be-9779f965e787"
+    ],
+    "item_id": 839040,
+    "act": 1
+  },
+  {
+    "name": "Grishkin",
+    "actors": [
+      {
+        "scene": "aqueduct_05_caravan",
+        "path": "Caravan_States/Fleatopia/Caravan Troup Member Short Pot"
+      },
+      {
+        "scene": "aqueduct_05_festival",
+        "path": "Caravan_States/Flea Festival/Festival_Feast/Caravan Troup Member Short Fleatopia"
+      },
+      {
+        "scene": "bone_10",
+        "path": "Black Thread States Thread Only Variant/Normal World/Caravan/Caravan State Regular/Caravan Troup Member Short"
+      },
+      {
+        "scene": "coral_judge_arena",
+        "path": "Caravan_Set/Caravan/Active/Caravan Troup Member Short Pot"
+      },
+      {
+        "scene": "greymoor_08_caravan",
+        "path": "Caravan/Caravan Troup Member Short Greymoor"
+      }
+    ],
+    "checks": [],
+    "events": [],
+    "item_id": 839041,
+    "act": 1
+  },
+  {
+    "name": "Varga",
+    "actors": [
+      {
+        "scene": "aqueduct_05_caravan",
+        "path": "Caravan_States/Fleatopia/Caravan Troup Member Tall - Act 2"
+      },
+      {
+        "scene": "aqueduct_05_caravan",
+        "path": "Caravan_States/Fleatopia/Caravan Troup Member Tall - Act 3"
+      },
+      {
+        "scene": "aqueduct_05_festival",
+        "path": "Caravan_States/Flea Festival/Fleas - Disabled During Games/Caravan Troup Member Tall (inactive bg)"
+      },
+      {
+        "scene": "bone_10",
+        "path": "Black Thread States Thread Only Variant/Normal World/Caravan/Caravan State Regular/Caravan Troup Member Tall"
+      },
+      {
+        "scene": "coral_judge_arena",
+        "path": "Caravan_Set/Caravan/Active/Caravan Troup Member Tall (inactive bg)"
+      },
+      {
+        "scene": "room_caravan_interior",
+        "path": "Caravan Troup Member Tall"
+      }
+    ],
+    "checks": [],
+    "events": [],
+    "item_id": 839042,
+    "act": 1
+  },
+  {
+    "name": "Fayforn",
+    "actors": [
+      {
+        "scene": "peak_08b",
+        "path": "DJ Get Sequence/Fayforn Ground Sit NPC"
+      }
+    ],
+    "checks": [
+      "Faydown Cloak"
+    ],
+    "events": [
+      "Room Event: event:mapper/c26299ac-978e-440b-8051-b262287c2397"
+    ],
+    "item_id": 839043,
+    "act": 2,
+    "interactions": [
+      {
+        "scene": "peak_08b",
+        "path": "DJ Get Sequence/Calling Device/Inspect Region"
+      }
+    ],
+    "states": [
+      {
+        "scene": "peak_08b",
+        "path": "DJ Get Sequence",
+        "fsm": "DJ Get Sequence",
+        "states": [
+          "In Range",
+          "Playing Wait",
+          "Lock"
+        ]
+      }
+    ]
+  },
+  {
+    "name": "Pinstress",
+    "actors": [
+      {
+        "scene": "room_pinstress",
+        "path": "Pinstress States/Ground Sitting/Pinstress Interior Ground Sit"
+      },
+      {
+        "scene": "room_pinstress",
+        "path": "Pinstress States/Standing/Pinstress Interior NPC"
+      },
+      {
+        "scene": "room_pinstress",
+        "path": "Pinstress States/Sitting/Pinstress Interior Sit NPC"
+      }
+    ],
+    "checks": [
+      "Needle Strike"
+    ],
+    "events": [
+      "Room Event: event:mapper/0aa10fd9-5827-4efe-804d-0b954e12a17e",
+      "Room Event: event:mapper/8367d436-2cc1-4307-bb2f-1218df50f559",
+      "Room Event: event:mapper/reviewed:fatal-resolve-accepted"
+    ],
+    "item_id": 839044,
+    "act": 1
+  },
+  {
+    "name": "Seth",
+    "actors": [
+      {
+        "scene": "aqueduct_05_festival",
+        "path": "Caravan_States/Flea Festival/Seth Sit NPC Fleatopia"
+      },
+      {
+        "scene": "coral_10",
+        "path": "Seth Stand NPC"
+      },
+      {
+        "scene": "greymoor_02",
+        "path": "Seth Sit NPC Greymoor"
+      },
+      {
+        "scene": "shellwood_20",
+        "path": "Seth Stand NPC"
+      }
+    ],
+    "checks": [],
+    "events": [
+      "Room Event: event:mapper/906d3bff-5700-4551-acf8-32b63d7611e8",
+      "Room Event: event:mapper/00e2df00-1963-45e6-897a-81ec9871a981",
+      "Room Event: event:mapper/55403823-7ad8-4eec-a0c4-018fed91fb8d",
+      "Room Event: event:mapper/511530a5-36c8-479b-a6af-9a86ed584c06",
+      "Room Event: event:mapper/reviewed:passing-age-accepted",
+      "Room Event: event:mapper/1f9a8076-5778-446f-b514-7431162645df"
+    ],
+    "item_id": 839045,
+    "act": 1,
+    "alternatives": {
+      "Guardian's Memento": [
+        "Room Event: event:mapper/1f9a8076-5778-446f-b514-7431162645df"
+      ]
+    }
+  },
+  {
+    "name": "Runt",
+    "actors": [
+      {
+        "scene": "room_huntress",
+        "path": "scene/Huntress_set/post/Incompleted/Huntress Runt"
+      }
+    ],
+    "checks": [],
+    "events": [
+      "Room Event: event:mapper/32ff1f62-f722-4058-8a08-69c8a3fe3056"
+    ],
+    "item_id": 839046,
+    "act": 2
+  },
+  {
+    "name": "Styx",
+    "actors": [
+      {
+        "scene": "dust_11",
+        "path": "Steel Soul States/Regular/NPC Control/Grub Farmer NPC"
+      }
+    ],
+    "checks": [
+      "Wish: Queen's Egg"
+    ],
+    "events": [
+      "Room Event: event:mapper/b11a5f4c-563b-42cc-8248-aa3cc012ae69",
+      "Room Event: event:mapper/reviewed:styx-first-grub-grown",
+      "Room Event: event:mapper/reviewed:courier-queens-egg-delivered"
+    ],
+    "item_id": 839047,
+    "act": 1
+  },
+  {
+    "name": "Skynx",
+    "actors": [
+      {
+        "scene": "dust_11",
+        "path": "Steel Soul States/Steel Soul/Group/Grub Farmer Mimic"
+      }
+    ],
+    "checks": [],
+    "events": [],
+    "item_id": 839048,
+    "act": 1
+  },
+  {
+    "name": "Old Penitent",
+    "actors": [
+      {
+        "scene": "slab_cell_creature",
+        "path": "Slab Prisoner"
+      }
+    ],
+    "checks": [],
+    "events": [],
+    "item_id": 839049,
+    "act": 2
+  },
+  {
+    "name": "Yarnaby",
+    "actors": [
+      {
+        "scene": "belltown_room_doctor",
+        "path": "Doctor Fly Scene/Doctor Fly"
+      }
+    ],
+    "checks": [
+      "Crest: Witch"
+    ],
+    "events": [
+      "Room Event: event:mapper/b289af30-9c97-4eb4-bd24-1750bc91adfe",
+      "Room Event: event:mapper/cf97a141-ac87-4c38-b4a5-231eca44dc3a",
+      "Room Event: event:mapper/reviewed:infestation-operation-accepted"
+    ],
+    "item_id": 839050,
+    "act": 1,
+    "interactions": [
+      {
+        "scene": "belltown_room_doctor",
+        "path": "Doctor Fly Scene"
+      }
+    ]
+  },
+  {
+    "name": "Pondcatcher Reed",
+    "actors": [
+      {
+        "scene": "belltown",
+        "path": "Black Thread States Thread Only Variant/Black Thread World/Pilgrim Crowds End/Crowds/Fisher_Act3"
+      },
+      {
+        "scene": "belltown",
+        "path": "Pilgrim Fisher NPC Walker"
+      },
+      {
+        "scene": "belltown_07",
+        "path": "Pilgrim Fisher NPC Walker"
+      },
+      {
+        "scene": "shellwood_01",
+        "path": "Pilgrim Fisher NPC Walker"
+      }
+    ],
+    "checks": [],
+    "events": [],
+    "item_id": 839051,
+    "act": 1
+  },
+  {
+    "name": "Mergwin",
+    "actors": [
+      {
+        "scene": "song_09b",
+        "path": "Gourmand/Great Gourmand Scene/Gourmand Servant"
+      }
+    ],
+    "checks": [
+      "Wish: Great Taste of Pharloom",
+      "Great Taste of Pharloom - Pale Oil"
+    ],
+    "events": [
+      "Room Event: event:mapper/d564a7a1-fa8b-46ca-aace-a81222d43934",
+      "Room Event: event:mapper/reviewed:great-taste-completed"
+    ],
+    "item_id": 839052,
+    "act": 2
+  },
+  {
+    "name": "Sula",
+    "actors": [
+      {
+        "scene": "bone_steel_servant",
+        "path": "Steel Servant Scene/Steel Servant NPC"
+      },
+      {
+        "scene": "bone_steel_servant",
+        "path": "Steel Servant Scene/Scene NPC"
+      }
+    ],
+    "checks": [],
+    "events": [
+      "Room Event: event:mapper/aa48b17e-dd99-40c9-8d5f-dfaa642a64a4",
+      "Combat: Summoned Saviour"
+    ],
+    "item_id": 839053,
+    "act": 1,
+    "states": [
+      {
+        "scene": "bone_steel_servant",
+        "path": "Steel Servant Scene",
+        "fsm": "Control",
+        "states": [
+          "Idle",
+          "Capture"
+        ]
+      },
+      {
+        "scene": "bone_steel_servant",
+        "path": "Steel Servant Scene",
+        "fsm": "Control",
+        "states": [
+          "Idle",
+          "Capture"
+        ]
+      }
+    ]
+  },
+  {
+    "name": "Steel Seer Zi",
+    "actors": [
+      {
+        "scene": "coral_37",
+        "path": "Room_States/Steel/Steel Sentinel"
+      }
+    ],
+    "checks": [
+      "Wish: A Vassal Lost"
+    ],
+    "events": [
+      "Room Event: event:mapper/512aa8e5-5da8-4afd-b906-c6f270dab172",
+      "Room Event: event:mapper/da476bc2-0b8d-4b9c-b040-2e0f75c197b8"
+    ],
+    "item_id": 839054,
+    "act": 1
+  },
+  {
+    "name": "Crawbell",
+    "actors": [],
+    "checks": [],
+    "events": [],
+    "item_id": 839055,
+    "act": 1,
+    "legacy": true
+  },
+  {
+    "name": "Pilby",
+    "actors": [
+      {
+        "scene": "bone_east_10",
+        "path": "Black Thread States Thread Only Variant/Normal World/Bonetown Resident"
+      },
+      {
+        "scene": "bone_east_10_room",
+        "path": "Black Thread States/Normal World/Bonetown Resident PilgrimsRest Variant"
+      },
+      {
+        "scene": "bonetown",
+        "path": "Black Thread States/Normal World/Bonetown Resident"
+      }
+    ],
+    "checks": [],
+    "events": [],
+    "item_id": 839056,
+    "act": 1
+  },
+  {
+    "name": "Garmond",
+    "actors": [
+      {
+        "scene": "dust_05",
+        "path": "Garmond Scene/Garmond Here/Garmond Aid NPC"
+      },
+      {
+        "scene": "greymoor_05",
+        "path": "Garmond Scene/Garmond Sleep NPC"
+      },
+      {
+        "scene": "greymoor_07",
+        "path": "Black Thread States Thread Only Variant/Normal World/Garmond Scene/Garmond Present/Garmond Aid NPC"
+      },
+      {
+        "scene": "hang_04",
+        "path": "Black Thread States/Normal World/Aftermath Control/Battle Aftermath/Garmond Heavy Sleeper NPC"
+      },
+      {
+        "scene": "hang_06",
+        "path": "Aid NPC Control/Garmond Aid NPC"
+      },
+      {
+        "scene": "song_enclave",
+        "path": "Black Thread States/Normal World/Enclave States/States/Level 2/Garmond Control/Garmond Scene/Garmond Sleep NPC"
+      },
+      {
+        "scene": "bone_09",
+        "path": "Black Thread States Thread Only Variant/Black Thread World/Garmond Fight Scene/Garmond Fighter"
+      },
+      {
+        "scene": "bone_11",
+        "path": "Black Thread States Thread Only Variant/Black Thread World/Garmond Fight Scene/Garmond Fighter"
+      },
+      {
+        "scene": "bone_east_02",
+        "path": "Black Thread States Thread Only Variant/Black Thread World/Garmond Fight Scene/Garmond Fighter"
+      },
+      {
+        "scene": "bone_east_05",
+        "path": "Black Thread States Thread Only Variant/Black Thread World/Garmond Fight Scene/Garmond Fighter"
+      },
+      {
+        "scene": "bone_east_14",
+        "path": "Black Thread States/Black Thread World/Garmond Fight Scene/Garmond Fighter"
+      },
+      {
+        "scene": "coral_02",
+        "path": "Black Thread States/Black Thread World/Garmond Fight Scene/Garmond Fighter"
+      },
+      {
+        "scene": "dust_05",
+        "path": "Black Thread States Thread Only Variant/Black Thread World/Garmond Fight Scene/Garmond Fighter"
+      },
+      {
+        "scene": "greymoor_05",
+        "path": "Scene Control/Farmer Enemies/Garmond Fight Scene/Garmond Fighter"
+      },
+      {
+        "scene": "greymoor_08_boss",
+        "path": "Vampire Gnat Scene/Garmond Fighter"
+      },
+      {
+        "scene": "hang_04_boss",
+        "path": "Battle Scene/Garmond Fighter"
+      },
+      {
+        "scene": "library_09",
+        "path": "Black Thread States/Normal World/Scene Control/Garmond Scene/Garmond Fighter"
+      },
+      {
+        "scene": "shellwood_04b",
+        "path": "Black Thread States Thread Only Variant/Black Thread World/Unspinner/Garmond Fight Scene/Garmond Fighter"
+      },
+      {
+        "scene": "song_01",
+        "path": "Citadel Woken Scene/Garmond Fight Scene/Garmond Fighter"
+      },
+      {
+        "scene": "song_02",
+        "path": "Black Thread States/Normal World/Citadel Woken Scene/Garmond Fight Scene/Garmond Fighter"
+      },
+      {
+        "scene": "song_13",
+        "path": "Garmond Fight Scene/Garmond Fighter"
+      },
+      {
+        "scene": "song_17",
+        "path": "Garmond Fight Scene/Garmond Fighter"
+      }
+    ],
+    "checks": [
+      "Hero's Memento"
+    ],
+    "events": [
+      "Room Event: event:mapper/a96cc8c0-d5e5-4445-8e21-eff910fb1bbd",
+      "Room Event: event:mapper/8d5120f7-d87a-4543-b242-2c2935d8ff70",
+      "Room Event: event:mapper/c5fae5ae-14d3-4096-b1cb-ff3a8f80d56b",
+      "Room Event: event:mapper/reviewed:garmond-act-three-encounter-deep-docks",
+      "Room Event: event:mapper/e77090bd-36e6-4b82-ba15-160704f23880",
+      "Room Event: event:mapper/reviewed:garmond-act-three-encounter-far-fields",
+      "Room Event: event:mapper/2556f3de-c939-45d2-b25c-8b04d58eefbf",
+      "Room Event: event:mapper/24e930a4-a9be-4227-8e8f-ba0338e80adb",
+      "Room Event: event:mapper/80d7efe3-7652-4145-8776-16b218d05810",
+      "Room Event: event:mapper/eef2f48b-55f9-406d-b2cb-8283f396b7f1",
+      "Room Event: event:mapper/7b7c6c0e-9ca1-49f1-9ec1-a578182f089a",
+      "Room Event: event:mapper/reviewed:garmond-act-three-encounter-sinners-road",
+      "Room Event: event:mapper/190e2efd-95c9-431d-b742-26294a5e2802",
+      "Combat: Garmond and Zaza"
+    ],
+    "item_id": 839057,
+    "act": 1,
+    "states": [
+      {
+        "scene": "library_09",
+        "path": "Black Thread States/Normal World/Scene Control/Garmond Scene",
+        "fsm": "Control",
+        "states": [
+          "Idle",
+          "Check Dir Init",
+          "Check Dir"
+        ]
+      }
+    ]
+  },
+  {
+    "name": "Zaza",
+    "actors": [
+      {
+        "scene": "dust_05",
+        "path": "Garmond Scene/Garmond Here/Garmond Aid NPC"
+      },
+      {
+        "scene": "greymoor_05",
+        "path": "Garmond Scene/Zaza Sleep NPC"
+      },
+      {
+        "scene": "greymoor_07",
+        "path": "Black Thread States Thread Only Variant/Normal World/Garmond Scene/Garmond Present/Garmond Aid NPC"
+      },
+      {
+        "scene": "hang_04",
+        "path": "Black Thread States/Normal World/Aftermath Control/Battle Aftermath/Garmond Heavy Sleeper NPC"
+      },
+      {
+        "scene": "hang_06",
+        "path": "Aid NPC Control/Garmond Aid NPC"
+      },
+      {
+        "scene": "song_enclave",
+        "path": "Black Thread States/Normal World/Enclave States/States/Level 2/Garmond Control/Garmond Scene/Zaza Sleep NPC"
+      },
+      {
+        "scene": "bone_09",
+        "path": "Black Thread States Thread Only Variant/Black Thread World/Garmond Fight Scene/Garmond Fighter"
+      },
+      {
+        "scene": "bone_11",
+        "path": "Black Thread States Thread Only Variant/Black Thread World/Garmond Fight Scene/Garmond Fighter"
+      },
+      {
+        "scene": "bone_east_02",
+        "path": "Black Thread States Thread Only Variant/Black Thread World/Garmond Fight Scene/Garmond Fighter"
+      },
+      {
+        "scene": "bone_east_05",
+        "path": "Black Thread States Thread Only Variant/Black Thread World/Garmond Fight Scene/Garmond Fighter"
+      },
+      {
+        "scene": "bone_east_14",
+        "path": "Black Thread States/Black Thread World/Garmond Fight Scene/Garmond Fighter"
+      },
+      {
+        "scene": "coral_02",
+        "path": "Black Thread States/Black Thread World/Garmond Fight Scene/Garmond Fighter"
+      },
+      {
+        "scene": "dust_05",
+        "path": "Black Thread States Thread Only Variant/Black Thread World/Garmond Fight Scene/Garmond Fighter"
+      },
+      {
+        "scene": "greymoor_05",
+        "path": "Scene Control/Farmer Enemies/Garmond Fight Scene/Garmond Fighter"
+      },
+      {
+        "scene": "greymoor_08_boss",
+        "path": "Vampire Gnat Scene/Garmond Fighter"
+      },
+      {
+        "scene": "hang_04_boss",
+        "path": "Battle Scene/Garmond Fighter"
+      },
+      {
+        "scene": "library_09",
+        "path": "Black Thread States/Normal World/Scene Control/Garmond Scene/Garmond Fighter"
+      },
+      {
+        "scene": "shellwood_04b",
+        "path": "Black Thread States Thread Only Variant/Black Thread World/Unspinner/Garmond Fight Scene/Garmond Fighter"
+      },
+      {
+        "scene": "song_01",
+        "path": "Citadel Woken Scene/Garmond Fight Scene/Garmond Fighter"
+      },
+      {
+        "scene": "song_02",
+        "path": "Black Thread States/Normal World/Citadel Woken Scene/Garmond Fight Scene/Garmond Fighter"
+      },
+      {
+        "scene": "song_13",
+        "path": "Garmond Fight Scene/Garmond Fighter"
+      },
+      {
+        "scene": "song_17",
+        "path": "Garmond Fight Scene/Garmond Fighter"
+      }
+    ],
+    "checks": [
+      "Hero's Memento"
+    ],
+    "events": [
+      "Room Event: event:mapper/a96cc8c0-d5e5-4445-8e21-eff910fb1bbd",
+      "Room Event: event:mapper/8d5120f7-d87a-4543-b242-2c2935d8ff70",
+      "Room Event: event:mapper/c5fae5ae-14d3-4096-b1cb-ff3a8f80d56b",
+      "Room Event: event:mapper/reviewed:garmond-act-three-encounter-deep-docks",
+      "Room Event: event:mapper/e77090bd-36e6-4b82-ba15-160704f23880",
+      "Room Event: event:mapper/reviewed:garmond-act-three-encounter-far-fields",
+      "Room Event: event:mapper/2556f3de-c939-45d2-b25c-8b04d58eefbf",
+      "Room Event: event:mapper/24e930a4-a9be-4227-8e8f-ba0338e80adb",
+      "Room Event: event:mapper/80d7efe3-7652-4145-8776-16b218d05810",
+      "Room Event: event:mapper/eef2f48b-55f9-406d-b2cb-8283f396b7f1",
+      "Room Event: event:mapper/7b7c6c0e-9ca1-49f1-9ec1-a578182f089a",
+      "Room Event: event:mapper/reviewed:garmond-act-three-encounter-sinners-road",
+      "Room Event: event:mapper/190e2efd-95c9-431d-b742-26294a5e2802",
+      "Combat: Garmond and Zaza"
+    ],
+    "item_id": 839058,
+    "act": 1,
+    "states": [
+      {
+        "scene": "library_09",
+        "path": "Black Thread States/Normal World/Scene Control/Garmond Scene",
+        "fsm": "Control",
+        "states": [
+          "Idle",
+          "Check Dir Init",
+          "Check Dir"
+        ]
+      }
+    ]
+  },
+  {
+    "name": "Eva",
+    "actors": [
+      {
+        "scene": "weave_10",
+        "path": "Crest Upgrade Shrine"
+      }
+    ],
+    "checks": [
+      "Hunter Evolution 1",
+      "Yellow Vesticrest",
+      "Blue Vesticrest",
+      "Hunter Evolution 2",
+      "Sylphsong"
+    ],
+    "events": [
+      "Room Event: event:mapper/11dd88f9-ee2b-42d4-bd80-bc80430c8a99",
+      "Room Event: event:mapper/e8c0a3a7-47ff-4ab1-91e2-445dd1ca5fa2",
+      "Room Event: event:mapper/3948fed0-b50b-4772-8aaa-bf65120db417",
+      "Room Event: event:mapper/3257c38f-c24f-47a3-9982-babb3b7aaf4c",
+      "Room Event: event:mapper/babb935d-d1c5-4d27-ada5-2ed28e26eb0c"
+    ],
+    "act": 1,
+    "item_id": 839059
+  },
+  {
+    "name": "Loam",
+    "actors": [
+      {
+        "scene": "under_03d",
+        "path": "Black Thread States/Normal World/Understore Large Worker"
+      }
+    ],
+    "checks": [],
+    "events": [],
+    "act": 2,
+    "item_id": 839060
+  },
+  {
+    "name": "Great Gourmand",
+    "actors": [
+      {
+        "scene": "song_09b",
+        "path": "Gourmand/Great Gourmand Scene/Great Gourmand"
+      }
+    ],
+    "checks": [
+      "Wish: Great Taste of Pharloom",
+      "Great Taste of Pharloom - Pale Oil"
+    ],
+    "events": [
+      "Room Event: event:mapper/d564a7a1-fa8b-46ca-aace-a81222d43934",
+      "Room Event: event:mapper/reviewed:great-taste-completed"
+    ],
+    "act": 2,
+    "item_id": 839061,
+    "interactions": [
+      {
+        "scene": "song_09b",
+        "path": "Gourmand/Great Gourmand Scene/Gourmand Servant"
+      }
+    ]
+  }
+]

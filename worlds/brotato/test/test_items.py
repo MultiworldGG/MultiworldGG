@@ -2,16 +2,17 @@ from collections import Counter
 
 from ..constants import ALL_CHARACTERS, PROGRESSIVE_WAVE_CAP_ITEM_TEMPLATE
 from ..items import ItemName
+from ..options import NumWaveCaps
 from . import BrotatoTestBase
 from .data_sets.shop_slots import SHOP_SLOT_TEST_DATA_SETS
 
 
 class TestBrotatoItems(BrotatoTestBase):
     def test_create_items_progressive_wave_cap_increase_items(self):
-        num_wave_caps = 4
-        expected_num_items = num_wave_caps - 1
+        num_wave_caps = NumWaveCaps.option_four
         with self._run({"num_wave_caps": num_wave_caps}):
-            expected_num_items = len(self.world._include_characters) * (num_wave_caps - 1)
+            # 3: 4 wave caps minus one for the first set of waves
+            expected_num_items = len(self.world._include_characters) * 3
             wave_cap_increase_items = [
                 item for item in self.multiworld.itempool if item.name.startswith("Progressive Wave Cap")
             ]

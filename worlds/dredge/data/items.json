@@ -1417,7 +1417,8 @@
     "can_catch": [
       "Coastal"
     ],
-    "size": 2
+    "size": 2,
+    "shape": ["XX"]
   },
   "Simple Skimmer": {
     "base_id_offset": 236,
@@ -1427,7 +1428,8 @@
     "can_catch": [
       "Shallow"
     ],
-    "size": 2
+    "size": 2,
+    "shape": ["XX"]
   },
   "Weighted Line": {
     "base_id_offset": 237,
@@ -1437,7 +1439,8 @@
     "can_catch": [
       "Shallow"
     ],
-    "size": 3
+    "size": 3,
+    "shape": ["XX", "X."]
   },
   "Hydraulic Rod": {
     "base_id_offset": 238,
@@ -1447,7 +1450,8 @@
     "can_catch": [
       "Oceanic"
     ],
-    "size": 4
+    "size": 4,
+    "shape": ["XX", "XX"]
   },
   "Flexible Fishing Pole": {
     "base_id_offset": 239,
@@ -1458,7 +1462,8 @@
       "Coastal",
       "Shallow"
     ],
-    "size": 3
+    "size": 3,
+    "shape": ["X", "X", "X"]
   },
   "Heat-Resistant Line": {
     "base_id_offset": 240,
@@ -1469,7 +1474,8 @@
       "Volcanic",
       "Shallow"
     ],
-    "size": 3
+    "size": 3,
+    "shape": ["XX", "X."]
   },
   "Anti-Tangle Line": {
     "base_id_offset": 241,
@@ -1480,7 +1486,8 @@
       "Mangrove",
       "Coastal"
     ],
-    "size": 3
+    "size": 3,
+    "shape": ["XX", "X."]
   },
   "Versatile Rod": {
     "base_id_offset": 242,
@@ -1493,7 +1500,8 @@
       "Mangrove",
       "Volcanic"
     ],
-    "size": 5
+    "size": 5,
+    "shape": ["XX", "XX", "X."]
   },
   "Harvesting Platform": {
     "base_id_offset": 243,
@@ -1505,7 +1513,8 @@
       "Shallow",
       "Oceanic"
     ],
-    "size": 6
+    "size": 6,
+    "shape": ["XX", "XX", "XX"]
   },
   "Bottomless Lines": {
     "base_id_offset": 244,
@@ -1516,7 +1525,8 @@
       "Abyssal",
       "Hadal"
     ],
-    "size": 4
+    "size": 4,
+    "shape": ["XX", ".X", ".X"]
   },
   "Fathomless Winch": {
     "base_id_offset": 245,
@@ -1528,7 +1538,8 @@
       "Hadal",
       "Oceanic"
     ],
-    "size": 4
+    "size": 4,
+    "shape": ["XX", "XX"]
   },
   "Sampling Device": {
     "base_id_offset": 246,
@@ -1538,7 +1549,8 @@
     "can_catch": [
       "Abyssal"
     ],
-    "size": 3
+    "size": 3,
+    "shape": ["X", "X", "X"]
   },
   "Barbed Ice Rod": {
     "base_id_offset": 247,
@@ -1548,7 +1560,8 @@
     "can_catch": [
       "Ice"
     ],
-    "size": 4
+    "size": 4,
+    "shape": ["XX", "XX"]
   },
   "Glacial Lance": {
     "base_id_offset": 248,
@@ -1559,7 +1572,8 @@
       "Oceanic",
       "Ice"
     ],
-    "size": 3
+    "size": 3,
+    "shape": ["X", "X", "X"]
   },
   "Infused Rod": {
     "base_id_offset": 249,
@@ -1572,7 +1586,8 @@
       "Infused Coastal",
       "Infused Shallow"
     ],
-    "size": 3
+    "size": 3,
+    "shape": ["X", "X", "X"]
   },
   "Infused Winch": {
     "base_id_offset": 250,
@@ -1587,7 +1602,8 @@
       "Infused Shallow",
       "Infused Oceanic"
     ],
-    "size": 4
+    "size": 4,
+    "shape": ["XX", "XX"]
   },
   "Infused Hoist": {
     "base_id_offset": 251,
@@ -1602,7 +1618,8 @@
       "Infused Abyssal",
       "Infused Hadal"
     ],
-    "size": 4
+    "size": 4,
+    "shape": ["XX", "XX"]
   },
   "Infused Coiling Rod": {
     "base_id_offset": 252,
@@ -1615,7 +1632,8 @@
       "Infused Mangrove",
       "Infused Coastal"
     ],
-    "size": 3
+    "size": 3,
+    "shape": ["XX", "X."]
   },
   "Infused Fireproof Rod": {
     "base_id_offset": 253,
@@ -1628,7 +1646,8 @@
       "Infused Volcanic",
       "Infused Shallow"
     ],
-    "size": 3
+    "size": 3,
+    "shape": ["XX", "X."]
   },
   "Sinew Spindle": {
     "base_id_offset": 254,
@@ -1639,7 +1658,8 @@
       "Coastal",
       "Shallow"
     ],
-    "size": 2
+    "size": 2,
+    "shape": ["X", "X"]
   },
   "Viscera Crane": {
     "base_id_offset": 255,
@@ -1650,7 +1670,8 @@
       "Abyssal",
       "Hadal"
     ],
-    "size": 4
+    "size": 4,
+    "shape": ["XX", ".X", ".X"]
   },
   "Tendon Rod": {
     "base_id_offset": 256,
@@ -1662,14 +1683,16 @@
       "Shallow",
       "Mangrove"
     ],
-    "size": 5
+    "size": 5,
+    "shape": ["XX", "X.", "XX"]
   },
   "Encrusted Talisman": {
     "base_id_offset": 257,
     "classification": "useful",
     "item_group": "Rod",
     "expansion": "Base",
-    "size": 4
+    "size": 4,
+    "shape": ["XX", "XX"]
   },
   "Basic Crab Pot": {
     "base_id_offset": 258,
@@ -1768,7 +1791,8 @@
     "can_catch": [
       "Coastal"
     ],
-    "size": 4
+    "size": 4,
+    "shape": ["XX", "XX"]
   },
   "Improved Trawl Net": {
     "base_id_offset": 268,
@@ -1778,7 +1802,8 @@
     "can_catch": [
       "Coastal"
     ],
-    "size": 4
+    "size": 4,
+    "shape": ["XX", "XX"]
   },
   "Silt Filtering Trawl Net": {
     "base_id_offset": 269,
@@ -1789,7 +1814,8 @@
       "Shallow",
       "Mangrove"
     ],
-    "size": 4
+    "size": 4,
+    "shape": ["XX", "XX"]
   },
   "Tempered Mesh Net": {
     "base_id_offset": 270,
@@ -1800,7 +1826,8 @@
       "Coastal",
       "Volcanic"
     ],
-    "size": 4
+    "size": 4,
+    "shape": ["XX", "XX"]
   },
   "Large Trawl Net": {
     "base_id_offset": 271,
@@ -1811,7 +1838,8 @@
       "Coastal",
       "Shallow"
     ],
-    "size": 6
+    "size": 6,
+    "shape": ["XX", "XX", "XX"]
   },
   "Heavy-Duty Trawl Net": {
     "base_id_offset": 272,
@@ -1822,7 +1850,8 @@
       "Coastal",
       "Oceanic"
     ],
-    "size": 6
+    "size": 6,
+    "shape": ["XX", "XX", "XX"]
   },
   "Brittle Trawl Net": {
     "base_id_offset": 273,
@@ -1832,7 +1861,8 @@
     "can_catch": [
       "Ice"
     ],
-    "size": 4
+    "size": 4,
+    "shape": ["XX", "XX"]
   },
   "Radiant Trawl Net": {
     "base_id_offset": 274,
@@ -1845,14 +1875,16 @@
       "Oceanic",
       "Shallow"
     ],
-    "size": 4
+    "size": 4,
+    "shape": ["XX", "XX"]
   },
   "Siphon Trawler": {
     "base_id_offset": 275,
     "classification": "progression",
     "item_group": "Net",
     "expansion": "IronRig",
-    "size": 4
+    "size": 4,
+    "shape": ["XX", "XX"]
   },
   "Starting Gear - Peculiar Engine": {
     "base_id_offset": 276,
@@ -1860,15 +1892,8 @@
     "item_group": "Engine",
     "expansion": "Base",
     "size": 2,
-    "item_value": 0
-  },
-  "Arterial Engine": {
-    "base_id_offset": 277,
-    "classification": "progression",
-    "item_group": "Engine",
-    "expansion": "Base",
-    "size": 1,
-    "item_value": 0
+    "shape": ["X", "X"],
+    "speed": 14
   },
   "Rusty Outboard Engine": {
     "base_id_offset": 278,
@@ -1876,7 +1901,9 @@
     "item_group": "Engine",
     "expansion": "Base",
     "size": 2,
-    "item_value": 0
+    "shape": ["X", "X"],
+    "speed": 10,
+    "rebuyable": true
   },
   "Improved Outboard Engine": {
     "base_id_offset": 279,
@@ -1884,7 +1911,9 @@
     "item_group": "Engine",
     "expansion": "Base",
     "size": 2,
-    "item_value": 1
+    "shape": ["X", "X"],
+    "speed": 15,
+    "rebuyable": true
   },
   "Refined Outboard Engine": {
     "base_id_offset": 280,
@@ -1892,7 +1921,9 @@
     "item_group": "Engine",
     "expansion": "Base",
     "size": 3,
-    "item_value": 1
+    "shape": ["XX", "X."],
+    "speed": 25,
+    "rebuyable": true
   },
   "Twin Prop Engine": {
     "base_id_offset": 281,
@@ -1900,7 +1931,9 @@
     "item_group": "Engine",
     "expansion": "Base",
     "size": 4,
-    "item_value": 2
+    "shape": ["XX", "XX"],
+    "speed": 35,
+    "rebuyable": true
   },
   "Jet Drive Engine": {
     "base_id_offset": 282,
@@ -1908,7 +1941,9 @@
     "item_group": "Engine",
     "expansion": "Base",
     "size": 1,
-    "item_value": 3
+    "shape": ["X"],
+    "speed": 9,
+    "rebuyable": true
   },
   "Twin Jet Drive Engine": {
     "base_id_offset": 283,
@@ -1916,7 +1951,9 @@
     "item_group": "Engine",
     "expansion": "Base",
     "size": 6,
-    "item_value": 0
+    "shape": ["X.X", "XXX"],
+    "speed": 50,
+    "rebuyable": true
   },
   "Engine Stack": {
     "base_id_offset": 284,
@@ -1924,7 +1961,9 @@
     "item_group": "Engine",
     "expansion": "Base",
     "size": 6,
-    "item_value": 0
+    "shape": ["XXX", "XXX"],
+    "speed": 64,
+    "rebuyable": true
   },
   "Weak Valve Engine": {
     "base_id_offset": 285,
@@ -1932,7 +1971,8 @@
     "item_group": "Engine",
     "expansion": "Base",
     "size": 3,
-    "item_value": 1
+    "shape": ["XX", "X."],
+    "speed": 18
   },
   "Progressive Hull": {
     "base_id_offset": 286,
@@ -2149,8 +2189,8 @@
   },
   "Ice Shaper": {
     "base_id_offset": 320,
-    "classification": "filler",
-    "item_group": "Miscellaneous",
+    "classification": "progression",
+    "item_group": "Quest Item",
     "expansion": "PaleReach"
   },
   "Bag of Doubloons": {
@@ -2255,108 +2295,6 @@
     "item_group": "Boat Upgrade",
     "expansion": "PaleReach"
   },
-  "Flexible Fishing Pole Researched":{
-	"base_id_offset": 338 ,
-	"classification": "progression",
-	"item_group": "Research",
-	"expansion": "Base"
- },
-  "Heat-Resistant Line Researched":{
-	"base_id_offset": 339,
-	"classification": "progression",
-	"item_group": "Research",
-	"expansion": "Base"
- },
-  "Anti-Tangle Line Researched":{
-	"base_id_offset": 340,
-	"classification": "progression",
-	"item_group": "Research",
-	"expansion": "Base"
- },
-  "Versatile Rod Researched":{
-	"base_id_offset": 341,
-	"classification": "progression",
-	"item_group": "Research",
-	"expansion": "Base"
- },
-  "Hydraulic Rod Researched":{
-	"base_id_offset": 342,
-	"classification": "progression",
-	"item_group": "Research",
-	"expansion": "Base"
- },
-  "Bottomless Lines Researched":{
-	"base_id_offset": 343,
-	"classification": "progression",
-	"item_group": "Research",
-	"expansion": "Base"
- },
-  "Improved Outboard Engine Researched":{
-	"base_id_offset": 344,
-	"classification": "progression",
-	"item_group": "Research",
-	"expansion": "Base"
- },
-  "Twin Prop Engine Researched":{
-	"base_id_offset": 345,
-	"classification": "progression",
-	"item_group": "Research",
-	"expansion": "Base"
- },
-  "Refined Outboard Engine Researched":{
-	"base_id_offset": 346,
-	"classification": "progression",
-	"item_group": "Research",
-	"expansion": "Base"
- },
-  "Twin Jet Drive Engine Researched":{
-	"base_id_offset": 347,
-	"classification": "progression",
-	"item_group": "Research",
-	"expansion": "Base"
- },
-  "Efficient Crab Pot Researched":{
-	"base_id_offset": 348,
-	"classification": "progression",
-	"item_group": "Research",
-	"expansion": "Base"
- },
-  "Hardy Crab Pot Researched":{
-	"base_id_offset": 349,
-	"classification": "progression",
-	"item_group": "Research",
-	"expansion": "Base"
- },
-  "Large Crab Pot Researched":{
-	"base_id_offset": 350,
-	"classification": "progression",
-	"item_group": "Research",
-	"expansion": "Base"
- },
-  "Complex Crab Pot Researched":{
-	"base_id_offset": 351,
-	"classification": "progression",
-	"item_group": "Research",
-	"expansion": "Base"
- },
-  "Massive Crab Pot Researched":{
-	"base_id_offset": 352,
-	"classification": "progression",
-	"item_group": "Research",
-	"expansion": "Base"
- },
-  "Improved Trawl Net Researched":{
-	"base_id_offset": 353,
-	"classification": "progression",
-	"item_group": "Research",
-	"expansion": "Base"
- },
-  "Large Trawl Net Researched":{
-	"base_id_offset": 354,
-	"classification": "progression",
-	"item_group": "Research",
-	"expansion": "Base"
- },
   "The Builder": {
 	"base_id_offset": 355,
 	"classification": "deprioritized",
@@ -2439,36 +2377,228 @@
 	"base_id_offset": 368,
 	"classification": "useful",
 	"item_group": "Light",
-	"expansion": "Base"
+	"expansion": "Base",
+	"shape": ["X"],
+	"lumens": 500,
+	"rebuyable": true
  },
   "Cloudy Lens": {
 	"base_id_offset": 369,
 	"classification": "useful",
 	"item_group": "Light",
-	"expansion": "Base"
+	"expansion": "Base",
+	"shape": ["X"],
+	"lumens": 750,
+	"rebuyable": true
  },
   "Halogen Spotlight": {
 	"base_id_offset": 370,
 	"classification": "useful",
 	"item_group": "Light",
-	"expansion": "Base"
+	"expansion": "Base",
+	"shape": ["XX"],
+	"lumens": 1800,
+	"rebuyable": true
  },
   "Tungsten Floodlight": {
 	"base_id_offset": 371,
 	"classification": "useful",
 	"item_group": "Light",
-	"expansion": "Base"
+	"expansion": "Base",
+	"shape": ["XX"],
+	"lumens": 2100,
+	"rebuyable": true
  },
   "Incandescent Array": {
 	"base_id_offset": 372,
 	"classification": "useful",
 	"item_group": "Light",
-	"expansion": "Base"
+	"expansion": "Base",
+	"shape": ["XXX"],
+	"lumens": 3000,
+	"rebuyable": true
  },
   "Flame of the Sky": {
 	"base_id_offset": 373,
 	"classification": "useful",
 	"item_group": "Light",
-	"expansion": "Base"
- }
+	"expansion": "Base",
+	"shape": ["XX"],
+	"lumens": 3500
+ },
+  "Progressive Aberration Chance": {
+    "base_id_offset": 374,
+    "classification": "useful",
+    "item_group": "Aberration Chance",
+    "expansion": "Base"
+  },
+  "Guaranteed Aberrations": {
+    "base_id_offset": 375,
+    "classification": "useful",
+    "item_group": "Aberration Chance",
+    "expansion": "Base"
+  },
+  "Damaging Event Trap": {
+    "base_id_offset": 376,
+    "classification": "trap",
+    "item_group": "Trap",
+    "expansion": "Base"
+  },
+  "Scary Event Trap": {
+    "base_id_offset": 377,
+    "classification": "trap",
+    "item_group": "Trap",
+    "expansion": "Base"
+  },
+  "Money Loss Trap": {
+    "base_id_offset": 378,
+    "classification": "trap",
+    "item_group": "Trap",
+    "expansion": "Base"
+  },
+  "Teleport Trap": {
+    "base_id_offset": 379,
+    "classification": "trap",
+    "item_group": "Trap",
+    "expansion": "Base"
+  },
+  "Panic Trap": {
+    "base_id_offset": 380,
+    "classification": "trap",
+    "item_group": "Trap",
+    "expansion": "Base"
+  },
+  "Hull Damage Trap": {
+    "base_id_offset": 381,
+    "classification": "trap",
+    "item_group": "Trap",
+    "expansion": "Base"
+  },
+  "Engine Damage Trap": {
+    "base_id_offset": 382,
+    "classification": "trap",
+    "item_group": "Trap",
+    "expansion": "Base"
+  },
+  "Nightfall Trap": {
+    "base_id_offset": 383,
+    "classification": "trap",
+    "item_group": "Trap",
+    "expansion": "Base"
+  },
+  "Rot Trap": {
+    "base_id_offset": 384,
+    "classification": "trap",
+    "item_group": "Trap",
+    "expansion": "Base"
+  },
+  "Slow Trap": {
+    "base_id_offset": 385,
+    "classification": "trap",
+    "item_group": "Trap",
+    "expansion": "Base"
+  },
+  "Lights Out Trap": {
+    "base_id_offset": 386,
+    "classification": "trap",
+    "item_group": "Trap",
+    "expansion": "Base"
+  },
+  "Cargo Scramble Trap": {
+    "base_id_offset": 387,
+    "classification": "trap",
+    "item_group": "Trap",
+    "expansion": "Base"
+  },
+  "Reverse Controls Trap": {
+    "base_id_offset": 388,
+    "classification": "trap",
+    "item_group": "Trap",
+    "expansion": "Base"
+  },
+  "Haste": {
+    "base_id_offset": 389,
+    "classification": "useful",
+    "item_group": "Ability",
+    "expansion": "Base"
+  },
+  "Manifest": {
+    "base_id_offset": 390,
+    "classification": "useful",
+    "item_group": "Ability",
+    "expansion": "Base"
+  },
+  "Banish": {
+    "base_id_offset": 391,
+    "classification": "useful",
+    "item_group": "Ability",
+    "expansion": "Base"
+  },
+  "Atrophy": {
+    "base_id_offset": 392,
+    "classification": "progression",
+    "item_group": "Ability",
+    "expansion": "Base"
+  },
+  "Bronze Belt Buckle": {
+    "base_id_offset": 393,
+    "classification": "progression",
+    "item_group": "Quest Item",
+    "expansion": "Base"
+  },
+  "Dog Tags": {
+    "base_id_offset": 394,
+    "classification": "progression",
+    "item_group": "Quest Item",
+    "expansion": "Base"
+  },
+  "Mortar Frame": {
+    "base_id_offset": 395,
+    "classification": "progression",
+    "item_group": "Quest Item",
+    "expansion": "Base"
+  },
+  "Mortar Barrel": {
+    "base_id_offset": 396,
+    "classification": "progression",
+    "item_group": "Quest Item",
+    "expansion": "Base"
+  },
+  "Family Crest": {
+    "base_id_offset": 397,
+    "classification": "useful",
+    "item_group": "Quest Item",
+    "expansion": "Base"
+  },
+  "Stone Tablet 1": {
+    "base_id_offset": 398,
+    "classification": "progression",
+    "item_group": "Quest Item",
+    "expansion": "Base"
+  },
+  "Stone Tablet 2": {
+    "base_id_offset": 399,
+    "classification": "progression",
+    "item_group": "Quest Item",
+    "expansion": "Base"
+  },
+  "Stone Tablet 3": {
+    "base_id_offset": 400,
+    "classification": "progression",
+    "item_group": "Quest Item",
+    "expansion": "Base"
+  },
+  "Ice Axe": {
+    "base_id_offset": 401,
+    "classification": "progression",
+    "item_group": "Quest Item",
+    "expansion": "PaleReach",
+    "max_quantity": 4
+  },
+  "Aurous Anchor": {
+    "base_id_offset": 402,
+    "classification": "useful",
+    "item_group": "Equipment",
+    "expansion": "PaleReach"
+  }
 }

@@ -333,7 +333,8 @@ DYNAMIC_FLAGS = {
     "Spirit of Wisdom no boss flag": {
         "on_scenes": [0x1701],
         "has_items": [("Spirit of Wisdom (Progressive)", 0), ("Spirit of Wisdom", 0),
-                      ("Spirit (Progressive)", 2, "not")],
+                      ("Spirit (Progressive)", 2, "not"),
+                      ("Spirit of Courage (Progressive)", 0), ("Spirit of Courage", 0), ("Spirit (Progressive)", 3, "not")],
         "unset_if_true": [(PHAddr.adv_flags_3, 0x40)],
         "reset_flags": ["RESET Spirit of Wisdom boss flag"]
     },

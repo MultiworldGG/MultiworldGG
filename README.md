@@ -34,6 +34,7 @@ Currently, the following games are supported:
 * Blasphemous
 * Bomb Rush Cyberfunk
 * Brotato
+* Build a Jetpack
 * Bumper Stickers
 * Candy Box 2
 * Castlevania 64
@@ -93,11 +94,13 @@ Currently, the following games are supported:
 * Heretic
 * HITMAN World of Assassination
 * Hollow Knight
+* Hollow Knight: Silksong
 * HuniePop
 * HuniePop 2
 * Hylics 2
 * Inscryption
 * Into the Breach
+* Isles of Trials
 * Jak and Daxter: The Precursor Legacy
 * Jigsaw Puzzles
 * Kindergarten 2

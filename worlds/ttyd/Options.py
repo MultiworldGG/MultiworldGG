@@ -346,16 +346,6 @@ class EnemyStatScaling(Toggle):
     display_name = "Enemy Stat Scaling"
 
 
-class ShuffleChapterStats(Toggle):
-    """
-    Chapter stat scaling values will be shuffled between each other.
-    EnemyStatScaling must be enabled for this option to have an effect.
-    ie. Chapter 1 enemies could have scaled stats based on chapter 5,
-    Chapter 2 enemies could have scaled stats based on chapter 3, etc.
-    """
-    display_name = "Shuffle Chapter Stats"
-
-
 class BossRandomizer(Choice):
     """
     Shuffles bosses amongst each other.
@@ -690,7 +680,6 @@ class TTYDOptions(PerGameCommonOptions):
     enemy_formations: EnemyFormations
     encounter_shuffle_type: EncounterShuffleType
     enemy_stat_scaling: EnemyStatScaling
-    shuffle_chapter_stats: ShuffleChapterStats
     boss_randomizer: BossRandomizer
     boss_stat_scaling: BossStatScaling
     boss_scaling_nerfs: BossScalingNerfs

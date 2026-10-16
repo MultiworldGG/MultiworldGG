@@ -594,18 +594,19 @@ DROPDOWN_GROUPS = [EntranceGroup.SEAFOAM_ISLANDS_DROP, EntranceGroup.POKEMON_MAN
 
 def _set_seafoam_entrances(world: "PokemonFRLGWorld") -> None:
     seafoam_reverse_entrances = {
-        "Seafoam Islands North Entrance": "Seafoam Islands 1F (Southeast)",
-        "Seafoam Islands South Entrance": "Seafoam Islands 1F",
-        "Seafoam Islands 1F West Exit": "Route 20 (Near South Cave)",
-        "Seafoam Islands 1F East Exit": "Route 20 (Near North Cave)"
+        "Seafoam Islands North Entrance": ["Seafoam Islands 1F (Southeast)", "Seafoam Islands 1F East Exit"],
+        "Seafoam Islands South Entrance": ["Seafoam Islands 1F", "Seafoam Islands 1F West Exit"],
+        "Seafoam Islands 1F West Exit": ["Route 20 (Near South Cave)", "Seafoam Islands South Entrance"],
+        "Seafoam Islands 1F East Exit": ["Route 20 (Near North Cave)", "Seafoam Islands North Entrance"]
     }
 
-    for entrance_name, region_name in seafoam_reverse_entrances.items():
+    for entrance_name, region_exit_names in seafoam_reverse_entrances.items():
         entrance = world.get_entrance(entrance_name)
-        region = world.get_region(region_name)
+        region = world.get_region(region_exit_names[0])
         entrance.connected_region.entrances.remove(entrance)
         entrance.connected_region = region
         region.entrances.append(entrance)
+        world.er_pairings.append((entrance_name, region_exit_names[1]))
 
 
 def _set_starting_pokemon_center(world: "PokemonFRLGWorld") -> List[str]:
@@ -1052,7 +1053,6 @@ def shuffle_entrances(world: "PokemonFRLGWorld") -> bool:
     entrance_rando = entrances_randomized(world)
 
     if entrance_rando:
-        world.er_pairings = []
         _disconnect_shuffled_entrances(world)
         entrance_group_lookup = _create_entrance_group_lookup(world)
         world.logic.randomizing_entrances = True

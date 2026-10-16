@@ -11,7 +11,7 @@ from .items import OuterWildsItem, all_non_event_items_table, item_name_groups, 
 from .locations_and_regions import all_non_event_locations_table, location_name_groups, create_regions
 from .options import *
 from .orbits import generate_random_orbits, generate_random_rotations
-from .warp_platforms import generate_random_warp_platform_mapping
+from .warp_platforms import WarpPlatforms
 
 
 class OuterWildsWebWorld(WebWorld):
@@ -78,7 +78,7 @@ class OuterWildsWorld(World):
     planet_order = 'vanilla'
     orbit_angles = 'vanilla'
     rotation_axes = 'vanilla'
-    warps = 'vanilla'
+    warps: WarpPlatforms
 
     # this is how we tell Universal Tracker we don't need the yaml
     ut_can_gen_without_yaml = True
@@ -133,12 +133,14 @@ class OuterWildsWorld(World):
         if self.options.spawn == Spawn.option_deep_bramble and not self.options.enable_fc_mod:
             raise OptionError('Incompatible options: deep bramble spawn requires enable_fc_mod to be true')
 
+        self.warps = WarpPlatforms()
         # implement .yaml-less Universal Tracker support
-        if hasattr(self.multiworld, "generation_is_fake"):
+        if getattr(self.multiworld, "generation_is_fake", False):
             if hasattr(self.multiworld, "re_gen_passthrough"):
                 if "Outer Wilds" in self.multiworld.re_gen_passthrough:
                     slot_data = self.multiworld.re_gen_passthrough["Outer Wilds"]
-                    self.warps = slot_data["warps"] # is always set
+                    if slot_data["warps"] != "vanilla":
+                        self.warps.mappings = slot_data["warps"] # is always set
                     self.options.goal.value = slot_data.get("goal", 0)
                     self.options.spawn.value = slot_data.get("spawn", 0)
                     self.options.logsanity.value = slot_data.get("logsanity", 0)
@@ -153,13 +155,14 @@ class OuterWildsWorld(World):
                     self.options.enable_eh_mod.value = slot_data.get("enable_eh_mod", 0)
                     self.options.split_translator.value = slot_data.get("split_translator", 0)
                     self.options.shuffle_spacesuit.value = slot_data.get("shuffle_spacesuit", 0)
+                    self.options.required_friends.value = slot_data.get("required_friends", 0)
             return
 
         # generate game-specific randomizations separate from AP items/locations
         self.eotu_coordinates = generate_random_coordinates(self.random) \
             if self.options.randomize_coordinates else "vanilla"
-        self.warps = generate_random_warp_platform_mapping(self.random, self.options) \
-            if self.options.randomize_warp_platforms else "vanilla"
+        if self.options.randomize_warp_platforms:
+            self.warps.generate_random_warp_platform_mapping(self.random, self.options.spawn, self.options.enable_ac_mod.value)
         (self.planet_order, self.orbit_angles) = generate_random_orbits(self.random, self.options) \
             if self.options.randomize_orbits else ("vanilla", "vanilla")
         self.rotation_axes = generate_random_rotations(self.random) \
@@ -188,7 +191,7 @@ class OuterWildsWorld(World):
             if self.options.early_key_item == EarlyKeyItem.option_any:
                 if self.options.spawn == Spawn.option_stranger:
                     key_item = self.random.choice(["Launch Codes", "Stranger Light Modulator"])
-                if self.options.spawn == Spawn.option_deep_bramble:
+                elif self.options.spawn == Spawn.option_deep_bramble:
                     key_item = self.random.choice([relevant_translator, "Signalscope", "Launch Codes"])
                 else:
                     key_item = self.random.choice([relevant_translator, "Nomai Warp Codes", "Launch Codes"])
@@ -267,7 +270,7 @@ class OuterWildsWorld(World):
         slot_data["planet_order"] = self.planet_order
         slot_data["orbit_angles"] = self.orbit_angles
         slot_data["rotation_axes"] = self.rotation_axes
-        slot_data["warps"] = self.warps
+        slot_data["warps"] = self.warps.mappings
         # apworld versions are not yet stored in the generated multiworld and exposed by AP servers,
         # so we have to transmit this to the client/mod using slot_data for the time being.
         apworld_manifest = orjson.loads(pkgutil.get_data(__name__, "archipelago.json").decode("utf-8"))
@@ -292,8 +295,8 @@ class OuterWildsWorld(World):
                                  '\n\nPlanet Order: %s\nOrbit Angles: %s\nRotation Axes: %s\n' %
                                  (self.multiworld.player_name[self.player],
                                   self.planet_order, self.orbit_angles, self.rotation_axes))
-        if self.warps != 'vanilla':
+        if self.options.randomize_warp_platforms:
             spoiler_handle.write('\nRandomized Warp Platforms for %s:'
                                  '\n\n%s\n' %
                                  (self.multiworld.player_name[self.player],
-                                  self.warps))
+                                  self.warps.mappings))

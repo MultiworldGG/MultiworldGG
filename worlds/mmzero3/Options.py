@@ -1,8 +1,8 @@
 from dataclasses import dataclass
 from Options import (Choice, Range, Toggle, DefaultOnToggle, OptionSet, DeathLink, OptionGroup, StartInventoryPool,
-                     PerGameCommonOptions)
+                     PerGameCommonOptions, Visibility)
 
-from . import Data
+from .data import Data
 
 
 class RequiredSecretDisks(Range):
@@ -10,8 +10,6 @@ class RequiredSecretDisks(Range):
 
     The Abandoned Research Laboratory opens once every other stage has been cleared and
     you are holding this many disks. Clearing it completes the game.
-    Setting it above 170 is not recommended, as it will place a lot of useful items in the final stage, which
-    at that point, the game is basically completed.
     """
     display_name = "Required Secret Disks"
     range_start = 0
@@ -97,7 +95,8 @@ class CyberElves(Choice):
 
     Vanilla: Unmodified Vanilla. Upgrading elves cost eCrystals, fusion elves decrease rank.
     No Penalty: Fusing an elf does not affect rank.
-    Auto: Every passive elf received via disk is automatically opened and applied, and Artan and Zictan arrive as their sub tanks. Does not affect rank. Gives the game a nice sense of progression, but makes it a lot easier.
+    Auto: Every passive elf received via disk is automatically opened and applied. 
+    Does not affect rank. Gives the game a nice sense of progression, but makes it a lot easier.
     """
     display_name = "Cyber-elves"
     option_vanilla = Data.AP_ELVES_VANILLA
@@ -112,7 +111,7 @@ class WeaponDamageUpgrades(DefaultOnToggle):
     A few players disliked this feature since it departed the gameplay from vanilla.
 
     WIP: Disabling this still keeps the extra three progressive weapon items in the pool, 
-    they just dont provde any bonuses.
+    they just don't provide any bonuses.
     """
     display_name = "Weapon Damage Upgrades"
 
@@ -120,6 +119,30 @@ class WeaponDamageUpgrades(DefaultOnToggle):
 class RandomizedPalettes(Toggle):
     """Every stage is drawn in a randomly chosen color scheme."""
     display_name = "Randomized Palettes"
+
+
+class RandomizeEnemies(Toggle):
+    """
+    Randomize each enemy spawn location.
+    WARNING: VERY EARLY WORK IN PROGRESS. DO NOT TAKE INTO BIG MULTIWORLDS!
+    This mode is very buggy, see the readme section to know what to expect.
+    Recommended to enable enemy disk markers!
+    """
+    display_name = "Randomize Enemies (WIP)"
+
+
+class EnemyDifficulty(Choice):
+    """
+    Only applies if `randomize_enemies` is enabled. Higher difficulties put more enemies in the spot for one, based off of the health of the spot being replaced.
+    Minimal: Tries to match enemy placements by health. If a less health enemy replaces one with more health, place multiple copies at that location.
+    Chaos: Places multiple enemies around every spawnpoint regardless of HP or enemy type. Leads to many more enemies per stage. Developer's choice!
+    Insanity: Places as many enemies as possible. Tries to prioritize enemies with higher HP. Expect many shield enemies in tight quarters. Good luck!
+    """
+    display_name = "Randomized Enemy Difficulty (WIP)"
+    option_minimal = 0
+    option_chaos = 1
+    option_insanity = 2
+    default = 0
 
 
 class DiskNamePopup(DefaultOnToggle):
@@ -131,7 +154,16 @@ class DiskNamePopup(DefaultOnToggle):
     display_name = "Disk Name Popup"
 
 
+class EnemyDiskMarkers(DefaultOnToggle):
+    """
+    Show a small Archipelago logo above enemies that can drop disks.
+    Recommended with enemy randomizer!
+    """
+    display_name = "Enemy Disk Markers"
+
+
 class InfiniteLives(Toggle):
+    """Get infinite lives."""
     display_name = "Infinite Lives"
 
 
@@ -153,6 +185,24 @@ class ShopPriceScale(Range):
     range_end = 400
     default = 100
 
+class TrapPercentage(Range):
+    """The percentage of filler items that are replaced with traps."""
+    display_name = "Trap Percentage"
+    range_start = 0
+    range_end = 100
+    default = 0
+
+
+class EnabledTraps(OptionSet):
+    """
+    Which traps may be placed. Right now, all are currently visual only.
+    Valid Keys: {"Earthquake", "Pixelate", "Slippery Floor"}
+    """
+    display_name = "Enabled Traps"
+    valid_keys = {"Earthquake", "Pixelate", "Slippery Floor"}
+    default = frozenset(valid_keys)
+
+
 mmzero3_option_groups = [
     OptionGroup("Goal Options", [
         RequiredSecretDisks,
@@ -164,6 +214,10 @@ mmzero3_option_groups = [
         ShopSlots,
         ShopPriceScale,
     ]),
+    OptionGroup("Optional Randomization", [
+        RandomizeEnemies,
+        EnemyDifficulty,
+    ]),
     OptionGroup("Gameplay", [
         StartingWeapons,
         WeaponDamageUpgrades,
@@ -173,9 +227,14 @@ mmzero3_option_groups = [
         InfiniteLives,
         DeathLink,
     ]),
+    OptionGroup("Traps", [
+        TrapPercentage,
+        EnabledTraps,
+    ]),
     OptionGroup("Aesthetics", [
         RandomizedPalettes,
         DiskNamePopup,
+        EnemyDiskMarkers,
     ]),
 ]
 
@@ -193,8 +252,13 @@ class MMZero3Options(PerGameCommonOptions):
     weapon_damage_upgrades: WeaponDamageUpgrades
     cyber_elves: CyberElves
     disk_name_popup: DiskNamePopup
+    enemy_disk_markers: EnemyDiskMarkers
     infinite_lives: InfiniteLives
+    randomize_enemies: RandomizeEnemies
+    enemy_difficulty: EnemyDifficulty
     start_inventory_from_pool: StartInventoryPool
     shop_slots: ShopSlots
     shop_price_scale: ShopPriceScale
+    trap_percentage: TrapPercentage
+    enabled_traps: EnabledTraps
     death_link: DeathLink

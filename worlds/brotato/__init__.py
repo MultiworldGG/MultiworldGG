@@ -267,6 +267,7 @@ class BrotatoWorld(World):
             self._include_characters,
             self.waves_with_checks,
             self.wave_access,
+            bool(self.options.include_elites_in_logic.value),
             self.common_loot_crate_groups,
             self.legendary_loot_crate_groups,
         )

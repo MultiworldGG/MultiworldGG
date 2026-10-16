@@ -292,7 +292,7 @@ class PhantomHourglassWorld(CachedRuleBuilderWorld):
                 from .tracker.TrackerUtil import get_hidden_entrances
                 self.ut_map_page_hidden_locations, self.ut_map_page_hidden_entrances = get_hidden_entrances(self)
         else:
-            print(f"masked beedle {self.options.randomize_masked_beedle.value}")
+            # print(f"masked beedle {self.options.randomize_masked_beedle.value}")
             self.options.shopsanity.value = {s.lower() for s in self.options.shopsanity.value}
             # print(f"Shopsanity {self.options.shopsanity.value}, {self.options.shopsanity.valid_keys_casefold}")
             if 'all' in self.options.shopsanity.value:
@@ -438,26 +438,24 @@ class PhantomHourglassWorld(CachedRuleBuilderWorld):
             return False
         if location_data.conditional:
             return location_data.conditional(self, location_data)
+
+        if location_data.has_slot_data:
+            for slot, _value, *args in location_data.has_slot_data:
+                slot = getattr(self.options, slot, None).value
+                if isinstance(slot, set):
+                    if _value not in slot:
+                        return False
+                else:
+                    _value = _value if isinstance(_value, list) else [_value]
+                    if slot not in _value:
+                        return False
+
+            if location_data.restock:
+                if 'restocks' not in self.options.shopsanity.value and (
+                        location_data.restock in self.options.shopsanity.value or location_data.restock == "always"):
+                    return False
         return True
-        #
-        # if location_data.has_slot_data:
-        #     for slot, _value, *args in location_data.has_slot_data:
-        #         slot = getattr(self.options, slot, None).value
-        #         if isinstance(slot, set):
-        #             if _value not in slot:
-        #                 return False
-        #         else:
-        #             _value = _value if isinstance(_value, list) else [_value]
-        #             if slot not in _value:
-        #                 return False
-        #
-        #     if location_data.restock:
-        #         if 'restocks' not in self.options.shopsanity.value and (
-        #                 location_data.restock in self.options.shopsanity.value or location_data.restock == "always"):
-        #             # print(f"Restock blocked: {location_name}")
-        #             return False
-        #     return True
-        #
+
         # if location_name in LOCATION_GROUPS["Golden Frogs"]:
         #     return self.options.randomize_frogs != PhantomHourglassFrogRandomization.option_start_with
         # if location_name in LOCATION_GROUPS["Rupee Dig Spots"]:

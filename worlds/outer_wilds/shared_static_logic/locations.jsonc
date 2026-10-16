@@ -2940,6 +2940,14 @@
         "category": "fq", "address": 1085046017, "name": "FQ: Corrupted Scroll",
         "region": "Banjo Galaxy", "requires": [ { "item": "Translator (Other)" } ]
     },
+    {
+        "category": "fq", "address": 1085046018, "name": "FQ: Scan Tuner Signal",
+        "region": "Banjo Galaxy", "requires": [ { "item": "Signalscope" } ]
+    },
+    {
+        "category": "fq", "address": 1085046019, "name": "FQ: Scan Strum's Radio Signal",
+        "region": "Banjo Galaxy", "requires": [ { "item": "Signalscope" }, { "item": "Hearthian Radio Frequency" } ]
+    },
 
 // Fret's Quest Story Mod Logsanity Locations
 

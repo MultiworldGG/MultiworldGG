@@ -106,6 +106,8 @@ class TTYDPatchExtension(APPatchExtension):
         caller.patcher.dol.data.write(seed_options.get("succeed_conditions", 0).to_bytes(1, "big"))
         caller.patcher.dol.data.seek(0x23C)
         caller.patcher.dol.data.write(seed_options.get("cutscene_skip", 0).to_bytes(1, "big"))
+        caller.patcher.dol.data.seek(0x23D)
+        caller.patcher.dol.data.write(seed_options.get("remote_items", 0).to_bytes(1, "big"))
         caller.patcher.dol.data.seek(0x23E)
         caller.patcher.dol.data.write(seed_options.get("starting_level", 1).to_bytes(1, "big"))
         caller.patcher.dol.data.seek(0x241)
@@ -136,8 +138,6 @@ class TTYDPatchExtension(APPatchExtension):
         caller.patcher.dol.data.write(seed_options.get("enemy_randomizer", 0).to_bytes(1, "big"))
         caller.patcher.dol.data.seek(0x252)
         caller.patcher.dol.data.write(seed_options.get("enemy_stat_scaling", 0).to_bytes(1, "big"))
-        caller.patcher.dol.data.seek(0x253)
-        caller.patcher.dol.data.write(seed_options.get("shuffle_chapter_stats", 0).to_bytes(1, "big"))
         caller.patcher.dol.data.seek(0x258)
         caller.patcher.dol.data.write(seed_options.get("badge_bp", 0).to_bytes(1, "big"))
         caller.patcher.dol.data.seek(0x259)
@@ -480,7 +480,6 @@ def write_files(world: "TTYDWorld", patch: TTYDProcedurePatch) -> None:
         "goal_recipes_range": world.options.goal_recipes_range.value,
         "epilogue_skip": world.options.epilogue_skip.value,
         "enemy_stat_scaling": world.options.enemy_stat_scaling.value,
-        "shuffle_chapter_stats": world.options.shuffle_chapter_stats.value,
         "badge_bp": world.options.badge_bp.value,
         "badge_fp": world.options.badge_fp.value,
         "partner_fp": world.options.partner_fp.value,

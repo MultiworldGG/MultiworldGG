@@ -1,6 +1,7 @@
 from __future__ import annotations
 
 import json
+import logging
 import pkgutil
 from collections import defaultdict
 from dataclasses import dataclass, field
@@ -29,8 +30,11 @@ class DREDGEItemData:
     expansion: str
     can_catch: List[str] = field(default_factory=list)
     size: int = 0
-    item_value: int = 0
+    speed: int = 0
+    lumens: int = 0
+    rebuyable: bool = False
     max_quantity: int = 1
+    shape: List[str] = field(default_factory=list)
 
 
 item_base_id = 3459028911689314
@@ -49,7 +53,11 @@ item_table = {
         expansion=entry["expansion"],
         can_catch=entry.get("can_catch", []),
         size=entry.get("size", 0),
-        item_value=entry.get("item_value", 0),
+        speed=entry.get("speed", 0),
+        lumens=entry.get("lumens", 0),
+        rebuyable=entry.get("rebuyable", False),
+        shape=entry.get("shape", []),
+        max_quantity=entry.get("max_quantity", 1),
     )
     for name, entry in load_data_file("items.json").items()
 }
@@ -66,16 +74,38 @@ for name, data in item_table.items():
     if data.item_group:
         ITEM_NAME_GROUPS[data.item_group].add(name)
 
+def is_expansion_enabled(world: DREDGEWorld, expansion: str) -> bool:
+    if expansion == "Base":
+        return True
+    if expansion == "PaleReach":
+        return bool(world.options.include_pale_reach_dlc)
+    if expansion == "IronRig":
+        return bool(world.options.include_iron_rig_dlc)
+    return False
+
+def progressive_hull_count(world: DREDGEWorld) -> int:
+    return 4 if world.options.include_iron_rig_dlc else 3
+
+def limit_starting_hulls(world: DREDGEWorld) -> None:
+    # Archipelago grants every requested start_inventory_from_pool item, even ones missing from the pool,
+    # which would hand a seed without the Iron Rig its Iron Rig hull.
+    requested = world.options.start_inventory_from_pool.value.get("Progressive Hull", 0)
+    available = progressive_hull_count(world)
+    if requested > available:
+        logging.warning(f"[DREDGE - '{world.player_name}'] start_inventory_from_pool asks for {requested} "
+                        f"Progressive Hulls but this seed only has {available}; starting with {available}.")
+        world.options.start_inventory_from_pool.value["Progressive Hull"] = available
+
 def get_random_filler_item_name(world: DREDGEWorld) -> str:
+    traps = sorted(world.options.enabled_traps.value)
+    if traps and world.random.randrange(100) < world.options.trap_percentage.value:
+        return world.random.choice(traps)
+
     filler_pool = [
         item
         for item, data in item_table.items()
         if data.classification == ItemClassification.filler
-           and (
-                   data.expansion == "Base"
-                   or (world.options.include_pale_reach_dlc and data.expansion == "PaleReach")
-                   or (world.options.include_iron_rig_dlc and data.expansion == "IronRig")
-           )
+           and is_expansion_enabled(world, data.expansion)
     ]
 
     random_filler_item = world.random.choice(filler_pool)
@@ -89,10 +119,10 @@ def create_all_items(world: DREDGEWorld) -> None:
     for item, data in item_table.items():
         if (data.classification not in progression_classes
                 or data.item_group == "Research"
-                or data.expansion == "Unused"):
+                or not is_expansion_enabled(world, data.expansion)):
             continue
 
-        if item.startswith("Starting Gear"):
+        if item.startswith("Starting Gear") or item == "Progressive Hull":
             continue
 
         if not world.options.add_fishing_licenses and data.item_group == "Virtual License":
@@ -101,30 +131,29 @@ def create_all_items(world: DREDGEWorld) -> None:
         if not world.options.add_passage_items and data.item_group == "Virtual Passage Item":
             continue
 
-        if data.expansion == "Base":
-            item_pool.append(world.create_item(item))
-        elif world.options.include_pale_reach_dlc and data.expansion == "PaleReach":
-            item_pool.append(world.create_item(item))
-        elif world.options.include_iron_rig_dlc and data.expansion == "IronRig":
+        for _ in range(data.max_quantity):
             item_pool.append(world.create_item(item))
 
-    num_base_hull_upgrades = 2
-    for _ in range(num_base_hull_upgrades):
+    for _ in range(progressive_hull_count(world)):
         item_pool.append(world.create_item("Progressive Hull"))
-    if world.options.include_iron_rig_dlc:
-        item_pool.append(world.create_item("Progressive Hull"))
-
-    num_research_parts = 30
-    for _ in range(num_research_parts):
-        item_pool.append(world.create_item("Research Part"))
 
     for item, data in item_table.items():
-        if data.classification == ItemClassification.useful:
+        if (data.classification == ItemClassification.useful and is_expansion_enabled(world, data.expansion)
+                and data.item_group != "Aberration Chance"):
             item_pool.append(world.create_item(item))
+
+    for _ in range(world.options.progressive_aberration_chance_items.value):
+        item_pool.append(world.create_item("Progressive Aberration Chance"))
+    if world.options.guaranteed_aberrations_item:
+        item_pool.append(world.create_item("Guaranteed Aberrations"))
 
     number_of_items = len(item_pool)
     number_of_unfilled_locations = len(world.multiworld.get_unfilled_locations(world.player))
     needed_number_of_filler_items = number_of_unfilled_locations - number_of_items
+
+    if needed_number_of_filler_items < 0:
+        raise Exception(f"[DREDGE - '{world.player_name}'] {number_of_items} items for only "
+                        f"{number_of_unfilled_locations} locations")
 
     if needed_number_of_filler_items > 0:
         for _ in range(needed_number_of_filler_items):

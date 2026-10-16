@@ -775,7 +775,9 @@ def run_gui(launch_components: list["Component"], args: Any) -> None:
                         elif s.startswith("# "):
                             out.append(f"[b][color=#ffffff]{inline(s[2:])}[/color][/b]")
                         elif re.match(r"^[-*+] ", s):
-                            out.append(f"  \u2022 {inline(s[2:])}")
+                            # Preserve Markdown nesting, expanding tabs for consistent label spacing.
+                            indent = line[:len(line) - len(line.lstrip())].expandtabs(4)
+                            out.append(f"{indent}  \u2022 {inline(s[2:])}")
                         elif re.match(r"^---+$|^\*\*\*+$", s):
                             out.append("\u2500" * 40)
                         else:

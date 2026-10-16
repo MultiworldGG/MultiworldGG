@@ -1,134 +1,112 @@
-# Mega Man Zero 3 Archipelago
+# Mega Man Zero 3
 
-Welcome to my project. Things are still under development, but here you will find my development of a custom Archipelago World for Mega Man Zero 3 on the GBA. You should probably read everything here so you know what to expect before playing!
-s
-## General Information (IMPORTANT)
-- **Locations:** All 180 secret disks, stage clears, an A+ rank clear in each of the 15 stages, the nine armor chips, both sub tanks, Cerveau's Recoil Rod and Shield Boomerang, ten extra life pickups, and eleven miniboss fights.
-- **Item pool:** 180 secret disks, the four weapons as progressive upgrade unlocks, nine armor chips, twelve EX Skills, two sub tanks, fifteen stage access items and two Story Progress items. E-Crystals are filler.
-- There's a modified mission select screen, which allows you to select from any level as long as you have its access item.
-  - Boss portraits are in groups of four like in vanilla, but now you can tab between the pages with left and right on the d-pad (the shoulder buttons work too).
-  - Hovering a level tells you its name, how many of its disks you have found, whether it's LOCKED / OPEN / CLEARED, as well as your best rank on that stage if it has been cleared.
-  - Picking a level you have already beaten asks you how you want to run it. EXPLORE is the vanilla revisit for picking up disks you missed. RETRY MISSION plays the level as a real mission again, so the boss is back and you get another attempt at the A rank check.
-- To beat the game, clear the Abandoned Research Laboratory. It won't open until you have cleared every other stage AND you are holding a configurable number of secret disks (default: 120)
-- Later NPC conversations, and the checks attached to them, are gated behind the two Story Progress items.
-- EX Skills are awarded based on your score on the level you just completed, rather than on your average score going into that level. (Yes, that's how they worked in the vanilla game). Your global rank score is calculated based on your average of all of your highest scores on completed levels.
+## Where is the options page?
 
-## Weapon Progression
+The [player options page for this game](../player-options) contains all the options you need to configure and export a
+config file.
 
-Each of the four weapons is a progressive item. For example, the item pool holds several copies of "Progressive Z-Saber", and every copy you receive moves that weapon one step up its upgrade path. This feature works very similar to the weapon XP system from Zero 1 and 2.
+## What does randomization do to this game?
 
-The first copy sends you the weapon itself, the ones after it unlock that weapon's abilities, and the last three are attack power boosts (ripped from the E-Reader cards).
+Every stage is unlocked by its own access item, and the mission select screen lets you pick any stage you have the
+access item for. Secret disks, weapons, armor chips, EX skills and sub tanks are all shuffled into the multiworld.
+Clearing a stage always brings you back to the Resistance Base, and you can leave any stage at any time.
 
-The upgrade progress is shown in game as stars in the pause menu, like in Zero 1 and 2.
+The mission select screen shows the boss portraits in pages of four, like in vanilla. Use left and right on the d-pad
+(or the shoulder buttons) to switch pages. Hovering a stage shows its name, how many of its secret disks you have found,
+whether it is LOCKED, OPEN or CLEARED, and your best rank on it. Picking a stage you have already cleared gives you two
+choices: EXPLORE is the vanilla revisit for picking up disks you missed, and RETRY MISSION plays the stage as a real
+mission again, with the boss included, for another try at the A+ rank check.
 
-| Weapon | Progressive Upgrades |
+## What is the goal?
+
+Clear the Abandoned Research Laboratory and defeat Omega. The stage only opens once you have cleared every other stage and are holding enough
+secret disks, (120 by default).
+
+## What items and locations get shuffled?
+
+Locations:
+- All 180 secret disks
+- Each stage clear
+- An A+ rank clear in each of the 15 stages (the rank needed is set with `ex_skill_rank`)
+- The nine armor chips
+- Both sub tanks
+- Cerveau's Recoil Rod and Shield Boomerang
+- Eleven miniboss fights
+- Optionally, the ten 1-UPs placed in stages (`extra_life_sanity`, on by default)
+- Optionally, the 82 life capsules and E-Crystals placed in stages (`itemsanity`)
+- Optionally, the slots in Cerveau's shop (`shop_slots`)
+
+Items:
+- 180 secret disks
+- The four weapons, as progressive items
+- Nine armor chips
+- Twelve EX skills
+- Two sub tanks
+- Fifteen stage access items
+- Two Story Progress items
+- E-Crystals as filler, and traps if `trap_percentage` is enabled.
+
+## Which items can be in another player's world?
+
+Any of the items above can be placed in another player's world.
+
+## What does another world's item look like in Mega Man Zero 3?
+
+Secret disk pickups are drawn as the Archipelago logo. With `extra_life_sanity` or `itemsanity` on, the pickups that
+are checks have a small Archipelago logo over them until you collect them. Cerveau's shop shows the name of each item
+and which player it is for.
+
+## When the player receives an item, what happens?
+
+The item is applied right away, and a small icon for it pops up over Zero's head. When the item is a secret disk, a
+message box at the bottom of the screen also says which disk it is (turn this off with `disk_name_popup`). Received disks
+need to be opened from the secret disk analysis screen like in the vanilla game.
+
+## Progressive weapons
+
+Each weapon is a progressive item. The first copy you receive gives you the weapon itself, the next ones unlock its abilities,
+and the last three raise its attack power ( which are damage boosts from the e-Reader cards). 
+
+This works a lot like the weapon level system from Zero 1 and 2, with your progress being shown as stars in the pause menu.
+
+| Weapon | Upgrades, in order |
 | --- | --- |
-| Buster | weapon, semi charge, full charge, damage (+1, +2, +3) |
-| Z-Saber | weapon, 2nd slash, 3rd slash, charged slash, damage (+1, +2, +3) |
-| Recoil Rod | weapon, charged rod,  damage (+1, +2, +3) |
-| Shield Boomerang | weapon, charged throw,  damage (+1, +2, +3) |
+| Buster | weapon, semi charge, full charge, damage +1, +2, +3 |
+| Z-Saber | weapon, 2nd slash, 3rd slash, charged slash, damage +1, +2, +3 |
+| Recoil Rod | weapon, charged rod, damage +1, +2, +3 |
+| Shield Boomerang | weapon, charged throw, damage +1, +2, +3 |
 
-Note: Anything you list in `starting_weapons`  begins at step 1. You will still have to collect the progressive items in order to upgrade it.
+## What other changes are made to the game?
 
-## Cerveau Shop
-Cerveau now has a shop, visit it by pressing L or R on his secret disk analysis screen. Items are purchasable by using e-Crystals. Prices and amount of items are configurable using YAML options.
+- Later NPC conversations, and the checks attached to them, are locked behind the two Story Progress items.
+- Cerveau has a shop. Open it with L or R on his secret disk analysis screen, and buy items with E-Crystals.
+- Pressing SELECT on the secret disk analysis screen opens every disk you own.
+- The pause menu shows how many secret disks you need for the final stage.
+- All skippable cutscenes can be skipped.
+- Enemies that can drop disks are marked with the AP logo.
+- Pressing SELECT during gameplay does one thing of your choice. By default it swaps sub weapons.
+- EX skills are awarded based on your score on the stage you just cleared. Your overall rank is the average of your best clear on each stage.
+- Some lore secret disks also unlock a random e-Reader graphics change. The full list is
+  [here](https://tcrf.net/Mega_Man_Zero_3/e-Reader_Functions).
 
-## Quality of Life Stuff
-- The pause menu shows you how many secret disks are required to collect in order to unlock the final stage.
-- All skippable cutscenes are skippable by default.
-- You can leave any level at any time.
-- Pressing SELECT during gameplay does one thing of your choosing. By default it swaps sub weapons, configurable by an option.
-- When MultiworldGG gives you an item, a small icon pops up over Zero's head with a unique icon displayed for each item, and for a secret disk the game's own message box names it along the bottom of the screen for a moment.
-- Collecting certain lore related secret disks will simultaneously unlock a random e-Reader graphical change. A full list can be seen [here](https://tcrf.net/Mega_Man_Zero_3/e-Reader_Functions).
-- Your player rank is based on the average of your best clear in each stage.
-- Pressing select on the secret disk analysis screen will open all of the disks that you own.
+## What are the item and location name groups?
 
-## Options
-- `required_secret_disks`:  
-  How many disks you need to be holding before the final stage will open (In addition to clearing every other level). Default is 120, max is 180.
+These work with `!hint`, for example `!hint Stage Access` or `!missing Sub Arcadia`.
 
-- `final_stage_rank`:  
-  The rank every other stage's best clear must reach before the final stage opens. Default is F, which means any clear will do. `none` drops the clears entirely: the final stage opens as soon as you hold the required secret disks.
-
-- `starting_weapons`:  
-  Which of the four you begin with. To give all, use `starting_weapons: ['Buster', 'Z-Saber', 'Recoil Rod', 'Shield Boomerang']` 
-
-- `ex_skill_rank`:  
-  The rank a stage clear needs to send that stage's EX Skill check (the "A+ Rank Clear" locations). Default is A, matching vanilla. Set to F to get the check on any clear. The fusion elf that increases your rank works to unlock that check on one stage per fuse.
-
-- `extra_life_sanity`:  
-  The game's ten static 1-UPs become location checks. Unchecked ones display in game with the Archipelago logo.
-
-- `itemsanity`:  
-  The game's 82 static life capsules and E-Crystals become location checks. Unchecked ones
-  display in game with the Archipelago logo.
-
-- `select_button`:  
-  The select button's functionality. Choose between Cycling the sub weapon (default), the main weapon, the head, body or foot chip, or use the fullest subtank.
-
-- `weapon_damage_upgrades`:  
-  On by default. Off, the last three steps of each progressive weapon (the damage increases) do nothing when received. The items stay in the pool.
-
-- `cyber_elves`:  
-  Modifications to Cyber Elf usage. Satellite elves remain unmodified.
-
-  - Vanilla: Unmodified Vanilla.
-  - No Penalty: Fusing an elf does not affect rank.
-  - Auto: Every passive elf received via disk is automatically opened and applied. Does not affect rank. Gives the game a nice sense of progresion, but makes it a lot easier.
-
-
-- `infinite_lives`:  
-  Infinite Lives.
-
-- `disk_name_popup`:  
-  On by default. When a Secret Disk arrives from MultiworldGG, a small message box names it for a moment. Every other item is obvious in game.
-
-- `randomized_palettes`:  
-  Every stage is drawn in a randomly chosen color scheme.
-
-- `shop_slots` / `shop_price_scale`:  
-  How many slots Cerveau's shop has (default 16, max 48) and how expensive they are, as a percentage.
-
-- `start_inventory_from_pool`:  
-  Starting inventory but the items don't appear in the pool.
-
-- `death_link`:  
-  Standard DeathLink. Dying sends, and receiving kills you.
-
-## Hinting and Tracking
-
-Items and locations are sorted into groups. Try using `!hint`.
-
-| locations | |
+| Locations | |
 | --- | --- |
-| per stage | `Resistance Base` (all three mission sets), `Aegis Volcano Base`, `Sunken Library`, and so on |
-| by type | `Secret Disks`, `Stage Clears`, `Chips`, `A+ Rank Clears`, `Subtanks`, `Weapons`, `1-UPs`, `Minibosses`, `Itemsanity`, `Shop` |
+| Per stage | `Resistance Base` (all three mission sets), `Aegis Volcano Base`, `Sunken Library`, and so on |
+| By type | `Secret Disks`, `Stage Clears`, `Chips`, `A+ Rank Clears`, `Subtanks`, `Weapons`, `1-UPs`, `Minibosses`, `Itemsanity`, `Shop` |
 
-| items | |
+| Items | |
 | --- | --- |
-| by type | `Secret Disks`, `Stage Access`, `Chips`, `Body Chips`, `Foot Chips`, `Head Chips`, `EX Skills`, `Subtanks`, `Weapons` |
+| By type | `Secret Disks`, `Stage Access`, `Chips`, `Body Chips`, `Foot Chips`, `Head Chips`, `EX Skills`, `Subtanks`, `Weapons`, `Traps` |
 
-For example: `!hint Stage Access` or `!missing Sub Arcadia`.
+## Is there a tracker?
 
+Yes, there is a PopTracker pack made by ambibii. [Get it here.](https://github.com/ambibii/mmz3-poptracker/releases/latest)
 
-## Known Bugs.
-- There have been repeated issues of trackers reporting currently unobtainable items as obtainable. Be sure to report any instance of that.
-- The item popup only shows one at a time, skipping multiple if they arrive at the same time, or if you received them during a cutscene.
-- I hope to soon bring this world from unstable to stable, so report anything that seems off, not just bugs!
-  
-## Planned Features.
-- A weapon wheel on SELECT for swapping chips and weapons without opening the menu. Right now it just cycles sub weapons.
-- Breakable containers and other collectables as location checks.
-- Level geometry, enemy, or entrance randomization.
-  - Enemy Randomization is currently being worked on.
-- Option to change the rank required to earn an Ex Skill check (higher or lower).
-- Something to do with the minigames.
+## Bugs
+Report bugs on [GitHub](https://github.com/brodieberger/MMZero3Archipelago/issues) or in the MultiworldGG Discord.
 
----
-If you have any questions, feel free to contact me on Discord: Stingrays110, though I'd prefer if you kept it to the Zero channel on the Archipelago Discord.
-
-And if you'd like to see the source code for the ROM, [check it out here!](https://github.com/brodieberger/rmz3/tree/ap). 
-
-Huge thanks to akatsuki105, [whose WIP decompilation of RMZ3 laid the groundwork for this world!](https://github.com/mmzret/rmz3)
-
-And a thank you to Shadyrix Phantom (@OfficialPhantomX) for the logo artwork.
+Click [here](https://github.com/brodieberger/MMZero3Archipelago) for a slightly more in depth Readme.

@@ -1,150 +1,140 @@
-from worlds.generic.Rules import set_rule, add_rule
 from typing import TYPE_CHECKING
+from rule_builder.rules import HasAll, HasAny, Has, OptionFilter
 if TYPE_CHECKING:
     from . import DoSWorld
 
-big_uppies = {"Hippogryph Soul", "Bat Company Soul"}
-small_uppies = {"Hippogryph Soul", "Bat Company Soul", "Malphas Soul"}
+big_uppies = HasAny("Hippogryph Soul", "Bat Company Soul")
+small_uppies = HasAny("Hippogryph Soul", "Bat Company Soul", "Malphas Soul")
 
 
 def set_location_rules(world: "DoSWorld") -> None:
-    player = world.player
+    from .Options import BoostSpeed, Goal
+
+    set_rule = world.set_rule
     paranoia_souls = {wall for i, wall in enumerate(world.red_soul_walls) if i != 2}
+    world.set_completion_rule(Has("Menace Defeated"))
+    # Lost Village
+    set_rule(world.get_location("Lost Village: Above Entrance"), big_uppies | HasAll("Malphas Soul", "Puppet Master Soul"))
+    set_rule(world.get_location("Lost Village: Above Drawbridge"), small_uppies)
+    set_rule(world.get_location("Lost Village: In Moat"), big_uppies & Has("Moat Drained"))
+    set_rule(world.get_location("Flying Armor Soul"), Has(world.magic_seal_table["Lost Village"]))
+    set_rule(world.get_location("Lost Village: Boss Room"), Has(world.magic_seal_table["Lost Village"]))
+    set_rule(world.get_location("Lost Village: Mirror Room Right"), Has("Paranoia Soul"))
+    set_rule(world.get_location("Lost Village: Above Guest House Entrance"), big_uppies)
+    if not world.options.boost_speed:
+        set_rule(world.get_location("Lost Village: Moat Drain Switch"),(small_uppies | HasAny("Puppet Master Soul", "Black Panther Soul", "Flying Armor Soul")))
 
-    ### Lost Village
-    set_rule(world.multiworld.get_location("Lost Village: Above Entrance", player), lambda state: state.has_any(big_uppies, player) or state.has_all({"Malphas Soul", "Pupper Master Soul"}, player))
-    set_rule(world.multiworld.get_location("Lost Village: Above Drawbridge", player), lambda state: state.has_any(small_uppies, player))
-    set_rule(world.multiworld.get_location("Lost Village: In Moat", player), lambda state: (state.has_any(big_uppies, player) and state.has("Moat Drained", player))) #state.has("Rahab Soul", player) this is permanently missable
-    set_rule(world.multiworld.get_location("Flying Armor Soul", player), lambda state: state.has(world.magic_seal_table["Lost Village"], player))
-    set_rule(world.multiworld.get_location("Lost Village: Boss Room", player), lambda state: state.has(world.magic_seal_table["Lost Village"], player))
-    set_rule(world.multiworld.get_location("Lost Village: Mirror Room Right", player), lambda state: state.has("Paranoia Soul", player))
-    set_rule(world.multiworld.get_location("Lost Village: Above Guest House Entrance", player), lambda state: state.has_any(big_uppies, player))
+    # Wizardry Lab
+    set_rule(world.get_location("Wizardry Lab: Mirror Room"), Has("Balore Soul"))
+    set_rule(world.get_location("Wizardry Lab: Mirror World"), HasAll("Balore Soul", "Paranoia Soul"))
+    set_rule(world.get_location("Wizardry Lab: Ceiling Secret Room"), HasAny("Balore Soul", "Bat Company Soul") | (HasAny("Malphas Soul", "Hippogryph Soul") & Has("Puppet Master Soul")))
+    set_rule(world.get_location("Balore Soul"), Has(world.magic_seal_table["Wizardry Lab"]))
+    set_rule(world.get_location("Wizardry Lab: Boss Room"), Has(world.magic_seal_table["Wizardry Lab"]))
 
-    ###Wizardry Lab
-    set_rule(world.multiworld.get_location("Wizardry Lab: Mirror Room", player), lambda state: state.has("Balore Soul", player))
-    set_rule(world.multiworld.get_location("Wizardry Lab: Mirror World", player), lambda state: state.has_all({"Balore Soul", "Paranoia Soul"}, player))
-    set_rule(world.multiworld.get_location("Wizardry Lab: Ceiling Secret Room", player), lambda state: (state.has("Balore Soul", player)) or (state.has("Bat Company Soul", player)) or (state.has("Puppet Master Soul", player) and state.has_any({"Malphas Soul", "Hippogryph Soul"}, player)))
+    set_rule(world.get_location("Wizardry Lab: Money Gate"), Has("Rahab Soul"))  # Sunken checks
+    set_rule(world.get_location("Wizardry Lab: Above Water"), Has("Rahab Soul"))
+    set_rule(world.get_location("Wizardry Lab: Underwater Left"), Has("Rahab Soul"))
+    set_rule(world.get_location("Wizardry Lab: Underwater Right"), Has("Rahab Soul"))
 
-    set_rule(world.multiworld.get_location("Balore Soul", player), lambda state: state.has(world.magic_seal_table["Wizardry Lab"], player))
-    set_rule(world.multiworld.get_location("Wizardry Lab: Boss Room", player), lambda state: state.has(world.magic_seal_table["Wizardry Lab"], player))
+    set_rule(world.get_location("Garden of Madness: Hidden Room"), small_uppies)
+    set_rule(world.get_location("Garden of Madness: Underground Room"), small_uppies | HasAny("Puppet Master Soul", "Black Panther Soul"))
+    set_rule(world.get_location("Garden of Madness: Boss Room"), Has(world.magic_seal_table["Garden of Madness"]))
 
-    set_rule(world.multiworld.get_location("Wizardry Lab: Money Gate", player), lambda state: state.has("Rahab Soul", player)) #Sunken checks
-    set_rule(world.multiworld.get_location("Wizardry Lab: Above Water", player), lambda state: state.has("Rahab Soul", player))
-    set_rule(world.multiworld.get_location("Wizardry Lab: Underwater Left", player), lambda state: state.has("Rahab Soul", player))
-    set_rule(world.multiworld.get_location("Wizardry Lab: Underwater Right", player), lambda state: state.has("Rahab Soul", player))
+    set_rule(world.get_location("Demon Guest House: Secret Room"), big_uppies)
 
-    set_rule(world.multiworld.get_location("Garden of Madness: Hidden Room", player), lambda state: state.has_any(big_uppies, player))
-    set_rule(world.multiworld.get_location("Garden of Madness: Underground Room", player), lambda state: state.has_any(small_uppies, player) or state.has_any({"Puppet Master Soul", "Black Panther Soul"}, player))
-    set_rule(world.multiworld.get_location("Garden of Madness: Boss Room", player), lambda state: state.has(world.magic_seal_table["Garden of Madness"], player))
+    set_rule(world.get_location("Demon Guest House: Number 8 Room"), small_uppies | Has("Puppet Master Soul"))
+    set_rule(world.get_location("Demon Guest House: Number 9 Room"), small_uppies | Has("Puppet Master Soul"))
+    set_rule(world.get_location("Demon Guest House: Number 12 Room"), small_uppies | Has("Puppet Master"))
+    set_rule(world.get_location("Demon Guest House: Mirror Room"), small_uppies | Has("Puppet Master"))
+    set_rule(world.get_location("Demon Guest House: Mirror World"), (small_uppies | Has("Puppet Master")) & Has("Paranoia Soul"))
 
-    set_rule(world.multiworld.get_location("Demon Guest House: Secret Room", player), lambda state: state.has_any(big_uppies, player))
+    set_rule(world.get_location("Puppet Master Soul"), small_uppies & Has(world.magic_seal_table["Demon Guest House"]))
+    set_rule(world.get_location("Demon Guest House: Boss Room"), small_uppies & Has(world.magic_seal_table["Demon Guest House"]))
+    set_rule(world.get_location("Demon Guest House: Ice Block Room Left"), small_uppies & Has("Balore Soul"))
+    set_rule(world.get_location("Demon Guest House: Ice Block Room Right"), small_uppies & Has("Balore Soul"))
+    set_rule(world.get_location("Demon Guest House: West Wing Left"),
+             (small_uppies | HasAny("Puppet Master Soul", "Black Panther Soul")) | OptionFilter(BoostSpeed, True))
+    set_rule(world.get_location("Demon Guest House: West Wing Right"),
+             (small_uppies | HasAny("Puppet Master Soul", "Black Panther Soul")) | OptionFilter(BoostSpeed, True))
 
-    set_rule(world.multiworld.get_location("Demon Guest House: Number 8 Room", player), lambda state: state.has_any(small_uppies, player) or state.has("Puppet Master Soul", player))
-    set_rule(world.multiworld.get_location("Demon Guest House: Number 9 Room", player), lambda state: state.has_any(small_uppies, player) or state.has("Puppet Master Soul", player))
-    set_rule(world.multiworld.get_location("Demon Guest House: Number 12 Room", player), lambda state: state.has_any(small_uppies, player) or state.has("Puppet Master Soul", player))
-    set_rule(world.multiworld.get_location("Demon Guest House: Mirror Room", player), lambda state: state.has_any(small_uppies, player) or state.has("Puppet Master Soul", player))
-    set_rule(world.multiworld.get_location("Demon Guest House: Mirror World", player), lambda state: (state.has_any(small_uppies, player) or state.has("Puppet Master Soul", player)) and state.has("Paranoia Soul", player))
+    set_rule(world.get_location("The Pinnacle: Under Big Staircase"), big_uppies)
 
-    set_rule(world.multiworld.get_location("Puppet Master Soul", player), lambda state: state.has_any(small_uppies, player) and state.has(world.magic_seal_table["Demon Guest House"], player))
-    set_rule(world.multiworld.get_location("Demon Guest House: Boss Room", player), lambda state: state.has_any(small_uppies, player) and state.has(world.magic_seal_table["Demon Guest House"], player))
-    set_rule(world.multiworld.get_location("Demon Guest House: Ice Block Room Left", player), lambda state: state.has_any(small_uppies, player) and state.has("Balore Soul", player))
-    set_rule(world.multiworld.get_location("Demon Guest House: Ice Block Room Right", player), lambda state: state.has_any(small_uppies, player) and state.has("Balore Soul", player))
-
-    set_rule(world.multiworld.get_location("The Pinnacle: Under Big Staircase", player), lambda state: state.has_any(big_uppies, player))
-
-    set_rule(world.multiworld.get_location("Dark Chapel: Entrance Alcove", player), lambda state: state.has_any(small_uppies, player) or state.has("Puppet Master Soul", player))
-    set_rule(world.multiworld.get_location("Dark Chapel: Catacombs Mirror World", player), lambda state: state.has("Paranoia Soul", player))
-    set_rule(world.multiworld.get_location("Dark Chapel: Big Square Room Alcove", player), lambda state: state.has_any(small_uppies, player) or state.has("Puppet Master Soul", player))
-    set_rule(world.multiworld.get_location("Dark Chapel: Bell Room In Bell", player), lambda state: state.has("Hippogryph Soul", player))
+    set_rule(world.get_location("Dark Chapel: Entrance Alcove"), small_uppies | Has("Puppet Master Soul"))
+    set_rule(world.get_location("Dark Chapel: Catacombs Mirror World"), Has("Paranoia Soul"))
+    set_rule(world.get_location("Dark Chapel: Big Square Room Alcove"), small_uppies | Has("Puppet Master Soul"))
+    set_rule(world.get_location("Dark Chapel: Bell Room In Bell"), Has("Hippogryph Soul"))
     # If soulsanity, the Soul Barrier needs Skeleton
 
-    set_rule(world.multiworld.get_location("Dark Chapel: Bell Room Right", player), lambda state: state.has_any(small_uppies, player) or state.has_any({"Puppet Master Soul", "Black Panther Soul"}, player))
+    set_rule(world.get_location("Dark Chapel: Bell Room Right"), small_uppies | HasAny("Puppet Master Soul", "Black Panther Soul"))
 
-    set_rule(world.multiworld.get_location("Dark Chapel: Big Room Top Right", player), lambda state: state.has_any(big_uppies, player) or (state.has("Puppet Master Soul", player) and state.has("Malphas Soul", player)))
-    set_rule(world.multiworld.get_location("Dark Chapel: Big Room Lower", player), lambda state: state.has_any(big_uppies, player))
-    set_rule(world.multiworld.get_location("Malphas Soul", player), lambda state: state.has(world.magic_seal_table["Dark Chapel Inner"], player) and state.has(world.magic_seal_table["Dark Chapel"], player))
-    set_rule(world.multiworld.get_location("Dark Chapel: Inner Chapel Boss Room", player), lambda state: state.has(world.magic_seal_table["Dark Chapel Inner"], player) and state.has(world.magic_seal_table["Dark Chapel"], player))
-    set_rule(world.multiworld.get_location("Dark Chapel: Boss Room", player), lambda state: state.has(world.magic_seal_table["Dark Chapel Inner"], player))
-    set_rule(world.multiworld.get_location("Dark Chapel: Post-Dimitrii Room", player), lambda state: state.has(world.magic_seal_table["Dark Chapel"], player) and state.has_any(small_uppies, player))
+    set_rule(world.get_location("Dark Chapel: Big Room Top Right"),     big_uppies | HasAll("Puppet Master Soul", "Malphas Soul"))
+    set_rule(world.get_location("Dark Chapel: Big Room Lower"), big_uppies)
+    set_rule(world.get_location("Malphas Soul"), HasAll(world.magic_seal_table["Dark Chapel Inner"], world.magic_seal_table["Dark Chapel"]))
+    set_rule(world.get_location("Dark Chapel: Inner Chapel Boss Room"), HasAll(world.magic_seal_table["Dark Chapel Inner"], world.magic_seal_table["Dark Chapel"]))
+    set_rule(world.get_location("Dark Chapel: Boss Room"), Has(world.magic_seal_table["Dark Chapel Inner"]))
+    set_rule(world.get_location("Dark Chapel: Post-Dmitrii Room"), Has(world.magic_seal_table["Dark Chapel Inner"]) & small_uppies)
 
-    set_rule(world.multiworld.get_location("Condemned Tower: 1F West", player), lambda state: state.has_any(big_uppies, player))
-    set_rule(world.multiworld.get_location("Condemned Tower: 2F East", player), lambda state: state.has_any(small_uppies, player) or state.has("Puppet Master Soul", player))
-    set_rule(world.multiworld.get_location("Gergoth Soul", player), lambda state: state.has(world.magic_seal_table["Condemned Tower"], player))
-    set_rule(world.multiworld.get_location("Condemned Tower: Boss Room", player), lambda state: state.has(world.magic_seal_table["Condemned Tower"], player))
+    set_rule(world.get_location("Condemned Tower: 1F West"), big_uppies)
+    set_rule(world.get_location("Condemned Tower: 2F East"), small_uppies | Has("Puppet Master Soul"))
+    set_rule(world.get_location("Gergoth Soul"), Has(world.magic_seal_table["Condemned Tower"]))
+    set_rule(world.get_location("Condemned Tower: Boss Room"), Has(world.magic_seal_table["Condemned Tower"]))
 
-    set_rule(world.multiworld.get_location("Cursed Clock Tower: Mirror World", player), lambda state: state.has("Paranoia Soul", player))
-    set_rule(world.multiworld.get_location("Cursed Clock Tower: Spike Room Secret", player), lambda state: state.has("Bat Company Soul", player))
+    set_rule(world.get_location("Cursed Clock Tower: Mirror World"), Has("Paranoia Soul"))
+    set_rule(world.get_location("Cursed Clock Tower: Spike Room Secret"), Has("Bat Company Soul"))
 
-    set_rule(world.multiworld.get_location("Zephyr Soul", player), lambda state: state.has(world.magic_seal_table["Cursed Clock Tower"], player))
-    set_rule(world.multiworld.get_location("Cursed Clock Tower: Boss Room", player), lambda state: state.has(world.magic_seal_table["Cursed Clock Tower"], player))
+    set_rule(world.get_location("Zephyr Soul"), Has(world.magic_seal_table["Cursed Clock Tower"]))
+    set_rule(world.get_location("Cursed Clock Tower: Boss Room"), Has(world.magic_seal_table["Cursed Clock Tower"]))
 
-    set_rule(world.multiworld.get_location("Rahab Soul", player), lambda state: state.has(world.magic_seal_table["Subterranean Hell"], player))
-    set_rule(world.multiworld.get_location("Subterranean Hell: Boss Room", player), lambda state: state.has(world.magic_seal_table["Subterranean Hell"], player))
-    set_rule(world.multiworld.get_location("Subterranean Hell: Near Save Room", player), lambda state: state.has_any(small_uppies, player) or state.has_any({"Puppet Master Soul", "Flying Armor Soul", "Black Panther Soul"}, player))
+    set_rule(world.get_location("Rahab Soul"), Has(world.magic_seal_table["Subterranean Hell"]))
+    set_rule(world.get_location("Subterranean Hell: Boss Room"), Has(world.magic_seal_table["Subterranean Hell"]))
+    set_rule(world.get_location("Subterranean Hell: Near Save Room"), small_uppies | HasAny("Puppet Master Soul", "Flying Armor Soul", "Black Panther Soul"))
 
-    set_rule(world.multiworld.get_location("Subterranean Hell: Giant Underwater Room Center Left", player), lambda state: state.has("Rahab Soul", player))
-    set_rule(world.multiworld.get_location("Subterranean Hell: Giant Underwater Room Center Right", player), lambda state: state.has("Rahab Soul", player))
-    set_rule(world.multiworld.get_location("Subterranean Hell: Giant Underwater Room Top Left", player), lambda state: state.has("Rahab Soul", player))
-    set_rule(world.multiworld.get_location("Subterranean Hell: Giant Underwater Room Bottom Right", player), lambda state: state.has("Rahab Soul", player))
+    set_rule(world.get_location("Subterranean Hell: Giant Underwater Room Center Left"), Has("Rahab Soul"))
+    set_rule(world.get_location("Subterranean Hell: Giant Underwater Room Center Right"), Has("Rahab Soul"))
+    set_rule(world.get_location("Subterranean Hell: Giant Underwater Room Top Left"), Has("Rahab Soul"))
+    set_rule(world.get_location("Subterranean Hell: Giant Underwater Room Bottom Right"), Has("Rahab Soul"))
 
-    set_rule(world.multiworld.get_location("Subterranean Hell: Behind Waterfall", player), lambda state: state.has_any(small_uppies, player) or state.has_any({"Flying Armor Soul", "Black Panther Soul"}, player))
+    set_rule(world.get_location("Subterranean Hell: Behind Waterfall"), small_uppies | HasAny("Flying Armor Soul", "Black Panther Soul"))
 
-    set_rule(world.multiworld.get_location("Silenced Ruins: Ice Block Room", player), lambda state: state.has("Balore Soul", player))
-    set_rule(world.multiworld.get_location("Silenced Ruins: Mirror World", player), lambda state: state.has("Paranoia Soul", player))
-    set_rule(world.multiworld.get_location("Bat Company Soul", player), lambda state: state.has(world.magic_seal_table["Silenced Ruins"], player))
-    set_rule(world.multiworld.get_location("Silenced Ruins: Boss Room", player), lambda state: state.has(world.magic_seal_table["Silenced Ruins"], player))
+    set_rule(world.get_location("Subterranean Hell: Waterfall Room Upper"), small_uppies | Has("Puppet Master Soul"))
 
-    set_rule(world.multiworld.get_location("Abyss Center", player), lambda state: state.has_any(big_uppies, player))
+    set_rule(world.get_location("Silenced Ruins: Ice Block Room"), Has("Balore Soul"))
+    set_rule(world.get_location("Silenced Ruins: Mirror World"), Has("Paranoia Soul"))
+    set_rule(world.get_location("Bat Company Soul"), Has(world.magic_seal_table["Silenced Ruins"]))
+    set_rule(world.get_location("Silenced Ruins: Boss Room"), Has(world.magic_seal_table["Silenced Ruins"]))
+    abyss_rule = big_uppies
+    if world.options.menace_condition:
+        abyss_rule &= HasAll(*world.menace_triggers)
+    if not world.options.goal:
+        abyss_rule &= Has(world.magic_seal_table["The Pinnacle"])
+
+    set_rule(world.get_location("Abyss Center"), abyss_rule)
     
     if world.options.goal:
-        set_rule(world.multiworld.get_location("The Pinnacle: Beyond Throne Room", player), lambda state: state.has_all({world.magic_seal_table["The Pinnacle"], "Paranoia Soul"}, player))
-        set_rule(world.multiworld.get_location("Aguni Soul", player), lambda state: state.has_all({world.magic_seal_table["The Pinnacle"], "Paranoia Soul"}, player))
-        set_rule(world.multiworld.get_location("The Pinnacle: Throne Room", player), lambda state: state.has_all({world.magic_seal_table["The Pinnacle"], "Paranoia Soul"}, player))
-    else:
-        add_rule(world.multiworld.get_location("Abyss Center", player), lambda state: state.has(world.magic_seal_table["The Pinnacle"], player))
+        set_rule(world.get_location("The Pinnacle: Beyond Throne Room"), HasAll(world.magic_seal_table["The Pinnacle"], "Paranoia Soul"))
+        set_rule(world.get_location("Aguni Soul"), HasAll(world.magic_seal_table["The Pinnacle"], "Paranoia Soul"))
+        set_rule(world.get_location("The Pinnacle: Throne Room"), HasAll(world.magic_seal_table["The Pinnacle"], "Paranoia Soul"))
 
     if world.mine_status != "Disabled":
-        set_rule(world.multiworld.get_location("Death Soul", player), lambda state: state.has(world.magic_seal_table["Mine of Judgment"], player) and (state.has_any(small_uppies, player) or state.has("Puppet Master Soul", player)))
-        set_rule(world.multiworld.get_location("Mine of Judgment: Boss Room", player), lambda state: state.has(world.magic_seal_table["Mine of Judgment"], player) and (state.has_any(small_uppies, player) or state.has("Puppet Master Soul", player)))
-
-
-    if not world.options.boost_speed:
-        # These jumps are trivial with the speedboost option on
-        set_rule(world.multiworld.get_location("Lost Village: Moat Drain Switch", player), lambda state: state.has_any(small_uppies, player) or state.has_any({"Flying Armor Soul", "Puppet Master Soul", "Black Panther Soul"}, player))
-        set_rule(world.multiworld.get_location("Demon Guest House: West Wing Left", player), lambda state: state.has_any(small_uppies, player) or state.has_any({"Puppet Master Soul", "Black Panther Soul"}, player))
-        set_rule(world.multiworld.get_location("Demon Guest House: West Wing Right", player), lambda state: state.has_any(small_uppies, player) or state.has_any({"Puppet Master Soul", "Black Panther Soul"}, player))
+        set_rule(world.get_location("Death Soul"), Has(world.magic_seal_table["Mine of Judgment"]) & (small_uppies | Has("Puppet Master Soul")))
+        set_rule(world.get_location("Mine of Judgment: Boss Room"), Has(world.magic_seal_table["Mine of Judgment"]) & (small_uppies | Has("Puppet Master Soul")))
 
     if world.options.soul_randomizer == 2:
         if world.options.soulsanity_level == 2:
             for location in world.rare_souls:
-                set_rule(world.multiworld.get_location(location, player), lambda state: state.has("Soul Eater Ring", player))
-            set_rule(world.multiworld.get_location("Iron Golem Soul", player), lambda state: state.has("Imp Soul", player))
+                set_rule(world.get_location(location), Has("Soul Eater Ring"))
+            set_rule(world.get_location("Iron Golem Soul"), Has("Imp Soul"))
 
-    set_rule(world.multiworld.get_location("Paranoia Soul", player), lambda state: state.has(world.magic_seal_table["Demon Guest House Upper"], player) and state.has_all(paranoia_souls, player))
-    set_rule(world.multiworld.get_location("Upper Guest House: Boss Room", player), lambda state: state.has(world.magic_seal_table["Demon Guest House Upper"], player) and state.has_all(paranoia_souls, player))
-    set_rule(world.multiworld.get_location("Demon Guest House: Paranoia Mirror", player), lambda state: state.has_all({world.magic_seal_table["Demon Guest House Upper"], "Paranoia Soul"}, player) and state.has_all(paranoia_souls, player))
-    set_rule(world.multiworld.get_location("Demon Guest House: Beyond Paranoia", player), lambda state: state.has(world.magic_seal_table["Demon Guest House Upper"], player) and state.has_all(paranoia_souls, player))
-    set_rule(world.multiworld.get_location("Dark Chapel: Catacombs Soul Barrier", player), lambda state: state.has(world.red_soul_walls[2], player))
-
-    if not world.options.replace_menace_with_soma:
-        set_rule(world.multiworld.get_location("Abyss Center", player), lambda state: state.has_any(big_uppies, player))
-
-    if world.options.menace_condition:
-        add_rule(world.multiworld.get_location("Abyss Center", player), lambda state: state.has_all(world.menace_triggers, player))
+    set_rule(world.get_location("Paranoia Soul"), Has(world.magic_seal_table["Demon Guest House Upper"]) & HasAll(*paranoia_souls))
+    set_rule(world.get_location("Upper Guest House: Boss Room"), Has(world.magic_seal_table["Demon Guest House Upper"]) & HasAll(*paranoia_souls))
+    set_rule(world.get_location("Demon Guest House: Paranoia Mirror"), HasAll(world.magic_seal_table["Demon Guest House Upper"], "Paranoia Soul") & HasAll(*paranoia_souls))
+    set_rule(world.get_location("Demon Guest House: Beyond Paranoia"), Has(world.magic_seal_table["Demon Guest House Upper"]) & HasAll(*paranoia_souls))
+    set_rule(world.get_location("Dark Chapel: Catacombs Soul Barrier"), Has(world.red_soul_walls[2]))
 
     if world.garden_chamber_available:
-        set_rule(world.multiworld.get_location("Garden of Madness: Central Chamber", player), lambda state: state.has_all({"Mina's Talisman", world.magic_seal_table["Castle Center"]}, player))
+        garden_rule = HasAll("Mina's Talisman", world.magic_seal_table["Castle Center"])
         if world.options.garden_condition:
-            add_rule(world.multiworld.get_location("Garden of Madness: Central Chamber", player), lambda state: state.has_all(world.garden_triggers, player))
+            garden_rule &= HasAll(*world.garden_triggers)
+        set_rule(world.get_location("Garden of Madness: Central Chamber"), garden_rule)
 
-    #if world.options.hidden_wall_status == RevealBreakableWalls.option_eye_spy:
-     #   add_rule(world.multiworld.get_location("Lost Village: Hidden Floor Room 1", player), lambda state: state.has("Peeping Eye Soul", player))
-      #  add_rule(world.multiworld.get_location("Lost Village: Hidden Floor Room 2", player), lambda state: state.has("Peeping Eye Soul", player))
-       # add_rule(world.multiworld.get_location("Subterranean Hell: Giant Underwater Room Bottom Right", player), lambda state: state.has("Peeping Eye Soul", player))
-        #add_rule(world.multiworld.get_location("Subterranean Hell: Giant Underwater Room Bottom Right", player), lambda state: state.has("Peeping Eye Soul", player))
-        #add_rule(world.multiworld.get_location("Subterranean Hell: Giant Underwater Room Bottom Right", player), lambda state: state.has("Peeping Eye Soul", player))
-        #add_rule(world.multiworld.get_location("Subterranean Hell: Giant Underwater Room Bottom Right", player), lambda state: state.has("Peeping Eye Soul", player))
-        #add_rule(world.multiworld.get_location("Subterranean Hell: Giant Underwater Room Bottom Right", player), lambda state: state.has("Peeping Eye Soul", player))
-        #add_rule(world.multiworld.get_location("Subterranean Hell: Giant Underwater Room Bottom Right", player), lambda state: state.has("Peeping Eye Soul", player))
-        #add_rule(world.multiworld.get_location("Subterranean Hell: Giant Underwater Room Bottom Right", player), lambda state: state.has("Peeping Eye Soul", player))
-        # 021A3278 for this
+        #  021A3278 for walls

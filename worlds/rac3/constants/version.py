@@ -36,7 +36,7 @@ GAME_ID_TO_VERSION: dict[str, str] = {
 
 GAME_ID_TO_OFFSET: dict[str, int] = {
     RAC3VERSION.US_ID: 0x0,
-    RAC3VERSION.EU_ID: -0x80
+    RAC3VERSION.EU_ID: -0x80,
 }
 
 PAL_SHIFTED_PLANETS: list[str] = [
@@ -59,11 +59,6 @@ PAL_SHIFTED_PLANETS: list[str] = [
     RAC3REGION.QWARK_VID_COMIC_5,
 ]
 
-VERSION_TO_BLACK_SCREEN_ORIGINAL_VALUE: dict[str, int] = {
-    RAC3VERSION.US_ID: 0x8C,
-    RAC3VERSION.EU_ID: 0x80
-}
-
 JP_SHIFTED_PLANETS: list[str] = [
     RAC3REGION.FLORANA,
     RAC3REGION.AQUATOS_SEWERS,
@@ -85,24 +80,25 @@ JP_SHIFTED_PLANETS: list[str] = [
 ]
 
 JP_PAUSE_CORRECTION_OFFSET: dict[str, int] = {
-    RAC3REGION.METROPOLIS:      0x8EC,
-    RAC3REGION.TYHRRANOSIS:     0x8EC,
-    RAC3REGION.ARIDIA:          0x7EC,
-    RAC3REGION.MARCADIA:        0xAAC,
-    RAC3REGION.DAXX:            0xD6C,
-    RAC3REGION.TYHRRANOSIS_RANGERS:  0xDEC,
-    RAC3REGION.METROPOLIS_RANGERS:   0xA6C,
+    RAC3REGION.METROPOLIS: 0x8EC,
+    RAC3REGION.TYHRRANOSIS: 0x8EC,
+    RAC3REGION.ARIDIA: 0x7EC,
+    RAC3REGION.MARCADIA: 0xAAC,
+    RAC3REGION.DAXX: 0xD6C,
+    RAC3REGION.TYHRRANOSIS_RANGERS: 0xDEC,
+    RAC3REGION.METROPOLIS_RANGERS: 0xA6C,
     RAC3REGION.BLACKWATER_CITY: 0xBAC,
-    RAC3REGION.COMMAND_CENTER:  0xB6C,
+    RAC3REGION.COMMAND_CENTER: 0xB6C,
     RAC3REGION.COMMAND_CENTER_2: 0x7AC,
 }
 
 JP_VENDOR_OFFSET_CORRECTION: dict[str, int] = {
     RAC3REGION.QWARKS_HIDEOUT: -0x40,
-    RAC3REGION.MARCADIA:       -0x40,
-    RAC3REGION.TYHRRANOSIS:    -0x40,
-    RAC3REGION.OBANI_DRACO:    -0x40,
+    RAC3REGION.MARCADIA: -0x40,
+    RAC3REGION.TYHRRANOSIS: -0x40,
+    RAC3REGION.OBANI_DRACO: -0x40,
 }
+
 
 def jp_convert_address(address: int, planet: str) -> int:
     """Convert a US-relative address to its JP equivalent."""
@@ -110,22 +106,28 @@ def jp_convert_address(address: int, planet: str) -> int:
     if planet in JP_SHIFTED_PLANETS and 0x001DE000 <= addr < 0x001DF000:
         addr += 0x80
     for start, end, offset in [
-        (0x0016C000, 0x0016C5EF,  0x9280),
-        (0x0016C5F0, 0x0016CFFF,  0x9310),
-        (0x00140000, 0x0019FFFF,   -0x80),
-        (0x001A0000, 0x001B0000,  0x9280),
-        (0x0010BB00, 0x001BFFFF,  0x9298),
-        (0x001C0000, 0x001D4CFF,  0x92C0),
-        (0x001D545C, 0x001DF000,  0x9300),
-        (0x001DF001, 0x001DFFFF,  0x9380),
-        (0x001E0000, 0x00200000,  0x106C),
-        (0x00200001, 0x002417CF,  0x9380),
-        (0x002417D0, 0x00300000,  0x93C0),
+        (0x0016C000, 0x0016C5EF, 0x9280),
+        (0x0016C5F0, 0x0016CFFF, 0x9310),
+        (0x00140000, 0x0019FFFF, -0x80),
+        (0x001A0000, 0x001B0000, 0x9280),
+        (0x0010BB00, 0x001C528F, 0x9298),
+        (0x001C5290, 0x001D4CFF, 0x92C0),
+        (0x001DEF34, 0x001DEF34, 0x9380),
+        (0x001D545C, 0x001DF000, 0x9300),
+        (0x001DF001, 0x001DFFFF, 0x9380),
+        (0x001E0000, 0x00200000, 0x106C),
+        (0x00200001, 0x00234000, 0x9380),
+        (0x00234CD0, 0x00234CD0, 0x9380),
+        (0x00235650, 0x00235650, 0x9380),
+        (0x00234001, 0x00237910, 0x93C0),
+        (0x00237911, 0x002417CF, 0x9380),
+        (0x002417D0, 0x00300000, 0x93C0),
     ]:
         if start <= addr <= end:
             addr += offset
             break
     return addr
+
 
 def jp_get_pause_physical_address(pause_addr: int, planet: str) -> int | None:
     """Return the JP physical address for reading the pause flag, or None if standard path applies.

@@ -340,6 +340,11 @@ Root: HKCR; Subkey: "{#MyAppName}mm3patch";                     ValueData: "Mult
 Root: HKCR; Subkey: "{#MyAppName}mm3patch\DefaultIcon";         ValueData: "{app}\MultiworldGGBizHawkClient.exe,0";                                          ValueType: string; ValueName: "";
 Root: HKCR; Subkey: "{#MyAppName}mm3patch\shell\open\command";  ValueData: """{app}\MultiworldGGBizHawkClient.exe"" ""%1""";                                 ValueType: string; ValueName: "";
 
+Root: HKCR; Subkey: ".apmmzero3";                                   ValueData: "{#MyAppName}mmzero3patch";                               Flags: uninsdeletevalue; ValueType: string; ValueName: "";
+Root: HKCR; Subkey: "{#MyAppName}mmzero3patch";                     ValueData: "MultiworldGG Mega Man Zero 3 Patch";                    Flags: uninsdeletekey;   ValueType: string; ValueName: "";
+Root: HKCR; Subkey: "{#MyAppName}mmzero3patch\DefaultIcon";         ValueData: "{app}\MultiworldGGBizHawkClient.exe,0";                                          ValueType: string; ValueName: "";
+Root: HKCR; Subkey: "{#MyAppName}mmzero3patch\shell\open\command";  ValueData: """{app}\MultiworldGGBizHawkClient.exe"" ""%1""";                                 ValueType: string; ValueName: "";
+
 Root: HKCR; Subkey: ".apmzm";                                     ValueData: "{#MyAppName}apmzmpatch";    Flags: uninsdeletevalue;          ValueType: string;  ValueName: "";
 Root: HKCR; Subkey: "{#MyAppName}apmzmpatch";                     ValueData: "MultiworldGG Metroid Zero Mission Patch"; Flags: uninsdeletekey;  ValueType: string;  ValueName: "";
 Root: HKCR; Subkey: "{#MyAppName}apmzmpatch\DefaultIcon";         ValueData: "{app}\MultiworldGGBizHawkClient.exe,0";                        ValueType: string; ValueName: "";

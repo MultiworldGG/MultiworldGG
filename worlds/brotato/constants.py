@@ -5,6 +5,8 @@ from functools import cached_property
 BASE_ID = 0x7A70_0000
 
 
+# The earliest wave that can be an elite wave (at Danger 2 or higher)
+MINIMUM_ELITE_WAVE = 11
 NUM_WAVES = 20
 MAX_DIFFICULTY = 5
 

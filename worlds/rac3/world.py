@@ -1,8 +1,10 @@
 """This module contains the World class for Ratchet and Clank 3"""
+from collections import Counter
 from logging import DEBUG, getLogger
-from typing import Any, ClassVar, TYPE_CHECKING
+from typing import Any, ClassVar, TextIO, TYPE_CHECKING
 
-from BaseClasses import CollectionState, Item, MultiWorld
+from BaseClasses import Item, Location, MultiWorld
+from NetUtils import MultiData
 from Options import OptionError
 from worlds.AutoWorld import World
 from worlds.rac3.constants.data.item import item_groups, RAC3_ITEM_DATA_TABLE
@@ -12,7 +14,7 @@ from worlds.rac3.constants.options import RAC3OPTION
 from worlds.rac3.constants.shortcuts import RAC3SHORTCUTS
 from worlds.rac3.items import (create_item, create_itempool, get_filler_selection, process_start_inventory,
                                starting_planets, starting_weapons)
-from worlds.rac3.locations import get_level_locations, get_location_names, get_total_locations, location_groups
+from worlds.rac3.locations import get_location_names, get_region_locations, get_total_locations, location_groups
 from worlds.rac3.rac3options import RaC3Options
 from worlds.rac3.regions import create_regions, get_nanotech_locations, get_regions
 from worlds.rac3.rules import set_rules
@@ -35,6 +37,8 @@ class RaC3World(World):
     location_name_groups = location_groups
     item_name_groups = item_groups
     preplaced_items: list[str] = []
+    starting_weapon_list: list[str] = []
+    starting_planet_list: list[str] = []
     filler_items: list[str] = []
     # Config for Universal Tracker
 
@@ -45,7 +49,7 @@ class RaC3World(World):
     tracker_world: ClassVar = tracker_world
 
     for region in get_regions():
-        location_name_groups[region] = get_level_locations(region)
+        location_name_groups[region] = get_region_locations(region)
 
     options_dataclass = RaC3Options
     web = RaC3Web()
@@ -54,6 +58,8 @@ class RaC3World(World):
 
     def __init__(self, multiworld: MultiWorld, player: int):
         super().__init__(multiworld, player)
+
+    # Generation Begins
 
     def generate_early(self):
         # count number of . in the version number to determine if dev build
@@ -65,59 +71,43 @@ class RaC3World(World):
                                 "and should not be used for normal play!\n")
         # implement .yaml-less Universal Tracker support
         setup_options_from_slot_data(self)
-        create_regions(self)
+        self.preplaced_items = [RAC3ITEM.VELDIN, RAC3ITEM.THIRD_PERSON, RAC3ITEM.FIRST_PERSON, RAC3ITEM.LOCK_STRAFE]
+        if self.options.clank_options.value == self.options.clank_options.option_start_with:
+            self.preplaced_items += [RAC3ITEM.CLANK, RAC3ITEM.HELI_PACK, RAC3ITEM.THRUSTER_PACK]
+        for item in self.preplaced_items:
+            self.push_precollected(self.create_item(item))
+        process_start_inventory(self)
+        starting_weapons(self)
+        starting_planets(self)
+        self.handle_option_errors()
+        self.dead_seed_check()
 
-        starting_weapon_list, starting_planet_list = self.generate_starting_items()
-        self.handle_option_errors(starting_planet_list, starting_weapon_list)
-        self.dead_seed_check(starting_planet_list, starting_weapon_list)
-        self.place_starting_items(starting_planet_list, starting_weapon_list)
+    def create_item(self, name: str) -> Item:
+        return create_item(self, name)
 
-    def place_starting_items(self, starting_planet_list: list[str], starting_weapon_list: list[str]):
-        """Take the list of starting planets and starting weapons and place them on locations or as precollected"""
-        if len(starting_weapon_list) > 0:
-            self.get_location(RAC3LOCATION.VELDIN_FIRST_RANGER).place_locked_item(
-                self.create_item(starting_weapon_list[0]))
-            if len(starting_weapon_list) > 1:
-                self.get_location(RAC3LOCATION.VELDIN_SECOND_RANGER).place_locked_item(
-                    self.create_item(starting_weapon_list[1]))
-        if self.options.shortcuts.value.get(RAC3SHORTCUTS.VELDIN_SKIP, False):
-            if len(starting_planet_list) == 1:  # either [Phoenix] or [Other]
-                if starting_planet_list[0] == RAC3ITEM.STARSHIP_PHOENIX:
-                    self.preplaced_items.append(starting_planet_list[0])
-                    self.push_precollected(self.create_item(starting_planet_list[0]))
-                else:
-                    self.get_location(RAC3LOCATION.VELDIN_SAVE_VELDIN).place_locked_item(
-                        self.create_item(starting_planet_list[0]))
-            elif len(starting_planet_list) > 1:  # always [Phoenix, Other]
-                self.preplaced_items.append(starting_planet_list[0])
-                self.push_precollected(self.create_item(starting_planet_list[0]))
-                self.get_location(RAC3LOCATION.VELDIN_SAVE_VELDIN).place_locked_item(
-                    self.create_item(starting_planet_list[1]))
-        else:
-            if len(starting_planet_list) == 1 and starting_planet_list[0] == RAC3ITEM.STARSHIP_PHOENIX:  # [Phoenix]
-                self.get_location(RAC3LOCATION.FLORANA_DEFEAT_QWARK).place_locked_item(
-                    self.create_item(starting_planet_list[0]))
-            elif len(starting_planet_list) > 0:  # First entry not Phoenix
-                self.get_location(RAC3LOCATION.VELDIN_SAVE_VELDIN).place_locked_item(
-                    self.create_item(starting_planet_list[0]))
-                if len(starting_planet_list) > 1:  # size == 2
-                    self.get_location(RAC3LOCATION.FLORANA_DEFEAT_QWARK).place_locked_item(
-                        self.create_item(starting_planet_list[1]))
-        self.preplaced_items.extend(starting_weapon_list)
-        self.preplaced_items.extend(starting_planet_list)
-
-    def handle_option_errors(self, starting_planet_list: list[str], starting_weapon_list: list[str]):
+    def handle_option_errors(self) -> None:
         """Check for option combinations that will never result in successful seed generation and warn the player"""
         if (not self.options.shortcuts.value.get(RAC3SHORTCUTS.VELDIN_SKIP, False)
             and self.options.clank_options.value
             and not self.options.titanium_bolts.value
             and not self.options.weapon_vendors.value
-            and len(starting_weapon_list) > 1
-            and starting_planet_list
+            and len(self.starting_weapon_list) > 1
+            and self.starting_planet_list
             and (self.multiworld.players == 1 and not self.using_ut)):
-            raise OptionError("Options selected do not allow Ratchet to collect a Clank Pack and advance past Florana")
+            item = ""
+            match self.options.clank_options.value:
+                case self.options.clank_options.option_shuffled_as_one:
+                    item = RAC3ITEM.CLANK
+                case self.options.clank_options.option_shuffled_independently:
+                    item = RAC3ITEM.HELI_PACK
+                case self.options.clank_options.option_shuffled_progressive:
+                    item = RAC3ITEM.PROGRESSIVE_PACK
+                case _:
+                    raise OptionError(
+                        "A clank option was added that does not have option error handling, Please warn the developer.")
+            self.options.start_inventory_from_pool.value[item] += 1
 
-    def dead_seed_check(self, starting_planet_list: list[str], starting_weapon_list: list[str]):
+    def dead_seed_check(self) -> None:
         """Check for option combinations that will result in a dead seed and raise an OptionError to warn the player"""
         nanotech_locations = get_nanotech_locations(self.options)
         no_nanotech_locations = not nanotech_locations
@@ -131,44 +121,91 @@ class RaC3World(World):
             and not self.options.vr_challenges.value
             and self.options.skill_points.value < 2
             and no_nanotech_locations
-            and len(starting_weapon_list) > 1
-            and starting_planet_list
+            and len(self.starting_weapon_list) > 1
+            and self.starting_planet_list
             and (self.multiworld.players == 1 and not self.using_ut)):
             raise OptionError("Options selected do not allow Ratchet to advance past Starship Phoenix")
 
-    def generate_starting_items(self):
-        """Process player options to generate a list of early placed items, ensuring successful seed generation"""
-        self.preplaced_items = [RAC3ITEM.VELDIN, RAC3ITEM.THIRD_PERSON, RAC3ITEM.FIRST_PERSON, RAC3ITEM.LOCK_STRAFE]
-        if self.options.clank_options.value == self.options.clank_options.option_start_with:
-            self.preplaced_items += [RAC3ITEM.CLANK, RAC3ITEM.HELI_PACK, RAC3ITEM.THRUSTER_PACK]
-        for item in self.preplaced_items:
-            self.push_precollected(self.create_item(item))
-        process_start_inventory(self)
-        return starting_weapons(self), starting_planets(self)
+    # Start inventory, local, non-local, and early items are finalised
+
+    def create_regions(self) -> None:
+        """Create the regions used in the world"""
+        create_regions(self)
+        self.place_starting_items()
+
+    def place_starting_items(self) -> None:
+        """Take the list of starting planets and starting weapons and place them on locations or as precollected"""
+        if len(self.starting_weapon_list) > 0:
+            self.get_location(RAC3LOCATION.VELDIN_FIRST_RANGER).place_locked_item(
+                self.create_item(self.starting_weapon_list[0]))
+            if len(self.starting_weapon_list) > 1:
+                self.get_location(RAC3LOCATION.VELDIN_SECOND_RANGER).place_locked_item(
+                    self.create_item(self.starting_weapon_list[1]))
+        if self.options.shortcuts.value.get(RAC3SHORTCUTS.VELDIN_SKIP, False):
+            if len(self.starting_planet_list) == 1:  # either [Phoenix] or [Other]
+                if self.starting_planet_list[0] == RAC3ITEM.STARSHIP_PHOENIX:
+                    self.preplaced_items.append(self.starting_planet_list[0])
+                    self.push_precollected(self.create_item(self.starting_planet_list[0]))
+                else:
+                    self.get_location(RAC3LOCATION.VELDIN_SAVE_VELDIN).place_locked_item(
+                        self.create_item(self.starting_planet_list[0]))
+            elif len(self.starting_planet_list) > 1:  # always [Phoenix, Other]
+                self.preplaced_items.append(self.starting_planet_list[0])
+                self.push_precollected(self.create_item(self.starting_planet_list[0]))
+                self.get_location(RAC3LOCATION.VELDIN_SAVE_VELDIN).place_locked_item(
+                    self.create_item(self.starting_planet_list[1]))
+        else:
+            if len(self.starting_planet_list) == 1 and self.starting_planet_list[
+                0] == RAC3ITEM.STARSHIP_PHOENIX:  # [Phoenix]
+                self.get_location(RAC3LOCATION.FLORANA_DEFEAT_QWARK).place_locked_item(
+                    self.create_item(self.starting_planet_list[0]))
+            elif len(self.starting_planet_list) > 0:  # First entry not Phoenix
+                self.get_location(RAC3LOCATION.VELDIN_SAVE_VELDIN).place_locked_item(
+                    self.create_item(self.starting_planet_list[0]))
+                if len(self.starting_planet_list) > 1:  # size == 2
+                    self.get_location(RAC3LOCATION.FLORANA_DEFEAT_QWARK).place_locked_item(
+                        self.create_item(self.starting_planet_list[1]))
+        self.preplaced_items.extend(self.starting_weapon_list)
+        self.preplaced_items.extend(self.starting_planet_list)
+        self.get_location(RAC3LOCATION.COMMAND_CENTER_BIOBLITERATOR).place_locked_item(
+            self.create_item(RAC3ITEM.VICTORY))
+        self.preplaced_items.append(RAC3ITEM.VICTORY)
 
     def create_items(self):
-        itempool = create_itempool(self)
+        """Create the items used in the world"""
+        exclusion_filler = [self.create_filler() for _ in range(self.get_excluded_count())]
+        self.multiworld.itempool.extend(exclusion_filler)
+
         own_location_count = len(self.multiworld.get_unfilled_locations(self.player))
-        total_location_count = len(self.multiworld.get_unfilled_locations())
-        existing_item_count = len(self.multiworld.itempool)
-        item_count = len(itempool)
-        placement_location_count = total_location_count - existing_item_count if self.multiworld.players > 1 else (
-            own_location_count)
-        excluded_count = self.get_excluded_count()
+        itempool = create_itempool(self)
+        item_count = len(itempool + exclusion_filler)
         filler_count = own_location_count - item_count
-        if item_count > placement_location_count:
-            self.handle_not_enough_locations(item_count - placement_location_count)
+        # rac3_logger.info(f"\nPlayer: {self.player_name}\n"
+        #                  f"Own location count: {own_location_count}\n"
+        #                  f"Item count: {item_count}\n")
 
-        self.multiworld.itempool.extend(itempool)
-
-        if excluded_count > filler_count and (self.multiworld.players == 1 and not self.using_ut):
-            self.handle_not_enough_locations(excluded_count - filler_count)
-
-        if filler_count >= 0:
+        if filler_count < 0:
+            self.handle_not_enough_locations(-filler_count)
+            self.random.shuffle(itempool)
+            # rac3_logger.info(f"Placing {-filler_count} starting items")
+            for item in range(-filler_count):
+                # rac3_logger.info(f"Starting with: {itempool[0].name}")
+                self.push_precollected(itempool.pop(0))
+        else:
             filler = [self.create_filler() for _ in range(filler_count)]
             self.multiworld.itempool.extend(filler)
-        elif self.multiworld.players == 1 and not self.using_ut:
-            self.handle_not_enough_locations(-filler_count)
+
+        self.multiworld.itempool.extend(itempool)
+        player_items = Counter(item.player for item in self.multiworld.itempool)
+        player_locs = Counter(loc.player for loc in self.multiworld.get_locations() if not loc.item)
+        assert player_items[self.player] == player_locs[self.player], (f"Player item count {player_items[self.player]} "
+                                                                       f"and location count {player_locs[self.player]} "
+                                                                       f"do not match")
+
+    def get_filler_item_name(self) -> str:
+        if not len(self.filler_items):
+            self.filler_items = get_filler_selection(self)
+        return self.random.choice(self.filler_items)
 
     def get_excluded_count(self) -> int:
         """Get the number of unique excluded locations for this player"""
@@ -181,8 +218,10 @@ class RaC3World(World):
                 excluded_locations.add(option)
         return len(excluded_locations)
 
-    def handle_not_enough_locations(self, count):
+    def handle_not_enough_locations(self, count: int):
         """Check the available location and items counts, raise OptionErrors to warn the player of too few locations"""
+        if self.options.generation_behavior.value:
+            return
         excluded_count = self.get_excluded_count()
         option_list: list[str] = []
         if self.options.skill_points.value == 0:
@@ -199,6 +238,8 @@ class RaC3World(World):
             option_list.append(RAC3OPTION.ARENA)
         if self.options.vidcomics.value == 0:
             option_list.append(RAC3OPTION.VIDCOMICS)
+        if self.options.vidcomic_health_upgrades.value == 0:
+            option_list.append(RAC3OPTION.VIDCOMIC_HEALTH_UPGRADES)
         if self.options.vr_challenges.value == 0:
             option_list.append(RAC3OPTION.VR_CHALLENGES)
         if self.options.weapon_vendors.value == 0:
@@ -207,7 +248,7 @@ class RaC3World(World):
             option_list.append(RAC3OPTION.ARMOR_VENDOR)
         if self.options.ship_vendor.value == 0:
             option_list.append(RAC3OPTION.SHIP_VENDOR)
-        if self.options.weapon_level_locations.value == 0:
+        if not self.options.weapon_level_locations.value:
             option_list.append(RAC3OPTION.WEAPON_LEVEL_LOCATIONS)
         if self.options.sewer_crystals.value < 3:
             option_list.append(RAC3OPTION.SEWER_CRYSTALS)
@@ -219,11 +260,12 @@ class RaC3World(World):
             option_list.append(RAC3OPTION.EXCLUDE)
         if not option_list:
             option_list: str = "dunno"  # ¯\_(''/)_/¯
-        message = f"Not enough location options enabled! {count} items have nowhere to be placed."
+        message = (f"Not enough location options enabled by Player: by Player: {self.player_name}! {count} items have "
+                   f"nowhere to be placed.")
         if count >= 50:
-            message += ("\nThis large of a difference requires Progressive Weapons to be disabled, Additional Sewer "
-                        "Crystal Trade locations, Additional Nanotech level locations or Additional Weapon Level "
-                        "locations.")
+            message += ("\nThis large of a difference requires Progressive Weapons and or Weapon Mods to be disabled, "
+                        "Additional Sewer, Crystal Trade locations, Additional Nanotech level locations or Additional "
+                        "Weapon Level locations.")
         if count <= 10 and sum(self.options.start_inventory_from_pool.value.values()) <= 10:
             message += "\nConsider adding some items to your starting_items_from_pool or "
         else:
@@ -231,16 +273,57 @@ class RaC3World(World):
         message += f"adjusting some of the following options: {option_list}"
         raise OptionError(message)
 
-    def get_filler_item_name(self) -> str:
-        if not len(self.filler_items):
-            self.filler_items = get_filler_selection(self)
-        return self.random.choice(self.filler_items)
-
     def set_rules(self):
         set_rules(self)
 
-    def create_item(self, name: str) -> Item:
-        return create_item(self, name)
+    # Priority and Excluded locations finalised
+    # Local and non-local location rules finalised
+    # Read Plando options
+
+    def connect_entrances(self) -> None:
+        pass
+
+    def generate_basic(self) -> None:
+        pass
+
+    # Remove starting inventory from pool and replace with filler
+    # Item Links finalised
+    # Resolve Item Plando
+
+    def pre_fill(self) -> None:
+        pass
+
+    # Begin Fill stage
+    # Distribute early items
+
+    def fill_hook(self,
+                  progitempool: list["Item"],
+                  usefulitempool: list["Item"],
+                  filleritempool: list["Item"],
+                  fill_locations: list["Location"]) -> None:
+        pass
+
+    # Remainder of Fill happens, error if any unplaced items or unfilled locations remain
+
+    def post_fill(self) -> None:
+        pass
+
+    # Progression Balancing
+
+    def finalize_multiworld(self) -> None:
+        pass
+
+    def pre_output(self) -> None:
+        pass
+
+    # Begin Multithreading
+    # Create spoiler
+
+    def generate_output(self, output_directory: str) -> None:
+        pass
+
+    def extend_hint_information(self, hint_data: dict[int, dict[int, str]]):
+        pass
 
     def fill_slot_data(self) -> dict[str, Any]:
         slot_data: dict[str, Any] = {
@@ -249,6 +332,7 @@ class RaC3World(World):
             RAC3OPTION.STARTING_WEAPONS: self.options.starting_weapons.value,
             RAC3OPTION.BOLT_AND_XP_MULTIPLIER: self.options.bolt_and_xp_multiplier.value,
             RAC3OPTION.PROGRESSIVE_WEAPONS: self.options.progressive_weapons.value,
+            RAC3OPTION.WEAPON_MODS: self.options.weapon_mods.value,
             RAC3OPTION.ARMOR_UPGRADE: self.options.armor_upgrade.value,
             RAC3OPTION.SKILL_POINTS: self.options.skill_points.value,
             RAC3OPTION.TROPHIES: self.options.trophies.value,
@@ -256,12 +340,15 @@ class RaC3World(World):
             RAC3OPTION.NANOTECH_MILESTONES: self.options.nanotech_milestones.value,
             RAC3OPTION.EXCLUDE: self.options.exclude_locations.value,
             RAC3OPTION.DEATHLINK: self.options.deathlink.value,
+            RAC3OPTION.GENERATION_BEHAVIOR: self.options.generation_behavior.value,
             RAC3OPTION.SHIP_NOSE: self.options.ship_nose.value,
             RAC3OPTION.SHIP_WINGS: self.options.ship_wings.value,
             RAC3OPTION.SHIP_SKIN: self.options.ship_skin.value,
             RAC3OPTION.PLAYER_SKIN: self.options.player_skin.value,
             RAC3OPTION.ENABLE_TRAPS: self.options.traps_enabled.value,
             RAC3OPTION.TRAP_WEIGHT: self.options.trap_weight.value,
+            RAC3OPTION.TRAP_MAGNITUDE: self.options.trap_magnitude.value,
+            RAC3OPTION.FILLER_MAGNITUDE: self.options.filler_magnitude.value,
             RAC3OPTION.RANGERS: self.options.rangers.value,
             RAC3OPTION.ARENA: self.options.arena.value,
             RAC3OPTION.VIDCOMICS: self.options.vidcomics.value,
@@ -284,16 +371,25 @@ class RaC3World(World):
             RAC3OPTION.HELP_DESK: self.options.helpdesk.value,
             RAC3OPTION.WEAPON_LEVEL_LOCATIONS: self.options.weapon_level_locations.value,
             RAC3OPTION.VENDOR_ACCESS: self.options.vendor_access.value,
+            RAC3OPTION.BONUS_VIDCOMIC_HEALTH: self.options.bonus_vidcomic_health.value,
+            RAC3OPTION.VIDCOMIC_HEALTH_UPGRADES: self.options.vidcomic_health_upgrades.value,
+            RAC3OPTION.DEATHLINK_BEHAVIOR: self.options.deathlink_behavior.value,
             RAC3OPTION.TOTAL_LOCATIONS: get_total_locations(self),
         }
 
         return slot_data
 
-    def collect(self, state: "CollectionState", item: "Item") -> bool:
-        return super().collect(state, item)
+    def modify_multidata(self, multidata: "MultiData") -> None:
+        pass
 
-    def remove(self, state: "CollectionState", item: "Item") -> bool:
-        return super().remove(state, item)
+    def write_spoiler_header(self, spoiler_handle: TextIO) -> None:
+        pass
+
+    def write_spoiler(self, spoiler_handle: TextIO) -> None:
+        pass
+
+    def write_spoiler_end(self, spoiler_handle: TextIO) -> None:
+        pass
 
     # For Universal Tracker integration
     @staticmethod

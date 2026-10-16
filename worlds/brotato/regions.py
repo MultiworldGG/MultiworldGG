@@ -1,7 +1,7 @@
 from collections.abc import Callable
-from typing import Literal
+from typing import Literal, cast
 
-from BaseClasses import Region
+from BaseClasses import CollectionRule, CollectionState, Region
 
 from .constants import (
     CHARACTER_REGION_TEMPLATE,
@@ -9,13 +9,19 @@ from .constants import (
     CRATE_DROP_LOCATION_TEMPLATE,
     LEGENDARY_CRATE_DROP_GROUP_REGION_TEMPLATE,
     LEGENDARY_CRATE_DROP_LOCATION_TEMPLATE,
+    MINIMUM_ELITE_WAVE,
     NUM_WAVES,
     RUN_COMPLETE_LOCATION_TEMPLATE,
     WAVE_COMPLETE_LOCATION_TEMPLATE,
 )
 from .locations import BrotatoCommonCrateLocation, BrotatoLegendaryCrateLocation, BrotatoLocation, location_table
 from .loot_crates import BrotatoLootCrateGroup
-from .rules import create_can_reach_wave_rule, create_has_character_rule, create_has_run_wins_rule
+from .rules import (
+    create_any_player_can_reach_wave_rule,
+    create_has_character_rule,
+    create_has_run_wins_rule,
+    create_player_can_reach_wave_rule,
+)
 
 RegionFactory = Callable[[str], Region]
 
@@ -25,6 +31,7 @@ def create_regions(
     characters: list[str],
     waves_with_checks: list[int],
     wave_access: dict[int, int],
+    include_elites_in_logic: bool,
     common_loot_crate_groups: list[BrotatoLootCrateGroup],
     legendary_loot_crate_groups: list[BrotatoLootCrateGroup],
 ) -> list[Region]:
@@ -43,8 +50,29 @@ def create_regions(
                 region_factory, group, loot_crate_type, crate_count_start=crate_count
             )
             crate_count += group.num_crates
+            # If elites are enabled, set the access wave to when they start spawning.
+            # Otherwise, set the access wave to the last wave, requiring boss kills.
+            required_wave = MINIMUM_ELITE_WAVE if include_elites_in_logic else NUM_WAVES
             has_wins_rule = create_has_run_wins_rule(loot_crate_group_region.player, group.wins_to_unlock)
-            menu_region.connect(loot_crate_group_region, name=loot_crate_group_region.name, rule=has_wins_rule)
+            if loot_crate_type == "legendary":
+                can_reach_wave_rule = create_any_player_can_reach_wave_rule(
+                    loot_crate_group_region.player, characters, wave_access[required_wave]
+                )
+
+                def legendary_loot_crate_region_rule(
+                    state: CollectionState,
+                    has_wins_rule: CollectionRule = has_wins_rule,
+                    can_reach_wave_rule: CollectionRule = can_reach_wave_rule,
+                ):
+                    has_wins = has_wins_rule(state)
+                    can_reach_wave = can_reach_wave_rule(state)
+                    return has_wins and can_reach_wave
+
+                loot_crate_region_rule = cast(CollectionRule, legendary_loot_crate_region_rule)
+
+            else:
+                loot_crate_region_rule = has_wins_rule
+            menu_region.connect(loot_crate_group_region, name=loot_crate_group_region.name, rule=loot_crate_region_rule)
             regions.append(loot_crate_group_region)
 
     for char in characters:
@@ -72,7 +100,7 @@ def create_character_region(
         parent=character_region,
     )
     # All wave cap increases are needed to reach the final wave.
-    run_complete_location.access_rule = create_can_reach_wave_rule(
+    run_complete_location.access_rule = create_player_can_reach_wave_rule(
         character_region.player, character, wave_access[NUM_WAVES]
     )
     character_region.locations.append(run_complete_location)
@@ -91,7 +119,7 @@ def create_character_region(
         )
 
         num_wave_cap_items_needed_for_wave = wave_access[wave]
-        wave_complete_location.access_rule = create_can_reach_wave_rule(
+        wave_complete_location.access_rule = create_player_can_reach_wave_rule(
             character_region.player, character, num_wave_cap_items_needed_for_wave
         )
         character_region.locations.append(wave_complete_location)

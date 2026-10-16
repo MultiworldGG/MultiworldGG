@@ -6,7 +6,7 @@ from NetUtils import ClientStatus
 import worlds._bizhawk as bizhawk
 from worlds._bizhawk.client import BizHawkClient
 
-from . import Data
+from .data import Data
 from .Items import item_table, progressive_weapon_names, weapon_chains, weapon_names
 from .Locations import location_data_table
 
@@ -54,6 +54,9 @@ class MMZero3Client(BizHawkClient):
         self.version_mismatch = False
         self.ap_handshake_logged = False
         self.locations_reported = set()  # location IDs already forwarded to the server
+        self.stage = None                # stage for trackers
+        self.area = None                 # area within the stage for trackers
+        self.shop_hinted = set()         # shop locations auto hints
 
         # Options, overwritten from slot data
         self.options_set = False
@@ -93,6 +96,8 @@ class MMZero3Client(BizHawkClient):
                 await self.handle_received_items(ctx, mailbox)
                 await self.handle_death_link(ctx, mailbox)
                 await self.handle_goal(ctx)
+                await self.handle_stage(ctx, mailbox)
+                await self.handle_shop_hints(ctx, mailbox)
 
             await self.handle_collected_pickups(ctx)
         except bizhawk.RequestFailedError:
@@ -105,7 +110,7 @@ class MMZero3Client(BizHawkClient):
         self.starting_weapons = set(ctx.slot_data.get("starting_weapons", ()))
         self.options_set = True
 
-    async def read_mailbox(self, ctx: "BizHawkClientContext") -> Optional[Dict[str, int]]:
+    async def read_mailbox(self, ctx: "BizHawkClientContext") -> Optional[Dict[str, Any]]:
         """One read of gAp. None means the ROM isn't ready.
 
         ApInit runs on the first Process_Game(), so the ready value not matching means the game is still booting or in the starting menu.
@@ -122,10 +127,13 @@ class MMZero3Client(BizHawkClient):
             (Data.DISKS_OWNED, 2, WRAM),
             (Data.DEATH_COUNT, 2, WRAM),
             (Data.CAN_ACCEPT_ITEMS, 1, WRAM),
+            (Data.SHOP_SEEN, Data.SHOP_SEEN_COUNT, WRAM),
+            (Data.STAGE_ID, 2, WRAM),
+            (Data.STAGE_AREA, 1, WRAM),
         ])
 
         (ready, version, inbox_write_index, inbox_read_index,
-         items_applied, disks_owned, death_count, can_accept_items) = mailbox_bytes
+         items_applied, disks_owned, death_count, can_accept_items, shop_seen, stage, area) = mailbox_bytes
 
         if int.from_bytes(ready, "little") != Data.AP_READY:
             return None
@@ -133,9 +141,15 @@ class MMZero3Client(BizHawkClient):
         rom_version = int.from_bytes(version, "little")
         if rom_version != Data.AP_VERSION:
             self.version_mismatch = True
+            if rom_version < Data.AP_VERSION:
+                reason = ("Your mmzero3.apworld is NEWER than the one this seed was generated with. "
+                          "Install the apworld version the host used, you may need to downgrade.")
+            else:
+                reason = ("Your mmzero3.apworld is OLDER than the one this seed was generated with. "
+                          "Update to the apworld version the host used.")
             message = (f"ROM/client version mismatch: the ROM is version "
                        f"{rom_version}, this apworld is version {Data.AP_VERSION}. "
-                       f"Please generate a new game/ROM!")
+                       f"{reason} Then restart the client.")
             logger.error("MMZero3: %s", message)
             await ctx.send_msgs([{"cmd": "Say", "text": f"[MMZ3] {message}"}])
             return None
@@ -151,6 +165,9 @@ class MMZero3Client(BizHawkClient):
             "disks_owned": int.from_bytes(disks_owned, "little"),
             "death_count": int.from_bytes(death_count, "little"),
             "can_accept_items": can_accept_items[0] != 0,
+            "shop_seen": shop_seen,
+            "stage": int.from_bytes(stage, "little"),
+            "area": area[0],
         }
 
     async def handle_checked_locations(self, ctx: "BizHawkClientContext") -> None:
@@ -307,6 +324,45 @@ class MMZero3Client(BizHawkClient):
             {"cmd": "StatusUpdate", "status": ClientStatus.CLIENT_GOAL},
         ])
         ctx.finished_game = True
+
+    async def handle_stage(self, ctx: "BizHawkClientContext", mailbox: Dict[str, Any]) -> None:
+        """Send the stage ID and the area within it for trackers."""
+        if not mailbox["can_accept_items"]:
+            return
+        msgs = []
+        if mailbox["stage"] != self.stage:
+            self.stage = mailbox["stage"]
+            self.area = None
+            msgs.append(self.tracker_set(ctx, "stage", self.stage))
+        if mailbox["area"] < 8 and mailbox["area"] != self.area:
+            self.area = mailbox["area"]
+            msgs.append(self.tracker_set(ctx, "area", self.area))
+        if msgs:
+            await ctx.send_msgs(msgs)
+
+    @staticmethod
+    def tracker_set(ctx: "BizHawkClientContext", name: str, value: int) -> Dict[str, Any]:
+        return {
+            "cmd": "Set",
+            "key": f"mmz3_{name}_{ctx.team}_{ctx.slot}",
+            "default": 0,
+            "want_reply": False,
+            "operations": [{"operation": "replace", "value": value}],
+        }
+
+    async def handle_shop_hints(self, ctx: "BizHawkClientContext", mailbox: Dict[str, Any]) -> None:
+        """
+        Hint every shop slot the player has looked at.
+        WIP the shop only has one set of items unlocked from the start, this will be updated later.
+        """
+        seen = mailbox["shop_seen"]
+        looked_at = [Data.AP_SHOP_LOCATION_FIRST + slot for slot in range(len(seen) * 8)
+                     if seen[slot >> 3] & (1 << (slot & 7))]
+        new_hints = [location for location in looked_at
+                     if location in ctx.missing_locations and location not in self.shop_hinted]
+        if new_hints:
+            self.shop_hinted.update(new_hints)
+            await ctx.send_msgs([{"cmd": "LocationScouts", "locations": new_hints, "create_as_hint": 2}])
 
     async def handle_collected_pickups(self, ctx: "BizHawkClientContext") -> None:
         """Keep the game's RAM synced with the locations the server says are checked.

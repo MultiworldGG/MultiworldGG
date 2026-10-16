@@ -1,0 +1,1264 @@
+{
+ "coverage_source": "map_logic.json",
+ "missing_locs": [
+  "Balm for the Wounded - Spool Fragment",
+  "Boss: Bell Eater",
+  "Boss: Broodmother",
+  "Boss: Clover Dancers",
+  "Boss: Father of the Flame",
+  "Boss: First Sinner",
+  "Boss: Grand Mother Silk",
+  "Boss: Nyleth",
+  "Boss: Palestag",
+  "Boss: Summoned Saviour",
+  "Choral Chambers - Heavy Rosary Necklace",
+  "Choral Chambers East - Silkeater",
+  "Cogwork Core - Map Pickup",
+  "Grand Gate - Nyleth Shrine Inscription",
+  "Great Taste of Pharloom - Pale Oil",
+  "Journal: Bell Eater",
+  "Journal: Broodmother",
+  "Journal: Clover Dancers",
+  "Journal: Father of the Flame",
+  "Journal: First Sinner",
+  "Journal: Grand Mother Silk",
+  "Journal: Lost Lace",
+  "Journal: Nyleth",
+  "Journal: Palestag",
+  "Journal: Summoned Saviour",
+  "Longclaw",
+  "Pinmaster Plinney: Hivesteel Needle",
+  "Pinmaster Plinney: Pale Steel Needle",
+  "Pinmaster Plinney: Sharpened Needle",
+  "Pinmaster Plinney: Shining Needle",
+  "Pollen Heart",
+  "Rune Rage",
+  "The Cradle - Lower Cage Inscription",
+  "The Cradle - Middle Cage Inscription",
+  "The Cradle - Shell Shard Cache",
+  "The Cradle - Upper Cage Inscription",
+  "Verdania - Map Pickup",
+  "Verdania - Oath Plaque",
+  "Wish: Balm for the Wounded",
+  "Wish: Great Taste of Pharloom",
+  "Wish: Pinmaster's Oil",
+  "Wispfire Lantern"
+ ],
+ "missing_ents": [
+  "ACT2 GMS Arena - left2",
+  "ACT2 GMS Arena - right2 (R)",
+  "Abyss Diving Bell Broken - door_wakeOnGround (D)",
+  "Abyss Diving Bell Broken - left1 (L)",
+  "Act2 Cradle Connector Hallway - left1",
+  "Act2 Cradle Connector Hallway - right1 (R)",
+  "Act2 Cradle Left Shaft - left2 (L)",
+  "Act2 Cradle Left Shaft - right1",
+  "Act2 Cradle Left Shaft - right2",
+  "Bellhart Pinsmith - left1 (L)",
+  "Bellhart Relic Shop - left1 (L)",
+  "Bellhome - Left1 (L)",
+  "Bilewater East Column - left1",
+  "Bilewater East Column - left2",
+  "Bilewater East Column - middle left (ML)",
+  "Bonegrave Passage - right (R)",
+  "Chapel of the Architect - left1 (L)",
+  "Choral Chambers Dining Room - top1 (T)",
+  "Cogwork Core Bench & Map - left1",
+  "Cogwork Core Main Connection - left1 (TL)",
+  "Cogwork Core Main Connection - left2",
+  "Greymoor Chapel of The Reaper - left (L)",
+  "Greymoor Yarnaby Room - left (L)",
+  "High Halls Not Implemented Room - left1 (L)",
+  "Huntress - left1",
+  "Last Dive - door_cutscenePosition (D)",
+  "Last Dive - door_cutscenePosition2 (D2)",
+  "Memory Karmelita - door_wakeInMemory (MG)",
+  "Nyleth Fight - door_wakeInMemory (D)",
+  "Nyleth Shrine - door_wakeOnGround (D)",
+  "Nyleth Shrine - right1",
+  "Path Of Pain Silksong - left1",
+  "Path Of Pain Silksong - top1",
+  "Slab Bellway - door1 (NI)",
+  "Slab Flea Cell - left1 (L)",
+  "Slab Penitent Cell - left1 (L)",
+  "The Marrow Bellshrine - right (R)",
+  "Weaver Jail Lore Room - right1 (R)",
+  "Whispering Vaults Totally Not White Palace - bot2 (B2)",
+  "Whispering Vaults Totally Not White Palace - bot3 (B3)",
+  "Whiteward Sherma Gauntlet - Left (L)",
+  "Wisp Thicket Grounds - top1 (T)",
+  "Witch Chapel - Left1 (L)"
+ ],
+ "entrance_details": [
+  {
+   "name": "ACT2 GMS Arena - left2",
+   "room": "ACT2 GMS Arena",
+   "scene": "Cradle_03",
+   "id": "the-cradle/act2-gms-arena@l",
+   "gate": "left2"
+  },
+  {
+   "name": "ACT2 GMS Arena - right2 (R)",
+   "room": "ACT2 GMS Arena",
+   "scene": "Cradle_03",
+   "id": "the-cradle/act2-gms-arena@r",
+   "gate": "right2"
+  },
+  {
+   "name": "Abyss Diving Bell Broken - door_wakeOnGround (D)",
+   "room": "Abyss Diving Bell Broken",
+   "scene": "Room_Diving_Bell_Abyss",
+   "id": "the-abyss/abyss-diving-bell-broken@d",
+   "gate": "door_wakeOnGround"
+  },
+  {
+   "name": "Abyss Diving Bell Broken - left1 (L)",
+   "room": "Abyss Diving Bell Broken",
+   "scene": "Room_Diving_Bell_Abyss",
+   "id": "the-abyss/abyss-diving-bell-broken@l",
+   "gate": "left1"
+  },
+  {
+   "name": "Act2 Cradle Connector Hallway - left1",
+   "room": "Act2 Cradle Connector Hallway",
+   "scene": "Cradle_01",
+   "id": "the-cradle/act2-cradle-connector-hallway@l",
+   "gate": "left1"
+  },
+  {
+   "name": "Act2 Cradle Connector Hallway - right1 (R)",
+   "room": "Act2 Cradle Connector Hallway",
+   "scene": "Cradle_01",
+   "id": "the-cradle/act2-cradle-connector-hallway@r",
+   "gate": "right1"
+  },
+  {
+   "name": "Act2 Cradle Left Shaft - left2 (L)",
+   "room": "Act2 Cradle Left Shaft",
+   "scene": "Cradle_02",
+   "id": "the-cradle/act2-cradle-left-shaft@l",
+   "gate": "left2"
+  },
+  {
+   "name": "Act2 Cradle Left Shaft - right1",
+   "room": "Act2 Cradle Left Shaft",
+   "scene": "Cradle_02",
+   "id": "the-cradle/act2-cradle-left-shaft@ur",
+   "gate": "right1"
+  },
+  {
+   "name": "Act2 Cradle Left Shaft - right2",
+   "room": "Act2 Cradle Left Shaft",
+   "scene": "Cradle_02",
+   "id": "the-cradle/act2-cradle-left-shaft@lr",
+   "gate": "right2"
+  },
+  {
+   "name": "Bellhart Pinsmith - left1 (L)",
+   "room": "Bellhart Pinsmith",
+   "scene": "Belltown_Room_pinsmith",
+   "id": "bellhart/bellhart-pinsmith@l",
+   "gate": "left1"
+  },
+  {
+   "name": "Bellhart Relic Shop - left1 (L)",
+   "room": "Bellhart Relic Shop",
+   "scene": "Belltown_Room_Relic",
+   "id": "bellhart/bellhart-relic-shop@l",
+   "gate": "left1"
+  },
+  {
+   "name": "Bellhome - Left1 (L)",
+   "room": "Bellhome",
+   "scene": "Belltown_room_spare",
+   "id": "bellhart/bellhome@l",
+   "gate": null
+  },
+  {
+   "name": "Bilewater East Column - left1",
+   "room": "Bilewater East Column",
+   "scene": "Shadow_09",
+   "id": "bilewater/bilewater-east-column@ul",
+   "gate": "left1"
+  },
+  {
+   "name": "Bilewater East Column - left2",
+   "room": "Bilewater East Column",
+   "scene": "Shadow_09",
+   "id": "bilewater/bilewater-east-column@ll",
+   "gate": "left2"
+  },
+  {
+   "name": "Bilewater East Column - middle left (ML)",
+   "room": "Bilewater East Column",
+   "scene": "Shadow_09",
+   "id": "bilewater/bilewater-east-column@ml",
+   "gate": "left3"
+  },
+  {
+   "name": "Bonegrave Passage - right (R)",
+   "room": "Bonegrave Passage",
+   "scene": "Bone_Steel_Servant",
+   "id": "bone-bottom/bonegrave-passage@r",
+   "gate": null
+  },
+  {
+   "name": "Chapel of the Architect - left1 (L)",
+   "room": "Chapel of the Architect",
+   "scene": "Under_20",
+   "id": "underworks/chapel-of-the-architect@l",
+   "gate": "left1"
+  },
+  {
+   "name": "Choral Chambers Dining Room - top1 (T)",
+   "room": "Choral Chambers Dining Room",
+   "scene": "Song_09b",
+   "id": "choral-chambers/choral-chambers-dining-room@t",
+   "gate": "top1"
+  },
+  {
+   "name": "Cogwork Core Bench & Map - left1",
+   "room": "Cogwork Core Bench & Map",
+   "scene": "Cog_Bench",
+   "id": "cogwork-core/cogwork-core-bench-map@l",
+   "gate": "left1"
+  },
+  {
+   "name": "Cogwork Core Main Connection - left1 (TL)",
+   "room": "Cogwork Core Main Connection",
+   "scene": "Cog_Pass",
+   "id": "cogwork-core/cogwork-core-main-connection@tl",
+   "gate": "left1"
+  },
+  {
+   "name": "Cogwork Core Main Connection - left2",
+   "room": "Cogwork Core Main Connection",
+   "scene": "Cog_Pass",
+   "id": "cogwork-core/cogwork-core-main-connection@bl",
+   "gate": "left2"
+  },
+  {
+   "name": "Greymoor Chapel of The Reaper - left (L)",
+   "room": "Greymoor Chapel of The Reaper",
+   "scene": "Greymoor_20c",
+   "id": "greymoor/greymoor-chapel-of-the-reaper@l",
+   "gate": "left1"
+  },
+  {
+   "name": "Greymoor Yarnaby Room - left (L)",
+   "room": "Greymoor Yarnaby Room",
+   "scene": "Belltown_Room_doctor",
+   "id": "greymoor/greymoor-yarnaby-room@l",
+   "gate": "left1"
+  },
+  {
+   "name": "High Halls Not Implemented Room - left1 (L)",
+   "room": "High Halls Not Implemented Room",
+   "scene": "Cog_11",
+   "id": "high-halls/high-halls-not-implemented-room@l",
+   "gate": null
+  },
+  {
+   "name": "Huntress - left1",
+   "room": "Huntress",
+   "scene": "Room_Huntress",
+   "id": "putrified-ducts/huntress@l",
+   "gate": "left1"
+  },
+  {
+   "name": "Last Dive - door_cutscenePosition (D)",
+   "room": "Last Dive",
+   "scene": "Last_Dive",
+   "id": "the-abyss/last-dive@d",
+   "gate": "door_cutscenePosition"
+  },
+  {
+   "name": "Last Dive - door_cutscenePosition2 (D2)",
+   "room": "Last Dive",
+   "scene": "Last_Dive",
+   "id": "the-abyss/last-dive@d2",
+   "gate": null
+  },
+  {
+   "name": "Memory Karmelita - door_wakeInMemory (MG)",
+   "room": "Memory Karmelita",
+   "scene": "Memory_Ant_Queen",
+   "id": "far-fields/memory-karmelita@mg",
+   "gate": "door_wakeInMemory"
+  },
+  {
+   "name": "Nyleth Fight - door_wakeInMemory (D)",
+   "room": "Nyleth Fight",
+   "scene": "Shellwood_11b_Memory",
+   "id": "grand-gate/nyleth-fight@d",
+   "gate": "door_wakeInMemory"
+  },
+  {
+   "name": "Nyleth Shrine - door_wakeOnGround (D)",
+   "room": "Nyleth Shrine",
+   "scene": "Shellwood_11b",
+   "id": "grand-gate/nyleth-shrine@d",
+   "gate": "door_wakeOnGround"
+  },
+  {
+   "name": "Nyleth Shrine - right1",
+   "room": "Nyleth Shrine",
+   "scene": "Shellwood_11b",
+   "id": "grand-gate/nyleth-shrine@r",
+   "gate": "right1"
+  },
+  {
+   "name": "Path Of Pain Silksong - left1",
+   "room": "Path Of Pain Silksong",
+   "scene": "Cradle_Destroyed_Challenge_01",
+   "id": "the-cradle/path-of-pain-silksong@l",
+   "gate": "left1"
+  },
+  {
+   "name": "Path Of Pain Silksong - top1",
+   "room": "Path Of Pain Silksong",
+   "scene": "Cradle_Destroyed_Challenge_01",
+   "id": "the-cradle/path-of-pain-silksong@c",
+   "gate": "top1"
+  },
+  {
+   "name": "Slab Bellway - door1 (NI)",
+   "room": "Slab Bellway",
+   "scene": "Slab_06",
+   "id": "the-slab/slab-bellway@ni",
+   "gate": "door1"
+  },
+  {
+   "name": "Slab Flea Cell - left1 (L)",
+   "room": "Slab Flea Cell",
+   "scene": "Slab_Cell",
+   "id": "the-slab/slab-flea-cell@l",
+   "gate": "left1"
+  },
+  {
+   "name": "Slab Penitent Cell - left1 (L)",
+   "room": "Slab Penitent Cell",
+   "scene": "Slab_Cell_Creature",
+   "id": "the-slab/slab-penitent-cell@l",
+   "gate": "left1"
+  },
+  {
+   "name": "The Marrow Bellshrine - right (R)",
+   "room": "The Marrow Bellshrine",
+   "scene": "Bellshrine",
+   "id": "the-marrow/the-marrow-bellshrine@r",
+   "gate": null
+  },
+  {
+   "name": "Weaver Jail Lore Room - right1 (R)",
+   "room": "Weaver Jail Lore Room",
+   "scene": "Cradle_02b",
+   "id": "the-cradle/weaver-jail-lore-room@r",
+   "gate": "right1"
+  },
+  {
+   "name": "Whispering Vaults Totally Not White Palace - bot2 (B2)",
+   "room": "Whispering Vaults Totally Not White Palace",
+   "scene": "Library_07",
+   "id": "whispering-vaults/whispering-vaults-palace@b2",
+   "gate": null
+  },
+  {
+   "name": "Whispering Vaults Totally Not White Palace - bot3 (B3)",
+   "room": "Whispering Vaults Totally Not White Palace",
+   "scene": "Library_07",
+   "id": "whispering-vaults/whispering-vaults-palace@b3",
+   "gate": null
+  },
+  {
+   "name": "Whiteward Sherma Gauntlet - Left (L)",
+   "room": "Whiteward Sherma Gauntlet",
+   "scene": "Ward_09",
+   "id": "whiteward/whiteward-sherma-gauntlet@l",
+   "gate": "left1"
+  },
+  {
+   "name": "Wisp Thicket Grounds - top1 (T)",
+   "room": "Wisp Thicket Grounds",
+   "scene": "Wisp_02",
+   "id": "wisp-thicket/wisp-thicket-grounds@t",
+   "gate": "top1"
+  },
+  {
+   "name": "Witch Chapel - Left1 (L)",
+   "room": "Witch Chapel",
+   "scene": "Shellwood_25b",
+   "id": "shellwood/witch-chapel@l",
+   "gate": null
+  }
+ ],
+ "missing_rooms": [
+  {
+   "scene": "bellway_centipede_arena",
+   "locations": [
+    "Boss: Bell Eater",
+    "Journal: Bell Eater"
+   ]
+  },
+  {
+   "scene": "clover_01",
+   "locations": [
+    "Boss: Clover Dancers",
+    "Journal: Clover Dancers"
+   ]
+  },
+  {
+   "scene": "clover_10",
+   "locations": [
+    "Verdania - Oath Plaque"
+   ]
+  },
+  {
+   "scene": "clover_19",
+   "locations": [
+    "Boss: Palestag",
+    "Journal: Palestag"
+   ]
+  },
+  {
+   "scene": "clover_20",
+   "locations": [
+    "Verdania - Map Pickup"
+   ]
+  },
+  {
+   "scene": "slab_10b",
+   "locations": [
+    "Boss: First Sinner",
+    "Journal: First Sinner",
+    "Rune Rage"
+   ]
+  },
+  {
+   "scene": "slab_16b",
+   "locations": [
+    "Boss: Broodmother",
+    "Journal: Broodmother"
+   ]
+  }
+ ],
+ "missing_images": [
+  {
+   "room": "Bonegrave Passage",
+   "scene": "Bone_Steel_Servant",
+   "image": "01-geometry/71803e5f-0049-4c4a-a72f-a592af51e64d.webp"
+  },
+  {
+   "room": "Memory Karmelita",
+   "scene": "Memory_Ant_Queen",
+   "image": "01-geometry/22cd4ca9-1750-4399-ac6f-a45f30af85cc.webp"
+  },
+  {
+   "room": "Witch Chapel",
+   "scene": "Shellwood_25b",
+   "image": "01-geometry/5f4edaaf-b3aa-464a-aa81-6532e1aac370.webp"
+  },
+  {
+   "room": "Bellhart Pinsmith",
+   "scene": "Belltown_Room_pinsmith",
+   "image": "01-geometry/e88b57e7-0008-48b6-881d-49766c04ab6b.webp"
+  },
+  {
+   "room": "Bellhart Relic Shop",
+   "scene": "Belltown_Room_Relic",
+   "image": "01-geometry/b2067b11-94e1-436b-b828-9483aef65664.webp"
+  },
+  {
+   "room": "Bellhome",
+   "scene": "Belltown_room_spare",
+   "image": "01-geometry/ab76f9ca-9c5d-406a-b803-96bfbe584275.webp"
+  },
+  {
+   "room": "Greymoor Chapel of The Reaper",
+   "scene": "Greymoor_20c",
+   "image": "01-geometry/ec5f77ca-8b6f-41df-af6f-522defd2a9e4.webp"
+  },
+  {
+   "room": "Greymoor Yarnaby Room",
+   "scene": "Belltown_Room_doctor",
+   "image": "01-geometry/1242e461-9256-4e6a-949b-276700970115.webp"
+  },
+  {
+   "room": "Nyleth Shrine",
+   "scene": "Shellwood_11b",
+   "image": "01-geometry/27f90db3-eb94-4ef5-be4e-580b13062b2f.webp"
+  },
+  {
+   "room": "Nyleth Fight",
+   "scene": "Shellwood_11b_Memory",
+   "image": "01-geometry/5229a44b-e481-4d4b-b3ae-7a0c0bd03f6e.webp"
+  },
+  {
+   "room": "Chapel of the Architect",
+   "scene": "Under_20",
+   "image": "01-geometry/4344b962-3cb4-4bd8-9843-088ed849ac1c.webp"
+  },
+  {
+   "room": "Cogwork Core Bench & Map",
+   "scene": "Cog_Bench",
+   "image": "01-geometry/214220b9-8ee1-4650-8d08-8245a6d8993b.webp"
+  },
+  {
+   "room": "Cogwork Core Main Connection",
+   "scene": "Cog_Pass",
+   "image": "01-geometry/d57d0573-04e1-4e71-ae8b-e8c586db173c.webp"
+  },
+  {
+   "room": "Whiteward Sherma Gauntlet",
+   "scene": "Ward_09",
+   "image": "01-geometry/ffe09fec-0947-4f05-8fe5-e8820ef65a63.webp"
+  },
+  {
+   "room": "High Halls Not Implemented Room",
+   "scene": "Cog_11",
+   "image": "01-geometry/5d6dfe6f-edbf-4649-ac34-374a0a4d1326.webp"
+  },
+  {
+   "room": "Slab Flea Cell",
+   "scene": "Slab_Cell",
+   "image": "01-geometry/6d87d1dc-c675-4b74-bc70-5ab1ae1f0247.webp"
+  },
+  {
+   "room": "Slab Penitent Cell",
+   "scene": "Slab_Cell_Creature",
+   "image": "01-geometry/30d7a033-28af-4e69-889c-46a08d7b3f82.webp"
+  },
+  {
+   "room": "Huntress",
+   "scene": "Room_Huntress",
+   "image": "01-geometry/4f58cf78-e891-4789-a610-2e2ead12f321.webp"
+  },
+  {
+   "room": "ACT2 GMS Arena",
+   "scene": "Cradle_03",
+   "image": "01-geometry/2e0f996f-5606-4d8b-95fe-e4a7dfb7c454.webp"
+  },
+  {
+   "room": "Act2 Cradle Connector Hallway",
+   "scene": "Cradle_01",
+   "image": "01-geometry/a841731d-70f2-46eb-bfb5-4f608be16a2c.webp"
+  },
+  {
+   "room": "Act2 Cradle Left Shaft",
+   "scene": "Cradle_02",
+   "image": "01-geometry/12fe7814-32c9-473a-8e5e-0cb33b05d8a9.webp"
+  },
+  {
+   "room": "Weaver Jail Lore Room",
+   "scene": "Cradle_02b",
+   "image": "01-geometry/715c8434-6851-475d-bc65-c73b3bce99ab.webp"
+  },
+  {
+   "room": "Path Of Pain Silksong",
+   "scene": "Cradle_Destroyed_Challenge_01",
+   "image": "01-geometry/16f507bb-1d29-448c-b920-5e1500494724.webp"
+  },
+  {
+   "room": "Abyss Diving Bell Broken",
+   "scene": "Room_Diving_Bell_Abyss",
+   "image": "01-geometry/bce8f99c-5c50-497c-8133-4a406103386e.webp"
+  },
+  {
+   "room": "Last Dive",
+   "scene": "Last_Dive",
+   "image": "01-geometry/aa56ed92-1d08-4aec-878c-4558570595e0.webp"
+  }
+ ],
+ "image_mismatches": [],
+ "rejected_positions": [
+  {
+   "name": "Journal: Summoned Saviour",
+   "scene": "Bone_Steel_Servant",
+   "room": "Bonegrave Passage",
+   "reason": "missing image dimensions",
+   "source_dimensions": [
+    130,
+    40
+   ],
+   "map_dimensions": [
+    null,
+    null
+   ]
+  },
+  {
+   "name": "Boss: Summoned Saviour",
+   "scene": "Bone_Steel_Servant",
+   "room": "Bonegrave Passage",
+   "reason": "missing image dimensions",
+   "source_dimensions": [
+    130,
+    40
+   ],
+   "map_dimensions": [
+    null,
+    null
+   ]
+  },
+  {
+   "name": "Wish: Pinmaster's Oil",
+   "scene": "Belltown_Room_pinsmith",
+   "room": "Bellhart Pinsmith",
+   "reason": "missing image dimensions",
+   "source_dimensions": [
+    55,
+    26
+   ],
+   "map_dimensions": [
+    55,
+    26
+   ]
+  },
+  {
+   "name": "Pinmaster Plinney: Sharpened Needle",
+   "scene": "Belltown_Room_pinsmith",
+   "room": "Bellhart Pinsmith",
+   "reason": "missing image dimensions",
+   "source_dimensions": [
+    55,
+    26
+   ],
+   "map_dimensions": [
+    55,
+    26
+   ]
+  },
+  {
+   "name": "Pinmaster Plinney: Shining Needle",
+   "scene": "Belltown_Room_pinsmith",
+   "room": "Bellhart Pinsmith",
+   "reason": "missing image dimensions",
+   "source_dimensions": [
+    55,
+    26
+   ],
+   "map_dimensions": [
+    55,
+    26
+   ]
+  },
+  {
+   "name": "Pinmaster Plinney: Hivesteel Needle",
+   "scene": "Belltown_Room_pinsmith",
+   "room": "Bellhart Pinsmith",
+   "reason": "missing image dimensions",
+   "source_dimensions": [
+    55,
+    26
+   ],
+   "map_dimensions": [
+    55,
+    26
+   ]
+  },
+  {
+   "name": "Pinmaster Plinney: Pale Steel Needle",
+   "scene": "Belltown_Room_pinsmith",
+   "room": "Bellhart Pinsmith",
+   "reason": "missing image dimensions",
+   "source_dimensions": [
+    55,
+    26
+   ],
+   "map_dimensions": [
+    55,
+    26
+   ]
+  },
+  {
+   "name": "Journal: Father of the Flame",
+   "scene": "Belltown_08",
+   "room": "Father of the Flame",
+   "reason": "position outside room",
+   "source_dimensions": [
+    115,
+    47
+   ],
+   "map_dimensions": [
+    115,
+    47
+   ]
+  },
+  {
+   "name": "Wispfire Lantern",
+   "scene": "Belltown_08",
+   "room": "Father of the Flame",
+   "reason": "position outside room",
+   "source_dimensions": [
+    115,
+    47
+   ],
+   "map_dimensions": [
+    115,
+    47
+   ]
+  },
+  {
+   "name": "Boss: Father of the Flame",
+   "scene": "Belltown_08",
+   "room": "Father of the Flame",
+   "reason": "position outside room",
+   "source_dimensions": [
+    115,
+    47
+   ],
+   "map_dimensions": [
+    115,
+    47
+   ]
+  },
+  {
+   "name": "Journal: Nyleth",
+   "scene": "Shellwood_11b",
+   "room": "Nyleth Shrine",
+   "reason": "missing image dimensions",
+   "source_dimensions": [
+    120,
+    170
+   ],
+   "map_dimensions": [
+    120,
+    170
+   ]
+  },
+  {
+   "name": "Pollen Heart",
+   "scene": "Shellwood_11b",
+   "room": "Nyleth Shrine",
+   "reason": "missing image dimensions",
+   "source_dimensions": [
+    120,
+    170
+   ],
+   "map_dimensions": [
+    120,
+    170
+   ]
+  },
+  {
+   "name": "Boss: Nyleth",
+   "scene": "Shellwood_11b",
+   "room": "Nyleth Shrine",
+   "reason": "missing image dimensions",
+   "source_dimensions": [
+    120,
+    170
+   ],
+   "map_dimensions": [
+    120,
+    170
+   ]
+  },
+  {
+   "name": "Grand Gate - Nyleth Shrine Inscription",
+   "scene": "Shellwood_11b",
+   "room": "Nyleth Shrine",
+   "reason": "missing image dimensions",
+   "source_dimensions": [
+    120,
+    170
+   ],
+   "map_dimensions": [
+    120,
+    170
+   ]
+  },
+  {
+   "name": "Choral Chambers - Heavy Rosary Necklace",
+   "scene": "Song_04",
+   "room": "Choral Chambers Outside Spa",
+   "reason": "coordinate frames differ",
+   "source_dimensions": [
+    143,
+    68
+   ],
+   "map_dimensions": [
+    143,
+    83
+   ]
+  },
+  {
+   "name": "Choral Chambers East - Silkeater",
+   "scene": "Song_09b",
+   "room": "Choral Chambers Dining Room",
+   "reason": "coordinate frames differ",
+   "source_dimensions": [
+    165,
+    146
+   ],
+   "map_dimensions": [
+    160,
+    30
+   ]
+  },
+  {
+   "name": "Great Taste of Pharloom - Pale Oil",
+   "scene": "Song_09b",
+   "room": "Choral Chambers Dining Room",
+   "reason": "coordinate frames differ",
+   "source_dimensions": [
+    165,
+    146
+   ],
+   "map_dimensions": [
+    160,
+    30
+   ]
+  },
+  {
+   "name": "Wish: Great Taste of Pharloom",
+   "scene": "Song_09b",
+   "room": "Choral Chambers Dining Room",
+   "reason": "coordinate frames differ",
+   "source_dimensions": [
+    165,
+    146
+   ],
+   "map_dimensions": [
+    160,
+    30
+   ]
+  },
+  {
+   "name": "Cogwork Core - Map Pickup",
+   "scene": "Cog_Bench",
+   "room": "Cogwork Core Bench & Map",
+   "reason": "missing image dimensions",
+   "source_dimensions": [
+    45,
+    40
+   ],
+   "map_dimensions": [
+    45,
+    40
+   ]
+  },
+  {
+   "name": "Balm for the Wounded - Spool Fragment",
+   "scene": "Ward_09",
+   "room": "Whiteward Sherma Gauntlet",
+   "reason": "missing image dimensions",
+   "source_dimensions": [
+    150,
+    18
+   ],
+   "map_dimensions": [
+    150,
+    18
+   ]
+  },
+  {
+   "name": "Wish: Balm for the Wounded",
+   "scene": "Ward_09",
+   "room": "Whiteward Sherma Gauntlet",
+   "reason": "missing image dimensions",
+   "source_dimensions": [
+    150,
+    18
+   ],
+   "map_dimensions": [
+    150,
+    18
+   ]
+  },
+  {
+   "name": "Longclaw",
+   "scene": "Room_Huntress",
+   "room": "Huntress",
+   "reason": "missing image dimensions",
+   "source_dimensions": [
+    35,
+    25
+   ],
+   "map_dimensions": [
+    35,
+    25
+   ]
+  },
+  {
+   "name": "Journal: Grand Mother Silk",
+   "scene": "Cradle_03",
+   "room": "ACT2 GMS Arena",
+   "reason": "missing image dimensions",
+   "source_dimensions": [
+    80,
+    160
+   ],
+   "map_dimensions": [
+    80,
+    160
+   ]
+  },
+  {
+   "name": "Boss: Grand Mother Silk",
+   "scene": "Cradle_03",
+   "room": "ACT2 GMS Arena",
+   "reason": "missing image dimensions",
+   "source_dimensions": [
+    80,
+    160
+   ],
+   "map_dimensions": [
+    80,
+    160
+   ]
+  },
+  {
+   "name": "The Cradle - Shell Shard Cache",
+   "scene": "Cradle_03",
+   "room": "ACT2 GMS Arena",
+   "reason": "missing image dimensions",
+   "source_dimensions": [
+    80,
+    160
+   ],
+   "map_dimensions": [
+    80,
+    160
+   ]
+  },
+  {
+   "name": "The Cradle - Upper Cage Inscription",
+   "scene": "Cradle_02b",
+   "room": "Weaver Jail Lore Room",
+   "reason": "missing image dimensions",
+   "source_dimensions": [
+    48,
+    47
+   ],
+   "map_dimensions": [
+    48,
+    47
+   ]
+  },
+  {
+   "name": "The Cradle - Middle Cage Inscription",
+   "scene": "Cradle_02b",
+   "room": "Weaver Jail Lore Room",
+   "reason": "missing image dimensions",
+   "source_dimensions": [
+    48,
+    47
+   ],
+   "map_dimensions": [
+    48,
+    47
+   ]
+  },
+  {
+   "name": "The Cradle - Lower Cage Inscription",
+   "scene": "Cradle_02b",
+   "room": "Weaver Jail Lore Room",
+   "reason": "missing image dimensions",
+   "source_dimensions": [
+    48,
+    47
+   ],
+   "map_dimensions": [
+    48,
+    47
+   ]
+  },
+  {
+   "name": "Journal: Lost Lace",
+   "scene": "Abyss_Cocoon",
+   "room": "Abyss Cocoon",
+   "reason": "coordinate frames differ",
+   "source_dimensions": [
+    65,
+    1024
+   ],
+   "map_dimensions": [
+    60,
+    54
+   ]
+  }
+ ],
+ "missing_turn_ins": [
+  {
+   "host": "Pinmaster Plinney",
+   "room": "Bellhart Pinsmith",
+   "scene": "Belltown_Room_pinsmith",
+   "reason": "missing image dimensions",
+   "source_dimensions": [
+    55.0,
+    26.0
+   ],
+   "map_dimensions": [
+    55,
+    26
+   ]
+  },
+  {
+   "host": "Gourmand Servant",
+   "room": "Choral Chambers Dining Room",
+   "scene": "Song_09b",
+   "reason": "coordinate frames differ",
+   "source_dimensions": [
+    165.0,
+    146.0
+   ],
+   "map_dimensions": [
+    160,
+    30
+   ]
+  },
+  {
+   "host": "Huntress",
+   "room": "Huntress",
+   "scene": "Room_Huntress",
+   "reason": "missing image dimensions",
+   "source_dimensions": [
+    35.0,
+    25.0
+   ],
+   "map_dimensions": [
+    35,
+    25
+   ]
+  }
+ ],
+ "skipped_locs": [
+  {
+   "room": "Nyleth Fight",
+   "name": "Pollen Heart"
+  }
+ ],
+ "skipped_ents": [],
+ "unpositioned_locs": [],
+ "ignored": {
+  "non_spatial_checks": [
+   "Crest Slot: Architect (Blue 1)",
+   "Crest Slot: Architect (Blue 2)",
+   "Crest Slot: Architect (Yellow 1)",
+   "Crest Slot: Architect (Yellow 2)",
+   "Crest Slot: Beast (Yellow 1)",
+   "Crest Slot: Beast (Yellow 2)",
+   "Crest Slot: Hunter (Blue 1)",
+   "Crest Slot: Hunter (Red 1)",
+   "Crest Slot: Hunter (Yellow 1)",
+   "Crest Slot: Reaper (Blue 1)",
+   "Crest Slot: Reaper (Red 1)",
+   "Crest Slot: Reaper (Yellow 1)",
+   "Crest Slot: Shaman (Blue 1)",
+   "Crest Slot: Shaman (Blue 2)",
+   "Crest Slot: Wanderer (Blue 1)",
+   "Crest Slot: Wanderer (Blue 2)",
+   "Crest Slot: Wanderer (Yellow 1)",
+   "Crest Slot: Witch (Blue 1)",
+   "Crest Slot: Witch (Blue 2)",
+   "Crest Slot: Witch (Red 1)",
+   "Crest: Hunter",
+   "Goal"
+  ],
+  "geometry_objects": {
+   "bench": 46,
+   "blockade": 124,
+   "boss": 8,
+   "collectible": 81,
+   "enemy": 1392,
+   "event": 168,
+   "gauntlet": 24,
+   "lock": 22,
+   "logic-point": 17,
+   "lore": 15,
+   "miniboss": 11,
+   "resource": 26,
+   "switch": 118,
+   "travel": 4,
+   "unknown": 210
+  },
+  "aliases_resolved_elsewhere": [
+   {
+    "room": "Greymoor Entry to Bellhart",
+    "name": "Boss: Moorwing"
+   },
+   {
+    "room": "Blasted Steps Grindle",
+    "name": "Pebb (Bone Bottom) / Grindle (Act 3) - Mask Shard"
+   },
+   {
+    "room": "Sinner's Road Styx Room",
+    "name": "Craw Summons"
+   },
+   {
+    "room": "Songclave",
+    "name": "Wish: Pain, Anguish and Misery"
+   },
+   {
+    "room": "Bellhart Wish Wall",
+    "name": "Savage Beastfly - Mask Shard"
+   },
+   {
+    "room": "Bellhart Wish Wall",
+    "name": "Dark Hearts - Mask Shard"
+   },
+   {
+    "room": "Bellhart Wish Wall",
+    "name": "The Hidden Hunter - Mask Shard"
+   }
+  ],
+  "nonphysical_links": [
+   {
+    "name": "Bone Bottom Town - wish wall (WW)",
+    "reason": "menu, scripted link or placeholder"
+   },
+   {
+    "name": "\"Deep Docks\" March Side Room - slab capture (SC)",
+    "reason": "menu, scripted link or placeholder"
+   },
+   {
+    "name": "Greyroot - Quest Rebirth (QR)",
+    "reason": "menu, scripted link or placeholder"
+   },
+   {
+    "name": "Witch Chapel - Quest Rebirth (QR)",
+    "reason": "menu, scripted link or placeholder"
+   },
+   {
+    "name": "Belltown - wish wall (WW)",
+    "reason": "menu, scripted link or placeholder"
+   },
+   {
+    "name": "Belltown - delivery wishes (DW)",
+    "reason": "menu, scripted link or placeholder"
+   },
+   {
+    "name": "Greymoor Towers Patio - slab capture (SC)",
+    "reason": "menu, scripted link or placeholder"
+   },
+   {
+    "name": "Verdania Placeholder - placeholder (P)",
+    "reason": "menu, scripted link or placeholder"
+   },
+   {
+    "name": "Songclave - wish wall (WW)",
+    "reason": "menu, scripted link or placeholder"
+   },
+   {
+    "name": "Bilewater Lower East Hall Secret - slab capture (SC)",
+    "reason": "menu, scripted link or placeholder"
+   },
+   {
+    "name": "Slab Broodmother Alcove - unknown (U)",
+    "reason": "menu, scripted link or placeholder"
+   },
+   {
+    "name": "Mount Fay Entrance - Dummy (DU)",
+    "reason": "menu, scripted link or placeholder"
+   },
+   {
+    "name": "Bellway Menu - bone bottom (BB)",
+    "reason": "menu, scripted link or placeholder"
+   },
+   {
+    "name": "Bellway Menu - the marrow (TM)",
+    "reason": "menu, scripted link or placeholder"
+   },
+   {
+    "name": "Bellway Menu - deep docks (DD)",
+    "reason": "menu, scripted link or placeholder"
+   },
+   {
+    "name": "Bellway Menu - far fields (FF)",
+    "reason": "menu, scripted link or placeholder"
+   },
+   {
+    "name": "Bellway Menu - greymoor (GM)",
+    "reason": "menu, scripted link or placeholder"
+   },
+   {
+    "name": "Bellway Menu - bellhart (BH)",
+    "reason": "menu, scripted link or placeholder"
+   },
+   {
+    "name": "Bellway Menu - shellwood (SW)",
+    "reason": "menu, scripted link or placeholder"
+   },
+   {
+    "name": "Bellway Menu - blasted steps (BS)",
+    "reason": "menu, scripted link or placeholder"
+   },
+   {
+    "name": "Bellway Menu - the slab (TS)",
+    "reason": "menu, scripted link or placeholder"
+   },
+   {
+    "name": "Bellway Menu - grand bellway (GB)",
+    "reason": "menu, scripted link or placeholder"
+   },
+   {
+    "name": "Bellway Menu - bilewater (BW)",
+    "reason": "menu, scripted link or placeholder"
+   },
+   {
+    "name": "Bellway Menu - putrified ducts (PD)",
+    "reason": "menu, scripted link or placeholder"
+   },
+   {
+    "name": "Ventrica Menu - terminus (T)",
+    "reason": "menu, scripted link or placeholder"
+   },
+   {
+    "name": "Ventrica Menu - memorium (M)",
+    "reason": "menu, scripted link or placeholder"
+   },
+   {
+    "name": "Ventrica Menu - high halls (HH)",
+    "reason": "menu, scripted link or placeholder"
+   },
+   {
+    "name": "Ventrica Menu - first shrine (FS)",
+    "reason": "menu, scripted link or placeholder"
+   },
+   {
+    "name": "Ventrica Menu - choral chambers (CC)",
+    "reason": "menu, scripted link or placeholder"
+   },
+   {
+    "name": "Ventrica Menu - grand bellway (GB)",
+    "reason": "menu, scripted link or placeholder"
+   },
+   {
+    "name": "Ventrica Menu - underworks (UW)",
+    "reason": "menu, scripted link or placeholder"
+   },
+   {
+    "name": "Slab Capture - cage (CG)",
+    "reason": "menu, scripted link or placeholder"
+   },
+   {
+    "name": "Slab Capture - deep docks (DD)",
+    "reason": "menu, scripted link or placeholder"
+   },
+   {
+    "name": "Slab Capture - bilewater (BW)",
+    "reason": "menu, scripted link or placeholder"
+   },
+   {
+    "name": "Slab Capture - greymoor (GM)",
+    "reason": "menu, scripted link or placeholder"
+   },
+   {
+    "name": "Bone Bottom Wish Wall - bone bottom (BB)",
+    "reason": "menu, scripted link or placeholder"
+   },
+   {
+    "name": "Bellhart Wish Wall - bellhart (BH)",
+    "reason": "menu, scripted link or placeholder"
+   },
+   {
+    "name": "Bellhart Deliveries - bellhart (BH)",
+    "reason": "menu, scripted link or placeholder"
+   },
+   {
+    "name": "Songclave Wish Wall - songclave (SC)",
+    "reason": "menu, scripted link or placeholder"
+   }
+  ]
+ }
+}

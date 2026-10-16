@@ -1,12 +1,14 @@
 import unittest
 
+from Options import OptionError
+
 from ..options import NumWaveCaps
 from ..wave_caps import get_wave_cap_info
 
 
 class TestBrotatoWaveCaps(unittest.TestCase):
     def test_get_wave_cap_info_option_one(self):
-        option = NumWaveCaps(1)
+        option = NumWaveCaps(NumWaveCaps.option_one)
         expected_wave_access = {
             1: 0,
             2: 0,
@@ -34,7 +36,7 @@ class TestBrotatoWaveCaps(unittest.TestCase):
         self.assertDictEqual(wave_access, expected_wave_access)
 
     def test_get_wave_cap_info_option_two(self):
-        option = NumWaveCaps(2)
+        option = NumWaveCaps(NumWaveCaps.option_two)
         expected_wave_access = {
             1: 0,
             2: 0,
@@ -62,7 +64,7 @@ class TestBrotatoWaveCaps(unittest.TestCase):
         self.assertDictEqual(wave_access, expected_wave_access)
 
     def test_get_wave_cap_info_option_four(self):
-        option = NumWaveCaps(4)
+        option = NumWaveCaps(NumWaveCaps.option_four)
         expected_wave_access = {
             1: 0,
             2: 0,
@@ -88,3 +90,8 @@ class TestBrotatoWaveCaps(unittest.TestCase):
         num_items, wave_access = get_wave_cap_info(option)
         self.assertEqual(num_items, 3)
         self.assertDictEqual(wave_access, expected_wave_access)
+
+    def test_get_wave_cap_info_invalid_value_raises_error(self):
+        option = NumWaveCaps(12)
+        with self.assertRaises(OptionError):
+            get_wave_cap_info(option)

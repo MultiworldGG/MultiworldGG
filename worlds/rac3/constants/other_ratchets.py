@@ -11,6 +11,8 @@ class OTHERRATCHETGAMES:
     RAC4_US = "SCUS-97465"
     RAC4_EU = "SCES-53285"
     RAC5_US = "SCUS-97615"
+    RAC5_EU = "SCES-55019"
+    RAC5_JP = "SCPS-15120"
     SAC_US = "SCUS-97623"
 
 
@@ -23,5 +25,7 @@ GAME_ID_TO_OTHER_RATCHET: dict[str, str] = {
     OTHERRATCHETGAMES.RAC4_US: "Ratchet 4: Deadlocked US",
     OTHERRATCHETGAMES.RAC4_EU: "Ratchet 4: Gladiator EU/AUS",
     OTHERRATCHETGAMES.RAC5_US: "Ratchet and Clank 5: Size Matters US",
+    OTHERRATCHETGAMES.RAC5_EU: "Ratchet and Clank 5: Size Matters EU/AUS",
+    OTHERRATCHETGAMES.RAC5_JP: "Ratchet and Clank 5: Size Matters JP",
     OTHERRATCHETGAMES.SAC_US: "Secret Agent Clank US",
 }

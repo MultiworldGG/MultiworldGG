@@ -280,6 +280,25 @@ class NumberLegendaryCrateDropGroups(Range):
     display_name: str = "Legendary Loot Crate Groups"
 
 
+class IncludeElitesInLogic(Toggle):
+    """Sets whether to consider elites when determining game logic.
+
+    Elites appear at Danger 2 and higher, on either wave 11 or 12, or wave 14 or 15, with
+    the horde wave appearing in the other pair. At Danger 4, another elite appears on
+    wave 17 or 18.
+
+    This only affects when legendary loot crates are in logic.
+
+    * When disabled, legendary loot crates are not in logic until you can reach wave 20
+      with any character and kill the boss.
+    * When enabled, legendary loot crates are in logic starting at wave 11. You are
+      current subject to RNG on whether the elite will spawn there versus the horde.
+    """
+
+    default = 0
+    display_name: str = "Include Elites in Logic"
+
+
 # Item weights
 #
 # The default values of each weight are meant to give a distribution of items matching:
@@ -521,6 +540,7 @@ class BrotatoOptions(PerGameCommonOptions, DeathLinkMixin):
     num_legendary_crate_drops: NumberLegendaryCrateDropLocations
     num_legendary_crate_drops_per_check: NumberLegendaryCrateDropsPerCheck
     num_legendary_crate_drop_groups: NumberLegendaryCrateDropGroups
+    include_elites_in_logic: IncludeElitesInLogic
     common_item_weight: CommonItemWeight
     uncommon_item_weight: UncommonItemWeight
     rare_item_weight: RareItemWeight

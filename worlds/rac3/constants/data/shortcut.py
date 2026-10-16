@@ -21,6 +21,13 @@ class RAC3SHORTCUTDATA:
                  items: list[list[str]] | None = None,
                  flag: list[tuple[int, int]] | None = None,
                  visit: list[str] | None = None):
+        """
+        :param planet: Region name of location of shortcut
+        :param items: Items required to reach the destination of the shortcut
+        :param flag: Local Flag address associated with the shortcut
+        :param visit: Region name of the visit flag to be set when the shortcut is performed
+        :rtype: RAC3SHORTCUTDATA
+        """
         self.PLANET = planet
         self.ITEMS = items
         self.FLAG_ADDRESSES = flag
@@ -66,7 +73,11 @@ RAC3_SHORTCUT_DATA_TABLE: dict[str, RAC3SHORTCUTDATA] = {
                                                         [RAC3PROGRESSFLAG.METROPOLIS_DEFEATED_KLUNK]),
     RAC3SHORTCUTS.HIDEOUT_TELEPORTER: RAC3SHORTCUTDATA(RAC3REGION.QWARKS_HIDEOUT, [[RAC3ITEM.GRAV_BOOTS]],
                                                        [RAC3PROGRESSFLAG.QWARKS_HIDEOUT_REACH_PDA_VENDOR]),
-    RAC3SHORTCUTS.HIDEOUT_TAXI: RAC3SHORTCUTDATA(RAC3REGION.QWARKS_HIDEOUT, [[RAC3ITEM.WARP_PAD, RAC3ITEM.HYPERSHOT]],
+    RAC3SHORTCUTS.HIDEOUT_TAXI: RAC3SHORTCUTDATA(RAC3REGION.QWARKS_HIDEOUT,
+                                                 [[RAC3ITEM.WARP_PAD, RAC3ITEM.HYPERSHOT, RAC3ITEM.HELI_PACK],
+                                                  [RAC3ITEM.WARP_PAD, RAC3ITEM.HYPERSHOT, RAC3ITEM.PROGRESSIVE_PACK],
+                                                  [RAC3ITEM.WARP_PAD, RAC3ITEM.HYPERSHOT, RAC3ITEM.CLANK],
+                                                  [RAC3ITEM.WARP_PAD, RAC3ITEM.HYPERSHOT, RAC3ITEM.CHARGE_BOOTS]],
                                                  [RAC3PROGRESSFLAG.QWARKS_HIDEOUT_FINISHED_CLANK_SECTION]),
     RAC3SHORTCUTS.DRACO_TELEPORTER: RAC3SHORTCUTDATA(RAC3REGION.OBANI_DRACO, [[RAC3ITEM.GRAV_BOOTS]],
                                                      [RAC3PROGRESSFLAG.OBANI_DRACO_REACH_THE_CONTROL_ROOM]),

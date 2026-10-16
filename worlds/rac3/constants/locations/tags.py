@@ -8,6 +8,7 @@ class RAC3TAG:
     T_BOLT = "T-Bolt"
     SEWER = "Sewer"
     VIDCOMIC = "VidComic"
+    VIDCOMIC_HEALTH_UPGRADE = "VidComic Health Upgrade"
     TROPHY = "Trophy"
     LONG_TROPHY = "Long Term Trophy"
     RANGERS = "Rangers"

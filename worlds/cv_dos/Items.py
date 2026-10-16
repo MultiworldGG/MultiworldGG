@@ -6,7 +6,7 @@ class ItemData(NamedTuple):
     category: str
     code: Optional[int]
     classification: ItemClassification
-    amount: Optional[int] = 1
+    default_count: Optional[int] = 1
 
 
 item_table: Dict[str, ItemData] = {
@@ -99,7 +99,7 @@ item_table: Dict[str, ItemData] = {
     "Burtgang": ItemData("Weapons", 0x319, ItemClassification.useful, 0),
     "Kaladbolg": ItemData("Weapons", 0x31A, ItemClassification.useful, 0),
     "Valmanway": ItemData("Weapons", 0x31B, ItemClassification.useful, 0),
-    "Alcuard Sword": ItemData("Weapons", 0x31C, ItemClassification.filler, 0),
+    "Alucard Sword": ItemData("Weapons", 0x31C, ItemClassification.filler, 0),
     "Claymore": ItemData("Weapons", 0x31D, ItemClassification.filler, 0),
     "Falchion": ItemData("Weapons", 0x31E, ItemClassification.filler, 0),
     "Great Sword": ItemData("Weapons", 0x31F, ItemClassification.filler, 0),
@@ -469,19 +469,14 @@ soul_filler_table = [
 consumable_table = [
     "Potion",
     "High Potion",
-    "Super Potion",
     "Mind Up",
     "High Mind Up",
-    "Mana Prism",
     "Anti-Venom",
     "Uncurse Potion",
     "Meat Strip",
-    "Tasty Meat",
     "Rice Ball",
     "Mushroom",
     "Corn Soup",
-    "Beef Curry",
-    "Noodles",
     "Cream Soda",
     "Cream Puff",
     "Milk",
@@ -489,7 +484,6 @@ consumable_table = [
     "Tea",
     "Pudding",
     "Strawberry",
-    "Melon",
     "Grapes",
     "Hamburger",
     "Fried Chicken",
@@ -498,9 +492,6 @@ consumable_table = [
     "Pancake",
     "Piroshki",
     "Tinned Spinach",
-    "Foie Gras",
-    "Caviar",
-    "Truffle",
     "Paella",
     "Spaghetti",
     "Ice Cream",
@@ -510,6 +501,18 @@ consumable_table = [
     "Rotten Meat",
     "Spoiled Milk",
     "Rusty Food Tin"
+]
+
+good_food_table = [
+    "Super Potion",
+    "Mana Prism",
+    "Tasty Meat",
+    "Beef Curry",
+    "Noodles",
+    "Melon",
+    "Foie Gras",
+    "Caviar",
+    "Truffle"
 ]
 
 money_table = [

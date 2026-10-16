@@ -1148,9 +1148,9 @@ class PhantomHourglassClient(DSZeldaClient):
         game_clear = False
         if ctx.slot_data["bellum_access"] == 4:
             has_metals = self.metal_count >= ctx.slot_data["required_metals"]
-            if has_metals and not self.sent_goal and self.current_scene == 0x160a and LOCATIONS_DATA["Zauz's House Phantom Blade"]["id"] in ctx.checked_locations:
+            if has_metals and not self.sent_goal and self.current_scene == 0x160a and LOCATIONS_DATA["Zauz's House Phantom Blade"].id in ctx.checked_locations:
                 printl(f"Bellum access: {ctx.slot_data['bellum_access']} metal count {self.metal_count} >= {ctx.slot_data['required_metals']}")
-                await self.store_visited_entrances(ctx, ENTRANCES["GOAL"], ENTRANCES["GOAL"].vanilla_reciprocal)
+                await self.store_visited_entrances(ctx, ENTRANCES["GOAL: Zauz"], ENTRANCES["GOAL: Zauz"].vanilla_reciprocal)
                 self.sent_goal = True
                 game_clear = True
         else:
@@ -2167,7 +2167,7 @@ class PhantomHourglassClient(DSZeldaClient):
                     shop_scene = 0x501 if self.masked_beedle else 0x500
                 shop_locations = SHOP_LOCATIONS.get(shop_scene, {})
                 location = shop_locations.get(k, shop_locations.get(k+str(shop_slot), ""))
-                # print(f"{k} {k+str(shop_slot)} scene {shop_locations.keys()}")
+                # print(f"\tGot shop location {location} from {k} {k+str(shop_slot)} scene {shop_locations.keys()}")
 
                 # Beedle restock can appear in the wrong slot
                 if (shop_scene == 0x500 and shop_slot == 2
@@ -2178,7 +2178,7 @@ class PhantomHourglassClient(DSZeldaClient):
                 elif (shop_scene == 0x501 and shop_slot == 2
                     and LOCATIONS_DATA["Masked Beedle Top Ship Part"].id not in ctx.checked_locations
                     and LOCATIONS_DATA["Masked Beedle Bottom Ship Part"].id in ctx.checked_locations
-                    and (LOCATIONS_DATA["Masked Beedle Heart Container"].id in ctx.checked_locations) or LOCATIONS_DATA["Masked Beedle Heart Container"].id not in ctx.server_locations):
+                    and (LOCATIONS_DATA["Masked Beedle Heart Container"].id in ctx.checked_locations or LOCATIONS_DATA["Masked Beedle Heart Container"].id not in ctx.server_locations)):
                     location = "Beedle Shop Top Ship Part"
 
                 if not location:

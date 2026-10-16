@@ -301,6 +301,15 @@ item_data_table: Dict[str, MMZero3ItemData] = {
         code=301,
         can_create=lambda world: False  # Only created from `get_filler_item_name`.
     ),
+
+    # Traps. 
+    # Created from `get_filler_item_name`.
+    "Earthquake Trap": MMZero3ItemData(code=310, type=ItemClassification.trap,
+                                       can_create=lambda world: False),
+    "Pixelate Trap": MMZero3ItemData(code=311, type=ItemClassification.trap,
+                                     can_create=lambda world: False),
+    "Slippery Floor Trap": MMZero3ItemData(code=312, type=ItemClassification.trap,
+                                           can_create=lambda world: False),
 }
 
 item_table = {name: data.code for name, data in item_data_table.items() if data.code is not None}
@@ -322,6 +331,7 @@ item_categories: Dict[str, range] = {
     "EX Skills": range(206, 218),
     "Subtanks": range(221, 223),
     "Weapons": range(224, 228),
+    "Traps": range(310, 313),
 }
 
 

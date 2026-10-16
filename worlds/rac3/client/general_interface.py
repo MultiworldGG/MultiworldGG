@@ -1,94 +1,150 @@
 """This module provides an interface for connecting to a pcsx2 game"""
-
-from struct import unpack
+from enum import Enum
+from struct import unpack, pack
+from typing import Any
 
 from CommonClient import logger
 from worlds.rac3.constants.other_ratchets import GAME_ID_TO_OTHER_RATCHET
 from worlds.rac3.constants.version import RAC3VERSION
-from worlds.rac3.pcsx2_interface.pine import Pine
+from worlds.rac3.pypine import Pine
 
 
 class GameInterface:
     """Base class for connecting with a pcsx2 game"""
+
+    class DataType(Enum):
+        """Enum class for data types"""
+        INT8 = 1
+        INT16 = 2
+        INT32 = 3
+        BYTES = 4
+        FLOAT = 5
+        STRING = 6
+
     current_game: str = "None"
     game_id_error: str | None = None
     is_connecting: bool = False
     emulator_connected: bool = False
     cycle_reads_count: int = 0
     cycle_writes_count: int = 0
+    cycle_batch_reads_count: int = 0
+    cycle_batch_writes_count: int = 0
     cycle_times: list[float] = []
-    cycle_cache: dict[int, int] = {}
-    pcsx2_interface: Pine = Pine()
+    pypine: Pine = Pine()
+    write_batcher: dict[tuple[int, DataType], Any] = {}
 
     def __init__(self) -> None:
         pass
 
+    @staticmethod
+    def bits_to_value(bits: set[int]) -> int:
+        """Converts a set of bits into its integer value representation
+
+        :param bits: Set object, members of this set indicate which ordered bits are flipped, first bit is order ``0``
+        :return: Integer value
+        """
+        value: int = 0
+        for bit in bits:
+            if 0 <= bit <= 7:
+                value += 1 << bit
+            else:
+                raise ValueError(f"Invalid bit position {bit}")
+        return value
+
+    @staticmethod
+    def value_to_bits(value: int) -> set[int]:
+        """Decomposes an integer value into its bit representation, returned as a set object.
+
+        :param value: Integer value
+        :return: Set object, members of this set indicate which ordered bits are flipped, first bit is order ``0``
+        """
+        bits: set[int] = set()
+        for i in range(8):
+            if value & (1 << i):
+                bits.add(i)
+        return bits
+
     def _read8(self, address: int) -> int:
         self.cycle_reads_count += 1
-        return self.pcsx2_interface.read_int8(address)
+        return self.pypine.read_int8(address)
 
     def _read16(self, address: int) -> int:
         self.cycle_reads_count += 1
-        return self.pcsx2_interface.read_int16(address)
+        return self.pypine.read_int16(address)
 
     def _read32(self, address: int) -> int:
         self.cycle_reads_count += 1
-        return self.pcsx2_interface.read_int32(address)
+        return self.pypine.read_int32(address)
+
+    def _read8_batch(self, addresses: list[int]) -> list[int]:
+        self.cycle_batch_reads_count += 1
+        return self.pypine.batch_read_int8(addresses)
+
+    def _read16_batch(self, addresses: list[int]) -> list[int]:
+        self.cycle_batch_reads_count += 1
+        return self.pypine.batch_read_int16(addresses)
+
+    def _read32_batch(self, addresses: list[int]) -> list[int]:
+        self.cycle_batch_reads_count += 1
+        return self.pypine.batch_read_int32(addresses)
 
     def _read_bytes(self, address: int, n: int) -> bytes:
-        self.cycle_reads_count += 1
-        return self.pcsx2_interface.read_bytes(address, n)
+        self.cycle_batch_reads_count += 1
+        return self.pypine.read_bytes(address, n)
 
     def _read_float(self, address: int) -> float:
         self.cycle_reads_count += 1
-        return unpack("f", self.pcsx2_interface.read_bytes(address, 4))[0]
+        return unpack("f", self.pypine.read_bytes(address, 4))[0]
 
     def _read_string(self, address: int, n: int) -> str:
-        self.cycle_reads_count += 1
-        return self.pcsx2_interface.read_string(address, n)
+        self.cycle_batch_reads_count += 1
+        return self.pypine.read_string(address, n)
 
-    def _write8(self, address: int, value: int):
-        self.cycle_writes_count += 1
-        self.pcsx2_interface.write_int8(address, value)
-
-    def _write16(self, address: int, value: int):
-        self.cycle_writes_count += 1
-        self.pcsx2_interface.write_int16(address, value)
-
-    def _write32(self, address: int, value: int):
-        self.cycle_writes_count += 1
-        self.pcsx2_interface.write_int32(address, value)
-
-    def _write_bytes(self, address: int, value: bytes):
-        self.cycle_writes_count += 1
-        self.pcsx2_interface.write_bytes(address, value)
-
-    def _write_float(self, address: int, value: float):
-        self.cycle_writes_count += 1
-        self.pcsx2_interface.write_float(address, value)
-
-    def _write_string(self, address: int, value: str):
-        self.cycle_writes_count += 1
-        self.pcsx2_interface.write_string(address, value)
+    def batch_write(self):
+        """Send all the stashed writes to pypine"""
+        batch: list[tuple[Pine.DataSize, int, bytes]] = []
+        for (address, operation), value in self.write_batcher.items():
+            match operation:
+                case self.DataType.INT8:
+                    batch.append((self.pypine.DataSize.INT8, address, value.to_bytes(1, "little")))
+                case self.DataType.INT16:
+                    batch.append((self.pypine.DataSize.INT16, address, value.to_bytes(2, "little")))
+                case self.DataType.INT32:
+                    batch.append((self.pypine.DataSize.INT32, address, value.to_bytes(4, "little")))
+                case self.DataType.BYTES:
+                    batch.extend([(size, chunk, value[chunk - address:chunk - address + size]) for size, chunk in
+                                  self.pypine._chunks(address, len(value))])
+                case self.DataType.FLOAT:
+                    batch.append((self.pypine.DataSize.INT32, address, pack("<f", value)))
+                case self.DataType.STRING:
+                    data = value.encode("ascii") + b"\x00"
+                    batch.extend([(size, chunk, data[chunk - address:chunk - address + size]) for size, chunk in
+                                  self.pypine._chunks(address, len(data))])
+                case _:
+                    logger.warning(f"Unknown write operation: {self.DataType(operation)}, "
+                                   f"with address+value: {address}, {value}")
+        self.cycle_batch_writes_count += len(batch)
+        self.pypine.batch_write(batch)
+        self.write_batcher.clear()
 
     def connect_to_game(self):
         """Initializes the connection to PCSX2 and verifies it is connected to the right game"""
         self.is_connecting = True
         logger.debug("Begin attempting emulator connection...")
         try:
-            self.pcsx2_interface.connect()
-        except Pine.ConnectionError:
+            self.pypine.connect()
+        except self.pypine.ConnectionError:
             self.is_connecting = False
             self.emulator_connected = False
             logger.debug("No Connection to PCSX2 Emulator")
             return
-        except Pine.DuplicateConnectionError:
+        except self.pypine.DuplicateConnectionError:
             self.is_connecting = False
             self.emulator_connected = False
             logger.warning("Duplicate connection to PCSX2 Emulator detected")
             return
         self.is_connecting = False
-        if not self.pcsx2_interface.is_connected():
+        if not self.pypine.is_connected():
             self.emulator_connected = False
             logger.debug("No Connection to PCSX2 Emulator")
             return
@@ -106,7 +162,7 @@ class GameInterface:
 
     def disconnect_from_game(self):
         """Remove connection to PCSX Emulator"""
-        self.pcsx2_interface.disconnect()
+        self.pypine.disconnect()
         self.current_game = "None"
         logger.info("Disconnected from PCSX2 Emulator")
         self.emulator_connected = False
@@ -115,7 +171,7 @@ class GameInterface:
         """Verify that the current game loaded in the PCSX connection has a valid game ID for Ratchet and Clank 3"""
         # logger.debug("Start Game Verification")
         try:
-            game_id = self.pcsx2_interface.get_game_id()
+            game_id = self.pypine.get_game_id()
         except ConnectionError as error:
             logger.debug(f"Game Verify Connection Error: {error}")
             return False
@@ -163,7 +219,7 @@ class GameInterface:
                     self.current_game = "None"
                     other_ratchet_game = GAME_ID_TO_OTHER_RATCHET.get(game_id)
                     if other_ratchet_game is not None:
-                        logger.warning(f"Connected to {other_ratchet_game} instead of Ratchet and Clank 3!\n" +
+                        logger.warning(f"Connected to {other_ratchet_game} instead of Ratchet and Clank 3!\n"
                                        "This client is for Ratchet and Clank 3 only, please load the correct Ratchet "
                                        "game to play.")
                     else:
@@ -178,7 +234,7 @@ class GameInterface:
     def get_connection_state(self) -> bool:
         """Safe connection test"""
         try:
-            if not self.pcsx2_interface.is_connected():
+            if not self.pypine.is_connected():
                 return False
             return self.verify_game_version()
         except RuntimeError:

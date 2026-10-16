@@ -4,6 +4,7 @@ from ..data.requirement import FestivalItemReceivedRequirement
 from ..options import FestivalLocations
 from ..stardew_rule import StardewRule
 from ..strings.animal_product_names import AnimalProduct
+from ..strings.ap_names.ap_option_names import CustomLogicOptionName
 from ..strings.book_names import Book
 from ..strings.crop_names import Fruit, Vegetable
 from ..strings.festival_check_names import FestivalCheck
@@ -46,7 +47,7 @@ class FestivalLogic(BaseLogic):
             FestivalCheck.spirit_eve_maze: self.logic.true_,
             FestivalCheck.jack_o_lantern: self.logic.festival.has_access_to_source(FestivalCheck.jack_o_lantern),
             FestivalCheck.rarecrow_2: self.logic.festival.has_access_to_source(FestivalCheck.rarecrow_2),
-            FestivalCheck.fishing_competition: self.logic.festival.can_win_fishing_competition() & self.logic.relationship.exists(NPC.lewis),
+            FestivalCheck.fishing_competition: self.logic.festival.can_win_fishing_competition(),
             FestivalCheck.rarecrow_4: self.logic.festival.has_access_to_source(FestivalCheck.rarecrow_4),
             FestivalCheck.mermaid_show: self.logic.true_,
             FestivalCheck.cone_hat: self.logic.festival.has_access_to_source(Hats.cone_hat.clarified_name),
@@ -119,7 +120,10 @@ class FestivalLogic(BaseLogic):
         if self.options.festival_locations == FestivalLocations.option_disabled:
             return self.logic.festival.can_squidfest_iridium_reward()
         else:
-            return self.logic.received(f"Book: {Book.the_art_o_crabbing}")
+            if CustomLogicOptionName.critical_free_samples in self.options.custom_logic:
+                return self.logic.received(f"Book: {Book.the_art_o_crabbing}")
+            else:
+                return self.logic.received(f"Book: {Book.the_art_o_crabbing}") & self.logic.festival.can_squidfest_iridium_reward()
 
     def can_win_egg_hunt(self) -> StardewRule:
         return self.logic.relationship.exists(NPC.lewis)
@@ -189,7 +193,7 @@ class FestivalLogic(BaseLogic):
         return animal_rule & artisan_rule & cooking_rule & fish_rule & forage_rule & fruit_rule & mineral_rule & vegetable_rule
 
     def can_win_fishing_competition(self) -> StardewRule:
-        return self.logic.fishing.can_fish(60)
+        return self.logic.fishing.can_fish(60) & self.logic.relationship.exists(NPC.lewis)
 
     def has_all_rarecrows(self) -> StardewRule:
         rules = []

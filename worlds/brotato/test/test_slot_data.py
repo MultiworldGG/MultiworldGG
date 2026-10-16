@@ -1,6 +1,6 @@
 from typing import Any
 
-from ..options import StartingShopLockButtonsMode
+from ..options import NumWaveCaps, StartingShopLockButtonsMode
 from ..waves import get_wave_for_each_item
 from . import BrotatoTestBase
 from .data_sets.shop_slots import SHOP_SLOT_TEST_DATA_SETS
@@ -14,7 +14,7 @@ class TestBrotatoSlotData(BrotatoTestBase):
         "num_victories": 10,
         "starting_characters": 0,
         "waves_per_drop": 2,
-        "num_wave_caps": 4,
+        "num_wave_caps": NumWaveCaps.option_four,
         "num_common_crate_drops_per_check": 2,
         "num_common_crate_drop_groups": 5,
         "num_legendary_crate_drops_per_check": 1,

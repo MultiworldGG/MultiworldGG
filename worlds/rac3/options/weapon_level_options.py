@@ -1,21 +1,21 @@
 """This module contains options for Weapon Level locations"""
 
-from Options import Choice
+from Options import OptionSet
 from worlds.rac3.constants.options import RAC3OPTION
 
 
-class WeaponLevels(Choice):
+class WeaponLevels(OptionSet):
     """
     Determines whether weapon levels should be locations or not.
     -----------------------------------------------------------------------------------------------
-    Disable: No weapon levels are locations.
-    V5:      Only V5 weapon levels are locations.
-    All:     All weapon levels are locations (including V6, V7, V8 if ngplus_items are enabled).
+    All weapon levels can be locations (including V6, V7, V8 if ngplus_items are enabled).
+    Only locations for the selected levels will be added. To disable weapon level locations, leave the brackets empty.
+    The valid keys are the following: V2, V3, V4, V5, V6, V7, V8
     -----------------------------------------------------------------------------------------------
     Note: If progressive weapons are enabled, leveling will be forced to manual leveling instead of automatic leveling.
     """
     display_name = RAC3OPTION.WEAPON_LEVEL_LOCATIONS
-    option_disable = 0
-    option_v5 = 1
-    option_all = 2
-    default = 1
+    valid_keys = frozenset({
+        "V2", "V3", "V4", "V5", "V6", "V7", "V8"
+    })
+    default = frozenset({"V2", "V3", "V4", "V5", "V6", "V7", "V8"})

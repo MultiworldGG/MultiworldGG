@@ -1,5 +1,6 @@
 """This module contains string constants for Sewer crystal locations"""
 
+
 class RAC3SEWER:
     """String constants for sewer crystal locations"""
     TRADE_1 = "Aquatos: 1 Sewer Crystal Traded"

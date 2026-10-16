@@ -177,15 +177,15 @@ def create_items(world: "OuterWildsWorld") -> None:
     for name, item in items_to_create.items():
         if item.code is None:
             # here we rely on our event items and event locations having identical names
-            multiworld.get_location(name, player).place_locked_item(create_item(player, name))
+            world.get_location(name).place_locked_item(create_item(player, name))
         elif name == "Spacesuit":
             if options.shuffle_spacesuit.value == 0:
-                multiworld.push_precollected(create_item(player, "Spacesuit"))
+                world.push_precollected(create_item(player, "Spacesuit"))
             else:
                 prog_and_useful_items.append(create_item(player, "Spacesuit"))
         elif name == "Launch Codes" and options.spawn == Spawn.option_vanilla:
             # in vanilla spawn, Launch Codes is locked to Hornfels to ensure the player starts the time loop
-            multiworld.get_location("TH: Talk to Hornfels", player).place_locked_item(create_item(player, name))
+            world.get_location("TH: Talk to Hornfels").place_locked_item(create_item(player, name))
         elif item.type == ItemClassification.filler:
             if name not in repeatable_filler_weights:
                 unique_filler.append(create_item(player, name))

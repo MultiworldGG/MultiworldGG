@@ -2,8 +2,8 @@ from __future__ import annotations
 
 from typing import TYPE_CHECKING
 
-from worlds.dredge.items import DREDGEItem
-from worlds.dredge.locations import DREDGELocation
+from .items import DREDGEItem
+from .locations import DREDGELocation
 
 if TYPE_CHECKING:
     from . import DREDGEWorld

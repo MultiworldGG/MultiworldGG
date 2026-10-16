@@ -129,6 +129,8 @@ class ShuffleSpacesuit(Toggle):
     Puts the spacesuit into the Archipelago item pool, forcing you to play suitless until it's found.
 
     This option is incompatible with non-vanilla spawns (i.e. generation will fail), since those imply playing "shipless" at first, and almost nothing can be done both shipless and suitless.
+    
+    Be warned that this is a harder setting for Outer Wilds and can require you to die multiple times to reach locations. Use at your own risk.
     """
     display_name = "Shuffle Spacesuit"
 
@@ -287,8 +289,8 @@ class EnableHearthsNeighbor2MagistariumMod(Toggle):
 
 class EnableFretsQuestMod(Toggle):
     """
-    Incorporates Fret's Quest story mod content into the randomizer with an additional 1 item and 18 locations.
-    If logsanity is enabled, that will add another 38 locations, for a total of 56 FQ locations.
+    Incorporates Fret's Quest story mod content into the randomizer with an additional 1 item and 20 locations.
+    If logsanity is enabled, that will add another 38 locations, for a total of 58 FQ locations.
     """
     display_name = "Enable Fret's Quest Story Mod"
 

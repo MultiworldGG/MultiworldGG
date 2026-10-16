@@ -1,5 +1,6 @@
 """This module contains string constants for Titanium Bolt locations"""
 
+
 class RAC3TBOLT:
     """String constants for Titanium Bolt locations"""
     FLORANA_BELOW_VENDOR = "Florana: T-Bolt: Below Gadgetron Vendor"

@@ -731,10 +731,8 @@ class TTYDWorld(World):
         if change and not self.in_pre_fill:
             if item.name in stars.values():
                 state.prog_items[item.player]["stars"] += 1
-            for star in self.required_chapters:
-                if item.location is not None:
-                    if item.name == stars[star]:
-                        state.prog_items[item.player]["required_stars"] += 1
+            if item.name in (stars[chapter] for chapter in self.required_chapters):
+                state.prog_items[item.player]["required_stars"] += 1
         return change
 
     def remove(self, state: "CollectionState", item: "Item") -> bool:
@@ -742,10 +740,8 @@ class TTYDWorld(World):
         if change:
             if item.name in stars.values():
                 state.prog_items[item.player]["stars"] -= 1
-            for star in self.required_chapters:
-                if item.location is not None:
-                    if item.name == stars[star]:
-                        state.prog_items[item.player]["required_stars"] -= 1
+            if item.name in (stars[chapter] for chapter in self.required_chapters):
+                state.prog_items[item.player]["required_stars"] -= 1
         return change
 
     def generate_output(self, output_directory: str) -> None:

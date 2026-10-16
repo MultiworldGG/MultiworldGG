@@ -82,13 +82,12 @@ location_name_groups = {
 }
 
 
-region_data_table: dict[str, OuterWildsRegionData] = {}
-
-
 def create_regions(world: "OuterWildsWorld") -> None:
     mw = world.multiworld
     p = world.player
     options = world.options
+
+    region_data_table: dict[str, OuterWildsRegionData] = {}
 
     # start by ensuring every region is a key in region_data_table
     locations_to_create = {k: v for k, v in location_data_table.items()
@@ -179,47 +178,9 @@ def create_regions(world: "OuterWildsWorld") -> None:
         add_rule(mw.get_location("Victory - Song of the Universe", p),
                  lambda state: sum([state.can_reach_location(friend, p) for friend in available_friend_locations]) >= required_count)
 
-    if world.warps == 'vanilla':
-        def has_codes(state): return state.has("Nomai Warp Codes", p)
-
-        hgt = mw.get_region("Hourglass Twins", p)
-        hgt.add_exits([
-            "Sun Station",
-            "Ash Twin Interior",
-            "Timber Hearth",
-            "Hanging City Ceiling",
-            "Giant's Deep",
-        ], {
-            "Sun Station": lambda state: state.has_all(["Nomai Warp Codes", "Spacesuit"], p),
-            "Ash Twin Interior": has_codes,
-            "Timber Hearth": has_codes,
-            "Hanging City Ceiling": has_codes,
-            "Giant's Deep": has_codes,
-        })
-
-        mw.get_region("Sun Station", p).connect(
-            hgt, "SS vanilla warp",
-            lambda state: state.has_all(["Nomai Warp Codes", "Spacesuit"], p))
-        mw.get_region("Ash Twin Interior", p).connect(hgt, "ATP vanilla warp", has_codes)
-        mw.get_region("Timber Hearth", p).connect(hgt, "TH vanilla warp", has_codes)
-        mw.get_region("Hanging City Ceiling", p).connect(hgt, "BHF vanilla warp", has_codes)
-        mw.get_region("Giant's Deep", p).connect(hgt, "GD vanilla warp", has_codes)
-
-        mw.get_region("White Hole Station", p).add_exits(["Brittle Hollow"], {"Brittle Hollow": has_codes})
-    else:
-        # Hang on to the pertinent warp connections
-        bhf_connection = None
-        bhng_connection = None
-        whs_connection = None
-
-        for (platform_1, platform_2) in world.warps:
-            if platform_1 == "BHF": bhf_connection = platform_2
-            elif platform_1 == "BHNG": bhng_connection = platform_2
-            elif platform_1 == "WHS": whs_connection = platform_2
-            if platform_2 == "BHF": bhf_connection = platform_1
-            elif platform_2 == "BHNG": bhng_connection = platform_1
-            elif platform_2 == "WHS": whs_connection = platform_1
-
+    # Connect warp platform regions (none exist in dlc only).
+    if not options.dlc_only:
+        for (platform_1, platform_2) in world.warps.mappings:
             region_name_1 = warp_platform_to_logical_region[platform_1]
             region_name_2 = warp_platform_to_logical_region[platform_2]
             if region_name_1 == region_name_2:
@@ -236,15 +197,8 @@ def create_regions(world: "OuterWildsWorld") -> None:
             r2.connect(r1, "%s->%s warp" % (region_name_2, region_name_1), rule)
 
         # To access the Black Hole Forge without the Launch Codes, there needs to be
-        # a path from Brittle Hollow proper to the Hanging City Ceiling. This path
-        # exists if the BHF warp is connected to one of the other two warps accessible
-        # from Brittle Hollow (BHNG/WHS) either directly, or indirectly through the
-        # Hourglass Twins. This means that there is no path if either BHF or both of
-        # BHNG & WHS connect to an isolated warp pad (i.e. SS, ATP, TH, GD).
-        hourglass_twins = ("ET", "ST", "ETT", "ATT", "THT", "BHT", "GDT")
-        if bhf_connection in ("BHNG", "WHS") or (
-            bhf_connection in hourglass_twins and (
-            bhng_connection in hourglass_twins or whs_connection in hourglass_twins)):
+        # a path from Brittle Hollow proper to the Hanging City Ceiling.
+        if world.warps.shipless_connection_exists("Brittle Hollow", "Hanging City Ceiling"):
             mw.get_region("Forge via Warps Only", p).connect(mw.get_region("Black Hole Forge", p), "Forge Warp Path")
 
 

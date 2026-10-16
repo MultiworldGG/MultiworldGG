@@ -749,12 +749,12 @@
     "expansion": "Base",
     "requirements": [
       {
-        "type": "items",
-        "all_of": ["Packed Explosives"]
-      },
-      {
         "type": "catch_type",
         "value": "Abyssal"
+      },
+      {
+        "type": "items",
+        "any_of": ["Packed Explosives", "Exotic Bait"]
       }
     ],
     "can_catch_rod": true,
@@ -784,6 +784,10 @@
       {
         "type": "catch_type",
         "value": "Ice"
+      },
+      {
+        "type": "items",
+        "all_of": ["Radiant Trawl Net"]
       }
     ],
     "can_catch_rod": false,
@@ -1578,7 +1582,7 @@
     "requirements": [
       {
         "type": "items",
-        "all_of": ["Packed Explosives"]
+        "any_of": ["Packed Explosives", "Exotic Bait"]
       },
       {
         "type": "catch_type",
@@ -2293,6 +2297,10 @@
       {
         "type": "catch_type",
         "value": "Ice"
+      },
+      {
+        "type": "items",
+        "all_of": ["Radiant Trawl Net"]
       }
     ],
     "can_catch_rod": false,
@@ -2846,6 +2854,10 @@
       {
         "type": "catch_type",
         "value": "Ice"
+      },
+      {
+        "type": "items",
+        "any_of": ["Icebreaker", "Exotic Bait"]
       }
     ],
     "can_catch_rod": true,
@@ -3951,185 +3963,58 @@
       }
     ]
   },
-  "Ornate Key": {
-    "base_id_offset": 254,
-    "region": "Open Ocean",
-    "location_group": "Relic",
-    "expansion": "Base",
-    "requirements": [],
-    "can_catch_rod": true,
-    "can_catch_net": false
-  },
-  "Rusted Music Box": {
-    "base_id_offset": 255,
-    "region": "Open Ocean",
-    "location_group": "Relic",
-    "expansion": "Base",
-    "requirements": [],
-    "can_catch_rod": true,
-    "can_catch_net": false
-  },
-  "Jewel Encrusted Band": {
-    "base_id_offset": 256,
-    "region": "Open Ocean",
-    "location_group": "Relic",
-    "expansion": "Base",
-    "requirements": [],
-    "can_catch_rod": true,
-    "can_catch_net": false
-  },
-  "Shimmering Necklace": {
-    "base_id_offset": 257,
-    "region": "Open Ocean",
-    "location_group": "Relic",
-    "expansion": "Base",
-    "requirements": [],
-    "can_catch_rod": true,
-    "can_catch_net": false
-  },
-  "Antique Pocket Watch": {
-    "base_id_offset": 258,
-    "region": "Open Ocean",
-    "location_group": "Relic",
-    "expansion": "Base",
-    "requirements": [],
-    "can_catch_rod": true,
-    "can_catch_net": false
-  },
-  "Sampling Device": {
-    "base_id_offset": 259,
-    "region": "Open Ocean",
-    "location_group": "Pursuit",
-    "expansion": "Base",
-    "requirements": [],
-    "can_catch_rod": true,
-    "can_catch_net": false
-  },
-  "Simple Skimmer": {
-    "base_id_offset": 260,
-    "region": "Open Ocean",
-    "location_group": "Shop",
-    "expansion": "Base",
-    "requirements": [],
-    "can_catch_rod": true,
-    "can_catch_net": false
-  },
-  "Weighted Line": {
-    "base_id_offset": 261,
-    "region": "Open Ocean",
-    "location_group": "Shop",
-    "expansion": "Base",
-    "requirements": [],
-    "can_catch_rod": true,
-    "can_catch_net": false
-  },
-  "Barbed Ice Rod": {
-    "base_id_offset": 262,
-    "region": "Open Ocean",
-    "location_group": "Shop",
-    "expansion": "PaleReach",
-    "requirements": [],
-    "can_catch_rod": true,
-    "can_catch_net": false
-  },
-  "Glacial Lance": {
-    "base_id_offset": 263,
-    "region": "Open Ocean",
-    "location_group": "Shop",
-    "expansion": "PaleReach",
-    "requirements": [],
-    "can_catch_rod": true,
-    "can_catch_net": false
-  },
-  "Infused Rod": {
-    "base_id_offset": 264,
-    "region": "Open Ocean",
-    "location_group": "Shop",
-    "expansion": "IronRig",
-    "requirements": [],
-    "can_catch_rod": true,
-    "can_catch_net": false
-  },
-  "Infused Winch": {
-    "base_id_offset": 265,
-    "region": "Open Ocean",
-    "location_group": "Shop",
-    "expansion": "IronRig",
-    "requirements": [],
-    "can_catch_rod": true,
-    "can_catch_net": false
-  },
-  "Infused Hoist": {
-    "base_id_offset": 266,
-    "region": "Open Ocean",
-    "location_group": "Shop",
-    "expansion": "IronRig",
-    "requirements": [],
-    "can_catch_rod": true,
-    "can_catch_net": false
-  },
-  "Infused Coiling Rod": {
-    "base_id_offset": 267,
-    "region": "Open Ocean",
-    "location_group": "Shop",
-    "expansion": "IronRig",
-    "requirements": [],
-    "can_catch_rod": true,
-    "can_catch_net": false
-  },
-  "Infused Fireproof Rod": {
-    "base_id_offset": 268,
-    "region": "Open Ocean",
-    "location_group": "Shop",
-    "expansion": "IronRig",
-    "requirements": [],
-    "can_catch_rod": true,
-    "can_catch_net": false
-  },
-  "Sinew Spindle": {
+  "The Marrows - Cod Shrine(J-9)": {
     "base_id_offset": 269,
-    "region": "Open Ocean",
+    "region": "The Marrows",
     "location_group": "World",
     "expansion": "Base",
-    "requirements": [],
-    "can_catch_rod": true,
-    "can_catch_net": false
+    "requirements": [
+      {
+        "type": "locations",
+        "all_of": [
+          "Cod"
+        ]
+      }
+    ]
   },
-  "Viscera Crane": {
+  "Stellar Basin - Shark Shrine(H-2)": {
     "base_id_offset": 270,
-    "region": "Open Ocean",
+    "region": "Stellar Basin",
     "location_group": "World",
     "expansion": "Base",
-    "requirements": [],
-    "can_catch_rod": true,
-    "can_catch_net": false
+    "requirements": [
+      {
+        "type": "locations",
+        "all_of": [
+          "Hammerhead Shark",
+          "Bronze Whaler",
+          "Blacktip Reef Shark",
+          "Ghost Shark"
+        ]
+      }
+    ]
   },
-  "Tendon Rod": {
+  "Twisted Strand - Aberration Shrine(D-13)": {
     "base_id_offset": 271,
-    "region": "Open Ocean",
+    "region": "Twisted Strand",
     "location_group": "World",
     "expansion": "Base",
-    "requirements": [],
-    "can_catch_rod": true,
-    "can_catch_net": false
+    "requirements": [
+      {
+        "type": "aberrations"
+      }
+    ]
   },
-  "Encrusted Talisman": {
+  "Devil's Spine - Shrine 3(O-14)": {
     "base_id_offset": 272,
-    "region": "Open Ocean",
+    "region": "Devil's Spine",
     "location_group": "World",
     "expansion": "Base",
-    "requirements": [],
-    "can_catch_rod": true,
-    "can_catch_net": false
-  },
-  "Basic Fishing Pole": {
-    "base_id_offset": 273,
-    "region": "Open Ocean",
-    "location_group": "World",
-    "expansion": "Base",
-    "requirements": [],
-    "can_catch_rod": true,
-    "can_catch_net": false
+    "requirements": [
+      {
+        "type": "aberrations"
+      }
+    ]
   },
   "Open Ocean - Silver Plate 1(M-10)": {
     "base_id_offset": 274,
@@ -5739,7 +5624,7 @@
     "requirements": [
       {
         "type": "items",
-        "all_of": ["Dredge Crane"]
+        "all_of": ["Icebreaker", "Dredge Crane"]
       }
     ]
   },
@@ -5847,7 +5732,7 @@
     "requirements": [
       {
         "type": "items",
-        "all_of": ["Dredge Crane"]
+        "all_of": ["Icebreaker", "Dredge Crane"]
       }
     ]
   },
@@ -5855,18 +5740,6 @@
     "base_id_offset": 417,
     "region": "The Pale Reach",
     "location_group": "Dredge",
-    "expansion": "PaleReach",
-    "requirements": [
-      {
-        "type": "items",
-        "all_of": ["Dredge Crane"]
-      }
-    ]
-  },
-  "Pale Reach - Teleport Anchor(G--7)": {
-    "base_id_offset": 418,
-    "region": "The Pale Reach",
-    "location_group": "Pursuit",
     "expansion": "PaleReach",
     "requirements": [
       {
@@ -6116,7 +5989,6 @@
     ]
   },
   "Flexible Fishing Pole Researched":{
-    "base_id_offset": 439,
 	"region": "Open Ocean",
 	"location_group": "Research Unlock",
 	"expansion": "Base",
@@ -6128,7 +6000,6 @@
     ]
   },
   "Heat-Resistant Line Researched":{
-    "base_id_offset": 440,
 	"region": "Open Ocean",
 	"location_group": "Research Unlock",
 	"expansion": "Base",
@@ -6144,7 +6015,6 @@
     ]
   },
   "Anti-Tangle Line Researched":{
-    "base_id_offset": 441,
 	"region": "Open Ocean",
 	"location_group": "Research Unlock",
 	"expansion": "Base",
@@ -6160,7 +6030,6 @@
     ]
   },
   "Versatile Rod Researched":{
-    "base_id_offset": 442,
 	"region": "Open Ocean",
 	"location_group": "Research Unlock",
 	"expansion": "Base",
@@ -6176,7 +6045,6 @@
     ]
   },
   "Hydraulic Rod Researched":{
-    "base_id_offset": 443,
 	"region": "Open Ocean",
 	"location_group": "Research Unlock",
 	"expansion": "Base",
@@ -6188,7 +6056,6 @@
     ]
   },
   "Bottomless Lines Researched":{
-    "base_id_offset": 444,
 	"region": "Open Ocean",
 	"location_group": "Research Unlock",
 	"expansion": "Base",
@@ -6204,7 +6071,6 @@
     ]
   },
   "Improved Outboard Engine Researched":{
-    "base_id_offset": 445,
 	"region": "Open Ocean",
 	"location_group": "Research Unlock",
 	"expansion": "Base",
@@ -6216,7 +6082,6 @@
     ]
   },
   "Twin Prop Engine Researched":{
-    "base_id_offset": 446,
 	"region": "Open Ocean",
 	"location_group": "Research Unlock",
 	"expansion": "Base",
@@ -6232,7 +6097,6 @@
     ]
   },
   "Refined Outboard Engine Researched":{
-    "base_id_offset": 447,
 	"region": "Open Ocean",
 	"location_group": "Research Unlock",
 	"expansion": "Base",
@@ -6248,7 +6112,6 @@
     ]
   },
   "Twin Jet Drive Engine Researched":{
-    "base_id_offset": 448,
 	"region": "Open Ocean",
 	"location_group": "Research Unlock",
 	"expansion": "Base",
@@ -6264,7 +6127,6 @@
     ]
   },
   "Efficient Crab Pot Researched":{
-    "base_id_offset": 449,
 	"region": "Open Ocean",
 	"location_group": "Research Unlock",
 	"expansion": "Base",
@@ -6280,7 +6142,6 @@
     ]
   },
   "Hardy Crab Pot Researched":{
-    "base_id_offset": 450,
 	"region": "Open Ocean",
 	"location_group": "Research Unlock",
 	"expansion": "Base",
@@ -6296,7 +6157,6 @@
     ]
   },
   "Large Crab Pot Researched":{
-    "base_id_offset": 451,
 	"region": "Open Ocean",
 	"location_group": "Research Unlock",
 	"expansion": "Base",
@@ -6312,7 +6172,6 @@
     ]
   },
   "Complex Crab Pot Researched":{
-    "base_id_offset": 452,
 	"region": "Open Ocean",
 	"location_group": "Research Unlock",
 	"expansion": "Base",
@@ -6328,7 +6187,6 @@
     ]
   },
   "Massive Crab Pot Researched":{
-    "base_id_offset": 453,
 	"region": "Open Ocean",
 	"location_group": "Research Unlock",
 	"expansion": "Base",
@@ -6344,7 +6202,6 @@
     ]
   },
   "Improved Trawl Net Researched":{
-    "base_id_offset": 454,
 	"region": "Open Ocean",
 	"location_group": "Research Unlock",
 	"expansion": "Base",
@@ -6360,7 +6217,6 @@
     ]
   },
   "Large Trawl Net Researched":{
-    "base_id_offset": 455,
 	"region": "Open Ocean",
 	"location_group": "Research Unlock",
 	"expansion": "Base",
@@ -6375,26 +6231,970 @@
       }
     ]
   },
-  "A Place to Rest - Deliver Materials":{
-    "base_id_offset": 456,
-	"region": "The Marrows",
-	"location_group": "Pursuit",
-	"expansion": "Base",
-    "requirements": [
-      {
-        "type": "items",
-        "all_of": ["Dredge Crane"]
-      }]
+  "The Marrows - Message in a Bottle 1(K-9)": {
+    "base_id_offset": 458,
+    "region": "The Marrows",
+    "location_group": "Message",
+    "expansion": "Base",
+    "requirements": []
   },
-  "A Place to Rest - Escort Builder":{
-    "base_id_offset": 457,
-	"region": "The Marrows",
-	"location_group": "Pursuit",
-	"expansion": "Base",
+  "The Marrows - Message in a Bottle 2(K-7)": {
+    "base_id_offset": 459,
+    "region": "The Marrows",
+    "location_group": "Message",
+    "expansion": "Base",
+    "requirements": []
+  },
+  "Gale Cliffs - Message in a Bottle 1(N-3)": {
+    "base_id_offset": 460,
+    "region": "Gale Cliffs",
+    "location_group": "Message",
+    "expansion": "Base",
+    "requirements": []
+  },
+  "Gale Cliffs - Message in a Bottle 2(N-4)": {
+    "base_id_offset": 461,
+    "region": "Gale Cliffs",
+    "location_group": "Message",
+    "expansion": "Base",
+    "requirements": []
+  },
+  "Stellar Basin - Message in a Bottle 1(E-5)": {
+    "base_id_offset": 462,
+    "region": "Stellar Basin",
+    "location_group": "Message",
+    "expansion": "Base",
+    "requirements": []
+  },
+  "Stellar Basin - Message in a Bottle 2(G-4)": {
+    "base_id_offset": 463,
+    "region": "Stellar Basin",
+    "location_group": "Message",
+    "expansion": "Base",
+    "requirements": []
+  },
+  "Twisted Strand - Message in a Bottle 1(F-13)": {
+    "base_id_offset": 464,
+    "region": "Twisted Strand",
+    "location_group": "Message",
+    "expansion": "Base",
+    "requirements": []
+  },
+  "Twisted Strand - Message in a Bottle 2(F-13)": {
+    "base_id_offset": 465,
+    "region": "Twisted Strand",
+    "location_group": "Message",
+    "expansion": "Base",
+    "requirements": []
+  },
+  "Devil's Spine - Message in a Bottle 1(N-14)": {
+    "base_id_offset": 466,
+    "region": "Devil's Spine",
+    "location_group": "Message",
+    "expansion": "Base",
+    "requirements": []
+  },
+  "Devil's Spine - Message in a Bottle 2(P-12)": {
+    "base_id_offset": 467,
+    "region": "Devil's Spine",
+    "location_group": "Message",
+    "expansion": "Base",
+    "requirements": []
+  },
+  "Fishmonger's Gift": {
+    "base_id_offset": 468,
+    "region": "The Marrows",
+    "location_group": "Pursuit",
+    "expansion": "Base",
+    "requirements": []
+  },
+  "Shipwright's Gift": {
+    "base_id_offset": 469,
+    "region": "The Marrows",
+    "location_group": "Pursuit",
+    "expansion": "Base",
     "requirements": [
       {
         "type": "items",
-        "all_of": ["A Place to Rest - Returned to Builder"]
-      }]
+        "any_of": [
+          "Starting Gear - Basic Fishing Pole",
+          "Simple Skimmer",
+          "Weighted Line",
+          "Hydraulic Rod",
+          "Flexible Fishing Pole",
+          "Heat-Resistant Line",
+          "Anti-Tangle Line",
+          "Versatile Rod",
+          "Harvesting Platform",
+          "Bottomless Lines",
+          "Fathomless Winch",
+          "Sampling Device",
+          "Barbed Ice Rod",
+          "Glacial Lance",
+          "Infused Rod",
+          "Infused Winch",
+          "Infused Hoist",
+          "Infused Coiling Rod",
+          "Infused Fireproof Rod",
+          "Sinew Spindle",
+          "Viscera Crane",
+          "Tendon Rod",
+          "Basic Crab Pot",
+          "Efficient Crab Pot",
+          "Hardy Crab Pot",
+          "Large Crab Pot",
+          "Complex Crab Pot",
+          "Massive Crab Pot",
+          "Reinforced Crab Pot",
+          "Mouth of the Deep",
+          "Flotsam Trap",
+          "Basic Trawl Net",
+          "Improved Trawl Net",
+          "Silt Filtering Trawl Net",
+          "Tempered Mesh Net",
+          "Large Trawl Net",
+          "Heavy-Duty Trawl Net",
+          "Brittle Trawl Net",
+          "Radiant Trawl Net",
+          "Siphon Trawler",
+          "Starting Gear - Peculiar Engine",
+          "Rusty Outboard Engine",
+          "Improved Outboard Engine",
+          "Refined Outboard Engine",
+          "Twin Prop Engine",
+          "Jet Drive Engine",
+          "Twin Jet Drive Engine",
+          "Engine Stack",
+          "Weak Valve Engine"
+        ]
+      }
+    ]
+  },
+  "Little Marrow Trader's Gift": {
+    "base_id_offset": 470,
+    "region": "The Marrows",
+    "location_group": "Pursuit",
+    "expansion": "Base",
+    "requirements": [
+      {
+        "type": "items",
+        "all_of": [
+          "Dredge Crane"
+        ]
+      }
+    ]
+  },
+  "Travelling Merchant's Gift": {
+    "base_id_offset": 471,
+    "region": "The Marrows",
+    "location_group": "Pursuit",
+    "expansion": "Base",
+    "requirements": [
+      {
+        "type": "regions",
+        "any_of": [
+          "Gale Cliffs",
+          "Stellar Basin",
+          "Twisted Strand",
+          "Devil's Spine"
+        ]
+      }
+    ]
+  },
+  "Package Delivery": {
+    "base_id_offset": 472,
+    "region": "The Marrows",
+    "location_group": "Pursuit",
+    "expansion": "Base",
+    "requirements": []
+  },
+  "Craven Courier": {
+    "base_id_offset": 473,
+    "region": "Open Ocean",
+    "location_group": "Pursuit",
+    "expansion": "Base",
+    "requirements": []
+  },
+  "Figure in Blue": {
+    "base_id_offset": 474,
+    "region": "Open Ocean",
+    "location_group": "Pursuit",
+    "expansion": "Base",
+    "requirements": [
+      {
+        "type": "locations",
+        "all_of": [
+          "Blue Mackerel",
+          "Tiger Mackerel",
+          "Snake Mackerel"
+        ]
+      }
+    ]
+  },
+  "Figure in Gold": {
+    "base_id_offset": 475,
+    "region": "Open Ocean",
+    "location_group": "Pursuit",
+    "expansion": "Base",
+    "requirements": [
+      {
+        "type": "locations",
+        "all_of": [
+          "Red Snapper",
+          "Fangtooth",
+          "Blue Crab"
+        ]
+      }
+    ]
+  },
+  "Figure in Purple": {
+    "base_id_offset": 476,
+    "region": "Open Ocean",
+    "location_group": "Pursuit",
+    "expansion": "Base",
+    "requirements": [
+      {
+        "type": "locations",
+        "all_of": [
+          "Tarpon",
+          "Horseshoe Crab",
+          "Barreleye"
+        ]
+      }
+    ]
+  },
+  "Figure in Red": {
+    "base_id_offset": 477,
+    "region": "Open Ocean",
+    "location_group": "Pursuit",
+    "expansion": "Base",
+    "requirements": [
+      {
+        "type": "locations",
+        "all_of": [
+          "Cusk Eel",
+          "Sailfish",
+          "Frilled Shark"
+        ]
+      }
+    ]
+  },
+  "Figure in White": {
+    "base_id_offset": 478,
+    "region": "The Pale Reach",
+    "location_group": "Pursuit",
+    "expansion": "PaleReach",
+    "is_aberration": true,
+    "requirements": [
+      {
+        "type": "locations",
+        "all_of": [
+          "Fractalline Icefish",
+          "Fallen Stars",
+          "Craterous Seer"
+        ]
+      }
+    ]
+  },
+  "Research Assistant": {
+    "base_id_offset": 479,
+    "region": "Stellar Basin",
+    "location_group": "Pursuit",
+    "expansion": "Base",
+    "requirements": [
+      {
+        "type": "items",
+        "all_of": [
+          "Sampling Device"
+        ]
+      },
+      {
+        "type": "locations",
+        "all_of": [
+          "Glowing Octopus",
+          "Firefly Squid",
+          "Aurora Jellyfish",
+          "Anglerfish",
+          "Snailfish",
+          "Giant Amphipod",
+          "Loosejaw"
+        ]
+      }
+    ]
+  },
+  "A Place to Rest": {
+    "base_id_offset": 480,
+    "region": "The Marrows",
+    "location_group": "Pursuit",
+    "expansion": "Base",
+    "requirements": [
+      {
+        "type": "items",
+        "all_of": [
+          "Dredge Crane"
+        ]
+      }
+    ]
+  },
+  "Grotesque Fish": {
+    "base_id_offset": 481,
+    "region": "The Marrows",
+    "location_group": "Pursuit",
+    "expansion": "Base",
+    "requirements": []
+  },
+  "The Collector - Ornate Key": {
+    "base_id_offset": 482,
+    "region": "The Marrows",
+    "location_group": "Pursuit",
+    "expansion": "Base",
+    "requirements": [
+      {
+        "type": "items",
+        "all_of": [
+          "Ornate Key"
+        ]
+      }
+    ]
+  },
+  "The Collector - Rusted Music Box": {
+    "base_id_offset": 483,
+    "region": "The Marrows",
+    "location_group": "Pursuit",
+    "expansion": "Base",
+    "requirements": [
+      {
+        "type": "items",
+        "all_of": [
+          "Rusted Music Box"
+        ]
+      }
+    ]
+  },
+  "The Collector - Jewel Encrusted Band": {
+    "base_id_offset": 484,
+    "region": "The Marrows",
+    "location_group": "Pursuit",
+    "expansion": "Base",
+    "requirements": [
+      {
+        "type": "items",
+        "all_of": [
+          "Jewel Encrusted Band"
+        ]
+      }
+    ]
+  },
+  "The Collector - Shimmering Necklace": {
+    "base_id_offset": 485,
+    "region": "The Marrows",
+    "location_group": "Pursuit",
+    "expansion": "Base",
+    "requirements": [
+      {
+        "type": "items",
+        "all_of": [
+          "Shimmering Necklace"
+        ]
+      }
+    ]
+  },
+  "The Collector - Antique Pocket Watch": {
+    "base_id_offset": 486,
+    "region": "The Marrows",
+    "location_group": "Pursuit",
+    "expansion": "Base",
+    "requirements": [
+      {
+        "type": "items",
+        "all_of": [
+          "Antique Pocket Watch"
+        ]
+      }
+    ]
+  },
+  "A Fresh Start": {
+    "base_id_offset": 487,
+    "region": "The Marrows",
+    "location_group": "Pursuit",
+    "expansion": "Base",
+    "requirements": []
+  },
+  "Castaway": {
+    "base_id_offset": 488,
+    "region": "The Marrows",
+    "location_group": "Pursuit",
+    "expansion": "Base",
+    "requirements": []
+  },
+  "Caught to Order": {
+    "base_id_offset": 489,
+    "region": "The Marrows",
+    "location_group": "Pursuit",
+    "expansion": "Base",
+    "requirements": [
+      {
+        "type": "locations",
+        "all_of": [
+          "Gulf Flounder",
+          "Grey Eel",
+          "Arrow Squid",
+          "Black Grouper",
+          "Fiddler Crab",
+          "Common Crab"
+        ]
+      },
+      {
+        "type": "aberrations"
+      }
+    ]
+  },
+  "Lost Dog": {
+    "base_id_offset": 490,
+    "region": "Stellar Basin",
+    "location_group": "Pursuit",
+    "expansion": "Base",
+    "requirements": []
+  },
+  "Lost at Sea": {
+    "base_id_offset": 491,
+    "region": "The Marrows",
+    "location_group": "Pursuit",
+    "expansion": "Base",
+    "requirements": [
+      {
+        "type": "items",
+        "all_of": [
+          "Bronze Belt Buckle"
+        ]
+      }
+    ]
+  },
+  "Recording Rarities - Oarfish": {
+    "base_id_offset": 492,
+    "region": "The Marrows",
+    "location_group": "Pursuit",
+    "expansion": "Base",
+    "requirements": [
+      {
+        "type": "regions",
+        "any_of": [
+          "Gale Cliffs",
+          "Stellar Basin",
+          "Twisted Strand",
+          "Devil's Spine"
+        ]
+      },
+      {
+        "type": "locations",
+        "all_of": [
+          "Oarfish"
+        ]
+      }
+    ]
+  },
+  "Recording Rarities - Gulper Eel": {
+    "base_id_offset": 493,
+    "region": "The Marrows",
+    "location_group": "Pursuit",
+    "expansion": "Base",
+    "requirements": [
+      {
+        "type": "regions",
+        "any_of": [
+          "Gale Cliffs",
+          "Stellar Basin",
+          "Twisted Strand",
+          "Devil's Spine"
+        ]
+      },
+      {
+        "type": "locations",
+        "all_of": [
+          "Gulper Eel"
+        ]
+      }
+    ]
+  },
+  "Recording Rarities - Goliath Tigerfish": {
+    "base_id_offset": 494,
+    "region": "The Marrows",
+    "location_group": "Pursuit",
+    "expansion": "Base",
+    "requirements": [
+      {
+        "type": "regions",
+        "any_of": [
+          "Gale Cliffs",
+          "Stellar Basin",
+          "Twisted Strand",
+          "Devil's Spine"
+        ]
+      },
+      {
+        "type": "locations",
+        "all_of": [
+          "Goliath Tigerfish"
+        ]
+      }
+    ]
+  },
+  "Recording Rarities - Coelacanth": {
+    "base_id_offset": 495,
+    "region": "The Marrows",
+    "location_group": "Pursuit",
+    "expansion": "Base",
+    "requirements": [
+      {
+        "type": "regions",
+        "any_of": [
+          "Gale Cliffs",
+          "Stellar Basin",
+          "Twisted Strand",
+          "Devil's Spine"
+        ]
+      },
+      {
+        "type": "locations",
+        "all_of": [
+          "Coelacanth"
+        ]
+      }
+    ]
+  },
+  "The Bitter End - Dog Tags": {
+    "base_id_offset": 496,
+    "region": "Twisted Strand",
+    "location_group": "Pursuit",
+    "expansion": "Base",
+    "requirements": [
+      {
+        "type": "items",
+        "all_of": [
+          "Dog Tags"
+        ]
+      }
+    ]
+  },
+  "The Bitter End": {
+    "base_id_offset": 497,
+    "region": "Twisted Strand",
+    "location_group": "Pursuit",
+    "expansion": "Base",
+    "requirements": [
+      {
+        "type": "items",
+        "all_of": [
+          "Mortar Frame",
+          "Mortar Barrel"
+        ]
+      },
+      {
+        "type": "locations",
+        "all_of": [
+          "Grey Mullet",
+          "Gar",
+          "Catfish",
+          "Longfin Eel"
+        ]
+      }
+    ]
+  },
+  "Flames of The Deep": {
+    "base_id_offset": 498,
+    "region": "Devil's Spine",
+    "location_group": "Pursuit",
+    "expansion": "Base",
+    "requirements": [
+      {
+        "type": "locations",
+        "all_of": [
+          "Squat Lobster",
+          "Spider Crab",
+          "Ghost Shark",
+          "Pale Skate"
+        ]
+      },
+      {
+        "type": "aberrations"
+      }
+    ]
+  },
+  "Gale Cliffs - Crab Shrine(P-3)": {
+    "base_id_offset": 499,
+    "region": "Gale Cliffs",
+    "location_group": "World",
+    "expansion": "Base",
+    "requirements": [
+      {
+        "type": "locations",
+        "all_of": [
+          "Decorator Crab",
+          "Rock Crab"
+        ]
+      }
+    ]
+  },
+  "Devil's Spine - Shrine 1(P-13)": {
+    "base_id_offset": 500,
+    "region": "Devil's Spine",
+    "location_group": "World",
+    "expansion": "Base",
+    "requirements": [
+      {
+        "type": "locations",
+        "all_of": [
+          "Squat Lobster",
+          "Spider Crab"
+        ]
+      }
+    ]
+  },
+  "Devil's Spine - Shrine 2(P-14)": {
+    "base_id_offset": 501,
+    "region": "Devil's Spine",
+    "location_group": "World",
+    "expansion": "Base",
+    "requirements": [
+      {
+        "type": "locations",
+        "all_of": [
+          "Ghost Shark",
+          "Pale Skate"
+        ]
+      }
+    ]
+  },
+  "The Marrows - Shore Cache 1(J-8)": {
+    "base_id_offset": 502,
+    "region": "The Marrows",
+    "location_group": "World",
+    "expansion": "Base",
+    "requirements": []
+  },
+  "The Marrows - Shore Cache 2(L-10)": {
+    "base_id_offset": 503,
+    "region": "The Marrows",
+    "location_group": "World",
+    "expansion": "Base",
+    "requirements": []
+  },
+  "Open Ocean - Old Wreck(L-5)": {
+    "base_id_offset": 504,
+    "region": "Open Ocean",
+    "location_group": "World",
+    "expansion": "Base",
+    "requirements": []
+  },
+  "Open Ocean - Shore Cache 1(M-6)": {
+    "base_id_offset": 505,
+    "region": "Open Ocean",
+    "location_group": "World",
+    "expansion": "Base",
+    "requirements": []
+  },
+  "Gale Cliffs - Shore Cache 1(P-3)": {
+    "base_id_offset": 506,
+    "region": "Gale Cliffs",
+    "location_group": "World",
+    "expansion": "Base",
+    "requirements": []
+  },
+  "Open Ocean - Shore Cache 2(P-6)": {
+    "base_id_offset": 507,
+    "region": "Open Ocean",
+    "location_group": "World",
+    "expansion": "Base",
+    "requirements": []
+  },
+  "Stellar Basin - Shore Cache 1(G-4)": {
+    "base_id_offset": 508,
+    "region": "Stellar Basin",
+    "location_group": "World",
+    "expansion": "Base",
+    "requirements": []
+  },
+  "Stellar Basin - Shore Cache 2(I-4)": {
+    "base_id_offset": 509,
+    "region": "Stellar Basin",
+    "location_group": "World",
+    "expansion": "Base",
+    "requirements": []
+  },
+  "Stellar Basin - Shore Cache 3(D-3)": {
+    "base_id_offset": 510,
+    "region": "Stellar Basin",
+    "location_group": "World",
+    "expansion": "Base",
+    "requirements": []
+  },
+  "Stellar Basin - Shore Cache 4(C-3)": {
+    "base_id_offset": 511,
+    "region": "Stellar Basin",
+    "location_group": "World",
+    "expansion": "Base",
+    "requirements": []
+  },
+  "Open Ocean - Shore Cache 3(I-5)": {
+    "base_id_offset": 512,
+    "region": "Open Ocean",
+    "location_group": "World",
+    "expansion": "Base",
+    "requirements": []
+  },
+  "Twisted Strand - Shore Cache 1(E-14)": {
+    "base_id_offset": 513,
+    "region": "Twisted Strand",
+    "location_group": "World",
+    "expansion": "Base",
+    "requirements": []
+  },
+  "Twisted Strand - Shore Cache 2(D-12)": {
+    "base_id_offset": 514,
+    "region": "Twisted Strand",
+    "location_group": "World",
+    "expansion": "Base",
+    "requirements": []
+  },
+  "Gale Cliffs - Old Mayor's Camp(O-2)": {
+    "base_id_offset": 515,
+    "region": "Gale Cliffs",
+    "location_group": "World",
+    "expansion": "Base",
+    "requirements": []
+  },
+  "Open Ocean - Old Mayor's Camp(J-3)": {
+    "base_id_offset": 516,
+    "region": "Open Ocean",
+    "location_group": "World",
+    "expansion": "Base",
+    "requirements": []
+  },
+  "Stellar Basin - Old Laboratory(G-4)": {
+    "base_id_offset": 517,
+    "region": "Stellar Basin",
+    "location_group": "World",
+    "expansion": "Base",
+    "requirements": []
+  },
+  "Stone Tablets": {
+    "base_id_offset": 518,
+    "region": "Devil's Spine",
+    "location_group": "Pursuit",
+    "expansion": "Base",
+    "requirements": [
+      {
+        "type": "items",
+        "all_of": [
+          "Stone Tablet 1",
+          "Stone Tablet 2",
+          "Stone Tablet 3"
+        ]
+      }
+    ]
+  },
+  "The Pale Reach - Central Camp Log 1": {
+    "base_id_offset": 519,
+    "region": "The Pale Reach",
+    "location_group": "Message",
+    "expansion": "PaleReach",
+    "requirements": []
+  },
+  "The Pale Reach - Central Camp Log 2": {
+    "base_id_offset": 520,
+    "region": "The Pale Reach",
+    "location_group": "Message",
+    "expansion": "PaleReach",
+    "requirements": []
+  },
+  "The Pale Reach - Central Camp Log 3": {
+    "base_id_offset": 521,
+    "region": "The Pale Reach",
+    "location_group": "Message",
+    "expansion": "PaleReach",
+    "requirements": []
+  },
+  "The Pale Reach - Eastern Terminus Log 1": {
+    "base_id_offset": 522,
+    "region": "The Pale Reach",
+    "location_group": "Message",
+    "expansion": "PaleReach",
+    "requirements": []
+  },
+  "The Pale Reach - Eastern Terminus Log 2": {
+    "base_id_offset": 523,
+    "region": "The Pale Reach",
+    "location_group": "Message",
+    "expansion": "PaleReach",
+    "requirements": []
+  },
+  "The Pale Reach - Eastern Terminus Log 3": {
+    "base_id_offset": 524,
+    "region": "The Pale Reach",
+    "location_group": "Message",
+    "expansion": "PaleReach",
+    "requirements": []
+  },
+  "The Pale Reach - Western Bearing Log 1": {
+    "base_id_offset": 525,
+    "region": "The Pale Reach",
+    "location_group": "Message",
+    "expansion": "PaleReach",
+    "requirements": []
+  },
+  "The Pale Reach - Western Bearing Log 2": {
+    "base_id_offset": 526,
+    "region": "The Pale Reach",
+    "location_group": "Message",
+    "expansion": "PaleReach",
+    "requirements": []
+  },
+  "The Pale Reach - Western Bearing Log 3": {
+    "base_id_offset": 527,
+    "region": "The Pale Reach",
+    "location_group": "Message",
+    "expansion": "PaleReach",
+    "requirements": []
+  },
+  "Under The Ice - Central Camp": {
+    "base_id_offset": 528,
+    "region": "The Pale Reach",
+    "location_group": "Pursuit",
+    "expansion": "PaleReach",
+    "requirements": [
+      {
+        "type": "item_count",
+        "item": "Ice Axe",
+        "count": 4
+      }
+    ]
+  },
+  "Under The Ice - Eastern Terminus": {
+    "base_id_offset": 529,
+    "region": "The Pale Reach",
+    "location_group": "Pursuit",
+    "expansion": "PaleReach",
+    "requirements": [
+      {
+        "type": "item_count",
+        "item": "Ice Axe",
+        "count": 4
+      }
+    ]
+  },
+  "Under The Ice - Western Bearing": {
+    "base_id_offset": 530,
+    "region": "The Pale Reach",
+    "location_group": "Pursuit",
+    "expansion": "PaleReach",
+    "requirements": [
+      {
+        "type": "item_count",
+        "item": "Ice Axe",
+        "count": 4
+      }
+    ]
+  },
+  "Under The Ice - Southern Locus": {
+    "base_id_offset": 531,
+    "region": "The Pale Reach",
+    "location_group": "Pursuit",
+    "expansion": "PaleReach",
+    "requirements": [
+      {
+        "type": "item_count",
+        "item": "Ice Axe",
+        "count": 4
+      }
+    ]
+  },
+  "The Pale Reach - Shrine(K--4)": {
+    "base_id_offset": 532,
+    "region": "The Pale Reach",
+    "location_group": "World",
+    "expansion": "PaleReach",
+    "requirements": [
+      {
+        "type": "item_count",
+        "item": "Ice Axe",
+        "count": 4
+      }
+    ]
+  },
+  "Ice Shaper": {
+    "base_id_offset": 533,
+    "region": "The Pale Reach",
+    "location_group": "Pursuit",
+    "expansion": "PaleReach",
+    "requirements": [
+      {
+        "type": "items",
+        "all_of": [
+          "Ice Shaper"
+        ]
+      }
+    ]
+  },
+  "Getting Power - Rig Built": {
+    "base_id_offset": 534,
+    "region": "The Iron Rig",
+    "location_group": "Pursuit",
+    "expansion": "IronRig",
+    "requirements": [
+      {
+        "type": "iron_rig_phase",
+        "value": 1
+      }
+    ]
+  },
+  "Getting Power - Science Lab Built": {
+    "base_id_offset": 535,
+    "region": "The Iron Rig",
+    "location_group": "Pursuit",
+    "expansion": "IronRig",
+    "requirements": [
+      {
+        "type": "iron_rig_phase",
+        "value": 1
+      }
+    ]
+  },
+  "Getting Power - Generator Fuelled": {
+    "base_id_offset": 536,
+    "region": "The Iron Rig",
+    "location_group": "Pursuit",
+    "expansion": "IronRig",
+    "requirements": [
+      {
+        "type": "iron_rig_phase",
+        "value": 1
+      }
+    ]
+  },
+  "Drilling in the Deep - Factory": {
+    "base_id_offset": 537,
+    "region": "The Iron Rig",
+    "location_group": "Pursuit",
+    "expansion": "IronRig",
+    "requirements": [
+      {
+        "type": "iron_rig_phase",
+        "value": 1
+      }
+    ]
+  },
+  "Pale Reach - Teleport Anchor(G--7)": {
+    "base_id_offset": 418,
+    "region": "The Pale Reach",
+    "location_group": "Dredge",
+    "expansion": "PaleReach",
+    "requirements": [
+      {
+        "type": "items",
+        "all_of": [
+          "Dredge Crane"
+        ]
+      }
+    ]
   }
 }

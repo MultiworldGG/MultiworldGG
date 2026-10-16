@@ -657,17 +657,18 @@ totok_b9_all_crystals = And(
 )
 
 # B10
+totok_b10_inner = has_explosives | (grapple_glitch & has_hammer)
 totok_b10 = (ut_pedestals_vanilla | totok_b9_all_crystals) & has_floor_time(10)
 totok_b10_key = can_steal_from_phantom & has_floor_time(10, 10)
-totok_b10_phantom = has_explosives & Or(
+totok_b10_phantom = totok_b10_inner & Or(
     has_phantom_sword & has_floor_time(10, 30),
     can_kill_phantoms_traps & has_floor_time(10, 45)
 )
-totok_b10_eyes = has_explosives & Or(
+totok_b10_eyes = totok_b10_inner & has_grapple & Or(
     has_chus & has_floor_time(10, 40),
     has_floor_time(10, 45)
 )
-totok_b10_hammer = has_hammer & has_explosives & Or(
+totok_b10_hammer = has_hammer & totok_b10_inner & Or(
     has_chus & has_floor_time(10, 20),
     has_floor_time(10, 35)
 )
@@ -677,12 +678,12 @@ totok_b10_all_checks_ut = And(
     has_spirit("Courage"),
     has_sea_chart("SW"),
     has_hammer,
-    has_explosives,
+    totok_b10_inner,
     has_shovel
 )
 
 # B11
-totok_b11 = has_explosives & has_floor_time(11) & (totok_deep_keys(6) | totok_b10_all_checks_ut)
+totok_b11 = totok_b10_inner & has_floor_time(11) & (totok_deep_keys(6) | totok_b10_all_checks_ut)
 totok_b11_phantom = has_phantom_sword & has_floor_time(11, 10)
 totok_b11_eyes = has_floor_time(11, 25)
 

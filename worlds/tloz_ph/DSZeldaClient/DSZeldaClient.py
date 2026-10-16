@@ -827,7 +827,7 @@ class DSZeldaClient(BizHawkClient):
 
     async def _reset_dynamic_flags(self, ctx):
         printl(f"resetting flags {self._dynamic_flags_to_reset}")
-        reset_data = [DYNAMIC_FLAGS[n] for n in self._dynamic_flags_to_reset]
+        reset_data = [DYNAMIC_FLAGS[n] for n in set(self._dynamic_flags_to_reset)]
         res = await self._process_dynamic_flags(ctx, reset_data)
         self._dynamic_flags_to_reset.clear()
         return res

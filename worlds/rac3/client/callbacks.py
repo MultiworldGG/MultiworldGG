@@ -7,7 +7,7 @@ from typing import TYPE_CHECKING
 from CommonClient import logger
 from NetUtils import ClientStatus
 from worlds.rac3.client.message import ClientMessage
-from worlds.rac3.client.texthelper import colorize_item_name, get_sent_item_message
+from worlds.rac3.client.texthelper import colorize_item_name, get_sent_item_message, remove_accents
 from worlds.rac3.constants.data.location import RAC3_LOCATION_DATA_TABLE
 from worlds.rac3.constants.data.region import RAC3_REGION_DATA_TABLE
 from worlds.rac3.constants.data.vendorslot import (ITEM_TO_ARMOR_VENDOR_LOCATION, ITEM_TO_WEAPON_VENDOR_LOCATION,
@@ -30,11 +30,12 @@ if TYPE_CHECKING:
     from worlds.rac3.client.client import Rac3Context as Context
 
 
-async def pcsx2_sync_task(ctx: "Context"):
-    """Connects to PCSX2 and loops through update functions until the connection is closed."""
+async def pcsx2_sync_task(ctx: "Context") -> None:
+    """Connects to PCSX2 and loops through update functions until the connection is closed.
+    :param ctx: RAC3 context class
+    """
     logger.info(f"Starting {RAC3OPTION.GAME_TITLE_FULL} Connector")
-    version_dots = RAC3OPTION.VERSION_NUMBER.count(".")
-    if version_dots >= 3 or "dev" in RAC3OPTION.VERSION_NUMBER:
+    if "-dev" in RAC3OPTION.VERSION_NUMBER or RAC3OPTION.VERSION_NUMBER.count(".") >= 3:
         logger.warning("\nYou are using a development build of the RaC3 Archipelago Randomizer!\n"
                        "There may be bugs present and features that have not been tested fully.\n"
                        "These builds are meant for testing and bug reporting purposes "
@@ -132,11 +133,12 @@ async def pcsx2_sync_task(ctx: "Context"):
                 logger.error(format_exc())
             # await sleep(3)
 
-        await sleep(0.1)
+        await sleep(ctx.fps)
     logger.info(f"{RAC3OPTION.GAME_TITLE_FULL} Client Shutdown")
 
 
 async def _handle_game_ready(ctx: "Context") -> None:
+    """:param ctx: RAC3 context class"""
     # Quite a lot of stuff ended up in this function, even though it might
     # have fit better in init(). It just didn't work when I put it there,
     # probably because of when the game loads stuff.
@@ -201,17 +203,22 @@ async def _handle_game_ready(ctx: "Context") -> None:
             logger.info("Adding Speedups...")
             ctx.game_interface.speedup_setup()
             logger.info("Game READY!")
+            ctx.game_interface.batch_write()
 
         if not ctx.main_menu:
             ctx.game_interface.cycle_reads_count = 0
             ctx.game_interface.cycle_writes_count = 0
-            ctx.game_interface.cycle_cache.clear()
+            ctx.game_interface.cycle_batch_reads_count = 0
+            ctx.game_interface.cycle_batch_writes_count = 0
             current_time = time()
             await update(ctx)
             after_time = time()
             elapsed = after_time - current_time
-            logger.debug(f"Update cycle took {elapsed:.5f} seconds (Reads: {ctx.game_interface.cycle_reads_count}, "
-                         f"Writes: {ctx.game_interface.cycle_writes_count})")
+            if "-dev" in RAC3OPTION.VERSION_NUMBER or RAC3OPTION.VERSION_NUMBER.count(".") >= 3:  # Is dev build
+                logger.debug(f"Update cycle took {elapsed:.5f} seconds (Reads: {ctx.game_interface.cycle_reads_count} "
+                             f"(Batch: {ctx.game_interface.cycle_batch_reads_count} operations), "
+                             f"Writes: {ctx.game_interface.cycle_writes_count} "
+                             f"(Batch: {ctx.game_interface.cycle_batch_writes_count} operations))")
             # logger.debug(f"Data Package: {ctx.stored_data.get(RAC3OPTION.PROCESSED_LOCATIONS, 'Empty')}")
             ctx.game_interface.cycle_times.append(elapsed)
             if len(ctx.game_interface.cycle_times) > 100:
@@ -225,7 +232,9 @@ async def _handle_game_ready(ctx: "Context") -> None:
 
 # common functions
 async def update(ctx: "Context") -> None:
-    """Called continuously"""
+    """Called continuously
+    :param ctx: RAC3 context class
+    """
     ctx.game_interface.early_update()
     # Check codecave and set values if needed
     await handle_codecave(ctx)
@@ -251,10 +260,12 @@ async def update(ctx: "Context") -> None:
     # Save to the server
     await handle_save(ctx)
     # logger.info(f"Update is called")
+    ctx.game_interface.batch_write()
 
 
 async def handle_codecave(ctx: "Context") -> None:
-    """Set up the codecave with the current item locations for use in the randomizer"""
+    """Set up the codecave with the current item locations for use in the randomizer
+    :param ctx: RAC3 context class"""
     if ctx.slot_data is None or ctx.code_cave_setup:
         return
     all_vendor_locations: list[str] = []
@@ -281,7 +292,7 @@ async def handle_codecave(ctx: "Context") -> None:
             else:
                 player_name = ctx.player_names.get(net_item.player, "???")
                 string = f"{player_name}'s {item_name}"
-            location_data.append((loc_key, string))
+            location_data.append((loc_key, remove_accents(string)))
 
     if location_data:
         ctx.game_interface.setup_code_cave(location_data)
@@ -289,8 +300,9 @@ async def handle_codecave(ctx: "Context") -> None:
 
 
 async def handle_intro_skip(ctx: "Context") -> None:
-    """Checks if the intro skip option is enabled, then skips veldin and sets required story/mission flags"""
-    if ctx.slot_data is None:
+    """Checks if the intro skip option is enabled, then skips veldin and sets required story/mission flags
+    :param ctx: RAC3 context class"""
+    if ctx.slot_data is None or ctx.slot is None:
         return
     if (ctx.slot_data[RAC3OPTION.SHORTCUTS].get(RAC3SHORTCUTS.VELDIN_SKIP, False)
         and ctx.current_planet == RAC3REGION.VELDIN and not ctx.game_interface.homewarping):
@@ -308,7 +320,8 @@ async def handle_intro_skip(ctx: "Context") -> None:
 
 
 async def handle_received_items(ctx: "Context") -> None:
-    """Process items received from the AP server"""
+    """Process items received from the AP server
+    :param ctx: RAC3 context class"""
     if ctx.slot_data is None or ctx.slot is None:
         return
 
@@ -326,8 +339,9 @@ async def handle_received_items(ctx: "Context") -> None:
 
 
 async def handle_checked_locations(ctx: "Context") -> None:
-    """Check for new locations collected, send these to the AP server"""
-    if ctx.slot_data is None:
+    """Check for new locations collected, send these to the AP server
+    :param ctx: RAC3 context class"""
+    if ctx.slot_data is None or ctx.slot is None:
         return
 
     # logger.info(f"{ctx.server_locations}")
@@ -341,6 +355,7 @@ async def handle_checked_locations(ctx: "Context") -> None:
     if new_checks:
         real_checks = list(await ctx.check_locations(new_checks))
         ctx.locations_checked.update(real_checks)
+        ctx.skip_save_cooldown = True
         for location in real_checks:
             net_item = ctx.locations_info.get(location, None)
             if net_item is not None and net_item.player != ctx.slot:
@@ -352,11 +367,12 @@ async def handle_checked_locations(ctx: "Context") -> None:
 
 
 async def handle_deathlink(ctx: "Context") -> None:
-    """Receive and send deathlink"""
-    if not ctx.death_link:
+    """Receive and send deathlink
+    :param ctx: RAC3 context class"""
+    if not ctx.death_link and not ctx.game_interface.track_deaths:
         return
     ctx.game_interface.reload_check()
-    if time() - ctx.last_death_link > 10:
+    if time() - ctx.last_death_link > 10 and ctx.death_link:
         alive, message = ctx.game_interface.alive()
         if alive:
             if ctx.queued_deaths > 0:
@@ -378,8 +394,9 @@ async def handle_deathlink(ctx: "Context") -> None:
 
 
 async def handle_check_goal(ctx: "Context") -> None:
-    """Checks if the goal is completed"""
-    if ctx.slot_data is None:
+    """Checks if the goal is completed
+    :param ctx: RAC3 context class"""
+    if ctx.slot_data is None or ctx.slot is None:
         return
 
     victory_code = ctx.game_interface.get_victory_code()
@@ -389,8 +406,9 @@ async def handle_check_goal(ctx: "Context") -> None:
 
 
 async def handle_planet_changed(ctx: "Context") -> None:
-    """Checks if the player is changing planet"""
-    if ctx.slot_data is None:
+    """Checks if the player is changing planet
+    :param ctx: RAC3 context class"""
+    if ctx.slot_data is None or ctx.slot is None:
         return
     # Player visits a new planet/region
     if ctx.game_interface.new_planet:
@@ -418,7 +436,11 @@ async def handle_planet_changed(ctx: "Context") -> None:
 
 
 async def handle_respawn(ctx: "Context", force_respawn: bool = False, force_load: bool = False):
-    """Check if the player should respawn"""
+    """Check if the player should respawn
+    :param ctx: RAC3 context class
+    :param force_respawn: Ignore player inputs and force a respawn
+    :param force_load: Ignore player inputs and force a reload
+    """
     if ctx.game_interface.is_reloading:
         return
     if ctx.death_link and ctx.game_interface.action not in PERMITTED_DEATHLINK_SHIP_TELEPORT_ACTIONS:
@@ -452,7 +474,8 @@ async def handle_respawn(ctx: "Context", force_respawn: bool = False, force_load
 
 
 async def handle_vendors(ctx: "Context") -> None:
-    """Read current vendor inventory and replace all items after the all ammo item with all items in the game"""
+    """Read current vendor inventory and replace all items after the all ammo item with all items in the game
+    :param ctx: RAC3 context class"""
     if ctx.slot_data is None or ctx.current_planet not in PLANET_VENDOR_OFFSET.keys():
         return
 
@@ -468,24 +491,30 @@ async def handle_vendors(ctx: "Context") -> None:
 
 
 async def handle_sequence_break(ctx: "Context") -> None:
-    """Undoes the flags for infobot locations when sequence breaking if you haven't checked the corresponding location
-    yet"""
-    if ctx.slot_data is None:
+    """
+    Undoes the flags for infobot locations when sequence breaking if you haven't checked the corresponding location yet
+    :param ctx: RAC3 context class
+    """
+    if ctx.slot_data is None or ctx.slot is None:
         return
     ctx.game_interface.sequence_break()
 
 
 async def handle_save(ctx: "Context") -> None:
-    """Checks if any memory values need to be saved to the server"""
+    """Checks if any memory values need to be saved to the server
+    :param ctx: RAC3 context class"""
     if ctx.slot_data is None or ctx.slot is None:
         return
     if ctx.data_received:
         local_save = ctx.game_interface.update_save()
         # logger.debug(f"local_save : {local_save}")
         # logger.debug(f"server_save: {ctx.save_data}")
-        if not (local_save == ctx.save_data):
+        current_time = time()
+        if not (local_save == ctx.save_data) and (current_time - ctx.last_saved > 20 or ctx.skip_save_cooldown):
             logger.debug("Sending new save data to server")
+            ctx.last_saved = current_time
             ctx.data_received = False
+            ctx.skip_save_cooldown = False
             ctx.save_data = local_save
             await ctx.send_msgs([ClientMessage.update_save(ctx.uuid, local_save)])
     else:

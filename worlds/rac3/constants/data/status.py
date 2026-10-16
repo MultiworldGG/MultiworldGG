@@ -9,9 +9,13 @@ from worlds.rac3.constants.status import RAC3STATUS
 @dataclass
 class RAC3STATUSDATA:
     """Dataclass for the current status of the game"""
-    SLOT_ADDRESS: int = None
+    SLOT_ADDRESS: int
 
-    def __init__(self, slot: int | None = None):
+    def __init__(self, slot: int):
+        """
+        :param slot: Slot number
+        :rtype: RAC3STATUSDATA
+        """
         self.SLOT_ADDRESS = 4 * slot + RAC3STATUS.QUICK_SELECT
 
 

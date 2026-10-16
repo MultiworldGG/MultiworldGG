@@ -120,7 +120,7 @@ advancement_table = {
     #Dotted Berries
     "Dotted Berry 1 - Springleaf Path": AdvData(3000, "Springleaf Path"),
     "Dotted Berry 2 - Springleaf Path": AdvData(2900, "Springleaf Path"),
-    "Dotted Berry 3 - Springleaf Path": AdvData(36100, "Springleaf Path"),
+    "Dotted Berry 3 - Springleaf Path": AdvData(36100, "Springleaf Path Continued"),
     "Dotted Berry 4 - Springleaf Path": AdvData(3100, "Lun Tree Roots"),
     "Dotted Berry 1 - Koho Village": AdvData(2700, "Koho Village"),
     "Dotted Berry 2 - Koho Village": AdvData(28200, "Koho Village"),
@@ -198,7 +198,7 @@ advancement_table = {
     "Lunar Crystal Branch 4 - Old Sanctuary": AdvData(12700, "Old Sanctuary"),
     "Lunar Crystal Branch 1 - Springleaf Path": AdvData(4000, "Springleaf Path"),
     "Lunar Crystal Branch 2 - Springleaf Path": AdvData(5000, "Springleaf Path"),
-    "Lunar Crystal Branch 3 - Springleaf Path": AdvData(4300, "Springleaf Path Continued"),
+    "Lunar Crystal Branch 3 - Springleaf Path": AdvData(4300, "Springleaf Path"),
     "Lunar Crystal Branch 4 - Springleaf Path": AdvData(4200, "Springleaf Path"),
     "Lunar Crystal Branch 5 - Springleaf Path": AdvData(4500, "Springleaf Path"),
     "Lunar Crystal Branch 1 - Lun Tree Roots": AdvData(8300, "Lun Tree Roots"),

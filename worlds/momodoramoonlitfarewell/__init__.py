@@ -72,8 +72,8 @@ class MomodoraWorld(World):
             itempool += [name] * num
         #Add useful skill items
         # if self.options.fast_travel.current_key == 2:
-        for name, num in extra_skill_items["fast_travel"].items():
-            itempool += [name] * num
+        # for name, num in extra_skill_items["fast_travel"].items():
+        #     itempool += [name] * num
         #Add all sigil items
         for name, num in sigil_items.items():
             itempool += [name] * num

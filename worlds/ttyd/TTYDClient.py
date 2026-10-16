@@ -427,7 +427,13 @@ class TTYDContext(cmmCtx):
                     if name not in batch_slots:
                         slot = len(batch_slots)
                         batch_slots[name] = slot
-                        raw = name.encode("ascii", "replace")[:15].ljust(16, b"\x00")
+                        # The game parses angle brackets as message commands.
+                        # Filter before truncation so a name cannot leave an
+                        # unterminated command in the received-item feed.
+                        safe_name = "".join(
+                            "(" if c == "<" else ")" if c == ">" else
+                            c if " " <= c < "\x7f" else "?" for c in name)
+                        raw = safe_name.encode("ascii")[:15].ljust(16, b"\x00")
                         dolphin.write_bytes(SENDER_NAME_RING + slot * 16, raw)
                     packed |= 0x2000 | (batch_slots[name] << 9)
                 elif net_item.location >= -1:

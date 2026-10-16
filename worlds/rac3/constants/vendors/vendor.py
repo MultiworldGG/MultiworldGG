@@ -23,17 +23,30 @@ class RAC3VENDOR:
 
     @staticmethod
     def get_vendor_property_address(planet: str, vendor_prop: int, game_id: str = '') -> int:
-        """Provides the vendor property address for reading data"""
+        """Provides the vendor property address for reading data
+        :param planet: Current Planet
+        :param vendor_prop: Property number
+        :param game_id: Game Release Version
+        """
         addr = RAC3STATUS.VENDOR_BASE + PLANET_VENDOR_OFFSET[planet] + vendor_prop
         if game_id == RAC3VERSION.JP_ID:
             addr += JP_VENDOR_OFFSET_CORRECTION.get(planet, 0)
         return addr
 
     @staticmethod
-    def get_vendor_item_property_address(planet: str, slot: int, item_prop_offset: int, slot_size: int, game_id: str = '') -> int:
+    def get_vendor_item_property_address(planet: str,
+                                         slot: int,
+                                         item_prop_offset: int,
+                                         slot_size: int,
+                                         game_id: str = '') -> int:
         """
         Provides the item property address for reading vendor item data,
         using the correct slot size for the vendor type.
+        :param planet: Current Planet
+        :param slot: Item slot number
+        :param item_prop_offset: Item property offset
+        :param slot_size: Item slot size
+        :param game_id: Game Release Version
         """
         return RAC3VENDOR.get_vendor_property_address(planet, 0, game_id) + (slot * slot_size) + item_prop_offset
 

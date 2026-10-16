@@ -1,0 +1,819 @@
+[
+  {
+    "name": "Miremite",
+    "room": "bilewater/bilewater-organ-entrance",
+    "act": 2,
+    "nodes": [
+      "bilewater/bilewater-organ-entrance#up-right",
+      "bilewater/bilewater-organ-entrance#ceiling",
+      "bilewater/bilewater-organ-entrance#left",
+      "bilewater/bilewater-organ-entrance#lower-right"
+    ],
+    "exits": [
+      "bilewater/bilewater-organ-entrance@lr",
+      "bilewater/bilewater-organ-entrance@l",
+      "bilewater/bilewater-organ-entrance@c",
+      "bilewater/bilewater-organ-entrance@ur"
+    ]
+  },
+  {
+    "name": "Mothleaf Lagnia",
+    "room": "bilewater/bilewater-spike-ball-ceiling-trap-room",
+    "act": 2,
+    "nodes": [
+      "bilewater/bilewater-spike-ball-ceiling-trap-room#upper",
+      "bilewater/bilewater-spike-ball-ceiling-trap-room#lower"
+    ],
+    "exits": [
+      "bilewater/bilewater-spike-ball-ceiling-trap-room@r",
+      "bilewater/bilewater-spike-ball-ceiling-trap-room@l"
+    ]
+  },
+  {
+    "name": "Squirrm",
+    "room": "blasted-steps/blasted-steps-shell-beast-shard",
+    "act": 1,
+    "nodes": [
+      "blasted-steps/blasted-steps-shell-beast-shard#room"
+    ],
+    "exits": [
+      "blasted-steps/blasted-steps-shell-beast-shard@l"
+    ]
+  },
+  {
+    "name": "Pharlid",
+    "room": "blasted-steps/blasted-steps-toll-bench-bottom",
+    "act": 1,
+    "nodes": [
+      "blasted-steps/blasted-steps-toll-bench-bottom#bottom-right",
+      "blasted-steps/blasted-steps-toll-bench-bottom#middle",
+      "blasted-steps/blasted-steps-toll-bench-bottom#bottom-left",
+      "blasted-steps/blasted-steps-toll-bench-bottom#top-left",
+      "blasted-steps/blasted-steps-toll-bench-bottom#top-right",
+      "blasted-steps/blasted-steps-toll-bench-bottom#top-right-pit-right",
+      "blasted-steps/blasted-steps-toll-bench-bottom#top-right-pit-left"
+    ],
+    "exits": [
+      "blasted-steps/blasted-steps-toll-bench-bottom@br",
+      "blasted-steps/blasted-steps-toll-bench-bottom@tr"
+    ]
+  },
+  {
+    "name": "Cogworker",
+    "room": "choral-chambers/choral-chambers-east-to-west",
+    "act": 2,
+    "nodes": [
+      "choral-chambers/choral-chambers-east-to-west#left-side",
+      "choral-chambers/choral-chambers-east-to-west#right-side"
+    ],
+    "exits": [
+      "choral-chambers/choral-chambers-east-to-west@t",
+      "choral-chambers/choral-chambers-east-to-west@r",
+      "choral-chambers/choral-chambers-east-to-west@l"
+    ]
+  },
+  {
+    "name": "Cogwork Defender",
+    "room": "cogwork-core/cogwork-core-east-choral-entrance",
+    "act": 2,
+    "nodes": [
+      "cogwork-core/cogwork-core-east-choral-entrance#left-side",
+      "cogwork-core/cogwork-core-east-choral-entrance#right-side"
+    ],
+    "exits": [
+      "cogwork-core/cogwork-core-east-choral-entrance@r",
+      "cogwork-core/cogwork-core-east-choral-entrance@l"
+    ]
+  },
+  {
+    "name": "Drapemite",
+    "room": "cogwork-core/cogwork-core-east-silk-spool-gauntlet",
+    "act": 2,
+    "nodes": [
+      "cogwork-core/cogwork-core-east-silk-spool-gauntlet#entrance",
+      "cogwork-core/cogwork-core-east-silk-spool-gauntlet#left-room",
+      "cogwork-core/cogwork-core-east-silk-spool-gauntlet#right-room",
+      "cogwork-core/cogwork-core-east-silk-spool-gauntlet#silk-spool-jump-left",
+      "cogwork-core/cogwork-core-east-silk-spool-gauntlet#silk-spool-jump-right",
+      "cogwork-core/cogwork-core-east-silk-spool-gauntlet#bottom-room",
+      "cogwork-core/cogwork-core-east-silk-spool-gauntlet#arena"
+    ],
+    "exits": [
+      "cogwork-core/cogwork-core-east-silk-spool-gauntlet@l"
+    ]
+  },
+  {
+    "name": "Cogwork Choirbug",
+    "room": "cogwork-core/cogwork-core-north-main",
+    "act": 2,
+    "nodes": [
+      "cogwork-core/cogwork-core-north-main#lower-entrance",
+      "cogwork-core/cogwork-core-north-main#upper-entrance",
+      "cogwork-core/cogwork-core-north-main#lever-door"
+    ],
+    "exits": [
+      "cogwork-core/cogwork-core-north-main@b",
+      "cogwork-core/cogwork-core-north-main@t"
+    ]
+  },
+  {
+    "name": "Cogwork Cleanser",
+    "room": "cogwork-core/cogwork-core-north-main",
+    "act": 2,
+    "nodes": [
+      "cogwork-core/cogwork-core-north-main#lower-entrance",
+      "cogwork-core/cogwork-core-north-main#upper-entrance",
+      "cogwork-core/cogwork-core-north-main#lever-door"
+    ],
+    "exits": [
+      "cogwork-core/cogwork-core-north-main@b",
+      "cogwork-core/cogwork-core-north-main@t"
+    ]
+  },
+  {
+    "name": "Cogwork Spine",
+    "room": "cogwork-core/cogwork-core-north-main",
+    "act": 2,
+    "nodes": [
+      "cogwork-core/cogwork-core-north-main#lower-entrance",
+      "cogwork-core/cogwork-core-north-main#upper-entrance",
+      "cogwork-core/cogwork-core-north-main#lever-door"
+    ],
+    "exits": [
+      "cogwork-core/cogwork-core-north-main@b",
+      "cogwork-core/cogwork-core-north-main@t"
+    ]
+  },
+  {
+    "name": "Lavalug",
+    "room": "deep-docks/deep-docks-chains-west",
+    "act": 2,
+    "nodes": [
+      "deep-docks/deep-docks-chains-west#main-area",
+      "deep-docks/deep-docks-chains-west#middle-crossing-left",
+      "deep-docks/deep-docks-chains-west#lower-left-exit",
+      "deep-docks/deep-docks-chains-west#lower-right-exit",
+      "deep-docks/deep-docks-chains-west#shard-bundle",
+      "deep-docks/deep-docks-chains-west#middle-crossing-right"
+    ],
+    "exits": [
+      "deep-docks/deep-docks-chains-west@ul",
+      "deep-docks/deep-docks-chains-west@ll",
+      "deep-docks/deep-docks-chains-west@ur",
+      "deep-docks/deep-docks-chains-west@mr",
+      "deep-docks/deep-docks-chains-west@lr"
+    ]
+  },
+  {
+    "name": "Lavalarga",
+    "room": "deep-docks/deep-docks-magma-slug-tunnels",
+    "act": 2,
+    "nodes": [
+      "deep-docks/deep-docks-magma-slug-tunnels#upper-far-left",
+      "deep-docks/deep-docks-magma-slug-tunnels#upper-mid-left",
+      "deep-docks/deep-docks-magma-slug-tunnels#upper-mid-right",
+      "deep-docks/deep-docks-magma-slug-tunnels#upper-far-right",
+      "deep-docks/deep-docks-magma-slug-tunnels#worst-spot-in-the-game",
+      "deep-docks/deep-docks-magma-slug-tunnels#check-alcove",
+      "deep-docks/deep-docks-magma-slug-tunnels#right-tunnel-1",
+      "deep-docks/deep-docks-magma-slug-tunnels#right-tunnel-2",
+      "deep-docks/deep-docks-magma-slug-tunnels#right-tunnel-3"
+    ],
+    "exits": [
+      "deep-docks/deep-docks-magma-slug-tunnels@l",
+      "deep-docks/deep-docks-magma-slug-tunnels@r"
+    ]
+  },
+  {
+    "name": "Hardbone Hopper",
+    "room": "deep-docks/deep-docks-spire-lower",
+    "act": 1,
+    "nodes": [
+      "deep-docks/deep-docks-spire-lower#top-left-entrance-path",
+      "deep-docks/deep-docks-spire-lower#top-right-entrance-path",
+      "deep-docks/deep-docks-spire-lower#rosary",
+      "deep-docks/deep-docks-spire-lower#floor"
+    ],
+    "exits": [
+      "deep-docks/deep-docks-spire-lower@c",
+      "deep-docks/deep-docks-spire-lower@l"
+    ]
+  },
+  {
+    "name": "Hardbone Elder",
+    "room": "far-fields/far-fields-deep-entrance",
+    "act": 2,
+    "nodes": [
+      "far-fields/far-fields-deep-entrance#left-exit-area",
+      "far-fields/far-fields-deep-entrance#bottom-exit-area",
+      "far-fields/far-fields-deep-entrance#right-exit-area",
+      "far-fields/far-fields-deep-entrance#lower-left-alcove",
+      "far-fields/far-fields-deep-entrance#middle-left-platform",
+      "far-fields/far-fields-deep-entrance#plains",
+      "far-fields/far-fields-deep-entrance#lower-right-area",
+      "far-fields/far-fields-deep-entrance#lower-right-alcove",
+      "far-fields/far-fields-deep-entrance#upper-right-alcove",
+      "far-fields/far-fields-deep-entrance#left-of-right-exit-gate",
+      "far-fields/far-fields-deep-entrance#plains-upper-right-platform",
+      "far-fields/far-fields-deep-entrance#plains-upper-left-platform"
+    ],
+    "exits": [
+      "far-fields/far-fields-deep-entrance@f",
+      "far-fields/far-fields-deep-entrance@l",
+      "far-fields/far-fields-deep-entrance@r"
+    ]
+  },
+  {
+    "name": "Fertid",
+    "room": "far-fields/far-fields-entrance-west",
+    "act": 1,
+    "nodes": [
+      "far-fields/far-fields-entrance-west#lower-walkway",
+      "far-fields/far-fields-entrance-west#upper-right-platforms",
+      "far-fields/far-fields-entrance-west#lower-right-exit-platform",
+      "far-fields/far-fields-entrance-west#upper-left-platforms",
+      "far-fields/far-fields-entrance-west#check-alcove"
+    ],
+    "exits": [
+      "far-fields/far-fields-entrance-west@ur",
+      "far-fields/far-fields-entrance-west@lr",
+      "far-fields/far-fields-entrance-west@l",
+      "far-fields/far-fields-entrance-west@c"
+    ]
+  },
+  {
+    "name": "Flapping Fertid",
+    "room": "far-fields/far-fields-entrance-west",
+    "act": 1,
+    "nodes": [
+      "far-fields/far-fields-entrance-west#lower-walkway",
+      "far-fields/far-fields-entrance-west#upper-right-platforms",
+      "far-fields/far-fields-entrance-west#lower-right-exit-platform",
+      "far-fields/far-fields-entrance-west#upper-left-platforms",
+      "far-fields/far-fields-entrance-west#check-alcove"
+    ],
+    "exits": [
+      "far-fields/far-fields-entrance-west@ur",
+      "far-fields/far-fields-entrance-west@lr",
+      "far-fields/far-fields-entrance-west@l",
+      "far-fields/far-fields-entrance-west@c"
+    ]
+  },
+  {
+    "name": "Brushflit",
+    "room": "far-fields/far-fields-wind-shaft",
+    "act": 1,
+    "nodes": [
+      "far-fields/far-fields-wind-shaft#upper-crossing",
+      "far-fields/far-fields-wind-shaft#rosary-cache-spot",
+      "far-fields/far-fields-wind-shaft#r4-left",
+      "far-fields/far-fields-wind-shaft#r4-area",
+      "far-fields/far-fields-wind-shaft#below-r4",
+      "far-fields/far-fields-wind-shaft#mort-corpse-platform",
+      "far-fields/far-fields-wind-shaft#middle-crossing",
+      "far-fields/far-fields-wind-shaft#l2-area",
+      "far-fields/far-fields-wind-shaft#r5-area",
+      "far-fields/far-fields-wind-shaft#r3-area",
+      "far-fields/far-fields-wind-shaft#left-almost-bottom",
+      "far-fields/far-fields-wind-shaft#the-bottom"
+    ],
+    "exits": [
+      "far-fields/far-fields-wind-shaft@c",
+      "far-fields/far-fields-wind-shaft@r1",
+      "far-fields/far-fields-wind-shaft@r4",
+      "far-fields/far-fields-wind-shaft@r2",
+      "far-fields/far-fields-wind-shaft@r5",
+      "far-fields/far-fields-wind-shaft@r3",
+      "far-fields/far-fields-wind-shaft@l4",
+      "far-fields/far-fields-wind-shaft@l1",
+      "far-fields/far-fields-wind-shaft@l2",
+      "far-fields/far-fields-wind-shaft@l3"
+    ]
+  },
+  {
+    "name": "Mitemother",
+    "room": "greymoor/greymoor-rat-tunnel",
+    "act": 1,
+    "nodes": [
+      "greymoor/greymoor-rat-tunnel#top-left-shaft-upper",
+      "greymoor/greymoor-rat-tunnel#top-left-shaft-center",
+      "greymoor/greymoor-rat-tunnel#top-left-shaft-bottom",
+      "greymoor/greymoor-rat-tunnel#top-right-section-upper",
+      "greymoor/greymoor-rat-tunnel#top-right-section-center",
+      "greymoor/greymoor-rat-tunnel#top-right-section-bottom",
+      "greymoor/greymoor-rat-tunnel#bellway-secret-entrance",
+      "greymoor/greymoor-rat-tunnel#bottom-section-left",
+      "greymoor/greymoor-rat-tunnel#bottom-section-right"
+    ],
+    "exits": [
+      "greymoor/greymoor-rat-tunnel@l",
+      "greymoor/greymoor-rat-tunnel@t"
+    ]
+  },
+  {
+    "name": "Fluttermite",
+    "room": "greymoor/greymoor-silver-shells-room",
+    "act": 1,
+    "nodes": [
+      "greymoor/greymoor-silver-shells-room#main-path",
+      "greymoor/greymoor-silver-shells-room#hidden-area"
+    ],
+    "exits": [
+      "greymoor/greymoor-silver-shells-room@l",
+      "greymoor/greymoor-silver-shells-room@u"
+    ]
+  },
+  {
+    "name": "Shardillard",
+    "room": "greymoor/greymoor-silver-shells-room",
+    "act": 1,
+    "nodes": [
+      "greymoor/greymoor-silver-shells-room#main-path",
+      "greymoor/greymoor-silver-shells-room#hidden-area"
+    ],
+    "exits": [
+      "greymoor/greymoor-silver-shells-room@l",
+      "greymoor/greymoor-silver-shells-room@u"
+    ]
+  },
+  {
+    "name": "Mite",
+    "room": "greymoor/greymoor-western-tower",
+    "act": 1,
+    "nodes": [
+      "greymoor/greymoor-western-tower#lower-section",
+      "greymoor/greymoor-western-tower#guarded-platforms",
+      "greymoor/greymoor-western-tower#lower-spike-wheel",
+      "greymoor/greymoor-western-tower#upper-spike-wheel",
+      "greymoor/greymoor-western-tower#tower-top-section",
+      "greymoor/greymoor-western-tower#whisp-thicket-entrance",
+      "greymoor/greymoor-western-tower#middle-section"
+    ],
+    "exits": [
+      "greymoor/greymoor-western-tower@lr",
+      "greymoor/greymoor-western-tower@ll",
+      "greymoor/greymoor-western-tower@ml",
+      "greymoor/greymoor-western-tower@mr",
+      "greymoor/greymoor-western-tower@yp",
+      "greymoor/greymoor-western-tower@gr",
+      "greymoor/greymoor-western-tower@ur",
+      "greymoor/greymoor-western-tower@t"
+    ]
+  },
+  {
+    "name": "Giant Drapemite",
+    "room": "high-halls/high-halls-cogfly-room",
+    "act": 2,
+    "nodes": [
+      "high-halls/high-halls-cogfly-room#main-area",
+      "high-halls/high-halls-cogfly-room#down-the-drain"
+    ],
+    "exits": [
+      "high-halls/high-halls-cogfly-room@r"
+    ]
+  },
+  {
+    "name": "Drapefly",
+    "room": "high-halls/high-halls-flooded-room",
+    "act": 2,
+    "nodes": [
+      "high-halls/high-halls-flooded-room#left-exit-area",
+      "high-halls/high-halls-flooded-room#right-exit-area",
+      "high-halls/high-halls-flooded-room#relic-spot"
+    ],
+    "exits": [
+      "high-halls/high-halls-flooded-room@l",
+      "high-halls/high-halls-flooded-room@r"
+    ]
+  },
+  {
+    "name": "Skarrlid",
+    "room": "hunter-s-march/hunters-march-early-pathway-west",
+    "act": 1,
+    "nodes": [
+      "hunter-s-march/hunters-march-early-pathway-west#upper-left-platforms",
+      "hunter-s-march/hunters-march-early-pathway-west#upper-right-platforms",
+      "hunter-s-march/hunters-march-early-pathway-west#trapped-platform",
+      "hunter-s-march/hunters-march-early-pathway-west#upper-left-alcove",
+      "hunter-s-march/hunters-march-early-pathway-west#left-exit-area",
+      "hunter-s-march/hunters-march-early-pathway-west#lower-floor"
+    ],
+    "exits": [
+      "hunter-s-march/hunters-march-early-pathway-west@l",
+      "hunter-s-march/hunters-march-early-pathway-west@r"
+    ]
+  },
+  {
+    "name": "Skarrwing",
+    "room": "hunter-s-march/hunters-march-pogo-intro",
+    "act": 1,
+    "nodes": [
+      "hunter-s-march/hunters-march-pogo-intro#flea-rescue-area",
+      "hunter-s-march/hunters-march-pogo-intro#main-area"
+    ],
+    "exits": [
+      "hunter-s-march/hunters-march-pogo-intro@l",
+      "hunter-s-march/hunters-march-pogo-intro@r"
+    ]
+  },
+  {
+    "name": "Beastfly",
+    "room": "memorium/memorium-rhino-room",
+    "act": 2,
+    "nodes": [
+      "memorium/memorium-rhino-room#room"
+    ],
+    "exits": [
+      "memorium/memorium-rhino-room@r",
+      "memorium/memorium-rhino-room@l"
+    ]
+  },
+  {
+    "name": "Skull Scuttler",
+    "room": "memorium/memorium-rhino-room",
+    "act": 2,
+    "nodes": [
+      "memorium/memorium-rhino-room#room"
+    ],
+    "exits": [
+      "memorium/memorium-rhino-room@r",
+      "memorium/memorium-rhino-room@l"
+    ]
+  },
+  {
+    "name": "Mossmir",
+    "room": "memorium/memorium-start-shaft",
+    "act": 2,
+    "nodes": [
+      "memorium/memorium-start-shaft#base",
+      "memorium/memorium-start-shaft#almost-bottom",
+      "memorium/memorium-start-shaft#almost-middle",
+      "memorium/memorium-start-shaft#lore-platform",
+      "memorium/memorium-start-shaft#above-evil-wall",
+      "memorium/memorium-start-shaft#ventrica-ledge",
+      "memorium/memorium-start-shaft#volt-ledge",
+      "memorium/memorium-start-shaft#tippidy-top"
+    ],
+    "exits": [
+      "memorium/memorium-start-shaft@bl",
+      "memorium/memorium-start-shaft@r",
+      "memorium/memorium-start-shaft@ve",
+      "memorium/memorium-start-shaft@t",
+      "memorium/memorium-start-shaft@b",
+      "memorium/memorium-start-shaft@ml",
+      "memorium/memorium-start-shaft@llr",
+      "memorium/memorium-start-shaft@vn",
+      "memorium/memorium-start-shaft@lr"
+    ]
+  },
+  {
+    "name": "Gahlia",
+    "room": "memorium/memorium-water-room",
+    "act": 2,
+    "nodes": [
+      "memorium/memorium-water-room#center",
+      "memorium/memorium-water-room#right-side"
+    ],
+    "exits": [
+      "memorium/memorium-water-room@t",
+      "memorium/memorium-water-room@r"
+    ]
+  },
+  {
+    "name": "Mawling",
+    "room": "memorium/seed-shooty-memorium",
+    "act": 2,
+    "nodes": [
+      "memorium/seed-shooty-memorium#middle",
+      "memorium/seed-shooty-memorium#bottom",
+      "memorium/seed-shooty-memorium#top",
+      "memorium/seed-shooty-memorium#not-connected"
+    ],
+    "exits": [
+      "memorium/seed-shooty-memorium@ut",
+      "memorium/seed-shooty-memorium@ll",
+      "memorium/seed-shooty-memorium@bl",
+      "memorium/seed-shooty-memorium@t",
+      "memorium/seed-shooty-memorium@r",
+      "memorium/seed-shooty-memorium@lr"
+    ]
+  },
+  {
+    "name": "Mossgrub",
+    "room": "moss-grotto/moss-grotto-east",
+    "act": 1,
+    "nodes": [
+      "moss-grotto/moss-grotto-east#ground-floor",
+      "moss-grotto/moss-grotto-east#weavenest-door-platform",
+      "moss-grotto/moss-grotto-east#upper-platforms",
+      "moss-grotto/moss-grotto-east#alcove-check-spot"
+    ],
+    "exits": [
+      "moss-grotto/moss-grotto-east@ul",
+      "moss-grotto/moss-grotto-east@ll",
+      "moss-grotto/moss-grotto-east@wd"
+    ]
+  },
+  {
+    "name": "Mossmir",
+    "room": "moss-grotto/moss-grotto-west",
+    "act": 1,
+    "nodes": [
+      "moss-grotto/moss-grotto-west#lower-right-exit-area",
+      "moss-grotto/moss-grotto-west#the-pond",
+      "moss-grotto/moss-grotto-west#the-backroom-floor",
+      "moss-grotto/moss-grotto-west#the-backroom-cache",
+      "moss-grotto/moss-grotto-west#upper-level",
+      "moss-grotto/moss-grotto-west#mossberry-platform"
+    ],
+    "exits": [
+      "moss-grotto/moss-grotto-west@ur",
+      "moss-grotto/moss-grotto-west@lr"
+    ]
+  },
+  {
+    "name": "Spit Squit",
+    "room": "putrified-ducts/putrified-ducts-tall-room",
+    "act": 2,
+    "nodes": [
+      "putrified-ducts/putrified-ducts-tall-room#top-left",
+      "putrified-ducts/putrified-ducts-tall-room#bellway-door",
+      "putrified-ducts/putrified-ducts-tall-room#middle-platform",
+      "putrified-ducts/putrified-ducts-tall-room#lower-sewage-tunnel"
+    ],
+    "exits": [
+      "putrified-ducts/putrified-ducts-tall-room@ul",
+      "putrified-ducts/putrified-ducts-tall-room@ur",
+      "putrified-ducts/putrified-ducts-tall-room@ml",
+      "putrified-ducts/putrified-ducts-tall-room@mr",
+      "putrified-ducts/putrified-ducts-tall-room@ll",
+      "putrified-ducts/putrified-ducts-tall-room@lr"
+    ]
+  },
+  {
+    "name": "Shardillard",
+    "room": "sands-of-karak/sands-of-karak-elevator-to-blasted-steps",
+    "act": 2,
+    "nodes": [
+      "sands-of-karak/sands-of-karak-elevator-to-blasted-steps#left",
+      "sands-of-karak/sands-of-karak-elevator-to-blasted-steps#right",
+      "sands-of-karak/sands-of-karak-elevator-to-blasted-steps#bottom",
+      "sands-of-karak/sands-of-karak-elevator-to-blasted-steps#shardilard-ledge"
+    ],
+    "exits": [
+      "sands-of-karak/sands-of-karak-elevator-to-blasted-steps@l",
+      "sands-of-karak/sands-of-karak-elevator-to-blasted-steps@r",
+      "sands-of-karak/sands-of-karak-elevator-to-blasted-steps@f"
+    ]
+  },
+  {
+    "name": "Phacia",
+    "room": "shellwood/cling-grip-room",
+    "act": 1,
+    "nodes": [
+      "shellwood/cling-grip-room#ground-level",
+      "shellwood/cling-grip-room#central-level",
+      "shellwood/cling-grip-room#upper-level"
+    ],
+    "exits": [
+      "shellwood/cling-grip-room@ur",
+      "shellwood/cling-grip-room@lr",
+      "shellwood/cling-grip-room@ml",
+      "shellwood/cling-grip-room@ul",
+      "shellwood/cling-grip-room@mr",
+      "shellwood/cling-grip-room@ll"
+    ]
+  },
+  {
+    "name": "Gahlia",
+    "room": "shellwood/shellwood-sister-splinter-bench",
+    "act": 1,
+    "nodes": [
+      "shellwood/shellwood-sister-splinter-bench#above-arena",
+      "shellwood/shellwood-sister-splinter-bench#arena",
+      "shellwood/shellwood-sister-splinter-bench#bench-toll",
+      "shellwood/shellwood-sister-splinter-bench#elevator-platform",
+      "shellwood/shellwood-sister-splinter-bench#upper-main",
+      "shellwood/shellwood-sister-splinter-bench#upper-hidden"
+    ],
+    "exits": [
+      "shellwood/shellwood-sister-splinter-bench@ur",
+      "shellwood/shellwood-sister-splinter-bench@mr",
+      "shellwood/shellwood-sister-splinter-bench@ll",
+      "shellwood/shellwood-sister-splinter-bench@ul",
+      "shellwood/shellwood-sister-splinter-bench@lr"
+    ]
+  },
+  {
+    "name": "Skull Scuttler",
+    "room": "the-abyss/abyss-escape",
+    "act": 3,
+    "nodes": [
+      "the-abyss/abyss-escape#start",
+      "the-abyss/abyss-escape#end"
+    ],
+    "exits": [
+      "the-abyss/abyss-escape@c",
+      "the-abyss/abyss-escape@f"
+    ]
+  },
+  {
+    "name": "Shadow Creeper",
+    "room": "the-abyss/abyss-landing-zone",
+    "act": 3,
+    "nodes": [
+      "the-abyss/abyss-landing-zone#landing-zone",
+      "the-abyss/abyss-landing-zone#shard-room",
+      "the-abyss/abyss-landing-zone#lower-exit",
+      "the-abyss/abyss-landing-zone#upper-exit"
+    ],
+    "exits": [
+      "the-abyss/abyss-landing-zone@ul",
+      "the-abyss/abyss-landing-zone@d1",
+      "the-abyss/abyss-landing-zone@d2",
+      "the-abyss/abyss-landing-zone@ll"
+    ]
+  },
+  {
+    "name": "Gargant Gloom",
+    "room": "the-abyss/abyss-upper-big-room",
+    "act": 3,
+    "nodes": [
+      "the-abyss/abyss-upper-big-room#upper-zone",
+      "the-abyss/abyss-upper-big-room#right-exit",
+      "the-abyss/abyss-upper-big-room#left-exit"
+    ],
+    "exits": [
+      "the-abyss/abyss-upper-big-room@l",
+      "the-abyss/abyss-upper-big-room@c",
+      "the-abyss/abyss-upper-big-room@r"
+    ]
+  },
+  {
+    "name": "Pharlid Diver",
+    "room": "the-cradle/cradle-path-of-pain-first-room",
+    "act": 3,
+    "nodes": [
+      "the-cradle/cradle-path-of-pain-first-room#start",
+      "the-cradle/cradle-path-of-pain-first-room#end"
+    ],
+    "exits": [
+      "the-cradle/cradle-path-of-pain-first-room@c",
+      "the-cradle/cradle-path-of-pain-first-room@l"
+    ]
+  },
+  {
+    "name": "Beastfly",
+    "room": "the-marrow/the-marrow-entrance",
+    "act": 1,
+    "nodes": [
+      "the-marrow/the-marrow-entrance#ceiling-exit",
+      "the-marrow/the-marrow-entrance#gauntlet-arena",
+      "the-marrow/the-marrow-entrance#passage-left",
+      "the-marrow/the-marrow-entrance#passage-right",
+      "the-marrow/the-marrow-entrance#middle-left",
+      "the-marrow/the-marrow-entrance#above-gauntlet",
+      "the-marrow/the-marrow-entrance#left-of-gauntlet"
+    ],
+    "exits": [
+      "the-marrow/the-marrow-entrance@ll",
+      "the-marrow/the-marrow-entrance@lr",
+      "the-marrow/the-marrow-entrance@ur",
+      "the-marrow/the-marrow-entrance@c"
+    ]
+  },
+  {
+    "name": "Skull Scuttler",
+    "room": "the-marrow/the-marrow-entrance",
+    "act": 1,
+    "nodes": [
+      "the-marrow/the-marrow-entrance#ceiling-exit",
+      "the-marrow/the-marrow-entrance#gauntlet-arena",
+      "the-marrow/the-marrow-entrance#passage-left",
+      "the-marrow/the-marrow-entrance#passage-right",
+      "the-marrow/the-marrow-entrance#middle-left",
+      "the-marrow/the-marrow-entrance#above-gauntlet",
+      "the-marrow/the-marrow-entrance#left-of-gauntlet"
+    ],
+    "exits": [
+      "the-marrow/the-marrow-entrance@ll",
+      "the-marrow/the-marrow-entrance@lr",
+      "the-marrow/the-marrow-entrance@ur",
+      "the-marrow/the-marrow-entrance@c"
+    ]
+  },
+  {
+    "name": "Kilik",
+    "room": "the-marrow/the-marrow-lava-track",
+    "act": 1,
+    "nodes": [
+      "the-marrow/the-marrow-lava-track#ceiling-exit-area",
+      "the-marrow/the-marrow-lava-track#upper-maze-left",
+      "the-marrow/the-marrow-lava-track#middle-maze",
+      "the-marrow/the-marrow-lava-track#left-alcove",
+      "the-marrow/the-marrow-lava-track#lower-maze-1",
+      "the-marrow/the-marrow-lava-track#lower-maze-2",
+      "the-marrow/the-marrow-lava-track#lower-maze-3",
+      "the-marrow/the-marrow-lava-track#right-alcove",
+      "the-marrow/the-marrow-lava-track#left-lava-track",
+      "the-marrow/the-marrow-lava-track#right-lava-track"
+    ],
+    "exits": [
+      "the-marrow/the-marrow-lava-track@l",
+      "the-marrow/the-marrow-lava-track@r",
+      "the-marrow/the-marrow-lava-track@c"
+    ]
+  },
+  {
+    "name": "Caranid",
+    "room": "the-marrow/the-marrow-lower-pogo",
+    "act": 1,
+    "nodes": [
+      "the-marrow/the-marrow-lower-pogo#lower-right-exit-area",
+      "the-marrow/the-marrow-lower-pogo#craftmetal-alcove",
+      "the-marrow/the-marrow-lower-pogo#upper-mid-right-area",
+      "the-marrow/the-marrow-lower-pogo#lower-mid-right-area",
+      "the-marrow/the-marrow-lower-pogo#cache-alcove",
+      "the-marrow/the-marrow-lower-pogo#pogo-supreme"
+    ],
+    "exits": [
+      "the-marrow/the-marrow-lower-pogo@c",
+      "the-marrow/the-marrow-lower-pogo@l",
+      "the-marrow/the-marrow-lower-pogo@ur",
+      "the-marrow/the-marrow-lower-pogo@lr"
+    ]
+  },
+  {
+    "name": "Wardenfly",
+    "room": "the-slab/slab-chilly-top",
+    "act": 2,
+    "nodes": [
+      "the-slab/slab-chilly-top#room"
+    ],
+    "exits": [
+      "the-slab/slab-chilly-top@bl",
+      "the-slab/slab-chilly-top@br"
+    ]
+  },
+  {
+    "name": "Scabfly",
+    "room": "the-slab/slab-infleatween-bottom",
+    "act": 2,
+    "nodes": [
+      "the-slab/slab-infleatween-bottom#top",
+      "the-slab/slab-infleatween-bottom#bottom",
+      "the-slab/slab-infleatween-bottom#mid"
+    ],
+    "exits": [
+      "the-slab/slab-infleatween-bottom@b",
+      "the-slab/slab-infleatween-bottom@t",
+      "the-slab/slab-infleatween-bottom@r"
+    ]
+  },
+  {
+    "name": "Pharlid Diver",
+    "room": "whispering-vaults/whispering-vaults-jumps",
+    "act": 2,
+    "nodes": [
+      "whispering-vaults/whispering-vaults-jumps#flea-chase",
+      "whispering-vaults/whispering-vaults-jumps#flea",
+      "whispering-vaults/whispering-vaults-jumps#annoying-ass-jump-left",
+      "whispering-vaults/whispering-vaults-jumps#annoying-ass-jump-right",
+      "whispering-vaults/whispering-vaults-jumps#jump-2-right",
+      "whispering-vaults/whispering-vaults-jumps#jump-2-left",
+      "whispering-vaults/whispering-vaults-jumps#rosary-necklace",
+      "whispering-vaults/whispering-vaults-jumps#room-with-stuff",
+      "whispering-vaults/whispering-vaults-jumps#bottom-right-entrance"
+    ],
+    "exits": [
+      "whispering-vaults/whispering-vaults-jumps@b",
+      "whispering-vaults/whispering-vaults-jumps@l"
+    ]
+  },
+  {
+    "name": "Skullwing",
+    "room": "the-abyss/abyss-escape",
+    "act": 3,
+    "nodes": [
+      "the-abyss/abyss-escape#start",
+      "the-abyss/abyss-escape#end"
+    ],
+    "exits": [
+      "the-abyss/abyss-escape@c",
+      "the-abyss/abyss-escape@f"
+    ]
+  },
+  {
+    "name": "Skullwing",
+    "room": "weavenest-atla/weavenest-atla-mask-shard",
+    "act": 2,
+    "nodes": [
+      "weavenest-atla/weavenest-atla-mask-shard#left-exit-area",
+      "weavenest-atla/weavenest-atla-mask-shard#starting-line",
+      "weavenest-atla/weavenest-atla-mask-shard#mask-shard-spot"
+    ],
+    "exits": [
+      "weavenest-atla/weavenest-atla-mask-shard@l"
+    ]
+  }
+]

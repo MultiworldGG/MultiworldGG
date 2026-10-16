@@ -1,0 +1,1286 @@
+[
+  {
+    "boss": "Boss: Groal the Great",
+    "item": "Soul of Groal the Great",
+    "item_id": 835424,
+    "events": [
+      "Room Event: event:mapper/c072b5f9-82a5-469b-8bf6-b91bb53e5180"
+    ],
+    "combat": [
+      "Combat: Groal the Great",
+      "Combat: Bilehaven (Groal the Great) Gauntlet"
+    ],
+    "actors": [],
+    "battles": [
+      {
+        "scene": "shadow_18",
+        "path": "Battle Scene"
+      }
+    ],
+    "states": []
+  },
+  {
+    "boss": "Boss: Moss Mother",
+    "item": "Soul of Moss Mother",
+    "item_id": 835425,
+    "events": [
+      "Room Event: event:mapper/c1c40522-825e-4744-a8c8-a6ea83f47f32",
+      "Room Event: event:mapper/62c0e376-c2a5-4c12-bb6e-cc265721ee5f"
+    ],
+    "combat": [
+      "Combat: Moss Mother (Ruined Chapel)",
+      "Combat: Moss Mother (Weavenest Atla)"
+    ],
+    "actors": [
+      {
+        "scene": "tut_02",
+        "path": "Black Thread States Thread Only Variant/Black Thread World/Mossbone Mother Scene/Mossbone Mother Ambient"
+      },
+      {
+        "scene": "tut_03",
+        "path": "Black Thread States/Normal World/Battle Scene/Wave 1/Mossbone Mother"
+      },
+      {
+        "scene": "weave_03",
+        "path": "Boss Scene/Bosses/Mossbone Mother A"
+      },
+      {
+        "scene": "weave_03",
+        "path": "Boss Scene/Bosses/Mossbone Mother B"
+      }
+    ],
+    "battles": [
+      {
+        "scene": "weave_03",
+        "path": "Boss Scene"
+      },
+      {
+        "scene": "tut_03",
+        "path": "Black Thread States/Normal World/Battle Scene"
+      }
+    ],
+    "states": [
+      {
+        "scene": "tut_03",
+        "path": "Black Thread States/Normal World/Battle Scene/Wave 1/Mossbone Mother",
+        "fsm": "Control",
+        "states": [
+          "Start Battle"
+        ]
+      },
+      {
+        "scene": "weave_03",
+        "path": "Boss Scene/Bosses/Mossbone Mother A",
+        "fsm": "Control",
+        "states": [
+          "Start Battle"
+        ]
+      },
+      {
+        "scene": "weave_03",
+        "path": "Boss Scene/Bosses/Mossbone Mother B",
+        "fsm": "Control",
+        "states": [
+          "Start Battle"
+        ]
+      }
+    ]
+  },
+  {
+    "boss": "Boss: Broodmother",
+    "item": "Soul of Broodmother",
+    "item_id": 835426,
+    "events": [
+      "Room Event: event:mapper/reviewed:broodmother-defeated"
+    ],
+    "combat": [
+      "Combat: Broodmother",
+      "Combat: Broodmother Gauntlet"
+    ],
+    "actors": [],
+    "battles": [
+      {
+        "scene": "slab_16b",
+        "path": "Broodmother Scene Control/Broodmother Scene/Battle Scene Broodmother"
+      }
+    ],
+    "states": []
+  },
+  {
+    "boss": "Boss: Crawfather",
+    "item": "Soul of Crawfather",
+    "item_id": 835427,
+    "events": [
+      "Room Event: event:mapper/reviewed:crawfather-defeated"
+    ],
+    "combat": [
+      "Combat: Crawfather",
+      "Combat: Crawfather Gauntlet"
+    ],
+    "actors": [],
+    "battles": [
+      {
+        "scene": "room_crowcourt_02",
+        "path": "Battle Scene"
+      }
+    ],
+    "states": [
+      {
+        "scene": "room_crowcourt_02",
+        "path": "Battle Scene/Battle Start",
+        "fsm": "Battle Start",
+        "states": [
+          "Idle",
+          "Enter"
+        ]
+      }
+    ]
+  },
+  {
+    "boss": "Boss: Disgraced Chef Lugoli",
+    "item": "Soul of Disgraced Chef Lugoli",
+    "item_id": 835428,
+    "events": [
+      "Room Event: event:mapper/ece84bf2-8875-4350-8d8a-a8cd071e0b5e"
+    ],
+    "combat": [
+      "Combat: Disgraced Chef Lugoli"
+    ],
+    "actors": [],
+    "battles": [
+      {
+        "scene": "dust_chef",
+        "path": "Battle Parent/Battle Scene"
+      }
+    ],
+    "states": [
+      {
+        "scene": "dust_chef",
+        "path": "Battle Parent/Kitchen Pipe Gong",
+        "fsm": "Gong Hit Reaction",
+        "states": [
+          "Hero Inside?",
+          "Hit Wait",
+          "Start Battle"
+        ]
+      }
+    ]
+  },
+  {
+    "boss": "Boss: Skull Tyrant (The Marrow)",
+    "item": "Soul of Skull Tyrant",
+    "item_id": 835430,
+    "events": [
+      "Room Event: event:mapper/2dba90b5-6ec3-4ec9-8016-60c859aecbd7"
+    ],
+    "combat": [
+      "Combat: Skull Tyrant (The Marrow)"
+    ],
+    "actors": [
+      {
+        "scene": "bone_15",
+        "path": "Boss Scene/Skull King"
+      }
+    ],
+    "battles": [],
+    "states": []
+  },
+  {
+    "boss": "Boss: Skull Tyrant (Bone Bottom)",
+    "item": "Soul of Skull Tyrant",
+    "item_id": 835430,
+    "events": [
+      "Room Event: event:mapper/f09ff4af-eadc-4167-ac83-aa27cf52e966"
+    ],
+    "combat": [
+      "Combat: Skull Tyrant (Bone Bottom)"
+    ],
+    "actors": [
+      {
+        "scene": "bonetown_boss",
+        "path": "Boss Scene/Skull King"
+      }
+    ],
+    "battles": [],
+    "states": []
+  },
+  {
+    "boss": "Boss: Raging Conchfly",
+    "item": "Soul of Raging Conchfly",
+    "item_id": 835429,
+    "events": [
+      "Room Event: event:mapper/44adf080-8baa-4759-99b4-65c923940cc5"
+    ],
+    "combat": [
+      "Combat: Raging Conchfly"
+    ],
+    "actors": [],
+    "battles": [
+      {
+        "scene": "coral_27",
+        "path": "Battle Scene"
+      }
+    ],
+    "states": []
+  },
+  {
+    "boss": "Boss: Bell Beast",
+    "item": "Soul of Bell Beast",
+    "item_id": 842008,
+    "events": [
+      "Room Event: event:mapper/95f1f75b-e452-4709-9fbc-ad8785ac520a"
+    ],
+    "combat": [
+      "Combat: Bell Beast"
+    ],
+    "actors": [
+      {
+        "scene": "bone_05_boss",
+        "path": "Boss Scene/Bone Beast"
+      },
+      {
+        "scene": "bone_05_boss",
+        "path": "Boss Scene/Thick Silk Vines Beast/Beast"
+      }
+    ],
+    "battles": [],
+    "states": [
+      {
+        "scene": "bone_05_boss",
+        "path": "Boss Scene/Return Battle",
+        "fsm": "Start Return Battle",
+        "states": [
+          "Idle",
+          "Scene Setup"
+        ]
+      }
+    ]
+  },
+  {
+    "boss": "Boss: Bell Eater",
+    "item": "Soul of Bell Eater",
+    "item_id": 842009,
+    "events": [
+      "Room Event: event:mapper/reviewed:bell-eater-defeated"
+    ],
+    "combat": [],
+    "actors": [
+      {
+        "scene": "bellway_centipede_arena",
+        "path": "Boss Scene/Centipede Control"
+      }
+    ],
+    "battles": [],
+    "states": [
+      {
+        "scene": "bellway_centipede_arena",
+        "path": "Boss Scene/Centipede Control",
+        "fsm": "Control",
+        "states": [
+          "Dormant"
+        ]
+      }
+    ]
+  },
+  {
+    "boss": "Boss: Cogwork Dancers",
+    "item": "Soul of Cogwork Dancers",
+    "item_id": 842010,
+    "events": [
+      "Room Event: event:mapper/282aae6f-3964-4935-93ea-5beaa6ef9fa4"
+    ],
+    "combat": [
+      "Combat: Cogwork Dancers"
+    ],
+    "actors": [
+      {
+        "scene": "cog_dancers_boss",
+        "path": "Dancer Control/Dancer A"
+      },
+      {
+        "scene": "cog_dancers_boss",
+        "path": "Dancer Control/Dancer B"
+      }
+    ],
+    "battles": [],
+    "states": [
+      {
+        "scene": "cog_dancers_boss",
+        "path": "Dancer Control",
+        "fsm": "Control",
+        "states": [
+          "Dormant",
+          "Gate Close"
+        ]
+      }
+    ]
+  },
+  {
+    "boss": "Boss: Crust King Khann",
+    "item": "Soul of Crust King Khann",
+    "item_id": 842011,
+    "events": [
+      "Room Event: event:mapper/reviewed:khann-memory-heart"
+    ],
+    "combat": [],
+    "actors": [
+      {
+        "scene": "memory_coral_tower",
+        "path": "Boss Scene/Coral King"
+      },
+      {
+        "scene": "coral_tower_01",
+        "path": "Memory Group/before/thread_memory"
+      }
+    ],
+    "battles": [],
+    "states": [
+      {
+        "scene": "memory_coral_tower",
+        "path": "Boss Scene",
+        "fsm": "Control",
+        "states": [
+          "Ready",
+          "Enter"
+        ]
+      }
+    ]
+  },
+  {
+    "boss": "Boss: Father of the Flame",
+    "item": "Soul of Father of the Flame",
+    "item_id": 842012,
+    "events": [
+      "Room Event: event:mapper/697f2d8b-d1f3-46c2-b8b3-e602e25ed870"
+    ],
+    "combat": [
+      "Combat: Father of the Flame"
+    ],
+    "actors": [
+      {
+        "scene": "belltown_08",
+        "path": "Boss Scene/Wisp Pyre Effigy"
+      }
+    ],
+    "battles": [],
+    "states": []
+  },
+  {
+    "boss": "Boss: First Sinner",
+    "item": "Soul of First Sinner",
+    "item_id": 842013,
+    "events": [],
+    "combat": [
+      "Combat: First Sinner"
+    ],
+    "actors": [
+      {
+        "scene": "slab_10b",
+        "path": "Boss Scene/First Weaver"
+      },
+      {
+        "scene": "slab_10b",
+        "path": "Boss Scene/Shrine First Weaver NPC"
+      }
+    ],
+    "battles": [],
+    "states": []
+  },
+  {
+    "boss": "Boss: Forebrothers Signis & Gron",
+    "item": "Soul of Forebrothers Signis & Gron",
+    "item_id": 842014,
+    "events": [
+      "Room Event: event:mapper/e3836a7a-fb8a-4ee0-a080-f1e550b07168"
+    ],
+    "combat": [
+      "Combat: Forebrothers Signis & Gron"
+    ],
+    "actors": [
+      {
+        "scene": "dock_09",
+        "path": "Boss Scene/Dock Guard Slasher"
+      },
+      {
+        "scene": "dock_09",
+        "path": "Boss Scene/Dock Guard Thrower"
+      }
+    ],
+    "battles": [],
+    "states": [
+      {
+        "scene": "dock_09",
+        "path": "Boss Scene",
+        "fsm": "Control",
+        "states": [
+          "Battle Ready",
+          "Arena Start"
+        ]
+      }
+    ]
+  },
+  {
+    "boss": "Boss: Fourth Chorus",
+    "item": "Soul of Fourth Chorus",
+    "item_id": 842015,
+    "events": [
+      "Room Event: event:mapper/e6e6d899-9def-42c2-ab77-53db34ced41d"
+    ],
+    "combat": [
+      "Combat: Fourth Chorus"
+    ],
+    "actors": [
+      {
+        "scene": "bone_east_08_boss_golem",
+        "path": "Boss Scene/song_golem"
+      }
+    ],
+    "battles": [],
+    "states": [
+      {
+        "scene": "bone_east_08",
+        "path": "Boss Scene",
+        "fsm": "Control",
+        "states": [
+          "Wake",
+          "Remeet 1"
+        ]
+      },
+      {
+        "scene": "bone_east_08",
+        "path": "Boss Scene",
+        "fsm": "Camera Control",
+        "states": [
+          "Get",
+          "Restart"
+        ]
+      },
+      {
+        "scene": "bone_east_08_boss_golem_rest",
+        "path": "Boss Scene/Golem_rest",
+        "fsm": "Wake",
+        "states": [
+          "Head Wake"
+        ]
+      }
+    ]
+  },
+  {
+    "boss": "Boss: Grand Mother Silk",
+    "item": "Soul of Grand Mother Silk",
+    "item_id": 842016,
+    "events": [
+      "Room Event: event:mapper/94d7df86-0362-407d-b3e7-5b3b02cd64f5"
+    ],
+    "combat": [
+      "Combat: Grand Mother Silk"
+    ],
+    "actors": [
+      {
+        "scene": "cradle_03",
+        "path": "Boss Scene/Silk Boss"
+      },
+      {
+        "scene": "cradle_03",
+        "path": "Boss Scene/Intro Sequence/Challenge Region"
+      }
+    ],
+    "battles": [],
+    "states": [
+      {
+        "scene": "cradle_03",
+        "path": "Boss Scene/Intro Sequence",
+        "fsm": "First Challenge",
+        "states": [
+          "Challenge Cam"
+        ]
+      }
+    ]
+  },
+  {
+    "boss": "Boss: Great Conchflies",
+    "item": "Soul of Great Conchflies",
+    "item_id": 842017,
+    "events": [
+      "Room Event: event:mapper/fbf3657a-2635-4a32-9fb0-ed48e114846c"
+    ],
+    "combat": [
+      "Combat: Great Conchflies"
+    ],
+    "actors": [
+      {
+        "scene": "coral_11",
+        "path": "Black Thread States Thread Only Variant/Normal World/Boss Scene/Driller A"
+      },
+      {
+        "scene": "coral_11",
+        "path": "Black Thread States Thread Only Variant/Normal World/Boss Scene/Driller B"
+      }
+    ],
+    "battles": [],
+    "states": [
+      {
+        "scene": "coral_11",
+        "path": "Black Thread States Thread Only Variant/Normal World/Boss Scene",
+        "fsm": "Control",
+        "states": [
+          "Ready",
+          "Restart Ready",
+          "Solo Ready",
+          "Arena Start"
+        ]
+      }
+    ]
+  },
+  {
+    "boss": "Boss: Gurr the Outcast",
+    "item": "Soul of Gurr the Outcast",
+    "item_id": 842018,
+    "events": [
+      "Room Event: event:mapper/2c331ca8-045d-44ef-8ce7-09b8e35a8041"
+    ],
+    "combat": [
+      "Combat: Gurr the Outcast"
+    ],
+    "actors": [
+      {
+        "scene": "bone_east_18b",
+        "path": "Boss Scene/Bone Hunter Trapper"
+      }
+    ],
+    "battles": [],
+    "states": [
+      {
+        "scene": "bone_east_18b",
+        "path": "Boss Scene",
+        "fsm": "Control",
+        "states": [
+          "Unencountered",
+          "Idle",
+          "Gate Sfx"
+        ]
+      },
+      {
+        "scene": "bone_east_18b",
+        "path": "Group(Split)/Group (4)/TrapBench",
+        "object_name": "TrapBench",
+        "fsm": "Bench Control",
+        "states": [
+          "Idle"
+        ]
+      }
+    ]
+  },
+  {
+    "boss": "Boss: Lace (Cradle)",
+    "item": "Soul of Lace (Cradle)",
+    "item_id": 842019,
+    "events": [
+      "Room Event: event:mapper/0ecf7e04-42c8-48f7-a444-bb46478a58ad"
+    ],
+    "combat": [
+      "Combat: Lace (The Cradle)"
+    ],
+    "actors": [
+      {
+        "scene": "song_tower_01",
+        "path": "Boss Scene/Lace Boss2 New"
+      }
+    ],
+    "battles": [],
+    "states": []
+  },
+  {
+    "boss": "Boss: Last Judge",
+    "item": "Soul of Last Judge",
+    "item_id": 842020,
+    "events": [
+      "Room Event: event:mapper/2149c0f6-3492-4a11-96c3-0fcbe57abc38"
+    ],
+    "combat": [
+      "Combat: Last Judge"
+    ],
+    "actors": [
+      {
+        "scene": "coral_judge_arena",
+        "path": "Boss Scene/Last Judge"
+      }
+    ],
+    "battles": [],
+    "states": [
+      {
+        "scene": "coral_judge_arena",
+        "path": "Boss Scene",
+        "fsm": "Control",
+        "states": [
+          "Out of Range",
+          "Encountered",
+          "Start Gate",
+          "Start Refight"
+        ]
+      }
+    ]
+  },
+  {
+    "boss": "Boss: Lost Garmond",
+    "item": "Soul of Lost Garmond",
+    "item_id": 842021,
+    "events": [
+      "Room Event: event:mapper/reviewed:lost-garmond-defeated"
+    ],
+    "combat": [],
+    "actors": [
+      {
+        "scene": "coral_33",
+        "path": "Black Thread States/Black Thread World/Garmond Scenes/Garmond Black Threaded Scene/Garmond Black Threaded Fighter"
+      }
+    ],
+    "battles": [],
+    "states": []
+  },
+  {
+    "boss": "Boss: Moorwing",
+    "item": "Soul of Moorwing",
+    "item_id": 842022,
+    "events": [
+      "Room Event: event:mapper/4127289c-12aa-4bb2-84ca-ef581aa3941c"
+    ],
+    "combat": [
+      "Combat: Moorwing"
+    ],
+    "actors": [
+      {
+        "scene": "greymoor_05_boss",
+        "path": "Vampire Gnat Boss Scene/Vampire Gnat"
+      },
+      {
+        "scene": "greymoor_08_boss",
+        "path": "Vampire Gnat Scene/Vampire Gnat"
+      }
+    ],
+    "battles": [],
+    "states": [
+      {
+        "scene": "greymoor_05_boss",
+        "path": "Vampire Gnat Boss Scene",
+        "fsm": "Control",
+        "states": [
+          "Idle",
+          "Enter"
+        ]
+      },
+      {
+        "scene": "greymoor_08_boss",
+        "path": "Vampire Gnat Scene",
+        "fsm": "Control",
+        "states": [
+          "Idle",
+          "Enter"
+        ]
+      }
+    ]
+  },
+  {
+    "boss": "Boss: Nyleth",
+    "item": "Soul of Nyleth",
+    "item_id": 842023,
+    "events": [
+      "Room Event: event:mapper/29d0cefc-ffa4-455c-bb21-acfe20c70ed6"
+    ],
+    "combat": [
+      "Combat: Nyleth"
+    ],
+    "actors": [
+      {
+        "scene": "shellwood_11b_memory",
+        "path": "Boss Scene/Flower Queen Boss"
+      },
+      {
+        "scene": "shellwood_11b",
+        "path": "memory_font/Uncompleted/Memory Group/thread_memory"
+      }
+    ],
+    "battles": [],
+    "states": [
+      {
+        "scene": "shellwood_11b_memory",
+        "path": "Boss Scene",
+        "fsm": "Control",
+        "states": [
+          "Unencountered",
+          "Enter 1"
+        ]
+      }
+    ]
+  },
+  {
+    "boss": "Boss: Phantom",
+    "item": "Soul of Phantom",
+    "item_id": 842024,
+    "events": [
+      "Room Event: event:mapper/reviewed:phantom-defeated"
+    ],
+    "combat": [],
+    "actors": [
+      {
+        "scene": "organ_01",
+        "path": "Boss Scene/Phantom"
+      }
+    ],
+    "battles": [],
+    "states": [
+      {
+        "scene": "organ_01",
+        "path": "Boss Scene",
+        "fsm": "Control",
+        "states": [
+          "Enter"
+        ]
+      }
+    ]
+  },
+  {
+    "boss": "Boss: Pinstress",
+    "item": "Soul of Pinstress",
+    "item_id": 842025,
+    "events": [
+      "Room Event: event:mapper/reviewed:pinstress-defeated"
+    ],
+    "combat": [],
+    "actors": [
+      {
+        "scene": "peak_07",
+        "path": "Pinstress Control/Pinstress Scene/Pinstress Boss"
+      }
+    ],
+    "battles": [],
+    "states": []
+  },
+  {
+    "boss": "Boss: Plasmified Zango",
+    "item": "Soul of Plasmified Zango",
+    "item_id": 842026,
+    "events": [
+      "Room Event: event:mapper/b94cbf57-5e84-4771-8178-ddcff1955087"
+    ],
+    "combat": [
+      "Combat: Plasmified Zango"
+    ],
+    "actors": [
+      {
+        "scene": "crawl_10",
+        "path": "Area_States/Infected/Blue Assistant"
+      }
+    ],
+    "battles": [],
+    "states": []
+  },
+  {
+    "boss": "Boss: Second Sentinel",
+    "item": "Soul of Second Sentinel",
+    "item_id": 842027,
+    "events": [
+      "Room Event: event:mapper/ee149de1-e2ea-47b1-b0b7-4bacbc14c856"
+    ],
+    "combat": [
+      "Combat: Second Sentinel"
+    ],
+    "actors": [
+      {
+        "scene": "hang_17b",
+        "path": "Boss Scene - To Additive Load/Song Knight"
+      }
+    ],
+    "battles": [],
+    "states": [
+      {
+        "scene": "hang_17b",
+        "path": "Boss Scene - To Additive Load",
+        "fsm": "Control",
+        "states": [
+          "Arena Start",
+          "Skip Arena"
+        ]
+      }
+    ]
+  },
+  {
+    "boss": "Boss: Shrine Guardian Seth",
+    "item": "Soul of Shrine Guardian Seth",
+    "item_id": 842028,
+    "events": [
+      "Room Event: event:mapper/66c01078-89ad-4aeb-ab46-a4ac05424109"
+    ],
+    "combat": [
+      "Combat: Shrine Guardian Seth"
+    ],
+    "actors": [
+      {
+        "scene": "shellwood_22",
+        "path": "Boss Scene/Seth"
+      }
+    ],
+    "battles": [],
+    "states": []
+  },
+  {
+    "boss": "Boss: Sister Splinter",
+    "item": "Soul of Sister Splinter",
+    "item_id": 842029,
+    "events": [
+      "Room Event: event:mapper/eb552bbd-ae4b-4341-a4d6-07c0d6509d9c"
+    ],
+    "combat": [
+      "Combat: Sister Splinter"
+    ],
+    "actors": [
+      {
+        "scene": "shellwood_18",
+        "path": "Boss Scene Parent/Boss Scene/Splinter Queen"
+      }
+    ],
+    "battles": [],
+    "states": [
+      {
+        "scene": "shellwood_18",
+        "path": "Boss Scene Parent/Boss Scene",
+        "fsm": "Battle Control",
+        "states": [
+          "Idle",
+          "Start Tension",
+          "Battle Start"
+        ]
+      },
+      {
+        "scene": "shellwood_18",
+        "path": "Boss Scene Parent/Boss Scene/Approaches",
+        "fsm": "Control",
+        "states": [
+          "Check"
+        ]
+      }
+    ]
+  },
+  {
+    "boss": "Boss: Skarrsinger Karmelita",
+    "item": "Soul of Skarrsinger Karmelita",
+    "item_id": 842030,
+    "events": [
+      "Room Event: event:mapper/61ba8ef0-8610-4b13-8ca4-854de0780bd5"
+    ],
+    "combat": [
+      "Combat: Skarrsinger Karmelita",
+      "Combat: Karmelita Gauntlet"
+    ],
+    "actors": [
+      {
+        "scene": "memory_ant_queen",
+        "path": "Boss Scene/Hunter Queen Boss"
+      },
+      {
+        "scene": "memory_ant_queen",
+        "path": "Boss Scene/Challenge Region"
+      },
+      {
+        "scene": "ant_queen",
+        "path": "Memory Group/here/thread_memory"
+      }
+    ],
+    "battles": [
+      {
+        "scene": "memory_ant_queen",
+        "path": "Boss Scene/Battle Scene"
+      }
+    ],
+    "states": []
+  },
+  {
+    "boss": "Boss: Summoned Saviour",
+    "item": "Soul of Summoned Saviour",
+    "item_id": 842031,
+    "events": [
+      "Room Event: event:mapper/aa48b17e-dd99-40c9-8d5f-dfaa642a64a4"
+    ],
+    "combat": [
+      "Combat: Summoned Saviour"
+    ],
+    "actors": [],
+    "battles": [
+      {
+        "scene": "bone_steel_servant",
+        "path": "Steel Servant Scene/Battle Scene"
+      }
+    ],
+    "states": [
+      {
+        "scene": "bone_steel_servant",
+        "path": "Steel Servant Scene",
+        "fsm": "Control",
+        "states": [
+          "Idle",
+          "Capture"
+        ]
+      }
+    ]
+  },
+  {
+    "boss": "Boss: The Unravelled",
+    "item": "Soul of The Unravelled",
+    "item_id": 842032,
+    "events": [
+      "Room Event: event:mapper/f31b5676-bea3-44e9-94fe-92fd0ac174e6"
+    ],
+    "combat": [
+      "Combat: The Unravelled"
+    ],
+    "actors": [
+      {
+        "scene": "ward_02_boss",
+        "path": "Boss Scene/Conductor Boss"
+      }
+    ],
+    "battles": [],
+    "states": [
+      {
+        "scene": "ward_02_boss",
+        "path": "Boss Scene",
+        "fsm": "Control",
+        "states": [
+          "Idle",
+          "Arena Start"
+        ]
+      }
+    ]
+  },
+  {
+    "boss": "Boss: Tormented Trobbio",
+    "item": "Soul of Tormented Trobbio",
+    "item_id": 842033,
+    "events": [
+      "Room Event: event:mapper/1a759608-03d6-44b1-9bed-2a7fd7d2cabf"
+    ],
+    "combat": [
+      "Combat: Tormented Trobbio"
+    ],
+    "actors": [
+      {
+        "scene": "library_13",
+        "path": "Grand Stage Scene/Boss Scene TormentedTrobbio/Tormented Trobbio"
+      }
+    ],
+    "battles": [],
+    "states": []
+  },
+  {
+    "boss": "Boss: Trobbio",
+    "item": "Soul of Trobbio",
+    "item_id": 842034,
+    "events": [
+      "Room Event: event:mapper/e05edf84-e794-4703-a549-993f7209643c"
+    ],
+    "combat": [
+      "Combat: Trobbio"
+    ],
+    "actors": [
+      {
+        "scene": "library_13",
+        "path": "Grand Stage Scene/Boss Scene Trobbio/Trobbio"
+      }
+    ],
+    "battles": [],
+    "states": []
+  },
+  {
+    "boss": "Boss: Voltvyrm",
+    "item": "Soul of Voltvyrm",
+    "item_id": 842035,
+    "events": [
+      "Room Event: event:mapper/c245a3a8-e4da-44e6-96bf-329e94ea8298"
+    ],
+    "combat": [
+      "Combat: Voltvyrm"
+    ],
+    "actors": [
+      {
+        "scene": "coral_29",
+        "path": "Boss Scene/Zap Core Enemy"
+      }
+    ],
+    "battles": [],
+    "states": []
+  },
+  {
+    "boss": "Boss: Watcher at the Edge",
+    "item": "Soul of Watcher at the Edge",
+    "item_id": 842036,
+    "events": [
+      "Room Event: event:mapper/07fd5367-62c5-40b4-b9f9-c83c12d4a99b"
+    ],
+    "combat": [
+      "Combat: Watcher at the Edge"
+    ],
+    "actors": [
+      {
+        "scene": "coral_39",
+        "path": "Coral Warrior Grey"
+      }
+    ],
+    "battles": [],
+    "states": []
+  },
+  {
+    "boss": "Boss: Widow",
+    "item": "Soul of Widow",
+    "item_id": 842037,
+    "events": [
+      "Room Event: event:mapper/f00c4d34-3d84-4746-b034-961203e08150"
+    ],
+    "combat": [
+      "Combat: Widow"
+    ],
+    "actors": [
+      {
+        "scene": "belltown_shrine",
+        "path": "Black Thread States Thread Only Variant/Normal World/Boss Scene/Spinner Boss"
+      },
+      {
+        "scene": "belltown_shrine",
+        "path": "Black Thread States Thread Only Variant/Normal World/Boss Scene/Challenge Region"
+      },
+      {
+        "scene": "belltown_shrine",
+        "path": "Black Thread States Thread Only Variant/Normal World/Boss Scene/Intro Spinner"
+      },
+      {
+        "scene": "belltown_shrine",
+        "path": "Black Thread States Thread Only Variant/Normal World/Boss Scene/Speak Region"
+      }
+    ],
+    "battles": [],
+    "states": [
+      {
+        "scene": "belltown_shrine",
+        "path": "Black Thread States Thread Only Variant/Normal World/Boss Scene",
+        "fsm": "Control",
+        "states": [
+          "Battle Start",
+          "Unencountered",
+          "Encountered"
+        ]
+      }
+    ]
+  },
+  {
+    "boss": "Boss: Lace (Deep Docks)",
+    "item": "Soul of Lace (Deep Docks)",
+    "item_id": 842100,
+    "act": 1,
+    "events": [
+      "Room Event: event:mapper/4092e48f-ea2e-4d19-9a3a-71fa7b4fcbda"
+    ],
+    "combat": [
+      "Combat: Lace (Deep Docks)"
+    ],
+    "actors": [
+      {
+        "scene": "bone_east_12",
+        "path": "Boss Scene/Lace Boss1"
+      }
+    ],
+    "battles": [],
+    "states": [
+      {
+        "scene": "bone_east_12",
+        "path": "Boss Scene/Lace Boss1",
+        "fsm": "Control",
+        "states": [
+          "Scene Start"
+        ]
+      }
+    ]
+  },
+  {
+    "boss": "Boss: Lost Lace",
+    "item": "Soul of Lost Lace",
+    "item_id": 842101,
+    "act": 3,
+    "events": [],
+    "combat": [
+      "Combat: Lost Lace"
+    ],
+    "actors": [
+      {
+        "scene": "abyss_cocoon",
+        "path": "Boss Control/Lost Lace Boss"
+      }
+    ],
+    "battles": [],
+    "states": [
+      {
+        "scene": "abyss_cocoon",
+        "path": "Boss Control/Intro Control",
+        "fsm": "Control",
+        "states": [
+          "Idle",
+          "Check Encountered"
+        ]
+      }
+    ]
+  },
+  {
+    "boss": "Boss: Garmond and Zaza",
+    "item": "Soul of Garmond and Zaza",
+    "item_id": 842102,
+    "act": 2,
+    "events": [],
+    "combat": [
+      "Combat: Garmond and Zaza"
+    ],
+    "actors": [
+      {
+        "scene": "library_09",
+        "path": "Black Thread States/Normal World/Scene Control/Garmond Scene/Garmond Fighter"
+      }
+    ],
+    "battles": [],
+    "states": [
+      {
+        "scene": "library_09",
+        "path": "Black Thread States/Normal World/Scene Control/Garmond Scene",
+        "fsm": "Control",
+        "states": [
+          "Idle",
+          "Check Dir Init",
+          "Check Dir"
+        ]
+      }
+    ]
+  },
+  {
+    "boss": "Boss: Savage Beastfly (Chapel of the Beast)",
+    "item": "Soul of Savage Beastfly (Chapel of the Beast)",
+    "item_id": 842103,
+    "act": 1,
+    "events": [],
+    "combat": [
+      "Combat: Savage Beastfly (Chapel of the Beast)"
+    ],
+    "actors": [
+      {
+        "scene": "ant_19",
+        "path": "Boss Control/Boss Scene/Bone Flyer Giant"
+      }
+    ],
+    "battles": [],
+    "states": [
+      {
+        "scene": "ant_19",
+        "path": "Boss Control/Boss Scene",
+        "fsm": "Control",
+        "states": [
+          "Idle",
+          "Start",
+          "Early Start Range"
+        ]
+      },
+      {
+        "scene": "ant_20",
+        "path": "Bone Flyer Rage Control",
+        "fsm": "Control",
+        "states": [
+          "Away"
+        ]
+      }
+    ]
+  },
+  {
+    "boss": "Boss: Savage Beastfly (Far Fields)",
+    "item": "Soul of Savage Beastfly (Far Fields)",
+    "item_id": 842104,
+    "act": 2,
+    "events": [],
+    "combat": [
+      "Combat: Savage Beastfly (Far Fields)"
+    ],
+    "actors": [
+      {
+        "scene": "bone_east_08_boss_beastfly",
+        "path": "Boss Scene Beastfly/Beastfly States/Active/Bone Flyer Giant"
+      }
+    ],
+    "battles": [],
+    "states": []
+  },
+  {
+    "boss": "Boss: Shakra",
+    "item": "Soul of Shakra",
+    "item_id": 842105,
+    "act": 2,
+    "events": [],
+    "combat": [
+      "Combat: Shakra"
+    ],
+    "actors": [
+      {
+        "scene": "greymoor_08_mapper",
+        "path": "Mapper Spar NPC"
+      }
+    ],
+    "battles": [],
+    "states": []
+  },
+  {
+    "boss": "Boss: Clover Dancers",
+    "item": "Soul of Clover Dancers",
+    "item_id": 842106,
+    "act": 3,
+    "events": [],
+    "combat": [
+      "Combat: Clover Dancers"
+    ],
+    "actors": [
+      {
+        "scene": "clover_10",
+        "path": "Boss Scene/Dancer Control/Dancer A"
+      },
+      {
+        "scene": "clover_10",
+        "path": "Boss Scene/Dancer Control/Dancer B"
+      },
+      {
+        "scene": "clover_10",
+        "path": "Boss Scene/Green Prince Boss NPC"
+      }
+    ],
+    "battles": [],
+    "states": [
+      {
+        "scene": "clover_10",
+        "path": "Boss Scene/Dancer Control",
+        "fsm": "Control",
+        "states": [
+          "Dormant",
+          "Gate Close"
+        ]
+      }
+    ]
+  },
+  {
+    "boss": "Boss: Palestag",
+    "item": "Soul of Palestag",
+    "item_id": 842107,
+    "act": 3,
+    "events": [],
+    "combat": [
+      "Combat: Palestag"
+    ],
+    "actors": [
+      {
+        "scene": "clover_19",
+        "path": "Boss Scene/Cloverstag White Boss"
+      }
+    ],
+    "battles": [],
+    "states": []
+  }
+]

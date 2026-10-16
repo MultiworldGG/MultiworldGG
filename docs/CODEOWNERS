@@ -71,6 +71,9 @@
 # Brotato
 /worlds/brotato/ @SpenserHaddad
 
+# Build a Jetpack
+/worlds/build_a_jetpack/ @NyanMC
+
 # Bumper Stickers
 /worlds/bumpstik/ @FelicitusNeko
 
@@ -252,6 +255,9 @@
 # Hollow Knight
 /worlds/hk/ @BadMagic100 @qwint
 
+# Hollow Knight: Silksong
+/worlds/silksong/ @Batatvideogames
+
 # HuniePop
 /worlds/huniepop/ @DotsofdarknessArchipelago
 
@@ -266,6 +272,9 @@
 
 # Into the Breach
 /worlds/into_the_breach/ @Ishigh1
+
+# Isles of Trials
+/worlds/isles_of_trials/ @NyanMC
 
 # Jak & Dexter: The Precursor Legacy
 /worlds/jakanddexter/ @massimilianodelliubaldini

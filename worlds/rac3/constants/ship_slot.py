@@ -1,4 +1,4 @@
-"""This module contains constants used for tracking the currently available planets in the ship menu"""
+"""This module contains constants used for tracking the available planets in the ship menu"""
 
 
 class RAC3SHIPSLOT:
