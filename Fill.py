@@ -7,6 +7,7 @@ from typing import Callable, Literal, ClassVar
 
 from BaseClasses import CollectionState, Item, Location, LocationProgressType, MultiWorld, PlandoItemBlock
 from Options import Accessibility
+from Utils import progress_ticker
 
 from worlds.AutoWorld import call_all
 from worlds.generic.Rules import add_item_rule
@@ -816,6 +817,7 @@ def fill_restrictive(multiworld: MultiWorld, base_state: CollectionState, locati
         has_beaten_game = multiworld.has_beaten_game(maximum_exploration_state)
 
         while items_to_place:
+            progress_ticker.tick()
             # if we have run out of locations to fill,break out of this loop
             if not locations:
                 unplaced_items += items_to_place
@@ -857,6 +859,7 @@ def fill_restrictive(multiworld: MultiWorld, base_state: CollectionState, locati
                                      for unsafe in (False, True)
                                      for i, location in enumerate(placements))
                     for (i, location, unsafe) in swap_attempts:
+                        progress_ticker.tick()
                         placed_item = location.item
                         if item_to_place == placed_item:
                             # The number of allowed swaps is limited, so do not allow a swap of an item with a copy of
@@ -1006,6 +1009,7 @@ def remaining_fill(multiworld: MultiWorld,
             return location_to_fill.item_rule(item_to_fill)
 
     while locations and itempool:
+        progress_ticker.tick()
         item_to_place = itempool.pop()
         spot_to_fill: Location | None = None
 
@@ -1625,6 +1629,7 @@ def balance_multiworld_progression(multiworld: MultiWorld) -> None:
             return
 
         while True:
+            progress_ticker.tick()
             # Gather non-locked locations.
             # This ensures that only shuffled locations get counted for progression balancing,
             #   i.e. the items the players will be checking.
@@ -1664,6 +1669,7 @@ def balance_multiworld_progression(multiworld: MultiWorld) -> None:
                     balancing_sphere = sphere_locations.copy()
                     candidate_items: dict[int, set[Location]] = defaultdict(set)
                     while True:
+                        progress_ticker.tick()
                         # Check locations in the current sphere and gather progression items to swap earlier
                         for location in balancing_sphere:
                             if location.advancement:
@@ -1700,6 +1706,7 @@ def balance_multiworld_progression(multiworld: MultiWorld) -> None:
                         items_to_test.sort()
                         multiworld.random.shuffle(items_to_test)
                         while items_to_test:
+                            progress_ticker.tick()
                             testing = items_to_test.pop()
                             reducing_state = state.copy()
                             for location in itertools.chain((
