@@ -1716,6 +1716,7 @@ class Spoiler:
         sphere_candidates = set(prog_locations)
         logging.debug('Building up collection spheres.')
         while sphere_candidates:
+            Utils.progress_ticker.tick()
 
             # build up spheres of collection radius.
             # Everything in each sphere is independent from each other in dependencies and only depends on lower spheres
@@ -1854,6 +1855,7 @@ class Spoiler:
         for num, sphere in reversed(tuple(enumerate(collection_spheres))):
             # The sphere is modified while iterating, so a tuple copy of the sphere is iterated instead.
             for location in tuple(sphere):
+                Utils.progress_ticker.tick()
                 # we remove the item at location and check if game is still beatable
                 logging.debug('Checking if %s (Player %d) is required to beat the game.', location.item.name,
                               location.item.player)
@@ -1884,6 +1886,7 @@ class Spoiler:
             # The list of items is mutated by removing one item at a time to determine if each item is required to beat
             # the game, and re-adding that item if it was required, so a copy needs to be made before iterating.
             for item in precollected_items.copy():
+                Utils.progress_ticker.tick()
                 if not item.advancement:
                     continue
                 logging.debug('Checking if %s (Player %d) is required to beat the game.', item.name, item.player)
