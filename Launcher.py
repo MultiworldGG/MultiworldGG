@@ -18,6 +18,7 @@ import os
 import subprocess
 import sys
 import threading
+import time
 import urllib.parse
 import webbrowser
 from collections.abc import Callable, Sequence
@@ -422,12 +423,14 @@ def _fit_windows_window(window) -> None:
 def run_gui(launch_components: list["Component"], args: Any) -> None:
     with initial_window_config():
         from kvui import ThemedApp, MDFloatLayout, MDGridLayout, ScrollBox
-    from kivy.properties import BooleanProperty, ObjectProperty
+    from kivy.properties import BooleanProperty, ColorProperty, ObjectProperty, StringProperty
+    from kivy.animation import Animation
     from kivy.core.window import Window
     from kivy.metrics import dp
     from kivymd.uix.button import MDIconButton, MDButton, MDButtonText
     from kivymd.uix.card import MDCard
     from kivymd.uix.menu import MDDropdownMenu
+    from kivymd.uix.progressindicator import MDCircularProgressIndicator
     from kivymd.uix.snackbar import MDSnackbar, MDSnackbarText
     from kivymd.uix.textfield import MDTextField
     from kivy.clock import Clock
@@ -437,13 +440,47 @@ def run_gui(launch_components: list["Component"], args: Any) -> None:
     from kivy.uix.scrollview import ScrollView
     from kivy.uix.label import Label
     from kivy.uix.popup import Popup
-    from kivy.graphics import Color, Rectangle
+    from kivy.graphics import Color, Rectangle, RoundedRectangle
     from kivy.app import App
     from kivy.lang.builder import Builder
 
+    class LauncherLoadingPanel(BoxLayout):
+        pass
+
+    class LauncherPlaceholders(Widget):
+        tint = ColorProperty((1, 1, 1, 1))
+
+        def __init__(self, **kwargs):
+            super().__init__(**kwargs)
+            self.bind(pos=self._redraw, size=self._redraw, tint=self._redraw)
+
+        def _redraw(self, *args):
+            self.canvas.clear()
+            row_height, spacing = dp(75), dp(10)
+            count = min(6, int((self.height + spacing) / (row_height + spacing)))
+            with self.canvas:
+                for index in range(count):
+                    fade = 1 - index * 0.14
+                    bottom = self.top - row_height - index * (row_height + spacing)
+                    Color(*self.tint[:3], 0.07 * fade)
+                    RoundedRectangle(pos=(self.x, bottom), size=(self.width, row_height),
+                                     radius=[dp(16)])
+                    Color(*self.tint[:3], 0.15 * fade)
+                    RoundedRectangle(pos=(self.x + self.width * 0.1 - dp(20), bottom + dp(17.5)),
+                                     size=(dp(40), dp(40)), radius=[dp(12)])
+                    text_x = self.x + self.width * 0.23
+                    RoundedRectangle(pos=(text_x, bottom + dp(44)),
+                                     size=(self.width * (0.26 + index % 3 * 0.04), dp(10)),
+                                     radius=[dp(5)])
+                    Color(*self.tint[:3], 0.09 * fade)
+                    RoundedRectangle(pos=(text_x, bottom + dp(23)),
+                                     size=(self.width * 0.43, dp(7)), radius=[dp(3.5)])
+                    RoundedRectangle(pos=(self.right - dp(96), bottom + dp(23)),
+                                     size=(dp(72), dp(26)), radius=[dp(13)])
+
     class LauncherCard(MDCard):
         component: "Component | None"
-        image: str
+        image = StringProperty("")
         context_button: MDIconButton = ObjectProperty(None)
 
         def __init__(self, *args, component: "Component | None" = None, image_path: str = "", **kwargs):
@@ -476,6 +513,11 @@ def run_gui(launch_components: list["Component"], args: Any) -> None:
             self._loading_overlay_subtitle_label = None
             self._loading_world_poll_event = None
             self._cache_refresh_started = False
+            self._card_build_event = None
+            self._startup_complete = False
+            self._stopped = False
+            self._update_check_started = False
+            self._pending_update: ReleaseInfo | None = None
             persistent = Utils.persistent_load()
             if "launcher" in persistent:
                 if "favorites" in persistent["launcher"]:
@@ -507,35 +549,83 @@ def run_gui(launch_components: list["Component"], args: Any) -> None:
 
                 :return: The created Card Widget.
                 """
-            image_path = resolve_icon_path(icon_paths.get(component.icon, local_path("data", "icon.png")))
             button_card = LauncherCard(component=component,
-                                       image_path=image_path)
+                                       image_path=local_path("data", "icon.png"))
 
             def open_menu(caller):
+                if not getattr(caller, "menu", None):
+                    caller.menu = MDDropdownMenu(caller=caller, items=[{
+                        "text": "Add shortcut on desktop",
+                        "leading_icon": "laptop",
+                        "on_release": lambda: create_shortcut(caller, component),
+                    }])
                 caller.menu.open()
 
-            menu_items = [
-                {
-                    "text": "Add shortcut on desktop",
-                    "leading_icon": "laptop",
-                    "on_release": lambda: create_shortcut(button_card.context_button, component)
-                }
-            ]
-            button_card.context_button.menu = MDDropdownMenu(caller=button_card.context_button, items=menu_items)
             button_card.context_button.bind(on_release=open_menu)
 
             return button_card
 
         def _rebuild_cards_from_components(self) -> None:
+            if self._stopped:
+                return
+            if self._card_build_event is not None:
+                self._card_build_event.cancel()
+
+            remaining = iter(tuple(components))
+            cards = []
+
+            def _build_batch(dt):
+                # Widget creation must stay on the UI thread. Yield between small
+                # batches so Kivy can animate the spinner and process input.
+                deadline = time.perf_counter() + 0.006
+                while True:
+                    component = next(remaining, None)
+                    if component is None:
+                        self._card_build_event = None
+                        self._publish_cards(cards)
+                        return False
+                    cards.append(self.build_card(component))
+                    if time.perf_counter() >= deadline:
+                        return True
+
+            self._card_build_event = Clock.schedule_interval(_build_batch, 0)
+
+        def _publish_cards(self, cards: list[LauncherCard]) -> None:
             self.failed_worlds = bool(failed_world_loads)
-            self.cards.clear()
-            for component in components:
-                self.cards.append(self.build_card(component))
+            self.cards = cards
 
             if self.search_box and self.search_box.text:
                 self.filter_clients_by_name(self.search_box, self.search_box.text)
             else:
                 self._refresh_components(self.current_filter)
+
+            cards = self.cards
+            card_icons = [(card, icon_paths.get(card.component.icon, local_path("data", "icon.png")))
+                          for card in cards]
+
+            def _load_icons() -> None:
+                resolved_icons = {}
+                for _, source in card_icons:
+                    if self._stopped or self.cards is not cards:
+                        return
+                    if source not in resolved_icons:
+                        resolved_icons[source] = resolve_icon_path(source)
+
+                def _apply_icons(dt):
+                    if self._stopped or self.cards is not cards:
+                        return
+                    for card, source in card_icons:
+                        card.image = resolved_icons[source]
+
+                Clock.schedule_once(_apply_icons, 0)
+
+            threading.Thread(target=_load_icons, name="LauncherIcons", daemon=True).start()
+
+            if not self._startup_complete:
+                self._dismiss_loading_overlay()
+                self._startup_complete = True
+                if self._pending_update is not None:
+                    Clock.schedule_once(self._maybe_show_update_dialog, 0)
 
 
         def _set_loading_overlay_text(self, text: str | None = None, subtitle: str | None = None) -> None:
@@ -544,53 +634,16 @@ def run_gui(launch_components: list["Component"], args: Any) -> None:
             if subtitle is not None and self._loading_overlay_subtitle_label is not None:
                 self._loading_overlay_subtitle_label.text = subtitle
 
-        def _show_loading_overlay(self, text: str = "Validating APWorld info...") -> None:
+        def _show_loading_overlay(self, text: str = "Loading games\u2026") -> None:
             if self._loading_overlay is not None:
                 self._set_loading_overlay_text(text=text)
                 return
-            overlay = BoxLayout(
-                orientation="vertical",
-                pos_hint={"center_x": 0.625, "center_y": 0.5},
-                size_hint=(0.52, None),
-                height=dp(118),
-                padding=(dp(16), dp(14)),
-                spacing=dp(4),
-            )
-            with overlay.canvas.before:
-                Color(0.12, 0.12, 0.12, 0.82)
-                rect = Rectangle(pos=overlay.pos, size=overlay.size)
-            overlay.bind(pos=lambda inst, val: setattr(rect, "pos", val))
-            overlay.bind(size=lambda inst, val: setattr(rect, "size", val))
-            label = Label(
-                text=text,
-                halign="center",
-                valign="bottom",
-                font_size="18sp",
-                color=(0.95, 0.95, 0.95, 1.0),
-                size_hint_y=None,
-                height=dp(36),
-            )
-            label.bind(size=lambda inst, val: setattr(inst, "text_size", val))
-            subtitle_label = Label(
-                text="",
-                halign="center",
-                valign="top",
-                font_size="13sp",
-                color=(0.78, 0.78, 0.78, 1.0),
-                shorten=True,
-                shorten_from="center",
-                size_hint_y=None,
-                height=dp(26),
-            )
-            subtitle_label.bind(size=lambda inst, val: setattr(inst, "text_size", val))
-            overlay.add_widget(Widget())
-            overlay.add_widget(label)
-            overlay.add_widget(subtitle_label)
-            overlay.add_widget(Widget())
-            self.top_screen.add_widget(overlay)
+            overlay = LauncherLoadingPanel(pos_hint={"x": 0, "y": 0})
+            self.top_screen.ids.content_area.add_widget(overlay)
             self._loading_overlay = overlay
-            self._loading_overlay_label = label
-            self._loading_overlay_subtitle_label = subtitle_label
+            self._loading_overlay_label = overlay.ids.title
+            self._loading_overlay_subtitle_label = overlay.ids.subtitle
+            self._set_loading_overlay_text(text=text)
 
         def _start_loading_world_poll(self) -> None:
             if self._loading_world_poll_event is not None:
@@ -599,7 +652,7 @@ def run_gui(launch_components: list["Component"], args: Any) -> None:
             def _poll_loading_world(dt: float) -> None:
                 import worlds
                 world_name = getattr(worlds, "_current_loading_world", None)
-                subtitle = f"Parsing {world_name}" if world_name else ""
+                subtitle = f"Loading {world_name}" if world_name else "Getting your games ready\u2026"
                 self._set_loading_overlay_text(subtitle=subtitle)
 
             self._loading_world_poll_event = Clock.schedule_interval(_poll_loading_world, 0.1)
@@ -610,43 +663,37 @@ def run_gui(launch_components: list["Component"], args: Any) -> None:
                 self._loading_world_poll_event.cancel()
                 self._loading_world_poll_event = None
             if self._loading_overlay is not None:
-                self.top_screen.remove_widget(self._loading_overlay)
+                self._loading_overlay.ids.spinner.active = False
+                self.top_screen.ids.content_area.remove_widget(self._loading_overlay)
                 self._loading_overlay = None
                 self._loading_overlay_label = None
                 self._loading_overlay_subtitle_label = None
+                self.button_layout.disabled = False
+                Animation.cancel_all(self.button_layout, "opacity")
+                if not self._stopped:
+                    Animation(opacity=1, duration=0.2, t="out_quad").start(self.button_layout)
 
         def _background_refresh_worker(self) -> None:
             import worlds
 
-            cache_exists = worlds.has_launcher_cache()
-
-            if not cache_exists:
-                # Load worlds in the worker thread so launcher UI stays responsive.
-                load_ok = False
-                try:
-                    worlds.ensure_worlds_loaded()
-                    load_ok = True
-                except Exception as exc:
-                    logging.warning("World loading failed: %s", exc)
-                finally:
-                    def _finish_on_main(dt):
-                        self.failed_worlds = bool(worlds.failed_world_loads)
-                        if load_ok:
-                            self._rebuild_cards_from_components()
-                        self._dismiss_loading_overlay()
-
-                    Clock.schedule_once(_finish_on_main, 0)
-            else:
-                # Valid Cache
-                def _finish_from_cache(dt):
+            try:
+                if worlds.has_launcher_cache():
                     from worlds.LauncherComponents import _hydrate_launcher_components_from_cache
                     _hydrate_launcher_components_from_cache()
-                    self._rebuild_cards_from_components()
-                    self._dismiss_loading_overlay()
-                Clock.schedule_once(_finish_from_cache, 0)
+                else:
+                    worlds.ensure_worlds_loaded()
+            except Exception as exc:
+                logging.warning("World loading failed: %s", exc)
+            finally:
+                Clock.schedule_once(self._finish_startup, 0)
+
+        def _finish_startup(self, dt) -> None:
+            if self._stopped or self._startup_complete:
+                return
+            self._rebuild_cards_from_components()
 
         def _start_background_cache_refresh(self) -> None:
-            if self._cache_refresh_started:
+            if self._stopped or self._cache_refresh_started:
                 return
 
             self._cache_refresh_started = True
@@ -716,8 +763,6 @@ def run_gui(launch_components: list["Component"], args: Any) -> None:
             Window.bind(on_drop_file=self._on_drop_file)
             Window.bind(on_keyboard=self._on_keyboard)
 
-            self._rebuild_cards_from_components()
-
             # Uncomment to re-enable the Kivy console/live editor
             # Ctrl-E to enable it, make sure numlock/capslock is disabled
             # from kivy.modules.console import create_console
@@ -728,7 +773,7 @@ def run_gui(launch_components: list["Component"], args: Any) -> None:
         def on_start(self):
             if is_windows:
                 Window.show()
-            self._show_loading_overlay("Validating APWorld info...")
+            self._show_loading_overlay()
             self._start_loading_world_poll()
 
             if self.launch_components:
@@ -736,21 +781,38 @@ def run_gui(launch_components: list["Component"], args: Any) -> None:
                 self.launch_components = None
                 self.launch_args = None
 
+            Clock.schedule_once(lambda dt: self._start_background_cache_refresh(), 0.2)
             if can_check_for_updates():
-                # Check for updates first, then start cache refresh after user responds
-                Clock.schedule_once(self._maybe_show_update_dialog, 0.2)
-            else:
-                # No update check, start cache refresh immediately
-                Clock.schedule_once(lambda dt: self._start_background_cache_refresh(), 0.2)
+                self._start_update_check()
+
+        def _start_update_check(self) -> None:
+            if self._stopped or self._update_check_started:
+                return
+            self._update_check_started = True
+
+            def _check() -> None:
+                try:
+                    release_info = get_latest_release_info()
+                except Exception as exc:
+                    logging.warning("Launcher update check failed: %s", exc)
+                    return
+
+                def _on_result(dt):
+                    if self._stopped:
+                        return
+                    self._pending_update = release_info
+                    self._maybe_show_update_dialog(dt)
+
+                Clock.schedule_once(_on_result, 0)
+
+            threading.Thread(target=_check, name="LauncherUpdateCheck", daemon=True).start()
 
         def _maybe_show_update_dialog(self, dt):
-            try:
-                release_info = get_latest_release_info()
-            except Exception as e:
-                logging.warning("Launcher update check failed: %s", e)
-                # Update check failed, proceed with cache refresh
-                self._start_background_cache_refresh()
+            if self._stopped or not self._startup_complete or self._pending_update is None:
                 return
+
+            release_info = self._pending_update
+            self._pending_update = None
 
             latest_ver = release_info.version
             changelog = release_info.changelog
@@ -895,15 +957,10 @@ def run_gui(launch_components: list["Component"], args: Any) -> None:
 
                 def _on_later(*args):
                     popup.dismiss()
-                    # User declined update, proceed with cache refresh
-                    self._start_background_cache_refresh()
 
                 later_btn.bind(on_release=_on_later)
                 update_btn.bind(on_release=lambda *a: self._on_user_requested_update(popup, release_info))
                 popup.open()
-            else:
-                # No update available, proceed with cache refresh
-                self._start_background_cache_refresh()
 
         def _on_user_requested_update(self, dialog, release_info: ReleaseInfo):
             dialog.dismiss()
@@ -1114,6 +1171,13 @@ def run_gui(launch_components: list["Component"], args: Any) -> None:
             super()._stop(*largs)
 
         def on_stop(self):
+            self._stopped = True
+            if self._card_build_event is not None:
+                self._card_build_event.cancel()
+                self._card_build_event = None
+            self._pending_update = None
+            self._dismiss_loading_overlay()
+            Animation.cancel_all(self.button_layout, "opacity")
             from worlds.LauncherComponents import Type
             Utils.persistent_store("launcher", "favorites", self.favorites)
             Utils.persistent_store("launcher", "filter", ", ".join(filter.name if isinstance(filter, Type) else filter

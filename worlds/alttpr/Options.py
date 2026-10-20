@@ -154,12 +154,27 @@ class ShuffleTavern(Toggle):
     default = False
 
 
-class Zelgawoods(Toggle):
+class ShuffleSkullWoods(Toggle):
     """If entrance shuffle is enabled, add Skull Woods entrances and dropdowns to the entrance shuffle. The main Skull Woods entrance/big chest
+    dropdown and the second Skull Woods entrance/the dropdown in the back are both added to the dropdown pool. At least one of the entrances in
+    the back of the Skull Woods area must be a connector, and without decoupled entrances, the other two dropdowns in the front are vanilla."""
+    display_name = "Shuffle Skull Woods"
+    default = False
+
+
+class Zelgawoods(Toggle):
+    """If crossed entrance shuffle is enabled, add Skull Woods entrances and dropdowns to the entrance shuffle. The main Skull Woods entrance/big chest
     dropdown and the second Skull Woods entrance/the dropdown in the back are both added to the dropdown pool. The other two dropdowns in the
     front are vanilla, and at least one of the entrances in the back of the Skull Woods area must be a connector."""
-    # TODO: If I have a good link to the image description a picture is better than text descriptions
     display_name = "Zelgawoods"
+    default = False
+    visibility = Visibility.none
+
+
+class LinkedDrops(Toggle):
+    """Dropdowns are linked to their nearby exit. When disabled and crossed entrance shuffle is enabled, dropdowns could lead to anywhere in the game world."""
+    display_name = "Linked Drops"
+    default = True
 
 
 class DoorShuffle(Choice):
@@ -197,10 +212,14 @@ class LobbyShuffle(Toggle):
 class DoorTypeShuffle(Choice):
     """With door shuffle enabled, randomize the types of each door.
     original: All dungeon doors which are open, bombable, bonkable, or small key locked become a random type of door.
-    big: Doors that are big key locked are also randomized."""
+    big: Doors that are big key locked are also randomized.
+    all: One-way trap doors are also randomized.
+    chaos: All doors and the number of each type of door is randomized."""
     display_name = "Door Type Shuffle"
     option_original = 0
     option_big = 1
+    option_all = 2
+    option_chaos = 3
     default = "original"
 
 
@@ -247,6 +266,12 @@ def boss_shuffle_string_from_option(option):
         return "random"
     else:
         raise Exception(f"Invalid option {option} for boss_shuffle")
+
+
+class Pseudolamp(Toggle):
+    """See in the dark without the Lamp."""
+    display_name = "Pseudolamp"
+    default = False
 
 
 class BomblessStart(Toggle):
@@ -378,6 +403,12 @@ class Sprite(FreeText):
     default = "Link"
 
 
+class LocalSprite(Toggle):
+    """Load a Link sprite from a local file upon running the patch."""
+    display_name = "Local Sprite"
+    default = False
+
+
 class Quickswap(Toggle):
     """Swap equipped items with the L and R buttons."""
     display_name = "Quickswap"
@@ -502,7 +533,9 @@ class ALttPROptions(PerGameCommonOptions):
     entrance_shuffle: EntranceShuffle
     shuffle_links_house: ShuffleLinksHouse
     shuffle_tavern: ShuffleTavern
+    shuffle_skull_woods: ShuffleSkullWoods
     zelgawoods: Zelgawoods
+    linked_drops: LinkedDrops
     door_shuffle: DoorShuffle
     lobby_shuffle: LobbyShuffle
     door_type_shuffle: DoorTypeShuffle
@@ -510,6 +543,7 @@ class ALttPROptions(PerGameCommonOptions):
     boss_shuffle: BossShuffle
     bombless_start: BomblessStart
     swordless: Swordless
+    pseudolamp: Pseudolamp
     shopsanity: Shopsanity
     prize_shuffle: PrizeShuffle
     flute_shuffle: FluteShuffle
@@ -522,6 +556,7 @@ class ALttPROptions(PerGameCommonOptions):
     dungeon_counters: DungeonCounters
     trap_appearance: TrapAppearance
     sprite: Sprite
+    local_sprite: LocalSprite
     quickswap: Quickswap
     heart_beep_rate: HeartBeepRate
     heart_color: HeartColor
@@ -572,6 +607,7 @@ alttpr_option_groups: list[OptionGroup] = [
             FluteShuffle,
             EnemyShuffle,
             BossShuffle,
+            Pseudolamp,
         ],
     ),
     OptionGroup(
@@ -581,6 +617,8 @@ alttpr_option_groups: list[OptionGroup] = [
           Zelgawoods,
           ShuffleLinksHouse,
           ShuffleTavern,
+          ShuffleSkullWoods,
+          LinkedDrops,
       ]
     ),
     OptionGroup(
@@ -600,6 +638,8 @@ alttpr_option_groups: list[OptionGroup] = [
             DungeonCounters,
             TrapAppearance,
             Sprite,
+            LocalSprite,
+            Quickswap,
             HeartBeepRate,
             HeartColor,
             FastMenu,

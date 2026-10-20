@@ -82,6 +82,7 @@ class SilkSupply:
         self.routes = [[] for _ in nodes]
         self.incoming = [[] for _ in nodes]
         self.source_conditions = [[] for _ in nodes]
+        self.seeds = set()
         self.refill_conditions = {}
         self.refills = set()
         self._dependencies = {}
@@ -130,6 +131,7 @@ class SilkSupply:
                 if source is None:
                     predicate = condition((clean(rule),))
                     if predicate is not None:
+                        self.seeds.add(index)
                         self.source_conditions[index].append(predicate)
                         self.actions[predicate].append(('seed', index))
                 elif source in self.nodes:
@@ -155,6 +157,13 @@ class SilkSupply:
         self._compile_dependencies()
         for rule in (*self.conditions, *self.capacity_rules):
             world.register_rule_dependencies(rule)
+
+    def query_sources(self, name):
+        node, amount = self.queries[name]
+        if amount:
+            return (self.node_names[node],)
+        sources = tuple(sorted({self.node_names[edge[0]] for edge in self.incoming[node]}))
+        return (*sources, None) if node in self.seeds else sources
 
     def _compile_exits(self, world, condition):
         from .scene_exits import shuffled_exits

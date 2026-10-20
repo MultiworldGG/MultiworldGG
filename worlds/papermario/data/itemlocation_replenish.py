@@ -7,7 +7,7 @@ bushes and crates, as well as the item traded by the hungry Yoshi and the final
 trade item from Rip Cheato.
 """
 replenishing_itemlocations = [
-    "DRO_01/ShopItemA", "DRO_01/ShopItemC", "DRO_01/ShopItemF",
+    "DRO_01/ShopItemA","DRO_01/ShopItemB","DRO_01/ShopItemC","DRO_01/ShopItemD","DRO_01/ShopItemE","DRO_01/ShopItemF",
     "FLO_16/ItemB",
     "FLO_09/ItemA",
     "FLO_03/Tree1_Drop1A", "FLO_03/Tree1_Drop1B",

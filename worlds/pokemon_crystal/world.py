@@ -108,21 +108,21 @@ class PokemonCrystalCollectionState(metaclass=AutoLogicRegister):
 class PokemonCrystalWebWorld(WebWorld):
     tutorials = [Tutorial(
         "Multiworld Setup Guide",
-        "A guide to playing Pokemon Crystal with MultiworldGG.",
+        "A guide to playing Pokemon Crystal with Archipelago.",
         "English",
         "setup_en.md",
         "setup/en",
         ["AliceMousie", "gerbiljames"]
     ), Tutorial(
         "Multiworld Setup Guide",
-        "Eine Anleitung zum Spielen von Pokémon Kristall mit MultiworldGG.",
+        "Eine Anleitung zum Spielen von Pokémon Kristall mit Archipelago.",
         "Deutsch",
         "setup_de.md",
         "setup/de",
         ["palex00"]
     ), Tutorial(
         "Multiworld Setup Guide",
-        "Poradnik do grania w Pokémon Crystal z MultiworldGG.",
+        "Poradnik do grania w Pokémon Crystal z Archipelago.",
         "Polski",
         "setup_pl.md",
         "setup/pl",

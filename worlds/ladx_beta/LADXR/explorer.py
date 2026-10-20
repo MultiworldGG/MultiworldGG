@@ -6,20 +6,14 @@ class Explorer:
     def __init__(self):
         self.__inventory = {}
         self.__visited = set()
-        self.__todo_simple = []
-        self.__todo_gated = []
+        self.__todo = []
 
     def getAccessableLocations(self):
         return self.__visited
 
     def getRequiredItemsForNextLocations(self):
         items = set()
-        for loc, req in self.__todo_simple:
-            if isinstance(req, str):
-                items.add(req)
-            else:
-                req.getItems(self.__inventory, items)
-        for loc, req in self.__todo_gated:
+        for loc, req in self.__todo:
             if isinstance(req, str):
                 items.add(req)
             else:
@@ -40,33 +34,16 @@ class Explorer:
         for ii in location.items:
             self.addItem(ii.item)
 
-        for target, requirements in location.simple_connections:
+        for target, requirements in location.connections:
             if target not in self.__visited:
                 if self.testRequirements(requirements):
                     self._visit(target)
                 else:
-                    self.__todo_simple.append((target, requirements))
-        for target, requirements in location.gated_connections:
-            if target not in self.__visited:
-                self.__todo_gated.append((target, requirements))
+                    self.__todo.append((target, requirements))
 
     def _process(self):
-        while self.__simpleExpand():
-            pass
-
-        self.__todo_gated = list(filter(lambda n: n[0] not in self.__visited, self.__todo_gated))
-        for target, req in self.__todo_gated:
-            if target not in self.__visited and self.testRequirements(req):
-                # TODO: Test all possible variations, as right now we just take the first option.
-                #       this will most likely branch into many different paths.
-                self.consumeRequirements(req)
-                self._visit(target)
-                return True
-        return False
-
-    def __simpleExpand(self):
-        self.__todo_simple = list(filter(lambda n: n[0] not in self.__visited, self.__todo_simple))
-        for target, req in self.__todo_simple:
+        self.__todo = list(filter(lambda n: n[0] not in self.__visited, self.__todo))
+        for target, req in self.__todo:
             if target not in self.__visited and self.testRequirements(req):
                 self._visit(target)
                 return True
@@ -118,10 +95,7 @@ class Explorer:
             if loc not in self.__visited:
                 failed += 1
         for loc in self.__visited:
-            for target, req in loc.simple_connections:
-                if target not in self.__visited:
-                    print("Missing:", req)
-            for target, req in loc.gated_connections:
+            for target, req in loc.connections:
                 if target not in self.__visited:
                     print("Missing:", req)
         for item, amount in sorted(self.__inventory.items()):

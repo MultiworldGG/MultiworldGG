@@ -12,6 +12,18 @@
     "group": "bot"
   },
   {
+    "id": "bellhart/bellhart-bellway@l",
+    "name": "Bellhart Bellway - left1",
+    "scene": "Belltown_basement",
+    "gate": "left1",
+    "direction": "left",
+    "vanilla": "bellhart/belltown@bd",
+    "target_scene": "Belltown",
+    "target_gate": "door1",
+    "is_door": false,
+    "group": "door_out"
+  },
+  {
     "id": "bellhart/bellhart-hallway-to-shellwood@l",
     "name": "Bellhart Hallway to Shellwood - left1",
     "scene": "Belltown_07",
@@ -22,6 +34,18 @@
     "target_gate": "right2",
     "is_door": false,
     "group": "left"
+  },
+  {
+    "id": "bellhart/bellhart-hallway-to-shellwood@r",
+    "name": "Bellhart Hallway to Shellwood - right1",
+    "scene": "Belltown_07",
+    "gate": "right1",
+    "direction": "right",
+    "vanilla": "bellhart/belltown@l",
+    "target_scene": "Belltown",
+    "target_gate": "left3",
+    "is_door": false,
+    "group": "right"
   },
   {
     "id": "bellhart/bellhart-lower@c",
@@ -48,6 +72,18 @@
     "group": "left"
   },
   {
+    "id": "bellhart/bellhart-right-entrance@ll",
+    "name": "Bellhart Right Entrance - left1",
+    "scene": "Belltown_06",
+    "gate": "left1",
+    "direction": "left",
+    "vanilla": "bellhart/belltown@r",
+    "target_scene": "Belltown",
+    "target_gate": "right2",
+    "is_door": false,
+    "group": "left"
+  },
+  {
     "id": "bellhart/bellhart-right-entrance@ul",
     "name": "Bellhart Right Entrance - left3",
     "scene": "Belltown_06",
@@ -58,6 +94,42 @@
     "target_gate": "right1",
     "is_door": false,
     "group": "left"
+  },
+  {
+    "id": "bellhart/belltown@bd",
+    "name": "Belltown - door1",
+    "scene": "Belltown",
+    "gate": "door1",
+    "direction": "door",
+    "vanilla": "bellhart/bellhart-bellway@l",
+    "target_scene": "Belltown_basement",
+    "target_gate": "left1",
+    "is_door": true,
+    "group": "door_in"
+  },
+  {
+    "id": "bellhart/belltown@l",
+    "name": "Belltown - left3",
+    "scene": "Belltown",
+    "gate": "left3",
+    "direction": "left",
+    "vanilla": "bellhart/bellhart-hallway-to-shellwood@r",
+    "target_scene": "Belltown_07",
+    "target_gate": "right1",
+    "is_door": false,
+    "group": "left"
+  },
+  {
+    "id": "bellhart/belltown@r",
+    "name": "Belltown - right2",
+    "scene": "Belltown",
+    "gate": "right2",
+    "direction": "right",
+    "vanilla": "bellhart/bellhart-right-entrance@ll",
+    "target_scene": "Belltown_06",
+    "target_gate": "left1",
+    "is_door": false,
+    "group": "right"
   },
   {
     "id": "bellhart/upper-bellhart@f",
@@ -192,6 +264,18 @@
     "target_gate": "right3",
     "is_door": false,
     "group": "left"
+  },
+  {
+    "id": "bilewater/bilewater-groal-arena@r",
+    "name": "Bilewater Groal Arena - right1",
+    "scene": "Shadow_18",
+    "gate": "right1",
+    "direction": "right",
+    "vanilla": "bilewater/bilewater-upper-trap-gauntlet-hall@l",
+    "target_scene": "Shadow_12",
+    "target_gate": "left1",
+    "is_door": false,
+    "group": "right"
   },
   {
     "id": "bilewater/bilewater-hanging-corpse-room@l",
@@ -590,6 +674,30 @@
     "group": "right"
   },
   {
+    "id": "bilewater/bilewater-upper-trap-gauntlet-hall@l",
+    "name": "Bilewater Upper Trap Gauntlet Hall - left1",
+    "scene": "Shadow_12",
+    "gate": "left1",
+    "direction": "left",
+    "vanilla": "bilewater/bilewater-groal-arena@r",
+    "target_scene": "Shadow_18",
+    "target_gate": "right1",
+    "is_door": false,
+    "group": "left"
+  },
+  {
+    "id": "bilewater/bilewater-upper-trap-gauntlet-hall@r",
+    "name": "Bilewater Upper Trap Gauntlet Hall - right1",
+    "scene": "Shadow_12",
+    "gate": "right1",
+    "direction": "right",
+    "vanilla": "bilewater/bilewater-vertical-sac-pogo-room@ul",
+    "target_scene": "Shadow_19",
+    "target_gate": "left1",
+    "is_door": false,
+    "group": "right"
+  },
+  {
     "id": "bilewater/bilewater-upper-west-column@lr",
     "name": "Bilewater Upper West Column - right2",
     "scene": "Shadow_14",
@@ -636,6 +744,18 @@
     "target_gate": "left1",
     "is_door": false,
     "group": "right"
+  },
+  {
+    "id": "bilewater/bilewater-vertical-sac-pogo-room@ul",
+    "name": "Bilewater Vertical Sac Pogo Room - left1",
+    "scene": "Shadow_19",
+    "gate": "left1",
+    "direction": "left",
+    "vanilla": "bilewater/bilewater-upper-trap-gauntlet-hall@r",
+    "target_scene": "Shadow_12",
+    "target_gate": "right1",
+    "is_door": false,
+    "group": "left"
   },
   {
     "id": "bilewater/bilewater-weavenest-murglin@l",
@@ -1442,6 +1562,18 @@
     "group": "right"
   },
   {
+    "id": "choral-chambers/choral-chambers-outside-spa@l",
+    "name": "Choral Chambers Outside Spa - left1",
+    "scene": "Song_04",
+    "gate": "left1",
+    "direction": "left",
+    "vanilla": "the-slab/slab-bridge@r",
+    "target_scene": "Slab_01",
+    "target_gate": "right1",
+    "is_door": false,
+    "group": "left"
+  },
+  {
     "id": "choral-chambers/choral-chambers-outside-spa@r2",
     "name": "Choral Chambers Outside Spa - right2",
     "scene": "Song_04",
@@ -1538,6 +1670,18 @@
     "group": "right"
   },
   {
+    "id": "choral-chambers/rotating-tunnel@rh",
+    "name": "Rotating Tunnel - right3",
+    "scene": "Song_20b",
+    "gate": "right3",
+    "direction": "right",
+    "vanilla": "whispering-vaults/songclave-steam-tunnel@bl",
+    "target_scene": "Library_02",
+    "target_gate": "left1",
+    "is_door": false,
+    "group": "right"
+  },
+  {
     "id": "choral-chambers/rotating-tunnel@t",
     "name": "Rotating Tunnel - top1",
     "scene": "Song_20b",
@@ -1619,7 +1763,8 @@
         "target_scene": "Cog_04",
         "target_gate": "top2"
       }
-    ]
+    ],
+    "arrival_requires": "cogwork-core/cog-dancers@b1"
   },
   {
     "id": "cogwork-core/cog-dancers@l",
@@ -2150,6 +2295,18 @@
     "group": "left"
   },
   {
+    "id": "deep-docks/deep-docks-lower-east-shaft@ll",
+    "name": "Deep Docks Lower East Shaft - left2",
+    "scene": "Dock_15",
+    "gate": "left2",
+    "direction": "left",
+    "vanilla": "deep-docks/deep-docks-memory-hole@r",
+    "target_scene": "Dock_13",
+    "target_gate": "right1",
+    "is_door": false,
+    "group": "left"
+  },
+  {
     "id": "deep-docks/deep-docks-lower-east-shaft@lr",
     "name": "Deep Docks Lower East Shaft - right3",
     "scene": "Dock_15",
@@ -2340,6 +2497,18 @@
     "target_gate": "right2",
     "is_door": false,
     "group": "left"
+  },
+  {
+    "id": "deep-docks/deep-docks-memory-hole@r",
+    "name": "Deep Docks Memory Hole - right1",
+    "scene": "Dock_13",
+    "gate": "right1",
+    "direction": "right",
+    "vanilla": "deep-docks/deep-docks-lower-east-shaft@ll",
+    "target_scene": "Dock_15",
+    "target_gate": "left2",
+    "is_door": false,
+    "group": "right"
   },
   {
     "id": "deep-docks/deep-docks-sauna@l",
@@ -3327,7 +3496,8 @@
     "target_scene": "Shellwood_11b",
     "target_gate": "right1",
     "is_door": true,
-    "group": "door_in"
+    "group": "door_in",
+    "arrival_requires": "grand-gate/shrine-guardian-seth@d"
   },
   {
     "id": "grand-gate/shrine-guardian-seth@r",
@@ -3455,7 +3625,7 @@
     "scene": "Greymoor_15b",
     "gate": "door1",
     "direction": "door",
-    "vanilla": "greymoor/greymoor-crow-nest@l",
+    "vanilla": "greymoor/greymoor-craw-nest@l",
     "target_scene": "Room_CrowCourt",
     "target_gate": "left1",
     "is_door": true,
@@ -3498,8 +3668,8 @@
     "group": "top"
   },
   {
-    "id": "greymoor/greymoor-crow-nest@l",
-    "name": "Greymoor Crow Nest - left",
+    "id": "greymoor/greymoor-craw-nest@l",
+    "name": "Greymoor Craw Nest - left",
     "scene": "Room_CrowCourt",
     "gate": "left1",
     "direction": "left",
@@ -3520,6 +3690,18 @@
     "target_gate": "right1",
     "is_door": false,
     "group": "left"
+  },
+  {
+    "id": "greymoor/greymoor-east-bellshrine-room@hr",
+    "name": "Greymoor East Bellshrine Room - right2",
+    "scene": "Greymoor_02",
+    "gate": "right2",
+    "direction": "right",
+    "vanilla": "greymoor/greymoor-silver-shells-room@l",
+    "target_scene": "Greymoor_17",
+    "target_gate": "left1",
+    "is_door": false,
+    "group": "right"
   },
   {
     "id": "greymoor/greymoor-east-bellshrine-room@lr",
@@ -3820,6 +4002,18 @@
     "target_gate": "bot1",
     "is_door": false,
     "group": "top"
+  },
+  {
+    "id": "greymoor/greymoor-silver-shells-room@l",
+    "name": "Greymoor Silver Shells room - left1",
+    "scene": "Greymoor_17",
+    "gate": "left1",
+    "direction": "left",
+    "vanilla": "greymoor/greymoor-east-bellshrine-room@hr",
+    "target_scene": "Greymoor_02",
+    "target_gate": "right2",
+    "is_door": false,
+    "group": "left"
   },
   {
     "id": "greymoor/greymoor-silver-shells-room@u",
@@ -4194,6 +4388,18 @@
     "group": "left"
   },
   {
+    "id": "high-halls/high-halls-big-shaft@sl",
+    "name": "High Halls Big Shaft - left3",
+    "scene": "Hang_08",
+    "gate": "left3",
+    "direction": "left",
+    "vanilla": "high-halls/high-halls-flooded-room@r",
+    "target_scene": "Hang_10",
+    "target_gate": "right1",
+    "is_door": false,
+    "group": "left"
+  },
+  {
     "id": "high-halls/high-halls-big-shaft@tl",
     "name": "High Halls Big Shaft - left1",
     "scene": "Hang_08",
@@ -4250,6 +4456,18 @@
     "vanilla": "high-halls/high-halls-arena@l",
     "target_scene": "Hang_04",
     "target_gate": "left1",
+    "is_door": false,
+    "group": "right"
+  },
+  {
+    "id": "high-halls/high-halls-flooded-room@r",
+    "name": "High Halls Flooded Room - right1",
+    "scene": "Hang_10",
+    "gate": "right1",
+    "direction": "right",
+    "vanilla": "high-halls/high-halls-big-shaft@sl",
+    "target_scene": "Hang_08",
+    "target_gate": "left3",
     "is_door": false,
     "group": "right"
   },
@@ -4998,6 +5216,19 @@
     "group": "left"
   },
   {
+    "id": "moss-grotto/moss-grotto-center@ll",
+    "name": "Moss Grotto Center - left3",
+    "scene": "Tut_01",
+    "gate": "left3",
+    "direction": "left",
+    "vanilla": "moss-grotto/moss-grotto-west@lr",
+    "target_scene": "Tut_02",
+    "target_gate": "right2",
+    "is_door": false,
+    "group": "left",
+    "arrival_requires": "moss-grotto/moss-grotto-center@ll"
+  },
+  {
     "id": "moss-grotto/moss-grotto-center@lr",
     "name": "Moss Grotto Center - lower right",
     "scene": "Tut_01",
@@ -5006,6 +5237,30 @@
     "vanilla": "moss-grotto/moss-grotto-east@ll",
     "target_scene": "Tut_01b",
     "target_gate": "left2",
+    "is_door": false,
+    "group": "right"
+  },
+  {
+    "id": "moss-grotto/moss-grotto-center@ml",
+    "name": "Moss Grotto Center - left2",
+    "scene": "Tut_01",
+    "gate": "left2",
+    "direction": "left",
+    "vanilla": "moss-grotto/moss-grotto-west@ur",
+    "target_scene": "Tut_02",
+    "target_gate": "right1",
+    "is_door": false,
+    "group": "left"
+  },
+  {
+    "id": "moss-grotto/moss-grotto-center@ur",
+    "name": "Moss Grotto Center - right1",
+    "scene": "Tut_01",
+    "gate": "right1",
+    "direction": "right",
+    "vanilla": "moss-grotto/moss-grotto-east@ul",
+    "target_scene": "Tut_01b",
+    "target_gate": "left1",
     "is_door": false,
     "group": "right"
   },
@@ -5022,6 +5277,18 @@
     "group": "left"
   },
   {
+    "id": "moss-grotto/moss-grotto-east@ul",
+    "name": "Moss Grotto East - left1",
+    "scene": "Tut_01b",
+    "gate": "left1",
+    "direction": "left",
+    "vanilla": "moss-grotto/moss-grotto-center@ur",
+    "target_scene": "Tut_01",
+    "target_gate": "right1",
+    "is_door": false,
+    "group": "left"
+  },
+  {
     "id": "moss-grotto/moss-grotto-east@wd",
     "name": "Moss Grotto East - weavenest door",
     "scene": "Tut_01b",
@@ -5034,6 +5301,31 @@
     "group": "right",
     "arrival_requires": "moss-grotto/moss-grotto-east@wd",
     "return_requires": "moss-grotto/moss-grotto-east@wd"
+  },
+  {
+    "id": "moss-grotto/moss-grotto-west@lr",
+    "name": "Moss Grotto West - right2",
+    "scene": "Tut_02",
+    "gate": "right2",
+    "direction": "right",
+    "vanilla": "moss-grotto/moss-grotto-center@ll",
+    "target_scene": "Tut_01",
+    "target_gate": "left3",
+    "is_door": false,
+    "group": "right",
+    "arrival_requires": "moss-grotto/moss-grotto-west@lr"
+  },
+  {
+    "id": "moss-grotto/moss-grotto-west@ur",
+    "name": "Moss Grotto West - right1",
+    "scene": "Tut_02",
+    "gate": "right1",
+    "direction": "right",
+    "vanilla": "moss-grotto/moss-grotto-center@ml",
+    "target_scene": "Tut_01",
+    "target_gate": "left2",
+    "is_door": false,
+    "group": "right"
   },
   {
     "id": "mount-fay/brightvein-entrance@d",
@@ -5240,6 +5532,30 @@
     "group": "left"
   },
   {
+    "id": "mount-fay/mount-fay-entrance@lr",
+    "name": "Mount Fay Entrance - right4",
+    "scene": "Peak_01",
+    "gate": "right4",
+    "direction": "right",
+    "vanilla": "the-slab/slab-bellway@l",
+    "target_scene": "Slab_06",
+    "target_gate": "left1",
+    "is_door": false,
+    "group": "right"
+  },
+  {
+    "id": "mount-fay/mount-fay-entrance@msr",
+    "name": "Mount Fay Entrance - right2",
+    "scene": "Peak_01",
+    "gate": "right2",
+    "direction": "right",
+    "vanilla": "the-slab/slab-chilly-prison@l",
+    "target_scene": "Slab_15",
+    "target_gate": "left1",
+    "is_door": false,
+    "group": "right"
+  },
+  {
     "id": "mount-fay/mount-fay-entrance@ul",
     "name": "Mount Fay Entrance - left1",
     "scene": "Peak_01",
@@ -5262,6 +5578,18 @@
     "target_gate": "right1",
     "is_door": false,
     "group": "left"
+  },
+  {
+    "id": "mount-fay/mount-fay-entrance@usr",
+    "name": "Mount Fay Entrance - right1",
+    "scene": "Peak_01",
+    "gate": "right1",
+    "direction": "right",
+    "vanilla": "the-slab/slab-arena@l",
+    "target_scene": "Slab_16",
+    "target_gate": "left1",
+    "is_door": false,
+    "group": "right"
   },
   {
     "id": "mount-fay/mount-fay-frozen-flea@l",
@@ -8012,6 +8340,222 @@
     "group": "bot"
   },
   {
+    "id": "the-slab/slab-arena@l",
+    "name": "Slab Arena - left1",
+    "scene": "Slab_16",
+    "gate": "left1",
+    "direction": "left",
+    "vanilla": "mount-fay/mount-fay-entrance@usr",
+    "target_scene": "Peak_01",
+    "target_gate": "right1",
+    "is_door": false,
+    "group": "left"
+  },
+  {
+    "id": "the-slab/slab-arena@r",
+    "name": "Slab Arena - right1",
+    "scene": "Slab_16",
+    "gate": "right1",
+    "direction": "right",
+    "vanilla": "the-slab/slab-cell@arn",
+    "target_scene": "Slab_03",
+    "target_gate": "left1",
+    "is_door": false,
+    "group": "right"
+  },
+  {
+    "id": "the-slab/slab-bellway@l",
+    "name": "Slab Bellway - left1",
+    "scene": "Slab_06",
+    "gate": "left1",
+    "direction": "left",
+    "vanilla": "mount-fay/mount-fay-entrance@lr",
+    "target_scene": "Peak_01",
+    "target_gate": "right4",
+    "is_door": false,
+    "group": "left"
+  },
+  {
+    "id": "the-slab/slab-bridge@l",
+    "name": "Slab Bridge - left1",
+    "scene": "Slab_01",
+    "gate": "left1",
+    "direction": "left",
+    "vanilla": "the-slab/slab-entrance@r",
+    "target_scene": "Slab_02",
+    "target_gate": "right1",
+    "is_door": false,
+    "group": "left"
+  },
+  {
+    "id": "the-slab/slab-bridge@r",
+    "name": "Slab Bridge - right1",
+    "scene": "Slab_01",
+    "gate": "right1",
+    "direction": "right",
+    "vanilla": "choral-chambers/choral-chambers-outside-spa@l",
+    "target_scene": "Song_04",
+    "target_gate": "left1",
+    "is_door": false,
+    "group": "right"
+  },
+  {
+    "id": "the-slab/slab-cave-entrance@d",
+    "name": "Slab Cave Entrance - door1",
+    "scene": "Slab_08",
+    "gate": "door1",
+    "direction": "door",
+    "vanilla": "the-slab/slab-quiet-cell@b",
+    "target_scene": "Slab_Cell_Quiet",
+    "target_gate": "left2",
+    "is_door": true,
+    "group": "door_in"
+  },
+  {
+    "id": "the-slab/slab-cave-entrance@l",
+    "name": "Slab Cave Entrance - left1",
+    "scene": "Slab_08",
+    "gate": "left1",
+    "direction": "left",
+    "vanilla": "the-slab/slab-cell@cav",
+    "target_scene": "Slab_03",
+    "target_gate": "right8",
+    "is_door": false,
+    "group": "left"
+  },
+  {
+    "id": "the-slab/slab-cell@arn",
+    "name": "Slab Cell - left1",
+    "scene": "Slab_03",
+    "gate": "left1",
+    "direction": "left",
+    "vanilla": "the-slab/slab-arena@r",
+    "target_scene": "Slab_16",
+    "target_gate": "right1",
+    "is_door": false,
+    "group": "left"
+  },
+  {
+    "id": "the-slab/slab-cell@cav",
+    "name": "Slab Cell - right8",
+    "scene": "Slab_03",
+    "gate": "right8",
+    "direction": "right",
+    "vanilla": "the-slab/slab-cave-entrance@l",
+    "target_scene": "Slab_08",
+    "target_gate": "left1",
+    "is_door": false,
+    "group": "right"
+  },
+  {
+    "id": "the-slab/slab-cell@chl",
+    "name": "Slab Cell - left2",
+    "scene": "Slab_03",
+    "gate": "left2",
+    "direction": "left",
+    "vanilla": "the-slab/slab-chilly-prison@r",
+    "target_scene": "Slab_15",
+    "target_gate": "right1",
+    "is_door": false,
+    "group": "left"
+  },
+  {
+    "id": "the-slab/slab-cell@f2t",
+    "name": "Slab Cell - left5",
+    "scene": "Slab_03",
+    "gate": "left5",
+    "direction": "left",
+    "vanilla": "the-slab/slab-infleatween-top@r",
+    "target_scene": "Slab_04",
+    "target_gate": "right1",
+    "is_door": false,
+    "group": "left"
+  },
+  {
+    "id": "the-slab/slab-cell@pdb",
+    "name": "Slab Cell - left8",
+    "scene": "Slab_03",
+    "gate": "left8",
+    "direction": "left",
+    "vanilla": "the-slab/slab-poodle@r2",
+    "target_scene": "Slab_07",
+    "target_gate": "right2",
+    "is_door": false,
+    "group": "left"
+  },
+  {
+    "id": "the-slab/slab-chilly-prison@l",
+    "name": "Slab Chilly Prison - left1",
+    "scene": "Slab_15",
+    "gate": "left1",
+    "direction": "left",
+    "vanilla": "mount-fay/mount-fay-entrance@msr",
+    "target_scene": "Peak_01",
+    "target_gate": "right2",
+    "is_door": false,
+    "group": "left"
+  },
+  {
+    "id": "the-slab/slab-chilly-prison@r",
+    "name": "Slab Chilly Prison - right1",
+    "scene": "Slab_15",
+    "gate": "right1",
+    "direction": "right",
+    "vanilla": "the-slab/slab-cell@chl",
+    "target_scene": "Slab_03",
+    "target_gate": "left2",
+    "is_door": false,
+    "group": "right"
+  },
+  {
+    "id": "the-slab/slab-entrance@r",
+    "name": "Slab Entrance - right1",
+    "scene": "Slab_02",
+    "gate": "right1",
+    "direction": "right",
+    "vanilla": "the-slab/slab-bridge@l",
+    "target_scene": "Slab_01",
+    "target_gate": "left1",
+    "is_door": false,
+    "group": "right"
+  },
+  {
+    "id": "the-slab/slab-infleatween-top@r",
+    "name": "Slab Infleatween Top - right1",
+    "scene": "Slab_04",
+    "gate": "right1",
+    "direction": "right",
+    "vanilla": "the-slab/slab-cell@f2t",
+    "target_scene": "Slab_03",
+    "target_gate": "left5",
+    "is_door": false,
+    "group": "right"
+  },
+  {
+    "id": "the-slab/slab-poodle@r2",
+    "name": "Slab Poodle - right2",
+    "scene": "Slab_07",
+    "gate": "right2",
+    "direction": "right",
+    "vanilla": "the-slab/slab-cell@pdb",
+    "target_scene": "Slab_03",
+    "target_gate": "left8",
+    "is_door": false,
+    "group": "right"
+  },
+  {
+    "id": "the-slab/slab-quiet-cell@b",
+    "name": "Slab Quiet Cell - left2",
+    "scene": "Slab_Cell_Quiet",
+    "gate": "left2",
+    "direction": "left",
+    "vanilla": "the-slab/slab-cave-entrance@d",
+    "target_scene": "Slab_08",
+    "target_gate": "door1",
+    "is_door": false,
+    "group": "door_out"
+  },
+  {
     "id": "underworks/broken-elevator@l",
     "name": "Broken Elevator - left1",
     "scene": "Under_01b",
@@ -8034,6 +8578,18 @@
     "target_gate": "top1",
     "is_door": false,
     "group": "bot"
+  },
+  {
+    "id": "underworks/underworks-below-confession@l",
+    "name": "Underworks Below Confession - left1",
+    "scene": "Under_06",
+    "gate": "left1",
+    "direction": "left",
+    "vanilla": "underworks/underworks-western-gauntlet@r",
+    "target_scene": "Under_07",
+    "target_gate": "right2",
+    "is_door": false,
+    "group": "left"
   },
   {
     "id": "underworks/underworks-below-confession@r",
@@ -8190,6 +8746,18 @@
     "target_gate": "left2",
     "is_door": false,
     "group": "right"
+  },
+  {
+    "id": "underworks/underworks-crushing-path@l",
+    "name": "Underworks Crushing Path - left1",
+    "scene": "Under_04",
+    "gate": "left1",
+    "direction": "left",
+    "vanilla": "underworks/underworks-saw-shaft@r",
+    "target_scene": "Under_03c",
+    "target_gate": "right1",
+    "is_door": false,
+    "group": "left"
   },
   {
     "id": "underworks/underworks-delvers-drill@l",
@@ -8492,6 +9060,18 @@
     "group": "left"
   },
   {
+    "id": "underworks/underworks-saw-shaft@r",
+    "name": "Underworks Saw Shaft - right1",
+    "scene": "Under_03c",
+    "gate": "right1",
+    "direction": "right",
+    "vanilla": "underworks/underworks-crushing-path@l",
+    "target_scene": "Under_04",
+    "target_gate": "left1",
+    "is_door": false,
+    "group": "right"
+  },
+  {
     "id": "underworks/underworks-shaft@l2",
     "name": "Underworks Shaft - left3",
     "scene": "Under_02",
@@ -8524,6 +9104,18 @@
     "vanilla": "underworks/underworks-saw-intro@l",
     "target_scene": "Under_03b",
     "target_gate": "left1",
+    "is_door": false,
+    "group": "right"
+  },
+  {
+    "id": "underworks/underworks-shaft@r3",
+    "name": "Underworks Shaft - right2",
+    "scene": "Under_02",
+    "gate": "right2",
+    "direction": "right",
+    "vanilla": "underworks/underworks-western-gauntlet@l",
+    "target_scene": "Under_07",
+    "target_gate": "left3",
     "is_door": false,
     "group": "right"
   },
@@ -8612,6 +9204,30 @@
     "group": "right"
   },
   {
+    "id": "underworks/underworks-western-gauntlet@l",
+    "name": "Underworks Western Gauntlet - left3",
+    "scene": "Under_07",
+    "gate": "left3",
+    "direction": "left",
+    "vanilla": "underworks/underworks-shaft@r3",
+    "target_scene": "Under_02",
+    "target_gate": "right2",
+    "is_door": false,
+    "group": "left"
+  },
+  {
+    "id": "underworks/underworks-western-gauntlet@r",
+    "name": "Underworks Western Gauntlet - right2",
+    "scene": "Under_07",
+    "gate": "right2",
+    "direction": "right",
+    "vanilla": "underworks/underworks-below-confession@l",
+    "target_scene": "Under_06",
+    "target_gate": "left1",
+    "is_door": false,
+    "group": "right"
+  },
+  {
     "id": "underworks/underworks-wisp-thicket-passage@r",
     "name": "Underworks Wisp Thicket Passage - right1",
     "scene": "Under_23",
@@ -8658,6 +9274,214 @@
     "target_gate": "left1",
     "is_door": false,
     "group": "right"
+  },
+  {
+    "id": "verdania/palestag@l",
+    "name": "Palestag - left1",
+    "scene": "Clover_19",
+    "gate": "left1",
+    "direction": "left",
+    "vanilla": "verdania/verdania-left-side-tall-room@ur",
+    "target_scene": "Clover_05c",
+    "target_gate": "right2",
+    "is_door": false,
+    "group": "left",
+    "shuffle_region": "verdania_memory"
+  },
+  {
+    "id": "verdania/verdania-big-button-room@l",
+    "name": "Verdania Big Button Room - left1",
+    "scene": "Clover_18",
+    "gate": "left1",
+    "direction": "left",
+    "vanilla": "verdania/verdania-right-side-tall-room@r",
+    "target_scene": "Clover_03",
+    "target_gate": "right1",
+    "is_door": false,
+    "group": "left",
+    "shuffle_region": "verdania_memory"
+  },
+  {
+    "id": "verdania/verdania-big-room@r",
+    "name": "Verdania Big Room - right1",
+    "scene": "Clover_02c",
+    "gate": "right1",
+    "direction": "right",
+    "vanilla": "verdania/verdania-right-side-tall-room@ll",
+    "target_scene": "Clover_03",
+    "target_gate": "left2",
+    "is_door": false,
+    "group": "right",
+    "shuffle_region": "verdania_memory"
+  },
+  {
+    "id": "verdania/verdania-big-room@ul",
+    "name": "Verdania Big Room - left2",
+    "scene": "Clover_02c",
+    "gate": "left2",
+    "direction": "left",
+    "vanilla": "verdania/verdania-left-side-tall-room@lr",
+    "target_scene": "Clover_05c",
+    "target_gate": "right3",
+    "is_door": false,
+    "group": "left",
+    "shuffle_region": "verdania_memory"
+  },
+  {
+    "id": "verdania/verdania-capital@r",
+    "name": "Verdania Capital - right1",
+    "scene": "Clover_04b",
+    "gate": "right1",
+    "direction": "right",
+    "vanilla": "verdania/verdania-right-side-tall-room@ul",
+    "target_scene": "Clover_03",
+    "target_gate": "left1",
+    "is_door": false,
+    "group": "right",
+    "shuffle_region": "verdania_memory"
+  },
+  {
+    "id": "verdania/verdania-capital@ul",
+    "name": "Verdania Capital - left1",
+    "scene": "Clover_04b",
+    "gate": "left1",
+    "direction": "left",
+    "vanilla": "verdania/verdania-kindanir-egg-room@r",
+    "target_scene": "Clover_11",
+    "target_gate": "right1",
+    "is_door": false,
+    "group": "left",
+    "shuffle_region": "verdania_memory"
+  },
+  {
+    "id": "verdania/verdania-cloverstag-steps@r",
+    "name": "Verdania Cloverstag Steps - right1",
+    "scene": "Clover_16",
+    "gate": "right1",
+    "direction": "right",
+    "vanilla": "verdania/verdania-left-side-tall-room@ul",
+    "target_scene": "Clover_05c",
+    "target_gate": "left1",
+    "is_door": false,
+    "group": "right",
+    "shuffle_region": "verdania_memory"
+  },
+  {
+    "id": "verdania/verdania-kindanir-egg-room@r",
+    "name": "Verdania Kindanir egg Room - right1",
+    "scene": "Clover_11",
+    "gate": "right1",
+    "direction": "right",
+    "vanilla": "verdania/verdania-capital@ul",
+    "target_scene": "Clover_04b",
+    "target_gate": "left1",
+    "is_door": false,
+    "group": "right",
+    "shuffle_region": "verdania_memory"
+  },
+  {
+    "id": "verdania/verdania-left-side-essence-shrine@r",
+    "name": "Verdania Left Side Essence Shrine - right1",
+    "scene": "Clover_21",
+    "gate": "right1",
+    "direction": "right",
+    "vanilla": "verdania/verdania-left-side-tall-room@ll",
+    "target_scene": "Clover_05c",
+    "target_gate": "left2",
+    "is_door": false,
+    "group": "right",
+    "shuffle_region": "verdania_memory"
+  },
+  {
+    "id": "verdania/verdania-left-side-tall-room@ll",
+    "name": "Verdania Left Side Tall Room - left2",
+    "scene": "Clover_05c",
+    "gate": "left2",
+    "direction": "left",
+    "vanilla": "verdania/verdania-left-side-essence-shrine@r",
+    "target_scene": "Clover_21",
+    "target_gate": "right1",
+    "is_door": false,
+    "group": "left",
+    "shuffle_region": "verdania_memory"
+  },
+  {
+    "id": "verdania/verdania-left-side-tall-room@lr",
+    "name": "Verdania Left Side Tall Room - right3",
+    "scene": "Clover_05c",
+    "gate": "right3",
+    "direction": "right",
+    "vanilla": "verdania/verdania-big-room@ul",
+    "target_scene": "Clover_02c",
+    "target_gate": "left2",
+    "is_door": false,
+    "group": "right",
+    "shuffle_region": "verdania_memory"
+  },
+  {
+    "id": "verdania/verdania-left-side-tall-room@ul",
+    "name": "Verdania Left Side Tall Room - left1",
+    "scene": "Clover_05c",
+    "gate": "left1",
+    "direction": "left",
+    "vanilla": "verdania/verdania-cloverstag-steps@r",
+    "target_scene": "Clover_16",
+    "target_gate": "right1",
+    "is_door": false,
+    "group": "left",
+    "shuffle_region": "verdania_memory"
+  },
+  {
+    "id": "verdania/verdania-left-side-tall-room@ur",
+    "name": "Verdania Left Side Tall Room - right2",
+    "scene": "Clover_05c",
+    "gate": "right2",
+    "direction": "right",
+    "vanilla": "verdania/palestag@l",
+    "target_scene": "Clover_19",
+    "target_gate": "left1",
+    "is_door": false,
+    "group": "right",
+    "shuffle_region": "verdania_memory"
+  },
+  {
+    "id": "verdania/verdania-right-side-tall-room@ll",
+    "name": "Verdania Right Side Tall Room - left2",
+    "scene": "Clover_03",
+    "gate": "left2",
+    "direction": "left",
+    "vanilla": "verdania/verdania-big-room@r",
+    "target_scene": "Clover_02c",
+    "target_gate": "right1",
+    "is_door": false,
+    "group": "left",
+    "shuffle_region": "verdania_memory"
+  },
+  {
+    "id": "verdania/verdania-right-side-tall-room@r",
+    "name": "Verdania Right Side Tall Room - right1",
+    "scene": "Clover_03",
+    "gate": "right1",
+    "direction": "right",
+    "vanilla": "verdania/verdania-big-button-room@l",
+    "target_scene": "Clover_18",
+    "target_gate": "left1",
+    "is_door": false,
+    "group": "right",
+    "shuffle_region": "verdania_memory"
+  },
+  {
+    "id": "verdania/verdania-right-side-tall-room@ul",
+    "name": "Verdania Right Side Tall Room - left1",
+    "scene": "Clover_03",
+    "gate": "left1",
+    "direction": "left",
+    "vanilla": "verdania/verdania-capital@r",
+    "target_scene": "Clover_04b",
+    "target_gate": "right1",
+    "is_door": false,
+    "group": "left",
+    "shuffle_region": "verdania_memory"
   },
   {
     "id": "weavenest-atla/weavenest-atla-bench@l",
@@ -8890,6 +9714,30 @@
     "group": "right"
   },
   {
+    "id": "whispering-vaults/grand-bellway-library@r",
+    "name": "Grand Bellway Library - right1",
+    "scene": "Library_03",
+    "gate": "right1",
+    "direction": "right",
+    "vanilla": "whispering-vaults/whispering-vaults-flea-shaft@cl",
+    "target_scene": "Library_01",
+    "target_gate": "left2",
+    "is_door": false,
+    "group": "right"
+  },
+  {
+    "id": "whispering-vaults/songclave-steam-tunnel@bl",
+    "name": "Songclave Steam Tunnel - left1",
+    "scene": "Library_02",
+    "gate": "left1",
+    "direction": "left",
+    "vanilla": "choral-chambers/rotating-tunnel@rh",
+    "target_scene": "Song_20b",
+    "target_gate": "right3",
+    "is_door": false,
+    "group": "left"
+  },
+  {
     "id": "whispering-vaults/songclave-steam-tunnel@br",
     "name": "Songclave Steam Tunnel - right1",
     "scene": "Library_02",
@@ -9116,6 +9964,18 @@
     "target_gate": "left2",
     "is_door": false,
     "group": "right"
+  },
+  {
+    "id": "whispering-vaults/whispering-vaults-flea-shaft@cl",
+    "name": "Whispering Vaults Flea Shaft - left2",
+    "scene": "Library_01",
+    "gate": "left2",
+    "direction": "left",
+    "vanilla": "whispering-vaults/grand-bellway-library@r",
+    "target_scene": "Library_03",
+    "target_gate": "right1",
+    "is_door": false,
+    "group": "left"
   },
   {
     "id": "whispering-vaults/whispering-vaults-flea-shaft@tl",

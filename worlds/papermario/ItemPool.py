@@ -1,19 +1,41 @@
-# not entirely, but partially from https://github.com/icebound777/PMR-SeedGenerator/blob/main/rando_modules/logic.py
+# not entirely, but partially from
+# https://github.com/icebound777/PMR-SeedGenerator/blob/main/rando_modules/logic.py
 # follows examples in OoT's implementation
 
 from collections import namedtuple
 from itertools import chain
 
-from .data.chapter_logic import get_bowser_castle_removed_locations, areas_by_chapter, \
-    get_locations_beyond_spirit_requirements
-from .data.ItemList import taycet_items, item_table, progression_miscitems, item_groups, item_multiples_base_name
-from .data.LocationsList import location_groups, location_table, missable_locations, dojo_location_order, ch8_locations
+from .data.chapter_logic import (
+    get_bowser_castle_removed_locations,
+    areas_by_chapter,
+    get_locations_beyond_spirit_requirements,
+)
+from .data.ItemList import (
+    taycet_items,
+    item_table,
+    progression_miscitems,
+    item_groups,
+    item_multiples_base_name,
+)
+from .data.LocationsList import (
+    location_groups,
+    location_table,
+    missable_locations,
+    dojo_location_order,
+    all_ch8_locations,
+)
 from .options import *
-from .data.item_exclusion import exclude_due_to_settings, exclude_from_taycet_placement
+from .data.item_exclusion import (
+    exclude_due_to_settings,
+    exclude_from_taycet_placement,
+)
 from .modules.modify_itempool import get_randomized_itempool
 from BaseClasses import ItemClassification as Ic, LocationProgressType
 from .Locations import location_factory
-from .data.chapter_logic import get_chapter_excluded_item_names, get_chapter_excluded_location_names
+from .data.chapter_logic import (
+    get_chapter_excluded_item_names,
+    get_chapter_excluded_location_names
+)
 
 from typing import TYPE_CHECKING
 if TYPE_CHECKING:
@@ -51,32 +73,44 @@ def get_pool_core(world: "PaperMarioWorld"):
 
     bc_removed_locations = []
 
-    # items and locations excluded from chapters for LCL get handled differently from normal excluded locations
+    # items and locations excluded from chapters for LCL get handled differently
+    # from normal excluded locations
     ch_excluded_locations = []
     ch_excluded_items = []
     placed_items_excluded = {}
 
     if world.options.spirit_requirements.value == SpiritRequirements.option_Specific_And_Limit_Chapter_Logic:
-        ch_excluded_locations = get_chapter_excluded_location_names(world.excluded_spirits,
-                                                                    world.options.letter_rewards.value)
+        ch_excluded_locations = get_chapter_excluded_location_names(
+            world.excluded_spirits,
+            world.options.letter_rewards.value,
+        )
         ch_excluded_items = get_chapter_excluded_item_names(world.excluded_spirits)
 
     # remove chapter 8 locations if star way is the goal
-    # otherwise remove any bowser castle locations removed by shortened or boss rush modes
+    # otherwise remove any bowser castle locations removed by shortened or boss
+    # rush modes
     if world.options.seed_goal.value == SeedGoal.option_Open_Star_Way:
-        ch_excluded_locations.extend(ch8_locations)
+        ch_excluded_locations.extend(all_ch8_locations)
         ch_excluded_items.extend(get_chapter_excluded_item_names([8]))
     else:
-        bc_removed_locations = get_bowser_castle_removed_locations(world.options.bowser_castle_mode.value)
+        bc_removed_locations = get_bowser_castle_removed_locations(
+            world.options.bowser_castle_mode.value
+        )
 
-    # Exclude locations that are either missable or are going to be considered not in logic based on settings
-    excluded_locations = missable_locations + get_locations_to_exclude(world, bc_removed_locations)
+    # Exclude locations that are either missable or are going to be considered
+    # not in logic based on settings
+    excluded_locations = missable_locations + get_locations_to_exclude(
+        world,
+        bc_removed_locations,
+    )
 
     # remove unused items from the pool
 
     for loc_name in location_table:
 
-        if loc_name not in ch_excluded_locations and loc_name not in bc_removed_locations:
+        if (    loc_name not in ch_excluded_locations
+            and loc_name not in bc_removed_locations
+        ):
             location = world.get_location(loc_name)
         else:
             location = location_factory(loc_name, world.player)
@@ -115,10 +149,13 @@ def get_pool_core(world: "PaperMarioWorld"):
         if location.name in location_groups["ShopItem"]:
 
             if location.identifier in ["DRO_01/ShopItemB", "DRO_01/ShopItemD", "DRO_01/ShopItemE"]:
-                shuffle_item = (world.options.random_puzzles.value and world.options.include_shops.value
-                                and not (world.options.spirit_requirements.value ==
-                                         SpiritRequirements.option_Specific_And_Limit_Chapter_Logic and
-                                         2 in world.excluded_spirits))
+                shuffle_item = (
+                        world.options.random_puzzles.value
+                    and world.options.include_shops.value
+                    and not (    world.options.spirit_requirements.value == SpiritRequirements.option_Specific_And_Limit_Chapter_Logic
+                             and 2 in world.excluded_spirits
+                        )
+                )
             else:
                 shuffle_item = world.options.include_shops.value
 
@@ -135,8 +172,10 @@ def get_pool_core(world: "PaperMarioWorld"):
         if location.name in location_groups["FavorReward"]:
             # coins get shuffled only if other rewards are also shuffled
             if location.name in location_groups["FavorCoin"]:
-                shuffle_item = (world.options.koot_coins.value and
-                                (world.options.koot_favors.value != ShuffleKootFavors.option_Vanilla))
+                shuffle_item = (
+                        world.options.koot_coins.value
+                    and (world.options.koot_favors.value != ShuffleKootFavors.option_Vanilla)
+                )
             else:
                 shuffle_item = (world.options.koot_favors.value != ShuffleKootFavors.option_Vanilla)
 
@@ -152,8 +191,10 @@ def get_pool_core(world: "PaperMarioWorld"):
 
         if location.name in location_groups["LetterReward"]:
             if location.name == "GR Goomba Village Goompapa Letter Reward 2":
-                shuffle_item = (world.options.letter_rewards.value in [ShuffleLetters.option_Final_Letter_Chain_Reward,
-                                                                       ShuffleLetters.option_Full_Shuffle])
+                shuffle_item = (world.options.letter_rewards.value in [
+                    ShuffleLetters.option_Final_Letter_Chain_Reward,
+                    ShuffleLetters.option_Full_Shuffle
+                ])
             elif location.name in location_groups["LetterChain"]:
                 shuffle_item = (world.options.letter_rewards.value == ShuffleLetters.option_Full_Shuffle)
 
@@ -196,8 +237,10 @@ def get_pool_core(world: "PaperMarioWorld"):
         if location.name in location_groups["Gear"]:
             # hammer 1 bush is special in that it is made to not be empty even if starting with hammer
             if location.name == "GR Jr. Troopa's Playground In Hammer Bush":
-                shuffle_item = ((world.options.gear_shuffle_mode.value != GearShuffleMode.option_Vanilla) or
-                                (world.options.starting_hammer.value == StartingHammer.option_Hammerless))
+                shuffle_item = (
+                       world.options.gear_shuffle_mode.value != GearShuffleMode.option_Vanilla
+                    or world.options.starting_hammer.value == StartingHammer.option_Hammerless
+                )
             else:
                 shuffle_item = (world.options.gear_shuffle_mode.value != GearShuffleMode.option_Vanilla)
             if not shuffle_item:
@@ -216,27 +259,35 @@ def get_pool_core(world: "PaperMarioWorld"):
         # add it to the proper pool, or place the item
         if shuffle_item:
 
-            # hammer bush gets shuffled as a Tayce T item if shuffling gear locations and not hammerless
-            if (location.name == "GR Jr. Troopa's Playground In Hammer Bush" and
-                    (world.options.gear_shuffle_mode.value == GearShuffleMode.option_Gear_Location_Shuffle) and
-                    (world.options.starting_hammer.value != StartingHammer.option_Hammerless)):
-                pool_progression_items.append(world.random.choice([x for x in taycet_items
-                                                                   if x not in exclude_from_taycet_placement]))
-
-            # some progression items need to be in replenishable locations, we only need one of each
+            # hammer bush gets shuffled as a Tayce T item if shuffling
+            # gear locations and not hammerless
+            if (    location.name == "GR Jr. Troopa's Playground In Hammer Bush"
+                and world.options.gear_shuffle_mode.value == GearShuffleMode.option_Gear_Location_Shuffle
+                and world.options.starting_hammer.value != StartingHammer.option_Hammerless
+            ):
+                pool_progression_items.append(world.random.choice([
+                    x
+                    for x in taycet_items
+                    if x not in exclude_from_taycet_placement
+                ]))
+            # some progression items need to be in replenishable locations, we
+            # only need one of each
             elif item in progression_miscitems:
                 if item not in pool_misc_progression_items:
                     pool_misc_progression_items.append(item)
                 else:
                     pool_illogical_consumables.append(item)
-
-            # progression items are shuffled; include gear and star pieces from rip cheato
-            elif (itemdata[1] == Ic.progression or
-                  (location.name in location_groups["ShopItem"] and
-                   world.options.include_shops.value and "Star Piece" in item)) and item not in ch_excluded_items:
+            # progression items are shuffled; include gear and star pieces from
+            # rip cheato
+            elif (    (   itemdata[1] == Ic.progression
+                       or (    location.name in location_groups["ShopItem"]
+                           and world.options.include_shops.value
+                           and "Star Piece" in item))
+                  and item not in ch_excluded_items
+            ):
                 pool_progression_items.append(item)
-
-            # split other items into their own pools; these other pools get modified before being sent elsewhere
+            # split other items into their own pools; these other pools get
+            # modified before being sent elsewhere
             elif itemdata[0] == "COIN":
                 pool_coins_only.append(item)
             elif itemdata[0] == "ITEM":
@@ -245,11 +296,15 @@ def get_pool_core(world: "PaperMarioWorld"):
                 pool_badges.append(item)
             else:
                 pool_other_items.append(item)
-        elif loc_name in ch_excluded_locations or loc_name in bc_removed_locations:
-            # keep out of logic placed items separate, remove the location and item from remaining excluded lists
+        elif (   loc_name in ch_excluded_locations
+              or loc_name in bc_removed_locations
+        ):
+            # keep out of logic placed items separate, remove the location and
+            # item from remaining excluded lists
             placed_items_excluded[location.name] = item
 
-            # remove locations with placed items from the respective lists so we can get the item pool count correct
+            # remove locations with placed items from the respective lists so we
+            # can get the item pool count correct
             if location.name in bc_removed_locations:
                 bc_removed_locations.remove(location.name)
 
@@ -265,21 +320,25 @@ def get_pool_core(world: "PaperMarioWorld"):
 
     # end of location for loop
 
-    # at this point every location's item should be either left unshuffled or added to a pool
-    # we want to modify these pools according to settings and make sure to have the right number of items
+    # at this point every location's item should be either left unshuffled or
+    # added to a pool
+    # we want to modify these pools according to settings and make sure to have
+    # the right number of items
 
     target_itempool_size = (
-            len(pool_progression_items)
-            + len(pool_misc_progression_items)
-            + len(pool_coins_only)
-            + len(pool_illogical_consumables)
-            + len(pool_badges)
-            + len(pool_other_items)
-            - len(bc_removed_locations)
+        len(pool_progression_items)
+        + len(pool_misc_progression_items)
+        + len(pool_coins_only)
+        + len(pool_illogical_consumables)
+        + len(pool_badges)
+        + len(pool_other_items)
+        - len(bc_removed_locations)
     )
 
     # add power stars
-    if world.options.power_star_hunt.value and world.options.total_power_stars.value > 0:
+    if (    world.options.power_star_hunt.value
+        and world.options.total_power_stars.value > 0
+    ):
         for i in range(0, world.options.total_power_stars.value):
             pool_progression_items.append("Power Star")
 
@@ -360,20 +419,24 @@ def get_pool_core(world: "PaperMarioWorld"):
         while len(pool_badges) > world.options.badge_pool_limit.value:
             pool_badges.pop()
 
-    # If the item pool is the wrong size now, fix it by filling up or clearing out items
+    # If the item pool is the wrong size now, fix it by filling up or clearing
+    # out items
     cur_itempool_size = (
-            len(pool_progression_items)
-            + len(pool_misc_progression_items)
-            + len(pool_coins_only)
-            + len(pool_illogical_consumables)
-            + len(pool_badges)
-            + len(pool_other_items)
+        len(pool_progression_items)
+        + len(pool_misc_progression_items)
+        + len(pool_coins_only)
+        + len(pool_illogical_consumables)
+        + len(pool_badges)
+        + len(pool_other_items)
     )
 
     # add random tayce t items if we need to add items for some reason
     while target_itempool_size > cur_itempool_size:
-        pool_illogical_consumables.append(world.random.choice([x for x in taycet_items
-                                                               if x not in exclude_from_taycet_placement]))
+        pool_illogical_consumables.append(world.random.choice([
+            x
+            for x in taycet_items
+            if x not in exclude_from_taycet_placement
+        ]))
         cur_itempool_size += 1
 
     # remove coins first, then consumables if we need to keep going
@@ -388,9 +451,11 @@ def get_pool_core(world: "PaperMarioWorld"):
                 trashable_items.pop()
                 cur_itempool_size -= 1
             else:
-                raise ValueError(f"Paper Mario: {world.player} ({world.multiworld.player_name[world.player]}) has too "
-                                 f"large of an item pool for the number of locations; consider increasing the number "
-                                 f"of checks available or reducing the badge or power star pools.")
+                raise ValueError(
+                    f"Paper Mario: {world.player} ({world.multiworld.player_name[world.player]}) has "
+                    "too large of an item pool for the number of locations; consider increasing the "
+                    "number of checks available or reducing the badge or power star pools."
+                )
 
     # Re-join the non-required items into one array
     pool_other_items.extend(pool_coins_only)
@@ -409,11 +474,13 @@ def get_pool_core(world: "PaperMarioWorld"):
     if ch_excluded_locations:
         world.random.shuffle(ch_excluded_locations)
 
-        # shuffle items but sort to put useful items in front so that filler items go to out of logic locations first
+        # shuffle items but sort to put useful items in front so that
+        # filler items go to out of logic locations first
         world.random.shuffle(pool_other_items)
         pool_other_items.sort(key=lambda item: 1 if item_table[item][1] == Ic.filler else 0)
 
-        # save some filler items for the excluded locations; not the chapter ones, but from get_locations_to_exclude
+        # save some filler items for the excluded locations; not the
+        # chapter ones, but from get_locations_to_exclude
         for _ in excluded_locations:
             pool.append(pool_other_items.pop())
 
@@ -507,17 +574,29 @@ def get_items_to_exclude(world: "PaperMarioWorld") -> list:
     return excluded_items
 
 
-def get_locations_to_exclude(world: "PaperMarioWorld", bc_removed_locations: list) -> list:
+def get_locations_to_exclude(
+    world: "PaperMarioWorld",
+    bc_removed_locations: list,
+) -> list:
     excluded_locations = []
 
-    # exclude locations which require more star spirits than are expected to be needed to beat the seed
+    # exclude locations which require more star spirits than are expected to be
+    # needed to beat the seed
     if not world.options.power_star_hunt.value:
-        excluded_locations.extend(get_locations_beyond_spirit_requirements(world.options.star_way_spirits.value))
+        excluded_locations.extend(
+            get_locations_beyond_spirit_requirements(
+                max([
+                    world.options.star_way_spirits.value,
+                    world.options.star_beam_spirits.value,
+                ])
+            )
+        )
 
-    # below lines turned off to see if letting late game locations not be excluded is a problem or not
+    # below lines turned off to see if letting late game locations not be
+    # excluded is a problem or not
     # exclude some amount of chapter 8 locations depending upon access requirements
     # if world.options.seed_goal.value != SeedGoal.option_Open_Star_Way:
-    #     late_game_locations = ch8_locations.copy()
+    #     late_game_locations = all_ch8_locations.copy()
     #     for bc_loc in bc_removed_locations:
     #         late_game_locations.remove(bc_loc)
     #
@@ -537,7 +616,9 @@ def get_locations_to_exclude(world: "PaperMarioWorld", bc_removed_locations: lis
     # exclude rowf item locations
     for location in location_groups["RowfShop"]:
         set_number: int = int(location[34])  # Example string: "TT Plaza District Rowf's Shop Set 1 - 1"
-        if location not in excluded_locations and set_number > world.options.rowf_items.value:
+        if (    location not in excluded_locations
+            and set_number > world.options.rowf_items.value
+        ):
             excluded_locations.append(location)
 
     # exclude rip cheato locations
@@ -565,7 +646,13 @@ def get_star_haven_access_ratio(options: PaperMarioOptions):
         return 1
     else:
         if options.power_star_hunt.value:
-            return (options.star_way_power_stars.value / options.total_power_stars.value + options.star_way_spirits.value / 7) / 2
+            return (
+                (
+                    (options.star_way_power_stars.value / options.total_power_stars.value)
+                    + (options.star_way_spirits.value / 7)
+                )
+                / 2
+            )
         else:
             return options.star_way_spirits.value / 7
 

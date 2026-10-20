@@ -160,6 +160,8 @@ def create_regions(world: "OuterWildsWorld") -> None:
         menu.add_exits(["Deep Bramble"])
         mw.get_entrance("Menu -> Space", p).access_rule = lambda state: state.has_all(["Launch Codes", "Deep Bramble Coordinates"], p)
         mw.get_region("Deep Bramble", p).add_exits(["Deep Bramble via Warp Drive"], {"Deep Bramble via Warp Drive": lambda state: state.has("Launch Codes", p)})
+        if options.enable_ac_mod and options.logsanity:
+            mw.get_location("AC Ship Log: Flashback Vision", p).access_rule = lambda state: state.has_all(["Launch Codes", "Deep Bramble Coordinates"], p)
 
     if options.goal == Goal.option_song_of_the_universe:
         friend_list = [
@@ -172,6 +174,7 @@ def create_regions(world: "OuterWildsWorld") -> None:
             ("FQ: Tuner's Song", options.enable_fq_mod),                                 # Fret's Quest
             ("FC: Conclusion", options.enable_fc_mod),                                   # Forgotten Castaways
             ("EH: Meet The Phosphors", options.enable_eh_mod),                           # Echo Hike
+            ("HS: Submission", options.enable_hs_mod),                                   # Heliostudy
         ]
         available_friend_locations = [location for (location, enabled) in friend_list if enabled]
         required_count = options.required_friends

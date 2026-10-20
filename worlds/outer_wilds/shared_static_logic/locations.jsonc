@@ -3889,5 +3889,209 @@
     { // SLF__EH_PHOSPHORS_X3
         "category": "eh", "logsanity": true, "address": 1085048107, "name": "EH Ship Log: Phosphor Shoal 3 - Thanks",
         "region": "Echo Hike", "requires": [ { "item": "Threader" } ]
-    }   
+    },
+
+// Heliostudy Story Mod Default Locations
+// These location ids start at 1085049000 (i.e. rounding up to the next thousand),
+// to make it slightly easier to change locations in the future.
+
+	{ // HS_SIGNAL_HELIOCENTER
+		"category": "hs", "address": 1085049000, "name": "HS: Scan Heliocenter Signal",
+		"region": "Heliostudy", "requires": [ { "item": "Signalscope" }, { "item": "Heliochord Frequency" } ]
+	},
+	{ // HS_SIGNAL_DAUCUS
+		"category": "hs", "address": 1085049001, "name": "HS: Scan Daucus Signal",
+		"region": "Heliostudy", "requires": [ { "item": "Signalscope" }, { "item": "Heliochord Frequency" } ]
+	},
+	{ // HS_SIGNAL_GLACIAL_ABYSS
+		"category": "hs", "address": 1085049002, "name": "HS: Scan Glacial Abyss! Signal",
+		"region": "Heliostudy", "requires": [ { "item": "Signalscope" }, { "item": "Heliochord Frequency" } ]
+	},
+	{ // HS_SIGNAL_SHATTERED_GEODE
+		"category": "hs", "address": 1085049003, "name": "HS: Scan Shattered Geode Signal",
+		"region": "Heliostudy", "requires": [ { "item": "Signalscope" }, { "item": "Heliochord Frequency" } ]
+	},
+	{ // HS_SIGNAL_THE_BIG_ONE
+		"category": "hs", "address": 1085049004, "name": "HS: Scan The Big One Signal",
+		"region": "Heliostudy", "requires": [ { "item": "Signalscope" }, { "item": "Heliochord Frequency" } ]
+	},
+	{ // HS_REQUIREMENT_1
+		"category": "hs", "address": 1085049005, "name": "HS: Learn Requirement 1",
+		"region": "The Big One Tower", "requires": [ { "item": "Translator (Other)" } ]
+	},
+	{ // HS_REQUIREMENT_2
+		"category": "hs", "address": 1085049006, "name": "HS: Learn Requirement 2",
+		"region": "The Big One Ghost Matter Cave", "requires": [ { "item": "Translator (Other)" } ]
+	},
+	{ // HS_REQUIREMENT_3
+		"category": "hs", "address": 1085049007, "name": "HS: Learn Requirement 3",
+		"region": "Enclosed Structure", "requires": [ { "item": "Translator (Other)" } ]
+	},
+	{ // HS_REQUIREMENT_4
+		"category": "hs", "address": 1085049008, "name": "HS: Learn Requirement 4",
+		"region": "Daucus Surface", "requires": [ { "item": "Translator (Other)" } ]
+	},
+	{ // HS_REQUIREMENT_5
+		"category": "hs", "address": 1085049009, "name": "HS: Learn Requirement 5",
+		"region": "Harmonic Convergence", "requires": [ { "item": "Translator (Other)" } ]
+	},
+	{ // HS_REQUIREMENT_6
+		"category": "hs", "address": 1085049010, "name": "HS: Learn Requirement 6",
+		"region": "Shattered Geode Quantum Cave", "requires": [ { "item": "Translator (Other)" } ]
+	},
+	{ // HS_REQUIREMENT_7
+		"category": "hs", "address": 1085049011, "name": "HS: Learn Requirement 7",
+		"region": "Glacial Abyss! Core", "requires": [ { "item": "Translator (Other)" } ]
+	},
+	{ // HS_SUBSURFACE_OCEAN
+		"category": "hs", "address": 1085049012, "name": "HS: Subsurface Ocean",
+		"region": "Subsurface Ocean", "requires": [ ]
+	},
+	{ // HS_COMPLETE_REQUIREMENT_1 - "A planet has solid ice"
+		"category": "hs", "address": 1085049013, "name": "HS: Fulfill Requirement 1",
+		"region": "Glacial Abyss! Core", "requires": [ ]
+	},
+	{ // HS_COMPLETE_REQUIREMENT_2 - "A planet has exposed geothermal activity"
+		"category": "hs", "address": 1085049014, "name": "HS: Fulfill Requirement 2",
+		"region": "Glacial Abyss! Core", "requires": [ { "item": "Glacial Abyss! Orb" } ] // melting Abyss is the only option
+	},
+	{ // HS_COMPLETE_REQUIREMENT_3 - "At least one warp receiver is aligned"
+		"category": "hs", "address": 1085049015, "name": "HS: Fulfill Requirement 3",
+		"region": "Glacial Abyss! Core", "requires": [ ]
+	},
+	{ // HS_COMPLETE_REQUIREMENT_4 - "More than one planet has sand"
+		"category": "hs", "address": 1085049016, "name": "HS: Fulfill Requirement 4",
+		"region": "Glacial Abyss! Core", "requires": [ { "anyOf": [ // only Daucus starts with sand, and only TBO can yoink it
+            { "item": "Daucus Orb" },
+			{ "item": "The Big One Orb" }
+        ] } ]
+	},
+	{ // HS_COMPLETE_REQUIREMENT_5 - "Any planets in the same orbit are on opposite sides of the sun"
+		"category": "hs", "address": 1085049017, "name": "HS: Fulfill Requirement 5",
+		"region": "Glacial Abyss! Core", "requires": [ { "anyOf": [ // only Abyss and TBO start in the same orbit
+            { "item": "Glacial Abyss! Orb" },
+			{ "item": "The Big One Orb" }
+        ] } ]
+	},
+	{ // HS_COMPLETE_REQUIREMENT_6 - "The largest planet is not in the furthest orbit"
+		"category": "hs", "address": 1085049018, "name": "HS: Fulfill Requirement 6",
+		"region": "Glacial Abyss! Core", "requires": [ { "item": "The Big One Orb" } ]
+	},
+	{ // HS_COMPLETED
+		"category": "hs", "address": 1085049019, "name": "HS: Submission",
+		"region": "Submission Chamber", "requires": [ ]
+	},
+// Heliostudy Story Mod Logsanity Locations
+	{ // SLF__Walker_Jam5_Planet1_Harmonic_Hint
+		"category": "hs", "logsanity": true, "address": 1085049020, "name": "HS Ship Log: Signal Detector",
+		"region": "Heliostudy", "requires": [ { "item": "Translator (Other)" } ]
+	},
+	{ // SLF__Walker_Jam5_Planet1_Warp_Hint
+		"category": "hs", "logsanity": true, "address": 1085049021, "name": "HS Ship Log: Warp Transmitter",
+		"region": "Heliostudy", "requires": [ { "item": "Translator (Other)" } ]
+	},
+	{ // SLF__Walker_Jam5_Planet1_Quantum_Hint
+		"category": "hs", "logsanity": true, "address": 1085049022, "name": "HS Ship Log: Quantum Rock",
+		"region": "Heliostudy", "requires": [ { "item": "Translator (Other)" } ]
+	},
+	{ // SLF__Walker_Jam5_Station_ProjectRequirements_OppositeSides_Fact
+		"category": "hs", "logsanity": true, "address": 1085049023, "name": "HS Ship Log: Fifth Requirement",
+		"region": "Harmonic Convergence", "requires": [ { "item": "Translator (Other)" } ]
+	},
+	{ // SLF__Walker_Jam5_Station_ProjectRequirements_MiddleOrbit_Fact
+		"category": "hs", "logsanity": true, "address": 1085049024, "name": "HS Ship Log: Sixth Requirement",
+		"region": "Shattered Geode Quantum Cave", "requires": [ { "item": "Translator (Other)" } ]
+	},
+	{ // SLF__Walker_Jam5_Planet2_Tower_Hint
+		"category": "hs", "logsanity": true, "address": 1085049025, "name": "HS Ship Log: Tall Tower",
+		"region": "Heliostudy", "requires": [ { "item": "Translator (Other)" } ]
+	},
+	{ // SLF__Walker_Jam5_Planet2_GhostMatter_Hint
+		"category": "hs", "logsanity": true, "address": 1085049026, "name": "HS Ship Log: Ghost Matter Cave",
+		"region": "Heliostudy", "requires": [ { "item": "Translator (Other)" } ]
+	},
+	{ // SLF__Walker_Jam5_Station_ProjectRequirements_Geysers_Fact
+		"category": "hs", "logsanity": true, "address": 1085049027, "name": "HS Ship Log: Second Requirement",
+		"region": "The Big One Ghost Matter Cave", "requires": [ { "item": "Translator (Other)" } ]
+	},
+	{ // SLF__Walker_Jam5_Station_ProjectRequirements_FrozenPlanet_Fact
+		"category": "hs", "logsanity": true, "address": 1085049028, "name": "HS Ship Log: First Requirement",
+		"region": "The Big One Tower", "requires": [ { "item": "Translator (Other)" } ]
+	},
+	{ // SLF__Walker_Jam5_Planet3_Buried_Hint
+		"category": "hs", "logsanity": true, "address": 1085049029, "name": "HS Ship Log: Buried Structure",
+		"region": "Heliostudy", "requires": [ { "item": "Translator (Other)" } ]
+	},
+	{ // SLF__Walker_Jam5_Planet3_NoDoor_Hint
+		"category": "hs", "logsanity": true, "address": 1085049030, "name": "HS Ship Log: Enclosed Structure",
+		"region": "Heliostudy", "requires": [ { "item": "Translator (Other)" } ]
+	},
+	{ // SLF__Walker_Jam5_Station_ProjectRequirements_WarpAlignment_Fact
+		"category": "hs", "logsanity": true, "address": 1085049031, "name": "HS Ship Log: Third Requirement",
+		"region": "Enclosed Structure", "requires": [ { "item": "Translator (Other)" } ]
+	},
+	{ // SLF__Walker_Jam5_Station_ProjectRequirements_DoubleSand_Fact
+		"category": "hs", "logsanity": true, "address": 1085049032, "name": "HS Ship Log: Fourth Requirement",
+		"region": "Daucus Surface", "requires": [ { "item": "Translator (Other)" } ]
+	},
+	{ // SLF__Walker_Jam5_Planet4_Ice_Fact
+		"category": "hs", "logsanity": true, "address": 1085049033, "name": "HS Ship Log: Subsurface Ocean",
+		"region": "Subsurface Ocean", "requires": [ ]
+	},
+	{ // SLF__Walker_Jam5_Planet4_Warp_Fact
+		"category": "hs", "logsanity": true, "address": 1085049034, "name": "HS Ship Log: Undersea Warp Receiver",
+		"region": "Subsurface Ocean", "requires": [ ]
+	},
+	{ // SLF__Walker_Jam5_Planet4_Geysers_Hint
+		"category": "hs", "logsanity": true, "address": 1085049035, "name": "HS Ship Log: Geysers",
+		"region": "Subsurface Ocean", "requires": [ { "item": "Translator (Other)" } ]
+	},
+	{ // SLF__Walker_Jam5_Planet4_Core_Fact
+		"category": "hs", "logsanity": true, "address": 1085049036, "name": "HS Ship Log: Abyssal Core 1 - Core",
+		"region": "Glacial Abyss! Core", "requires": [ ]
+	},
+	{ // SLF__Walker_Jam5_Planet4_Core_Warp
+		"category": "hs", "logsanity": true, "address": 1085049037, "name": "HS Ship Log: Abyssal Core 2 - Warp Transmitter",
+		"region": "Glacial Abyss! Core", "requires": [ ]
+	},
+	{ // SLF__Walker_Jam5_Planet4_MissingWarp_Fact
+		"category": "hs", "logsanity": true, "address": 1085049038, "name": "HS Ship Log: Missing Orrery Warp Transmitter",
+		"region": "Glacial Abyss! Core", "requires": [ ]
+	},
+	{ // SLF__Walker_Jam5_Planet4_Core_Door
+		"category": "hs", "logsanity": true, "address": 1085049039, "name": "HS Ship Log: Abyssal Core 3 - Door",
+		"region": "Glacial Abyss! Core", "requires": [ { "item": "Translator (Other)" } ]
+	},
+	{ // SLF__Walker_Jam5_Station_ProjectRequirements_FinalLocation_Fact
+		"category": "hs", "logsanity": true, "address": 1085049040, "name": "HS Ship Log: Seventh Requirement",
+		"region": "Glacial Abyss! Core", "requires": [ { "item": "Translator (Other)" } ]
+	},
+	{ // SLF__Walker_Jam5_Platform_Discovery
+		"category": "hs", "logsanity": true, "address": 1085049041, "name": "HS Ship Log: Invitation Platform 1 - Invitation",
+		"region": "Heliostudy", "requires": [ { "item": "Translator (Other)" } ]
+	},
+	{ // SLF__Walker_Jam5_Platform_Combination
+		"category": "hs", "logsanity": true, "address": 1085049042, "name": "HS Ship Log: Invitation Platform 2 - Activation",
+		"region": "Submission Chamber", "requires": [ ]
+	},
+	{ // SLF__Walker_Jam5_Station_Fact
+		"category": "hs", "logsanity": true, "address": 1085049043, "name": "HS Ship Log: Orrery Station 1 - Station",
+		"region": "Heliostudy", "requires": [ ]
+	},
+	{ // SLF__Walker_Jam5_Station_Orrery_Fact
+		"category": "hs", "logsanity": true, "address": 1085049044, "name": "HS Ship Log: Orrery Station 2 - Orrery",
+		"region": "Heliostudy", "requires": [ { "item": "Translator (Other)" } ]
+	},
+	{ // SLF__Walker_Jam5_Station_Orrery_Warp
+		"category": "hs", "logsanity": true, "address": 1085049045, "name": "HS Ship Log: Orrery Station 3 - Warp",
+		"region": "Heliostudy", "requires": [ { "item": "Translator (Other)" } ]
+	},
+	{ // SLF__Walker_Jam5_Station_ProjectRequirements_Count
+		"category": "hs", "logsanity": true, "address": 1085049046, "name": "HS Ship Log: Orrery Station 4 - Requirements",
+		"region": "Heliostudy", "requires": [ { "item": "Translator (Other)" } ]
+	},
+	{ // SLF__Walker_Jam5_Star_Heliostudy_Fact
+		"category": "hs", "logsanity": true, "address": 1085049047, "name": "HS Ship Log: Heliostudy",
+		"region": "Heliostudy", "requires": [ ]
+	}
 ]

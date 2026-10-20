@@ -3,17 +3,23 @@
 import logging
 import pkgutil
 import random
+from hashlib import sha256
+
 import settings
 import typing
 import xml.etree.ElementTree as ElementTree
 from typing import Any, Dict
 from .Options import RimworldOptions, max_research_locations, rimworld_options
 from .Items import RimworldItem, any_electricity_items
-from .Locations import RimworldLocation, base_location_id, location_id_gap, generic_victory_requirements, ship_launch_victory_requirements, royalty_victory_requirements, archonexus_victory_requirements, anomaly_victory_requirements, raid_tiers, simple_raid_tier_requirements, gun_raid_tier_requirements, better_gun_raid_tier_requirements, spacer_raid_tier_requirements
-from ..generic.Rules import set_rule, add_rule
+from .Locations import RimworldLocation, base_location_id, location_id_gap, generic_victory_requirements, \
+    ship_launch_victory_requirements, royalty_victory_requirements, archonexus_victory_requirements, \
+    anomaly_victory_requirements, raid_tiers, simple_raid_tier_requirements, gun_raid_tier_requirements, \
+    better_gun_raid_tier_requirements, spacer_raid_tier_requirements, first_trade_tier_requirements, \
+    second_trade_tier_requirements, third_trade_tier_requirements, trade_tiers
 from worlds.AutoWorld import World, WebWorld
 from BaseClasses import LocationProgressType, Region, Location, Entrance, Item, ItemClassification, Tutorial
 from Options import OptionError
+from rule_builder.rules import Has, HasAny
 
 logger = logging.getLogger("Rimworld")
 
@@ -41,7 +47,6 @@ class RimworldWorld(World):
     where the game is used as the medium for players to experience narrative adventures.
     """
     game = "Rimworld"  # name of the game/world
-    author: str = "Phantom Of Ares"
     web = RimworldWebWorld()
     options_dataclass = RimworldOptions  # options the player can set
     options: RimworldOptions # typing hints for option results
@@ -64,9 +69,15 @@ class RimworldWorld(World):
 
     building_name_to_prereqs = {}
 
+    raid_incidents = []
+    positive_incidents = []
+    negative_incidents = []
+
     max_item_id = 0
 
-    item_root = ElementTree.fromstring(pkgutil.get_data(__name__,"ArchipelagoItemDefs.xml"));
+    item_defs = pkgutil.get_data(__name__,"ArchipelagoItemDefs.xml")
+    item_def_sha = sha256(item_defs).hexdigest()
+    item_root = ElementTree.fromstring(item_defs);
 
     for item in item_root:
         itemName = item.find("label").text
@@ -79,6 +90,15 @@ class RimworldWorld(World):
 
         if (defType == "ResearchProjectDef" or defType == "IncidentDef"):
             item_name_to_id[itemName] = int(itemId)
+            incidentTags = item.find("Tags")
+            if incidentTags is not None:
+                for incidentTag in incidentTags:
+                    if incidentTag.text == "Positive":
+                        positive_incidents.append(itemName)
+                    if incidentTag.text == "Negative":
+                        negative_incidents.append(itemName)
+                    if incidentTag.text == "ThreatBig":
+                        raid_incidents.append(itemName)
 
         if (defType == "ResearchProjectDef"):
             research_items[itemName] = int(itemId)
@@ -159,6 +179,12 @@ class RimworldWorld(World):
         locationId = i + baseLocationId
         location_name_to_id[locationName] = locationId
 
+    baseLocationId = baseLocationId + location_id_gap
+    for i in range(max_research_locations):
+        locationName = "Quest Location " + str(i)
+        locationId = i + baseLocationId
+        location_name_to_id[locationName] = locationId
+
 
     baseLocationId = baseLocationId + location_id_gap
     locationName = "Space Victory"
@@ -210,6 +236,7 @@ class RimworldWorld(World):
                 if "Rimworld" in self.multiworld.re_gen_passthrough:
                     slot_data = self.multiworld.re_gen_passthrough["Rimworld"]
                     self.location_prerequisites = slot_data["location_prerequisites"]
+                    self.craft_location_recipes = slot_data["craft_recipes"]
                     self.options.RoyaltyEnabled = slot_data["options"]["RoyaltyEnabled"]
                     self.options.IdeologyEnabled = slot_data["options"]["IdeologyEnabled"]
                     self.options.AnomalyEnabled = slot_data["options"]["AnomalyEnabled"]
@@ -222,6 +249,7 @@ class RimworldWorld(World):
                     self.options.CraftLocationCount.value = slot_data["options"]["CraftLocationCount"]
                     self.options.RaidLocationCount.value = slot_data["options"]["RaidLocationCount"]
                     self.options.TradeLocationCount.value = slot_data["options"]["TradeLocationCount"]
+                    self.options.QuestLocationCount.value = slot_data["options"]["QuestLocationCount"]
 
                     if (len(slot_data["craft_recipes"]) > 0):
                         for locId, ingredients in slot_data["craft_recipes"].items():
@@ -240,6 +268,8 @@ class RimworldWorld(World):
         slot_data = {}
 
         slot_data["seed"] = self.multiworld.seed_name
+        slot_data["item_def_sha"] = self.item_def_sha
+        slot_data["apworld_version"] = self.world_version.as_simple_string()
         options = slot_data["options"] = {}
         for option_name in rimworld_options:
             option = getattr(self.options, option_name)
@@ -307,6 +337,7 @@ class RimworldWorld(World):
         craftLocationCount = getattr(self.options, "CraftLocationCount").value
         raidLocationCount = getattr(self.options, "RaidLocationCount").value
         tradeLocationCount = getattr(self.options, "TradeLocationCount").value
+        questLocationCount = getattr(self.options, "QuestLocationCount").value
         royalty_disabled = not getattr(self.options, "RoyaltyEnabled")
         ideology_disabled = not getattr(self.options, "IdeologyEnabled")
         biotech_disabled = not getattr(self.options, "BiotechEnabled")
@@ -365,36 +396,36 @@ class RimworldWorld(World):
                 item_weights[itemId] = anomaly_weight
             total_weight += item_weights[itemId]
 
-        self.craft_location_recipes = {}
         for i in range(craftLocationCount):
             locationName = "Craft Location " + str(i)
             locationId = self.location_name_to_id[locationName]
 
-            randomWeight = self.random.randrange(total_weight)
-            for itemId in item_weights:
-                if randomWeight < item_weights[itemId]:
-                    itemId1 = itemId
-                    itemName1 = self.craftable_item_id_to_name[itemId]
-                    break
-                else:
-                    randomWeight -= item_weights[itemId]
+            if (str(locationId) not in self.craft_location_recipes):
+                randomWeight = self.random.randrange(total_weight)
+                for itemId in item_weights:
+                    if randomWeight < item_weights[itemId]:
+                        itemId1 = itemId
+                        itemName1 = self.craftable_item_id_to_name[itemId]
+                        break
+                    else:
+                        randomWeight -= item_weights[itemId]
 
-            # Allows duplicate items - maybe fix it? Maybe who cares?
-            randomWeight = self.random.randrange(total_weight)
-            for itemId in item_weights:
-                if randomWeight < item_weights[itemId]:
-                    itemId2 = itemId
-                    itemName2 = self.craftable_item_id_to_name[itemId]
-                    break
-                else:
-                    randomWeight -= item_weights[itemId]
+                # Allows duplicate items - maybe fix it? Maybe who cares?
+                randomWeight = self.random.randrange(total_weight)
+                for itemId in item_weights:
+                    if randomWeight < item_weights[itemId]:
+                        itemId2 = itemId
+                        itemName2 = self.craftable_item_id_to_name[itemId]
+                        break
+                    else:
+                        randomWeight -= item_weights[itemId]
 
-            prerequisites = list(set(self.craftable_item_id_to_prereqs[itemId1]) | set(self.craftable_item_id_to_prereqs[itemId2]))
-            for item in prerequisites:
-                self.progression_items.add(item)
-            self.location_prerequisites[locationName] = prerequisites
-            self.craft_location_recipes[locationId] = [itemName1, itemName2]
-            # print(self.player_name + "'s " + locationName + ": " + itemName1 + " + " + itemName2 + "(" + str(prerequisites) + ")")
+                prerequisites = list(set(self.craftable_item_id_to_prereqs[itemId1]) | set(self.craftable_item_id_to_prereqs[itemId2]))
+                for item in prerequisites:
+                    self.progression_items.add(item)
+                self.location_prerequisites[locationName] = prerequisites
+                self.craft_location_recipes[locationId] = [itemName1, itemName2]
+
             location_pool[locationName] = locationId
 
         prerequisites = []
@@ -411,17 +442,55 @@ class RimworldWorld(World):
                 prerequisites.extend(spacer_raid_tier_requirements)
             self.location_prerequisites[locationName] = prerequisites.copy()
 
+        for item in prerequisites:
+            if type(item) is list:
+                for subitem in item:
+                    self.progression_items.add(subitem)
+            else:
+                self.progression_items.add(item)
+
+        # Use raid logic for quests, since they're similarly "fighty"
+        prerequisites = []
+        prerequisites.extend(simple_raid_tier_requirements)
+        for i in range(questLocationCount):
+            locationName = "Quest Location " + str(i)
+            locationId = self.location_name_to_id[locationName]
+            location_pool[locationName] = locationId
+            if i == (questLocationCount // raid_tiers):
+                prerequisites.extend(gun_raid_tier_requirements)
+            if i == (questLocationCount // raid_tiers) * 2:
+                prerequisites.extend(better_gun_raid_tier_requirements)
+            if i == (questLocationCount // raid_tiers) * 3:
+                prerequisites.extend(spacer_raid_tier_requirements)
+
+            self.location_prerequisites[locationName] = prerequisites.copy()
+
+        for item in prerequisites:
+            if type(item) is list:
+                for subitem in item:
+                    self.progression_items.add(subitem)
+            else:
+                self.progression_items.add(item)
+
+        prerequisites = []
         for i in range(tradeLocationCount):
             locationName = "Trade Location " + str(i)
             locationId = self.location_name_to_id[locationName]
             location_pool[locationName] = locationId
+            if i == (tradeLocationCount // trade_tiers):
+                prerequisites.extend(first_trade_tier_requirements)
+            if i == (tradeLocationCount // trade_tiers) * 2:
+                prerequisites.extend(second_trade_tier_requirements)
+            if i == (tradeLocationCount // trade_tiers) * 2:
+                prerequisites.extend(third_trade_tier_requirements)
+            self.location_prerequisites[locationName] = prerequisites.copy()
 
         for item in prerequisites:
-            if item is str:
-                self.progression_items.add(item)
-            else:
+            if type(item) is list:
                 for subitem in item:
                     self.progression_items.add(subitem)
+            else:
+                self.progression_items.add(item)
 
         self.location_counts += len(location_pool)
         main_region.add_locations(location_pool, RimworldLocation)
@@ -540,11 +609,31 @@ class RimworldWorld(World):
         for i in range(colonistItems):
             self.item_counts += 1
             itempool.append(self.create_item("Colonist", ItemClassification.useful))
-        
+
+        raid_items = []
+        for item in self.raid_incidents:
+            if royalty_disabled and self.item_name_to_expansion[item] == "Ludeon.RimWorld.Royalty":
+                continue
+            if ideology_disabled and self.item_name_to_expansion[item] == "Ludeon.RimWorld.Ideology":
+                continue
+            if biotech_disabled and self.item_name_to_expansion[item] == "Ludeon.RimWorld.Biotech":
+                continue
+            if anomaly_disabled and self.item_name_to_expansion[item] == "Ludeon.RimWorld.Anomaly":
+                continue
+            if odyssey_disabled and self.item_name_to_expansion[item] == "Ludeon.RimWorld.Odyssey":
+                continue
+
+            raid_items.append(item)
+
         guaranteedTrapCount = getattr(self.options, "RaidTrapCount")
         for i in range(guaranteedTrapCount):
             self.item_counts += 1
-            itempool.append(self.create_item("Enemy Raid", ItemClassification.trap))
+            # Flip a coin - if it's heads, enemy raid, otherwise, pick at random.
+            if self.random.randrange(2) == 0:
+                itempool.append(self.create_item("Enemy Raid", ItemClassification.trap))
+            else:
+                self.random.shuffle(raid_items)
+                itempool.append(self.create_item(raid_items[0], ItemClassification.trap))
 
         self.multiworld.itempool += itempool
 
@@ -573,6 +662,20 @@ class RimworldWorld(World):
                     continue
                 possiblePositiveItems.append(fillerName)
 
+            for item in self.negative_incidents:
+                if royalty_disabled and self.item_name_to_expansion[item] == "Ludeon.RimWorld.Royalty":
+                    continue
+                if ideology_disabled and self.item_name_to_expansion[item] == "Ludeon.RimWorld.Ideology":
+                    continue
+                if biotech_disabled and self.item_name_to_expansion[item] == "Ludeon.RimWorld.Biotech":
+                    continue
+                if anomaly_disabled and self.item_name_to_expansion[item] == "Ludeon.RimWorld.Anomaly":
+                    continue
+                if odyssey_disabled and self.item_name_to_expansion[item] == "Ludeon.RimWorld.Odyssey":
+                    continue
+
+                possibleNegativeItems.append(item)
+
             # Eventually, make this realerer
             possiblePositiveItems.append("Ship Chunk Drop")
             possibleNegativeItems.append("Enemy Raid")
@@ -580,8 +683,13 @@ class RimworldWorld(World):
             while self.item_counts < self.location_counts:
                 self.item_counts += 1
                 if self.random.randrange(100) < trapRandomChance:
-                    fillerIndex = self.random.randrange(len(possibleNegativeItems))
-                    self.multiworld.itempool.append(self.create_item(possibleNegativeItems[fillerIndex], ItemClassification.trap))
+                    # Flip a coin - if it's heads, enemy raid, otherwise, pick at random.
+                    if self.random.randrange(2) == 0:
+                        fillerName = "Enemy Raid"
+                    else:
+                        fillerIndex = self.random.randrange(len(possibleNegativeItems))
+                        fillerName = possibleNegativeItems[fillerIndex]
+                    self.multiworld.itempool.append(self.create_item(fillerName, ItemClassification.trap))
                 else:
                     fillerIndex = self.random.randrange(len(possiblePositiveItems))
                     self.multiworld.itempool.append(self.create_item(possiblePositiveItems[fillerIndex], ItemClassification.filler))
@@ -607,62 +715,90 @@ class RimworldWorld(World):
             locationName = location.name
             if locationName in self.location_prerequisites:
                 # print("prereqs: " + locationName + ": " + str(self.location_prerequisites[locationName]))
+                rule = None
                 for req in self.location_prerequisites[locationName]:
                     if isinstance(req, list):
-                        add_rule(self.get_location(locationName),
-                            lambda state, prereq = req: state.has_any(prereq, self.player), "and")
+                        if (rule is None):
+                            rule = HasAny(*req)
+                        else:
+                            rule = rule & HasAny(*req)
                     elif req == "AnyElectricity":
-                        add_rule(self.get_location(locationName),
-                            lambda state: state.has_any(any_electricity_items, self.player), "and")
+                        if (rule is None):
+                            rule = HasAny(*any_electricity_items)
+                        else:
+                            rule = rule & HasAny(*any_electricity_items)
                     else:
-                        add_rule(self.get_location(locationName),
-                            lambda state, prereq = req: state.has(prereq, self.player), "and")
+                        if (rule is None):
+                            rule = Has(req)
+                        else:
+                            rule = rule & Has(req)
+
+                if (rule is not None):
+                    self.set_rule(location, rule)
 
         royalty_disabled = not getattr(self.options, "RoyaltyEnabled")
         anomaly_disabled = not getattr(self.options, "AnomalyEnabled")
         self.multiworld.completion_condition[self.player] = lambda state: state.has("Victory", self.player)
+        rule = None
         victoryCondition = getattr(self.options, "VictoryCondition")
         if (victoryCondition == 0 or victoryCondition == 1):
             victoryLocation = self.get_location("Space Victory")
             for victoryRequirement in generic_victory_requirements:
-                add_rule(victoryLocation, lambda state, req = victoryRequirement: state.has_any(req, self.player), "and")
+                if (rule is None):
+                    rule = HasAny(*victoryRequirement)
+                else:
+                    rule = rule & HasAny(*victoryRequirement)
             for victoryRequirement in ship_launch_victory_requirements:
-                add_rule(victoryLocation, lambda state, req = victoryRequirement: state.has_any(req, self.player), "and")
+                rule = rule & HasAny(*victoryRequirement)
+            self.set_rule(victoryLocation, rule)
             victoryLocation.place_locked_item(self.create_event("Victory"))
         if ((victoryCondition == 0 and not royalty_disabled) or victoryCondition == 2):
             victoryLocation = self.get_location("Royalty Victory")
             for victoryRequirement in generic_victory_requirements:
-                add_rule(victoryLocation, lambda state, req = victoryRequirement: state.has_any(req, self.player), "and")
+                if (rule is None):
+                    rule = HasAny(*victoryRequirement)
+                else:
+                    rule = rule & HasAny(*victoryRequirement)
             for victoryRequirement in royalty_victory_requirements:
-                add_rule(victoryLocation, lambda state, req = victoryRequirement: state.has_any(req, self.player), "and")
+                rule = rule & HasAny(*victoryRequirement)
+            self.set_rule(victoryLocation, rule)
             victoryLocation.place_locked_item(self.create_event("Victory"))
         if (victoryCondition == 3):
             victoryLocation = self.get_location("Archonexus Victory")
             for victoryRequirement in generic_victory_requirements:
-                add_rule(victoryLocation, lambda state, req = victoryRequirement: state.has_any(req, self.player), "and")
+                if (rule is None):
+                    rule = HasAny(*victoryRequirement)
+                else:
+                    rule = rule & HasAny(*victoryRequirement)
             for victoryRequirement in archonexus_victory_requirements:
-                add_rule(victoryLocation, lambda state, req = victoryRequirement: state.has_any(req, self.player), "and")
+                rule = rule & HasAny(*victoryRequirement)
+            self.set_rule(victoryLocation, rule)
             victoryLocation.place_locked_item(self.create_event("Victory"))
         if ((victoryCondition == 0 and not anomaly_disabled) or victoryCondition == 4):
             victoryLocation = self.get_location("Anomaly Victory")
             for victoryRequirement in generic_victory_requirements:
-                add_rule(victoryLocation, lambda state, req = victoryRequirement: state.has_any(req, self.player), "and")
+                if (rule is None):
+                    rule = HasAny(*victoryRequirement)
+                else:
+                    rule = rule & HasAny(*victoryRequirement)
             for victoryRequirement in anomaly_victory_requirements:
-                add_rule(victoryLocation, lambda state, req = victoryRequirement: state.has_any(req, self.player), "and")
+                rule = rule & HasAny(*victoryRequirement)
+            self.set_rule(victoryLocation, rule)
             victoryLocation.place_locked_item(self.create_event("Victory"))
         if (victoryCondition == 5):
             victoryLocation = self.get_location("Monument Victory")
             statueCount = getattr(self.options, "MonumentStatueCount").value
-            add_rule(victoryLocation, lambda state, player = self.player, statCount = statueCount: state.has("Archipelago Sculpture", player, statCount), "and")
+            rule = Has("Archipelago Sculpture", statueCount)
             for buildingName in self.monument_data["MonumentBuildings"].keys():
                 if buildingName == "SculptureArchipelago":
                     continue
 
                 for prereq in self.building_name_to_prereqs[buildingName]:
                     if prereq == "AnyElectricity":
-                        add_rule(victoryLocation, lambda state: state.has_any(any_electricity_items, self.player), "and")
+                        rule = rule & HasAny(*any_electricity_items)
                     else:
-                        add_rule(victoryLocation, lambda state, req = prereq: state.has(req, self.player), "and")
+                        rule = rule & Has(prereq)
+            self.set_rule(victoryLocation, rule)
             victoryLocation.place_locked_item(self.create_event("Victory"))
 
     def write_spoiler_header(self, spoiler_handle: typing.TextIO) -> None:

@@ -51,10 +51,11 @@ class Logic:
             world.updateIndoorLocation("d0", dungeonColor.DungeonColor(configuration_options, world_setup, r).entrance)
 
         if configuration_options.overworld != "random":
-            for k in world.entrances.keys():
-                assert k in world_setup.entrance_mapping, k
-            for k in world_setup.entrance_mapping.keys():
-                assert k in world.entrances, k
+            if not world_setup.is_partial:
+                for k in world.entrances.keys():
+                    assert k in world_setup.entrance_mapping, k
+                for k in world_setup.entrance_mapping.keys():
+                    assert k in world.entrances, k
 
             for source, target in world_setup.entrance_mapping.items():
                 se = world.entrances[source]
@@ -133,9 +134,7 @@ class Logic:
                 location.flat_requirements = new_flat_requirements
             else:
                 location.flat_requirements = requirements.flatten(req)
-            for connection, requirement in location.simple_connections:
-                __rec(connection, AND(req, requirement) if req else requirement)
-            for connection, requirement in location.gated_connections:
+            for connection, requirement in location.connections:
                 __rec(connection, AND(req, requirement) if req else requirement)
         __rec(self.start, None)
         for ii in self.iteminfo_list:
@@ -150,9 +149,7 @@ class Logic:
         self.__location_set.add(location)
         for ii in location.items:
             self.iteminfo_list.append(ii)
-        for connection, requirement in location.simple_connections:
-            self.__recursiveFindAll(connection)
-        for connection, requirement in location.gated_connections:
+        for connection, requirement in location.connections:
             self.__recursiveFindAll(connection)
 
 
@@ -182,14 +179,12 @@ class MultiworldLogic:
 
             req_done_set = set()
             for loc in world.location_list:
-                loc.simple_connections = [(target, addWorldIdToRequirements(req_done_set, n, req)) for target, req in loc.simple_connections]
-                loc.gated_connections = [(target, addWorldIdToRequirements(req_done_set, n, req)) for target, req in loc.gated_connections]
+                loc.connections = [(target, addWorldIdToRequirements(req_done_set, n, req)) for target, req in loc.connections]
                 loc.items = [MultiworldItemInfoWrapper(n, options, ii) for ii in loc.items]
                 self.iteminfo_list += loc.items
 
             self.worlds.append(world)
-            self.start.simple_connections += world.start.simple_connections
-            self.start.gated_connections += world.start.gated_connections
+            self.start.connections += world.start.connections
             self.start.items += world.start.items
             world.start.items.clear()
             self.location_list += world.location_list

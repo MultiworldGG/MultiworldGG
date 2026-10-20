@@ -10,6 +10,7 @@ from .. import LinksAwakeningWorld
 
 class PlandoTest(LADXTestBase):
     options = {
+        "expand_start": 2,
         "plando_items": [{
             "items": {
                 "Progressive Sword": 2,

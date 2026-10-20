@@ -229,11 +229,11 @@ def generateRom(base_rom: bytes, args, patch_data: Dict):
     patches.bowwow.fixBowwow(rom)
     patches.follower.patchFollowerCreation(rom, extra_spawn=ladxr_settings.follower)
     patches.desert.desertAccess(rom)
-    # if ladxr_settings.overworld == 'dungeondive':
-    #    patches.overworld.patchOverworldTilesets(rom)
-    #    patches.overworld.createDungeonOnlyOverworld(rom)
-    # elif ladxr_settings.overworld == 'nodungeons':
-    #    patches.dungeon.patchNoDungeons(rom)
+    if ladxr_settings.overworld == 'dungeondive':
+        patches.overworld.patchOverworldTilesets(rom)
+        patches.overworld.createDungeonOnlyOverworld(rom)
+    elif ladxr_settings.overworld == 'nodungeons':
+        patches.dungeon.patchNoDungeons(rom)
     #elif ladxr_settings.overworld == 'random':
     #    patches.overworld.patchOverworldTilesets(rom)
     #    mapgen.store_map(rom, world.ladxr_logic.world.map)
@@ -315,8 +315,8 @@ def generateRom(base_rom: bytes, args, patch_data: Dict):
 
     # Patch the generated logic into the rom
     patches.chest.setMultiChest(rom, world_setup.multichest)
-    #if ladxr_settings.overworld not in {"dungeondive", "random"}:
-    patches.entrances.changeEntrances(rom, world_setup.entrance_mapping)
+    if ladxr_settings.overworld not in {"dungeondive", "random"}:
+        patches.entrances.changeEntrances(rom, world_setup.entrance_mapping)
     for ladxr_item in item_list:
         ladxr_item.patch(rom, ladxr_item.item, multiworld=ladxr_item.mw)
     patches.enemies.changeBosses(rom, world_setup.boss_mapping)
@@ -326,7 +326,7 @@ def generateRom(base_rom: bytes, args, patch_data: Dict):
         patches.core.addFrameCounter(rom, len(item_list))
 
     
-    patches.core.warpHome(rom, ladxr_settings.entranceshuffle in ("chaos", "insane"))
+    patches.core.warpHome(rom, ladxr_settings.entrancerules in ("chaos", "insane", "madness"))
     
     patches.titleScreen.setRomInfo(rom, patch_data)
     if ladxr_settings.aptitlescreen:

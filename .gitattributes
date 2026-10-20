@@ -1,3 +1,3 @@
 worlds/blasphemous/region_data.py linguist-generated=true
 worlds/yachtdice/YachtWeights.py linguist-generated=true
-worlds/silksong/map_logic.json text eol=lf
+worlds/silksong/*.json text eol=lf

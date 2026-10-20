@@ -219,13 +219,13 @@ def export_world(world, slot_data):
     from .requirements import _export_requirement_group
     from .entrance_randomization import node_overrides
     graph = dict(world._silksong_native_abstract_requirements)
+    disconnected = node_overrides(world) or {}
     for node, incoming in (node_overrides(world, connected=True) or {}).items():
-        graph[node] = tuple(gate(rule) for rule in incoming)
+        added = tuple(rule for rule in incoming if rule not in disconnected[node])
+        graph[node] = tuple(dict.fromkeys((*graph[node], *(gate(rule) for rule in added))))
         for amount in range(1, MAX_SILK + 1):
             transfers = []
-            for rule in incoming:
-                if rule in world._silk_node_rules.get(node, ()):
-                    continue
+            for rule in added:
                 source = source_node(rule)
                 cost = rule_cost(rule)
                 if source is None or amount + cost > MAX_SILK:

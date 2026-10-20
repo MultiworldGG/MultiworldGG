@@ -109,10 +109,6 @@ def room_event_action_names() -> Mapping[str, str]:
     })
 
 
-def room_event_action_name(event_id: str) -> str:
-    return room_event_action_names()[event_id]
-
-
 @lru_cache(maxsize=1)
 def room_event_display_names() -> Mapping[str, str]:
     return MappingProxyType({
@@ -168,6 +164,8 @@ _ATOM_ALTERNATIVES: Mapping[str, tuple[CompiledRoomClause, ...]] = {
     "item:needle-strike": (_part("Ability: Needle Strike"),),
     "item:needolin": (_part("Ancestral Art: Needolin"),),
     "item:key-of-apostate": (_part("Key of Apostate"),),
+    "item:key-of-indolent": (_part("Key of Indolent"),),
+    "item:key-of-heretic": (_part("Key of Heretic"),),
     "item:ruined-tool": (_part("Ruined Tool"),),
     "item:reaper-crest": (_part("Crest: Reaper"),),
     "item:rune-rage": (_part("Usable Rune Rage"),),
@@ -184,14 +182,12 @@ _ATOM_ALTERNATIVES: Mapping[str, tuple[CompiledRoomClause, ...]] = {
     "item:wanderer-crest": (_part("Crest: Wanderer"),),
     "item:witch-crest": (_part("Crest: Witch"),),
     "item:white-key": (_part("White Key"),),
+    "macro:wardenfly-capture": (_part("Path: Wardenfly Capture"),),
     "path:bellways": (_part("Path: Bellways"),),
     "path:bilewater-twisted-bud": (
         _part("Twisted Bud"),
     ),
-    "macro:progressive-swift-step-first": (
-        _part("Swift Step"),
-        _part("Progressive Swift Step"),
-    ),
+    "macro:progressive-swift-step-first": (_part("Capability: Sprint"),),
     "macro:progressive-swift-step-full": (_part("Swift Step"),),
     # Confirmed graph vocabulary: any one of Sharpdart, full Dash or
     # Clawline is horizontal movement tech. Sprint alone is not.
@@ -592,7 +588,6 @@ _IMPLICIT_EVENT_SOURCE: Mapping[str, tuple[CompiledRoomClause, ...]] = {
             )
         ),
     ),
-    # Clearing the Arena makes the fixed Heretic Key available.
     "event:the-slab/slab-arena/gauntlet": (
         _part(room_node_name("the-slab/slab-arena#arena")),
     ),
@@ -601,7 +596,7 @@ _IMPLICIT_EVENT_SOURCE: Mapping[str, tuple[CompiledRoomClause, ...]] = {
         _part(room_node_name("the-slab/slab-entrance#room")),
     ),
     "event:the-slab/slab-cell/poodle-wall-opened": (
-        _part(room_node_name("the-slab/slab-poodle#room")),
+        _part(room_node_name("the-slab/slab-poodle#top")),
     ),
     "event:the-slab/slab-cell/secret-side-wall-opened": (
         _part(room_node_name("the-slab/slab-secret-side-room#bottom")),
@@ -871,7 +866,7 @@ _IMPLICIT_EVENT_SOURCE: Mapping[str, tuple[CompiledRoomClause, ...]] = {
     ),
     "event:greymoor/greymoor-craw-lake/lever-broken-from-greymoor-crow-nest": (
         _part(
-            room_node_name("greymoor/greymoor-crow-nest#crow-arena")
+            room_node_name("greymoor/greymoor-craw-nest#crow-arena")
         ),
     ),
     "event:greymoor/greymoor-west-bellshrine-room/lever-switch": (
@@ -1389,8 +1384,8 @@ _GREYMOOR_EAST_CACHE_POGO_REQUIREMENTS = tuple(
 _EXISTING_LOCATION_CLAUSE_BINDINGS: Mapping[
     str, tuple[CompiledRoomClause, ...]
 ] = {
-    "Greymoor - Rosary Cache #2": _GREYMOOR_EAST_CACHE_POGO_REQUIREMENTS,
-    "Greymoor - Rosary Cache #3": _GREYMOOR_EAST_CACHE_POGO_REQUIREMENTS,
+    'Greymoor - Craw gang lunch money': _GREYMOOR_EAST_CACHE_POGO_REQUIREMENTS,
+    'Greymoor - Craw gang savings': _GREYMOOR_EAST_CACHE_POGO_REQUIREMENTS,
     "Beast Shard: Craggler": (
         _part(
             room_event_name(
@@ -1432,6 +1427,12 @@ def _event_requirement_name(atom: str) -> str:
 
 
 def _atom_alternatives(atom: str) -> tuple[CompiledRoomClause, ...]:
+    if atom == 'mapper:elite-ball-knowledge:none':
+        return (_part('Option: Elite Ball Knowledge'),)
+    if atom.startswith(('mapper:damage-boost:', 'mapper:enemy-damage-boost:')):
+        difficulty = atom.rsplit(':', 1)[-1]
+        tier = {'none': 1, 'easy': 1, 'medium': 2, 'hard': 3}[difficulty]
+        return (_part(f'Technique: Damage Boost {tier}'),)
     if atom.startswith("combat:"):
         return (_part(combat_requirement_name(atom.removeprefix("combat:"))),)
     if atom == "mapper:act-2":
@@ -1444,20 +1445,34 @@ def _atom_alternatives(atom: str) -> tuple[CompiledRoomClause, ...]:
         return (_part(f"Technique: Enemy Pogo {tier}"),) if tier else (_part(),)
     if atom.startswith("mapper:clawline:") and len(atom.split(":")) == 4:
         _, _, direction, casts = atom.split(":")
-        if direction not in {"up", "down", "left", "right"}:
+        if direction not in {"up", "down", "left", "right", "any", "both"}:
             raise ValueError(f"unsupported Clawline direction: {direction}")
-        return _atom_alternatives("mapper:clawline:" + casts)
+        if not 1 <= int(casts) <= 8:
+            raise ValueError(f"unsupported Clawline quantity: {casts}")
+        if direction in {'left', 'right'}:
+            return (_part('Directional: Clawline ' + direction.title()),)
+        if direction == 'any':
+            return (_part('Directional: Clawline Left'), _part('Directional: Clawline Right'))
+        if direction == 'both':
+            return (_part('Directional: Clawline Left', 'Directional: Clawline Right'),)
+        return _atom_alternatives('item:clawline')
     if atom.startswith("mapper:"):
         _, kind, difficulty = atom.split(":")
-        if kind.endswith("-direction") and difficulty in {"up", "down", "left", "right"}:
+        if kind.endswith("-direction") and difficulty in {"up", "down", "left", "right", "any", "both"}:
             capability = kind.removesuffix("-direction")
             base = {"ledge-grab": "capability:ledge-grab", "cling-grip": "item:cling-grip",
                     "sprint": "macro:progressive-swift-step-first", "dash": "macro:progressive-swift-step-full",
                     "look": "capability:free", "move": "capability:free"}.get(capability)
             if base is None:
                 raise ValueError(f"unsupported directional capability: {atom}")
+            if capability in {'ledge-grab', 'cling-grip', 'sprint', 'dash'} and difficulty in {'left', 'right'}:
+                return (_part('Directional: ' + capability.replace('-', ' ').title() + ' ' + difficulty.title()),)
+            if capability in {'ledge-grab', 'cling-grip', 'sprint', 'dash'} and difficulty in {'any', 'both'}:
+                left = 'Directional: ' + capability.replace('-', ' ').title() + ' Left'
+                right = 'Directional: ' + capability.replace('-', ' ').title() + ' Right'
+                return (_part(left), _part(right)) if difficulty == 'any' else (_part(left, right),)
             return _atom_alternatives(base)
-        if kind == "attack" and difficulty in {"up", "down", "left", "right"}:
+        if kind == "attack" and difficulty in {"up", "down", "left", "right", "any", "either", "both"}:
             return (_part(),)
         if kind.endswith("-crest-attack") and difficulty in {"up", "down", "left", "right"}:
             return (_part("Crest: " + kind.removesuffix("-crest-attack").title()),)
@@ -1519,10 +1534,19 @@ def _atom_alternatives(atom: str) -> tuple[CompiledRoomClause, ...]:
             raise ValueError("received item name cannot be empty")
         if name == "Swift Step":
             return (_part(name),)
+        if name in {"Cling Grip", "Clawline"}:
+            # Either half sets the native ownership flag. Movement still checks its direction.
+            return tuple(_part(item_counts=((item, 1),))
+                         for item in (name, f"{name} (Left)", f"{name} (Right)"))
         return (_part(item_counts=((name, 1),)),)
     alternatives = _ATOM_ALTERNATIVES.get(atom)
     if alternatives is not None:
         return alternatives
+    if atom.startswith("count:verdania-shards:"):
+        minimum = int(atom.rsplit(":", 1)[1])
+        if not 1 <= minimum <= 17:
+            raise ValueError(f"unsupported Verdania essence count: {atom}")
+        return (_part(f"Verdania Shards: {minimum}"),)
     if atom.startswith(("count:fleas:", "count:pale-oil:", "count:bellshrines-activated:", "count:craftmetal:")):
         _, kind, quantity = atom.split(":")
         minimum = int(quantity)

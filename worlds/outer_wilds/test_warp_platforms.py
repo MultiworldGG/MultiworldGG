@@ -1,11 +1,13 @@
 from random import Random
 
+from Options import OptionError
 from . import Spawn
 from .warp_platforms import WarpPlatforms
 
 
 def test_vanilla_get_connected_warp() -> None:
     wp = WarpPlatforms()
+    wp.apply_vanilla_warp_platform_mapping()
 
     assert wp.get_connected_warp("SS") == "ST"
     assert wp.get_connected_warp("ET") == "ETT"
@@ -15,6 +17,7 @@ def test_vanilla_get_connected_warp() -> None:
 
 def test_vanilla_connection_exists() -> None:
     wp = WarpPlatforms()
+    wp.apply_vanilla_warp_platform_mapping()
 
     # trivial, warpless, invalid connections
     assert wp.shipless_connection_exists("Sun Station", "Sun Station")
@@ -50,7 +53,7 @@ def test_fixed_seed_get_connected_warp() -> None:
     wp = WarpPlatforms()
     r = Random()
     r.seed(1)
-    wp.generate_random_warp_platform_mapping(r, Spawn(Spawn.option_vanilla), False)
+    wp.randomize_unmapped_warps(r, Spawn(Spawn.option_vanilla))
 
     assert wp.get_connected_warp("SS") == "ET"
     assert wp.get_connected_warp("ATP") == "GDT"
@@ -67,7 +70,7 @@ def test_fixed_seed_connection_exists() -> None:
     # this seed has WHS warp to an Ash Twin tower, which is what we want to test
     # it also has Sun Station warp to Hourglass Twins, so we can leave many control asserts unchanged
     r.seed(1)
-    wp.generate_random_warp_platform_mapping(r, Spawn(Spawn.option_vanilla), False)
+    wp.randomize_unmapped_warps(r, Spawn(Spawn.option_vanilla))
 
     # trivial, warpless, invalid connections
     assert wp.shipless_connection_exists("Sun Station", "Sun Station")
@@ -101,3 +104,34 @@ def test_fixed_seed_connection_exists() -> None:
     # these are now True because THT <-> WHS in this seed
     assert wp.shipless_connection_exists("Brittle Hollow", "Hanging City Ceiling")
     assert wp.shipless_connection_exists("Brittle Hollow", "Sun Station")
+
+
+def test_warp_plando() -> None:
+    wp = WarpPlatforms()
+    wp.apply_warp_plando({"ATP": "ATT", "TH": "GD", "BHNG": "WHS"})
+    wp.randomize_unmapped_warps(Random(), Spawn(Spawn.option_vanilla))
+    # Test plando working.
+    assert wp.get_connected_warp("ATP") == "ATT"
+    # Test that non-plando platforms got mapped.
+    assert wp.get_connected_warp("ETT") is not None
+    # Test that every platform is mapped once.
+    all_warps = [w for t in wp.mappings for w in t]
+    assert len(all_warps) == len(set(all_warps))
+
+
+def test_warp_plando_invalid_input() -> None:
+    wp = WarpPlatforms()
+    try:
+        wp.apply_warp_plando({"ATP": "ATP"})
+    except OptionError:
+        pass
+    else:
+        raise Exception("Duplicate warp did not cause error.")
+
+
+def test_ac_warps() -> None:
+    wp = WarpPlatforms()
+    r = Random()
+    wp.apply_ac_modifications(r)
+    wp.randomize_unmapped_warps(r, Spawn(Spawn.option_vanilla))
+    assert wp.shipless_connection_exists("Hourglass Twins", "Timber Hearth")

@@ -1679,7 +1679,7 @@ def do_mandatory_connections(avail, entrances, cave_options, must_exit):
     if len(must_exit) == 0:
         return
     if not avail.coupled:
-        do_mandatory_connections_decoupled(avail, cave_options, must_exit)
+        do_mandatory_connections_decoupled(avail, entrances, cave_options, must_exit)
         return
 
     invalid_connections = Must_Exit_Invalid_Connections.copy()
@@ -1710,6 +1710,17 @@ def do_mandatory_connections(avail, entrances, cave_options, must_exit):
                     invalid_connections[ext] = invalid_connections[ext].union({'Agahnims Tower', 'Hyrule Castle Entrance (West)', 'Hyrule Castle Entrance (East)'})
                 break
 
+    def remember_partial(remainder_cave, prior_cave, served_now):
+        served = set(pending_cave_entrances.pop(id(prior_cave), ()))
+        served.update(served_now)
+        pending_cave_entrances[id(remainder_cave)] = served
+
+    def finish_cave(finished_cave, served_now=None):
+        served = set(pending_cave_entrances.pop(id(finished_cave), ()))
+        if served_now:
+            served.update(served_now)
+        semi_resolved_entrances.difference_update(served)
+
     def connect_cave_swap(entrance, exit, current_cave):
         swap_entrance, swap_exit = connect_swap(entrance, exit, avail)
         if swap_entrance and entrance not in single_entrance_map:
@@ -1723,10 +1734,40 @@ def do_mandatory_connections(avail, entrances, cave_options, must_exit):
                     break
         return swap_entrance, swap_exit
 
+    def reserve_must_exit_entrances(caves):
+        if not avail.swapped:
+            return
+        for reserve_cave in caves:
+            if isinstance(reserve_cave, str) or len(reserve_cave) < 2:
+                continue
+            for exit_name in reserve_cave:
+                vanilla_entrance = exit_to_vanilla_entrance.get(exit_name)
+                if vanilla_entrance:
+                    reserved_swap_entrances.add(vanilla_entrance)
+
+    prepare_must_exit_exits(cave_options)
+
+    reserved_swap_entrances = set()
+    exit_to_vanilla_entrance = {}
+    if avail.swapped:
+        for ent_name, exit_name in avail.combine_map.items():
+            exit_to_vanilla_entrance.setdefault(exit_name, ent_name)
+
+    reserve_must_exit_entrances(cave_options)
+
+    # Entrances on a must-exit ledge cannot be the way into a cave until that ledge's connector is finished.
+    semi_resolved_entrances = set()
+    for must_exit_entrance in must_exit:
+        names = must_exit_entrance if isinstance(must_exit_entrance, tuple) else (must_exit_entrance,)
+        for name in names:
+            semi_resolved_entrances.update(invalid_connections[name])
+    pending_cave_entrances = {}
+
     used_caves = []
     required_entrances = 0  # Number of entrances reserved for used_caves
     while must_exit:
         exit = must_exit.pop()
+        served_now = set(invalid_connections[exit])
         # find multi exit cave
         candidates = []
         for candidate in cave_options:
@@ -1752,7 +1793,6 @@ def do_mandatory_connections(avail, entrances, cave_options, must_exit):
 
         # all caves are sorted so that the last exit is always reachable
         rnd_cave = list(cave)
-        shuffle_connector_exits(rnd_cave)  # should be the same as unbiasing some entrances...
 
         # If the front and back exits of Turtle Rock are both must-exits, and small keys aren't shuffled, then it's impossible
         # to place the small keys so they are all logically accessible. Thus, only one of the front and back exits can be a must-exit.
@@ -1773,6 +1813,8 @@ def do_mandatory_connections(avail, entrances, cave_options, must_exit):
         if len(cave) == 2:
             entrance = next(e for e in entrances[::-1] if e not in invalid_connections[exit]
                             and e not in invalid_cave_connections[tuple(cave)] and e not in must_exit
+                            and e not in semi_resolved_entrances
+                            and e not in reserved_swap_entrances
                             and (not avail.swapped or rnd_cave[0] != avail.combine_map[e])
                             and bonk_fairy_exception(avail, e))
             entrances.remove(entrance)
@@ -1786,6 +1828,7 @@ def do_mandatory_connections(avail, entrances, cave_options, must_exit):
             if entrance in invalid_connections:
                 for exit2 in invalid_connections[entrance]:
                     invalid_connections[exit2] = invalid_connections[exit2].union(invalid_connections[exit]).union(invalid_cave_connections[tuple(cave)])
+            finish_cave(cave, served_now)
         elif len(cave) == 1 and avail.assumed_loose_caves:
             #TODO: keep track of caves we use for must exits that are unaccounted here
             # the other exits of the cave should NOT be used to satisfy must-exit later
@@ -1799,6 +1842,8 @@ def do_mandatory_connections(avail, entrances, cave_options, must_exit):
                     cave_entrances.append(entrance)
                 else:
                     entrance = next(e for e in entrances[::-1] if e not in invalid_connections[exit] and e not in must_exit
+                                    and e not in semi_resolved_entrances
+                                    and e not in reserved_swap_entrances
                                     and (not avail.swapped or cave_exit != avail.combine_map[e]) and bonk_fairy_exception(avail, e))
                     cave_entrances.append(entrance)
                     entrances.remove(entrance)
@@ -1812,16 +1857,21 @@ def do_mandatory_connections(avail, entrances, cave_options, must_exit):
                 new_invalid_connections = invalid_connections[cave_entrances[0]].intersection(invalid_connections[cave_entrances[1]])
                 for exit2 in new_invalid_connections:
                     invalid_connections[exit2] = invalid_connections[exit2].union(invalid_connections[exit])
+            finish_cave(cave, served_now)
         else:  # save for later so we can connect to multiple exits
             if cave in used_caves:
                 required_entrances -= 1
                 used_caves.remove(cave)
             else:
                 required_entrances += len(cave)-1
-            cave_options.append(rnd_cave[0:-1])
+            remainder = rnd_cave[0:-1]
+            prepare_must_exit_exits([remainder])
+            reserve_must_exit_entrances([remainder])
+            cave_options.append(remainder)
             random.shuffle(cave_options)
-            used_caves.append(rnd_cave[0:-1])
-            invalid_cave_connections[tuple(rnd_cave[0:-1])] = invalid_cave_connections[tuple(cave)].union(invalid_connections[exit])
+            used_caves.append(remainder)
+            invalid_cave_connections[tuple(remainder)] = invalid_cave_connections[tuple(cave)].union(invalid_connections[exit])
+            remember_partial(remainder, cave, served_now)
         cave_options.remove(cave)
 
     for cave in used_caves:
@@ -1831,13 +1881,15 @@ def do_mandatory_connections(avail, entrances, cave_options, must_exit):
                     continue
                 else:
                     entrance = next(e for e in entrances[::-1] if e not in invalid_cave_connections[tuple(cave)]
+                                    and e not in semi_resolved_entrances
+                                    and e not in reserved_swap_entrances
                                     and (not avail.swapped or cave_exit != avail.combine_map[e]) and bonk_fairy_exception(avail, e))
-                    invalid_cave_connections[tuple(cave)] = set()
                     entrances.remove(entrance)
                     connect_two_way(entrance, cave_exit, avail)
                     if avail.swapped and avail.combine_map[entrance] != cave_exit:
                         swap_ent, _ = connect_cave_swap(entrance, cave_exit, cave)
                         entrances.remove(swap_ent)
+            finish_cave(cave)
             cave_options.remove(cave)
     if avail.swapped:
         entrances.extend(swap_forbidden)
@@ -1853,7 +1905,15 @@ def turtle_rock_could_softlock(avail):
            avail.world.dropshuffle[avail.player] in simple_drop_shuffle
 
 
-def do_mandatory_connections_decoupled(avail, cave_options, must_exit):
+def do_mandatory_connections_decoupled(avail, entrances, cave_options, must_exit):
+    invalid_connections = Must_Exit_Invalid_Connections.copy()
+    semi_resolved_entrances = set()
+    for must_exit_entrance in must_exit:
+        names = must_exit_entrance if isinstance(must_exit_entrance, tuple) else (must_exit_entrance,)
+        for name in names:
+            semi_resolved_entrances.update(invalid_connections[name])
+
+    prepare_must_exit_exits(cave_options)
     for next_entrance in must_exit:
         random.shuffle(cave_options)
         candidate = None
@@ -1868,10 +1928,17 @@ def do_mandatory_connections_decoupled(avail, cave_options, must_exit):
         cave_options.remove(candidate)
 
         # all caves are sorted so that the last exit is always reachable
-        shuffle_connector_exits(candidate)  # should be the same as un-biasing some entrances...
         chosen_exit = candidate[-1]
         cave = candidate[:-1]
+        way_in = next(e for e in avail.decoupled_entrances
+                      if e not in semi_resolved_entrances and bonk_fairy_exception(avail, e))
+        connect_entrance(way_in, chosen_exit, avail)
+        avail.decoupled_entrances.remove(way_in)
+        if way_in in entrances:
+            entrances.remove(way_in)
         connect_exit(chosen_exit, next_entrance, avail)
+        semi_resolved_entrances.difference_update(invalid_connections[next_entrance])
+        prepare_must_exit_exits([cave])
         cave_options.append(cave)
         avail.decoupled_entrances.remove(next_entrance)
 
@@ -1888,6 +1955,12 @@ def must_exit_filter(avail, candidates, shuffle_pool):
         elif cand in avail.entrances and cand in shuffle_pool:
             filtered_list.append(cand)
     return filtered_list
+
+
+def prepare_must_exit_exits(cave_options):
+    for cave in cave_options:
+        if not isinstance(cave, str) and len(cave) > 1:
+            shuffle_connector_exits(cave)
 
 
 def shuffle_connector_exits(connector_choices):

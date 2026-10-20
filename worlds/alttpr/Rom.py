@@ -6,6 +6,7 @@ from pathlib import Path
 import pkgutil
 import shutil
 import tempfile
+from tkinter import filedialog, Tk
 from typing import Any, Callable, Sequence
 from urllib.request import urlopen
 
@@ -61,17 +62,25 @@ class ALttPRBaseRandomizerPatch(APPatchExtension):
             return rom
 
         sprite_filename = None
-        with tempfile.NamedTemporaryFile(delete=False) as sprite_file:
-            sprite_filename = sprite_file.name
-            print(f"Created temporary file {sprite_filename}")
-            loaded_sprite = load_sprite_file(sprite_name, sprite_file)
-        if not loaded_sprite or not sprite_filename or not os.path.isfile(sprite_filename):
-            print(f"Could not download and read the sprite file for {sprite_name}.")
+        if sprite_name == "local":
+            root = Tk()
+            root.withdraw()
+            sprite_filename = filedialog.askopenfilename(title="Open Link Sprite", filetypes=[("Sprite", "*.zspr")])
+            if not sprite_filename:
+                # The user canceled the file dialog
+                return rom
+            sprite = Sprite(sprite_filename)
+        else:
+            with tempfile.NamedTemporaryFile(delete=False) as sprite_file:
+                sprite_filename = sprite_file.name
+                loaded_sprite = load_sprite_file(sprite_name, sprite_file)
+            if not loaded_sprite or not sprite_filename or not os.path.isfile(sprite_filename):
+                print(f"Could not download and read the sprite file for {sprite_name}.")
+                Path(sprite_filename).unlink()
+                return rom
+            sprite = Sprite(sprite_filename)
             Path(sprite_filename).unlink()
-            return rom
 
-        sprite = Sprite(sprite_filename)
-        Path(sprite_filename).unlink()
         if not sprite.valid:
             print(f"Sprite file for {sprite_name} is not valid.")
             return rom
@@ -87,12 +96,12 @@ def load_sprite_file(sprite_name_arg, dest_file) -> bool:
     sprite_name = sprite_name_arg.lower()
     if sprite_name == "link":
         return False
+
     if not sprite_name in Sprites.sprites:
         # This should never happen because validate_options also checks this, but better safe than sorry.
         logger.error(f"Invalid sprite option {sprite_name_arg}. No custom sprite will be applied.")
         return False
 
-    # TODO: Do this asynchronously
     try:
         with urlopen(Sprites.sprites[sprite_name]["url"], timeout=10) as response:
             shutil.copyfileobj(response, dest_file)
@@ -123,6 +132,7 @@ def patch_base_rom(buffer):
     patchedmd5 = hashlib.md5()
     patchedmd5.update(buffer)
     if RANDOMIZERBASEHASH != patchedmd5.hexdigest():
+        print(f"Hash {patchedmd5.hexdigest()} did not match")
         raise RuntimeError('Provided Base Rom unsuitable for patching. Please provide a JAP(1.0) "Zelda no Densetsu - Kamigami no Triforce (Japan).sfc" rom to use as a base.')
 
     return buffer

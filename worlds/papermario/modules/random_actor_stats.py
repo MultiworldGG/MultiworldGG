@@ -18,8 +18,12 @@ def get_shuffled_chapter_difficulty(
     # }
     all_enemy_stats = {}
 
-    shuffle_chapter_difficulty = (enemy_difficulty == EnemyDifficulty.option_Shuffle_Chapter_Difficulty)
-    progressive_scaling = (enemy_difficulty == EnemyDifficulty.option_Progressive_Scaling)
+    shuffle_chapter_difficulty = (
+        enemy_difficulty == EnemyDifficulty.option_Shuffle_Chapter_Difficulty
+    )
+    progressive_scaling = (
+        enemy_difficulty == EnemyDifficulty.option_Progressive_Scaling
+    )
 
     for param_key, param_value in actor_param_table.items():
         actor_name = param_value[0]
@@ -47,12 +51,14 @@ def get_shuffled_chapter_difficulty(
         random.shuffle(chapters_to_shuffle)
 
     chapter_dict = {}
-    for old_chapter_number, new_chapter_number in enumerate(chapters_to_shuffle):
+    for (old_chapter_number, new_chapter_number) in enumerate(chapters_to_shuffle):
         chapter_dict[old_chapter_number + 1] = new_chapter_number
     # Chapter 8 is never shuffled
     chapter_dict[8] = 8
 
-    if starting_chapter != 0 and chapter_dict[starting_chapter] > 3:
+    if (    starting_chapter != 0
+        and chapter_dict[starting_chapter] > 3
+    ):
         # Chapter we are starting in is too high of a level: adjust it
         original_chapters = list(chapter_dict.keys())
         random.shuffle(original_chapters)
@@ -69,9 +75,11 @@ def get_shuffled_chapter_difficulty(
         dbkey = get_actor_attr_key(attr_id)
         actor_name = attr_value[3]
         actor_stat_name = attr_value[4]
-        if (actor_name not in all_enemy_stats
-                or actor_stat_name not in all_enemy_stats[actor_name]
-                or (not progressive_scaling and not shuffle_chapter_difficulty)):
+        if (  actor_name not in all_enemy_stats
+            or actor_stat_name not in all_enemy_stats[actor_name]
+            or (    not progressive_scaling
+                and not shuffle_chapter_difficulty)
+        ):
             # not supposed to be random, so write defaults
             value = attr_value[5]
         else:
@@ -79,7 +87,9 @@ def get_shuffled_chapter_difficulty(
             if native_chapter == -1:
                 # Special case for Dojo / Kent
                 native_chapter = 1
-            value = int(all_enemy_stats[actor_name][actor_stat_name][chapter_dict.get(native_chapter) - 1])
+            value = int(
+                all_enemy_stats[actor_name][actor_stat_name][chapter_dict.get(native_chapter) - 1]
+            )
 
         new_enemy_stats.append((dbkey, value))
 

@@ -2,8 +2,17 @@
 
 from .data.RomOptionList import rom_option_table, ap_to_rom_option_table
 from .data.palettes_meta import MENU_COLORS
-from .options import (EnemyDamage, PaperMarioOptions, PartnerUpgradeShuffle, ShuffleKootFavors, ShuffleLetters,
-                      BowserCastleMode, StatusMenuColorPalette, EnemyDifficulty, ShuffleSuperMultiBlocks)
+from .options import (
+    EnemyDamage,
+    PaperMarioOptions,
+    PartnerUpgradeShuffle,
+    ShuffleKootFavors,
+    ShuffleLetters,
+    BowserCastleMode,
+    StatusMenuColorPalette,
+    EnemyDifficulty,
+    ShuffleSuperMultiBlocks
+)
 from .data.MysteryOptions import MysteryOptions
 from .data.starting_maps import starting_maps
 from .data.node import Node
@@ -26,14 +35,34 @@ class RomTable:
     def __getitem__(self, key):
         return self.db[key]
 
-    def generate_pairs(self, options: PaperMarioOptions, placed_items: list[Node], entrances: list,
-                       actor_attributes: list, move_costs: list, palettes: list, quizzes: list, music_list: list,
-                       mapmirror_list: list, puzzle_list: list, mystery_opts: MysteryOptions, required_spirits: list,
-                       battle_list: list, star_beam_area: int, trappable_item_names: list, random):
+    def generate_pairs(
+        self,
+        options: PaperMarioOptions,
+        placed_items: list[Node],
+        entrances: list,
+        actor_attributes: list,
+        move_costs: list,
+        palettes: list,
+        quizzes: list,
+        music_list: list,
+        mapmirror_list: list,
+        puzzle_list: list,
+        mystery_opts: MysteryOptions,
+        required_spirits: list,
+        battle_list: list,
+        star_beam_area: int,
+        trappable_item_names: list,
+        random,
+    ):
         table_data = []
 
         # Options
-        option_dbtuples = get_dbtuples(options, mystery_opts, required_spirits, star_beam_area)
+        option_dbtuples = get_dbtuples(
+            options,
+            mystery_opts,
+            required_spirits,
+            star_beam_area
+        )
 
         for option_data in option_dbtuples:
             option_key = option_data[0]
@@ -72,7 +101,8 @@ class RomTable:
                     item_id = item_multiples_ids[item_id][repeat_items[item_id]]
                     repeat_items[node.current_item.id] -= 1
                 elif item_id == item_table["Damage Trap"][2]:
-                    # damage traps are fire flowers by default, but if it's local we can set it to be a different item
+                    # damage traps are fire flowers by default, but if it's local
+                    # we can set it to be a different item
                     trap_item = random.choice(trappable_item_names)
                     item_id = get_trapped_item_id(item_table[trap_item][2])
 
@@ -181,8 +211,12 @@ def generate_table_pairs(value_set):
     return table_data
 
 
-def get_dbtuples(options: PaperMarioOptions, mystery_opts: MysteryOptions, required_spirits: list,
-                 star_beam_area: int) -> list:
+def get_dbtuples(
+    options: PaperMarioOptions,
+    mystery_opts: MysteryOptions,
+    required_spirits: list,
+    star_beam_area: int,
+) -> list:
     dbtuples = []
 
     # map tracker check and shop bits
@@ -233,7 +267,8 @@ def get_dbtuples(options: PaperMarioOptions, mystery_opts: MysteryOptions, requi
         option_key = get_db_key(rom_option)
         option_value = -1
         if ap_option == "":
-            #  handle options that are calculated, not yet implemented, or otherwise not changeable by the player
+            #  handle options that are calculated, not yet implemented, or
+            # otherwise not changeable by the player
             match rom_option:
                 # Always turned on
                 case "BlocksMatchContent" | "FastTextSkip" | "ShuffleItems" | "RandomQuiz" \

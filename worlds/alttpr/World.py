@@ -286,16 +286,12 @@ class ALttPRWorld(World):
                         trap_classification = self.random.choice([ItemClassification.progression, ItemClassification.useful, ItemClassification.filler])
 
                 # Using the green/blue/red clocks as placeholders for AP items.
-                # TODO: Edit the base ROM to add AP items and matching sprites
                 if location.item.classification & ItemClassification.progression or trap_classification == ItemClassification.progression:
-                    dr_item = ItemFactory("Green Clock", 1)
-                    dr_item.price = 100
+                    dr_item = ItemFactory("Progression AP Item", 1)
                 elif location.item.classification & ItemClassification.useful or trap_classification == ItemClassification.useful:
-                    dr_item = ItemFactory("Blue Clock", 1)
-                    dr_item.price = 50
+                    dr_item = ItemFactory("Useful AP Item", 1)
                 else:
-                    dr_item = ItemFactory("Red Clock", 1)
-                    dr_item.price = 20
+                    dr_item = ItemFactory("Filler AP Item", 1)
 
                 self.set_hint_and_credits_text(dr_item, location.item)
 
@@ -319,7 +315,7 @@ class ALttPRWorld(World):
             hint_text["Progressive Bow"] = " and ".join(bow_location_names)
 
         # Create a ROM patch
-        rom = ALttPRRom(self.player, self.player_name, self.seed_hash, self.options.sprite.value)
+        rom = ALttPRRom(self.player, self.player_name, self.seed_hash, self.options.sprite.value if not self.options.local_sprite else "local")
         try:
             patch_rom(self.door_rando_world, rom, 1, 1, is_mystery=False, hint_text=hint_text)
         except RuntimeError as e:
@@ -450,10 +446,10 @@ class ALttPRWorld(World):
         self.door_rando_world.experimental = {
             1: False}  # This makes you a bunny if your spawn point is in the dark world
         self.door_rando_world.flute_mode = {1: "active" if self.options.pre_activated_flute.value else "normal"}
+        self.door_rando_world.free_lamp_cone = {1: self.options.pseudolamp.value}
         self.door_rando_world.intensity = {1: 2 if not self.options.lobby_shuffle.value else 3}  # No door shuffle
         self.door_rando_world.keyshuffle = {1: "none" if not self.options.small_key_shuffle.value else "wild"}
-        self.door_rando_world.linked_drops = {
-            1: "unset"}  # In entrance shuffle, whether dropdowns link with their matching exit is determined by the entrance setting
+        self.door_rando_world.linked_drops = {1: "unset" if self.options.linked_drops else "independent"}  # In entrance shuffle, whether dropdowns link with their matching exit is determined by the entrance setting
         self.door_rando_world.lock_aga_door_in_escape = True
         self.door_rando_world.mapshuffle = {1: "wild" if self.options.map_shuffle.value else "none"}
         self.door_rando_world.mirrorscroll = {1: self.options.mirror_scroll.value or shuffled_doors}
@@ -476,7 +472,7 @@ class ALttPRWorld(World):
         self.door_rando_world.shufflelinks = {1: self.options.shuffle_links_house.value}
         self.door_rando_world.shuffletavern = {1: self.options.shuffle_tavern.value}
         self.door_rando_world.skullwoods = {
-            1: "followlinked" if self.options.zelgawoods.value else "original"}  # How to handle Skull Woods in entrance shuffle.
+            1: "followlinked" if self.options.shuffle_skull_woods or self.options.zelgawoods else "original"}  # How to handle Skull Woods in entrance shuffle.
         self.door_rando_world.trap_door_mode = {1: "vanilla"}
         self.door_rando_world.treasure_hunt_count = {1: self.options.triforce_hunt_goal.value}
         self.door_rando_world.treasure_hunt_total = {1: self.options.triforce_hunt_total.value}
@@ -630,6 +626,7 @@ class ALttPRWorld(World):
             "Chicken",
             "Fairy",
             "Fighter Sword",
+            "Filler AP Item",
             "Golden Sword",
             "Good Bee",
             "Green Clock",
@@ -637,6 +634,7 @@ class ALttPRWorld(World):
             "Master Sword",
             "Multi RNG",
             "Nothing",
+            "Progression AP Item",
             "Power Glove",
             "Power Star",
             "Red Clock",
@@ -648,6 +646,7 @@ class ALttPRWorld(World):
             "Tempered Sword",
             "Titans Mitts",
             "Triforce Piece",
+            "Useful AP Item",
         ]
         always_invalid_starting_items.extend([item for item in Items.progressive_items if item.startswith("Small Key")])
         errors = []

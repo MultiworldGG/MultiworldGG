@@ -39,6 +39,22 @@
         "address": "03482045",
         "length": 0
     },
+    "AP_UT_ENTRANCE_DESTINATIONS": {
+        "address": "034E53E0",
+        "length": 4096
+    },
+    "AP_UT_FOUND_ENTRANCES": {
+        "address": "034E63E0",
+        "length": 64
+    },
+    "AP_UT_PENDING_DESTINATION": {
+        "address": "034E6422",
+        "length": 2
+    },
+    "AP_UT_PENDING_ENTRANCE": {
+        "address": "034E6420",
+        "length": 2
+    },
     "AUDIOBANK_TABLE_EXTENDED": {
         "address": "03486F10",
         "length": 2560
@@ -56,7 +72,7 @@
         "length": 4
     },
     "AUDIO_THREAD_MEM_START": {
-        "address": "034E55E0",
+        "address": "034E6810",
         "length": 0
     },
     "AUTO_TRACKER_CONTEXT": {

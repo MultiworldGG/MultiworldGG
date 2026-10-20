@@ -1854,7 +1854,7 @@ def build_ganon_text(world: 'OOTWorld', messages: list[Message]) -> None:
 
     # lines before battle
     ganonLines = get_hint_group('ganonLine', world)
-    random.shuffle(ganonLines)
+    world.hint_rng.shuffle(ganonLines)
     text = get_raw_text(ganonLines.pop().text)
     update_message_by_id(messages, 0x70CB, text)
 

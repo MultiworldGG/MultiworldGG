@@ -65,6 +65,7 @@ Follow [the general MultiworldGG instructions](/tutorial/Archipelago/setup/en#ge
 Follow [the general MultiworldGG instructions](/tutorial/Archipelago/setup/en#hosting-an-archipelago-server) for hosting a MultiworldGG server. You _can_ host games that use the Paper Mario AP World on the website, or you can host it locally.
 
 ## Connecting to a MultiworldGG Server
+
 1. Obtain your .appm64 file from whoever is hosting the game. These files will not upload to the MultiworldGG even if it is hosted there, so you will have to send/receive them elsewhere.
 2. Once you have obtained your .appm64 patch file, open up MultiworldGGLauncher.exe from the base MultiworldGG folder and click "Open Patch". In the prompt that comes up, choose your .appm64 file. If this is your first time opening the patch file, you will be prompted to locate your vanilla ROM. You will also be prompted to locate your BizHawk client, which is named EmuHawk.exe in your BizHawk install. A patched .z64 file will be created in the same place as the patch file.
 3. Once the patch file has been created, BizHawk should start up automatically with the patched ROM. The Generic BizHawk Client for MultiworldGG will also open, as well as a Lua Console window. At this point all you need to do to connect is enter your room's address and port (e.g. multiworld.gg:38281) into the top text field of the client and click Connect.

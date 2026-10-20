@@ -789,7 +789,7 @@ exclude_from_trap_placement = location_groups["ShopItem"] + location_groups["Mer
     "JJ Whale Cove Over Flower 2"
 ]
 
-ch8_locations = [
+all_ch8_locations = [
     "PC Library (2F) Upper Level",
     "PC Library (2F) Between Bookshelves",
     "PC Storeroom (2F) On The Ground",

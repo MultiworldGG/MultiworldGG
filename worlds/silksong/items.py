@@ -1,6 +1,7 @@
 from __future__ import annotations
 
-from .npc_souls import CATALOGUE as NPC_SOUL_CATALOGUE
+from .npc_souls import CATALOGUE as NPC_SOUL_CATALOGUE, item_name as npc_soul_name
+from .directional_abilities import ITEMS as DIRECTIONAL_ITEMS, split_pool
 
 from .eva import EVA_NODE, EVA_REWARDS, EVA_POINT, EVA_POINT_SOURCES, EVA_CREST_SLOTS, EVOLVED_HUNTER, YELLOW_VESTICREST, BLUE_VESTICREST, SYLPHSONG
 
@@ -27,7 +28,6 @@ from .minor_families import (
 )
 from .locations import (
     BOSS_CREDIT_BY_LOCATION,
-    HUNTER_CREST_SLOT_LOCATION_NAMES,
     INDIVIDUAL_RELIC_TURN_IN_ITEM_NAMES,
     LOCATION_NAMES_BY_CATEGORY,
     WISH_REWARD_LOCATION_BY_COMPLETION,
@@ -57,7 +57,6 @@ from .requirements import (
     SIMPLE_KEY_GREEN_PRINCE,
     get_logic_item_references,
 )
-from .verdania_scope import VERDANIA_LOCATION_NAMES
 
 ITEM_BASE_ID = 835000
 
@@ -425,7 +424,7 @@ ITEM_TABLE_SOURCE: tuple[tuple[str, str], ...] = tuple(
     ('Craw Memento', 'Memento'),
     ('Literacy Trap', 'Trap'),
 ) + tuple((name, 'Boss') for location, name in BOSS_CREDIT_BY_LOCATION.items()
-          if location != 'Boss: Lace (Deep Docks)') + (
+          if location not in {'Boss: Lace (Deep Docks)', 'Boss: Palestag'}) + (
     ('Soul of Groal the Great', 'BossSoul'),
     ('Soul of Moss Mother', 'BossSoul'),
     ('Soul of Broodmother', 'BossSoul'),
@@ -433,7 +432,7 @@ ITEM_TABLE_SOURCE: tuple[tuple[str, str], ...] = tuple(
     ('Soul of Disgraced Chef Lugoli', 'BossSoul'),
     ('Soul of Raging Conchfly', 'BossSoul'),
     ('Soul of Skull Tyrant', 'BossSoul'),
-    *(("NPC Soul: " + row['name'], 'NpcSoul') for row in NPC_SOUL_CATALOGUE),
+    *((npc_soul_name(row['name']), 'NpcSoul') for row in NPC_SOUL_CATALOGUE),
 )
 
 from .boss_journal import ITEM_BY_LOCATION as JOURNAL_ITEMS, JOURNAL
@@ -441,6 +440,9 @@ ITEM_TABLE_SOURCE += tuple((name, "Journal") for name in JOURNAL_ITEMS.values())
 ITEM_TABLE_SOURCE += tuple((source.item_name, LORE_TABLET_CATEGORY) for source in ADDITIONAL_LORE_TABLET_SOURCES[:1])
 ITEM_TABLE_SOURCE += (("Boss Credit: Lace (Deep Docks)", "Boss"),)
 ITEM_TABLE_SOURCE += tuple((source.item_name, LORE_TABLET_CATEGORY) for source in ADDITIONAL_LORE_TABLET_SOURCES[1:])
+ITEM_TABLE_SOURCE += (("Boss Credit: Palestag", "Boss"),)
+ITEM_TABLE_SOURCE += tuple((name, "InnateAbility" if name.startswith("Ledge Grab") else "Skill") for name in DIRECTIONAL_ITEMS)
+ITEM_TABLE_SOURCE += (("Sprint", "Skill"), ("Conjoined Heart", "OldHeart"))
 
 # Rename in place so every established numeric item ID remains unchanged.
 NATIVE_ITEM_NAME_TO_TABLE_NAME: Mapping[str, str] = {
@@ -678,7 +680,7 @@ ITEM_TABLE_SOURCE = tuple(dict.fromkeys(ITEM_TABLE_SOURCE))
 
 from .enemy_souls import CATALOGUE as ENEMY_SOUL_CATALOGUE, item_name as enemy_soul_name
 from .boss_souls import CATALOGUE as BOSS_SOUL_CATALOGUE, SETH_SOUL
-item_table.update({"NPC Soul: " + row["name"]: row["item_id"] for row in NPC_SOUL_CATALOGUE})
+item_table.update({npc_soul_name(row["name"]): row["item_id"] for row in NPC_SOUL_CATALOGUE})
 item_table.update({enemy_soul_name(row['name']): row['item_id'] for row in ENEMY_SOUL_CATALOGUE})
 item_table.update({row["item"]: row["item_id"] for row in BOSS_SOUL_CATALOGUE})
 
@@ -691,11 +693,6 @@ ITEM_CATEGORY_BY_NAME.update({row["item"]: "BossSoul" for row in BOSS_SOUL_CATAL
 
 ITEM_CATEGORY_BY_NAME[SETH_SOUL] = "BossSoul"
 
-VANILLA_ONLY_ITEM_NAMES: FrozenSet[str] = frozenset({
-    'Key of Indolent',
-    'Key of Heretic',
-})
-
 item_name_groups: Dict[str, set[str]] = {
     "Skills": {name for name, category in ITEM_TABLE_SOURCE if category == "Skill"},
     "Spells": {name for name, category in ITEM_TABLE_SOURCE if category == "Spell"},
@@ -703,7 +700,7 @@ item_name_groups: Dict[str, set[str]] = {
     "Tools": {
         name
         for name, category in ITEM_TABLE_SOURCE
-        if category in {"Tool", "Compass"} and name not in VANILLA_ONLY_ITEM_NAMES
+        if category in {"Tool", "Compass"}
     },
     "Fleas": {name for name, category in ITEM_TABLE_SOURCE if category == "Flea"},
     "MaskShard": {name for name, category in ITEM_TABLE_SOURCE if category == "MaskShard"},
@@ -711,7 +708,7 @@ item_name_groups: Dict[str, set[str]] = {
     "SilkHeart": {
         name
         for name, category in ITEM_TABLE_SOURCE
-        if category == "SilkHeart" and name not in VANILLA_ONLY_ITEM_NAMES
+        if category == "SilkHeart"
     },
     "Bells": {name for name, category in ITEM_TABLE_SOURCE if category == "BellShrine"},
     "Bellway": {name for name, category in ITEM_TABLE_SOURCE if category == "Bellway"},
@@ -749,7 +746,7 @@ item_name_groups: Dict[str, set[str]] = {
     },
     "Major Keys": {
         name for name, category in ITEM_TABLE_SOURCE
-        if category == "MajorKey" and name not in VANILLA_ONLY_ITEM_NAMES
+        if category == "MajorKey"
     },
     "Simple Keys": {
         name for name, category in ITEM_TABLE_SOURCE if category == "Key"
@@ -759,7 +756,7 @@ item_name_groups: Dict[str, set[str]] = {
     "Boss Credits": set(BOSS_CREDIT_BY_LOCATION.values()),
     "Journal Entries": set(JOURNAL_ITEMS.values()) - {JOURNAL},
     "Enemy Souls": {enemy_soul_name(row["name"]) for row in ENEMY_SOUL_CATALOGUE},
-    "NPC Souls": {"NPC Soul: " + row["name"] for row in NPC_SOUL_CATALOGUE if not row.get("legacy")},
+    "NPC Souls": {npc_soul_name(row["name"]) for row in NPC_SOUL_CATALOGUE if not row.get("legacy")},
     "Boss Souls": {row["item"] for row in BOSS_SOUL_CATALOGUE} | {SETH_SOUL},
     "Traps": {name for name, category in ITEM_TABLE_SOURCE if category == "Trap"},
     "Needle Upgrades": {'Progressive Needle Upgrade'},
@@ -782,6 +779,8 @@ def _classification_for(name: str) -> ItemClassification:
     if ITEM_CATEGORY_BY_NAME[name] == "Trap":
         return ItemClassification.trap
     if ITEM_CATEGORY_BY_NAME[name] in {"BossSoul", "NpcSoul", "EnemySoul"}:
+        return ItemClassification.progression
+    if name in DIRECTIONAL_ITEMS:
         return ItemClassification.progression
     if name == JOURNAL:
         return ItemClassification.progression
@@ -856,6 +855,8 @@ QUEST_FILLER_COUNTS: Dict[str, int] = {
 # These items enter the pool only when their corresponding option is enabled.
 CONDITIONAL_POOL_ITEM_NAMES: FrozenSet[str] = frozenset({
     PROGRESSIVE_SWIFT_STEP_ITEM,
+    'Sprint',
+    *DIRECTIONAL_ITEMS,
     *PALE_OIL_POOL_COUNTS,
     *NEEDLE_UPGRADE_POOL_COUNTS,
     *ALPHABET_ITEM_NAMES,
@@ -1094,7 +1095,6 @@ def get_category_item_names(category: str) -> tuple[str, ...]:
                 for name, item_category in ITEM_TABLE_SOURCE
                 if (
                     item_category == 'Tool'
-                    and name not in VANILLA_ONLY_ITEM_NAMES
                     and name not in POOL_ONLY_USEFUL_ITEM_NAMES
                 )
             ),
@@ -1124,7 +1124,6 @@ def get_category_item_names(category: str) -> tuple[str, ...]:
     excluded_names = (
         set(TRAP_ITEM_NAMES)
         | set(CONDITIONAL_POOL_ITEM_NAMES)
-        | set(VANILLA_ONLY_ITEM_NAMES)
         | set(POOL_ONLY_USEFUL_ITEM_NAMES)
     )
     return tuple(
@@ -1402,7 +1401,6 @@ def get_dynamic_trap_capacity(
     act_two_only: bool = False,
     start_fully_mapped: bool = False,
     act_one_only: bool = False,
-    exclude_verdania: bool = False,
     retain_green_prince_key: bool = False,
     alphabet_mode: bool = False,
     act_one_donation_tool_pouch_requirements: Mapping[str, int] | None = None,
@@ -1414,6 +1412,7 @@ def get_dynamic_trap_capacity(
     minimum_memory_lockets: int = 0,
     required_goal_items: tuple[str, ...] = (),
     silk_soar_begone: bool = False,
+    directional_abilities: tuple[str, ...] = (),
 ) -> int:
     """Count filler entries that can be replaced by traps."""
 
@@ -1430,7 +1429,7 @@ def get_dynamic_trap_capacity(
             act_two_only=act_two_only,
             start_fully_mapped=start_fully_mapped,
             act_one_only=act_one_only,
-            exclude_verdania=exclude_verdania,
+
             retain_green_prince_key=retain_green_prince_key,
             alphabet_mode=alphabet_mode,
             act_one_donation_tool_pouch_requirements=(
@@ -1445,59 +1444,9 @@ def get_dynamic_trap_capacity(
             minimum_memory_lockets=minimum_memory_lockets,
             required_goal_items=required_goal_items,
             silk_soar_begone=silk_soar_begone,
+            directional_abilities=directional_abilities,
         )
     )
-
-
-def _trim_verdania_pool_entries(
-    entries: list[ItemPoolEntry],
-    category_modes: Mapping[str, str],
-) -> list[ItemPoolEntry]:
-    """Remove rewards paired with the five Lost Verdania checks."""
-
-    for location_name in sorted(VERDANIA_LOCATION_NAMES):
-        location_data = location_data_table[location_name]
-        source_category = location_data.category
-        if category_modes.get(source_category, "anywhere") == "vanilla":
-            continue
-
-        if source_category in OBSERVATION_LOCATION_CATEGORIES:
-            entry_index = next(
-                (
-                    index
-                    for index, entry in enumerate(entries)
-                    if (
-                        entry.source_category == source_category
-                        and _is_replaceable_filler(entry.name)
-                    )
-                ),
-                None,
-            )
-        else:
-            reward_name = get_vanilla_reward_name(
-                location_name,
-                source_category,
-            )
-            entry_index = next(
-                (
-                    index
-                    for index, entry in enumerate(entries)
-                    if (
-                        entry.source_category == source_category
-                        and entry.name == reward_name
-                    )
-                ),
-                None,
-            )
-
-        if entry_index is None:
-            raise ValueError(
-                "Lost Verdania content trim could not remove an item for "
-                f"{location_name!r} from the {source_category!r} pool lane."
-            )
-        entries.pop(entry_index)
-
-    return entries
 
 
 def _replace_verdania_only_key_pool_entry(
@@ -1546,7 +1495,6 @@ def build_item_pool_entries(
     act_two_only: bool = False,
     start_fully_mapped: bool = False,
     act_one_only: bool = False,
-    exclude_verdania: bool = False,
     retain_green_prince_key: bool = False,
     alphabet_mode: bool = False,
     act_one_donation_tool_pouch_requirements: Mapping[str, int] | None = None,
@@ -1563,6 +1511,7 @@ def build_item_pool_entries(
     minimum_memory_lockets: int = 0,
     required_goal_items: tuple[str, ...] = (),
     silk_soar_begone: bool = False,
+    directional_abilities: tuple[str, ...] = (),
 ) -> tuple[ItemPoolEntry, ...]:
     """Build the unfilled-location pool for the selected category modes."""
 
@@ -1571,9 +1520,9 @@ def build_item_pool_entries(
             raise ValueError(f"{category} does not support shuffle.")
     if act_one_only and act_two_only:
         raise ValueError("Act 1 and Act 2 content scopes cannot overlap.")
-    exclude_verdania_content = (
-        exclude_verdania or act_one_only or act_two_only
-    )
+
+    if act_two_only and category_modes.get('Crest', 'anywhere') == 'anywhere':
+        required_goal_items = tuple(dict.fromkeys((*required_goal_items, 'Crest: Shaman')))
 
     entries: list[ItemPoolEntry] = []
     act_one_excluded_location_names = (
@@ -1590,10 +1539,9 @@ def build_item_pool_entries(
         act_one_excluded_location_names
         if act_one_only
         else get_act_two_excluded_location_names(
-            starting_crest_item, category_modes.get("Skill", "anywhere"), cursed_ending, silk_soar_begone)
+            starting_crest_item, category_modes.get("Skill", "anywhere"), cursed_ending, silk_soar_begone,
+            required_goal_items)
         if act_two_only
-        else VERDANIA_LOCATION_NAMES
-        if exclude_verdania
         else frozenset()
     )
     start_with_map_items = (
@@ -1603,11 +1551,7 @@ def build_item_pool_entries(
         if act_one_only
         else ACT_TWO_START_WITH_MAP_ITEMS
         if act_two_only
-        else tuple(
-            name
-            for name in START_WITH_MAP_ITEMS
-            if name != "Map: Verdania" or not exclude_verdania
-        )
+        else START_WITH_MAP_ITEMS
     )
     removed_option_items_by_category: Dict[str, tuple[str, ...]] = {
         'Map': start_with_map_items if start_with_maps else (),
@@ -1715,10 +1659,9 @@ def build_item_pool_entries(
     elif act_two_only:
         entries = list(
             trim_act_two_pool_entries(
-                entries, starting_crest_item, category_modes.get("Skill", "anywhere"), cursed_ending, silk_soar_begone)
+                entries, starting_crest_item, category_modes.get("Skill", "anywhere"), cursed_ending, silk_soar_begone,
+                required_goal_items)
         )
-    elif exclude_verdania:
-        entries = _trim_verdania_pool_entries(entries, category_modes)
 
     from .game_modes import excluded_locations
     mode_exclusions = excluded_locations(steel_soul, act_one_only)
@@ -1769,7 +1712,7 @@ def build_item_pool_entries(
     # Act 2 may keep the otherwise Verdania-only key as an optional bingo
     # collectible without restoring any Verdania locations or requirements.
     if (
-        exclude_verdania_content
+        act_two_only
         and not act_one_only
         and not retain_green_prince_key
     ):
@@ -1801,6 +1744,11 @@ def build_item_pool_entries(
     missing_lockets = max(
         0, minimum_memory_lockets - sum(entry.name == 'Memory Locket' for entry in entries)
     )
+    if (
+        category_modes.get('Crest', 'anywhere') == 'anywhere'
+        and starting_crest_item in goal_excluded_location_names
+    ):
+        required_goal_items = (*required_goal_items, 'Crest: Hunter')
     missing_goal_items = [name for name in required_goal_items if not any(entry.name == name for entry in entries)]
     needed_items = ['Memory Locket'] * missing_lockets + missing_goal_items
     if needed_items:
@@ -1944,7 +1892,6 @@ def build_item_pool_entries(
         from collections import Counter
         remaining = Counter((entry.name, entry.source_category) for entry in entries)
         required_retained = set(missing_goal_items)
-        excluded_hunter_slots = HUNTER_CREST_SLOT_LOCATION_NAMES & goal_excluded_location_names
         retained = []
         for entry in entries_before_goal_trim:
             key = (entry.name, entry.source_category)
@@ -1954,7 +1901,6 @@ def build_item_pool_entries(
                 required_retained.remove(entry.name)
             elif (
                 category_modes.get(entry.source_category, 'anywhere') == 'anywhere'
-                and entry.name not in excluded_hunter_slots
                 and not (silk_soar_begone and entry.name == SILK_SOAR_ITEM)
                 and entry.source_category not in {'OldHeart', 'Everbloom', 'Memento'}
                 and not (act_one_only and entry.source_category in {'Soul', 'TwistedBud'})
@@ -1998,6 +1944,7 @@ def build_item_pool_entries(
         for index, entry in zip(filler_indices, selected):
             entries[index] = entry
 
+    split_pool(entries, directional_abilities, ItemPoolEntry, replace_filler_with_innate_ability_items)
     return tuple(entries)
 
 
@@ -2012,7 +1959,6 @@ def get_configured_item_pool_size(
     act_two_only: bool = False,
     start_fully_mapped: bool = False,
     act_one_only: bool = False,
-    exclude_verdania: bool = False,
     retain_green_prince_key: bool = False,
     alphabet_mode: bool = False,
     act_one_donation_tool_pouch_requirements: Mapping[str, int] | None = None,
@@ -2034,7 +1980,7 @@ def get_configured_item_pool_size(
             act_two_only=act_two_only,
             start_fully_mapped=start_fully_mapped,
             act_one_only=act_one_only,
-            exclude_verdania=exclude_verdania,
+
             retain_green_prince_key=retain_green_prince_key,
             alphabet_mode=alphabet_mode,
             act_one_donation_tool_pouch_requirements=(
@@ -2084,7 +2030,6 @@ def _get_adjusted_pool_counts(
                     category in {'Resource', 'BossSoul', 'NpcSoul'}
                     or name in TRAP_ITEM_NAMES
                     or name in CONDITIONAL_POOL_ITEM_NAMES
-                    or name in VANILLA_ONLY_ITEM_NAMES
                     or name in POOL_ONLY_USEFUL_ITEM_NAMES
                 )
                 else 1
@@ -2200,7 +2145,6 @@ def iter_item_pool_names(
                 if (
                     name in TRAP_ITEM_NAMES
                     or name in CONDITIONAL_POOL_ITEM_NAMES
-                    or name in VANILLA_ONLY_ITEM_NAMES
                     or name in POOL_ONLY_USEFUL_ITEM_NAMES
                 )
                 else 1

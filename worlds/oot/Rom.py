@@ -4,7 +4,6 @@ import platform
 import struct
 import subprocess
 import copy
-import threading
 from .Utils import subprocess_args, data_path, get_version_bytes, __version__
 from Utils import user_path
 from .ntype import BigStream
@@ -21,12 +20,11 @@ PAUSE_PLAYER_OVERLAY_TABLE_OFFSET = 4
 NUM_OVERLAY_ENTRIES = 0x1D7
 NUM_PAUSE_PLAYER_OVERLAY_ENTRIES = 2
 
-double_cache_prevention = threading.Lock()
 
 class Rom(BigStream):
     original = None
 
-    def __init__(self, file=None, force_use=False):
+    def __init__(self, file=None, force_use=False, decompressed_path=None):
         super().__init__([])
 
         self.changed_address = {}
@@ -37,19 +35,9 @@ class Rom(BigStream):
         if file is None:
             return
 
-        decomp_file = user_path('ZOOTDEC.z64')
+        decomp_file = decompressed_path or user_path('ZOOTDEC.z64')
 
-        with open(data_path('generated/symbols.json'), 'r') as stream:
-            raw_symbols = json.load(stream)
-        self.symbols = {}
-        for name, entry in raw_symbols.items():
-            if isinstance(entry, dict):
-                self.symbols[name] = {'address': int(entry['address'], 16), 'length': entry.get('length', 1)}
-            else:
-                self.symbols[name] = {'address': int(entry, 16), 'length': 1}
-
-        with open(data_path('generated/patch_symbols.json'), 'r') as stream:
-            self.patch_symbols = json.load(stream)
+        self._load_symbols()
 
         # If decompressed file already exists, read from it
         if not force_use:
@@ -72,11 +60,25 @@ class Rom(BigStream):
         # decompress rom, or check if it's already decompressed
         self.decompress_rom_file(file, decomp_file, force_use)
 
+        self._initialize_buffer()
+
+    def _load_symbols(self):
+        with open(data_path('generated/symbols.json'), 'r') as stream:
+            raw_symbols = json.load(stream)
+        self.symbols = {}
+        for name, entry in raw_symbols.items():
+            if isinstance(entry, dict):
+                self.symbols[name] = {'address': int(entry['address'], 16), 'length': entry.get('length', 1)}
+            else:
+                self.symbols[name] = {'address': int(entry, 16), 'length': 1}
+
+        with open(data_path('generated/patch_symbols.json'), 'r') as stream:
+            self.patch_symbols = json.load(stream)
+
+    def _initialize_buffer(self):
         # Add file to maximum size
         self.buffer.extend(bytearray([0x00] * (0x4000000 - len(self.buffer))))
-        with double_cache_prevention:
-            if not self.original:
-                Rom.original = self.copy()
+        self.original = self.copy()
         self.overlay_table = OverlayTable.read_overlay_table(
             self, OVERLAY_TABLE_START, OVERLAY_TABLE_OFFSET, OVERLAY_TABLE_ENTRY_SIZE, NUM_OVERLAY_ENTRIES
         ) + OverlayTable.read_overlay_table(
@@ -87,6 +89,16 @@ class Rom(BigStream):
         # Add version number to header.
         self.write_bytes(0x35, get_version_bytes(__version__))
         self.force_patch.extend([0x35, 0x36, 0x37])
+
+    @classmethod
+    def from_bytes(cls, source):
+        if len(source) != 0x4000000:
+            raise ValueError("Expected a 64 MiB decompressed OoT ROM")
+        rom = cls()
+        rom._load_symbols()
+        rom.buffer = bytearray(source)
+        rom._initialize_buffer()
+        return rom
 
     def copy(self):
         new_rom = Rom()

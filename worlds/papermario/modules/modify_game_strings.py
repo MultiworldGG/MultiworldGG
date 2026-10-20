@@ -87,7 +87,9 @@ def multiworld_item_info_to_pmString(
     pmString.extend(_get_formatting_token(FormattingToken.SAVE_COLOR))
     pmString.extend(_get_formatting_token(FormattingToken.SET_COLOR))
 
-    if ItemClassification.trap in progression_type and ItemClassification.progression in progression_type:
+    if (    ItemClassification.trap in progression_type
+        and ItemClassification.progression in progression_type
+    ):
         pmString.extend(_get_formatting_token(FormattingToken.COLOR_YELLOW))
     elif ItemClassification.progression in progression_type:
         pmString.extend(_get_formatting_token(FormattingToken.COLOR_PURPLE))

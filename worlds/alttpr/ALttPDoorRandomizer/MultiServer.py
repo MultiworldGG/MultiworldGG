@@ -446,7 +446,4 @@ async def main():
     await console(ctx)
 
 if __name__ == '__main__':
-    loop = asyncio.get_event_loop()
-    loop.run_until_complete(main())
-    loop.run_until_complete(asyncio.gather(*asyncio.Task.all_tasks()))
-    loop.close()
+    asyncio.run(main())

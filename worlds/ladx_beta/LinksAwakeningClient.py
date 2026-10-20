@@ -885,8 +885,7 @@ def run_game(romfile: str) -> None:
     auto_start = LinksAwakeningWorld.settings.rom_start
 
     if auto_start is True:
-        import webbrowser
-        webbrowser.open(romfile)
+        Utils.open_file(romfile)
     elif isinstance(auto_start, str):
         args = shlex.split(auto_start)
         # Specify full path to ROM as we are going to cd in popen

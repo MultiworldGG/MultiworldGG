@@ -27,9 +27,6 @@ Paper Mario:
     # Other options: Low, Medium, High
     # This can add logic to blooper fights to ensure you're well-equipped enough with boots and partners to beat them.
 
-    death_link: False
-    # death link is not yet implemented, leave this False
-
 description: Paper Mario YAML using PMR Setting String
 game: Paper Mario
 name: PMR

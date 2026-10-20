@@ -11,12 +11,19 @@
   - [ares](https://ares-emu.net/) (Windows/Linux)
   - [RetroArch](https://www.retroarch.com/?page=platforms) (works on MacOS) 
 - The built-in MultiworldGG Ocarina of Time client, which gets installed alongside [MultiworldGG](https://github.com/MultiworldGG/MultiworldGG/releases).
-- If you want to use AP: The latest APWorld from [here](https://github.com/TreZc0/OoTR-APWorld/releases)
-- An Ocarina of Time v1.0 NTSC-U or NTSC-J ROM.
+- An Ocarina of Time v1.0 NTSC-U or NTSC-J ROM, needed only when patching your game.
 
-## Install the APworld (only on AP)
+## Optional Software
 
-Since OoT currently ships with AP in a non-standard way, the old apworld will collide with the new one. Before installing this apworld, make sure to delete the `oot` folder in `lib/worlds` in your MultiworldGG folder. Afterwards, to install the APworld, simply double click it or drag and drop it into the running MultiworldGG Launcher. Alternatively, you can choose the option `Install APWorld` in the Archipelago Launcher or drop the `.apworld` file into the `custom_world`-folder in your Archipelago install.
+- [Universal Tracker APWorld](https://github.com/FarisTheAncient/Archipelago/releases) (only for AP)
+
+When Universal Tracker is installed, the Ocarina of Time Client includes a **Tracker Page** tab.
+Connect the client to your game to populate the tracker; no separate tracker client or YAML file is needed.
+Without Universal Tracker, the client works normally without the tracker tab.
+
+## Install the APworld (only with AP)
+
+Since OoT currently ships with AP in a non-standard way, the old apworld will collide with the new one. Before installing this apworld, make sure to delete the `oot` folder in `lib/worlds` in your Archipelago folder. Afterwards, to install the APworld, simply double click it or drag and drop it into the running Archipelago Launcher. Alternatively, you can choose the option `Install APWorld` in the Archipelago Launcher or drop the `.apworld` file into the `custom_world`-folder in your Archipelago install.
 
 After installing, restart the Launcher.
 
@@ -52,9 +59,10 @@ validator page: [YAML Validation page](/mysterycheck)
 
 When you join a multiworld game, you will be asked to provide your YAML file to whoever is hosting. Once that is done,
 the host will provide you with either a link to download your data file, or with a zip file containing everyone's data
-files. Your data file should have a `.apz5` extension.
+files. Your data file should have an `.apoot` extension. The host does not need a ROM to generate it.
 
-Double-click on your `.apz5` file to start your client and start the ROM patch process. Once the process is finished
+Use **Open Patch** in the Launcher and select your `.apoot` file. If your installation has registered the file
+extension, you can also double-click it. The client will ask for your base ROM when needed. Once patching is finished
 (this can take a while), the client and the emulator will be started automatically.
 Alternatively, you can run the `Ocarina of Time Adjuster` from the launcher, allowing you to customize you seed with a lot of visual and sfx options, like custom music, voices, models, and a lot of color and sound options.
 After patching, the client is started automatically.

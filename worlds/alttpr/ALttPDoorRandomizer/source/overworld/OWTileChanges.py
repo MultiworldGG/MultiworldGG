@@ -1498,10 +1498,10 @@ SCREEN_CHANGES = {
             stripe(0x209A, [0x163, 0x301]),
             stripe_rle(0x2E7, 0x209E, 14),
             tile(0x0D5, 0x20BA),
+            tile(0x306, 0x211C),
             param='Octoballoon NE',
         ),
         change(ChangeWhen.DISABLED_EDGE,  # Octoballoon WC
-            tile(0x306, 0x211C),
             stripe(0x2680, [0x17E, 0x183, 0x153, 0x153, 0x1EE, 0x131, 0x131, 0x131, 0x158, 0x158], vertical=True),
             stripe_rle(0x2C4, 0x2902, 3, vertical=True),
             stripe(0x2A82, [0x2F6, 0x225], vertical=True),
@@ -2201,7 +2201,6 @@ SCREEN_CHANGES = {
             param='Hammer Bridge WS',
         ),
         change(ChangeWhen.DISABLED_EDGE,  # Hammer Bridge SC
-            stripe(0x2F18, [0x0AD, 0x0AC]),
             tile(0x333, 0x2F90),
             stripe_rle(0x10B, 0x2F92, 6),
             stripe_rle(0x337, 0x2F9E, 5),
@@ -2369,7 +2368,6 @@ SCREEN_CHANGES = {
             stripe_rle(0x10B, 0x2012, 6),
             stripe_rle(0x337, 0x201E, 5),
             tile(0x333, 0x2028),
-            stripe(0x2098, [0x09E, 0x17C]),
             param='Ice Lake NW',
         ),
         change(ChangeWhen.DISABLED_EDGE,  # Ice Lake NC
@@ -2520,10 +2518,10 @@ SCREEN_CHANGES = {
             stripe(0x209A, [0x163, 0x301]),
             stripe_rle(0x2E7, 0x209E, 14),
             tile(0x0D5, 0x20BA),
+            tile(0x306, 0x211C),
             param='Bomber Corner NE',
         ),
         change(ChangeWhen.DISABLED_EDGE,  # Bomber Corner WC
-            tile(0x306, 0x211C),
             stripe(0x2680, [0x17E, 0x183, 0x153, 0x153, 0x1EE, 0x131, 0x131, 0x131, 0x158, 0x158], vertical=True),
             stripe_rle(0x2C4, 0x2902, 3, vertical=True),
             stripe(0x2A82, [0x2F6, 0x225], vertical=True),

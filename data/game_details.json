@@ -4360,6 +4360,55 @@
         ],
         "release_date": 1996
     },
+    "Pokemon Snap": {
+        "igdb_id": "2324",
+        "world_name": "Pokemon Snap",
+        "igdb_name": "Pokémon Snap",
+        "us_rating": [],
+        "player_perspectives": [
+            "First person"
+        ],
+        "genres": [
+            "Simulator"
+        ],
+        "themes": [
+            "Action",
+            "Fantasy"
+        ],
+        "keywords": [
+            "anime",
+            "evolution",
+            "pikachu",
+            "photography",
+            "on-rails",
+            "kid friendly",
+            "camera",
+            "silent protagonist",
+            "bats",
+            "explosion",
+            "based on - anime",
+            "platform exclusive",
+            "polygonal 3d",
+            "virtual console",
+            "auto-scrolling levels",
+            "book adaptation",
+            "journalist",
+            "clefable",
+            "parasect",
+            "fictional currencies",
+            "greatest hits",
+            "interactive achievement awards 2000",
+            "unknown species",
+            "wii console message board interaction",
+            "retroachievements",
+            "wii virtual console",
+            "wii u virtual console",
+            "nintendo switch online - expansion pack",
+            "nintendo gateway system",
+            "nintendo 64 exclusive"
+        ],
+        "release_date": 1999
+    },
     "Portal 2": {
         "igdb_id": "72",
         "world_name": "Portal 2",

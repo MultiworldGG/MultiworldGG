@@ -157,6 +157,7 @@ progressive_items = [
     "Ocarina (Activated)",
     "Pegasus Boots",
     "Power Glove",
+    "Progression AP Item",
     "Progressive Bow",
     "Progressive Bow (Alt)",
     "Progressive Glove",
@@ -184,23 +185,24 @@ progressive_items = [
     "Tempered Sword",
     "Titans Mitts",
     "Triforce Piece",
-    "Green Clock",  # Placeholder for progressive AP items
 ]
 
 useful_items = [
     "Arrow Upgrade (+5)",
     "Arrow Upgrade (+10)",
+    "Blue Clock",
     "Blue Mail",
     "Blue Potion",
     "Bomb Upgrade (+5)",
     "Boss Heart Container",
+    "Green Clock",
     "Green Potion",
     "Progressive Armor",
     "Red Mail",
     "Red Potion",
     "Rupees (300)",
     "Sanctuary Heart Container",
-    "Blue Clock",  # Placeholder for useful AP items
+    "Useful AP Item",
 ]
 
 filler_items = [
@@ -228,6 +230,7 @@ filler_items = [
     "Compass (Turtle Rock)",
     "Compass (Ganons Tower)",
     "Fairy",
+    "Filler AP Item",
     "Good Bee",
     "Map (Escape)",
     "Map (Eastern Palace)",
@@ -246,7 +249,7 @@ filler_items = [
     "Nothing",
     "Piece of Heart",
     "Power Star",
-    "Red Clock",  # Placeholder for filler AP items
+    "Red Clock",
     "Red Shield",
     "Rupee (1)",
     "Rupees (5)",

@@ -16,9 +16,17 @@ View the setup guide [here.](https://github.com/JKBSunshine/PMR_APWorld/blob/mai
 - Refer to the [PMR Wiki](https://github.com/icebound777/PMR-SeedGenerator/wiki) for help for Paper Mario Randomizer, such as commonly missed locations, general tips, and more.
 
 ## TO DO from PMR
+
 - Dungeon Entrance Randomizer
 - Boss Shuffle
 - Static Mirror Mode
+
+## Paper Mario Archipelago AI Usage Disclaimer
+
+- Paper Mario Archipelago is not vibe-coded.
+- Paper Mario Archipelago does not contain AI-generated or -altered art.
+- No code in Paper Mario Archipelago or connected projects has been entirely or partially written by AI. This includes the apworld implementation, and the base patch for making the game randomizable in the first place.
+- No conversations with LLMs have been used in the making of Paper Mario Archipelago or connected projects. AI has not been used to analyze code, suggest improvements, or fix bugs.
 
 ## Credits
 

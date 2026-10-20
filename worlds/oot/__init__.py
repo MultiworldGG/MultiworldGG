@@ -2,6 +2,8 @@ import logging
 import threading
 import copy
 import functools
+import json
+import os
 import settings
 import typing
 from typing import Optional, List, AbstractSet, Union  # remove when 3.8 support is dropped
@@ -25,10 +27,11 @@ from .LocationList import business_scrubs, dungeon_song_locations, location_sort
 from .DungeonList import dungeon_table, create_dungeons
 from .LogicTricks import normalized_name_tricks, normalized_name_advanced_tricks
 from .OcarinaSongs import SONG_TABLE, Song, generate_song_list
-from .Rom import Rom
-from .Patches import AP_MAX_PLAYER_ID, OoTContainer, patch_rom
-from .N64Patch import create_patch_file
-from .Cosmetics import patch_cosmetics
+from .Patches import AP_MAX_PLAYER_ID
+from .appp import OoTProcedurePatch
+from .appp.generate import build_patch_data
+from .ut import apply_replay_options, serialize_generation_results, serialize_slot_options
+from .ut.entrances import FOUND_ENTRANCES_KEY, defer_entrances, reconnect_found_entrances, restore_entrances
 
 from BaseClasses import MultiWorld, CollectionState, Tutorial
 from Options import Range, Toggle, VerifyKeys, Accessibility, PlandoConnections, PlandoItems
@@ -36,9 +39,6 @@ from Fill import fill_restrictive, fast_fill, FillError, sweep_from_pool
 from worlds.generic.Rules import exclusion_rules, add_item_rule
 from worlds.AutoWorld import World, AutoLogicRegister, WebWorld
 from worlds.LauncherComponents import launch as launch_component, components, Component, Type, SuffixIdentifier, icon_paths
-
-# OoT's generate_output doesn't benefit from more than 2 threads, instead it uses a lot of memory.
-i_o_limiter = threading.Semaphore(2)
 
 class _StartingItemRecord:
     def __init__(self, count: int):
@@ -75,8 +75,8 @@ def launch_client(*args):
 
 icon_paths["oot"] = f"ap:{__name__}/data/icon.png"
 components.append(Component(display_name="Ocarina of Time Client", func=launch_client, component_type=Type.CLIENT,
-                            file_identifier=SuffixIdentifier('.apz5'),
-                            description=f"Connect to an OoT multiworld using OoT APWorld {oot_version}.", icon="oot"))
+                            file_identifier=SuffixIdentifier('.apoot'),
+                            description=f"Connect to an OoT multiworld using OoT APWorld v{oot_version}.", icon="oot"))
 
 
 def launch_adjuster(*args):
@@ -85,7 +85,7 @@ def launch_adjuster(*args):
 
 
 components.append(Component(display_name="Ocarina of Time Adjuster", component_type=Type.ADJUSTER, func=launch_adjuster,
-                            description=f"Change Cosmetics and SFX for your OoT Seed using OoT APWorld {oot_version}.", icon="oot"))
+                            description=f"Change Cosmetics and SFX for your OoT Seed using OoT APWorld v{oot_version}.", icon="oot"))
 
 
 class OOTCollectionState(metaclass=AutoLogicRegister):
@@ -254,6 +254,8 @@ class OOTWorld(World):
     settings: typing.ClassVar[OOTSettings]
     topology_present: bool = True
     ut_can_gen_without_yaml = True
+    found_entrances_datastorage_key = FOUND_ENTRANCES_KEY
+    reconnect_found_entrances = reconnect_found_entrances
     # APWorld-specific: generic plando items are generation-only data and contain
     # PlandoItem objects, which cannot be serialized into slot_data.
     ut_omitted_slot_options = {'plando_connections', 'plando_items', *cosmetic_options, *sfx_options}
@@ -312,49 +314,10 @@ class OOTWorld(World):
         super(OOTWorld, self).__init__(world, player)
 
 
-    @classmethod
-    def stage_assert_generate(cls, multiworld: MultiWorld):
-        oot_settings = OOTWorld.settings
-        rom = Rom(file=oot_settings.rom_file)
-
-
     @staticmethod
     def interpret_slot_data(slot_data: dict) -> dict:
         """Tell Universal Tracker to regenerate using this slot data as re_gen_passthrough."""
         return slot_data
-
-
-    def get_ut_replay_slot_data(self) -> dict:
-        re_gen_passthrough = getattr(self.multiworld, "re_gen_passthrough", {})
-        if re_gen_passthrough and self.game in re_gen_passthrough:
-            return re_gen_passthrough[self.game]
-        return {}
-
-
-    @staticmethod
-    def get_generation_results_from_slot_data(slot_data: dict) -> dict:
-        return slot_data.get("generation_results", slot_data.get("oot_generated", {}))
-
-
-    def apply_ut_replay_options(self, slot_data: dict) -> None:
-        slot_options = slot_data.get("options", slot_data)
-        for option_name, option_type in self.options_dataclass.type_hints.items():
-            if option_name not in slot_options:
-                continue
-            try:
-                setattr(self.options, option_name, option_type.from_any(slot_options[option_name]))
-            except Exception as exc:
-                logger.warning(
-                    "Could not restore OoT option %s from slot data for Universal Tracker: %s",
-                    option_name,
-                    exc,
-                )
-
-        generation_results = self.get_generation_results_from_slot_data(slot_data)
-        for option_name, randomized in generation_results.get("option_randomized", {}).items():
-            option = getattr(self.options, option_name, None)
-            if option is not None and hasattr(option, "randomized"):
-                option.randomized = bool(randomized)
 
 
     def custom_ut_sort(self, region_label: str, location_label: str) -> tuple[int, str, str]:
@@ -370,10 +333,11 @@ class OOTWorld(World):
             )
 
         self.parser = Rule_AST_Transformer(self, self.player)
-        self.ut_replay_slot_data = self.get_ut_replay_slot_data()
-        self.ut_replay_results = self.get_generation_results_from_slot_data(self.ut_replay_slot_data)
-        if self.ut_replay_slot_data:
-            self.apply_ut_replay_options(self.ut_replay_slot_data)
+        self.ut_replay_slot_data = getattr(self.multiworld, "re_gen_passthrough", {}).get(self.game)
+        self.ut_replay_results = {}
+        if self.ut_replay_slot_data is not None:
+            self.ut_replay_results = self.ut_replay_slot_data["generation_results"]
+            apply_replay_options(self, self.ut_replay_slot_data)
 
         for option_name in self.options_dataclass.type_hints:
             result = getattr(self.options, option_name)
@@ -1456,7 +1420,9 @@ class OOTWorld(World):
 
     def set_rules(self):
         # This has to run AFTER creating items but BEFORE set_entrances_based_rules
-        if self.entrance_shuffle:
+        if self.ut_replay_slot_data is not None:
+            restore_entrances(self, self.ut_replay_results["entrances"])
+        elif self.entrance_shuffle:
             # 10 attempts at shuffling entrances
             tries = 10
             while tries:
@@ -1571,6 +1537,7 @@ class OOTWorld(World):
                 loc.address = None
 
         self.remove_excess_junk_from_itempool()
+        defer_entrances(self)
 
 
     def fill_hook(self, progitempool, usefulitempool, filleritempool, fill_locations):
@@ -2234,37 +2201,25 @@ class OOTWorld(World):
         if self.hints != 'none' or self.misc_hints:
             self.hint_data_available.wait()
 
-        with i_o_limiter:
-            # Make traps appear as other random items
-            trap_location_ids = [loc.address for loc in self.get_locations() if loc.item.trap]
-            self.trap_appearances = {}
-            for loc_id in trap_location_ids:
-                self.trap_appearances[loc_id] = self.create_item(self.random.choice(self.fake_items).name)
-
-            # Seed hint RNG, used for ganon text lines also
-            self.hint_rng = self.random
-
+        # Resolve the filled world into patch data; this path never opens a ROM.
+        self.trap_appearances = {
+            location.address: self.create_item(self.random.choice(self.fake_items).name)
+            for location in self.get_locations() if location.item is not None and location.item.trap
+        }
+        self.hint_rng = self.random
+        try:
+            if self.hints != 'none':
+                buildWorldGossipHints(self)
+            patch_data = build_patch_data(self)
             outfile_name = self.multiworld.get_out_file_name_base(self.player)
-            oot_settings = OOTWorld.settings
-            rom = Rom(file=oot_settings.rom_file)
-            try:
-                if self.hints != 'none':
-                    buildWorldGossipHints(self)
-                patch_rom(self, rom)
-                patch_cosmetics(self, rom)
-            except Exception as e:
-                logger.exception("Failed while generating OoT output for player %s.", self.player)
-                raise e
-            finally:
-                self.collectible_flags_available.set()
-            rom.update_header()
-            patch_data = create_patch_file(rom, self.random)
-            rom.restore()
-
-            apz5 = OoTContainer(patch_data, outfile_name, output_directory,
-                player=self.player,
-                player_name=self.multiworld.get_player_name(self.player))
-            apz5.write()
+            patch = OoTProcedurePatch(
+                os.path.join(output_directory, outfile_name + OoTProcedurePatch.patch_file_ending),
+                player=self.player, player_name=self.multiworld.get_player_name(self.player))
+            patch.write_file("seed.json", json.dumps(patch_data, ensure_ascii=True, separators=(",", ":"),
+                                                    allow_nan=False).encode("utf-8"))
+            patch.write()
+        finally:
+            self.collectible_flags_available.set()
 
 
     # Gathers hint data for OoT. Loops over all world locations for woth, barren, and major item locations.
@@ -2360,14 +2315,14 @@ class OOTWorld(World):
         self.collectible_flags_available.wait()
         if not self.shop_location_flags:
             self.shop_location_flags = self.calculate_shop_location_flags()
-        slot_options = self._serialize_slot_options()
+        slot_options = serialize_slot_options(self)
 
         slot_data = {
             'collectible_override_flags': self.collectible_override_flags,
             'collectible_flag_offsets': self.collectible_flag_offsets,
             'shop_flag_offsets': self.shop_location_flags,
             'options': slot_options,
-            'generation_results': self._serialize_generation_results(),
+            'generation_results': serialize_generation_results(self),
         }
         slot_data.update(slot_options)
 
@@ -2417,59 +2372,6 @@ class OOTWorld(World):
             slot_data['dungeon_bosses'] = dungeon_bosses
 
         return slot_data
-
-
-    @staticmethod
-    def _serialize_slot_value(value):
-        if isinstance(value, (set, frozenset)):
-            return sorted(value)
-        if isinstance(value, Counter):
-            return dict(value)
-        if isinstance(value, dict):
-            return {
-                key: OOTWorld._serialize_slot_value(inner_value)
-                for key, inner_value in value.items()
-            }
-        if isinstance(value, (list, tuple)):
-            return [OOTWorld._serialize_slot_value(inner_value) for inner_value in value]
-        return value
-
-
-    def _serialize_slot_options(self):
-        return {
-            option_name: self._serialize_slot_value(getattr(self.options, option_name).value)
-            for option_name in self.options_dataclass.type_hints
-            if option_name not in self.ut_omitted_slot_options
-        }
-
-
-    def _serialize_generation_results(self):
-        return {
-            'connect_name': self.connect_name,
-            'file_hash': list(self.file_hash),
-            'skipped_trials': dict(self.skipped_trials),
-            'dungeon_mq': dict(self.dungeon_mq),
-            'precompleted_dungeons': dict(self.precompleted_dungeons),
-            'empty_dungeon_reward_assignments': dict(self.empty_dungeon_reward_assignments),
-            'empty_dungeon_starting_rewards': list(getattr(self, 'empty_dungeon_starting_rewards', [])),
-            'dungeon_shortcuts': sorted(self.dungeon_shortcuts),
-            'key_rings': sorted(self.key_rings),
-            'silver_rupee_pouches': sorted(self.silver_rupee_pouches),
-            'selected_adult_trade_item': self.selected_adult_trade_item,
-            'shop_prices': dict(self.shop_prices),
-            'scrub_prices': dict(self.scrub_prices),
-            'randomized_starting_items': dict(self.randomized_starting_items),
-            'song_notes': {name: str(notes) for name, notes in self.song_notes.items()},
-            'rauru_starting_item': getattr(self, 'rauru_starting_item', None),
-            'rauru_free_post_fill': getattr(self, 'rauru_free_post_fill', False),
-            'option_randomized': {
-                'trials': self.trials_random,
-                'mq_dungeons_count': self.mq_dungeons_random,
-                'empty_dungeons_count': self.options.empty_dungeons_count.randomized,
-                'special_deal_price_min': self.options.special_deal_price_min.randomized,
-                'special_deal_price_max': self.options.special_deal_price_max.randomized,
-            },
-        }
 
 
     def modify_multidata(self, multidata: dict):

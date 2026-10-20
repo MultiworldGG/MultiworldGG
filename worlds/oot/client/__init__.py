@@ -15,9 +15,21 @@ except ImportError:
     apname = "Archipelago"
 from worlds import network_data_package
 from .. import OOTWorld, launch_rom
-from ..Rom import Rom, compress_rom_file
-from ..N64Patch import apply_patch_file
+from Patch import create_rom_file
 from ..Utils import __version__ as oot_version
+from ..ut.discovery import publish_discoveries
+
+# Use UT's context and UI when installed, as other embedded game clients do.
+try:
+    from worlds.tracker.TrackerClient import (
+        TrackerGameContext as ClientContext,
+        TrackerCommandProcessor as ClientCommandProcessor,
+        UT_VERSION,
+    )
+    tracker_loaded = True
+except ImportError:
+    ClientContext = CommonContext
+    tracker_loaded = False
 
 CONNECTION_TIMING_OUT_STATUS = "Connection timing out. Please restart your emulator."
 CONNECTION_REFUSED_STATUS = "Connection refused. Please start your emulator and load your OoT AP ROM."
@@ -50,7 +62,7 @@ deathlink_sent_this_death: we interacted with the multiworld on this death, wait
 
 oot_loc_name_to_id = network_data_package["games"]["Ocarina of Time"]["location_name_to_id"]
 
-script_version: int = 9
+script_version: int = 10
 AP_MAX_PLAYER_ID = 1024
 
 def get_item_value(ap_id):
@@ -74,12 +86,16 @@ class OoTCommandProcessor(ClientCommandProcessor):
             async_start(self.ctx.update_death_link(self.ctx.deathlink_enabled), name="Update Deathlink")
 
 
-class OoTContext(CommonContext):
+class OoTContext(ClientContext):
     command_processor = OoTCommandProcessor
     items_handling = 0b001  # full local
 
     def __init__(self, server_address, password):
         super().__init__(server_address, password)
+        # UT defaults to receiving all items. OoT handles local/starting items
+        # in the ROM; UT scouts checked locations for its own local item state.
+        self.items_handling = 0b001
+        self.tags = self.tags - {"Tracker"}
         self.game = 'Ocarina of Time'
         self.n64_streams: (StreamReader, StreamWriter) = None
         self.n64_sync_task = None
@@ -97,13 +113,16 @@ class OoTContext(CommonContext):
         self.version_warning = False
         self.pending_display_items: list = []
         self._unknown_location_warnings: set[str] = set()
+        self.entrance_names = []
+        self.entrance_rom = None
+        self.reported_entrances = set()
 
     async def server_auth(self, password_requested: bool = False):
         if password_requested and not self.password:
-            await super(OoTContext, self).server_auth(password_requested)
+            await CommonContext.server_auth(self, password_requested)
         if not self.auth:
             self.awaiting_rom = True
-            logger.info('Awaiting connection to emulator to get player information')
+            logger.info('Awaiting connection to emulator. Note: This version of OoT will automatically connect to compatible emulators (no lua script needed).')
             return
 
         await self.send_connect()
@@ -112,25 +131,35 @@ class OoTContext(CommonContext):
         self.deathlink_pending = True
         super().on_deathlink(data)
 
-    def run_gui(self):
-        from kvui import GameManager
+    def make_gui(self):
+        ui = super().make_gui()
 
-        class OoTManager(GameManager):
+        class OoTManager(ui):
             logging_pairs = [
                 ("Client", "Archipelago")
             ]
-            base_title = f"Ocarina of Time Client (OoT APWorld {oot_version}) | {apname}"
+            base_title = f"Ocarina of Time Client (OoT APWorld {oot_version})"
+            if tracker_loaded:
+                base_title += f" | Universal Tracker {UT_VERSION}"
+            base_title += f" | {apname}"
 
-        self.ui = OoTManager(self)
-        self.ui_task = asyncio.create_task(self.ui.async_run(), name="UI")
+        return OoTManager
 
     def on_package(self, cmd, args):
+        super().on_package(cmd, args)
         if cmd == 'Connected':
             slot_data = args.get('slot_data', None)
             if slot_data:
                 self.collectible_override_flags_address = slot_data.get('collectible_override_flags', 0)
                 self.collectible_offsets = slot_data.get('collectible_flag_offsets', {})
                 self.shop_flag_offsets = slot_data.get('shop_flag_offsets', {})
+                results = slot_data["generation_results"]
+                self.entrance_rom = results["connect_name"]
+                self.entrance_names = sorted(
+                    name for name, record in results["entrances"].items()
+                    if record["replaces"] is not None
+                )
+                self.reported_entrances.clear()
         elif cmd == 'PrintJSON':
             if args.get('type') == 'ItemSend':
                 network_item = args.get('item')
@@ -170,6 +199,8 @@ def get_payload(ctx: OoTContext):
             "collectibleOverrides": ctx.collectible_override_flags_address,
             "collectibleOffsets": ctx.collectible_offsets,
             "shopFlagOffsets": ctx.shop_flag_offsets,
+            "entranceRom": ctx.entrance_rom,
+            "entranceNames": ctx.entrance_names,
             "pendingDisplayItems": pending_display_items,
         })
     return payload
@@ -188,9 +219,14 @@ async def parse_payload(payload: dict, ctx: OoTContext, force: bool):
         ctx.deathlink_pending = False
         ctx.deathlink_sent_this_death = False
         ctx.pending_display_items = []
+        ctx.entrance_rom = None
+        ctx.entrance_names = []
+        ctx.reported_entrances.clear()
         ctx.auth = payload['playerName']
         await ctx.send_connect()
         return
+
+    await publish_discoveries(ctx, payload.get("foundEntrances", []))
 
     # Turn on deathlink if it is on, and if the client hasn't overriden it
     if payload['deathlinkActive'] and not ctx.deathlink_enabled and not ctx.deathlink_client_override:
@@ -336,33 +372,16 @@ async def run_game(romfile, ctx: OoTContext | None = None):
     await asyncio.to_thread(launch_rom, romfile, logger, status_callback)
 
 
-def patch_game(apz5_file):
-    apz5_file = os.path.abspath(apz5_file)
-    base_name = os.path.splitext(apz5_file)[0]
-    decomp_path = base_name + '-decomp.z64'
-    comp_path = base_name + '.z64'
-    rom_file_name = OOTWorld.settings.rom_file
-    rom = Rom(rom_file_name)
-
-    sub_file = None
-    if zipfile.is_zipfile(apz5_file):
-        for name in zipfile.ZipFile(apz5_file).namelist():
-            if name.endswith('.zpf'):
-                sub_file = name
-                break
-
-    apply_patch_file(rom, apz5_file, sub_file=sub_file)
-    rom.write_to_file(decomp_path)
-    compress_rom_file(decomp_path, comp_path)
-    os.remove(decomp_path)
-    return comp_path
+def patch_game(patch_file):
+    _, rom_path = create_rom_file(os.path.abspath(patch_file))
+    return rom_path
 
 
-def get_apz5_server(apz5_file: str) -> str | None:
-    """Return the server address baked into an APZ5 container, if present."""
+def get_patch_server(patch_file: str) -> str | None:
+    """Return the server address baked into an APOOT container, if present."""
     try:
-        with zipfile.ZipFile(apz5_file) as apz5:
-            with apz5.open("archipelago.json") as manifest_file:
+        with zipfile.ZipFile(patch_file) as patch:
+            with patch.open("archipelago.json") as manifest_file:
                 manifest = json.load(manifest_file)
     except (OSError, KeyError, UnicodeDecodeError, zipfile.BadZipFile, json.JSONDecodeError):
         return None
@@ -371,11 +390,11 @@ def get_apz5_server(apz5_file: str) -> str | None:
     return server if isinstance(server, str) and server else None
 
 
-async def patch_and_run_game(apz5_file, ctx: OoTContext | None = None):
+async def patch_and_run_game(patch_file, ctx: OoTContext | None = None):
     try:
-        comp_path = await asyncio.to_thread(patch_game, apz5_file)
+        comp_path = await asyncio.to_thread(patch_game, patch_file)
     except Exception:
-        logger.exception("Failed to patch OoT APZ5 file.")
+        logger.exception("Failed to patch OoT APOOT file.")
         return
 
     await run_game(comp_path, ctx)
@@ -403,17 +422,19 @@ def main(*launcher_args: str):
     async def main():
         multiprocessing.freeze_support()
         parser = get_base_parser()
-        parser.add_argument('apz5_file', default="", type=str, nargs="?",
-                            help='Path to an APZ5 file')
+        parser.add_argument('patch_file', default="", type=str, nargs="?",
+                            help='Path to an APOOT file')
         args = parser.parse_args(launcher_args)
 
-        if args.apz5_file and not args.connect:
-            args.connect = get_apz5_server(args.apz5_file)
+        if args.patch_file and not args.connect:
+            args.connect = get_patch_server(args.patch_file)
 
         ctx = OoTContext(args.connect, args.password)
-        if args.apz5_file:
-            logger.info("APZ5 file supplied, beginning patching process...")
-            async_start(patch_and_run_game(args.apz5_file, ctx))
+        if tracker_loaded:
+            ctx.run_generator()
+        if args.patch_file:
+            logger.info("APOOT file supplied, beginning patching process...")
+            async_start(patch_and_run_game(args.patch_file, ctx))
 
         ctx.server_task = asyncio.create_task(server_loop(ctx), name="Server Loop")
         if gui_enabled:

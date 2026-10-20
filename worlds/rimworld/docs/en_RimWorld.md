@@ -10,13 +10,13 @@ There are several types of item in RimWorld:
     * Research is also the primary progression in the game - you need certain tech to complete your victory condition, and crafting items will also require their requisite research.
 * Boons (Coming soon...)
     * All of the fun helpful stuff people can send you!
-    * Colonists
-    * Item drops
+    * Colonists - DONE
+    * Item drops - DONE
     * Merchants
     * And more!
 * Traps (Coming soon...)
     * All the fun bad stuff people can send you! 
-    * Raids
+    * Raids - DONE
     * Scaria
     * Weather Events
     * Off-map problem causers
@@ -32,14 +32,13 @@ Locations in RimWorld are all tasks to be accomplished. They come in several for
 * Crafting
     * The Archipelago Grinder is a new building in the Production tab. It will request pairs of items that the player can craft. Send the two requested items to the grinder, and it will send the location.
 * Combat (Coming soon...)
-    * Defeat raiders to obtain items that can be consumed to complete a location
+    * Defeat raiders to obtain items that can be consumed to complete a location - DONE
     * Trophies for all of the different types of enemy in the game
 * Quests (Coming soon...)
     * Quest rewards that send location checks, as alternate choices to the vanilla quest rewards
-* Trade (Coming soon...)
-    * Traveling traders and merchants at other settlements will sell items that can send locations
+* Trade
+    * Traveling traders and merchants at other settlements will sell items that can send locations - DONE
 
 
 ## What is the goal of this game when randomized?
-The goal is configurable to be any of the vanilla win conditions in the game.
-(Coming soon...) For shorter multiworlds, a new McGuffin collection win condition to help allow RimWorld to better integrate into shorter games. Also, an option to enable the last stand for the new win condition, or to disable/reduce it for the vanilla ones.
+The goal is configurable to be any of the vanilla win conditions in the game. The mod also adds a "Monument" win condition, which requires the player to collect some number of sculptures and put them in a room with a randomized set of other buildings. You might need a room with a pilot console and a mech charger, or a meditation throne and a dresser. It's all random (and configurable)!

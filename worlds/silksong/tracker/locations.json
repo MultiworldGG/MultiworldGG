@@ -63,10 +63,10 @@
     ]
    },
    {
-    "name": "Moss Grotto Center - lower left (LL)",
+    "name": "Moss Grotto Center - left3",
     "sections": [
      {
-      "name": "Moss Grotto Center - lower left (LL)"
+      "name": "Moss Grotto Center - left3"
      }
     ],
     "map_locations": [
@@ -78,10 +78,10 @@
     ]
    },
    {
-    "name": "Moss Grotto Center - middle left (ML)",
+    "name": "Moss Grotto Center - left2",
     "sections": [
      {
-      "name": "Moss Grotto Center - middle left (ML)"
+      "name": "Moss Grotto Center - left2"
      }
     ],
     "map_locations": [
@@ -123,10 +123,10 @@
     ]
    },
    {
-    "name": "Moss Grotto Center - upper right (UR)",
+    "name": "Moss Grotto Center - right1",
     "sections": [
      {
-      "name": "Moss Grotto Center - upper right (UR)"
+      "name": "Moss Grotto Center - right1"
      }
     ],
     "map_locations": [
@@ -218,10 +218,10 @@
     ]
    },
    {
-    "name": "Moss Grotto West - upper right (UR)",
+    "name": "Moss Grotto West - right1",
     "sections": [
      {
-      "name": "Moss Grotto West - upper right (UR)"
+      "name": "Moss Grotto West - right1"
      }
     ],
     "map_locations": [
@@ -233,10 +233,10 @@
     ]
    },
    {
-    "name": "Moss Grotto West - lower right (LR)",
+    "name": "Moss Grotto West - right2",
     "sections": [
      {
-      "name": "Moss Grotto West - lower right (LR)"
+      "name": "Moss Grotto West - right2"
      }
     ],
     "map_locations": [
@@ -313,10 +313,10 @@
     ]
    },
    {
-    "name": "Moss Grotto East - upper left (UL)",
+    "name": "Moss Grotto East - left1",
     "sections": [
      {
-      "name": "Moss Grotto East - upper left (UL)"
+      "name": "Moss Grotto East - left1"
      }
     ],
     "map_locations": [
@@ -1155,6 +1155,44 @@
       "map": "Bonegrave",
       "x": 6,
       "y": 470
+     }
+    ]
+   }
+  ]
+ },
+ {
+  "name": "Bonegrave Passage",
+  "children": [
+   {
+    "name": "Boss: Summoned Saviour",
+    "sections": [
+     {
+      "name": "Boss: Summoned Saviour"
+     },
+     {
+      "name": "Journal: Summoned Saviour"
+     }
+    ],
+    "map_locations": [
+     {
+      "map": "Bonegrave Passage",
+      "x": 1651,
+      "y": 1975
+     }
+    ]
+   },
+   {
+    "name": "Bonegrave Passage - right (R)",
+    "sections": [
+     {
+      "name": "Bonegrave Passage - right (R)"
+     }
+    ],
+    "map_locations": [
+     {
+      "map": "Bonegrave Passage",
+      "x": 8320,
+      "y": 768
      }
     ]
    }
@@ -2238,7 +2276,7 @@
      {
       "map": "The Marrow Bell Bench",
       "x": 380,
-      "y": 214
+      "y": 112
      }
     ]
    },
@@ -2253,7 +2291,7 @@
      {
       "map": "The Marrow Bell Bench",
       "x": 406,
-      "y": 214
+      "y": 112
      }
     ]
    },
@@ -2268,7 +2306,7 @@
      {
       "map": "The Marrow Bell Bench",
       "x": 123,
-      "y": 503
+      "y": 401
      }
     ]
    },
@@ -2283,7 +2321,7 @@
      {
       "map": "The Marrow Bell Bench",
       "x": 117,
-      "y": 494
+      "y": 392
      }
     ]
    },
@@ -2298,7 +2336,7 @@
      {
       "map": "The Marrow Bell Bench",
       "x": 428,
-      "y": 527
+      "y": 425
      }
     ]
    },
@@ -2313,7 +2351,7 @@
      {
       "map": "The Marrow Bell Bench",
       "x": 57,
-      "y": 228
+      "y": 126
      }
     ]
    },
@@ -2328,7 +2366,7 @@
      {
       "map": "The Marrow Bell Bench",
       "x": 63,
-      "y": 520
+      "y": 418
      }
     ]
    },
@@ -2343,7 +2381,7 @@
      {
       "map": "The Marrow Bell Bench",
       "x": 495,
-      "y": 527
+      "y": 425
      }
     ]
    }
@@ -2427,8 +2465,8 @@
     "map_locations": [
      {
       "map": "The Marrow Lava Track",
-      "x": 177,
-      "y": 192
+      "x": 180,
+      "y": 194
      }
     ]
    },
@@ -2442,8 +2480,8 @@
     "map_locations": [
      {
       "map": "The Marrow Lava Track",
-      "x": 196,
-      "y": 192
+      "x": 199,
+      "y": 194
      }
     ]
    },
@@ -2457,8 +2495,8 @@
     "map_locations": [
      {
       "map": "The Marrow Lava Track",
-      "x": 700,
-      "y": 60
+      "x": 711,
+      "y": 61
      }
     ]
    },
@@ -2473,7 +2511,7 @@
      {
       "map": "The Marrow Lava Track",
       "x": 0,
-      "y": 365
+      "y": 371
      }
     ]
    },
@@ -2487,8 +2525,8 @@
     "map_locations": [
      {
       "map": "The Marrow Lava Track",
-      "x": 844,
-      "y": 368
+      "x": 857,
+      "y": 374
      }
     ]
    },
@@ -2502,7 +2540,7 @@
     "map_locations": [
      {
       "map": "The Marrow Lava Track",
-      "x": 368,
+      "x": 374,
       "y": 0
      }
     ]
@@ -4438,8 +4476,8 @@
     "map_locations": [
      {
       "map": "Wormways Flea Rescue",
-      "x": 398,
-      "y": 111
+      "x": 389,
+      "y": 131
      }
     ]
    },
@@ -4454,7 +4492,7 @@
      {
       "map": "Wormways Flea Rescue",
       "x": 0,
-      "y": 128
+      "y": 152
      }
     ]
    }
@@ -6695,10 +6733,10 @@
     ]
    },
    {
-    "name": "Deep Docks Lower East Shaft - left2 (LL)",
+    "name": "Deep Docks Lower East Shaft - left2",
     "sections": [
      {
-      "name": "Deep Docks Lower East Shaft - left2 (LL)"
+      "name": "Deep Docks Lower East Shaft - left2"
      }
     ],
     "map_locations": [
@@ -6810,10 +6848,10 @@
     ]
    },
    {
-    "name": "Deep Docks Memory Hole - right1 (R)",
+    "name": "Deep Docks Memory Hole - right1",
     "sections": [
      {
-      "name": "Deep Docks Memory Hole - right1 (R)"
+      "name": "Deep Docks Memory Hole - right1"
      }
     ],
     "map_locations": [
@@ -8679,21 +8717,6 @@
     ]
    },
    {
-    "name": "Far Fields - Shell Shard Cache #8",
-    "sections": [
-     {
-      "name": "Far Fields - Shell Shard Cache #8"
-     }
-    ],
-    "map_locations": [
-     {
-      "map": "Far Fields Skull Arena",
-      "x": 92,
-      "y": 609
-     }
-    ]
-   },
-   {
     "name": "Far Fields Skull Arena - left1",
     "sections": [
      {
@@ -9374,6 +9397,41 @@
   ]
  },
  {
+  "name": "Memory Karmelita",
+  "children": [
+   {
+    "name": "Boss: Skarrsinger Karmelita",
+    "sections": [
+     {
+      "name": "Boss: Skarrsinger Karmelita"
+     }
+    ],
+    "map_locations": [
+     {
+      "map": "Memory Karmelita",
+      "x": 9536,
+      "y": 1715
+     }
+    ]
+   },
+   {
+    "name": "Memory Karmelita - door_wakeInMemory (MG)",
+    "sections": [
+     {
+      "name": "Memory Karmelita - door_wakeInMemory (MG)"
+     }
+    ],
+    "map_locations": [
+     {
+      "map": "Memory Karmelita",
+      "x": 1530,
+      "y": 1681
+     }
+    ]
+   }
+  ]
+ },
+ {
   "name": "Sprintmaster Cave",
   "children": [
    {
@@ -9392,8 +9450,8 @@
     "map_locations": [
      {
       "map": "Sprintmaster Cave",
-      "x": 570,
-      "y": 263
+      "x": 564,
+      "y": 234
      }
     ]
    },
@@ -9408,7 +9466,7 @@
      {
       "map": "Sprintmaster Cave",
       "x": 0,
-      "y": 193
+      "y": 171
      }
     ]
    }
@@ -9958,8 +10016,8 @@
     "map_locations": [
      {
       "map": "Hunter's March Skarr Shop",
-      "x": 83,
-      "y": 63
+      "x": 88,
+      "y": 88
      }
     ]
    },
@@ -9973,8 +10031,8 @@
     "map_locations": [
      {
       "map": "Hunter's March Skarr Shop",
-      "x": 67,
-      "y": 65
+      "x": 71,
+      "y": 91
      }
     ]
    },
@@ -9988,8 +10046,8 @@
     "map_locations": [
      {
       "map": "Hunter's March Skarr Shop",
-      "x": 826,
-      "y": 71
+      "x": 879,
+      "y": 99
      }
     ]
    },
@@ -10003,8 +10061,8 @@
     "map_locations": [
      {
       "map": "Hunter's March Skarr Shop",
-      "x": 846,
-      "y": 65
+      "x": 900,
+      "y": 91
      }
     ]
    },
@@ -10018,8 +10076,8 @@
     "map_locations": [
      {
       "map": "Hunter's March Skarr Shop",
-      "x": 822,
-      "y": 49
+      "x": 874,
+      "y": 68
      }
     ]
    },
@@ -10033,8 +10091,8 @@
     "map_locations": [
      {
       "map": "Hunter's March Skarr Shop",
-      "x": 851,
-      "y": 45
+      "x": 905,
+      "y": 64
      }
     ]
    },
@@ -10048,8 +10106,8 @@
     "map_locations": [
      {
       "map": "Hunter's March Skarr Shop",
-      "x": 907,
-      "y": 81
+      "x": 965,
+      "y": 114
      }
     ]
    }
@@ -10283,10 +10341,10 @@
     ]
    },
    {
-    "name": "Shellwood - Pollip Heart #3",
+    "name": "Pollip Heart Cling Grip Room",
     "sections": [
      {
-      "name": "Shellwood - Pollip Heart #3"
+      "name": "Pollip Heart Cling Grip Room"
      }
     ],
     "map_locations": [
@@ -10670,8 +10728,8 @@
     "map_locations": [
      {
       "map": "Shellwood Bellway\n",
-      "x": 325,
-      "y": 124
+      "x": 320,
+      "y": 127
      }
     ]
    },
@@ -10726,10 +10784,10 @@
   "name": "Shellwood Big Room Left",
   "children": [
    {
-    "name": "Shellwood - Pollip Heart #1",
+    "name": "Pollip Heart Left Big Room",
     "sections": [
      {
-      "name": "Shellwood - Pollip Heart #1"
+      "name": "Pollip Heart Left Big Room"
      }
     ],
     "map_locations": [
@@ -10936,10 +10994,10 @@
   "name": "Greyroots Basement Tall room",
   "children": [
    {
-    "name": "Shellwood - Shell Shard Cache #1",
+    "name": "Shell Shard Cache: Greyroots Diddy Basement 1",
     "sections": [
      {
-      "name": "Shellwood - Shell Shard Cache #1"
+      "name": "Shell Shard Cache: Greyroots Diddy Basement 1"
      }
     ],
     "map_locations": [
@@ -10951,10 +11009,10 @@
     ]
    },
    {
-    "name": "Shellwood - Shell Shard Cache #2",
+    "name": "Shell Shard Cache: Greyroots Diddy Basement 2",
     "sections": [
      {
-      "name": "Shellwood - Shell Shard Cache #2"
+      "name": "Shell Shard Cache: Greyroots Diddy Basement 2"
      }
     ],
     "map_locations": [
@@ -10966,10 +11024,10 @@
     ]
    },
    {
-    "name": "Shellwood - Shell Shard Cache #3",
+    "name": "Shell Shard Cache: Greyroots Diddy Basement 3",
     "sections": [
      {
-      "name": "Shellwood - Shell Shard Cache #3"
+      "name": "Shell Shard Cache: Greyroots Diddy Basement 3"
      }
     ],
     "map_locations": [
@@ -11066,10 +11124,10 @@
   "name": "Shellwood Flower Pogo Upper Hall",
   "children": [
    {
-    "name": "Shellwood - Pollip Heart #2",
+    "name": "Pollip Heart Flower Room",
     "sections": [
      {
-      "name": "Shellwood - Pollip Heart #2"
+      "name": "Pollip Heart Flower Room"
      }
     ],
     "map_locations": [
@@ -11151,10 +11209,10 @@
   "name": "Shellwood Hidden Bellhart Connection",
   "children": [
    {
-    "name": "Shellwood - Pollip Heart #5",
+    "name": "Pollip Heart Hidden Room",
     "sections": [
      {
-      "name": "Shellwood - Pollip Heart #5"
+      "name": "Pollip Heart Hidden Room"
      }
     ],
     "map_locations": [
@@ -11275,8 +11333,8 @@
     "map_locations": [
      {
       "map": "Shellwood Lower Left Tall Room",
-      "x": 156,
-      "y": 532
+      "x": 159,
+      "y": 566
      }
     ]
    },
@@ -11411,10 +11469,10 @@
   "name": "Shellwood Mask Shard Room",
   "children": [
    {
-    "name": "Shellwood - Mask Shard",
+    "name": "Mask Shard: Shellwood",
     "sections": [
      {
-      "name": "Shellwood - Mask Shard"
+      "name": "Mask Shard: Shellwood"
      }
     ],
     "map_locations": [
@@ -11461,10 +11519,10 @@
     ]
    },
    {
-    "name": "Shellwood - Pollip Heart #6",
+    "name": "Pollip Heart Right Side Big Room",
     "sections": [
      {
-      "name": "Shellwood - Pollip Heart #6"
+      "name": "Pollip Heart Right Side Big Room"
      }
     ],
     "map_locations": [
@@ -11476,10 +11534,10 @@
     ]
    },
    {
-    "name": "Shellwood - Shell Shard Cache #4",
+    "name": "Shell shard Cache: Outside Longpin 1",
     "sections": [
      {
-      "name": "Shellwood - Shell Shard Cache #4"
+      "name": "Shell shard Cache: Outside Longpin 1"
      }
     ],
     "map_locations": [
@@ -11491,10 +11549,10 @@
     ]
    },
    {
-    "name": "Shellwood - Shell Shard Cache #5",
+    "name": "Shell shard Cache: Outside Longpin 2",
     "sections": [
      {
-      "name": "Shellwood - Shell Shard Cache #5"
+      "name": "Shell shard Cache: Outside Longpin 2"
      }
     ],
     "map_locations": [
@@ -11506,10 +11564,10 @@
     ]
    },
    {
-    "name": "Shellwood - Shell Shard Cache #6",
+    "name": "Shell shard Cache: Outside Longpin 3",
     "sections": [
      {
-      "name": "Shellwood - Shell Shard Cache #6"
+      "name": "Shell shard Cache: Outside Longpin 3"
      }
     ],
     "map_locations": [
@@ -11746,10 +11804,10 @@
     ]
    },
    {
-    "name": "Shellwood - Rosary Cache",
+    "name": "Rosary cache: Shellwood Top Room",
     "sections": [
      {
-      "name": "Shellwood - Rosary Cache"
+      "name": "Rosary cache: Shellwood Top Room"
      }
     ],
     "map_locations": [
@@ -11938,6 +11996,41 @@
   ]
  },
  {
+  "name": "Witch Chapel",
+  "children": [
+   {
+    "name": "Witch Chapel - Left1 (L)",
+    "sections": [
+     {
+      "name": "Witch Chapel - Left1 (L)"
+     }
+    ],
+    "map_locations": [
+     {
+      "map": "Witch Chapel",
+      "x": 32,
+      "y": 896
+     }
+    ]
+   },
+   {
+    "name": "Witch Chapel - Quest Rebirth (QR)",
+    "sections": [
+     {
+      "name": "Witch Chapel - Quest Rebirth (QR)"
+     }
+    ],
+    "map_locations": [
+     {
+      "map": "Witch Chapel",
+      "x": 1564,
+      "y": 436
+     }
+    ]
+   }
+  ]
+ },
+ {
   "name": "Bellhart Bellway",
   "children": [
    {
@@ -11950,7 +12043,7 @@
     "map_locations": [
      {
       "map": "Bellhart Bellway",
-      "x": 215,
+      "x": 158,
       "y": 210
      }
     ]
@@ -11965,22 +12058,22 @@
     "map_locations": [
      {
       "map": "Bellhart Bellway",
-      "x": 514,
-      "y": 215
+      "x": 457,
+      "y": 216
      }
     ]
    },
    {
-    "name": "Bellhart Bellway - left1 (L)",
+    "name": "Bellhart Bellway - left1",
     "sections": [
      {
-      "name": "Bellhart Bellway - left1 (L)"
+      "name": "Bellhart Bellway - left1"
      }
     ],
     "map_locations": [
      {
       "map": "Bellhart Bellway",
-      "x": 282,
+      "x": 225,
       "y": 63
      }
     ]
@@ -11995,7 +12088,7 @@
     "map_locations": [
      {
       "map": "Bellhart Bellway",
-      "x": 175,
+      "x": 118,
       "y": 192
      }
     ]
@@ -12051,10 +12144,10 @@
     ]
    },
    {
-    "name": "Bellhart Hallway to Shellwood - right1 (R)",
+    "name": "Bellhart Hallway to Shellwood - right1",
     "sections": [
      {
-      "name": "Bellhart Hallway to Shellwood - right1 (R)"
+      "name": "Bellhart Hallway to Shellwood - right1"
      }
     ],
     "map_locations": [
@@ -12163,6 +12256,136 @@
   ]
  },
  {
+  "name": "Bellhart Pinsmith",
+  "children": [
+   {
+    "name": "Pinmaster Plinney: Sharpened Needle",
+    "sections": [
+     {
+      "name": "Pinmaster Plinney: Sharpened Needle"
+     },
+     {
+      "name": "Pinmaster Plinney: Shining Needle"
+     },
+     {
+      "name": "Wish: Pinmaster's Oil"
+     },
+     {
+      "name": "Pinmaster Plinney: Hivesteel Needle"
+     },
+     {
+      "name": "Pinmaster Plinney: Pale Steel Needle"
+     }
+    ],
+    "map_locations": [
+     {
+      "map": "Bellhart Pinsmith",
+      "x": 1651,
+      "y": 1128
+     }
+    ]
+   },
+   {
+    "name": "Bellhart Pinsmith - left1 (L)",
+    "sections": [
+     {
+      "name": "Bellhart Pinsmith - left1 (L)"
+     }
+    ],
+    "map_locations": [
+     {
+      "map": "Bellhart Pinsmith",
+      "x": 1196,
+      "y": 1152
+     }
+    ]
+   },
+   {
+    "name": "Pinmaster Plinney",
+    "sections": [
+     {
+      "name": "Turn-in: Wish: Bone Bottom Repairs"
+     },
+     {
+      "name": "Turn-in: Wish: A Lifesaving Bridge"
+     },
+     {
+      "name": "Turn-in: Wish: An Icon of Hope"
+     },
+     {
+      "name": "Turn-in: Wish: Garb of the Pilgrims"
+     },
+     {
+      "name": "Turn-in: Wish: Volatile Flintbeetles"
+     },
+     {
+      "name": "Turn-in: Volatile Flintbeetles - Memory Locket"
+     },
+     {
+      "name": "Turn-in: Wish: The Terrible Tyrant"
+     },
+     {
+      "name": "Turn-in: Wish: Restoration of Bellhart"
+     },
+     {
+      "name": "Turn-in: Wish: Bellhart's Glory"
+     },
+     {
+      "name": "Turn-in: Wish: Hero's Call"
+     },
+     {
+      "name": "Turn-in: Wish: Silver Bells"
+     },
+     {
+      "name": "Turn-in: Savage Beastfly - Mask Shard"
+     },
+     {
+      "name": "Turn-in: The Hidden Hunter - Mask Shard"
+     },
+     {
+      "name": "Turn-in: Wish: Fine Pins"
+     },
+     {
+      "name": "Turn-in: Wish: Cloaks of the Choir"
+     },
+     {
+      "name": "Turn-in: Wish: Building Up Songclave"
+     },
+     {
+      "name": "Turn-in: Wish: Strengthening Songclave"
+     }
+    ],
+    "map_locations": [
+     {
+      "map": "Bellhart Pinsmith",
+      "x": 1651,
+      "y": 1128
+     }
+    ]
+   }
+  ]
+ },
+ {
+  "name": "Bellhart Relic Shop",
+  "children": [
+   {
+    "name": "Bellhart Relic Shop - left1 (L)",
+    "sections": [
+     {
+      "name": "Bellhart Relic Shop - left1 (L)"
+     }
+    ],
+    "map_locations": [
+     {
+      "map": "Bellhart Relic Shop",
+      "x": 1152,
+      "y": 1152
+     }
+    ]
+   }
+  ]
+ },
+ {
   "name": "Bellhart Right Entrance",
   "children": [
    {
@@ -12196,10 +12419,10 @@
     ]
    },
    {
-    "name": "Bellhart Right Entrance - left1 (LL)",
+    "name": "Bellhart Right Entrance - left1",
     "sections": [
      {
-      "name": "Bellhart Right Entrance - left1 (LL)"
+      "name": "Bellhart Right Entrance - left1"
      }
     ],
     "map_locations": [
@@ -12432,10 +12655,10 @@
     ]
    },
    {
-    "name": "Belltown - left3 (L)",
+    "name": "Belltown - left3",
     "sections": [
      {
-      "name": "Belltown - left3 (L)"
+      "name": "Belltown - left3"
      }
     ],
     "map_locations": [
@@ -12447,10 +12670,10 @@
     ]
    },
    {
-    "name": "Belltown - right2 (R)",
+    "name": "Belltown - right2",
     "sections": [
      {
-      "name": "Belltown - right2 (R)"
+      "name": "Belltown - right2"
      }
     ],
     "map_locations": [
@@ -12462,10 +12685,10 @@
     ]
    },
    {
-    "name": "Belltown - door1 (BD)",
+    "name": "Belltown - door1",
     "sections": [
      {
-      "name": "Belltown - door1 (BD)"
+      "name": "Belltown - door1"
      }
     ],
     "map_locations": [
@@ -12718,21 +12941,6 @@
   "name": "Widow Boss Fight",
   "children": [
    {
-    "name": "Boss: Widow",
-    "sections": [
-     {
-      "name": "Boss: Widow"
-     }
-    ],
-    "map_locations": [
-     {
-      "map": "Widow Boss Fight",
-      "x": 337,
-      "y": 166
-     }
-    ]
-   },
-   {
     "name": "Bellhart - Bellshrine",
     "sections": [
      {
@@ -12767,6 +12975,9 @@
     "sections": [
      {
       "name": "Journal: Widow"
+     },
+     {
+      "name": "Boss: Widow"
      }
     ],
     "map_locations": [
@@ -12810,6 +13021,26 @@
   ]
  },
  {
+  "name": "Bellhome",
+  "children": [
+   {
+    "name": "Bellhome - Left1 (L)",
+    "sections": [
+     {
+      "name": "Bellhome - Left1 (L)"
+     }
+    ],
+    "map_locations": [
+     {
+      "map": "Bellhome",
+      "x": 1152,
+      "y": 1152
+     }
+    ]
+   }
+  ]
+ },
+ {
   "name": "Greymoor Bellshrine",
   "children": [
    {
@@ -12822,8 +13053,8 @@
     "map_locations": [
      {
       "map": "Greymoor Bellshrine",
-      "x": 97,
-      "y": 51
+      "x": 132,
+      "y": 87
      }
     ]
    },
@@ -12837,8 +13068,8 @@
     "map_locations": [
      {
       "map": "Greymoor Bellshrine",
-      "x": 38,
-      "y": 133
+      "x": 50,
+      "y": 127
      }
     ]
    },
@@ -12852,200 +13083,15 @@
     "map_locations": [
      {
       "map": "Greymoor Bellshrine",
-      "x": 159,
-      "y": 133
+      "x": 212,
+      "y": 127
      }
     ]
    }
   ]
  },
  {
-  "name": "Greymoor Craw Lake",
-  "children": [
-   {
-    "name": "Greymoor - Frayed Rosary String #2",
-    "sections": [
-     {
-      "name": "Greymoor - Frayed Rosary String #2"
-     }
-    ],
-    "map_locations": [
-     {
-      "map": "Greymoor Craw Lake",
-      "x": 99,
-      "y": 586
-     }
-    ]
-   },
-   {
-    "name": "Greymoor - Rosary Cache #20",
-    "sections": [
-     {
-      "name": "Greymoor - Rosary Cache #20"
-     }
-    ],
-    "map_locations": [
-     {
-      "map": "Greymoor Craw Lake",
-      "x": 750,
-      "y": 534
-     }
-    ]
-   },
-   {
-    "name": "Flea: Greymoor - Craw Lake",
-    "sections": [
-     {
-      "name": "Flea: Greymoor - Craw Lake"
-     }
-    ],
-    "map_locations": [
-     {
-      "map": "Greymoor Craw Lake",
-      "x": 638,
-      "y": 478
-     }
-    ]
-   },
-   {
-    "name": "Greymoor - Rosary Cache #21",
-    "sections": [
-     {
-      "name": "Greymoor - Rosary Cache #21"
-     }
-    ],
-    "map_locations": [
-     {
-      "map": "Greymoor Craw Lake",
-      "x": 820,
-      "y": 406
-     }
-    ]
-   },
-   {
-    "name": "Greymoor - Rosary Cache #22",
-    "sections": [
-     {
-      "name": "Greymoor - Rosary Cache #22"
-     }
-    ],
-    "map_locations": [
-     {
-      "map": "Greymoor Craw Lake",
-      "x": 809,
-      "y": 391
-     }
-    ]
-   },
-   {
-    "name": "Greymoor - Rosary Cache #19",
-    "sections": [
-     {
-      "name": "Greymoor - Rosary Cache #19"
-     }
-    ],
-    "map_locations": [
-     {
-      "map": "Greymoor Craw Lake",
-      "x": 675,
-      "y": 174
-     }
-    ]
-   },
-   {
-    "name": "Threefold Pin",
-    "sections": [
-     {
-      "name": "Threefold Pin"
-     }
-    ],
-    "map_locations": [
-     {
-      "map": "Greymoor Craw Lake",
-      "x": 687,
-      "y": 188
-     }
-    ]
-   },
-   {
-    "name": "Greymoor Craw Lake - top",
-    "sections": [
-     {
-      "name": "Greymoor Craw Lake - top"
-     }
-    ],
-    "map_locations": [
-     {
-      "map": "Greymoor Craw Lake",
-      "x": 612,
-      "y": 0
-     }
-    ]
-   },
-   {
-    "name": "Greymoor Craw Lake - middle left",
-    "sections": [
-     {
-      "name": "Greymoor Craw Lake - middle left"
-     }
-    ],
-    "map_locations": [
-     {
-      "map": "Greymoor Craw Lake",
-      "x": 296,
-      "y": 457
-     }
-    ]
-   },
-   {
-    "name": "Greymoor Craw Lake - lower right (LR)",
-    "sections": [
-     {
-      "name": "Greymoor Craw Lake - lower right (LR)"
-     }
-    ],
-    "map_locations": [
-     {
-      "map": "Greymoor Craw Lake",
-      "x": 886,
-      "y": 671
-     }
-    ]
-   },
-   {
-    "name": "Greymoor Craw Lake - craw nest entrance",
-    "sections": [
-     {
-      "name": "Greymoor Craw Lake - craw nest entrance"
-     }
-    ],
-    "map_locations": [
-     {
-      "map": "Greymoor Craw Lake",
-      "x": 633,
-      "y": 754
-     }
-    ]
-   },
-   {
-    "name": "Greymoor Craw Lake - lower left",
-    "sections": [
-     {
-      "name": "Greymoor Craw Lake - lower left"
-     }
-    ],
-    "map_locations": [
-     {
-      "map": "Greymoor Craw Lake",
-      "x": 296,
-      "y": 746
-     }
-    ]
-   }
-  ]
- },
- {
-  "name": "Greymoor Crow Court",
+  "name": "Greymoor Craw Court",
   "children": [
    {
     "name": "Craw Memento",
@@ -13056,54 +13102,54 @@
     ],
     "map_locations": [
      {
-      "map": "Greymoor Crow Court",
-      "x": 243,
-      "y": 461
+      "map": "Greymoor Craw Court",
+      "x": 222,
+      "y": 453
      }
     ]
    },
    {
-    "name": "Greymoor - Rosary Cache #35",
+    "name": "Greymoor - craw court rosary vault stash",
     "sections": [
      {
-      "name": "Greymoor - Rosary Cache #35"
+      "name": "Greymoor - craw court rosary vault stash"
      }
     ],
     "map_locations": [
      {
-      "map": "Greymoor Crow Court",
-      "x": 124,
-      "y": 284
+      "map": "Greymoor Craw Court",
+      "x": 122,
+      "y": 263
      }
     ]
    },
    {
-    "name": "Greymoor - Rosary Cache #36",
+    "name": "Greymoor - the other craw court rosary vault stash",
     "sections": [
      {
-      "name": "Greymoor - Rosary Cache #36"
+      "name": "Greymoor - the other craw court rosary vault stash"
      }
     ],
     "map_locations": [
      {
-      "map": "Greymoor Crow Court",
-      "x": 109,
-      "y": 264
+      "map": "Greymoor Craw Court",
+      "x": 112,
+      "y": 246
      }
     ]
    },
    {
-    "name": "Greymoor - Rosary Cache #37",
+    "name": "Greymoor - the final craw court rosary vault stash",
     "sections": [
      {
-      "name": "Greymoor - Rosary Cache #37"
+      "name": "Greymoor - the final craw court rosary vault stash"
      }
     ],
     "map_locations": [
      {
-      "map": "Greymoor Crow Court",
-      "x": 57,
-      "y": 77
+      "map": "Greymoor Craw Court",
+      "x": 54,
+      "y": 69
      }
     ]
    },
@@ -13119,7 +13165,7 @@
     ],
     "map_locations": [
      {
-      "map": "Greymoor Crow Court",
+      "map": "Greymoor Craw Court",
       "x": 205,
       "y": 400
      }
@@ -13134,22 +13180,22 @@
     ],
     "map_locations": [
      {
-      "map": "Greymoor Crow Court",
+      "map": "Greymoor Craw Court",
       "x": 123,
       "y": 302
      }
     ]
    },
    {
-    "name": "Greymoor Crow Court - top1 (T)",
+    "name": "Greymoor Craw Court - top1 (T)",
     "sections": [
      {
-      "name": "Greymoor Crow Court - top1 (T)"
+      "name": "Greymoor Craw Court - top1 (T)"
      }
     ],
     "map_locations": [
      {
-      "map": "Greymoor Crow Court",
+      "map": "Greymoor Craw Court",
       "x": 380,
       "y": 0
      }
@@ -13158,138 +13204,323 @@
   ]
  },
  {
-  "name": "Greymoor Crow Nest",
+  "name": "Greymoor Craw Lake",
   "children": [
    {
-    "name": "Greymoor - Rosary Cache #30",
+    "name": "Greymoor - Frayed Rosary String in tiny ass hole above left lower entrance",
     "sections": [
      {
-      "name": "Greymoor - Rosary Cache #30"
+      "name": "Greymoor - Frayed Rosary String in tiny ass hole above left lower entrance"
      }
     ],
     "map_locations": [
      {
-      "map": "Greymoor Crow Nest",
-      "x": 126,
-      "y": 286
+      "map": "Greymoor Craw Lake",
+      "x": 113,
+      "y": 677
      }
     ]
    },
    {
-    "name": "Greymoor - Rosary Cache #29",
+    "name": "Greymoor - Rosary Cache under the flea below the hatch",
     "sections": [
      {
-      "name": "Greymoor - Rosary Cache #29"
+      "name": "Greymoor - Rosary Cache under the flea below the hatch"
      }
     ],
     "map_locations": [
      {
-      "map": "Greymoor Crow Nest",
-      "x": 108,
-      "y": 289
+      "map": "Greymoor Craw Lake",
+      "x": 783,
+      "y": 614
      }
     ]
    },
    {
-    "name": "Greymoor - Rosary Cache #28",
+    "name": "Flea: Greymoor - Craw Lake",
     "sections": [
      {
-      "name": "Greymoor - Rosary Cache #28"
+      "name": "Flea: Greymoor - Craw Lake"
      }
     ],
     "map_locations": [
      {
-      "map": "Greymoor Crow Nest",
-      "x": 175,
-      "y": 404
+      "map": "Greymoor Craw Lake",
+      "x": 537,
+      "y": 524
      }
     ]
    },
    {
-    "name": "Greymoor - Rosary Cache #32",
+    "name": "Greymoor - the other flea segment rosaries",
     "sections": [
      {
-      "name": "Greymoor - Rosary Cache #32"
+      "name": "Greymoor - the other flea segment rosaries"
      }
     ],
     "map_locations": [
      {
-      "map": "Greymoor Crow Nest",
-      "x": 249,
-      "y": 405
+      "map": "Greymoor Craw Lake",
+      "x": 825,
+      "y": 452
      }
     ]
    },
    {
-    "name": "Greymoor - Rosary Cache #33",
+    "name": "Greymoor - flea segment rosaries",
     "sections": [
      {
-      "name": "Greymoor - Rosary Cache #33"
+      "name": "Greymoor - flea segment rosaries"
      }
     ],
     "map_locations": [
      {
-      "map": "Greymoor Crow Nest",
-      "x": 234,
-      "y": 415
+      "map": "Greymoor Craw Lake",
+      "x": 836,
+      "y": 466
      }
     ]
    },
    {
-    "name": "Greymoor - Rosary Cache #31",
+    "name": "Greymoor - mathematician nest rosaries if you know you know",
     "sections": [
      {
-      "name": "Greymoor - Rosary Cache #31"
+      "name": "Greymoor - mathematician nest rosaries if you know you know"
      }
     ],
     "map_locations": [
      {
-      "map": "Greymoor Crow Nest",
-      "x": 200,
-      "y": 409
+      "map": "Greymoor Craw Lake",
+      "x": 691,
+      "y": 237
      }
     ]
    },
    {
-    "name": "Greymoor - Rosary Cache #34",
+    "name": "Threefold Pin",
     "sections": [
      {
-      "name": "Greymoor - Rosary Cache #34"
+      "name": "Threefold Pin"
      }
     ],
     "map_locations": [
      {
-      "map": "Greymoor Crow Nest",
-      "x": 312,
-      "y": 267
+      "map": "Greymoor Craw Lake",
+      "x": 675,
+      "y": 225
      }
     ]
    },
    {
-    "name": "Greymoor Crow Nest - bottom (B)",
+    "name": "Greymoor Craw Lake - top",
     "sections": [
      {
-      "name": "Greymoor Crow Nest - bottom (B)"
+      "name": "Greymoor Craw Lake - top"
      }
     ],
     "map_locations": [
      {
-      "map": "Greymoor Crow Nest",
+      "map": "Greymoor Craw Lake",
+      "x": 495,
+      "y": 0
+     }
+    ]
+   },
+   {
+    "name": "Greymoor Craw Lake - middle left",
+    "sections": [
+     {
+      "name": "Greymoor Craw Lake - middle left"
+     }
+    ],
+    "map_locations": [
+     {
+      "map": "Greymoor Craw Lake",
+      "x": 0,
+      "y": 501
+     }
+    ]
+   },
+   {
+    "name": "Greymoor Craw Lake - lower right (LR)",
+    "sections": [
+     {
+      "name": "Greymoor Craw Lake - lower right (LR)"
+     }
+    ],
+    "map_locations": [
+     {
+      "map": "Greymoor Craw Lake",
+      "x": 927,
+      "y": 736
+     }
+    ]
+   },
+   {
+    "name": "Greymoor Craw Lake - craw nest entrance",
+    "sections": [
+     {
+      "name": "Greymoor Craw Lake - craw nest entrance"
+     }
+    ],
+    "map_locations": [
+     {
+      "map": "Greymoor Craw Lake",
+      "x": 529,
+      "y": 827
+     }
+    ]
+   },
+   {
+    "name": "Greymoor Craw Lake - lower left",
+    "sections": [
+     {
+      "name": "Greymoor Craw Lake - lower left"
+     }
+    ],
+    "map_locations": [
+     {
+      "map": "Greymoor Craw Lake",
+      "x": 0,
+      "y": 818
+     }
+    ]
+   }
+  ]
+ },
+ {
+  "name": "Greymoor Craw Nest",
+  "children": [
+   {
+    "name": "Greymoor - entrance rosary stash",
+    "sections": [
+     {
+      "name": "Greymoor - entrance rosary stash"
+     }
+    ],
+    "map_locations": [
+     {
+      "map": "Greymoor Craw Nest",
+      "x": 163,
+      "y": 268
+     }
+    ]
+   },
+   {
+    "name": "Greymoor - entrance food savings",
+    "sections": [
+     {
+      "name": "Greymoor - entrance food savings"
+     }
+    ],
+    "map_locations": [
+     {
+      "map": "Greymoor Craw Nest",
+      "x": 156,
+      "y": 266
+     }
+    ]
+   },
+   {
+    "name": "Greymoor - nest savings at the extreme left",
+    "sections": [
+     {
+      "name": "Greymoor - nest savings at the extreme left"
+     }
+    ],
+    "map_locations": [
+     {
+      "map": "Greymoor Craw Nest",
+      "x": 153,
+      "y": 336
+     }
+    ]
+   },
+   {
+    "name": "Greymoor - nest savings at the extreme right",
+    "sections": [
+     {
+      "name": "Greymoor - nest savings at the extreme right"
+     }
+    ],
+    "map_locations": [
+     {
+      "map": "Greymoor Craw Nest",
+      "x": 212,
+      "y": 336
+     }
+    ]
+   },
+   {
+    "name": "Greymoor - nest mortage at the inner right",
+    "sections": [
+     {
+      "name": "Greymoor - nest mortage at the inner right"
+     }
+    ],
+    "map_locations": [
+     {
+      "map": "Greymoor Craw Nest",
+      "x": 202,
+      "y": 345
+     }
+    ]
+   },
+   {
+    "name": "Greymoor - nest mortage at the inner left",
+    "sections": [
+     {
+      "name": "Greymoor - nest mortage at the inner left"
+     }
+    ],
+    "map_locations": [
+     {
+      "map": "Greymoor Craw Nest",
+      "x": 167,
+      "y": 345
+     }
+    ]
+   },
+   {
+    "name": "Greymoor - some dumb bird life savings left outside in the nest",
+    "sections": [
+     {
+      "name": "Greymoor - some dumb bird life savings left outside in the nest"
+     }
+    ],
+    "map_locations": [
+     {
+      "map": "Greymoor Craw Nest",
+      "x": 297,
+      "y": 261
+     }
+    ]
+   },
+   {
+    "name": "Greymoor Craw Nest - bottom (B)",
+    "sections": [
+     {
+      "name": "Greymoor Craw Nest - bottom (B)"
+     }
+    ],
+    "map_locations": [
+     {
+      "map": "Greymoor Craw Nest",
       "x": 380,
       "y": 473
      }
     ]
    },
    {
-    "name": "Greymoor Crow Nest - left",
+    "name": "Greymoor Craw Nest - left",
     "sections": [
      {
-      "name": "Greymoor Crow Nest - left"
+      "name": "Greymoor Craw Nest - left"
      }
     ],
     "map_locations": [
      {
-      "map": "Greymoor Crow Nest",
+      "map": "Greymoor Craw Nest",
       "x": 3,
       "y": 311
      }
@@ -13310,38 +13541,38 @@
     "map_locations": [
      {
       "map": "Greymoor East Bellshrine Room",
-      "x": 183,
-      "y": 78
+      "x": 193,
+      "y": 71
      }
     ]
    },
    {
-    "name": "Greymoor - Rosary Cache #2",
+    "name": "Greymoor - Craw gang lunch money",
     "sections": [
      {
-      "name": "Greymoor - Rosary Cache #2"
+      "name": "Greymoor - Craw gang lunch money"
      }
     ],
     "map_locations": [
      {
       "map": "Greymoor East Bellshrine Room",
-      "x": 287,
-      "y": 366
+      "x": 330,
+      "y": 348
      }
     ]
    },
    {
-    "name": "Greymoor - Rosary Cache #3",
+    "name": "Greymoor - Craw gang savings",
     "sections": [
      {
-      "name": "Greymoor - Rosary Cache #3"
+      "name": "Greymoor - Craw gang savings"
      }
     ],
     "map_locations": [
      {
       "map": "Greymoor East Bellshrine Room",
-      "x": 304,
-      "y": 357
+      "x": 336,
+      "y": 340
      }
     ]
    },
@@ -13355,8 +13586,8 @@
     "map_locations": [
      {
       "map": "Greymoor East Bellshrine Room",
-      "x": 373,
-      "y": 932
+      "x": 432,
+      "y": 914
      }
     ]
    },
@@ -13371,7 +13602,7 @@
      {
       "map": "Greymoor East Bellshrine Room",
       "x": 0,
-      "y": 854
+      "y": 774
      }
     ]
    },
@@ -13385,8 +13616,8 @@
     "map_locations": [
      {
       "map": "Greymoor East Bellshrine Room",
-      "x": 543,
-      "y": 1008
+      "x": 572,
+      "y": 913
      }
     ]
    },
@@ -13400,8 +13631,8 @@
     "map_locations": [
      {
       "map": "Greymoor East Bellshrine Room",
-      "x": 177,
-      "y": 770
+      "x": 187,
+      "y": 698
      }
     ]
    },
@@ -13415,8 +13646,8 @@
     "map_locations": [
      {
       "map": "Greymoor East Bellshrine Room",
-      "x": 543,
-      "y": 777
+      "x": 572,
+      "y": 704
      }
     ]
    },
@@ -13431,22 +13662,22 @@
      {
       "map": "Greymoor East Bellshrine Room",
       "x": 0,
-      "y": 609
+      "y": 552
      }
     ]
    },
    {
-    "name": "Greymoor East Bellshrine Room - hidden right (HR)",
+    "name": "Greymoor East Bellshrine Room - right2",
     "sections": [
      {
-      "name": "Greymoor East Bellshrine Room - hidden right (HR)"
+      "name": "Greymoor East Bellshrine Room - right2"
      }
     ],
     "map_locations": [
      {
       "map": "Greymoor East Bellshrine Room",
-      "x": 543,
-      "y": 42
+      "x": 572,
+      "y": 38
      }
     ]
    }
@@ -13456,17 +13687,17 @@
   "name": "Greymoor Eastern Tower",
   "children": [
    {
-    "name": "Greymoor - Rosary Cache #6",
+    "name": "Greymoor - Rosary Cache next to the lowest airstream",
     "sections": [
      {
-      "name": "Greymoor - Rosary Cache #6"
+      "name": "Greymoor - Rosary Cache next to the lowest airstream"
      }
     ],
     "map_locations": [
      {
       "map": "Greymoor Eastern Tower",
-      "x": 199,
-      "y": 776
+      "x": 192,
+      "y": 842
      }
     ]
    },
@@ -13480,8 +13711,8 @@
     "map_locations": [
      {
       "map": "Greymoor Eastern Tower",
-      "x": 110,
-      "y": 90
+      "x": 123,
+      "y": 154
      }
     ]
    },
@@ -13495,8 +13726,8 @@
     "map_locations": [
      {
       "map": "Greymoor Eastern Tower",
-      "x": 258,
-      "y": 1017
+      "x": 254,
+      "y": 1003
      }
     ]
    },
@@ -13511,7 +13742,7 @@
      {
       "map": "Greymoor Eastern Tower",
       "x": 0,
-      "y": 1017
+      "y": 1003
      }
     ]
    },
@@ -13525,8 +13756,8 @@
     "map_locations": [
      {
       "map": "Greymoor Eastern Tower",
-      "x": 258,
-      "y": 753
+      "x": 254,
+      "y": 743
      }
     ]
    },
@@ -13541,7 +13772,7 @@
      {
       "map": "Greymoor Eastern Tower",
       "x": 0,
-      "y": 753
+      "y": 743
      }
     ]
    },
@@ -13556,7 +13787,7 @@
      {
       "map": "Greymoor Eastern Tower",
       "x": 0,
-      "y": 347
+      "y": 343
      }
     ]
    }
@@ -13576,7 +13807,7 @@
      {
       "map": "Greymoor Lower Halfway Home Path",
       "x": 0,
-      "y": 120
+      "y": 107
      }
     ]
    },
@@ -13590,8 +13821,8 @@
     "map_locations": [
      {
       "map": "Greymoor Lower Halfway Home Path",
-      "x": 1133,
-      "y": 120
+      "x": 1143,
+      "y": 107
      }
     ]
    },
@@ -13605,8 +13836,8 @@
     "map_locations": [
      {
       "map": "Greymoor Lower Halfway Home Path",
-      "x": 623,
-      "y": 163
+      "x": 628,
+      "y": 146
      }
     ]
    }
@@ -13625,38 +13856,38 @@
     "map_locations": [
      {
       "map": "Greymoor Weaver Shrine",
-      "x": 202,
-      "y": 95
+      "x": 250,
+      "y": 56
      }
     ]
    },
    {
-    "name": "Greymoor - Rosary Cache #26",
+    "name": "Greymoor - rosaries hanging left of the weaver shrine",
     "sections": [
      {
-      "name": "Greymoor - Rosary Cache #26"
+      "name": "Greymoor - rosaries hanging left of the weaver shrine"
      }
     ],
     "map_locations": [
      {
       "map": "Greymoor Weaver Shrine",
-      "x": 513,
-      "y": 165
+      "x": 562,
+      "y": 116
      }
     ]
    },
    {
-    "name": "Greymoor - Rosary Cache #27",
+    "name": "Greymoor - some craw rosaries i guess and he will hit you",
     "sections": [
      {
-      "name": "Greymoor - Rosary Cache #27"
+      "name": "Greymoor - some craw rosaries i guess and he will hit you"
      }
     ],
     "map_locations": [
      {
       "map": "Greymoor Weaver Shrine",
-      "x": 599,
-      "y": 136
+      "x": 663,
+      "y": 104
      }
     ]
    },
@@ -13670,8 +13901,8 @@
     "map_locations": [
      {
       "map": "Greymoor Weaver Shrine",
-      "x": 301,
-      "y": 358
+      "x": 336,
+      "y": 318
      }
     ]
    }
@@ -13690,23 +13921,23 @@
     "map_locations": [
      {
       "map": "Greymoor Western Tower",
-      "x": 123,
-      "y": 368
+      "x": 122,
+      "y": 410
      }
     ]
    },
    {
-    "name": "Greymoor - Rosary Cache #10",
+    "name": "Greymoor - Rosary cache below a spike wheel",
     "sections": [
      {
-      "name": "Greymoor - Rosary Cache #10"
+      "name": "Greymoor - Rosary cache below a spike wheel"
      }
     ],
     "map_locations": [
      {
       "map": "Greymoor Western Tower",
       "x": 24,
-      "y": 775
+      "y": 827
      }
     ]
    },
@@ -13720,8 +13951,8 @@
     "map_locations": [
      {
       "map": "Greymoor Western Tower",
-      "x": 255,
-      "y": 1040
+      "x": 254,
+      "y": 1098
      }
     ]
    },
@@ -13736,7 +13967,7 @@
      {
       "map": "Greymoor Western Tower",
       "x": 0,
-      "y": 1040
+      "y": 1098
      }
     ]
    },
@@ -13751,7 +13982,7 @@
      {
       "map": "Greymoor Western Tower",
       "x": 0,
-      "y": 619
+      "y": 666
      }
     ]
    },
@@ -13765,8 +13996,8 @@
     "map_locations": [
      {
       "map": "Greymoor Western Tower",
-      "x": 255,
-      "y": 563
+      "x": 254,
+      "y": 609
      }
     ]
    },
@@ -13781,7 +14012,7 @@
      {
       "map": "Greymoor Western Tower",
       "x": 0,
-      "y": 563
+      "y": 609
      }
     ]
    },
@@ -13795,8 +14026,8 @@
     "map_locations": [
      {
       "map": "Greymoor Western Tower",
-      "x": 255,
-      "y": 761
+      "x": 254,
+      "y": 812
      }
     ]
    },
@@ -13810,8 +14041,8 @@
     "map_locations": [
      {
       "map": "Greymoor Western Tower",
-      "x": 226,
-      "y": 68
+      "x": 225,
+      "y": 101
      }
     ]
    },
@@ -13825,8 +14056,8 @@
     "map_locations": [
      {
       "map": "Greymoor Western Tower",
-      "x": 48,
-      "y": 10
+      "x": 63,
+      "y": 0
      }
     ]
    }
@@ -13845,8 +14076,8 @@
     "map_locations": [
      {
       "map": "Pimpillo Room",
-      "x": 89,
-      "y": 57
+      "x": 126,
+      "y": 66
      }
     ]
    },
@@ -13860,8 +14091,8 @@
     "map_locations": [
      {
       "map": "Pimpillo Room",
-      "x": 38,
-      "y": 90
+      "x": 69,
+      "y": 95
      }
     ]
    }
@@ -13871,17 +14102,17 @@
   "name": "Yarnaby Place",
   "children": [
    {
-    "name": "Greymoor - Frayed Rosary String #3",
+    "name": "Greymoor - Yanarby stash with a Frayed Rosary",
     "sections": [
      {
-      "name": "Greymoor - Frayed Rosary String #3"
+      "name": "Greymoor - Yanarby stash with a Frayed Rosary"
      }
     ],
     "map_locations": [
      {
       "map": "Yarnaby Place",
-      "x": 264,
-      "y": 10
+      "x": 157,
+      "y": 74
      }
     ]
    },
@@ -13898,8 +14129,8 @@
     "map_locations": [
      {
       "map": "Yarnaby Place",
-      "x": 290,
-      "y": 196
+      "x": 81,
+      "y": 260
      }
     ]
    },
@@ -13913,8 +14144,8 @@
     "map_locations": [
      {
       "map": "Yarnaby Place",
-      "x": 1025,
-      "y": 181
+      "x": 895,
+      "y": 240
      }
     ]
    },
@@ -13928,7 +14159,7 @@
     "map_locations": [
      {
       "map": "Yarnaby Place",
-      "x": 309,
+      "x": 101,
       "y": 0
      }
     ]
@@ -13991,8 +14222,8 @@
     "map_locations": [
      {
       "map": "Yarnaby Place",
-      "x": 290,
-      "y": 196
+      "x": 81,
+      "y": 260
      }
     ]
    }
@@ -14011,8 +14242,8 @@
     "map_locations": [
      {
       "map": "Greymoor Bellway",
-      "x": 341,
-      "y": 143
+      "x": 451,
+      "y": 139
      }
     ]
    },
@@ -14041,8 +14272,8 @@
     "map_locations": [
      {
       "map": "Greymoor Bellway",
-      "x": 391,
-      "y": 134
+      "x": 450,
+      "y": 133
      }
     ]
    },
@@ -14056,8 +14287,8 @@
     "map_locations": [
      {
       "map": "Greymoor Bellway",
-      "x": 132,
-      "y": 191
+      "x": 152,
+      "y": 190
      }
     ]
    }
@@ -14067,17 +14298,17 @@
   "name": "Greymoor Bone Scroll Room",
   "children": [
    {
-    "name": "Relic: Bone Scroll (Greymoor)",
+    "name": "Relic: Bone Scroll (Greymoor) at bugs lonely resting place",
     "sections": [
      {
-      "name": "Relic: Bone Scroll (Greymoor)"
+      "name": "Relic: Bone Scroll (Greymoor) at bugs lonely resting place"
      }
     ],
     "map_locations": [
      {
       "map": "Greymoor Bone Scroll Room",
-      "x": 379,
-      "y": 124
+      "x": 469,
+      "y": 132
      }
     ]
    },
@@ -14091,8 +14322,43 @@
     "map_locations": [
      {
       "map": "Greymoor Bone Scroll Room",
-      "x": 189,
+      "x": 234,
       "y": 0
+     }
+    ]
+   }
+  ]
+ },
+ {
+  "name": "Greymoor Chapel of The Reaper",
+  "children": [
+   {
+    "name": "Crest: Reaper",
+    "sections": [
+     {
+      "name": "Crest: Reaper"
+     }
+    ],
+    "map_locations": [
+     {
+      "map": "Greymoor Chapel of The Reaper",
+      "x": 239,
+      "y": 70
+     }
+    ]
+   },
+   {
+    "name": "Greymoor Chapel of The Reaper - left (L)",
+    "sections": [
+     {
+      "name": "Greymoor Chapel of The Reaper - left (L)"
+     }
+    ],
+    "map_locations": [
+     {
+      "map": "Greymoor Chapel of The Reaper",
+      "x": 3,
+      "y": 330
      }
     ]
    }
@@ -14111,8 +14377,8 @@
     "map_locations": [
      {
       "map": "Greymoor Chapel of The Reaper Entrance",
-      "x": 152,
-      "y": 67
+      "x": 159,
+      "y": 63
      }
     ]
    },
@@ -14126,8 +14392,8 @@
     "map_locations": [
      {
       "map": "Greymoor Chapel of The Reaper Entrance",
-      "x": 101,
-      "y": 109
+      "x": 106,
+      "y": 103
      }
     ]
    },
@@ -14141,8 +14407,8 @@
     "map_locations": [
      {
       "map": "Greymoor Chapel of The Reaper Entrance",
-      "x": 304,
-      "y": 101
+      "x": 318,
+      "y": 95
      }
     ]
    }
@@ -14152,17 +14418,17 @@
   "name": "Greymoor Craw Lake Entrance",
   "children": [
    {
-    "name": "Greymoor - Frayed Rosary String #1",
+    "name": "Greymoor - Frayed Rosary String from dead bug guarded by rat",
     "sections": [
      {
-      "name": "Greymoor - Frayed Rosary String #1"
+      "name": "Greymoor - Frayed Rosary String from dead bug guarded by rat"
      }
     ],
     "map_locations": [
      {
       "map": "Greymoor Craw Lake Entrance",
-      "x": 438,
-      "y": 387
+      "x": 408,
+      "y": 378
      }
     ]
    },
@@ -14176,8 +14442,8 @@
     "map_locations": [
      {
       "map": "Greymoor Craw Lake Entrance",
-      "x": 318,
-      "y": 66
+      "x": 296,
+      "y": 65
      }
     ]
    },
@@ -14192,7 +14458,7 @@
      {
       "map": "Greymoor Craw Lake Entrance",
       "x": 0,
-      "y": 467
+      "y": 456
      }
     ]
    },
@@ -14206,8 +14472,8 @@
     "map_locations": [
      {
       "map": "Greymoor Craw Lake Entrance",
-      "x": 531,
-      "y": 467
+      "x": 495,
+      "y": 456
      }
     ]
    },
@@ -14221,8 +14487,8 @@
     "map_locations": [
      {
       "map": "Greymoor Craw Lake Entrance",
-      "x": 531,
-      "y": 142
+      "x": 495,
+      "y": 139
      }
     ]
    },
@@ -14237,7 +14503,7 @@
      {
       "map": "Greymoor Craw Lake Entrance",
       "x": 0,
-      "y": 253
+      "y": 247
      }
     ]
    }
@@ -14247,17 +14513,17 @@
   "name": "Greymoor Entry to Bellhart",
   "children": [
    {
-    "name": "Greymoor - Rosary Cache #14",
+    "name": "Greymoor - Secret dead bug rosaries near rat tunnel",
     "sections": [
      {
-      "name": "Greymoor - Rosary Cache #14"
+      "name": "Greymoor - Secret dead bug rosaries near rat tunnel"
      }
     ],
     "map_locations": [
      {
       "map": "Greymoor Entry to Bellhart",
-      "x": 821,
-      "y": 31
+      "x": 889,
+      "y": 26
      }
     ]
    },
@@ -14271,8 +14537,8 @@
     "map_locations": [
      {
       "map": "Greymoor Entry to Bellhart",
-      "x": 142,
-      "y": 190
+      "x": 154,
+      "y": 160
      }
     ]
    },
@@ -14286,8 +14552,8 @@
     "map_locations": [
      {
       "map": "Greymoor Entry to Bellhart",
-      "x": 260,
-      "y": 191
+      "x": 281,
+      "y": 160
      }
     ]
    },
@@ -14301,8 +14567,8 @@
     "map_locations": [
      {
       "map": "Greymoor Entry to Bellhart",
-      "x": 32,
-      "y": 234
+      "x": 34,
+      "y": 196
      }
     ]
    },
@@ -14316,7 +14582,7 @@
     "map_locations": [
      {
       "map": "Greymoor Entry to Bellhart",
-      "x": 598,
+      "x": 647,
       "y": 0
      }
     ]
@@ -14331,8 +14597,8 @@
     "map_locations": [
      {
       "map": "Greymoor Entry to Bellhart",
-      "x": 944,
-      "y": 105
+      "x": 1022,
+      "y": 88
      }
     ]
    }
@@ -14351,8 +14617,8 @@
     "map_locations": [
      {
       "map": "Greymoor Halfway Home",
-      "x": 39,
-      "y": 105
+      "x": 52,
+      "y": 121
      }
     ]
    },
@@ -14366,8 +14632,8 @@
     "map_locations": [
      {
       "map": "Greymoor Halfway Home",
-      "x": 116,
-      "y": 45
+      "x": 154,
+      "y": 52
      }
     ]
    },
@@ -14381,8 +14647,8 @@
     "map_locations": [
      {
       "map": "Greymoor Halfway Home",
-      "x": 105,
-      "y": 33
+      "x": 139,
+      "y": 38
      }
     ]
    },
@@ -14396,8 +14662,8 @@
     "map_locations": [
      {
       "map": "Greymoor Halfway Home",
-      "x": 120,
-      "y": 31
+      "x": 159,
+      "y": 36
      }
     ]
    },
@@ -14411,8 +14677,8 @@
     "map_locations": [
      {
       "map": "Greymoor Halfway Home",
-      "x": 120,
-      "y": 61
+      "x": 159,
+      "y": 70
      }
     ]
    },
@@ -14426,8 +14692,8 @@
     "map_locations": [
      {
       "map": "Greymoor Halfway Home",
-      "x": 204,
-      "y": 148
+      "x": 270,
+      "y": 171
      }
     ]
    },
@@ -14441,8 +14707,8 @@
     "map_locations": [
      {
       "map": "Greymoor Halfway Home",
-      "x": 50,
-      "y": 148
+      "x": 66,
+      "y": 171
      }
     ]
    },
@@ -14456,8 +14722,8 @@
     "map_locations": [
      {
       "map": "Greymoor Halfway Home",
-      "x": 117,
-      "y": 162
+      "x": 155,
+      "y": 187
      }
     ]
    }
@@ -14467,32 +14733,32 @@
   "name": "Greymoor Halfway Home Exterior",
   "children": [
    {
-    "name": "Greymoor - Rosary Cache #4",
+    "name": "Greymoor - Rosary Cache bellow sinners road entrance",
     "sections": [
      {
-      "name": "Greymoor - Rosary Cache #4"
+      "name": "Greymoor - Rosary Cache bellow sinners road entrance"
      }
     ],
     "map_locations": [
      {
       "map": "Greymoor Halfway Home Exterior",
-      "x": 668,
-      "y": 504
+      "x": 570,
+      "y": 249
      }
     ]
    },
    {
-    "name": "Greymoor - Rosary Cache #5",
+    "name": "Greymoor - sinner road entrance guards lunch money",
     "sections": [
      {
-      "name": "Greymoor - Rosary Cache #5"
+      "name": "Greymoor - sinner road entrance guards lunch money"
      }
     ],
     "map_locations": [
      {
       "map": "Greymoor Halfway Home Exterior",
-      "x": 553,
-      "y": 293
+      "x": 578,
+      "y": 242
      }
     ]
    },
@@ -14506,8 +14772,8 @@
     "map_locations": [
      {
       "map": "Greymoor Halfway Home Exterior",
-      "x": 545,
-      "y": 301
+      "x": 140,
+      "y": 121
      }
     ]
    },
@@ -14522,7 +14788,7 @@
      {
       "map": "Greymoor Halfway Home Exterior",
       "x": 0,
-      "y": 983
+      "y": 812
      }
     ]
    },
@@ -14536,8 +14802,8 @@
     "map_locations": [
      {
       "map": "Greymoor Halfway Home Exterior",
-      "x": 729,
-      "y": 960
+      "x": 762,
+      "y": 793
      }
     ]
    },
@@ -14551,8 +14817,8 @@
     "map_locations": [
      {
       "map": "Greymoor Halfway Home Exterior",
-      "x": 729,
-      "y": 507
+      "x": 762,
+      "y": 419
      }
     ]
    },
@@ -14566,8 +14832,8 @@
     "map_locations": [
      {
       "map": "Greymoor Halfway Home Exterior",
-      "x": 729,
-      "y": 745
+      "x": 762,
+      "y": 615
      }
     ]
    },
@@ -14581,8 +14847,8 @@
     "map_locations": [
      {
       "map": "Greymoor Halfway Home Exterior",
-      "x": 434,
-      "y": 960
+      "x": 454,
+      "y": 793
      }
     ]
    },
@@ -14596,8 +14862,8 @@
     "map_locations": [
      {
       "map": "Greymoor Halfway Home Exterior",
-      "x": 598,
-      "y": 199
+      "x": 625,
+      "y": 165
      }
     ]
    },
@@ -14611,8 +14877,8 @@
     "map_locations": [
      {
       "map": "Greymoor Halfway Home Exterior",
-      "x": 261,
-      "y": 960
+      "x": 273,
+      "y": 793
      }
     ]
    },
@@ -14627,7 +14893,7 @@
      {
       "map": "Greymoor Halfway Home Exterior",
       "x": 0,
-      "y": 668
+      "y": 552
      }
     ]
    }
@@ -14646,8 +14912,8 @@
     "map_locations": [
      {
       "map": "Greymoor Kraft Room",
-      "x": 533,
-      "y": 94
+      "x": 482,
+      "y": 77
      }
     ]
    },
@@ -14662,7 +14928,7 @@
      {
       "map": "Greymoor Kraft Room",
       "x": 0,
-      "y": 156
+      "y": 126
      }
     ]
    }
@@ -14682,7 +14948,7 @@
      {
       "map": "Greymoor Middle Passage",
       "x": 0,
-      "y": 76
+      "y": 95
      }
     ]
    },
@@ -14696,8 +14962,8 @@
     "map_locations": [
      {
       "map": "Greymoor Middle Passage",
-      "x": 703,
-      "y": 76
+      "x": 698,
+      "y": 95
      }
     ]
    }
@@ -14707,32 +14973,32 @@
   "name": "Greymoor Rat Tunnel",
   "children": [
    {
-    "name": "Greymoor - Shell Shard Cache #1",
+    "name": "Greymoor - Shell Shard Cache next to the pit with with fat fuck",
     "sections": [
      {
-      "name": "Greymoor - Shell Shard Cache #1"
+      "name": "Greymoor - Shell Shard Cache next to the pit with with fat fuck"
      }
     ],
     "map_locations": [
      {
       "map": "Greymoor Rat Tunnel",
-      "x": 1068,
-      "y": 225
+      "x": 572,
+      "y": 297
      }
     ]
    },
    {
-    "name": "Greymoor - Shell Shard Cache #2",
+    "name": "Greymoor - The other Shell Shard Cache in the pit with the fat fuck",
     "sections": [
      {
-      "name": "Greymoor - Shell Shard Cache #2"
+      "name": "Greymoor - The other Shell Shard Cache in the pit with the fat fuck"
      }
     ],
     "map_locations": [
      {
       "map": "Greymoor Rat Tunnel",
-      "x": 861,
-      "y": 58
+      "x": 582,
+      "y": 288
      }
     ]
    },
@@ -14746,8 +15012,8 @@
     "map_locations": [
      {
       "map": "Greymoor Rat Tunnel",
-      "x": 1062,
-      "y": 232
+      "x": 831,
+      "y": 55
      }
     ]
    },
@@ -14761,53 +15027,53 @@
     "map_locations": [
      {
       "map": "Greymoor Rat Tunnel",
-      "x": 357,
-      "y": 63
+      "x": 344,
+      "y": 59
      }
     ]
    },
    {
-    "name": "Greymoor - Rosary Cache #23",
+    "name": "Greymoor - Rosary Cache behind the big rat above the pit",
     "sections": [
      {
-      "name": "Greymoor - Rosary Cache #23"
+      "name": "Greymoor - Rosary Cache behind the big rat above the pit"
      }
     ],
     "map_locations": [
      {
       "map": "Greymoor Rat Tunnel",
-      "x": 1042,
-      "y": 252
+      "x": 1025,
+      "y": 218
      }
     ]
    },
    {
-    "name": "Greymoor - Rosary Cache #24",
+    "name": "Greymoor - the other Rosary Cache behind the big rat above the pit with the other big rat",
     "sections": [
      {
-      "name": "Greymoor - Rosary Cache #24"
+      "name": "Greymoor - the other Rosary Cache behind the big rat above the pit with the other big rat"
      }
     ],
     "map_locations": [
      {
       "map": "Greymoor Rat Tunnel",
-      "x": 1063,
-      "y": 262
+      "x": 1031,
+      "y": 212
      }
     ]
    },
    {
-    "name": "Greymoor - Rosary Cache #25",
+    "name": "Greymoor - Another rosary cache behind the big rat above the pit",
     "sections": [
      {
-      "name": "Greymoor - Rosary Cache #25"
+      "name": "Greymoor - Another rosary cache behind the big rat above the pit"
      }
     ],
     "map_locations": [
      {
       "map": "Greymoor Rat Tunnel",
-      "x": 1054,
-      "y": 241
+      "x": 1020,
+      "y": 223
      }
     ]
    },
@@ -14822,7 +15088,7 @@
      {
       "map": "Greymoor Rat Tunnel",
       "x": 0,
-      "y": 114
+      "y": 107
      }
     ]
    },
@@ -14836,7 +15102,7 @@
     "map_locations": [
      {
       "map": "Greymoor Rat Tunnel",
-      "x": 1032,
+      "x": 997,
       "y": 0
      }
     ]
@@ -14847,92 +15113,92 @@
   "name": "Greymoor Silver Shells room",
   "children": [
    {
-    "name": "Greymoor - Shell Shard Cache #3",
+    "name": "Greymoor - Shell Shard Cache of the silver room",
     "sections": [
      {
-      "name": "Greymoor - Shell Shard Cache #3"
+      "name": "Greymoor - Shell Shard Cache of the silver room"
      }
     ],
     "map_locations": [
      {
       "map": "Greymoor Silver Shells room",
-      "x": 101,
-      "y": 242
+      "x": 147,
+      "y": 218
      }
     ]
    },
    {
-    "name": "Greymoor - Shell Shard Cache #4",
+    "name": "Greymoor - the other Shell Shard Cache of the silver room",
     "sections": [
      {
-      "name": "Greymoor - Shell Shard Cache #4"
+      "name": "Greymoor - the other Shell Shard Cache of the silver room"
      }
     ],
     "map_locations": [
      {
       "map": "Greymoor Silver Shells room",
-      "x": 159,
-      "y": 242
+      "x": 124,
+      "y": 256
      }
     ]
    },
    {
-    "name": "Greymoor - Shell Shard Cache #5",
+    "name": "Greymoor - the other other Shell Shard Cache of the silver room",
     "sections": [
      {
-      "name": "Greymoor - Shell Shard Cache #5"
-     }
-    ],
-    "map_locations": [
-     {
-      "map": "Greymoor Silver Shells room",
-      "x": 151,
-      "y": 241
-     }
-    ]
-   },
-   {
-    "name": "Greymoor - Shell Shard Cache #6",
-    "sections": [
-     {
-      "name": "Greymoor - Shell Shard Cache #6"
+      "name": "Greymoor - the other other Shell Shard Cache of the silver room"
      }
     ],
     "map_locations": [
      {
       "map": "Greymoor Silver Shells room",
       "x": 134,
-      "y": 241
+      "y": 258
      }
     ]
    },
    {
-    "name": "Greymoor - Shell Shard Cache #7",
+    "name": "Greymoor - the other other other Shell Shard Cache of the silver room",
     "sections": [
      {
-      "name": "Greymoor - Shell Shard Cache #7"
+      "name": "Greymoor - the other other other Shell Shard Cache of the silver room"
      }
     ],
     "map_locations": [
      {
       "map": "Greymoor Silver Shells room",
-      "x": 177,
-      "y": 243
+      "x": 72,
+      "y": 228
      }
     ]
    },
    {
-    "name": "Greymoor Silver Shells room - left (L)",
+    "name": "Greymoor - the other other other other Shell Shard Cache of the silver room idk why so many",
     "sections": [
      {
-      "name": "Greymoor Silver Shells room - left (L)"
+      "name": "Greymoor - the other other other other Shell Shard Cache of the silver room idk why so many"
+     }
+    ],
+    "map_locations": [
+     {
+      "map": "Greymoor Silver Shells room",
+      "x": 137,
+      "y": 188
+     }
+    ]
+   },
+   {
+    "name": "Greymoor Silver Shells room - left1",
+    "sections": [
+     {
+      "name": "Greymoor Silver Shells room - left1"
      }
     ],
     "map_locations": [
      {
       "map": "Greymoor Silver Shells room",
       "x": 9,
-      "y": 64
+      "y": 82
      }
     ]
    },
@@ -14946,7 +15212,7 @@
     "map_locations": [
      {
       "map": "Greymoor Silver Shells room",
-      "x": 208,
+      "x": 203,
       "y": 0
      }
     ]
@@ -14957,62 +15223,62 @@
   "name": "Greymoor Towers Patio",
   "children": [
    {
-    "name": "Greymoor - Rosary Cache #7",
+    "name": "Greymoor - flying rat stolen rosaries above the west tower entrance",
     "sections": [
      {
-      "name": "Greymoor - Rosary Cache #7"
+      "name": "Greymoor - flying rat stolen rosaries above the west tower entrance"
      }
     ],
     "map_locations": [
      {
       "map": "Greymoor Towers Patio",
       "x": 42,
-      "y": 368
+      "y": 319
      }
     ]
    },
    {
-    "name": "Greymoor - Rosary Cache #8",
+    "name": "Greymoor - poor soul rosaries that were stolen by flying rats above the west tower entrance",
     "sections": [
      {
-      "name": "Greymoor - Rosary Cache #8"
+      "name": "Greymoor - poor soul rosaries that were stolen by flying rats above the west tower entrance"
      }
     ],
     "map_locations": [
      {
       "map": "Greymoor Towers Patio",
-      "x": 377,
-      "y": 89
+      "x": 46,
+      "y": 311
      }
     ]
    },
    {
-    "name": "Greymoor - Rosary Cache #9",
+    "name": "Greymoor - someones mortage at the top of the room",
     "sections": [
      {
-      "name": "Greymoor - Rosary Cache #9"
+      "name": "Greymoor - someones mortage at the top of the room"
      }
     ],
     "map_locations": [
      {
       "map": "Greymoor Towers Patio",
-      "x": 584,
-      "y": 120
+      "x": 603,
+      "y": 83
      }
     ]
    },
    {
-    "name": "Greymoor - Shard Bundle #1",
+    "name": "Greymor - totally free to take shell shard cache at the top",
     "sections": [
      {
-      "name": "Greymoor - Shard Bundle #1"
+      "name": "Greymor - totally free to take shell shard cache at the top"
      }
     ],
     "map_locations": [
      {
       "map": "Greymoor Towers Patio",
-      "x": 370,
-      "y": 132
+      "x": 374,
+      "y": 77
      }
     ]
    },
@@ -15026,8 +15292,8 @@
     "map_locations": [
      {
       "map": "Greymoor Towers Patio",
-      "x": 337,
-      "y": 465
+      "x": 334,
+      "y": 337
      }
     ]
    },
@@ -15044,8 +15310,8 @@
     "map_locations": [
      {
       "map": "Greymoor Towers Patio",
-      "x": 320,
-      "y": 510
+      "x": 317,
+      "y": 441
      }
     ]
    },
@@ -15059,8 +15325,8 @@
     "map_locations": [
      {
       "map": "Greymoor Towers Patio",
-      "x": 624,
-      "y": 506
+      "x": 618,
+      "y": 437
      }
     ]
    },
@@ -15075,7 +15341,7 @@
      {
       "map": "Greymoor Towers Patio",
       "x": 0,
-      "y": 498
+      "y": 431
      }
     ]
    },
@@ -15090,7 +15356,7 @@
      {
       "map": "Greymoor Towers Patio",
       "x": 0,
-      "y": 168
+      "y": 145
      }
     ]
    },
@@ -15104,8 +15370,8 @@
     "map_locations": [
      {
       "map": "Greymoor Towers Patio",
-      "x": 704,
-      "y": 234
+      "x": 698,
+      "y": 203
      }
     ]
    }
@@ -15115,17 +15381,17 @@
   "name": "Greymoor Upper Halfway Home Path",
   "children": [
    {
-    "name": "Greymoor - Shard Bundle #2",
+    "name": "Greymoor that shard bundle i hate at the left side of the room",
     "sections": [
      {
-      "name": "Greymoor - Shard Bundle #2"
+      "name": "Greymoor that shard bundle i hate at the left side of the room"
      }
     ],
     "map_locations": [
      {
       "map": "Greymoor Upper Halfway Home Path",
-      "x": 386,
-      "y": 129
+      "x": 389,
+      "y": 131
      }
     ]
    },
@@ -15140,7 +15406,7 @@
      {
       "map": "Greymoor Upper Halfway Home Path",
       "x": 0,
-      "y": 175
+      "y": 177
      }
     ]
    },
@@ -15154,8 +15420,8 @@
     "map_locations": [
      {
       "map": "Greymoor Upper Halfway Home Path",
-      "x": 1134,
-      "y": 175
+      "x": 1143,
+      "y": 177
      }
     ]
    }
@@ -15165,47 +15431,47 @@
   "name": "Greymoor Upper Towers Path",
   "children": [
    {
-    "name": "Greymoor - Rosary Cache #15",
+    "name": "Greymoor - another smaller hanging rosary string at the left side of the room",
     "sections": [
      {
-      "name": "Greymoor - Rosary Cache #15"
+      "name": "Greymoor - another smaller hanging rosary string at the left side of the room"
      }
     ],
     "map_locations": [
      {
       "map": "Greymoor Upper Towers Path",
-      "x": 165,
-      "y": 119
+      "x": 164,
+      "y": 81
      }
     ]
    },
    {
-    "name": "Greymoor - Rosary Cache #16",
+    "name": "Greymoor - Rosary Cache hanging at the left side of the room",
     "sections": [
      {
-      "name": "Greymoor - Rosary Cache #16"
+      "name": "Greymoor - Rosary Cache hanging at the left side of the room"
      }
     ],
     "map_locations": [
      {
       "map": "Greymoor Upper Towers Path",
-      "x": 160,
-      "y": 132
+      "x": 159,
+      "y": 90
      }
     ]
    },
    {
-    "name": "Greymoor - Rosary Cache #17",
+    "name": "Greymoor - Someones rosary pocket change above the airstream",
     "sections": [
      {
-      "name": "Greymoor - Rosary Cache #17"
+      "name": "Greymoor - Someones rosary pocket change above the airstream"
      }
     ],
     "map_locations": [
      {
       "map": "Greymoor Upper Towers Path",
-      "x": 405,
-      "y": 200
+      "x": 392,
+      "y": 124
      }
     ]
    },
@@ -15220,7 +15486,7 @@
      {
       "map": "Greymoor Upper Towers Path",
       "x": 0,
-      "y": 55
+      "y": 38
      }
     ]
    },
@@ -15234,8 +15500,8 @@
     "map_locations": [
      {
       "map": "Greymoor Upper Towers Path",
-      "x": 704,
-      "y": 212
+      "x": 698,
+      "y": 145
      }
     ]
    }
@@ -15245,17 +15511,17 @@
   "name": "Greymoor West Bellshrine Room ",
   "children": [
    {
-    "name": "Greymoor - Rosary Cache #1",
+    "name": "Greymoor - Rosary Cache above rosary machine",
     "sections": [
      {
-      "name": "Greymoor - Rosary Cache #1"
+      "name": "Greymoor - Rosary Cache above rosary machine"
      }
     ],
     "map_locations": [
      {
       "map": "Greymoor West Bellshrine Room ",
       "x": 12,
-      "y": 227
+      "y": 209
      }
     ]
    },
@@ -15270,7 +15536,7 @@
      {
       "map": "Greymoor West Bellshrine Room ",
       "x": 0,
-      "y": 123
+      "y": 114
      }
     ]
    },
@@ -15284,8 +15550,8 @@
     "map_locations": [
      {
       "map": "Greymoor West Bellshrine Room ",
-      "x": 830,
-      "y": 61
+      "x": 826,
+      "y": 57
      }
     ]
    },
@@ -15299,8 +15565,8 @@
     "map_locations": [
      {
       "map": "Greymoor West Bellshrine Room ",
-      "x": 830,
-      "y": 316
+      "x": 826,
+      "y": 291
      }
     ]
    },
@@ -15315,7 +15581,7 @@
      {
       "map": "Greymoor West Bellshrine Room ",
       "x": 0,
-      "y": 316
+      "y": 291
      }
     ]
    },
@@ -15329,8 +15595,8 @@
     "map_locations": [
      {
       "map": "Greymoor West Bellshrine Room ",
-      "x": 817,
-      "y": 220
+      "x": 813,
+      "y": 203
      }
     ]
    },
@@ -15344,8 +15610,8 @@
     "map_locations": [
      {
       "map": "Greymoor West Bellshrine Room ",
-      "x": 434,
-      "y": 351
+      "x": 432,
+      "y": 323
      }
     ]
    }
@@ -15355,47 +15621,32 @@
   "name": "Greymoor Western Room",
   "children": [
    {
-    "name": "Greymoor - Rosary Cache #11",
+    "name": "Greymoor - hanging rosaries below scissor fucker",
     "sections": [
      {
-      "name": "Greymoor - Rosary Cache #11"
+      "name": "Greymoor - hanging rosaries below scissor fucker"
      }
     ],
     "map_locations": [
      {
       "map": "Greymoor Western Room",
-      "x": 146,
-      "y": 532
+      "x": 173,
+      "y": 537
      }
     ]
    },
    {
-    "name": "Greymoor - Rosary Cache #12",
+    "name": "Greymoor - the other hanging rosaries below scissor fucker",
     "sections": [
      {
-      "name": "Greymoor - Rosary Cache #12"
+      "name": "Greymoor - the other hanging rosaries below scissor fucker"
      }
     ],
     "map_locations": [
      {
       "map": "Greymoor Western Room",
-      "x": 167,
-      "y": 532
-     }
-    ]
-   },
-   {
-    "name": "Greymoor - Rosary Cache #13",
-    "sections": [
-     {
-      "name": "Greymoor - Rosary Cache #13"
-     }
-    ],
-    "map_locations": [
-     {
-      "map": "Greymoor Western Room",
-      "x": 177,
-      "y": 525
+      "x": 180,
+      "y": 531
      }
     ]
    },
@@ -15409,8 +15660,23 @@
     "map_locations": [
      {
       "map": "Greymoor Western Room",
-      "x": 157,
-      "y": 562
+      "x": 178,
+      "y": 564
+     }
+    ]
+   },
+   {
+    "name": "Greymoor - that one rosary i hate in tiny platform to the right",
+    "sections": [
+     {
+      "name": "Greymoor - that one rosary i hate in tiny platform to the right"
+     }
+    ],
+    "map_locations": [
+     {
+      "map": "Greymoor Western Room",
+      "x": 392,
+      "y": 169
      }
     ]
    },
@@ -15424,8 +15690,8 @@
     "map_locations": [
      {
       "map": "Greymoor Western Room",
-      "x": 487,
-      "y": 477
+      "x": 476,
+      "y": 488
      }
     ]
    },
@@ -15439,8 +15705,8 @@
     "map_locations": [
      {
       "map": "Greymoor Western Room",
-      "x": 487,
-      "y": 43
+      "x": 476,
+      "y": 44
      }
     ]
    },
@@ -15454,8 +15720,8 @@
     "map_locations": [
      {
       "map": "Greymoor Western Room",
-      "x": 168,
-      "y": 620
+      "x": 165,
+      "y": 635
      }
     ]
    },
@@ -15470,7 +15736,27 @@
      {
       "map": "Greymoor Western Room",
       "x": 0,
-      "y": 353
+      "y": 361
+     }
+    ]
+   }
+  ]
+ },
+ {
+  "name": "Greymoor Yarnaby Room",
+  "children": [
+   {
+    "name": "Greymoor Yarnaby Room - left (L)",
+    "sections": [
+     {
+      "name": "Greymoor Yarnaby Room - left (L)"
+     }
+    ],
+    "map_locations": [
+     {
+      "map": "Greymoor Yarnaby Room",
+      "x": 3,
+      "y": 50
      }
     ]
    }
@@ -15489,7 +15775,7 @@
     "map_locations": [
      {
       "map": "Halfway Home Cellar",
-      "x": 262,
+      "x": 257,
       "y": 0
      }
     ]
@@ -15874,6 +16160,652 @@
       "map": "Wisp Thicket Cave",
       "x": 180,
       "y": 0
+     }
+    ]
+   }
+  ]
+ },
+ {
+  "name": "Clover Dancers",
+  "children": [
+   {
+    "name": "Verdania - Oath Plaque",
+    "sections": [
+     {
+      "name": "Verdania - Oath Plaque"
+     }
+    ],
+    "map_locations": [
+     {
+      "map": "Clover Dancers",
+      "x": 355,
+      "y": 294
+     }
+    ]
+   },
+   {
+    "name": "Boss: Clover Dancers",
+    "sections": [
+     {
+      "name": "Boss: Clover Dancers"
+     }
+    ],
+    "map_locations": [
+     {
+      "map": "Clover Dancers",
+      "x": 597,
+      "y": 125
+     }
+    ]
+   },
+   {
+    "name": "Clover Dancers - left1 (L)",
+    "sections": [
+     {
+      "name": "Clover Dancers - left1 (L)"
+     }
+    ],
+    "map_locations": [
+     {
+      "map": "Clover Dancers",
+      "x": 15,
+      "y": 171
+     }
+    ]
+   }
+  ]
+ },
+ {
+  "name": "Dead Verdania Bench",
+  "children": [
+   {
+    "name": "Verdania - Map Pickup",
+    "sections": [
+     {
+      "name": "Verdania - Map Pickup"
+     }
+    ],
+    "map_locations": [
+     {
+      "map": "Dead Verdania Bench",
+      "x": 845,
+      "y": 203
+     }
+    ]
+   },
+   {
+    "name": "Dead Verdania Bench - left1 (L)",
+    "sections": [
+     {
+      "name": "Dead Verdania Bench - left1 (L)"
+     }
+    ],
+    "map_locations": [
+     {
+      "map": "Dead Verdania Bench",
+      "x": 0,
+      "y": 238
+     }
+    ]
+   }
+  ]
+ },
+ {
+  "name": "Dead Verdania Main",
+  "children": [
+   {
+    "name": "Journal: Clover Dancers",
+    "sections": [
+     {
+      "name": "Journal: Clover Dancers"
+     },
+     {
+      "name": "Boss: Clover Dancers"
+     }
+    ],
+    "map_locations": [
+     {
+      "map": "Dead Verdania Main",
+      "x": 830,
+      "y": 105
+     }
+    ]
+   },
+   {
+    "name": "Conjoined Heart",
+    "sections": [
+     {
+      "name": "Conjoined Heart"
+     }
+    ],
+    "map_locations": [
+     {
+      "map": "Dead Verdania Main",
+      "x": 826,
+      "y": 112
+     }
+    ]
+   },
+   {
+    "name": "Dead Verdania Main - left1 (L)",
+    "sections": [
+     {
+      "name": "Dead Verdania Main - left1 (L)"
+     }
+    ],
+    "map_locations": [
+     {
+      "map": "Dead Verdania Main",
+      "x": 0,
+      "y": 129
+     }
+    ]
+   },
+   {
+    "name": "Dead Verdania Main - right1 (R)",
+    "sections": [
+     {
+      "name": "Dead Verdania Main - right1 (R)"
+     }
+    ],
+    "map_locations": [
+     {
+      "map": "Dead Verdania Main",
+      "x": 1219,
+      "y": 98
+     }
+    ]
+   },
+   {
+    "name": "Dead Verdania Main - door_wakeOnGround (DR)",
+    "sections": [
+     {
+      "name": "Dead Verdania Main - door_wakeOnGround (DR)"
+     }
+    ],
+    "map_locations": [
+     {
+      "map": "Dead Verdania Main",
+      "x": 782,
+      "y": 112
+     }
+    ]
+   }
+  ]
+ },
+ {
+  "name": "Palestag",
+  "children": [
+   {
+    "name": "Boss: Palestag",
+    "sections": [
+     {
+      "name": "Boss: Palestag"
+     },
+     {
+      "name": "Journal: Palestag"
+     }
+    ],
+    "map_locations": [
+     {
+      "map": "Palestag",
+      "x": 184,
+      "y": 78
+     }
+    ]
+   },
+   {
+    "name": "Palestag - top1 (C)",
+    "sections": [
+     {
+      "name": "Palestag - top1 (C)"
+     }
+    ],
+    "map_locations": [
+     {
+      "map": "Palestag",
+      "x": 526,
+      "y": 0
+     }
+    ]
+   },
+   {
+    "name": "Palestag - left1",
+    "sections": [
+     {
+      "name": "Palestag - left1"
+     }
+    ],
+    "map_locations": [
+     {
+      "map": "Palestag",
+      "x": 0,
+      "y": 83
+     }
+    ]
+   }
+  ]
+ },
+ {
+  "name": "Verdania Big Button Room",
+  "children": [
+   {
+    "name": "Verdania - Lake Plaque",
+    "sections": [
+     {
+      "name": "Verdania - Lake Plaque"
+     }
+    ],
+    "map_locations": [
+     {
+      "map": "Verdania Big Button Room",
+      "x": 702,
+      "y": 500
+     }
+    ]
+   },
+   {
+    "name": "Verdania Big Button Room - left1",
+    "sections": [
+     {
+      "name": "Verdania Big Button Room - left1"
+     }
+    ],
+    "map_locations": [
+     {
+      "map": "Verdania Big Button Room",
+      "x": 0,
+      "y": 503
+     }
+    ]
+   }
+  ]
+ },
+ {
+  "name": "Verdania Big Room",
+  "children": [
+   {
+    "name": "Verdania Big Room - right1",
+    "sections": [
+     {
+      "name": "Verdania Big Room - right1"
+     }
+    ],
+    "map_locations": [
+     {
+      "map": "Verdania Big Room",
+      "x": 1304,
+      "y": 54
+     }
+    ]
+   },
+   {
+    "name": "Verdania Big Room - left2",
+    "sections": [
+     {
+      "name": "Verdania Big Room - left2"
+     }
+    ],
+    "map_locations": [
+     {
+      "map": "Verdania Big Room",
+      "x": 0,
+      "y": 287
+     }
+    ]
+   },
+   {
+    "name": "Verdania Big Room - left1 (LL)",
+    "sections": [
+     {
+      "name": "Verdania Big Room - left1 (LL)"
+     }
+    ],
+    "map_locations": [
+     {
+      "map": "Verdania Big Room",
+      "x": 0,
+      "y": 444
+     }
+    ]
+   }
+  ]
+ },
+ {
+  "name": "Verdania Capital",
+  "children": [
+   {
+    "name": "Verdania Capital - right1",
+    "sections": [
+     {
+      "name": "Verdania Capital - right1"
+     }
+    ],
+    "map_locations": [
+     {
+      "map": "Verdania Capital",
+      "x": 1249,
+      "y": 430
+     }
+    ]
+   },
+   {
+    "name": "Verdania Capital - door1 (D)",
+    "sections": [
+     {
+      "name": "Verdania Capital - door1 (D)"
+     }
+    ],
+    "map_locations": [
+     {
+      "map": "Verdania Capital",
+      "x": 729,
+      "y": 103
+     }
+    ]
+   },
+   {
+    "name": "Verdania Capital - left1",
+    "sections": [
+     {
+      "name": "Verdania Capital - left1"
+     }
+    ],
+    "map_locations": [
+     {
+      "map": "Verdania Capital",
+      "x": 640,
+      "y": 362
+     }
+    ]
+   },
+   {
+    "name": "Verdania Capital - left2 (LL)",
+    "sections": [
+     {
+      "name": "Verdania Capital - left2 (LL)"
+     }
+    ],
+    "map_locations": [
+     {
+      "map": "Verdania Capital",
+      "x": 0,
+      "y": 419
+     }
+    ]
+   }
+  ]
+ },
+ {
+  "name": "Verdania Cloverstag Steps",
+  "children": [
+   {
+    "name": "Verdania Cloverstag Steps - right1",
+    "sections": [
+     {
+      "name": "Verdania Cloverstag Steps - right1"
+     }
+    ],
+    "map_locations": [
+     {
+      "map": "Verdania Cloverstag Steps",
+      "x": 868,
+      "y": 470
+     }
+    ]
+   },
+   {
+    "name": "Verdania Cloverstag Steps - top1 (C)",
+    "sections": [
+     {
+      "name": "Verdania Cloverstag Steps - top1 (C)"
+     }
+    ],
+    "map_locations": [
+     {
+      "map": "Verdania Cloverstag Steps",
+      "x": 142,
+      "y": 0
+     }
+    ]
+   }
+  ]
+ },
+ {
+  "name": "Verdania Entrance",
+  "children": [
+   {
+    "name": "Verdania Entrance - right1 (R)",
+    "sections": [
+     {
+      "name": "Verdania Entrance - right1 (R)"
+     }
+    ],
+    "map_locations": [
+     {
+      "map": "Verdania Entrance",
+      "x": 1079,
+      "y": 96
+     }
+    ]
+   },
+   {
+    "name": "Verdania Entrance - door_wakeInMemory (L)",
+    "sections": [
+     {
+      "name": "Verdania Entrance - door_wakeInMemory (L)"
+     }
+    ],
+    "map_locations": [
+     {
+      "map": "Verdania Entrance",
+      "x": 89,
+      "y": 139
+     }
+    ]
+   }
+  ]
+ },
+ {
+  "name": "Verdania Kindanir egg Room",
+  "children": [
+   {
+    "name": "Verdania Kindanir egg Room - right1",
+    "sections": [
+     {
+      "name": "Verdania Kindanir egg Room - right1"
+     }
+    ],
+    "map_locations": [
+     {
+      "map": "Verdania Kindanir egg Room",
+      "x": 324,
+      "y": 85
+     }
+    ]
+   }
+  ]
+ },
+ {
+  "name": "Verdania Left Side Essence Shrine",
+  "children": [
+   {
+    "name": "Verdania Left Side Essence Shrine - right1",
+    "sections": [
+     {
+      "name": "Verdania Left Side Essence Shrine - right1"
+     }
+    ],
+    "map_locations": [
+     {
+      "map": "Verdania Left Side Essence Shrine",
+      "x": 1010,
+      "y": 139
+     }
+    ]
+   }
+  ]
+ },
+ {
+  "name": "Verdania Left Side Tall Room",
+  "children": [
+   {
+    "name": "Verdania Left Side Tall Room - right2",
+    "sections": [
+     {
+      "name": "Verdania Left Side Tall Room - right2"
+     }
+    ],
+    "map_locations": [
+     {
+      "map": "Verdania Left Side Tall Room",
+      "x": 195,
+      "y": 53
+     }
+    ]
+   },
+   {
+    "name": "Verdania Left Side Tall Room - left2",
+    "sections": [
+     {
+      "name": "Verdania Left Side Tall Room - left2"
+     }
+    ],
+    "map_locations": [
+     {
+      "map": "Verdania Left Side Tall Room",
+      "x": 0,
+      "y": 648
+     }
+    ]
+   },
+   {
+    "name": "Verdania Left Side Tall Room - left1",
+    "sections": [
+     {
+      "name": "Verdania Left Side Tall Room - left1"
+     }
+    ],
+    "map_locations": [
+     {
+      "map": "Verdania Left Side Tall Room",
+      "x": 3,
+      "y": 474
+     }
+    ]
+   },
+   {
+    "name": "Verdania Left Side Tall Room - right1 (MR)",
+    "sections": [
+     {
+      "name": "Verdania Left Side Tall Room - right1 (MR)"
+     }
+    ],
+    "map_locations": [
+     {
+      "map": "Verdania Left Side Tall Room",
+      "x": 195,
+      "y": 421
+     }
+    ]
+   },
+   {
+    "name": "Verdania Left Side Tall Room - right3",
+    "sections": [
+     {
+      "name": "Verdania Left Side Tall Room - right3"
+     }
+    ],
+    "map_locations": [
+     {
+      "map": "Verdania Left Side Tall Room",
+      "x": 197,
+      "y": 842
+     }
+    ]
+   }
+  ]
+ },
+ {
+  "name": "Verdania Right Side Tall Room",
+  "children": [
+   {
+    "name": "Verdania Right Side Tall Room - left1",
+    "sections": [
+     {
+      "name": "Verdania Right Side Tall Room - left1"
+     }
+    ],
+    "map_locations": [
+     {
+      "map": "Verdania Right Side Tall Room",
+      "x": 0,
+      "y": 281
+     }
+    ]
+   },
+   {
+    "name": "Verdania Right Side Tall Room - left2",
+    "sections": [
+     {
+      "name": "Verdania Right Side Tall Room - left2"
+     }
+    ],
+    "map_locations": [
+     {
+      "map": "Verdania Right Side Tall Room",
+      "x": 0,
+      "y": 417
+     }
+    ]
+   },
+   {
+    "name": "Verdania Right Side Tall Room - right1",
+    "sections": [
+     {
+      "name": "Verdania Right Side Tall Room - right1"
+     }
+    ],
+    "map_locations": [
+     {
+      "map": "Verdania Right Side Tall Room",
+      "x": 209,
+      "y": 449
+     }
+    ]
+   }
+  ]
+ },
+ {
+  "name": "Verdania Top Room",
+  "children": [
+   {
+    "name": "Verdania Top Room - bot2 (RF)",
+    "sections": [
+     {
+      "name": "Verdania Top Room - bot2 (RF)"
+     }
+    ],
+    "map_locations": [
+     {
+      "map": "Verdania Top Room",
+      "x": 1711,
+      "y": 206
+     }
+    ]
+   },
+   {
+    "name": "Verdania Top Room - bot1 (LF)",
+    "sections": [
+     {
+      "name": "Verdania Top Room - bot1 (LF)"
+     }
+    ],
+    "map_locations": [
+     {
+      "map": "Verdania Top Room",
+      "x": 138,
+      "y": 181
      }
     ]
    }
@@ -16810,8 +17742,8 @@
     "map_locations": [
      {
       "map": "Blasted Steps Toll Bench Bottom",
-      "x": 1524,
-      "y": 158
+      "x": 1418,
+      "y": 578
      }
     ]
    },
@@ -16825,8 +17757,8 @@
     "map_locations": [
      {
       "map": "Blasted Steps Toll Bench Bottom",
-      "x": 1418,
-      "y": 578
+      "x": 1524,
+      "y": 158
      }
     ]
    }
@@ -17501,8 +18433,8 @@
     "map_locations": [
      {
       "map": "Grand Gate Courtroom",
-      "x": 124,
-      "y": 115
+      "x": 134,
+      "y": 298
      }
     ]
    },
@@ -17516,8 +18448,8 @@
     "map_locations": [
      {
       "map": "Grand Gate Courtroom",
-      "x": 212,
-      "y": 843
+      "x": 229,
+      "y": 858
      }
     ]
    },
@@ -17531,8 +18463,8 @@
     "map_locations": [
      {
       "map": "Grand Gate Courtroom",
-      "x": 14,
-      "y": 809
+      "x": 15,
+      "y": 832
      }
     ]
    },
@@ -17546,8 +18478,8 @@
     "map_locations": [
      {
       "map": "Grand Gate Courtroom",
-      "x": 388,
-      "y": 338
+      "x": 418,
+      "y": 470
      }
     ]
    },
@@ -17561,8 +18493,8 @@
     "map_locations": [
      {
       "map": "Grand Gate Courtroom",
-      "x": 441,
-      "y": 842
+      "x": 476,
+      "y": 857
      }
     ]
    }
@@ -17758,6 +18690,124 @@
       "map": "Shrine Guardian Seth",
       "x": 1135,
       "y": 135
+     }
+    ]
+   }
+  ]
+ },
+ {
+  "name": "Nyleth Shrine",
+  "children": [
+   {
+    "name": "Grand Gate - Nyleth Shrine Inscription",
+    "sections": [
+     {
+      "name": "Grand Gate - Nyleth Shrine Inscription"
+     }
+    ],
+    "map_locations": [
+     {
+      "map": "Nyleth Shrine",
+      "x": 3780,
+      "y": 1340
+     }
+    ]
+   },
+   {
+    "name": "Journal: Nyleth",
+    "sections": [
+     {
+      "name": "Journal: Nyleth"
+     },
+     {
+      "name": "Boss: Nyleth"
+     }
+    ],
+    "map_locations": [
+     {
+      "map": "Nyleth Shrine",
+      "x": 1102,
+      "y": 1315
+     }
+    ]
+   },
+   {
+    "name": "Pollen Heart",
+    "sections": [
+     {
+      "name": "Pollen Heart"
+     }
+    ],
+    "map_locations": [
+     {
+      "map": "Nyleth Shrine",
+      "x": 1408,
+      "y": 1343
+     }
+    ]
+   },
+   {
+    "name": "Nyleth Shrine - right1",
+    "sections": [
+     {
+      "name": "Nyleth Shrine - right1"
+     }
+    ],
+    "map_locations": [
+     {
+      "map": "Nyleth Shrine",
+      "x": 7552,
+      "y": 1216
+     }
+    ]
+   },
+   {
+    "name": "Nyleth Shrine - door_wakeOnGround (D)",
+    "sections": [
+     {
+      "name": "Nyleth Shrine - door_wakeOnGround (D)"
+     }
+    ],
+    "map_locations": [
+     {
+      "map": "Nyleth Shrine",
+      "x": 1209,
+      "y": 1402
+     }
+    ]
+   }
+  ]
+ },
+ {
+  "name": "Nyleth Fight",
+  "children": [
+   {
+    "name": "Boss: Nyleth",
+    "sections": [
+     {
+      "name": "Boss: Nyleth"
+     }
+    ],
+    "map_locations": [
+     {
+      "map": "Nyleth Fight",
+      "x": 636,
+      "y": 3304
+     }
+    ]
+   },
+   {
+    "name": "Nyleth Fight - door_wakeInMemory (D)",
+    "sections": [
+     {
+      "name": "Nyleth Fight - door_wakeInMemory (D)"
+     }
+    ],
+    "map_locations": [
+     {
+      "map": "Nyleth Fight",
+      "x": 6367,
+      "y": 863
      }
     ]
    }
@@ -18770,6 +19820,41 @@
   ]
  },
  {
+  "name": "Chapel of the Architect",
+  "children": [
+   {
+    "name": "Crest: Architect",
+    "sections": [
+     {
+      "name": "Crest: Architect"
+     }
+    ],
+    "map_locations": [
+     {
+      "map": "Chapel of the Architect",
+      "x": 1953,
+      "y": 1139
+     }
+    ]
+   },
+   {
+    "name": "Chapel of the Architect - left1 (L)",
+    "sections": [
+     {
+      "name": "Chapel of the Architect - left1 (L)"
+     }
+    ],
+    "map_locations": [
+     {
+      "map": "Chapel of the Architect",
+      "x": 32,
+      "y": 960
+     }
+    ]
+   }
+  ]
+ },
+ {
   "name": "Underworks Below Vaultkeeper",
   "children": [
    {
@@ -19013,7 +20098,7 @@
      {
       "map": "Underworks East Shaft",
       "x": 0,
-      "y": 768
+      "y": 756
      }
     ]
    },
@@ -19027,8 +20112,8 @@
     "map_locations": [
      {
       "map": "Underworks East Shaft",
-      "x": 323,
-      "y": 730
+      "x": 330,
+      "y": 717
      }
     ]
    },
@@ -19043,7 +20128,7 @@
      {
       "map": "Underworks East Shaft",
       "x": 0,
-      "y": 193
+      "y": 190
      }
     ]
    },
@@ -19057,8 +20142,8 @@
     "map_locations": [
      {
       "map": "Underworks East Shaft",
-      "x": 323,
-      "y": 58
+      "x": 330,
+      "y": 57
      }
     ]
    },
@@ -19073,7 +20158,7 @@
      {
       "map": "Underworks East Shaft",
       "x": 0,
-      "y": 329
+      "y": 324
      }
     ]
    },
@@ -19087,8 +20172,8 @@
     "map_locations": [
      {
       "map": "Underworks East Shaft",
-      "x": 323,
-      "y": 413
+      "x": 330,
+      "y": 406
      }
     ]
    },
@@ -19103,7 +20188,7 @@
      {
       "map": "Underworks East Shaft",
       "x": 0,
-      "y": 613
+      "y": 603
      }
     ]
    }
@@ -19592,98 +20677,8 @@
     "map_locations": [
      {
       "map": "Underworks Twelfth Architect",
-      "x": 360,
-      "y": 311
-     }
-    ]
-   },
-   {
-    "name": "Cogwork Wheel",
-    "sections": [
-     {
-      "name": "Cogwork Wheel"
-     }
-    ],
-    "map_locations": [
-     {
-      "map": "Underworks Twelfth Architect",
-      "x": 473,
-      "y": 173
-     }
-    ]
-   },
-   {
-    "name": "Sawtooth Circlet",
-    "sections": [
-     {
-      "name": "Sawtooth Circlet"
-     }
-    ],
-    "map_locations": [
-     {
-      "map": "Underworks Twelfth Architect",
-      "x": 499,
-      "y": 183
-     }
-    ]
-   },
-   {
-    "name": "Scuttlebrace",
-    "sections": [
-     {
-      "name": "Scuttlebrace"
-     }
-    ],
-    "map_locations": [
-     {
-      "map": "Underworks Twelfth Architect",
-      "x": 430,
-      "y": 180
-     }
-    ]
-   },
-   {
-    "name": "Twelfth Architect - Crafting Kit",
-    "sections": [
-     {
-      "name": "Twelfth Architect - Crafting Kit"
-     }
-    ],
-    "map_locations": [
-     {
-      "map": "Underworks Twelfth Architect",
-      "x": 443,
-      "y": 178
-     }
-    ]
-   },
-   {
-    "name": "Architect's Key",
-    "sections": [
-     {
-      "name": "Architect's Key"
-     }
-    ],
-    "map_locations": [
-     {
-      "map": "Underworks Twelfth Architect",
-      "x": 487,
-      "y": 174
-     }
-    ]
-   },
-   {
-    "name": "Underworks - Pristine Core",
-    "sections": [
-     {
-      "name": "Underworks - Pristine Core"
-     }
-    ],
-    "map_locations": [
-     {
-      "map": "Underworks Twelfth Architect",
-      "x": 487,
-      "y": 171
+      "x": 354,
+      "y": 283
      }
     ]
    },
@@ -19697,8 +20692,98 @@
     "map_locations": [
      {
       "map": "Underworks Twelfth Architect",
-      "x": 496,
-      "y": 140
+      "x": 463,
+      "y": 169
+     }
+    ]
+   },
+   {
+    "name": "Cogwork Wheel",
+    "sections": [
+     {
+      "name": "Cogwork Wheel"
+     }
+    ],
+    "map_locations": [
+     {
+      "map": "Underworks Twelfth Architect",
+      "x": 465,
+      "y": 157
+     }
+    ]
+   },
+   {
+    "name": "Sawtooth Circlet",
+    "sections": [
+     {
+      "name": "Sawtooth Circlet"
+     }
+    ],
+    "map_locations": [
+     {
+      "map": "Underworks Twelfth Architect",
+      "x": 491,
+      "y": 166
+     }
+    ]
+   },
+   {
+    "name": "Scuttlebrace",
+    "sections": [
+     {
+      "name": "Scuttlebrace"
+     }
+    ],
+    "map_locations": [
+     {
+      "map": "Underworks Twelfth Architect",
+      "x": 443,
+      "y": 168
+     }
+    ]
+   },
+   {
+    "name": "Twelfth Architect - Crafting Kit",
+    "sections": [
+     {
+      "name": "Twelfth Architect - Crafting Kit"
+     }
+    ],
+    "map_locations": [
+     {
+      "map": "Underworks Twelfth Architect",
+      "x": 454,
+      "y": 156
+     }
+    ]
+   },
+   {
+    "name": "Architect's Key",
+    "sections": [
+     {
+      "name": "Architect's Key"
+     }
+    ],
+    "map_locations": [
+     {
+      "map": "Underworks Twelfth Architect",
+      "x": 478,
+      "y": 159
+     }
+    ]
+   },
+   {
+    "name": "Underworks - Pristine Core",
+    "sections": [
+     {
+      "name": "Underworks - Pristine Core"
+     }
+    ],
+    "map_locations": [
+     {
+      "map": "Underworks Twelfth Architect",
+      "x": 478,
+      "y": 156
      }
     ]
    },
@@ -19715,8 +20800,8 @@
     "map_locations": [
      {
       "map": "Underworks Twelfth Architect",
-      "x": 169,
-      "y": 92
+      "x": 166,
+      "y": 84
      }
     ]
    },
@@ -19731,7 +20816,7 @@
      {
       "map": "Underworks Twelfth Architect",
       "x": 0,
-      "y": 195
+      "y": 177
      }
     ]
    },
@@ -19745,8 +20830,8 @@
     "map_locations": [
      {
       "map": "Underworks Twelfth Architect",
-      "x": 1059,
-      "y": 230
+      "x": 1041,
+      "y": 209
      }
     ]
    },
@@ -19760,8 +20845,8 @@
     "map_locations": [
      {
       "map": "Underworks Twelfth Architect",
-      "x": 154,
-      "y": 335
+      "x": 152,
+      "y": 305
      }
     ]
    },
@@ -19775,8 +20860,8 @@
     "map_locations": [
      {
       "map": "Underworks Twelfth Architect",
-      "x": 800,
-      "y": 335
+      "x": 787,
+      "y": 305
      }
     ]
    },
@@ -19790,7 +20875,7 @@
     "map_locations": [
      {
       "map": "Underworks Twelfth Architect",
-      "x": 933,
+      "x": 917,
       "y": 0
      }
     ]
@@ -19966,10 +21051,10 @@
   "name": "Underworks Below Confession",
   "children": [
    {
-    "name": "Underworks Below Confession - left1 (L)",
+    "name": "Underworks Below Confession - left1",
     "sections": [
      {
-      "name": "Underworks Below Confession - left1 (L)"
+      "name": "Underworks Below Confession - left1"
      }
     ],
     "map_locations": [
@@ -20075,8 +21160,8 @@
     "map_locations": [
      {
       "map": "Underworks Outside Choral Chambers",
-      "x": 505,
-      "y": 155
+      "x": 120,
+      "y": 321
      }
     ]
    },
@@ -20090,8 +21175,8 @@
     "map_locations": [
      {
       "map": "Underworks Outside Choral Chambers",
-      "x": 110,
-      "y": 256
+      "x": 104,
+      "y": 322
      }
     ]
    },
@@ -20105,8 +21190,8 @@
     "map_locations": [
      {
       "map": "Underworks Outside Choral Chambers",
-      "x": 312,
-      "y": 290
+      "x": 296,
+      "y": 364
      }
     ]
    },
@@ -20120,8 +21205,8 @@
     "map_locations": [
      {
       "map": "Underworks Outside Choral Chambers",
-      "x": 496,
-      "y": 209
+      "x": 475,
+      "y": 178
      }
     ]
    },
@@ -20136,7 +21221,7 @@
      {
       "map": "Underworks Outside Choral Chambers",
       "x": 0,
-      "y": 359
+      "y": 450
      }
     ]
    },
@@ -20150,7 +21235,7 @@
     "map_locations": [
      {
       "map": "Underworks Outside Choral Chambers",
-      "x": 381,
+      "x": 362,
       "y": 0
      }
     ]
@@ -20176,10 +21261,10 @@
     ]
    },
    {
-    "name": "Underworks Shaft - right2 (R3)",
+    "name": "Underworks Shaft - right2",
     "sections": [
      {
-      "name": "Underworks Shaft - right2 (R3)"
+      "name": "Underworks Shaft - right2"
      }
     ],
     "map_locations": [
@@ -20271,10 +21356,10 @@
     ]
    },
    {
-    "name": "Underworks Western Gauntlet - right2 (R)",
+    "name": "Underworks Western Gauntlet - right2",
     "sections": [
      {
-      "name": "Underworks Western Gauntlet - right2 (R)"
+      "name": "Underworks Western Gauntlet - right2"
      }
     ],
     "map_locations": [
@@ -20286,10 +21371,10 @@
     ]
    },
    {
-    "name": "Underworks Western Gauntlet - left3 (L)",
+    "name": "Underworks Western Gauntlet - left3",
     "sections": [
      {
-      "name": "Underworks Western Gauntlet - left3 (L)"
+      "name": "Underworks Western Gauntlet - left3"
      }
     ],
     "map_locations": [
@@ -20416,10 +21501,10 @@
     ]
    },
    {
-    "name": "Underworks Crushing Path - left1 (L)",
+    "name": "Underworks Crushing Path - left1",
     "sections": [
      {
-      "name": "Underworks Crushing Path - left1 (L)"
+      "name": "Underworks Crushing Path - left1"
      }
     ],
     "map_locations": [
@@ -20601,10 +21686,10 @@
     ]
    },
    {
-    "name": "Underworks Saw Shaft - right1 (R)",
+    "name": "Underworks Saw Shaft - right1",
     "sections": [
      {
-      "name": "Underworks Saw Shaft - right1 (R)"
+      "name": "Underworks Saw Shaft - right1"
      }
     ],
     "map_locations": [
@@ -20730,8 +21815,8 @@
     "map_locations": [
      {
       "map": "High Halls Entrance",
-      "x": 273,
-      "y": 562
+      "x": 318,
+      "y": 552
      }
     ]
    },
@@ -20745,8 +21830,8 @@
     "map_locations": [
      {
       "map": "High Halls Entrance",
-      "x": 273,
-      "y": 122
+      "x": 318,
+      "y": 120
      }
     ]
    }
@@ -20765,8 +21850,8 @@
     "map_locations": [
      {
       "map": "Songclave Bellshrine",
-      "x": 23,
-      "y": 135
+      "x": 25,
+      "y": 114
      }
     ]
    }
@@ -20785,8 +21870,8 @@
     "map_locations": [
      {
       "map": "Songclave",
-      "x": 603,
-      "y": 190
+      "x": 648,
+      "y": 170
      }
     ]
    },
@@ -20821,8 +21906,8 @@
     "map_locations": [
      {
       "map": "Songclave",
-      "x": 467,
-      "y": 177
+      "x": 501,
+      "y": 158
      }
     ]
    },
@@ -20836,8 +21921,8 @@
     "map_locations": [
      {
       "map": "Songclave",
-      "x": 354,
-      "y": 180
+      "x": 380,
+      "y": 161
      }
     ]
    },
@@ -20851,8 +21936,8 @@
     "map_locations": [
      {
       "map": "Songclave",
-      "x": 62,
-      "y": 178
+      "x": 66,
+      "y": 159
      }
     ]
    },
@@ -20866,8 +21951,8 @@
     "map_locations": [
      {
       "map": "Songclave",
-      "x": 62,
-      "y": 64
+      "x": 66,
+      "y": 57
      }
     ]
    },
@@ -20881,8 +21966,8 @@
     "map_locations": [
      {
       "map": "Songclave",
-      "x": 508,
-      "y": 213
+      "x": 546,
+      "y": 190
      }
     ]
    },
@@ -20896,7 +21981,7 @@
     "map_locations": [
      {
       "map": "Songclave",
-      "x": 183,
+      "x": 196,
       "y": 0
      }
     ]
@@ -20911,8 +21996,8 @@
     "map_locations": [
      {
       "map": "Songclave",
-      "x": 389,
-      "y": 187
+      "x": 417,
+      "y": 167
      }
     ]
    },
@@ -20974,8 +22059,8 @@
     "map_locations": [
      {
       "map": "Songclave",
-      "x": 417,
-      "y": 202
+      "x": 448,
+      "y": 180
      }
     ]
    }
@@ -20995,7 +22080,7 @@
      {
       "map": "Choral Chambers Spa",
       "x": 6,
-      "y": 274
+      "y": 253
      }
     ]
    },
@@ -21009,8 +22094,8 @@
     "map_locations": [
      {
       "map": "Choral Chambers Spa",
-      "x": 820,
-      "y": 48
+      "x": 806,
+      "y": 44
      }
     ]
    }
@@ -21019,6 +22104,21 @@
  {
   "name": "Choral Chambers Outside Spa",
   "children": [
+   {
+    "name": "Choral Chambers - Heavy Rosary Necklace",
+    "sections": [
+     {
+      "name": "Choral Chambers - Heavy Rosary Necklace"
+     }
+    ],
+    "map_locations": [
+     {
+      "map": "Choral Chambers Outside Spa",
+      "x": 798,
+      "y": 197
+     }
+    ]
+   },
    {
     "name": "Choral Chambers Outside Spa - bot1 (B)",
     "sections": [
@@ -21029,23 +22129,23 @@
     "map_locations": [
      {
       "map": "Choral Chambers Outside Spa",
-      "x": 165,
-      "y": 450
+      "x": 177,
+      "y": 432
      }
     ]
    },
    {
-    "name": "Choral Chambers Outside Spa - left1 (L)",
+    "name": "Choral Chambers Outside Spa - left1",
     "sections": [
      {
-      "name": "Choral Chambers Outside Spa - left1 (L)"
+      "name": "Choral Chambers Outside Spa - left1"
      }
     ],
     "map_locations": [
      {
       "map": "Choral Chambers Outside Spa",
-      "x": 515,
-      "y": 140
+      "x": 555,
+      "y": 69
      }
     ]
    },
@@ -21059,8 +22159,8 @@
     "map_locations": [
      {
       "map": "Choral Chambers Outside Spa",
-      "x": 843,
-      "y": 151
+      "x": 908,
+      "y": 82
      }
     ]
    },
@@ -21074,8 +22174,8 @@
     "map_locations": [
      {
       "map": "Choral Chambers Outside Spa",
-      "x": 840,
-      "y": 390
+      "x": 904,
+      "y": 362
      }
     ]
    }
@@ -21095,7 +22195,7 @@
      {
       "map": "Choral Chambers Western Shaft",
       "x": 0,
-      "y": 602
+      "y": 609
      }
     ]
    },
@@ -21109,8 +22209,8 @@
     "map_locations": [
      {
       "map": "Choral Chambers Western Shaft",
-      "x": 203,
-      "y": 602
+      "x": 222,
+      "y": 609
      }
     ]
    },
@@ -21125,7 +22225,7 @@
      {
       "map": "Choral Chambers Western Shaft",
       "x": 0,
-      "y": 470
+      "y": 475
      }
     ]
    },
@@ -21139,8 +22239,8 @@
     "map_locations": [
      {
       "map": "Choral Chambers Western Shaft",
-      "x": 203,
-      "y": 363
+      "x": 222,
+      "y": 368
      }
     ]
    },
@@ -21155,7 +22255,7 @@
      {
       "map": "Choral Chambers Western Shaft",
       "x": 0,
-      "y": 263
+      "y": 266
      }
     ]
    },
@@ -21169,7 +22269,7 @@
     "map_locations": [
      {
       "map": "Choral Chambers Western Shaft",
-      "x": 203,
+      "x": 222,
       "y": 69
      }
     ]
@@ -21204,8 +22304,8 @@
     "map_locations": [
      {
       "map": "Choral Chambers Shop",
-      "x": 313,
-      "y": 84
+      "x": 260,
+      "y": 88
      }
     ]
    }
@@ -21224,8 +22324,8 @@
     "map_locations": [
      {
       "map": "Choral Chambers Cogheart Room",
-      "x": 235,
-      "y": 111
+      "x": 222,
+      "y": 152
      }
     ]
    }
@@ -21244,7 +22344,7 @@
     "map_locations": [
      {
       "map": "Choral Chambers Grindle",
-      "x": 258,
+      "x": 362,
       "y": 76
      }
     ]
@@ -21264,8 +22364,8 @@
     "map_locations": [
      {
       "map": "Choral Chambers Flea Room",
-      "x": 399,
-      "y": 72
+      "x": 419,
+      "y": 75
      }
     ]
    },
@@ -21280,7 +22380,7 @@
      {
       "map": "Choral Chambers Flea Room",
       "x": 0,
-      "y": 82
+      "y": 88
      }
     ]
    }
@@ -21299,8 +22399,8 @@
     "map_locations": [
      {
       "map": "Choral Chambers Above Spa",
-      "x": 557,
-      "y": 92
+      "x": 540,
+      "y": 88
      }
     ]
    },
@@ -21315,7 +22415,7 @@
      {
       "map": "Choral Chambers Above Spa",
       "x": 0,
-      "y": 92
+      "y": 88
      }
     ]
    }
@@ -21325,23 +22425,47 @@
   "name": "Choral Chambers Maintenance Tunnel",
   "children": [
    {
-    "name": "Choral Chambers - Rosary Cache #17",
+    "name": "Maintenance Worker's Wage Rosary cache",
     "sections": [
      {
-      "name": "Choral Chambers - Rosary Cache #17"
-     },
-     {
-      "name": "Choral Chambers - Rosary Cache #18"
-     },
-     {
-      "name": "Choral Chambers - Rosary Cache #19"
+      "name": "Maintenance Worker's Wage Rosary cache"
      }
     ],
     "map_locations": [
      {
       "map": "Choral Chambers Maintenance Tunnel",
-      "x": 42,
+      "x": 47,
+      "y": 193
+     }
+    ]
+   },
+   {
+    "name": "Maintenance Tunnel's Rosary cache budget",
+    "sections": [
+     {
+      "name": "Maintenance Tunnel's Rosary cache budget"
+     }
+    ],
+    "map_locations": [
+     {
+      "map": "Choral Chambers Maintenance Tunnel",
+      "x": 35,
       "y": 202
+     }
+    ]
+   },
+   {
+    "name": "Maintenance Head chief's embezzled Rosary cache",
+    "sections": [
+     {
+      "name": "Maintenance Head chief's embezzled Rosary cache"
+     }
+    ],
+    "map_locations": [
+     {
+      "map": "Choral Chambers Maintenance Tunnel",
+      "x": 26,
+      "y": 213
      }
     ]
    },
@@ -21355,8 +22479,8 @@
     "map_locations": [
      {
       "map": "Choral Chambers Maintenance Tunnel",
-      "x": 558,
-      "y": 228
+      "x": 540,
+      "y": 215
      }
     ]
    },
@@ -21371,7 +22495,7 @@
      {
       "map": "Choral Chambers Maintenance Tunnel",
       "x": 0,
-      "y": 140
+      "y": 133
      }
     ]
    }
@@ -21390,41 +22514,53 @@
     "map_locations": [
      {
       "map": "Choral Chambers Flea Shaft",
-      "x": 318,
-      "y": 146
+      "x": 287,
+      "y": 133
      }
     ]
    },
    {
-    "name": "Choral Chambers - Rosary Cache #14",
+    "name": "Flea Shaft's stolen rosaries",
     "sections": [
      {
-      "name": "Choral Chambers - Rosary Cache #14"
+      "name": "Flea Shaft's stolen rosaries"
      }
     ],
     "map_locations": [
      {
       "map": "Choral Chambers Flea Shaft",
-      "x": 274,
-      "y": 829
+      "x": 244,
+      "y": 880
      }
     ]
    },
    {
-    "name": "Choral Chambers - Rosary Cache #15",
+    "name": "Flea Shaft's bounty",
     "sections": [
      {
-      "name": "Choral Chambers - Rosary Cache #15"
-     },
-     {
-      "name": "Choral Chambers - Rosary Cache #16"
+      "name": "Flea Shaft's bounty"
      }
     ],
     "map_locations": [
      {
       "map": "Choral Chambers Flea Shaft",
-      "x": 292,
-      "y": 841
+      "x": 257,
+      "y": 889
+     }
+    ]
+   },
+   {
+    "name": "Flea Shaft's kidnappers' bonus",
+    "sections": [
+     {
+      "name": "Flea Shaft's kidnappers' bonus"
+     }
+    ],
+    "map_locations": [
+     {
+      "map": "Choral Chambers Flea Shaft",
+      "x": 269,
+      "y": 883
      }
     ]
    },
@@ -21439,7 +22575,7 @@
      {
       "map": "Choral Chambers Flea Shaft",
       "x": 0,
-      "y": 104
+      "y": 107
      }
     ]
    },
@@ -21454,7 +22590,7 @@
      {
       "map": "Choral Chambers Flea Shaft",
       "x": 0,
-      "y": 392
+      "y": 406
      }
     ]
    },
@@ -21468,8 +22604,8 @@
     "map_locations": [
      {
       "map": "Choral Chambers Flea Shaft",
-      "x": 376,
-      "y": 42
+      "x": 377,
+      "y": 44
      }
     ]
    },
@@ -21484,7 +22620,7 @@
      {
       "map": "Choral Chambers Flea Shaft",
       "x": 22,
-      "y": 913
+      "y": 946
      }
     ]
    },
@@ -21498,8 +22634,8 @@
     "map_locations": [
      {
       "map": "Choral Chambers Flea Shaft",
-      "x": 380,
-      "y": 1047
+      "x": 381,
+      "y": 1086
      }
     ]
    },
@@ -21514,7 +22650,7 @@
      {
       "map": "Choral Chambers Flea Shaft",
       "x": 0,
-      "y": 836
+      "y": 866
      }
     ]
    },
@@ -21528,8 +22664,8 @@
     "map_locations": [
      {
       "map": "Choral Chambers Flea Shaft",
-      "x": 380,
-      "y": 759
+      "x": 381,
+      "y": 787
      }
     ]
    }
@@ -21549,7 +22685,7 @@
      {
       "map": "High Halls Corridor",
       "x": 0,
-      "y": 120
+      "y": 114
      }
     ]
    },
@@ -21563,8 +22699,8 @@
     "map_locations": [
      {
       "map": "High Halls Corridor",
-      "x": 915,
-      "y": 126
+      "x": 933,
+      "y": 120
      }
     ]
    },
@@ -21578,8 +22714,8 @@
     "map_locations": [
      {
       "map": "High Halls Corridor",
-      "x": 168,
-      "y": 180
+      "x": 171,
+      "y": 171
      }
     ]
    },
@@ -21593,7 +22729,7 @@
     "map_locations": [
      {
       "map": "High Halls Corridor",
-      "x": 168,
+      "x": 171,
       "y": 0
      }
     ]
@@ -21604,17 +22740,17 @@
   "name": "Corridor to High Halls",
   "children": [
    {
-    "name": "Choral Chambers - Rosary Chest #2",
+    "name": "Reed's personal chest",
     "sections": [
      {
-      "name": "Choral Chambers - Rosary Chest #2"
+      "name": "Reed's personal chest"
      }
     ],
     "map_locations": [
      {
       "map": "Corridor to High Halls",
-      "x": 208,
-      "y": 46
+      "x": 220,
+      "y": 88
      }
     ]
    },
@@ -21628,8 +22764,8 @@
     "map_locations": [
      {
       "map": "Corridor to High Halls",
-      "x": 820,
-      "y": 187
+      "x": 857,
+      "y": 362
      }
     ]
    },
@@ -21644,20 +22780,20 @@
      {
       "map": "Corridor to High Halls",
       "x": 0,
-      "y": 193
+      "y": 374
      }
     ]
    }
   ]
  },
  {
-  "name": "Choral Chambers Over Dininig",
+  "name": "Choral Chambers Over Dining",
   "children": [
    {
-    "name": "Choral Chambers - Rosary Cache #11",
+    "name": "Dining Hall's food budget",
     "sections": [
      {
-      "name": "Choral Chambers - Rosary Cache #11"
+      "name": "Dining Hall's food budget"
      },
      {
       "name": "Choral Chambers - Rosary Necklace #2"
@@ -21665,9 +22801,39 @@
     ],
     "map_locations": [
      {
-      "map": "Choral Chambers Over Dininig",
-      "x": 229,
-      "y": 495
+      "map": "Choral Chambers Over Dining",
+      "x": 250,
+      "y": 487
+     }
+    ]
+   },
+   {
+    "name": "Mergwin's hidden stash",
+    "sections": [
+     {
+      "name": "Mergwin's hidden stash"
+     }
+    ],
+    "map_locations": [
+     {
+      "map": "Choral Chambers Over Dining",
+      "x": 64,
+      "y": 146
+     }
+    ]
+   },
+   {
+    "name": "Great Gourmand's treasury",
+    "sections": [
+     {
+      "name": "Great Gourmand's treasury"
+     }
+    ],
+    "map_locations": [
+     {
+      "map": "Choral Chambers Over Dining",
+      "x": 77,
+      "y": 160
      }
     ]
    },
@@ -21680,72 +22846,54 @@
     ],
     "map_locations": [
      {
-      "map": "Choral Chambers Over Dininig",
-      "x": 242,
-      "y": 265
+      "map": "Choral Chambers Over Dining",
+      "x": 270,
+      "y": 237
      }
     ]
    },
    {
-    "name": "Choral Chambers - Rosary Cache #12",
+    "name": "Choral Chambers Over Dining - right1 (R)",
     "sections": [
      {
-      "name": "Choral Chambers - Rosary Cache #12"
-     },
-     {
-      "name": "Choral Chambers - Rosary Cache #13"
+      "name": "Choral Chambers Over Dining - right1 (R)"
      }
     ],
     "map_locations": [
      {
-      "map": "Choral Chambers Over Dininig",
-      "x": 63,
-      "y": 156
+      "map": "Choral Chambers Over Dining",
+      "x": 318,
+      "y": 266
      }
     ]
    },
    {
-    "name": "Choral Chambers Over Dininig - right1 (R)",
+    "name": "Choral Chambers Over Dining - top1 (T)",
     "sections": [
      {
-      "name": "Choral Chambers Over Dininig - right1 (R)"
+      "name": "Choral Chambers Over Dining - top1 (T)"
      }
     ],
     "map_locations": [
      {
-      "map": "Choral Chambers Over Dininig",
-      "x": 292,
-      "y": 271
-     }
-    ]
-   },
-   {
-    "name": "Choral Chambers Over Dininig - top1 (T)",
-    "sections": [
-     {
-      "name": "Choral Chambers Over Dininig - top1 (T)"
-     }
-    ],
-    "map_locations": [
-     {
-      "map": "Choral Chambers Over Dininig",
-      "x": 146,
+      "map": "Choral Chambers Over Dining",
+      "x": 159,
       "y": 0
      }
     ]
    },
    {
-    "name": "Choral Chambers Over Dininig - bot1 (B)",
+    "name": "Choral Chambers Over Dining - bot1 (B)",
     "sections": [
      {
-      "name": "Choral Chambers Over Dininig - bot1 (B)"
+      "name": "Choral Chambers Over Dining - bot1 (B)"
      }
     ],
     "map_locations": [
      {
-      "map": "Choral Chambers Over Dininig",
-      "x": 151,
-      "y": 549
+      "map": "Choral Chambers Over Dining",
+      "x": 165,
+      "y": 540
      }
     ]
    }
@@ -21754,6 +22902,66 @@
  {
   "name": "Choral Chambers Dining Room",
   "children": [
+   {
+    "name": "Choral Chambers East - Silkeater",
+    "sections": [
+     {
+      "name": "Choral Chambers East - Silkeater"
+     }
+    ],
+    "map_locations": [
+     {
+      "map": "Choral Chambers Dining Room",
+      "x": 979,
+      "y": 42
+     }
+    ]
+   },
+   {
+    "name": "Great Taste of Pharloom - Pale Oil",
+    "sections": [
+     {
+      "name": "Great Taste of Pharloom - Pale Oil"
+     }
+    ],
+    "map_locations": [
+     {
+      "map": "Choral Chambers Dining Room",
+      "x": 721,
+      "y": 81
+     }
+    ]
+   },
+   {
+    "name": "Wish: Great Taste of Pharloom",
+    "sections": [
+     {
+      "name": "Wish: Great Taste of Pharloom"
+     }
+    ],
+    "map_locations": [
+     {
+      "map": "Choral Chambers Dining Room",
+      "x": 696,
+      "y": 84
+     }
+    ]
+   },
+   {
+    "name": "Choral Chambers Dining Room - top1 (T)",
+    "sections": [
+     {
+      "name": "Choral Chambers Dining Room - top1 (T)"
+     }
+    ],
+    "map_locations": [
+     {
+      "map": "Choral Chambers Dining Room",
+      "x": 152,
+      "y": 3
+     }
+    ]
+   },
    {
     "name": "Choral Chambers Dining Room - left1 (L)",
     "sections": [
@@ -21764,8 +22972,71 @@
     "map_locations": [
      {
       "map": "Choral Chambers Dining Room",
-      "x": 2,
-      "y": 146
+      "x": 8,
+      "y": 159
+     }
+    ]
+   },
+   {
+    "name": "Gourmand Servant",
+    "sections": [
+     {
+      "name": "Turn-in: Wish: Bone Bottom Repairs"
+     },
+     {
+      "name": "Turn-in: Wish: A Lifesaving Bridge"
+     },
+     {
+      "name": "Turn-in: Wish: An Icon of Hope"
+     },
+     {
+      "name": "Turn-in: Wish: Garb of the Pilgrims"
+     },
+     {
+      "name": "Turn-in: Wish: Volatile Flintbeetles"
+     },
+     {
+      "name": "Turn-in: Volatile Flintbeetles - Memory Locket"
+     },
+     {
+      "name": "Turn-in: Wish: The Terrible Tyrant"
+     },
+     {
+      "name": "Turn-in: Wish: Restoration of Bellhart"
+     },
+     {
+      "name": "Turn-in: Wish: Bellhart's Glory"
+     },
+     {
+      "name": "Turn-in: Wish: Hero's Call"
+     },
+     {
+      "name": "Turn-in: Wish: Silver Bells"
+     },
+     {
+      "name": "Turn-in: Savage Beastfly - Mask Shard"
+     },
+     {
+      "name": "Turn-in: The Hidden Hunter - Mask Shard"
+     },
+     {
+      "name": "Turn-in: Wish: Fine Pins"
+     },
+     {
+      "name": "Turn-in: Wish: Cloaks of the Choir"
+     },
+     {
+      "name": "Turn-in: Wish: Building Up Songclave"
+     },
+     {
+      "name": "Turn-in: Wish: Strengthening Songclave"
+     }
+    ],
+    "map_locations": [
+     {
+      "map": "Choral Chambers Dining Room",
+      "x": 696,
+      "y": 84
      }
     ]
    }
@@ -21785,7 +23056,7 @@
      {
       "map": "Choral Chambers Eastern Shaft",
       "x": 6,
-      "y": 723
+      "y": 704
      }
     ]
    },
@@ -21799,8 +23070,8 @@
     "map_locations": [
      {
       "map": "Choral Chambers Eastern Shaft",
-      "x": 306,
-      "y": 723
+      "x": 314,
+      "y": 704
      }
     ]
    },
@@ -21815,7 +23086,7 @@
      {
       "map": "Choral Chambers Eastern Shaft",
       "x": 0,
-      "y": 469
+      "y": 457
      }
     ]
    },
@@ -21829,8 +23100,8 @@
     "map_locations": [
      {
       "map": "Choral Chambers Eastern Shaft",
-      "x": 303,
-      "y": 430
+      "x": 311,
+      "y": 418
      }
     ]
    },
@@ -21845,7 +23116,7 @@
      {
       "map": "Choral Chambers Eastern Shaft",
       "x": 0,
-      "y": 280
+      "y": 272
      }
     ]
    },
@@ -21859,8 +23130,8 @@
     "map_locations": [
      {
       "map": "Choral Chambers Eastern Shaft",
-      "x": 310,
-      "y": 97
+      "x": 318,
+      "y": 95
      }
     ]
    }
@@ -21870,17 +23141,32 @@
   "name": "Choral Chambers Merchant Room",
   "children": [
    {
-    "name": "Choral Chambers - Rosary Cache #10",
+    "name": "Choral Chambers - Rosary Necklace #1",
     "sections": [
      {
-      "name": "Choral Chambers - Rosary Cache #10"
+      "name": "Choral Chambers - Rosary Necklace #1"
      }
     ],
     "map_locations": [
      {
       "map": "Choral Chambers Merchant Room",
-      "x": 19,
-      "y": 104
+      "x": 48,
+      "y": 128
+     }
+    ]
+   },
+   {
+    "name": "Merchant's funds",
+    "sections": [
+     {
+      "name": "Merchant's funds"
+     }
+    ],
+    "map_locations": [
+     {
+      "map": "Choral Chambers Merchant Room",
+      "x": 17,
+      "y": 124
      }
     ]
    },
@@ -21894,23 +23180,8 @@
     "map_locations": [
      {
       "map": "Choral Chambers Merchant Room",
-      "x": 226,
-      "y": 95
-     }
-    ]
-   },
-   {
-    "name": "Choral Chambers - Rosary Necklace #1",
-    "sections": [
-     {
-      "name": "Choral Chambers - Rosary Necklace #1"
-     }
-    ],
-    "map_locations": [
-     {
-      "map": "Choral Chambers Merchant Room",
-      "x": 19,
-      "y": 101
+      "x": 272,
+      "y": 114
      }
     ]
    },
@@ -21924,8 +23195,8 @@
     "map_locations": [
      {
       "map": "Choral Chambers Merchant Room",
-      "x": 413,
-      "y": 100
+      "x": 502,
+      "y": 120
      }
     ]
    }
@@ -21945,7 +23216,7 @@
      {
       "map": "Choral Chambers Below Dining",
       "x": 0,
-      "y": 69
+      "y": 88
      }
     ]
    },
@@ -21959,8 +23230,8 @@
     "map_locations": [
      {
       "map": "Choral Chambers Below Dining",
-      "x": 411,
-      "y": 269
+      "x": 444,
+      "y": 343
      }
     ]
    }
@@ -21979,8 +23250,8 @@
     "map_locations": [
      {
       "map": "Choral Chambers Below Spa",
-      "x": 1337,
-      "y": 87
+      "x": 1187,
+      "y": 76
      }
     ]
    },
@@ -21995,7 +23266,7 @@
      {
       "map": "Choral Chambers Below Spa",
       "x": 0,
-      "y": 139
+      "y": 120
      }
     ]
    }
@@ -22005,35 +23276,47 @@
   "name": "Choral Chambers Above Ventrica",
   "children": [
    {
-    "name": "Choral Chambers - Rosary Cache #8",
+    "name": "Choristor's precious belongings",
     "sections": [
      {
-      "name": "Choral Chambers - Rosary Cache #8"
-     },
-     {
-      "name": "Choral Chambers - Rosary Cache #9"
+      "name": "Choristor's precious belongings"
      }
     ],
     "map_locations": [
      {
       "map": "Choral Chambers Above Ventrica",
-      "x": 267,
-      "y": 36
+      "x": 820,
+      "y": 229
      }
     ]
    },
    {
-    "name": "Choral Chambers - Rosary Chest #1",
+    "name": "Old Ventrica gains",
     "sections": [
      {
-      "name": "Choral Chambers - Rosary Chest #1"
+      "name": "Old Ventrica gains"
      }
     ],
     "map_locations": [
      {
       "map": "Choral Chambers Above Ventrica",
-      "x": 873,
-      "y": 230
+      "x": 247,
+      "y": 44
+     }
+    ]
+   },
+   {
+    "name": "Old Ventrica treasury",
+    "sections": [
+     {
+      "name": "Old Ventrica treasury"
+     }
+    ],
+    "map_locations": [
+     {
+      "map": "Choral Chambers Above Ventrica",
+      "x": 237,
+      "y": 53
      }
     ]
    },
@@ -22047,8 +23330,8 @@
     "map_locations": [
      {
       "map": "Choral Chambers Above Ventrica",
-      "x": 340,
-      "y": 263
+      "x": 323,
+      "y": 254
      }
     ]
    },
@@ -22062,7 +23345,7 @@
     "map_locations": [
      {
       "map": "Choral Chambers Above Ventrica",
-      "x": 200,
+      "x": 190,
       "y": 0
      }
     ]
@@ -22073,6 +23356,51 @@
   "name": "Choral Chambers Ventrica Room",
   "children": [
    {
+    "name": "Ventrica's stored funds",
+    "sections": [
+     {
+      "name": "Ventrica's stored funds"
+     }
+    ],
+    "map_locations": [
+     {
+      "map": "Choral Chambers Ventrica Room",
+      "x": 97,
+      "y": 56
+     }
+    ]
+   },
+   {
+    "name": "Ventrica's maintenance fees",
+    "sections": [
+     {
+      "name": "Ventrica's maintenance fees"
+     }
+    ],
+    "map_locations": [
+     {
+      "map": "Choral Chambers Ventrica Room",
+      "x": 83,
+      "y": 67
+     }
+    ]
+   },
+   {
+    "name": "Ventrica's closed door budget",
+    "sections": [
+     {
+      "name": "Ventrica's closed door budget"
+     }
+    ],
+    "map_locations": [
+     {
+      "map": "Choral Chambers Ventrica Room",
+      "x": 78,
+      "y": 85
+     }
+    ]
+   },
+   {
     "name": "Choral Chambers - Map Purchase",
     "sections": [
      {
@@ -22082,8 +23410,8 @@
     "map_locations": [
      {
       "map": "Choral Chambers Ventrica Room",
-      "x": 692,
-      "y": 121
+      "x": 651,
+      "y": 102
      }
     ]
    },
@@ -22097,41 +23425,8 @@
     "map_locations": [
      {
       "map": "Choral Chambers Ventrica Room",
-      "x": 323,
-      "y": 93
-     }
-    ]
-   },
-   {
-    "name": "Choral Chambers - Rosary Cache #5",
-    "sections": [
-     {
-      "name": "Choral Chambers - Rosary Cache #5"
-     },
-     {
-      "name": "Choral Chambers - Rosary Cache #6"
-     }
-    ],
-    "map_locations": [
-     {
-      "map": "Choral Chambers Ventrica Room",
-      "x": 88,
-      "y": 62
-     }
-    ]
-   },
-   {
-    "name": "Choral Chambers - Rosary Cache #7",
-    "sections": [
-     {
-      "name": "Choral Chambers - Rosary Cache #7"
-     }
-    ],
-    "map_locations": [
-     {
-      "map": "Choral Chambers Ventrica Room",
-      "x": 113,
-      "y": 60
+      "x": 304,
+      "y": 79
      }
     ]
    },
@@ -22145,8 +23440,8 @@
     "map_locations": [
      {
       "map": "Choral Chambers Ventrica Room",
-      "x": 836,
-      "y": 90
+      "x": 787,
+      "y": 76
      }
     ]
    },
@@ -22160,7 +23455,7 @@
     "map_locations": [
      {
       "map": "Choral Chambers Ventrica Room",
-      "x": 222,
+      "x": 209,
       "y": 0
      }
     ]
@@ -22175,8 +23470,8 @@
     "map_locations": [
      {
       "map": "Choral Chambers Ventrica Room",
-      "x": 505,
-      "y": 143
+      "x": 476,
+      "y": 121
      }
     ]
    },
@@ -22190,8 +23485,8 @@
     "map_locations": [
      {
       "map": "Choral Chambers Ventrica Room",
-      "x": 323,
-      "y": 111
+      "x": 304,
+      "y": 94
      }
     ]
    }
@@ -22201,50 +23496,32 @@
   "name": "Choral Chambers Below Ventrica",
   "children": [
    {
-    "name": "Choral Chambers - Rosary Cache #1",
+    "name": "Ventrica worker's wage",
     "sections": [
      {
-      "name": "Choral Chambers - Rosary Cache #1"
-     },
-     {
-      "name": "Choral Chambers - Rosary Cache #2"
+      "name": "Ventrica worker's wage"
      }
     ],
     "map_locations": [
      {
       "map": "Choral Chambers Below Ventrica",
-      "x": 120,
-      "y": 343
+      "x": 676,
+      "y": 126
      }
     ]
    },
    {
-    "name": "Choral Chambers - Rosary Cache #3",
+    "name": "Ventrica worker's stolen funds",
     "sections": [
      {
-      "name": "Choral Chambers - Rosary Cache #3"
+      "name": "Ventrica worker's stolen funds"
      }
     ],
     "map_locations": [
      {
       "map": "Choral Chambers Below Ventrica",
-      "x": 669,
-      "y": 82
-     }
-    ]
-   },
-   {
-    "name": "Choral Chambers - Rosary Cache #4",
-    "sections": [
-     {
-      "name": "Choral Chambers - Rosary Cache #4"
-     }
-    ],
-    "map_locations": [
-     {
-      "map": "Choral Chambers Below Ventrica",
-      "x": 675,
-      "y": 93
+      "x": 688,
+      "y": 131
      }
     ]
    },
@@ -22258,8 +23535,38 @@
     "map_locations": [
      {
       "map": "Choral Chambers Below Ventrica",
-      "x": 434,
-      "y": 211
+      "x": 448,
+      "y": 267
+     }
+    ]
+   },
+   {
+    "name": "Ventrica Window's repairing fees",
+    "sections": [
+     {
+      "name": "Ventrica Window's repairing fees"
+     }
+    ],
+    "map_locations": [
+     {
+      "map": "Choral Chambers Below Ventrica",
+      "x": 121,
+      "y": 431
+     }
+    ]
+   },
+   {
+    "name": "Ventrica Window's cleaning fees",
+    "sections": [
+     {
+      "name": "Ventrica Window's cleaning fees"
+     }
+    ],
+    "map_locations": [
+     {
+      "map": "Choral Chambers Below Ventrica",
+      "x": 111,
+      "y": 438
      }
     ]
    },
@@ -22273,8 +23580,8 @@
     "map_locations": [
      {
       "map": "Choral Chambers Below Ventrica",
-      "x": 146,
-      "y": 621
+      "x": 152,
+      "y": 746
      }
     ]
    },
@@ -22288,7 +23595,7 @@
     "map_locations": [
      {
       "map": "Choral Chambers Below Ventrica",
-      "x": 685,
+      "x": 711,
       "y": 0
      }
     ]
@@ -22303,8 +23610,8 @@
     "map_locations": [
      {
       "map": "Choral Chambers Below Ventrica",
-      "x": 991,
-      "y": 436
+      "x": 1029,
+      "y": 523
      }
     ]
    }
@@ -22323,8 +23630,8 @@
     "map_locations": [
      {
       "map": "Choral Chambers Outisde Underworks",
-      "x": 317,
-      "y": 81
+      "x": 298,
+      "y": 149
      }
     ]
    },
@@ -22338,8 +23645,8 @@
     "map_locations": [
      {
       "map": "Choral Chambers Outisde Underworks",
-      "x": 102,
-      "y": 65
+      "x": 6,
+      "y": 120
      }
     ]
    }
@@ -22361,8 +23668,8 @@
     "map_locations": [
      {
       "map": "Songclave Tube",
-      "x": 81,
-      "y": 88
+      "x": 102,
+      "y": 100
      }
     ]
    },
@@ -22376,8 +23683,8 @@
     "map_locations": [
      {
       "map": "Songclave Tube",
-      "x": 151,
-      "y": 114
+      "x": 190,
+      "y": 130
      }
     ]
    }
@@ -22396,7 +23703,7 @@
     "map_locations": [
      {
       "map": "Memorium Entrance Tunnel",
-      "x": 64,
+      "x": 63,
       "y": 0
      }
     ]
@@ -22412,7 +23719,7 @@
      {
       "map": "Memorium Entrance Tunnel",
       "x": 3,
-      "y": 126
+      "y": 120
      }
     ]
    },
@@ -22426,7 +23733,7 @@
     "map_locations": [
      {
       "map": "Memorium Entrance Tunnel",
-      "x": 596,
+      "x": 584,
       "y": 0
      }
     ]
@@ -22441,8 +23748,8 @@
     "map_locations": [
      {
       "map": "Memorium Entrance Tunnel",
-      "x": 1634,
-      "y": 140
+      "x": 1600,
+      "y": 133
      }
     ]
    },
@@ -22456,8 +23763,8 @@
     "map_locations": [
      {
       "map": "Memorium Entrance Tunnel",
-      "x": 596,
-      "y": 176
+      "x": 584,
+      "y": 168
      }
     ]
    }
@@ -22521,23 +23828,23 @@
     "map_locations": [
      {
       "map": "Rotating Tunnel",
-      "x": 117,
-      "y": 508
+      "x": 95,
+      "y": 482
      }
     ]
    },
    {
-    "name": "Rotating Tunnel - right3 (RH)",
+    "name": "Rotating Tunnel - right3",
     "sections": [
      {
-      "name": "Rotating Tunnel - right3 (RH)"
+      "name": "Rotating Tunnel - right3"
      }
     ],
     "map_locations": [
      {
       "map": "Rotating Tunnel",
-      "x": 316,
-      "y": 339
+      "x": 318,
+      "y": 336
      }
     ]
    },
@@ -22551,8 +23858,8 @@
     "map_locations": [
      {
       "map": "Rotating Tunnel",
-      "x": 0,
-      "y": 342
+      "x": 6,
+      "y": 336
      }
     ]
    }
@@ -22571,8 +23878,8 @@
     "map_locations": [
      {
       "map": "Songclave Silk Shop",
-      "x": 315,
-      "y": 84
+      "x": 260,
+      "y": 88
      }
     ]
    }
@@ -22686,23 +23993,23 @@
     "map_locations": [
      {
       "map": "Grand Bellway Side Room",
-      "x": 323,
-      "y": 162
+      "x": 337,
+      "y": 211
      }
     ]
    },
    {
-    "name": "Choral Chambers - Rosary Chest #3",
+    "name": "Grand bellway hidden chest",
     "sections": [
      {
-      "name": "Choral Chambers - Rosary Chest #3"
+      "name": "Grand bellway hidden chest"
      }
     ],
     "map_locations": [
      {
       "map": "Grand Bellway Side Room",
-      "x": 49,
-      "y": 78
+      "x": 47,
+      "y": 106
      }
     ]
    },
@@ -22716,8 +24023,8 @@
     "map_locations": [
      {
       "map": "Grand Bellway Side Room",
-      "x": 372,
-      "y": 77
+      "x": 387,
+      "y": 101
      }
     ]
    }
@@ -22736,8 +24043,8 @@
     "map_locations": [
      {
       "map": "Grand Bellway",
-      "x": 405,
-      "y": 67
+      "x": 428,
+      "y": 74
      }
     ]
    },
@@ -22751,8 +24058,8 @@
     "map_locations": [
      {
       "map": "Grand Bellway",
-      "x": 615,
-      "y": 149
+      "x": 673,
+      "y": 167
      }
     ]
    },
@@ -22766,8 +24073,8 @@
     "map_locations": [
      {
       "map": "Grand Bellway",
-      "x": 239,
-      "y": 148
+      "x": 253,
+      "y": 164
      }
     ]
    },
@@ -22781,8 +24088,8 @@
     "map_locations": [
      {
       "map": "Grand Bellway",
-      "x": 489,
-      "y": 128
+      "x": 518,
+      "y": 142
      }
     ]
    },
@@ -22796,8 +24103,8 @@
     "map_locations": [
      {
       "map": "Grand Bellway",
-      "x": 672,
-      "y": 57
+      "x": 711,
+      "y": 63
      }
     ]
    },
@@ -22812,7 +24119,7 @@
      {
       "map": "Grand Bellway",
       "x": 3,
-      "y": 115
+      "y": 127
      }
     ]
    },
@@ -22826,8 +24133,8 @@
     "map_locations": [
      {
       "map": "Grand Bellway",
-      "x": 247,
-      "y": 145
+      "x": 262,
+      "y": 161
      }
     ]
    },
@@ -22841,8 +24148,23 @@
     "map_locations": [
      {
       "map": "Grand Bellway",
-      "x": 489,
-      "y": 142
+      "x": 518,
+      "y": 157
+     }
+    ]
+   },
+   {
+    "name": "Grand Bellway - BE Arena (BB)",
+    "sections": [
+     {
+      "name": "Grand Bellway - BE Arena (BB)"
+     }
+    ],
+    "map_locations": [
+     {
+      "map": "Grand Bellway",
+      "x": 313,
+      "y": 226
      }
     ]
    }
@@ -22861,8 +24183,8 @@
     "map_locations": [
      {
       "map": "Choral Chambers East to West",
-      "x": 434,
-      "y": 64
+      "x": 358,
+      "y": 60
      }
     ]
    },
@@ -22876,8 +24198,8 @@
     "map_locations": [
      {
       "map": "Choral Chambers East to West",
-      "x": 1654,
-      "y": 136
+      "x": 1365,
+      "y": 127
      }
     ]
    },
@@ -22891,8 +24213,46 @@
     "map_locations": [
      {
       "map": "Choral Chambers East to West",
-      "x": 11,
-      "y": 136
+      "x": 9,
+      "y": 127
+     }
+    ]
+   }
+  ]
+ },
+ {
+  "name": "Bellway Centipede Arena",
+  "children": [
+   {
+    "name": "Journal: Bell Eater",
+    "sections": [
+     {
+      "name": "Journal: Bell Eater"
+     },
+     {
+      "name": "Boss: Bell Eater"
+     }
+    ],
+    "map_locations": [
+     {
+      "map": "Bellway Centipede Arena",
+      "x": 8919,
+      "y": 2110
+     }
+    ]
+   },
+   {
+    "name": "Bellway Centipede Arena - top1 (T)",
+    "sections": [
+     {
+      "name": "Bellway Centipede Arena - top1 (T)"
+     }
+    ],
+    "map_locations": [
+     {
+      "map": "Bellway Centipede Arena",
+      "x": 4416,
+      "y": 1760
      }
     ]
    }
@@ -23097,6 +24457,41 @@
   ]
  },
  {
+  "name": "Cogwork Core Bench & Map",
+  "children": [
+   {
+    "name": "Cogwork Core - Map Pickup",
+    "sections": [
+     {
+      "name": "Cogwork Core - Map Pickup"
+     }
+    ],
+    "map_locations": [
+     {
+      "map": "Cogwork Core Bench & Map",
+      "x": 1680,
+      "y": 701
+     }
+    ]
+   },
+   {
+    "name": "Cogwork Core Bench & Map - left1",
+    "sections": [
+     {
+      "name": "Cogwork Core Bench & Map - left1"
+     }
+    ],
+    "map_locations": [
+     {
+      "map": "Cogwork Core Bench & Map",
+      "x": 32,
+      "y": 1984
+     }
+    ]
+   }
+  ]
+ },
+ {
   "name": "Cogwork Core Breakable Walls",
   "children": [
    {
@@ -23109,8 +24504,8 @@
     "map_locations": [
      {
       "map": "Cogwork Core Breakable Walls",
-      "x": 38,
-      "y": 1223
+      "x": 41,
+      "y": 1187
      }
     ]
    },
@@ -23125,7 +24520,7 @@
      {
       "map": "Cogwork Core Breakable Walls",
       "x": 0,
-      "y": 71
+      "y": 69
      }
     ]
    }
@@ -23211,6 +24606,41 @@
       "map": "Cogwork Core East Silk Spool & Gauntlet",
       "x": 0,
       "y": 269
+     }
+    ]
+   }
+  ]
+ },
+ {
+  "name": "Cogwork Core Main Connection",
+  "children": [
+   {
+    "name": "Cogwork Core Main Connection - left2",
+    "sections": [
+     {
+      "name": "Cogwork Core Main Connection - left2"
+     }
+    ],
+    "map_locations": [
+     {
+      "map": "Cogwork Core Main Connection",
+      "x": 32,
+      "y": 3776
+     }
+    ]
+   },
+   {
+    "name": "Cogwork Core Main Connection - left1 (TL)",
+    "sections": [
+     {
+      "name": "Cogwork Core Main Connection - left1 (TL)"
+     }
+    ],
+    "map_locations": [
+     {
+      "map": "Cogwork Core Main Connection",
+      "x": 32,
+      "y": 512
      }
     ]
    }
@@ -23833,10 +25263,10 @@
     ]
    },
    {
-    "name": "Whispering Vaults Flea Shaft - left2 (CL)",
+    "name": "Whispering Vaults Flea Shaft - left2",
     "sections": [
      {
-      "name": "Whispering Vaults Flea Shaft - left2 (CL)"
+      "name": "Whispering Vaults Flea Shaft - left2"
      }
     ],
     "map_locations": [
@@ -24358,10 +25788,10 @@
     ]
    },
    {
-    "name": "Grand Bellway Library - right1 (R)",
+    "name": "Grand Bellway Library - right1",
     "sections": [
      {
-      "name": "Grand Bellway Library - right1 (R)"
+      "name": "Grand Bellway Library - right1"
      }
     ],
     "map_locations": [
@@ -24408,10 +25838,10 @@
     ]
    },
    {
-    "name": "Songclave Steam Tunnel - left1 (BL)",
+    "name": "Songclave Steam Tunnel - left1",
     "sections": [
      {
-      "name": "Songclave Steam Tunnel - left1 (BL)"
+      "name": "Songclave Steam Tunnel - left1"
      }
     ],
     "map_locations": [
@@ -24775,6 +26205,44 @@
       "map": "Whiteward Entrance",
       "x": 484,
       "y": 594
+     }
+    ]
+   }
+  ]
+ },
+ {
+  "name": "Whiteward Sherma Gauntlet",
+  "children": [
+   {
+    "name": "Balm for the Wounded - Spool Fragment",
+    "sections": [
+     {
+      "name": "Balm for the Wounded - Spool Fragment"
+     },
+     {
+      "name": "Wish: Balm for the Wounded"
+     }
+    ],
+    "map_locations": [
+     {
+      "map": "Whiteward Sherma Gauntlet",
+      "x": 3883,
+      "y": 810
+     }
+    ]
+   },
+   {
+    "name": "Whiteward Sherma Gauntlet - Left (L)",
+    "sections": [
+     {
+      "name": "Whiteward Sherma Gauntlet - Left (L)"
+     }
+    ],
+    "map_locations": [
+     {
+      "map": "Whiteward Sherma Gauntlet",
+      "x": 64,
+      "y": 704
      }
     ]
    }
@@ -25405,10 +26873,10 @@
     ]
    },
    {
-    "name": "High Halls Big Shaft - left3 (SL)",
+    "name": "High Halls Big Shaft - left3",
     "sections": [
      {
-      "name": "High Halls Big Shaft - left3 (SL)"
+      "name": "High Halls Big Shaft - left3"
      }
     ],
     "map_locations": [
@@ -25545,10 +27013,10 @@
     ]
    },
    {
-    "name": "High Halls Flooded Room - right1 (R)",
+    "name": "High Halls Flooded Room - right1",
     "sections": [
      {
-      "name": "High Halls Flooded Room - right1 (R)"
+      "name": "High Halls Flooded Room - right1"
      }
     ],
     "map_locations": [
@@ -26404,6 +27872,51 @@
       "y": 475
      }
     ]
+   },
+   {
+    "name": "Bilewater East Column - middle left (ML)",
+    "sections": [
+     {
+      "name": "Bilewater East Column - middle left (ML)"
+     }
+    ],
+    "map_locations": [
+     {
+      "map": "Bilewater East Column",
+      "x": 0,
+      "y": 294
+     }
+    ]
+   },
+   {
+    "name": "Bilewater East Column - left1",
+    "sections": [
+     {
+      "name": "Bilewater East Column - left1"
+     }
+    ],
+    "map_locations": [
+     {
+      "map": "Bilewater East Column",
+      "x": 0,
+      "y": 59
+     }
+    ]
+   },
+   {
+    "name": "Bilewater East Column - left2",
+    "sections": [
+     {
+      "name": "Bilewater East Column - left2"
+     }
+    ],
+    "map_locations": [
+     {
+      "map": "Bilewater East Column",
+      "x": 0,
+      "y": 506
+     }
+    ]
    }
   ]
  },
@@ -26491,10 +28004,10 @@
     ]
    },
    {
-    "name": "Bilewater Groal Arena - right (R)",
+    "name": "Bilewater Groal Arena - right1",
     "sections": [
      {
-      "name": "Bilewater Groal Arena - right (R)"
+      "name": "Bilewater Groal Arena - right1"
      }
     ],
     "map_locations": [
@@ -27125,8 +28638,8 @@
     "map_locations": [
      {
       "map": "Bilewater Slubberlug River",
-      "x": 2010,
-      "y": 75
+      "x": 2066,
+      "y": 65
      }
     ]
    },
@@ -27406,10 +28919,10 @@
   "name": "Bilewater Upper Trap Gauntlet Hall",
   "children": [
    {
-    "name": "Bilewater Upper Trap Gauntlet Hall - right (R)",
+    "name": "Bilewater Upper Trap Gauntlet Hall - right1",
     "sections": [
      {
-      "name": "Bilewater Upper Trap Gauntlet Hall - right (R)"
+      "name": "Bilewater Upper Trap Gauntlet Hall - right1"
      }
     ],
     "map_locations": [
@@ -27421,10 +28934,10 @@
     ]
    },
    {
-    "name": "Bilewater Upper Trap Gauntlet Hall - left (L)",
+    "name": "Bilewater Upper Trap Gauntlet Hall - left1",
     "sections": [
      {
-      "name": "Bilewater Upper Trap Gauntlet Hall - left (L)"
+      "name": "Bilewater Upper Trap Gauntlet Hall - left1"
      }
     ],
     "map_locations": [
@@ -27521,10 +29034,10 @@
     ]
    },
    {
-    "name": "Bilewater Vertical Sac Pogo Room - upper left (UL)",
+    "name": "Bilewater Vertical Sac Pogo Room - left1",
     "sections": [
      {
-      "name": "Bilewater Vertical Sac Pogo Room - upper left (UL)"
+      "name": "Bilewater Vertical Sac Pogo Room - left1"
      }
     ],
     "map_locations": [
@@ -29761,32 +31274,32 @@
   "name": "Slab Bridge",
   "children": [
    {
-    "name": "Slab Bridge - left1 (L)",
+    "name": "Slab Bridge - left1",
     "sections": [
      {
-      "name": "Slab Bridge - left1 (L)"
+      "name": "Slab Bridge - left1"
      }
     ],
     "map_locations": [
      {
       "map": "Slab Bridge",
-      "x": 148,
-      "y": 114
+      "x": 161,
+      "y": 133
      }
     ]
    },
    {
-    "name": "Slab Bridge - right1 (R)",
+    "name": "Slab Bridge - right1",
     "sections": [
      {
-      "name": "Slab Bridge - right1 (R)"
+      "name": "Slab Bridge - right1"
      }
     ],
     "map_locations": [
      {
       "map": "Slab Bridge",
-      "x": 1163,
-      "y": 114
+      "x": 1270,
+      "y": 133
      }
     ]
    }
@@ -29795,6 +31308,21 @@
  {
   "name": "Slab Arena",
   "children": [
+   {
+    "name": "Key of Heretic",
+    "sections": [
+     {
+      "name": "Key of Heretic"
+     }
+    ],
+    "map_locations": [
+     {
+      "map": "Slab Arena",
+      "x": 161,
+      "y": 392
+     }
+    ]
+   },
    {
     "name": "Slab Arena - door1 (D)",
     "sections": [
@@ -29805,8 +31333,8 @@
     "map_locations": [
      {
       "map": "Slab Arena",
-      "x": 177,
-      "y": 400
+      "x": 181,
+      "y": 388
      }
     ]
    },
@@ -29820,23 +31348,23 @@
     "map_locations": [
      {
       "map": "Slab Arena",
-      "x": 267,
-      "y": 523
+      "x": 273,
+      "y": 508
      }
     ]
    },
    {
-    "name": "Slab Arena - left1 (L)",
+    "name": "Slab Arena - left1",
     "sections": [
      {
-      "name": "Slab Arena - left1 (L)"
+      "name": "Slab Arena - left1"
      }
     ],
     "map_locations": [
      {
       "map": "Slab Arena",
-      "x": 52,
-      "y": 438
+      "x": 53,
+      "y": 425
      }
     ]
    },
@@ -29850,23 +31378,61 @@
     "map_locations": [
      {
       "map": "Slab Arena",
-      "x": 117,
+      "x": 120,
       "y": 0
      }
     ]
    },
    {
-    "name": "Slab Arena - right1 (R)",
+    "name": "Slab Arena - right1",
     "sections": [
      {
-      "name": "Slab Arena - right1 (R)"
+      "name": "Slab Arena - right1"
      }
     ],
     "map_locations": [
      {
       "map": "Slab Arena",
-      "x": 621,
-      "y": 392
+      "x": 635,
+      "y": 381
+     }
+    ]
+   }
+  ]
+ },
+ {
+  "name": "Slab Broodmother Alcove",
+  "children": [
+   {
+    "name": "Journal: Broodmother",
+    "sections": [
+     {
+      "name": "Journal: Broodmother"
+     },
+     {
+      "name": "Boss: Broodmother"
+     }
+    ],
+    "map_locations": [
+     {
+      "map": "Slab Broodmother Alcove",
+      "x": 3456,
+      "y": 1363
+     }
+    ]
+   },
+   {
+    "name": "Slab Broodmother Alcove - Exit (E)",
+    "sections": [
+     {
+      "name": "Slab Broodmother Alcove - Exit (E)"
+     }
+    ],
+    "map_locations": [
+     {
+      "map": "Slab Broodmother Alcove",
+      "x": 128,
+      "y": 576
      }
     ]
    }
@@ -29891,10 +31457,10 @@
     ]
    },
    {
-    "name": "Slab Cell - left1 (L0L)",
+    "name": "Slab Cell - left1",
     "sections": [
      {
-      "name": "Slab Cell - left1 (L0L)"
+      "name": "Slab Cell - left1"
      }
     ],
     "map_locations": [
@@ -29906,10 +31472,10 @@
     ]
    },
    {
-    "name": "Slab Cell - right1 (L0R)",
+    "name": "Slab Cell - right1 (WHY)",
     "sections": [
      {
-      "name": "Slab Cell - right1 (L0R)"
+      "name": "Slab Cell - right1 (WHY)"
      }
     ],
     "map_locations": [
@@ -29921,10 +31487,10 @@
     ]
    },
    {
-    "name": "Slab Cell - left2 (L1L)",
+    "name": "Slab Cell - left2",
     "sections": [
      {
-      "name": "Slab Cell - left2 (L1L)"
+      "name": "Slab Cell - left2"
      }
     ],
     "map_locations": [
@@ -29936,10 +31502,10 @@
     ]
    },
    {
-    "name": "Slab Cell - right2 (L1R)",
+    "name": "Slab Cell - right2 (SCR)",
     "sections": [
      {
-      "name": "Slab Cell - right2 (L1R)"
+      "name": "Slab Cell - right2 (SCR)"
      }
     ],
     "map_locations": [
@@ -29951,10 +31517,10 @@
     ]
    },
    {
-    "name": "Slab Cell - left3 (L2L)",
+    "name": "Slab Cell - left3 (IND)",
     "sections": [
      {
-      "name": "Slab Cell - left3 (L2L)"
+      "name": "Slab Cell - left3 (IND)"
      }
     ],
     "map_locations": [
@@ -29966,10 +31532,10 @@
     ]
    },
    {
-    "name": "Slab Cell - right3 (L2R)",
+    "name": "Slab Cell - right3 (GRN)",
     "sections": [
      {
-      "name": "Slab Cell - right3 (L2R)"
+      "name": "Slab Cell - right3 (GRN)"
      }
     ],
     "map_locations": [
@@ -29981,10 +31547,10 @@
     ]
    },
    {
-    "name": "Slab Cell - left4 (L3L)",
+    "name": "Slab Cell - left4 (FL1)",
     "sections": [
      {
-      "name": "Slab Cell - left4 (L3L)"
+      "name": "Slab Cell - left4 (FL1)"
      }
     ],
     "map_locations": [
@@ -29996,10 +31562,10 @@
     ]
    },
    {
-    "name": "Slab Cell - right4 (L3R)",
+    "name": "Slab Cell - right4 (CVN)",
     "sections": [
      {
-      "name": "Slab Cell - right4 (L3R)"
+      "name": "Slab Cell - right4 (CVN)"
      }
     ],
     "map_locations": [
@@ -30011,10 +31577,10 @@
     ]
    },
    {
-    "name": "Slab Cell - left5 (L4L)",
+    "name": "Slab Cell - left5",
     "sections": [
      {
-      "name": "Slab Cell - left5 (L4L)"
+      "name": "Slab Cell - left5"
      }
     ],
     "map_locations": [
@@ -30026,10 +31592,10 @@
     ]
    },
    {
-    "name": "Slab Cell - right5 (L4R)",
+    "name": "Slab Cell - right5 (ENT)",
     "sections": [
      {
-      "name": "Slab Cell - right5 (L4R)"
+      "name": "Slab Cell - right5 (ENT)"
      }
     ],
     "map_locations": [
@@ -30041,10 +31607,10 @@
     ]
    },
    {
-    "name": "Slab Cell - left6 (L5L)",
+    "name": "Slab Cell - left6 (F2B)",
     "sections": [
      {
-      "name": "Slab Cell - left6 (L5L)"
+      "name": "Slab Cell - left6 (F2B)"
      }
     ],
     "map_locations": [
@@ -30056,10 +31622,10 @@
     ]
    },
    {
-    "name": "Slab Cell - right8 (L5R)",
+    "name": "Slab Cell - right8",
     "sections": [
      {
-      "name": "Slab Cell - right8 (L5R)"
+      "name": "Slab Cell - right8"
      }
     ],
     "map_locations": [
@@ -30071,10 +31637,10 @@
     ]
    },
    {
-    "name": "Slab Cell - right7 (L6R)",
+    "name": "Slab Cell - right7 (PRL)",
     "sections": [
      {
-      "name": "Slab Cell - right7 (L6R)"
+      "name": "Slab Cell - right7 (PRL)"
      }
     ],
     "map_locations": [
@@ -30086,10 +31652,10 @@
     ]
    },
    {
-    "name": "Slab Cell - left7 (L7L)",
+    "name": "Slab Cell - left7 (PDT)",
     "sections": [
      {
-      "name": "Slab Cell - left7 (L7L)"
+      "name": "Slab Cell - left7 (PDT)"
      }
     ],
     "map_locations": [
@@ -30101,10 +31667,10 @@
     ]
    },
    {
-    "name": "Slab Cell - left8 (L8L)",
+    "name": "Slab Cell - left8",
     "sections": [
      {
-      "name": "Slab Cell - left8 (L8L)"
+      "name": "Slab Cell - left8"
      }
     ],
     "map_locations": [
@@ -30116,10 +31682,10 @@
     ]
    },
    {
-    "name": "Slab Cell - right9 (L8R)",
+    "name": "Slab Cell - right9 (WND)",
     "sections": [
      {
-      "name": "Slab Cell - right9 (L8R)"
+      "name": "Slab Cell - right9 (WND)"
      }
     ],
     "map_locations": [
@@ -30136,17 +31702,17 @@
   "name": "Slab Chilly Prison",
   "children": [
    {
-    "name": "Slab Chilly Prison - left1 (L)",
+    "name": "Slab Chilly Prison - left1",
     "sections": [
      {
-      "name": "Slab Chilly Prison - left1 (L)"
+      "name": "Slab Chilly Prison - left1"
      }
     ],
     "map_locations": [
      {
       "map": "Slab Chilly Prison",
       "x": 0,
-      "y": 163
+      "y": 133
      }
     ]
    },
@@ -30160,8 +31726,8 @@
     "map_locations": [
      {
       "map": "Slab Chilly Prison",
-      "x": 453,
-      "y": 195
+      "x": 463,
+      "y": 159
      }
     ]
    },
@@ -30175,23 +31741,23 @@
     "map_locations": [
      {
       "map": "Slab Chilly Prison",
-      "x": 267,
+      "x": 273,
       "y": 0
      }
     ]
    },
    {
-    "name": "Slab Chilly Prison - right1 (R)",
+    "name": "Slab Chilly Prison - right1",
     "sections": [
      {
-      "name": "Slab Chilly Prison - right1 (R)"
+      "name": "Slab Chilly Prison - right1"
      }
     ],
     "map_locations": [
      {
       "map": "Slab Chilly Prison",
-      "x": 621,
-      "y": 163
+      "x": 635,
+      "y": 133
      }
     ]
    }
@@ -30200,21 +31766,6 @@
  {
   "name": "Slab Bellway",
   "children": [
-   {
-    "name": "The Slab - Bellway",
-    "sections": [
-     {
-      "name": "The Slab - Bellway"
-     }
-    ],
-    "map_locations": [
-     {
-      "map": "Slab Bellway",
-      "x": 269,
-      "y": 188
-     }
-    ]
-   },
    {
     "name": "Flea: The Slab - Bellway",
     "sections": [
@@ -30225,8 +31776,23 @@
     "map_locations": [
      {
       "map": "Slab Bellway",
-      "x": 511,
-      "y": 44
+      "x": 526,
+      "y": 46
+     }
+    ]
+   },
+   {
+    "name": "The Slab - Bellway",
+    "sections": [
+     {
+      "name": "The Slab - Bellway"
+     }
+    ],
+    "map_locations": [
+     {
+      "map": "Slab Bellway",
+      "x": 226,
+      "y": 207
      }
     ]
    },
@@ -30240,23 +31806,23 @@
     "map_locations": [
      {
       "map": "Slab Bellway",
-      "x": 402,
+      "x": 422,
       "y": 0
      }
     ]
    },
    {
-    "name": "Slab Bellway - left1 (L)",
+    "name": "Slab Bellway - left1",
     "sections": [
      {
-      "name": "Slab Bellway - left1 (L)"
+      "name": "Slab Bellway - left1"
      }
     ],
     "map_locations": [
      {
       "map": "Slab Bellway",
       "x": 0,
-      "y": 159
+      "y": 158
      }
     ]
    },
@@ -30270,8 +31836,8 @@
     "map_locations": [
      {
       "map": "Slab Bellway",
-      "x": 270,
-      "y": 185
+      "x": 283,
+      "y": 184
      }
     ]
    }
@@ -30290,8 +31856,8 @@
     "map_locations": [
      {
       "map": "Slab Cave Entrance",
-      "x": 140,
-      "y": 129
+      "x": 129,
+      "y": 170
      }
     ]
    },
@@ -30305,38 +31871,38 @@
     "map_locations": [
      {
       "map": "Slab Cave Entrance",
-      "x": 186,
-      "y": 129
+      "x": 161,
+      "y": 168
      }
     ]
    },
    {
-    "name": "Slab Cave Entrance - door1 (D)",
+    "name": "Slab Cave Entrance - door1",
     "sections": [
      {
-      "name": "Slab Cave Entrance - door1 (D)"
+      "name": "Slab Cave Entrance - door1"
      }
     ],
     "map_locations": [
      {
       "map": "Slab Cave Entrance",
-      "x": 86,
-      "y": 45
+      "x": 79,
+      "y": 57
      }
     ]
    },
    {
-    "name": "Slab Cave Entrance - left1 (L)",
+    "name": "Slab Cave Entrance - left1",
     "sections": [
      {
-      "name": "Slab Cave Entrance - left1 (L)"
+      "name": "Slab Cave Entrance - left1"
      }
     ],
     "map_locations": [
      {
       "map": "Slab Cave Entrance",
       "x": 0,
-      "y": 149
+      "y": 190
      }
     ]
    }
@@ -30356,7 +31922,7 @@
      {
       "map": "Slab Cavern Exit",
       "x": 0,
-      "y": 94
+      "y": 76
      }
     ]
    },
@@ -30370,38 +31936,38 @@
     "map_locations": [
      {
       "map": "Slab Cavern Exit",
-      "x": 609,
-      "y": 94
+      "x": 648,
+      "y": 76
      }
     ]
    },
    {
-    "name": "Slab Cavern Exit - door1 (D1)",
+    "name": "Slab Cavern Exit - door1 (P)",
     "sections": [
      {
-      "name": "Slab Cavern Exit - door1 (D1)"
+      "name": "Slab Cavern Exit - door1 (P)"
      }
     ],
     "map_locations": [
      {
       "map": "Slab Cavern Exit",
-      "x": 224,
-      "y": 105
+      "x": 238,
+      "y": 84
      }
     ]
    },
    {
-    "name": "Slab Cavern Exit - door2 (D2)",
+    "name": "Slab Cavern Exit - door2 (C)",
     "sections": [
      {
-      "name": "Slab Cavern Exit - door2 (D2)"
+      "name": "Slab Cavern Exit - door2 (C)"
      }
     ],
     "map_locations": [
      {
       "map": "Slab Cavern Exit",
-      "x": 89,
-      "y": 151
+      "x": 95,
+      "y": 121
      }
     ]
    }
@@ -30420,8 +31986,8 @@
     "map_locations": [
      {
       "map": "Slab Chilly Top",
-      "x": 167,
-      "y": 105
+      "x": 179,
+      "y": 125
      }
     ]
    },
@@ -30435,8 +32001,8 @@
     "map_locations": [
      {
       "map": "Slab Chilly Top",
-      "x": 112,
-      "y": 267
+      "x": 120,
+      "y": 318
      }
     ]
    },
@@ -30450,8 +32016,8 @@
     "map_locations": [
      {
       "map": "Slab Chilly Top",
-      "x": 1383,
-      "y": 267
+      "x": 1485,
+      "y": 318
      }
     ]
    }
@@ -30470,8 +32036,8 @@
     "map_locations": [
      {
       "map": "Slab Entrance",
-      "x": 335,
-      "y": 63
+      "x": 339,
+      "y": 62
      }
     ]
    },
@@ -30486,22 +32052,75 @@
      {
       "map": "Slab Entrance",
       "x": 0,
-      "y": 159
+      "y": 146
      }
     ]
    },
    {
-    "name": "Slab Entrance - right1 (R)",
+    "name": "Slab Entrance - right1",
     "sections": [
      {
-      "name": "Slab Entrance - right1 (R)"
+      "name": "Slab Entrance - right1"
      }
     ],
     "map_locations": [
      {
       "map": "Slab Entrance",
-      "x": 784,
-      "y": 145
+      "x": 794,
+      "y": 133
+     }
+    ]
+   }
+  ]
+ },
+ {
+  "name": "Slab First Sinner",
+  "children": [
+   {
+    "name": "Rune Rage",
+    "sections": [
+     {
+      "name": "Rune Rage"
+     }
+    ],
+    "map_locations": [
+     {
+      "map": "Slab First Sinner",
+      "x": 240,
+      "y": 116
+     }
+    ]
+   },
+   {
+    "name": "Journal: First Sinner",
+    "sections": [
+     {
+      "name": "Journal: First Sinner"
+     },
+     {
+      "name": "Boss: First Sinner"
+     }
+    ],
+    "map_locations": [
+     {
+      "map": "Slab First Sinner",
+      "x": 243,
+      "y": 130
+     }
+    ]
+   },
+   {
+    "name": "Slab First Sinner - Exit (E)",
+    "sections": [
+     {
+      "name": "Slab First Sinner - Exit (E)"
+     }
+    ],
+    "map_locations": [
+     {
+      "map": "Slab First Sinner",
+      "x": 114,
+      "y": 126
      }
     ]
    }
@@ -30510,21 +32129,6 @@
  {
   "name": "Slab First Sinner Antechamber",
   "children": [
-   {
-    "name": "The Slab - Weaver Gate Inscription",
-    "sections": [
-     {
-      "name": "The Slab - Weaver Gate Inscription"
-     }
-    ],
-    "map_locations": [
-     {
-      "map": "Slab First Sinner Antechamber",
-      "x": 131,
-      "y": 319
-     }
-    ]
-   },
    {
     "name": "Slab First Sinner Antechamber - left1 (L)",
     "sections": [
@@ -30536,7 +32140,7 @@
      {
       "map": "Slab First Sinner Antechamber",
       "x": 0,
-      "y": 61
+      "y": 63
      }
     ]
    },
@@ -30550,8 +32154,43 @@
     "map_locations": [
      {
       "map": "Slab First Sinner Antechamber",
-      "x": 132,
-      "y": 325
+      "x": 145,
+      "y": 337
+     }
+    ]
+   }
+  ]
+ },
+ {
+  "name": "Slab Flea Cell",
+  "children": [
+   {
+    "name": "Flea: The Slab - Cell",
+    "sections": [
+     {
+      "name": "Flea: The Slab - Cell"
+     }
+    ],
+    "map_locations": [
+     {
+      "map": "Slab Flea Cell",
+      "x": 36,
+      "y": 47
+     }
+    ]
+   },
+   {
+    "name": "Slab Flea Cell - left1 (L)",
+    "sections": [
+     {
+      "name": "Slab Flea Cell - left1 (L)"
+     }
+    ],
+    "map_locations": [
+     {
+      "map": "Slab Flea Cell",
+      "x": 184,
+      "y": 57
      }
     ]
    }
@@ -30570,8 +32209,8 @@
     "map_locations": [
      {
       "map": "Slab Flea Prison",
-      "x": 153,
-      "y": 83
+      "x": 228,
+      "y": 98
      }
     ]
    },
@@ -30586,7 +32225,7 @@
      {
       "map": "Slab Flea Prison",
       "x": 0,
-      "y": 113
+      "y": 133
      }
     ]
    },
@@ -30600,8 +32239,8 @@
     "map_locations": [
      {
       "map": "Slab Flea Prison",
-      "x": 239,
-      "y": 135
+      "x": 355,
+      "y": 159
      }
     ]
    },
@@ -30615,8 +32254,8 @@
     "map_locations": [
      {
       "map": "Slab Flea Prison",
-      "x": 427,
-      "y": 81
+      "x": 635,
+      "y": 95
      }
     ]
    },
@@ -30630,8 +32269,8 @@
     "map_locations": [
      {
       "map": "Slab Flea Prison",
-      "x": 153,
-      "y": 87
+      "x": 228,
+      "y": 103
      }
     ]
    }
@@ -30650,8 +32289,8 @@
     "map_locations": [
      {
       "map": "Slab Grindle",
-      "x": 556,
-      "y": 71
+      "x": 549,
+      "y": 62
      }
     ]
    },
@@ -30666,7 +32305,7 @@
      {
       "map": "Slab Grindle",
       "x": 0,
-      "y": 81
+      "y": 88
      }
     ]
    }
@@ -30675,6 +32314,21 @@
  {
   "name": "Slab Indolent Room",
   "children": [
+   {
+    "name": "Key of Indolent",
+    "sections": [
+     {
+      "name": "Key of Indolent"
+     }
+    ],
+    "map_locations": [
+     {
+      "map": "Slab Indolent Room",
+      "x": 81,
+      "y": 140
+     }
+    ]
+   },
    {
     "name": "Slab Indolent Room - top1 (T)",
     "sections": [
@@ -30685,7 +32339,7 @@
     "map_locations": [
      {
       "map": "Slab Indolent Room",
-      "x": 454,
+      "x": 463,
       "y": 0
      }
     ]
@@ -30700,8 +32354,8 @@
     "map_locations": [
      {
       "map": "Slab Indolent Room",
-      "x": 623,
-      "y": 161
+      "x": 635,
+      "y": 158
      }
     ]
    }
@@ -30720,8 +32374,8 @@
     "map_locations": [
      {
       "map": "Slab Infleatween Bottom",
-      "x": 268,
-      "y": 21
+      "x": 315,
+      "y": 55
      }
     ]
    },
@@ -30735,8 +32389,8 @@
     "map_locations": [
      {
       "map": "Slab Infleatween Bottom",
-      "x": 281,
-      "y": 31
+      "x": 352,
+      "y": 55
      }
     ]
    },
@@ -30750,53 +32404,53 @@
     "map_locations": [
      {
       "map": "Slab Infleatween Bottom",
-      "x": 300,
-      "y": 54
+      "x": 332,
+      "y": 55
      }
     ]
    },
    {
-    "name": "Slab Infleatween Bottom - bot1 (B)",
+    "name": "Slab Infleatween Bottom - Right (R)",
     "sections": [
      {
-      "name": "Slab Infleatween Bottom - bot1 (B)"
+      "name": "Slab Infleatween Bottom - Right (R)"
      }
     ],
     "map_locations": [
      {
       "map": "Slab Infleatween Bottom",
-      "x": 358,
-      "y": 263
+      "x": 631,
+      "y": 165
      }
     ]
    },
    {
-    "name": "Slab Infleatween Bottom - top1 (T)",
+    "name": "Slab Infleatween Bottom - Upper (U)",
     "sections": [
      {
-      "name": "Slab Infleatween Bottom - top1 (T)"
+      "name": "Slab Infleatween Bottom - Upper (U)"
      }
     ],
     "map_locations": [
      {
       "map": "Slab Infleatween Bottom",
-      "x": 188,
+      "x": 222,
       "y": 0
      }
     ]
    },
    {
-    "name": "Slab Infleatween Bottom - right1 (R)",
+    "name": "Slab Infleatween Bottom - Bottom (B)",
     "sections": [
      {
-      "name": "Slab Infleatween Bottom - right1 (R)"
+      "name": "Slab Infleatween Bottom - Bottom (B)"
      }
     ],
     "map_locations": [
      {
       "map": "Slab Infleatween Bottom",
-      "x": 536,
-      "y": 189
+      "x": 422,
+      "y": 229
      }
     ]
    }
@@ -30815,23 +32469,23 @@
     "map_locations": [
      {
       "map": "Slab Infleatween Top",
-      "x": 58,
-      "y": 117
+      "x": 60,
+      "y": 135
      }
     ]
    },
    {
-    "name": "Slab Infleatween Top - right1 (R)",
+    "name": "Slab Infleatween Top - right1",
     "sections": [
      {
-      "name": "Slab Infleatween Top - right1 (R)"
+      "name": "Slab Infleatween Top - right1"
      }
     ],
     "map_locations": [
      {
       "map": "Slab Infleatween Top",
-      "x": 615,
-      "y": 165
+      "x": 635,
+      "y": 184
      }
     ]
    },
@@ -30845,7 +32499,7 @@
     "map_locations": [
      {
       "map": "Slab Infleatween Top",
-      "x": 344,
+      "x": 355,
       "y": 0
      }
     ]
@@ -30860,8 +32514,28 @@
     "map_locations": [
      {
       "map": "Slab Infleatween Top",
-      "x": 212,
-      "y": 211
+      "x": 219,
+      "y": 235
+     }
+    ]
+   }
+  ]
+ },
+ {
+  "name": "Slab Penitent Cell",
+  "children": [
+   {
+    "name": "Slab Penitent Cell - left1 (L)",
+    "sections": [
+     {
+      "name": "Slab Penitent Cell - left1 (L)"
+     }
+    ],
+    "map_locations": [
+     {
+      "map": "Slab Penitent Cell",
+      "x": 3,
+      "y": 63
      }
     ]
    }
@@ -30880,23 +32554,23 @@
     "map_locations": [
      {
       "map": "Slab Poodle",
-      "x": 518,
+      "x": 559,
       "y": 63
      }
     ]
    },
    {
-    "name": "Slab Poodle - right2 (R2)",
+    "name": "Slab Poodle - right2",
     "sections": [
      {
-      "name": "Slab Poodle - right2 (R2)"
+      "name": "Slab Poodle - right2"
      }
     ],
     "map_locations": [
      {
       "map": "Slab Poodle",
-      "x": 518,
-      "y": 197
+      "x": 559,
+      "y": 196
      }
     ]
    }
@@ -30910,16 +32584,13 @@
     "sections": [
      {
       "name": "The Slab - Rosary Chest"
-     },
-     {
-      "name": "The Slab - Rosary Cache #5"
      }
     ],
     "map_locations": [
      {
       "map": "Slab Prelude",
-      "x": 167,
-      "y": 134
+      "x": 116,
+      "y": 165
      }
     ]
    },
@@ -30933,8 +32604,8 @@
     "map_locations": [
      {
       "map": "Slab Prelude",
-      "x": 126,
-      "y": 111
+      "x": 127,
+      "y": 120
      }
     ]
    },
@@ -30948,8 +32619,8 @@
     "map_locations": [
      {
       "map": "Slab Prelude",
-      "x": 122,
-      "y": 110
+      "x": 134,
+      "y": 123
      }
     ]
    },
@@ -30963,8 +32634,23 @@
     "map_locations": [
      {
       "map": "Slab Prelude",
-      "x": 137,
-      "y": 121
+      "x": 146,
+      "y": 133
+     }
+    ]
+   },
+   {
+    "name": "The Slab - Rosary Cache #5",
+    "sections": [
+     {
+      "name": "The Slab - Rosary Cache #5"
+     }
+    ],
+    "map_locations": [
+     {
+      "map": "Slab Prelude",
+      "x": 177,
+      "y": 148
      }
     ]
    },
@@ -30979,7 +32665,7 @@
      {
       "map": "Slab Prelude",
       "x": 0,
-      "y": 150
+      "y": 165
      }
     ]
    },
@@ -30993,8 +32679,8 @@
     "map_locations": [
      {
       "map": "Slab Prelude",
-      "x": 262,
-      "y": 40
+      "x": 279,
+      "y": 44
      }
     ]
    }
@@ -31013,8 +32699,8 @@
     "map_locations": [
      {
       "map": "Slab Quiet Cell",
-      "x": 264,
-      "y": 157
+      "x": 269,
+      "y": 188
      }
     ]
    },
@@ -31028,23 +32714,23 @@
     "map_locations": [
      {
       "map": "Slab Quiet Cell",
-      "x": 29,
-      "y": 37
+      "x": 15,
+      "y": 38
      }
     ]
    },
    {
-    "name": "Slab Quiet Cell - left2 (B)",
+    "name": "Slab Quiet Cell - left2",
     "sections": [
      {
-      "name": "Slab Quiet Cell - left2 (B)"
+      "name": "Slab Quiet Cell - left2"
      }
     ],
     "map_locations": [
      {
       "map": "Slab Quiet Cell",
-      "x": 29,
-      "y": 314
+      "x": 15,
+      "y": 323
      }
     ]
    }
@@ -31058,16 +32744,13 @@
     "sections": [
      {
       "name": "The Slab - Shell Shard Cache #6"
-     },
-     {
-      "name": "The Slab - Rosary Cache #1"
      }
     ],
     "map_locations": [
      {
       "map": "Slab Secret Side Room",
-      "x": 99,
-      "y": 330
+      "x": 522,
+      "y": 49
      }
     ]
    },
@@ -31081,8 +32764,8 @@
     "map_locations": [
      {
       "map": "Slab Secret Side Room",
-      "x": 105,
-      "y": 358
+      "x": 526,
+      "y": 49
      }
     ]
    },
@@ -31096,8 +32779,23 @@
     "map_locations": [
      {
       "map": "Slab Secret Side Room",
-      "x": 105,
-      "y": 359
+      "x": 109,
+      "y": 347
+     }
+    ]
+   },
+   {
+    "name": "The Slab - Rosary Cache #1",
+    "sections": [
+     {
+      "name": "The Slab - Rosary Cache #1"
+     }
+    ],
+    "map_locations": [
+     {
+      "map": "Slab Secret Side Room",
+      "x": 103,
+      "y": 320
      }
     ]
    },
@@ -31111,8 +32809,8 @@
     "map_locations": [
      {
       "map": "Slab Secret Side Room",
-      "x": 607,
-      "y": 170
+      "x": 631,
+      "y": 165
      }
     ]
    },
@@ -31127,7 +32825,7 @@
      {
       "map": "Slab Secret Side Room",
       "x": 0,
-      "y": 432
+      "y": 419
      }
     ]
    }
@@ -31137,47 +32835,47 @@
   "name": "Slab Shaft",
   "children": [
    {
-    "name": "Slab Shaft - left3 (BL)",
+    "name": "Slab Shaft - Top (T)",
     "sections": [
      {
-      "name": "Slab Shaft - left3 (BL)"
+      "name": "Slab Shaft - Top (T)"
+     }
+    ],
+    "map_locations": [
+     {
+      "map": "Slab Shaft",
+      "x": 31,
+      "y": 0
+     }
+    ]
+   },
+   {
+    "name": "Slab Shaft - Bottom (B)",
+    "sections": [
+     {
+      "name": "Slab Shaft - Bottom (B)"
      }
     ],
     "map_locations": [
      {
       "map": "Slab Shaft",
       "x": 0,
-      "y": 1046
+      "y": 971
      }
     ]
    },
    {
-    "name": "Slab Shaft - top1 (T)",
+    "name": "Slab Shaft - Mid (M)",
     "sections": [
      {
-      "name": "Slab Shaft - top1 (T)"
+      "name": "Slab Shaft - Mid (M)"
      }
     ],
     "map_locations": [
      {
       "map": "Slab Shaft",
-      "x": 20,
-      "y": 0
-     }
-    ]
-   },
-   {
-    "name": "Slab Shaft - left1 (UL)",
-    "sections": [
-     {
-      "name": "Slab Shaft - left1 (UL)"
-     }
-    ],
-    "map_locations": [
-     {
-      "map": "Slab Shaft",
-      "x": 12,
-      "y": 417
+      "x": 19,
+      "y": 387
      }
     ]
    }
@@ -31196,7 +32894,7 @@
     "map_locations": [
      {
       "map": "Slab Why Room",
-      "x": 107,
+      "x": 122,
       "y": 46
      }
     ]
@@ -31222,21 +32920,6 @@
   "name": "Slab Window",
   "children": [
    {
-    "name": "Relic: Weaver Effigy (Atla, The Slab)",
-    "sections": [
-     {
-      "name": "Relic: Weaver Effigy (Atla, The Slab)"
-     }
-    ],
-    "map_locations": [
-     {
-      "map": "Slab Window",
-      "x": 588,
-      "y": 47
-     }
-    ]
-   },
-   {
     "name": "The Slab - Shell Shard Cache #4",
     "sections": [
      {
@@ -31246,8 +32929,8 @@
     "map_locations": [
      {
       "map": "Slab Window",
-      "x": 140,
-      "y": 89
+      "x": 148,
+      "y": 151
      }
     ]
    },
@@ -31261,8 +32944,23 @@
     "map_locations": [
      {
       "map": "Slab Window",
-      "x": 147,
-      "y": 81
+      "x": 156,
+      "y": 137
+     }
+    ]
+   },
+   {
+    "name": "Relic: Weaver Effigy (Atla, The Slab)",
+    "sections": [
+     {
+      "name": "Relic: Weaver Effigy (Atla, The Slab)"
+     }
+    ],
+    "map_locations": [
+     {
+      "map": "Slab Window",
+      "x": 625,
+      "y": 80
      }
     ]
    },
@@ -31277,7 +32975,7 @@
      {
       "map": "Slab Window",
       "x": 0,
-      "y": 41
+      "y": 69
      }
     ]
    }
@@ -31452,10 +33150,10 @@
     ]
    },
    {
-    "name": "Mount Fay Entrance - right1 (USR)",
+    "name": "Mount Fay Entrance - right1",
     "sections": [
      {
-      "name": "Mount Fay Entrance - right1 (USR)"
+      "name": "Mount Fay Entrance - right1"
      }
     ],
     "map_locations": [
@@ -31482,10 +33180,10 @@
     ]
    },
    {
-    "name": "Mount Fay Entrance - right2 (MSR)",
+    "name": "Mount Fay Entrance - right2",
     "sections": [
      {
-      "name": "Mount Fay Entrance - right2 (MSR)"
+      "name": "Mount Fay Entrance - right2"
      }
     ],
     "map_locations": [
@@ -31497,10 +33195,10 @@
     ]
    },
    {
-    "name": "Mount Fay Entrance - right4 (LR)",
+    "name": "Mount Fay Entrance - right4",
     "sections": [
      {
-      "name": "Mount Fay Entrance - right4 (LR)"
+      "name": "Mount Fay Entrance - right4"
      }
     ],
     "map_locations": [
@@ -32944,6 +34642,104 @@
   ]
  },
  {
+  "name": "Huntress",
+  "children": [
+   {
+    "name": "Longclaw",
+    "sections": [
+     {
+      "name": "Longclaw"
+     }
+    ],
+    "map_locations": [
+     {
+      "map": "Huntress",
+      "x": 1551,
+      "y": 932
+     }
+    ]
+   },
+   {
+    "name": "Huntress - left1",
+    "sections": [
+     {
+      "name": "Huntress - left1"
+     }
+    ],
+    "map_locations": [
+     {
+      "map": "Huntress",
+      "x": 192,
+      "y": 1152
+     }
+    ]
+   },
+   {
+    "name": "Huntress",
+    "sections": [
+     {
+      "name": "Turn-in: Wish: Bone Bottom Repairs"
+     },
+     {
+      "name": "Turn-in: Wish: A Lifesaving Bridge"
+     },
+     {
+      "name": "Turn-in: Wish: An Icon of Hope"
+     },
+     {
+      "name": "Turn-in: Wish: Garb of the Pilgrims"
+     },
+     {
+      "name": "Turn-in: Wish: Volatile Flintbeetles"
+     },
+     {
+      "name": "Turn-in: Volatile Flintbeetles - Memory Locket"
+     },
+     {
+      "name": "Turn-in: Wish: The Terrible Tyrant"
+     },
+     {
+      "name": "Turn-in: Wish: Restoration of Bellhart"
+     },
+     {
+      "name": "Turn-in: Wish: Bellhart's Glory"
+     },
+     {
+      "name": "Turn-in: Wish: Hero's Call"
+     },
+     {
+      "name": "Turn-in: Wish: Silver Bells"
+     },
+     {
+      "name": "Turn-in: Savage Beastfly - Mask Shard"
+     },
+     {
+      "name": "Turn-in: The Hidden Hunter - Mask Shard"
+     },
+     {
+      "name": "Turn-in: Wish: Fine Pins"
+     },
+     {
+      "name": "Turn-in: Wish: Cloaks of the Choir"
+     },
+     {
+      "name": "Turn-in: Wish: Building Up Songclave"
+     },
+     {
+      "name": "Turn-in: Wish: Strengthening Songclave"
+     }
+    ],
+    "map_locations": [
+     {
+      "map": "Huntress",
+      "x": 1551,
+      "y": 932
+     }
+    ]
+   }
+  ]
+ },
+ {
   "name": "Putrified Ducts Bellway",
   "children": [
    {
@@ -33581,8 +35377,8 @@
     "map_locations": [
      {
       "map": "ACT3 Connection To GMS",
-      "x": 199,
-      "y": 122
+      "x": 2496,
+      "y": 2560
      }
     ]
    },
@@ -33596,7 +35392,7 @@
     "map_locations": [
      {
       "map": "ACT3 Connection To GMS",
-      "x": 233,
+      "x": 2912,
       "y": 0
      }
     ]
@@ -33616,8 +35412,8 @@
     "map_locations": [
      {
       "map": "ACT3 GMS Arena",
-      "x": 319,
-      "y": 275
+      "x": 3164,
+      "y": 3622
      }
     ]
    },
@@ -33634,8 +35430,8 @@
     "map_locations": [
      {
       "map": "ACT3 GMS Arena",
-      "x": 307,
-      "y": 70
+      "x": 2933,
+      "y": 1035
      }
     ]
    },
@@ -33649,8 +35445,8 @@
     "map_locations": [
      {
       "map": "ACT3 GMS Arena",
-      "x": 314,
-      "y": 615
+      "x": 3008,
+      "y": 8992
      }
     ]
    }
@@ -33692,6 +35488,174 @@
   ]
  },
  {
+  "name": "ACT2 GMS Arena",
+  "children": [
+   {
+    "name": "The Cradle - Shell Shard Cache",
+    "sections": [
+     {
+      "name": "The Cradle - Shell Shard Cache"
+     }
+    ],
+    "map_locations": [
+     {
+      "map": "ACT2 GMS Arena",
+      "x": 4755,
+      "y": 4860
+     }
+    ]
+   },
+   {
+    "name": "Journal: Grand Mother Silk",
+    "sections": [
+     {
+      "name": "Journal: Grand Mother Silk"
+     },
+     {
+      "name": "Boss: Grand Mother Silk"
+     }
+    ],
+    "map_locations": [
+     {
+      "map": "ACT2 GMS Arena",
+      "x": 3239,
+      "y": 1347
+     }
+    ]
+   },
+   {
+    "name": "ACT2 GMS Arena - left2",
+    "sections": [
+     {
+      "name": "ACT2 GMS Arena - left2"
+     }
+    ],
+    "map_locations": [
+     {
+      "map": "ACT2 GMS Arena",
+      "x": 0,
+      "y": 6784
+     }
+    ]
+   },
+   {
+    "name": "ACT2 GMS Arena - right2 (R)",
+    "sections": [
+     {
+      "name": "ACT2 GMS Arena - right2 (R)"
+     }
+    ],
+    "map_locations": [
+     {
+      "map": "ACT2 GMS Arena",
+      "x": 5120,
+      "y": 6656
+     }
+    ]
+   }
+  ]
+ },
+ {
+  "name": "Act2 Cradle Connector Hallway",
+  "children": [
+   {
+    "name": "Act2 Cradle Connector Hallway - left1",
+    "sections": [
+     {
+      "name": "Act2 Cradle Connector Hallway - left1"
+     }
+    ],
+    "map_locations": [
+     {
+      "map": "Act2 Cradle Connector Hallway",
+      "x": 0,
+      "y": 896
+     }
+    ]
+   },
+   {
+    "name": "Act2 Cradle Connector Hallway - right1 (R)",
+    "sections": [
+     {
+      "name": "Act2 Cradle Connector Hallway - right1 (R)"
+     }
+    ],
+    "map_locations": [
+     {
+      "map": "Act2 Cradle Connector Hallway",
+      "x": 5120,
+      "y": 768
+     }
+    ]
+   }
+  ]
+ },
+ {
+  "name": "Act2 Cradle Left Shaft",
+  "children": [
+   {
+    "name": "The Cradle - Map Purchase",
+    "sections": [
+     {
+      "name": "The Cradle - Map Purchase"
+     }
+    ],
+    "map_locations": [
+     {
+      "map": "Act2 Cradle Left Shaft",
+      "x": 3461,
+      "y": 2741
+     }
+    ]
+   },
+   {
+    "name": "Act2 Cradle Left Shaft - right1",
+    "sections": [
+     {
+      "name": "Act2 Cradle Left Shaft - right1"
+     }
+    ],
+    "map_locations": [
+     {
+      "map": "Act2 Cradle Left Shaft",
+      "x": 5184,
+      "y": 1472
+     }
+    ]
+   },
+   {
+    "name": "Act2 Cradle Left Shaft - left2 (L)",
+    "sections": [
+     {
+      "name": "Act2 Cradle Left Shaft - left2 (L)"
+     }
+    ],
+    "map_locations": [
+     {
+      "map": "Act2 Cradle Left Shaft",
+      "x": 3232,
+      "y": 4864
+     }
+    ]
+   },
+   {
+    "name": "Act2 Cradle Left Shaft - right2",
+    "sections": [
+     {
+      "name": "Act2 Cradle Left Shaft - right2"
+     }
+    ],
+    "map_locations": [
+     {
+      "map": "Act2 Cradle Left Shaft",
+      "x": 5184,
+      "y": 4288
+     }
+    ]
+   }
+  ]
+ },
+ {
   "name": "Lace 2 Fight",
   "children": [
    {
@@ -33704,8 +35668,8 @@
     "map_locations": [
      {
       "map": "Lace 2 Fight",
-      "x": 276,
-      "y": 279
+      "x": 3788,
+      "y": 2525
      }
     ]
    },
@@ -33719,8 +35683,8 @@
     "map_locations": [
      {
       "map": "Lace 2 Fight",
-      "x": 216,
-      "y": 259
+      "x": 3495,
+      "y": 2113
      }
     ]
    },
@@ -33737,8 +35701,8 @@
     "map_locations": [
      {
       "map": "Lace 2 Fight",
-      "x": 205,
-      "y": 116
+      "x": 3788,
+      "y": 2526
      }
     ]
    },
@@ -33752,8 +35716,8 @@
     "map_locations": [
      {
       "map": "Lace 2 Fight",
-      "x": 188,
-      "y": 121
+      "x": 3476,
+      "y": 2624
      }
     ]
    },
@@ -33767,8 +35731,8 @@
     "map_locations": [
      {
       "map": "Lace 2 Fight",
-      "x": 283,
-      "y": 115
+      "x": 5216,
+      "y": 2496
      }
     ]
    }
@@ -33787,8 +35751,8 @@
     "map_locations": [
      {
       "map": "Terminus Ventrica",
-      "x": 112,
-      "y": 838
+      "x": 1302,
+      "y": 8718
      }
     ]
    },
@@ -33802,8 +35766,8 @@
     "map_locations": [
      {
       "map": "Terminus Ventrica",
-      "x": 149,
-      "y": 711
+      "x": 1730,
+      "y": 7398
      }
     ]
    },
@@ -33817,8 +35781,8 @@
     "map_locations": [
      {
       "map": "Terminus Ventrica",
-      "x": 655,
-      "y": 647
+      "x": 7569,
+      "y": 6730
      }
     ]
    },
@@ -33832,8 +35796,8 @@
     "map_locations": [
      {
       "map": "Terminus Ventrica",
-      "x": 105,
-      "y": 739
+      "x": 1216,
+      "y": 7680
      }
     ]
    },
@@ -33847,8 +35811,8 @@
     "map_locations": [
      {
       "map": "Terminus Ventrica",
-      "x": 68,
-      "y": 363
+      "x": 786,
+      "y": 3776
      }
     ]
    },
@@ -33862,8 +35826,8 @@
     "map_locations": [
      {
       "map": "Terminus Ventrica",
-      "x": 68,
-      "y": 98
+      "x": 786,
+      "y": 1024
      }
     ]
    },
@@ -33877,8 +35841,73 @@
     "map_locations": [
      {
       "map": "Terminus Ventrica",
-      "x": 420,
-      "y": 651
+      "x": 4860,
+      "y": 6772
+     }
+    ]
+   }
+  ]
+ },
+ {
+  "name": "Weaver Jail Lore Room",
+  "children": [
+   {
+    "name": "The Cradle - Lower Cage Inscription",
+    "sections": [
+     {
+      "name": "The Cradle - Lower Cage Inscription"
+     }
+    ],
+    "map_locations": [
+     {
+      "map": "Weaver Jail Lore Room",
+      "x": 1533,
+      "y": 2527
+     }
+    ]
+   },
+   {
+    "name": "The Cradle - Middle Cage Inscription",
+    "sections": [
+     {
+      "name": "The Cradle - Middle Cage Inscription"
+     }
+    ],
+    "map_locations": [
+     {
+      "map": "Weaver Jail Lore Room",
+      "x": 494,
+      "y": 1994
+     }
+    ]
+   },
+   {
+    "name": "The Cradle - Upper Cage Inscription",
+    "sections": [
+     {
+      "name": "The Cradle - Upper Cage Inscription"
+     }
+    ],
+    "map_locations": [
+     {
+      "map": "Weaver Jail Lore Room",
+      "x": 528,
+      "y": 1040
+     }
+    ]
+   },
+   {
+    "name": "Weaver Jail Lore Room - right1 (R)",
+    "sections": [
+     {
+      "name": "Weaver Jail Lore Room - right1 (R)"
+     }
+    ],
+    "map_locations": [
+     {
+      "map": "Weaver Jail Lore Room",
+      "x": 3072,
+      "y": 832
      }
     ]
    }
@@ -33964,6 +35993,41 @@
       "map": "Path of Pain Bench",
       "x": 174,
       "y": 34
+     }
+    ]
+   }
+  ]
+ },
+ {
+  "name": "Path Of Pain Silksong",
+  "children": [
+   {
+    "name": "Path Of Pain Silksong - top1",
+    "sections": [
+     {
+      "name": "Path Of Pain Silksong - top1"
+     }
+    ],
+    "map_locations": [
+     {
+      "map": "Path Of Pain Silksong",
+      "x": 448,
+      "y": 0
+     }
+    ]
+   },
+   {
+    "name": "Path Of Pain Silksong - left1",
+    "sections": [
+     {
+      "name": "Path Of Pain Silksong - left1"
+     }
+    ],
+    "map_locations": [
+     {
+      "map": "Path Of Pain Silksong",
+      "x": 192,
+      "y": 8864
      }
     ]
    }
@@ -34075,6 +36139,41 @@
   ]
  },
  {
+  "name": "Abyss Diving Bell Broken",
+  "children": [
+   {
+    "name": "Abyss Diving Bell Broken - left1 (L)",
+    "sections": [
+     {
+      "name": "Abyss Diving Bell Broken - left1 (L)"
+     }
+    ],
+    "map_locations": [
+     {
+      "map": "Abyss Diving Bell Broken",
+      "x": 1376,
+      "y": 1152
+     }
+    ]
+   },
+   {
+    "name": "Abyss Diving Bell Broken - door_wakeOnGround (D)",
+    "sections": [
+     {
+      "name": "Abyss Diving Bell Broken - door_wakeOnGround (D)"
+     }
+    ],
+    "map_locations": [
+     {
+      "map": "Abyss Diving Bell Broken",
+      "x": 1718,
+      "y": 1237
+     }
+    ]
+   }
+  ]
+ },
+ {
   "name": "Abyss Diving Bell Fixed",
   "children": [
    {
@@ -34157,7 +36256,7 @@
     "map_locations": [
      {
       "map": "Abyss Escape",
-      "x": 176,
+      "x": 480,
       "y": 0
      }
     ]
@@ -34172,8 +36271,8 @@
     "map_locations": [
      {
       "map": "Abyss Escape",
-      "x": 288,
-      "y": 976
+      "x": 784,
+      "y": 16368
      }
     ]
    }
@@ -34768,6 +36867,21 @@
   "name": "Abyss Cocoon",
   "children": [
    {
+    "name": "Journal: Lost Lace",
+    "sections": [
+     {
+      "name": "Journal: Lost Lace"
+     }
+    ],
+    "map_locations": [
+     {
+      "map": "Abyss Cocoon",
+      "x": 241,
+      "y": 302
+     }
+    ]
+   },
+   {
     "name": "Abyss Cocoon - door_entry (D)",
     "sections": [
      {
@@ -34779,6 +36893,29 @@
       "map": "Abyss Cocoon",
       "x": 185,
       "y": 307
+     }
+    ]
+   }
+  ]
+ },
+ {
+  "name": "Last Dive",
+  "children": [
+   {
+    "name": "Last Dive - door_cutscenePosition (D)",
+    "sections": [
+     {
+      "name": "Last Dive - door_cutscenePosition (D)"
+     },
+     {
+      "name": "Last Dive - door_cutscenePosition2 (D2)"
+     }
+    ],
+    "map_locations": [
+     {
+      "map": "Last Dive",
+      "x": 3198,
+      "y": 1484
      }
     ]
    }

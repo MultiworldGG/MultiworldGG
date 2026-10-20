@@ -1,3 +1,51 @@
+<LauncherLoadingPanel>:
+    orientation: "vertical"
+    spacing: "8dp"
+
+    BoxLayout:
+        size_hint_y: None
+        height: "64dp"
+        padding: "20dp", 0
+        spacing: "16dp"
+
+        MDCircularProgressIndicator:
+            id: spinner
+            size_hint: None, None
+            size: "24dp", "24dp"
+            pos_hint: {"center_y": 0.5}
+            color: app.theme_cls.primaryColor
+
+        BoxLayout:
+            orientation: "vertical"
+            size_hint_y: None
+            height: "44dp"
+            pos_hint: {"center_y": 0.5}
+
+            Label:
+                id: title
+                text: "Loading games…"
+                color: app.theme_cls.onSurfaceColor
+                font_size: "17sp"
+                bold: True
+                halign: "left"
+                valign: "middle"
+                text_size: self.size
+
+            Label:
+                id: subtitle
+                text: "Getting your games ready…"
+                color: app.theme_cls.onSurfaceVariantColor
+                font_size: "13sp"
+                halign: "left"
+                valign: "middle"
+                text_size: self.size
+                shorten: True
+                shorten_from: "right"
+
+    LauncherPlaceholders:
+        tint: app.theme_cls.primaryColor
+
+
 <LauncherCard>:
     id: main
     style: "filled"
@@ -8,8 +56,9 @@
     focus_behavior: False
 
     MDRelativeLayout:
-        Image:
+        ApAsyncImage:
             source: main.image
+            on_error: self.source = local_path("data", "icon.png") if self.source != local_path("data", "icon.png") else ""
             size: (48, 48)
             size_hint: None, None
             pos_hint: {"center_x": 0.1, "center_y": 0.5}
@@ -188,5 +237,11 @@ MDFloatLayout:
                 MDTextFieldHintText:
                     text: "Search"
 
-            ScrollBox:
-                id: button_layout
+            FloatLayout:
+                id: content_area
+
+                ScrollBox:
+                    id: button_layout
+                    pos_hint: {"x": 0, "y": 0}
+                    opacity: 0
+                    disabled: True

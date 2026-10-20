@@ -3,6 +3,7 @@ from __future__ import annotations
 from .options import get_silk_and_soul_points
 
 from collections.abc import Mapping
+from dataclasses import replace
 from functools import lru_cache
 
 from BaseClasses import Region
@@ -26,7 +27,9 @@ def native_rule_options(world) -> dict[str, object]:
             world.allows_bellways_before_bell_beast()
         ),
         "proficient_combat": world.get_proficient_combat_mode(),
-        "proficient_movement": bool(getattr(getattr(world.options, "proficient_movement", None), "value", 0)),
+        "platforming_capability": int(world.options.platforming_capability.value),
+        "directional_abilities": world.get_directional_abilities(),
+        "damage_boost_tier": int(world.options.damage_boost_logic.value),
         "flea_brew_jump_logic": bool(getattr(getattr(world.options, "flea_brew_jump_logic", None), "value", 0)),
         "sharpdart_logic": bool(getattr(getattr(world.options, "sharpdart_logic", None), "value", 0)),
         "red_tool_stall_tier": int(world.options.red_tool_stall_logic.value),
@@ -75,7 +78,9 @@ def get_native_abstract_requirements(world):
         ),
         randomize_swim=world.is_swim_ability_rando_enabled(),
         proficient_combat=world.get_proficient_combat_mode(),
-        proficient_movement=bool(getattr(getattr(world.options, "proficient_movement", None), "value", 0)),
+        platforming_capability=int(world.options.platforming_capability.value),
+        directional_abilities=world.get_directional_abilities(),
+        damage_boost_tier=int(world.options.damage_boost_logic.value),
         flea_brew_jump_logic=bool(getattr(getattr(world.options, "flea_brew_jump_logic", None), "value", 0)),
         sharpdart_logic=bool(getattr(getattr(world.options, "sharpdart_logic", None), "value", 0)),
         red_tool_stall_tier=int(world.options.red_tool_stall_logic.value),
@@ -305,14 +310,31 @@ def connect_native_logic_regions(
     abstract_names = world._silksong_native_abstract_names
     anchor_names = world._silksong_native_region_names
     options = native_rule_options(world)
+    resolved_rules = {} if getattr(world.multiworld, 'generation_is_fake', False) else None
 
     for owner, anchor, name, grouped_requirements in _native_entrance_groups(world, requirements, anchor_names):
-        rule = build_requirements_rule(
-            tuple(grouped_requirements),
-            anchor_requirement_name=anchor,
-            extra_abstract_requirement_names=abstract_names,
-            **options,
-        )
+        if resolved_rules is None:
+            rule = build_requirements_rule(
+                tuple(grouped_requirements), anchor_requirement_name=anchor,
+                extra_abstract_requirement_names=abstract_names, **options,
+            )
+        else:
+            # The entrance already supplies its anchor, silk layers often share the rest.
+            conditions = tuple(
+                replace(requirement, all_of=tuple(n for n in requirement.all_of if n != anchor))
+                if anchor in requirement.all_of else requirement
+                for requirement in grouped_requirements
+            )
+            rule = resolved_rules.get(conditions)
+            if rule is None:
+                rule = build_requirements_rule(
+                    conditions, extra_abstract_requirement_names=abstract_names, **options,
+                ).resolve(world)
+                resolved_rules[conditions] = rule
+                if not rule.always_false:
+                    world.register_rule_dependencies(rule)
+            if rule.always_false:
+                continue
         entrance = world.create_entrance(
             regions[anchor] if anchor is not None else menu,
             regions[owner],
@@ -326,7 +348,10 @@ def connect_native_logic_regions(
     if supply is not None:
         from .silk_supply import SilkSupplyRule
         for name in sorted(supply.boundaries):
-            world.create_entrance(menu, regions[name], SilkSupplyRule(name), f'Silksong Silk: {name}')
+            for source in supply.query_sources(name):
+                world.create_entrance(regions[source] if source is not None else menu,
+                                      regions[name], SilkSupplyRule(name),
+                                      f'Silksong Silk: {name} from {source or "Menu"}')
 
 
 @lru_cache(maxsize=1)

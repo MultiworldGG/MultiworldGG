@@ -220,46 +220,6 @@ def planned_wishes(world, eligible):
     return result
 
 
-def build_event_rules(events: Mapping[str, Rules], **options):
-    from .requirement_rules import build_requirements_rule
-
-    options = {**options, "native_abstract_regions": True,
-               "extra_abstract_requirement_names": frozenset(events)}
-    return MappingProxyType({
-        name: build_requirements_rule(alternatives, **options)
-        for name, alternatives in events.items()
-    })
-
-
-def connect_event_regions(world, menu, events: Mapping[str, Rules], **options):
-    from BaseClasses import Region
-    from .requirement_rules import build_requirements_rule
-    from .room_graph_logic import native_region_name
-
-    names = frozenset(events)
-    existing = {region.name: region for region in world.multiworld.get_regions(world.player)}
-    if any(native_region_name(name) in existing for name in names):
-        raise ValueError("Progression event regions already exist.")
-    regions = {name: Region(native_region_name(name), world.player, world.multiworld) for name in names}
-    world.multiworld.regions.extend(regions.values())
-    options = {**options, "native_abstract_regions": True,
-               "extra_abstract_requirement_names": names}
-    for name, alternatives in events.items():
-        grouped: dict[str | None, list[LocationRequirement]] = {}
-        for alternative in alternatives:
-            anchor = next((dependency for dependency in alternative.all_of
-                           if dependency != name and (dependency in names or
-                           native_region_name(dependency) in existing)), None)
-            grouped.setdefault(anchor, []).append(alternative)
-        for index, (anchor, rules) in enumerate(grouped.items()):
-            parent = regions.get(anchor) if anchor is not None else menu
-            if parent is None:
-                parent = existing[native_region_name(anchor)]
-            rule = build_requirements_rule(tuple(rules), anchor_requirement_name=anchor, **options)
-            world.create_entrance(parent, regions[name], rule, f"{name} {index + 1}")
-    return MappingProxyType(regions)
-
-
 def donation_contracts(graph: Mapping[str, Rules], eligible_locations: frozenset[str]):
     result = []
     for identity, location, completed, task_terms in _DONATIONS:

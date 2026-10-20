@@ -179,9 +179,7 @@ def walk_ladxdr(f, n, walked=set()):
     f(n)
     walked.add(n)
 
-    for o, req in n.simple_connections:
-        walk_ladxdr(f, o, walked)
-    for o, req in n.gated_connections:
+    for o, req in n.connections:
         walk_ladxdr(f, o, walked)
 
 
@@ -205,13 +203,8 @@ def create_regions_from_ladxr(player, multiworld, logic):
     def print_items(n):
         print(f"Creating Region {ladxr_region_to_name(n)}")
         print("Has simple connections:")
-        for region, info in n.simple_connections:
+        for region, info in n.connections:
             print("  " + ladxr_region_to_name(region) + " | " + str(info))
-        print("Has gated connections:")
-
-        for region, info in n.gated_connections:
-            print("  " + ladxr_region_to_name(region) + " | " + str(info))
-
         print("Has Locations:")
         for item in n.items:
             print("  " + str(item.metadata))
@@ -236,7 +229,7 @@ def create_regions_from_ladxr(player, multiworld, logic):
         regions[l] = r
 
     for ladxr_location in logic.location_list:
-        for connection_location, connection_condition in ladxr_location.simple_connections + ladxr_location.gated_connections:
+        for connection_location, connection_condition in ladxr_location.connections:
             region_a = regions[ladxr_location]
             region_b = regions[connection_location]
             # TODO: This name ain't gonna work for entrance rando, we need to cross reference with logic.world.overworld_entrance

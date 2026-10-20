@@ -160,7 +160,15 @@ class PokemonCrystalAPPatchExtension(APPatchExtension):
             raise AssertionError(f"This {caller.game} patch was generated with a different base patch than the one in "
                                  f"your installed APWorld (version {data.manifest.world_version}). Please regenerate "
                                  "the patch or install the APWorld version it was generated with.")
-        return bsdiff4.patch(rom, base_patch)
+        patched_rom = bytearray(bsdiff4.patch(rom, base_patch))
+        write_bytes = lambda data, address: write_rom_bytes(patched_rom, data, address)
+
+        # truncated to 19 to preserve the "v" at the beginning
+        ap_version_text = convert_to_ingame_text(data.manifest.pokemon_crystal_version)[:19]
+        ap_version_text.append(0x50)
+        write_bytes(data.manifest.world_version.encode("ascii")[:32], data.rom_addresses["AP_Version"])
+        write_bytes(ap_version_text, data.rom_addresses["AP_Version_Text"] + 1)
+        return patched_rom
 
     @staticmethod
     def apply_overrides(caller: APProcedurePatch, rom: bytes) -> bytes:
@@ -2112,12 +2120,7 @@ def generate_output(world: "PokemonCrystalWorld", output_directory: str, patch: 
     write_customizable_options(world.options, write_bytes, must_write_option, world_data)
 
     # Set slot auth
-    ap_version_text = convert_to_ingame_text(data.manifest.pokemon_crystal_version)[:19]
-    ap_version_text.append(0x50)
-    # truncated to 19 to preserve the "v" at the beginning
     write_bytes(world.auth, data.rom_addresses["AP_Seed_Auth"])
-    write_bytes(data.manifest.world_version.encode("ascii")[:32], data.rom_addresses["AP_Version"])
-    write_bytes(ap_version_text, data.rom_addresses["AP_Version_Text"] + 1)
 
     if world.options.route_23_restored:
         write_route_23_restored_warps(write_bytes)

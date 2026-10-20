@@ -20,7 +20,7 @@ including the exclamation point.
 - `!license` Returns the software licensing information.
 - `!options` Returns the current server options, including password in plaintext.
 - `!players` Returns info about the currently connected and non-connected players.
-- `!status` Returns information about the connection status and check completion numbers for all players in the current room. <br /> (Optionally mention a Tag name and get information on who has that Tag. For example: !status DeathLink)
+- `!status` Returns information about the connection status and check completion numbers for all players on your team, plus the checked and total location counts across the multiworld. <br /> (Optionally mention a Tag name and get information on who has that Tag. For example: !status DeathLink)
 
 
 ### Utilities

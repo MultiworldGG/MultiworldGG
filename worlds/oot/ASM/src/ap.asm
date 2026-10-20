@@ -14,3 +14,5 @@
 .definelabel DEATH_LINK,                   0x8040002B
 
 .definelabel AP_PLAYER_NAME,               0x80402045
+
+.include "ap/entrances.asm"

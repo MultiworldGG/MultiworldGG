@@ -4,7 +4,7 @@ from typing import NamedTuple
 
 from BaseClasses import Item, ItemClassification
 from Utils import restricted_loads
-from .options import Spawn
+from .options import Spawn, ShuffleEquipment
 from .should_generate import should_generate
 
 if typing.TYPE_CHECKING:
@@ -186,6 +186,10 @@ def create_items(world: "OuterWildsWorld") -> None:
         elif name == "Launch Codes" and options.spawn == Spawn.option_vanilla:
             # in vanilla spawn, Launch Codes is locked to Hornfels to ensure the player starts the time loop
             world.get_location("TH: Talk to Hornfels").place_locked_item(create_item(player, name))
+        elif name in {"Autopilot", "Velocity Matcher"} and options.shuffle_equipment < ShuffleEquipment.option_normal:
+            multiworld.push_precollected(create_item(player, name))
+        elif name in {"Ship Medkit", "Ship Jetpack Refueler", "Velocity Indicator", "Distance Indicator", "Ship Lights"} and options.shuffle_equipment < ShuffleEquipment.option_hard:
+            multiworld.push_precollected(create_item(player, name))
         elif item.type == ItemClassification.filler:
             if name not in repeatable_filler_weights:
                 unique_filler.append(create_item(player, name))

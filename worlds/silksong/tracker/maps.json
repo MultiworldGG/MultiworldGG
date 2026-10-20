@@ -54,6 +54,12 @@
   "location_border_thickness": 3
  },
  {
+  "name": "Bonegrave Passage",
+  "img": "01-geometry/71803e5f-0049-4c4a-a72f-a592af51e64d.webp",
+  "location_size": 192,
+  "location_border_thickness": 32
+ },
+ {
   "name": "Chapel of the Wanderer",
   "img": "01-geometry/54b9e0cd-dcf3-46ff-824b-07aac66e6491.webp",
   "location_size": 19,
@@ -128,7 +134,7 @@
  {
   "name": "The Marrow Lava Track",
   "img": "01-geometry/544ec07f-d3bc-494d-8bbb-01908a8ae80c.webp",
-  "location_size": 18,
+  "location_size": 19,
   "location_border_thickness": 3
  },
  {
@@ -302,8 +308,8 @@
  {
   "name": "Wormways Flea Rescue",
   "img": "01-geometry/c7e270a3-07ac-4e0c-ae58-782fd8111730.webp",
-  "location_size": 16,
-  "location_border_thickness": 2
+  "location_size": 19,
+  "location_border_thickness": 3
  },
  {
   "name": "Wormways Middle",
@@ -726,9 +732,15 @@
   "location_border_thickness": 3
  },
  {
+  "name": "Memory Karmelita",
+  "img": "01-geometry/22cd4ca9-1750-4399-ac6f-a45f30af85cc.webp",
+  "location_size": 192,
+  "location_border_thickness": 32
+ },
+ {
   "name": "Sprintmaster Cave",
   "img": "01-geometry/cd6baea4-a19b-4b65-80e6-e1d1df0709e8.webp",
-  "location_size": 21,
+  "location_size": 19,
   "location_border_thickness": 3
  },
  {
@@ -788,8 +800,8 @@
  {
   "name": "Hunter's March Skarr Shop",
   "img": "01-geometry/2d4e2550-1b7e-4911-a64c-cf92b305bbb6.webp",
-  "location_size": 13,
-  "location_border_thickness": 2
+  "location_size": 19,
+  "location_border_thickness": 3
  },
  {
   "name": "Hunter's March Treasure Vault",
@@ -966,6 +978,12 @@
   "location_border_thickness": 2
  },
  {
+  "name": "Witch Chapel",
+  "img": "01-geometry/5f4edaaf-b3aa-464a-aa81-6532e1aac370.webp",
+  "location_size": 192,
+  "location_border_thickness": 32
+ },
+ {
   "name": "Bellhart Bellway",
   "img": "01-geometry/4fbdfd88-9f6c-4880-974d-577c3b164c4f.webp",
   "location_size": 19,
@@ -982,6 +1000,18 @@
   "img": "01-geometry/40119e28-1d30-4452-b289-12c8b505fd0d.webp",
   "location_size": 19,
   "location_border_thickness": 3
+ },
+ {
+  "name": "Bellhart Pinsmith",
+  "img": "01-geometry/e88b57e7-0008-48b6-881d-49766c04ab6b.webp",
+  "location_size": 192,
+  "location_border_thickness": 32
+ },
+ {
+  "name": "Bellhart Relic Shop",
+  "img": "01-geometry/b2067b11-94e1-436b-b828-9483aef65664.webp",
+  "location_size": 192,
+  "location_border_thickness": 32
  },
  {
   "name": "Bellhart Right Entrance",
@@ -1008,25 +1038,31 @@
   "location_border_thickness": 2
  },
  {
+  "name": "Bellhome",
+  "img": "01-geometry/ab76f9ca-9c5d-406a-b803-96bfbe584275.webp",
+  "location_size": 192,
+  "location_border_thickness": 32
+ },
+ {
   "name": "Greymoor Bellshrine",
   "img": "01-geometry/ee5316ed-a1c3-4985-aa2e-7dd5ae725729.webp",
-  "location_size": 20,
+  "location_size": 19,
   "location_border_thickness": 3
  },
  {
-  "name": "Greymoor Craw Lake",
-  "img": "01-geometry/18314a1d-436b-455f-9991-fe014f8e6a4c.webp",
-  "location_size": 17,
-  "location_border_thickness": 2
- },
- {
-  "name": "Greymoor Crow Court",
+  "name": "Greymoor Craw Court",
   "img": "01-geometry/3e0e8999-5264-45f4-a333-66e9d6a85c5b.webp",
   "location_size": 19,
   "location_border_thickness": 3
  },
  {
-  "name": "Greymoor Crow Nest",
+  "name": "Greymoor Craw Lake",
+  "img": "01-geometry/18314a1d-436b-455f-9991-fe014f8e6a4c.webp",
+  "location_size": 19,
+  "location_border_thickness": 3
+ },
+ {
+  "name": "Greymoor Craw Nest",
   "img": "01-geometry/a5474092-51d2-46a4-85aa-1a54d431ec21.webp",
   "location_size": 19,
   "location_border_thickness": 3
@@ -1034,7 +1070,7 @@
  {
   "name": "Greymoor East Bellshrine Room",
   "img": "01-geometry/c14ade81-d5e6-403d-84a5-2adadd5e43e1.webp",
-  "location_size": 21,
+  "location_size": 19,
   "location_border_thickness": 3
  },
  {
@@ -1046,32 +1082,32 @@
  {
   "name": "Greymoor Lower Halfway Home Path",
   "img": "01-geometry/bf133942-a6cd-467e-a3b7-66c29cb7a7ea.webp",
-  "location_size": 21,
+  "location_size": 19,
   "location_border_thickness": 3
  },
  {
   "name": "Greymoor Weaver Shrine",
   "img": "01-geometry/46f96f64-794d-468d-8034-8de1b7500b1a.webp",
-  "location_size": 21,
+  "location_size": 19,
   "location_border_thickness": 3
  },
  {
   "name": "Greymoor Western Tower",
   "img": "01-geometry/25fb324b-120f-440d-87bf-40a28ff70416.webp",
-  "location_size": 18,
+  "location_size": 19,
   "location_border_thickness": 3
  },
  {
   "name": "Pimpillo Room",
   "img": "01-geometry/4ce48b05-45d5-497c-a85b-f8fc17a6e1a5.webp",
-  "location_size": 14,
-  "location_border_thickness": 2
+  "location_size": 19,
+  "location_border_thickness": 3
  },
  {
   "name": "Yarnaby Place",
   "img": "01-geometry/bde9412b-ed93-4b95-81a2-8875630bfa80.webp",
-  "location_size": 14,
-  "location_border_thickness": 2
+  "location_size": 19,
+  "location_border_thickness": 3
  },
  {
   "name": "Greymoor Bellway",
@@ -1082,13 +1118,19 @@
  {
   "name": "Greymoor Bone Scroll Room",
   "img": "01-geometry/3ae434b5-9d96-4c35-8fd8-d131f06d64d3.webp",
-  "location_size": 18,
+  "location_size": 19,
+  "location_border_thickness": 3
+ },
+ {
+  "name": "Greymoor Chapel of The Reaper",
+  "img": "01-geometry/ec5f77ca-8b6f-41df-af6f-522defd2a9e4.webp",
+  "location_size": 19,
   "location_border_thickness": 3
  },
  {
   "name": "Greymoor Chapel of The Reaper Entrance",
   "img": "01-geometry/9b660520-a037-46d4-9584-39fe81145bd8.webp",
-  "location_size": 20,
+  "location_size": 19,
   "location_border_thickness": 3
  },
  {
@@ -1100,80 +1142,86 @@
  {
   "name": "Greymoor Entry to Bellhart",
   "img": "01-geometry/70d050ca-12cf-43d9-a0e5-0b5d6d824e45.webp",
-  "location_size": 22,
+  "location_size": 19,
   "location_border_thickness": 3
  },
  {
   "name": "Greymoor Halfway Home",
   "img": "01-geometry/31b75b41-1c96-4daf-afe7-c0d26132ab71.webp",
-  "location_size": 16,
-  "location_border_thickness": 2
+  "location_size": 19,
+  "location_border_thickness": 3
  },
  {
   "name": "Greymoor Halfway Home Exterior",
   "img": "01-geometry/8eea16fa-bd7c-4b73-9bd1-cf6c70018efc.webp",
-  "location_size": 23,
+  "location_size": 19,
   "location_border_thickness": 3
  },
  {
   "name": "Greymoor Kraft Room",
   "img": "01-geometry/09ec56a1-f46f-479d-a453-1829bfd471a1.webp",
-  "location_size": 23,
+  "location_size": 19,
   "location_border_thickness": 3
  },
  {
   "name": "Greymoor Middle Passage",
   "img": "01-geometry/50e60fb2-ea2c-4924-a18c-65d75b34790b.webp",
-  "location_size": 15,
-  "location_border_thickness": 2
+  "location_size": 19,
+  "location_border_thickness": 3
  },
  {
   "name": "Greymoor Rat Tunnel",
   "img": "01-geometry/b59078c1-75e1-4a8e-bee3-6959fdc39117.webp",
-  "location_size": 20,
+  "location_size": 19,
   "location_border_thickness": 3
  },
  {
   "name": "Greymoor Silver Shells room",
   "img": "01-geometry/c355d518-9dc5-4ad4-a755-94eb3a080efe.webp",
-  "location_size": 14,
-  "location_border_thickness": 2
+  "location_size": 19,
+  "location_border_thickness": 3
  },
  {
   "name": "Greymoor Towers Patio",
   "img": "01-geometry/33c7a174-48ab-4f34-ad28-40c50cdd32ae.webp",
-  "location_size": 22,
+  "location_size": 19,
   "location_border_thickness": 3
  },
  {
   "name": "Greymoor Upper Halfway Home Path",
   "img": "01-geometry/9e464f57-c0a0-4970-8420-05326f5cfba8.webp",
-  "location_size": 18,
+  "location_size": 19,
   "location_border_thickness": 3
  },
  {
   "name": "Greymoor Upper Towers Path",
   "img": "01-geometry/902d22ce-5f25-486a-a254-ad7e5e420eb4.webp",
-  "location_size": 27,
-  "location_border_thickness": 4
+  "location_size": 19,
+  "location_border_thickness": 3
  },
  {
   "name": "Greymoor West Bellshrine Room ",
   "img": "01-geometry/aa005fde-640b-47bb-b03e-ae7556ed768e.webp",
-  "location_size": 20,
+  "location_size": 19,
   "location_border_thickness": 3
  },
  {
   "name": "Greymoor Western Room",
   "img": "01-geometry/9a877d30-750e-4ee5-8b97-a978f5e1ff02.webp",
-  "location_size": 18,
+  "location_size": 19,
+  "location_border_thickness": 3
+ },
+ {
+  "name": "Greymoor Yarnaby Room",
+  "img": "01-geometry/1242e461-9256-4e6a-949b-276700970115.webp",
+  "location_size": 19,
   "location_border_thickness": 3
  },
  {
   "name": "Halfway Home Cellar",
   "img": "01-geometry/9a735e37-9925-4266-853a-61f69954c09f.webp",
-  "location_size": 14,
-  "location_border_thickness": 2
+  "location_size": 19,
+  "location_border_thickness": 3
  },
  {
   "name": "Eastern Wisp Thicket",
@@ -1215,6 +1263,90 @@
   "name": "Wisp Thicket Cave",
   "img": "01-geometry/df2534e5-7bfb-4cc4-928b-201951043dc0.webp",
   "location_size": 18,
+  "location_border_thickness": 3
+ },
+ {
+  "name": "Clover Dancers",
+  "img": "01-geometry/3afde74d-2b11-42c0-a98b-069fb9d15135.webp",
+  "location_size": 19,
+  "location_border_thickness": 3
+ },
+ {
+  "name": "Dead Verdania Bench",
+  "img": "01-geometry/832472da-8b5d-45c5-ad6c-b457e37284b8.webp",
+  "location_size": 19,
+  "location_border_thickness": 3
+ },
+ {
+  "name": "Dead Verdania Main",
+  "img": "01-geometry/dee37a7b-5e24-46ff-a66e-a10c5f236fe9.webp",
+  "location_size": 22,
+  "location_border_thickness": 3
+ },
+ {
+  "name": "Palestag",
+  "img": "01-geometry/33c9b723-42e4-41c7-bd5d-a932ce03dab2.webp",
+  "location_size": 14,
+  "location_border_thickness": 2
+ },
+ {
+  "name": "Verdania Big Button Room",
+  "img": "01-geometry/0ebf6484-c7c0-440a-8a19-57445550df33.webp",
+  "location_size": 21,
+  "location_border_thickness": 3
+ },
+ {
+  "name": "Verdania Big Room",
+  "img": "01-geometry/e83db629-1bd0-4faf-8d74-7f65fd0dbf06.webp",
+  "location_size": 20,
+  "location_border_thickness": 3
+ },
+ {
+  "name": "Verdania Capital",
+  "img": "01-geometry/60119afe-bbf2-4bf6-9602-337ae004654c.webp",
+  "location_size": 16,
+  "location_border_thickness": 2
+ },
+ {
+  "name": "Verdania Cloverstag Steps",
+  "img": "01-geometry/6775d35b-01e8-4453-9425-1e9ebb8f3518.webp",
+  "location_size": 18,
+  "location_border_thickness": 3
+ },
+ {
+  "name": "Verdania Entrance",
+  "img": "01-geometry/081fd689-1133-49fc-a884-280e9f4affed.webp",
+  "location_size": 24,
+  "location_border_thickness": 4
+ },
+ {
+  "name": "Verdania Kindanir egg Room",
+  "img": "01-geometry/95e59896-8812-45b2-bb8e-a531878a9fad.webp",
+  "location_size": 14,
+  "location_border_thickness": 2
+ },
+ {
+  "name": "Verdania Left Side Essence Shrine",
+  "img": "01-geometry/633fe56d-d126-4def-b593-aada9b415a5c.webp",
+  "location_size": 22,
+  "location_border_thickness": 3
+ },
+ {
+  "name": "Verdania Left Side Tall Room",
+  "img": "01-geometry/d0b5500b-0332-4879-92ad-efbf01e55184.webp",
+  "location_size": 20,
+  "location_border_thickness": 3
+ },
+ {
+  "name": "Verdania Right Side Tall Room",
+  "img": "01-geometry/086950b5-e7e2-4ec6-b348-90e5c1e42eba.webp",
+  "location_size": 14,
+  "location_border_thickness": 2
+ },
+ {
+  "name": "Verdania Top Room",
+  "img": "01-geometry/3494da2a-aa3c-4b98-9f3e-34a2bf570077.webp",
+  "location_size": 20,
   "location_border_thickness": 3
  },
  {
@@ -1340,8 +1472,8 @@
  {
   "name": "Grand Gate Courtroom",
   "img": "01-geometry/205b19ef-859b-41a8-b288-2bbc789e5423.webp",
-  "location_size": 24,
-  "location_border_thickness": 4
+  "location_size": 19,
+  "location_border_thickness": 3
  },
  {
   "name": "Grand Elevator",
@@ -1360,6 +1492,18 @@
   "img": "01-geometry/15dd7027-4faa-4c7f-80db-9e33da3bef3a.webp",
   "location_size": 21,
   "location_border_thickness": 3
+ },
+ {
+  "name": "Nyleth Shrine",
+  "img": "01-geometry/27f90db3-eb94-4ef5-be4e-580b13062b2f.webp",
+  "location_size": 192,
+  "location_border_thickness": 32
+ },
+ {
+  "name": "Nyleth Fight",
+  "img": "01-geometry/5229a44b-e481-4d4b-b3ae-7a0c0bd03f6e.webp",
+  "location_size": 192,
+  "location_border_thickness": 32
  },
  {
   "name": "Sinner's Road Bench",
@@ -1446,6 +1590,12 @@
   "location_border_thickness": 2
  },
  {
+  "name": "Chapel of the Architect",
+  "img": "01-geometry/4344b962-3cb4-4bd8-9843-088ed849ac1c.webp",
+  "location_size": 192,
+  "location_border_thickness": 32
+ },
+ {
   "name": "Underworks Below Vaultkeeper",
   "img": "01-geometry/85be8340-46a4-4758-b6bd-8a75249311dc.webp",
   "location_size": 16,
@@ -1520,7 +1670,7 @@
  {
   "name": "Underworks Twelfth Architect",
   "img": "01-geometry/c9e666cd-9f03-4a30-8086-2345d6146874.webp",
-  "location_size": 20,
+  "location_size": 19,
   "location_border_thickness": 3
  },
  {
@@ -1556,8 +1706,8 @@
  {
   "name": "Underworks Outside Choral Chambers",
   "img": "01-geometry/a0c1d39a-cf5d-4cf0-b04c-412f222b5deb.webp",
-  "location_size": 15,
-  "location_border_thickness": 2
+  "location_size": 19,
+  "location_border_thickness": 3
  },
  {
   "name": "Underworks Shaft",
@@ -1628,44 +1778,44 @@
  {
   "name": "Songclave Bellshrine",
   "img": "01-geometry/17eb3fe1-a3f8-468b-8114-63903a5e54a2.webp",
-  "location_size": 22,
+  "location_size": 19,
   "location_border_thickness": 3
  },
  {
   "name": "Songclave",
   "img": "01-geometry/22203700-80e1-499d-a188-8d64a8091a81.webp",
-  "location_size": 21,
+  "location_size": 19,
   "location_border_thickness": 3
  },
  {
   "name": "Choral Chambers Spa",
   "img": "01-geometry/eff09b58-aab8-4093-bdb5-9d87e6f98653.webp",
-  "location_size": 20,
+  "location_size": 19,
   "location_border_thickness": 3
  },
  {
   "name": "Choral Chambers Outside Spa",
   "img": "01-geometry/0a492c2a-2045-4021-a279-e8b881841c11.webp",
-  "location_size": 16,
-  "location_border_thickness": 2
+  "location_size": 19,
+  "location_border_thickness": 3
  },
  {
   "name": "Choral Chambers Western Shaft",
   "img": "01-geometry/c35f5cb2-0b3d-4421-b333-ceee0203b99e.webp",
-  "location_size": 18,
+  "location_size": 19,
   "location_border_thickness": 3
  },
  {
   "name": "Choral Chambers Shop",
   "img": "01-geometry/20c80804-7814-46d4-9bb0-073c742993d4.webp",
-  "location_size": 18,
+  "location_size": 19,
   "location_border_thickness": 3
  },
  {
   "name": "Choral Chambers Cogheart Room",
   "img": "01-geometry/7354630d-e32e-4a1c-b4f7-8a9d8cdd4d9f.webp",
-  "location_size": 13,
-  "location_border_thickness": 2
+  "location_size": 19,
+  "location_border_thickness": 3
  },
  {
   "name": "Choral Chambers Grindle",
@@ -1676,8 +1826,8 @@
  {
   "name": "Choral Chambers Flea Room",
   "img": "01-geometry/9cc3c018-438a-47e2-aab2-252e31a358a3.webp",
-  "location_size": 17,
-  "location_border_thickness": 2
+  "location_size": 19,
+  "location_border_thickness": 3
  },
  {
   "name": "Choral Chambers Above Spa",
@@ -1688,29 +1838,29 @@
  {
   "name": "Choral Chambers Maintenance Tunnel",
   "img": "01-geometry/c99763f4-bcf9-4ff0-ba0c-831623e6fbef.webp",
-  "location_size": 20,
+  "location_size": 19,
   "location_border_thickness": 3
  },
  {
   "name": "Choral Chambers Flea Shaft",
   "img": "01-geometry/531a61f0-6d2f-4a2d-9b24-c240cb509b29.webp",
-  "location_size": 18,
+  "location_size": 19,
   "location_border_thickness": 3
  },
  {
   "name": "High Halls Corridor",
   "img": "01-geometry/1a3cd976-c5ad-4df4-a5d8-ad9246428216.webp",
-  "location_size": 20,
+  "location_size": 19,
   "location_border_thickness": 3
  },
  {
   "name": "Corridor to High Halls",
   "img": "01-geometry/661ffeff-2313-4dc5-9589-98d851e9ec42.webp",
-  "location_size": 9,
-  "location_border_thickness": 1
+  "location_size": 19,
+  "location_border_thickness": 3
  },
  {
-  "name": "Choral Chambers Over Dininig",
+  "name": "Choral Chambers Over Dining",
   "img": "01-geometry/6d8fb266-f747-40eb-8434-242f5cc6d31f.webp",
   "location_size": 19,
   "location_border_thickness": 3
@@ -1730,19 +1880,19 @@
  {
   "name": "Choral Chambers Merchant Room",
   "img": "01-geometry/f55b0d82-7bea-47a1-babc-2a1993c65cff.webp",
-  "location_size": 15,
-  "location_border_thickness": 2
+  "location_size": 19,
+  "location_border_thickness": 3
  },
  {
   "name": "Choral Chambers Below Dining",
   "img": "01-geometry/632a5568-9ab2-46a7-8c06-3feab405359e.webp",
-  "location_size": 14,
-  "location_border_thickness": 2
+  "location_size": 19,
+  "location_border_thickness": 3
  },
  {
   "name": "Choral Chambers Below Spa",
   "img": "01-geometry/1d5e5d3e-5ca2-4b47-9177-26310b4f1f54.webp",
-  "location_size": 21,
+  "location_size": 19,
   "location_border_thickness": 3
  },
  {
@@ -1754,31 +1904,31 @@
  {
   "name": "Choral Chambers Ventrica Room",
   "img": "01-geometry/09c0a344-d713-44f9-9e5e-2c65203a9066.webp",
-  "location_size": 22,
+  "location_size": 19,
   "location_border_thickness": 3
  },
  {
   "name": "Choral Chambers Below Ventrica",
   "img": "01-geometry/2fd442d9-10e0-46e5-9034-c7cb8d3675a0.webp",
-  "location_size": 15,
-  "location_border_thickness": 2
+  "location_size": 19,
+  "location_border_thickness": 3
  },
  {
   "name": "Choral Chambers Outisde Underworks",
   "img": "01-geometry/4621cb68-70be-44af-9325-e4549e826e95.webp",
-  "location_size": 10,
-  "location_border_thickness": 1
+  "location_size": 19,
+  "location_border_thickness": 3
  },
  {
   "name": "Songclave Tube",
   "img": "01-geometry/a3436584-9f7a-4f2a-8e51-e9b15942dc9e.webp",
-  "location_size": 16,
-  "location_border_thickness": 2
+  "location_size": 19,
+  "location_border_thickness": 3
  },
  {
   "name": "Memorium Entrance Tunnel",
   "img": "01-geometry/aae4b7ae-f565-4955-b510-cfe2f08bfa1b.webp",
-  "location_size": 20,
+  "location_size": 19,
   "location_border_thickness": 3
  },
  {
@@ -1790,7 +1940,7 @@
  {
   "name": "Songclave Silk Shop",
   "img": "01-geometry/54c1e18b-b555-4cca-80b2-5220a6a2236e.webp",
-  "location_size": 18,
+  "location_size": 19,
   "location_border_thickness": 3
  },
  {
@@ -1802,20 +1952,26 @@
  {
   "name": "Grand Bellway Side Room",
   "img": "01-geometry/849ca4a0-930c-4fe2-95a1-db3607a09dc1.webp",
-  "location_size": 14,
-  "location_border_thickness": 2
+  "location_size": 19,
+  "location_border_thickness": 3
  },
  {
   "name": "Grand Bellway",
   "img": "01-geometry/57316a91-fdbb-43f7-b244-5906cd7dce63.webp",
-  "location_size": 17,
-  "location_border_thickness": 2
+  "location_size": 19,
+  "location_border_thickness": 3
  },
  {
   "name": "Choral Chambers East to West",
   "img": "01-geometry/959cbd97-d320-4d01-886d-54ad7ac98a23.webp",
-  "location_size": 20,
+  "location_size": 19,
   "location_border_thickness": 3
+ },
+ {
+  "name": "Bellway Centipede Arena",
+  "img": "01-geometry/1da34e84-7cd7-5108-92c4-37ef4bab0897.webp",
+  "location_size": 192,
+  "location_border_thickness": 32
  },
  {
   "name": "Cog Dancers",
@@ -1836,6 +1992,12 @@
   "location_border_thickness": 2
  },
  {
+  "name": "Cogwork Core Bench & Map",
+  "img": "01-geometry/214220b9-8ee1-4650-8d08-8245a6d8993b.webp",
+  "location_size": 192,
+  "location_border_thickness": 32
+ },
+ {
   "name": "Cogwork Core Breakable Walls",
   "img": "01-geometry/5d243fea-c6c9-47aa-8e0a-5fbc685316c4.webp",
   "location_size": 19,
@@ -1852,6 +2014,12 @@
   "img": "01-geometry/cbf31989-81d0-4643-9d0b-07a5ea65dad1.webp",
   "location_size": 14,
   "location_border_thickness": 2
+ },
+ {
+  "name": "Cogwork Core Main Connection",
+  "img": "01-geometry/d57d0573-04e1-4e71-ae8b-e8c586db173c.webp",
+  "location_size": 192,
+  "location_border_thickness": 32
  },
  {
   "name": "Cogwork Core North Main",
@@ -1972,6 +2140,12 @@
   "img": "01-geometry/0eb82c90-2aca-449c-8d2f-3bfe5ffbc633.webp",
   "location_size": 20,
   "location_border_thickness": 3
+ },
+ {
+  "name": "Whiteward Sherma Gauntlet",
+  "img": "01-geometry/ffe09fec-0947-4f05-8fe5-e8820ef65a63.webp",
+  "location_size": 192,
+  "location_border_thickness": 32
  },
  {
   "name": "Whiteward Descent Connection",
@@ -2462,14 +2636,20 @@
  {
   "name": "Slab Bridge",
   "img": "01-geometry/1b842713-583f-44a3-9a48-49ba78003ee8.webp",
-  "location_size": 16,
-  "location_border_thickness": 2
+  "location_size": 19,
+  "location_border_thickness": 3
  },
  {
   "name": "Slab Arena",
   "img": "01-geometry/4e0630fb-f809-48a9-80c4-ea9dbc9dbaaf.webp",
   "location_size": 19,
   "location_border_thickness": 3
+ },
+ {
+  "name": "Slab Broodmother Alcove",
+  "img": "01-geometry/9b3b3b16-aac1-5615-a135-41143ea1c169.webp",
+  "location_size": 192,
+  "location_border_thickness": 32
  },
  {
   "name": "Slab Cell",
@@ -2480,7 +2660,7 @@
  {
   "name": "Slab Chilly Prison",
   "img": "01-geometry/58d7d80c-aeb7-4d1b-89a7-c64ccf4c6060.webp",
-  "location_size": 23,
+  "location_size": 19,
   "location_border_thickness": 3
  },
  {
@@ -2492,44 +2672,56 @@
  {
   "name": "Slab Cave Entrance",
   "img": "01-geometry/f21cfc1d-cd81-4f3b-9fec-254b3fe5b9ab.webp",
-  "location_size": 14,
-  "location_border_thickness": 2
+  "location_size": 19,
+  "location_border_thickness": 3
  },
  {
   "name": "Slab Cavern Exit",
   "img": "01-geometry/7ac949c4-21bc-4c84-a8c1-2b5bff82d0a4.webp",
-  "location_size": 23,
+  "location_size": 19,
   "location_border_thickness": 3
  },
  {
   "name": "Slab Chilly Top",
   "img": "01-geometry/84bc3519-edf7-4e3e-8041-e844fe75d272.webp",
-  "location_size": 16,
-  "location_border_thickness": 2
+  "location_size": 19,
+  "location_border_thickness": 3
  },
  {
   "name": "Slab Entrance",
   "img": "01-geometry/c1271c3d-bbf6-436e-abc1-101b46e04e3e.webp",
-  "location_size": 20,
+  "location_size": 19,
+  "location_border_thickness": 3
+ },
+ {
+  "name": "Slab First Sinner",
+  "img": "01-geometry/591dbca9-4812-4bb1-82ba-a9afb75ae70d.webp",
+  "location_size": 19,
   "location_border_thickness": 3
  },
  {
   "name": "Slab First Sinner Antechamber",
   "img": "01-geometry/fdd6d625-7ddf-4cb8-8dd0-40fd9bf7eb2e.webp",
-  "location_size": 18,
+  "location_size": 19,
+  "location_border_thickness": 3
+ },
+ {
+  "name": "Slab Flea Cell",
+  "img": "01-geometry/6d87d1dc-c675-4b74-bc70-5ab1ae1f0247.webp",
+  "location_size": 19,
   "location_border_thickness": 3
  },
  {
   "name": "Slab Flea Prison",
   "img": "01-geometry/9abc02a6-9a1f-40bc-bbde-6e6aacf83be1.webp",
-  "location_size": 16,
-  "location_border_thickness": 2
+  "location_size": 19,
+  "location_border_thickness": 3
  },
  {
   "name": "Slab Grindle",
   "img": "01-geometry/7f3a1fe2-bcc4-4f1d-ac9e-05b4c72224ae.webp",
-  "location_size": 17,
-  "location_border_thickness": 2
+  "location_size": 19,
+  "location_border_thickness": 3
  },
  {
   "name": "Slab Indolent Room",
@@ -2540,14 +2732,20 @@
  {
   "name": "Slab Infleatween Bottom",
   "img": "01-geometry/05962a85-12f9-42bf-96d8-5672993c0aba.webp",
-  "location_size": 21,
+  "location_size": 19,
   "location_border_thickness": 3
  },
  {
   "name": "Slab Infleatween Top",
   "img": "01-geometry/89a3eac6-f430-44d9-b3e8-b604ca4daba5.webp",
-  "location_size": 17,
-  "location_border_thickness": 2
+  "location_size": 19,
+  "location_border_thickness": 3
+ },
+ {
+  "name": "Slab Penitent Cell",
+  "img": "01-geometry/30d7a033-28af-4e69-889c-46a08d7b3f82.webp",
+  "location_size": 19,
+  "location_border_thickness": 3
  },
  {
   "name": "Slab Poodle",
@@ -2558,13 +2756,13 @@
  {
   "name": "Slab Prelude",
   "img": "01-geometry/35e00f7b-7f92-4e1c-ad2c-bb5f268a446b.webp",
-  "location_size": 17,
-  "location_border_thickness": 2
+  "location_size": 19,
+  "location_border_thickness": 3
  },
  {
   "name": "Slab Quiet Cell",
   "img": "01-geometry/2ebc0ead-3032-47d7-bc0a-32cb0b0355cc.webp",
-  "location_size": 18,
+  "location_size": 19,
   "location_border_thickness": 3
  },
  {
@@ -2576,7 +2774,7 @@
  {
   "name": "Slab Shaft",
   "img": "01-geometry/6f5768b3-aa10-4ca4-8cde-cc87b10689ce.webp",
-  "location_size": 20,
+  "location_size": 19,
   "location_border_thickness": 3
  },
  {
@@ -2588,8 +2786,8 @@
  {
   "name": "Slab Window",
   "img": "01-geometry/d5229963-ee1a-4337-8415-b58b670abe33.webp",
-  "location_size": 11,
-  "location_border_thickness": 1
+  "location_size": 19,
+  "location_border_thickness": 3
  },
  {
   "name": "Mount Fay Entrance",
@@ -2712,6 +2910,12 @@
   "location_border_thickness": 3
  },
  {
+  "name": "Huntress",
+  "img": "01-geometry/4f58cf78-e891-4789-a610-2e2ead12f321.webp",
+  "location_size": 192,
+  "location_border_thickness": 32
+ },
+ {
   "name": "Putrified Ducts Bellway",
   "img": "01-geometry/3710c659-596b-4b53-be90-dd3fe5705d74.webp",
   "location_size": 16,
@@ -2762,14 +2966,14 @@
  {
   "name": "ACT3 Connection To GMS",
   "img": "01-geometry/472cafdb-18f7-4efc-967a-1dcb75ac3216.webp",
-  "location_size": 9,
-  "location_border_thickness": 1
+  "location_size": 192,
+  "location_border_thickness": 32
  },
  {
   "name": "ACT3 GMS Arena",
   "img": "01-geometry/ae052636-de56-44dd-a4d2-6033e62b19c2.webp",
-  "location_size": 13,
-  "location_border_thickness": 2
+  "location_size": 192,
+  "location_border_thickness": 32
  },
  {
   "name": "ACT3 Lace2 Arena",
@@ -2778,16 +2982,40 @@
   "location_border_thickness": 1
  },
  {
+  "name": "ACT2 GMS Arena",
+  "img": "01-geometry/2e0f996f-5606-4d8b-95fe-e4a7dfb7c454.webp",
+  "location_size": 192,
+  "location_border_thickness": 32
+ },
+ {
+  "name": "Act2 Cradle Connector Hallway",
+  "img": "01-geometry/a841731d-70f2-46eb-bfb5-4f608be16a2c.webp",
+  "location_size": 192,
+  "location_border_thickness": 32
+ },
+ {
+  "name": "Act2 Cradle Left Shaft",
+  "img": "01-geometry/12fe7814-32c9-473a-8e5e-0cb33b05d8a9.webp",
+  "location_size": 192,
+  "location_border_thickness": 32
+ },
+ {
   "name": "Lace 2 Fight",
   "img": "01-geometry/e721ece2-60da-4925-84eb-57fd201316ad.webp",
-  "location_size": 8,
-  "location_border_thickness": 1
+  "location_size": 192,
+  "location_border_thickness": 32
  },
  {
   "name": "Terminus Ventrica",
   "img": "01-geometry/01be65c9-b456-4203-b870-3e026f9d53ae.webp",
-  "location_size": 18,
-  "location_border_thickness": 3
+  "location_size": 192,
+  "location_border_thickness": 32
+ },
+ {
+  "name": "Weaver Jail Lore Room",
+  "img": "01-geometry/715c8434-6851-475d-bc65-c73b3bce99ab.webp",
+  "location_size": 192,
+  "location_border_thickness": 32
  },
  {
   "name": "Cradle Path Of Pain First Room",
@@ -2800,6 +3028,12 @@
   "img": "01-geometry/b8579f03-b516-4ef7-839b-c774a952efb6.webp",
   "location_size": 19,
   "location_border_thickness": 3
+ },
+ {
+  "name": "Path Of Pain Silksong",
+  "img": "01-geometry/16f507bb-1d29-448c-b920-5e1500494724.webp",
+  "location_size": 48,
+  "location_border_thickness": 8
  },
  {
   "name": "The Surface",
@@ -2820,6 +3054,12 @@
   "location_border_thickness": 4
  },
  {
+  "name": "Abyss Diving Bell Broken",
+  "img": "01-geometry/bce8f99c-5c50-497c-8133-4a406103386e.webp",
+  "location_size": 192,
+  "location_border_thickness": 32
+ },
+ {
   "name": "Abyss Diving Bell Fixed",
   "img": "01-geometry/bcad5304-34dc-4e65-8c73-73a7dce741f6.webp",
   "location_size": 9,
@@ -2834,8 +3074,8 @@
  {
   "name": "Abyss Escape",
   "img": "01-geometry/fc42071a-7c4f-45b2-8119-d8068b07c444.webp",
-  "location_size": 2,
-  "location_border_thickness": 1
+  "location_size": 48,
+  "location_border_thickness": 8
  },
  {
   "name": "Abyss Escape Hallway",
@@ -2896,5 +3136,11 @@
   "img": "01-geometry/5ee88aea-8b93-44f8-aeb1-7c392dce8376.webp",
   "location_size": 19,
   "location_border_thickness": 3
+ },
+ {
+  "name": "Last Dive",
+  "img": "01-geometry/aa56ed92-1d08-4aec-878c-4558570595e0.webp",
+  "location_size": 192,
+  "location_border_thickness": 32
  }
 ]

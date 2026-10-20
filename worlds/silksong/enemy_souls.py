@@ -1,6 +1,7 @@
 from __future__ import annotations
 
 import json
+import logging
 import pkgutil
 from dataclasses import replace
 from functools import lru_cache
@@ -17,10 +18,19 @@ from .combat import profiles, requirement_name
 BOSS_COMBAT = frozenset(requirement_name(key) for key in profiles() if key.startswith('boss:')) | frozenset(
     name for row in BOSS_CATALOGUE for name in row['combat'])
 BOSS_EVENTS = frozenset(name for row in BOSS_CATALOGUE for name in row['events'])
+STYX_EVENTS = frozenset((
+    'Room Event: event:mapper/reviewed:styx-first-grub-grown',
+    'Room Event: event:mapper/reviewed:courier-queens-egg-delivered',
+))
+ACT_3_INTRO_NODE = 'Room Node: cogwork-core/cogwork-core-breakable-walls#northern-gauntlet'
+ACT_3_INTRO_EVENT = 'Room Event: event:mapper/82aabe64-d7cd-4911-9a15-f1338e0400c0'
+ACT_3_INTRO_SPECIES = frozenset(row['name'] for row in CATALOGUE
+                               if any(b['scene'].lower() == 'cog_10_destroyed' and b['path'] == 'Battle Scene'
+                                      for b in row.get('battles', ())))
 
 
 def item_name(name):
-    return 'Enemy Soul: ' + name
+    return 'Soul of ' + name
 
 
 def location_name(name):
@@ -37,15 +47,16 @@ def enabled_enemies(world):
     act = int(world.get_content_scope().removeprefix('act_'))
     anywhere = frozenset(category for category in SCOPE_CATEGORIES
                          if world.get_category_mode(category) == 'anywhere')
-    return _scoped_enemies(act, anywhere)
+    excluded_items = frozenset({'Silk Soar'} if world.options.silk_soar_begone and act < 3 else ())
+    return _scoped_enemies(act, anywhere, excluded_items)
 
 
 @lru_cache(maxsize=16)
-def _scoped_enemies(act, anywhere):
+def _scoped_enemies(act, anywhere, excluded_items=frozenset()):
     return tuple(row['name'] for row in CATALOGUE
                  if any(route['act'] <= act for route in row['routes'])
-                 and all(category in anywhere
-                         for category in row.get('scope_items', {}).get(str(act), {}).values()))
+                 and all(category in anywhere and item not in excluded_items
+                         for item, category in row.get('scope_items', {}).get(str(act), {}).items()))
 
 
 def required_pool_items(world):
@@ -68,11 +79,58 @@ def validate_slot_data(data):
 def check_requirements(name, enabled=None):
     from .requirements import req
     enabled = frozenset(BY_NAME if enabled is None else enabled)
-    return tuple(req(item_name(name), *(('Act: ' + str(route['act']),) if route['act'] > 1 else ()),
-                     *route.get('events', ()),
-                     *(item_name(soul) for soul in route.get('souls', ()) if soul in enabled),
-                     *('Room Node: ' + node for node in route['nodes']))
-                 for route in BY_NAME[name]['routes'])
+    result = []
+    for index, route in enumerate(BY_NAME[name]['routes']):
+        act = route.get('requires_act', route['act'])
+        prefix = (item_name(name), *(('Act: ' + str(act),) if act > 1 else ()),
+                  *route.get('events', ()),
+                  *(item_name(soul) for soul in route.get('souls', ()) if soul in enabled))
+        if 'mapped_encounters' in route or route.get('mapper_generated'):
+            result.extend(replace(rule, all_of=tuple(dict.fromkeys((*prefix, *rule.all_of))),
+                                  require_any_crest=True) for rule in _mapped_requirements(name, index))
+        else:
+            result.append(req(*prefix, *('Room Node: ' + node for node in route['nodes'])))
+    if name in ACT_3_INTRO_SPECIES:
+        result.append(replace(req('Act: 3', ACT_3_INTRO_EVENT), require_any_crest=True))
+    return tuple(dict.fromkeys(result))
+
+
+def _mapped_route_error(name, index, detail):
+    logging.getLogger(__name__).error(
+        'Invalid mapped enemy route for %s at index %s: %s', name, index, detail,
+        extra={'NoStream': True, 'skip_gui': True})
+    return ValueError(
+        "The Silksong APWorld contains inconsistent enemy-soul data. "
+        "Reinstall the APWorld for the version you're using and restart Archipelago. "
+        "If this keeps happening, report it with your Archipelago log.")
+
+
+@lru_cache(maxsize=None)
+def _mapped_requirements(name, index):
+    from .room_graph import load_room_graph, RequirementMode, RequirementSpec
+    from .room_graph_logic import _compile_spec
+    from .requirements import _compiled_room_clause_requirement
+    route = BY_NAME[name]['routes'][index]
+    graph = load_room_graph()
+    if route.get('mapper_source') != graph.source_aggregate_sha256:
+        raise _mapped_route_error(name, index,
+            f"Mapper source {route.get('mapper_source')!r} does not match room graph {graph.source_aggregate_sha256!r}.")
+    rules = []
+    rooms = {value.split('#', 1)[0] for value in route['nodes']}
+    for encounter in route.get('mapped_encounters', ()):
+        node = encounter['node']
+        if node not in graph.node_by_id or node.split('#', 1)[0] not in rooms:
+            raise _mapped_route_error(name, index,
+                f'Placement {node!r} is missing or outside its reviewed room. '
+                f'Node exists: {node in graph.node_by_id}. Reviewed rooms: {sorted(rooms)!r}.')
+        spec = RequirementSpec('', RequirementMode.EXPRESSION,
+                               tuple(tuple(clause) for clause in encounter['dnf']), (), (), 0)
+        rules.extend(_compiled_room_clause_requirement(clause)
+                     for clause in _compile_spec(spec, 'Room Node: ' + node))
+    if not rules:
+        raise _mapped_route_error(name, index,
+            f"No usable encounters compiled from {len(route.get('mapped_encounters', ()))} placements.")
+    return tuple(dict.fromkeys(rules))
 
 
 def add_souls_to_pool(world, entries):
@@ -114,7 +172,7 @@ def pogo_graph(names):
             for branch in spec.dnf:
                 needed = souls if any(atom.startswith('mapper:enemy-pogo:') for atom in branch) else ()
                 needed += tuple(connections.get(row.id, ()))
-                records = {atom.split(':')[2] for atom in branch if atom.startswith('mapper:enemy-type-pogo:')}
+                records = {atom.split(':')[2] for atom in branch if atom.startswith(('mapper:enemy-type-pogo:', 'mapper:enemy-damage-boost:'))}
                 if records:
                     needed += tuple('received:' + item_name(name) for name in names if BY_NAME[name]['record'] in records)
                 if ('Skullwing' in names and room.id in BY_NAME['Skullwing']['rooms']
@@ -182,18 +240,34 @@ def gate_graph(world, graph):
         souls = tuple(item_name(name) for name in names if room.id in BY_NAME[name]['rooms'])
         for event in room.events:
             owner = 'Room Event: ' + event.id
-            if souls and event.kind in {'enemy', 'miniboss', 'gauntlet'} and owner in result and owner not in BOSS_EVENTS:
+            if (souls and event.kind in {'enemy', 'miniboss', 'gauntlet'} and owner in result
+                    and owner not in BOSS_EVENTS and owner != ACT_3_INTRO_EVENT):
                 result[owner] = tuple(rule if BOSS_COMBAT.intersection(rule.all_of) else
                                       replace(rule, all_of=tuple(dict.fromkeys((*rule.all_of, *souls)))) for rule in result[owner])
     for name in names:
         for event in BY_NAME[name].get('events', ()):
-            result[event] = tuple(replace(rule, all_of=tuple(dict.fromkeys((*rule.all_of, item_name(name)))))
-                                  for rule in result[event])
+            alternatives = (item_name(name), 'Act: 3') if name == 'Muckroach' and event in STYX_EVENTS else (item_name(name),)
+            result[event] = tuple(replace(rule, all_of=tuple(dict.fromkeys((*rule.all_of, requirement))))
+                                  for rule in result[event] for requirement in alternatives)
     for combat, souls in _boss_summons(names).items():
         result[combat] = tuple(replace(rule, all_of=tuple(dict.fromkeys((*rule.all_of, *souls))))
                                for rule in result[combat])
     for owner, rules in tuple(result.items()):
-        result[owner] = tuple(_combat_gate(rule, names) for rule in rules)
+        if owner != ACT_3_INTRO_EVENT:
+            result[owner] = tuple(_combat_gate(rule, names) for rule in rules)
+    ragpelts = 'Room Event: event:mapper/reviewed:crawbug-ragpelts-collected'
+    if 'Craw' in names and ragpelts in result:
+        original = result[ragpelts]
+        result[ragpelts] = ()
+        from .requirements import _combine_room_graph_gate
+        for species in ('Craw', 'Tallcraw', 'Squatcraw'):
+            for source in check_requirements(species, names):
+                if species not in names:
+                    source = replace(source, all_of=tuple(n for n in source.all_of if n != item_name(species)))
+                for rule in original:
+                    gate = replace(rule, all_of=tuple(n for n in rule.all_of if not n.startswith('Room Node: ')))
+                    result[ragpelts] += (_combine_room_graph_gate(source, gate),)
+        result[ragpelts] = tuple(dict.fromkeys(result[ragpelts]))
     return result
 
 

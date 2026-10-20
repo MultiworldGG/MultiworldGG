@@ -131,7 +131,7 @@ def get_tmhm_compatibility(world: "PokemonCrystalWorld", pkmn_name) -> list[str]
     tmhms = []
     for tm_name, tm_data in sorted(world.generated_tms.items(), key=lambda x: x[0]):
         is_hm = tm_data.is_hm or tm_name in HM_COMPAT_TMS
-        same_type = tm_data.type in pkmn_data.types
+        same_type = world.generated_moves[tm_data.id].type in pkmn_data.types
         if is_hm:
             tier_value = hm_same if same_type else hm_other
             use_value = world.options.hm_compatibility_override.get(
@@ -157,7 +157,7 @@ def apply_tm_plando(world: "PokemonCrystalWorld") -> dict[int, str]:
         if tm_data.is_hm or tm_data.tm_num not in plando_data:
             continue
         move = world.generated_moves[plando_data[tm_data.tm_num]]
-        world.generated_tms[tm_name] = TMHMData(move.id, tm_data.tm_num, move.type, False, move.rom_id)
+        world.generated_tms[tm_name] = TMHMData(move.id, tm_data.tm_num, False, move.rom_id)
     return plando_data
 
 
@@ -192,7 +192,7 @@ def randomize_tms(world: "PokemonCrystalWorld"):
         else:
             new_move = filtered_move_pool.pop()
             global_move_pool.remove(new_move)
-        world.generated_tms[tm_name] = TMHMData(new_move.id, tm_data.tm_num, new_move.type, False, new_move.rom_id)
+        world.generated_tms[tm_name] = TMHMData(new_move.id, tm_data.tm_num, False, new_move.rom_id)
 
 
 def get_random_move_from_learnset(world: "PokemonCrystalWorld", pokemon: str, level: int,
@@ -242,7 +242,10 @@ def randomize_move_values(world: "PokemonCrystalWorld"):
             new_acc = move_data.accuracy
             new_pp = move_data.pp
 
-            if power_full:
+            # power 1 marks moves whose damage is computed by their effect
+            if move_data.power == 1:
+                pass
+            elif power_full:
                 new_power = world.random.randint(20, 150)
                 new_power //= MOVE_POWER_RATIO.get(move_name, 1)
             elif power_restricted:

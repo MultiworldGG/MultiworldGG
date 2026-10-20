@@ -80,8 +80,10 @@ class RandomMoveCosts(IntEnum):
     FULLY_RANDOM = 3
 
 
-# modified from the original since we can't have both a value and a setting from one option
-# two options per palette would be rather ugly looking and probably a bit confusing
+# modified from the original since we can't have both a value and a setting from
+# one option
+# two options per palette would be rather ugly looking and probably a bit
+# confusing
 # SETTING is the old value, kept them around in case they were needed
 @unique
 class RandomPalettes(IntEnum):

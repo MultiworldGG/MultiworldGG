@@ -1,13 +1,14 @@
 """This module handles creation of item hints for Merluvlee to offer Mario."""
 from .options import ShuffleKootFavors, ShuffleLetters, PaperMarioOptions
 
-from .data.itemlocation_special \
-    import kootfavors_reward_locations,\
-           kootfavors_keyitem_locations,\
-           chainletter_giver_locations,\
-           chainletter_final_reward_location,\
-           simpleletter_locations,\
-           limited_by_item_areas
+from .data.itemlocation_special import (
+    kootfavors_reward_locations,
+    kootfavors_keyitem_locations,
+    chainletter_giver_locations,
+    chainletter_final_reward_location,
+    simpleletter_locations,
+    limited_by_item_areas
+)
 from .data.partners_meta import all_partners
 
 

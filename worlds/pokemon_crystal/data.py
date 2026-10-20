@@ -218,7 +218,6 @@ class TypeData:
 class TMHMData:
     id: str
     tm_num: int
-    type: str
     is_hm: bool
     move_id: int
 
@@ -1476,7 +1475,6 @@ def _init() -> None:
     tmhm = {tm_name: TMHMData(
         tm_name,
         tm_data["tm_num"],
-        tm_data["type"],
         tm_data["is_hm"],
         move_data[tm_name]["id"]
     ) for tm_name, tm_data in tmhm_data.items()}

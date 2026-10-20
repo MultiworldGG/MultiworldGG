@@ -30,7 +30,12 @@ class PMEntrance(Entrance):
 
     def get_new_target(self, pool_type):
         root = self.multiworld.get_region('Root Exits', self.player)
-        target_entrance = PMEntrance(self.player, self.multiworld, f'Root -> ({self.name}) ({pool_type})', root)
+        target_entrance = PMEntrance(
+            self.player,
+            self.multiworld,
+            f'Root -> ({self.name}) ({pool_type})',
+            root,
+        )
         target_entrance.connect(self.connected_region)
         target_entrance.replaces = self
         root.exits.append(target_entrance)

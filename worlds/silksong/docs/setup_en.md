@@ -52,7 +52,7 @@ The profile code contains the Archipelago Randomizer Mod, Custom Music Randomize
 
 **NOTE: Please make sure to press "Update Mods" when installing or when new versions release and it'll automatically update you to the latest version of the mod.**
 
-**Cogfly Import Code:** `01a109ba-4c4f-b4f0-8695-8b4d42cb8159` (Same as R2Modman)
+**Cogfly Import Code:** `01a12cf3-f4cb-5402-d6a8-0f266b3e7aa8` (Same as R2Modman)
 
 ### Using R2Modman (3.2.18+) / Thunderstore Manager (1.123.1+)
 1.) First start off by installing [R2Modman](https://r2modman.com/download-latest/) to the latest version for your preferred operating system.
@@ -65,7 +65,7 @@ The profile code contains the Archipelago Randomizer Mod, Custom Music Randomize
 
 **NOTE: Please make sure to press "Update Mods" when installing or when new versions release and it'll automatically update you to the latest version of the mod.**
 
-**R2Modman Import Code:** `01a109ba-4c4f-b4f0-8695-8b4d42cb8159` (Same as Cogfly)
+**R2Modman Import Code:** `01a12cf3-f4cb-5402-d6a8-0f266b3e7aa8` (Same as Cogfly)
 
 ### Manually
 1.) Find your Hollow Knight: Silksong installation folder based on your Silksong storefront.
@@ -117,12 +117,12 @@ The resulting folder structure should look something like:
 
 6.) You can then upload the zip to host the game as you wish. MultiworldGG's upload hosting page can be found [here](/uploads).
 
-## Frequently Asked Questions (FAQ)
-
-### I Got An Error Saying My APWorld Version is Incompatible
+## I Got An Error Saying My APWorld Version is Incompatible
 This occurs when you've changed your APWorld to a new version for an update while having your world generated on an old one.
 
 Use one of the installation methods to downgrade. Manual is preferred for downgrading but here are some old codes for the mod managers (these work for both):
+
+**v0.5.1** Import Code: `01a12cf3-f4cb-5402-d6a8-0f266b3e7aa8`
 
 **v0.5.0** Import Code: `01a109ba-4c4f-b4f0-8695-8b4d42cb8159`
 
@@ -157,4 +157,4 @@ Try manually installing the mod list using the photo below, [swap to R2Modman](h
 - If Silksong does not connect, confirm that BepInEx is installed correctly and that the plugin is in the `BepInEx/plugins` folder.
 - If the Silksong world does not appear in Archipelago, confirm that the `.apworld` is in `custom_worlds` and restart the Archipelago launcher.
 - If items or checks appear out of sync, reconnect the client or use the client's resynchronization command if available.
-- If reporting a bug, include the randomizer version, MultiworldGG/AP version, relevant YAML settings, and the BepInEx log.
+- If reporting a bug, include the randomizer version, MultiworldGG version, relevant YAML settings, and the BepInEx log.

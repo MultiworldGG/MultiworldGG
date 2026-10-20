@@ -10,14 +10,14 @@ from ..data.formations_meta import (
     flying_enemies,
     battlestage_ceilings,
     battlestage_ceiling_formations,
-    ceiling_enemies
+    ceiling_enemies,
 )
 
 
 def _get_random_formationsize(
     chapter_difficulty:int,
     do_progressive_scaling:bool,
-    random
+    random,
 ):
     """
     Choose the size of the formation from 1-4. This is a function of
@@ -67,7 +67,7 @@ def _get_random_formationsize(
 
     rnd_value = random.random() * 100
     probability_count = 0
-    for size, size_probability in enumerate(size_chances[chapter_difficulty]):
+    for (size, size_probability) in enumerate(size_chances[chapter_difficulty]):
         probability_count += size_probability
         if rnd_value <= probability_count:
             rnd_number_of_enemies = size + 1
@@ -110,7 +110,7 @@ def _get_new_formation(
     else:
         cur_turn_order = 0x0A
 
-    for i, enemy_pos in enumerate(enemycount_occupancy_map[len(enemylist)]):
+    for (i, enemy_pos) in enumerate(enemycount_occupancy_map[len(enemylist)]):
         # formation setup on example:
         # -> 0000010A 8021B0AC 00000000 00000000
         # word 1:

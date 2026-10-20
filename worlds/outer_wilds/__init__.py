@@ -35,6 +35,7 @@ class OuterWildsWebWorld(WebWorld):
             Spawn,
             EarlyKeyItem,
             RandomizeWarpPlatforms,
+            WarpPlatformPlando,
             SplitTranslator,
             Logsanity,
             ShuffleSpacesuit,
@@ -48,6 +49,7 @@ class OuterWildsWebWorld(WebWorld):
             EnableFretsQuestMod,
             EnableHearthsNeighborMod,
             EnableHearthsNeighbor2MagistariumMod,
+            EnableHeliostudyMod,
             EnableTheOutsiderMod,
         ]),
         OptionGroup("Additional Non-Logical Randomizations", [
@@ -59,6 +61,7 @@ class OuterWildsWebWorld(WebWorld):
         OptionGroup("(Non-Progression) Item Options", [
             TrapChance,
             TrapTypeWeights,
+            ShuffleEquipment,
             UpgradeCounts,
         ]),
     ]
@@ -70,7 +73,6 @@ class OuterWildsWorld(World):
     Through repeated attempts, they investigate the alien ruins of the Nomai to discover their history and the cause of the time loop.
     """
     game = "Outer Wilds"
-    author: str = "Ixrec"
     web = OuterWildsWebWorld()
 
     eotu_coordinates = 'vanilla'
@@ -96,6 +98,7 @@ class OuterWildsWorld(World):
             self.options.enable_outsider_mod = EnableTheOutsiderMod(0)
             self.options.enable_fc_mod = EnableForgottenCastawaysMod(0)
             self.options.enable_eh_mod = EnableEchoHikeMod(0)
+            self.options.enable_hs_mod = EnableHeliostudyMod(0)
 
         if self.options.spawn == Spawn.option_random_non_vanilla:
             max_spawn = Spawn.option_stranger if self.options.enable_eote_dlc else Spawn.option_giants_deep
@@ -123,6 +126,7 @@ class OuterWildsWorld(World):
                 self.options.enable_fq_mod,
                 self.options.enable_fc_mod,
                 self.options.enable_eh_mod,
+                self.options.enable_hs_mod,
             ], 1) # Solanum always counts
             if self.options.required_friends > max_friends:
                 raise OptionError(f'Incompatible options: required_friends is ({self.options.required_friends}), but the other options only make {max_friends} available')
@@ -139,7 +143,9 @@ class OuterWildsWorld(World):
             if hasattr(self.multiworld, "re_gen_passthrough"):
                 if "Outer Wilds" in self.multiworld.re_gen_passthrough:
                     slot_data = self.multiworld.re_gen_passthrough["Outer Wilds"]
-                    if slot_data["warps"] != "vanilla":
+                    if slot_data["warps"] == "vanilla": # Legacy support.
+                        self.warps.apply_vanilla_warp_platform_mapping()
+                    else:
                         self.warps.mappings = slot_data["warps"] # is always set
                     self.options.goal.value = slot_data.get("goal", 0)
                     self.options.spawn.value = slot_data.get("spawn", 0)
@@ -153,6 +159,7 @@ class OuterWildsWorld(World):
                     self.options.enable_fq_mod.value = slot_data.get("enable_fq_mod", 0)
                     self.options.enable_fc_mod.value = slot_data.get("enable_fc_mod", 0)
                     self.options.enable_eh_mod.value = slot_data.get("enable_eh_mod", 0)
+                    self.options.enable_hs_mod.value = slot_data.get("enable_hs_mod", 0)
                     self.options.split_translator.value = slot_data.get("split_translator", 0)
                     self.options.shuffle_spacesuit.value = slot_data.get("shuffle_spacesuit", 0)
                     self.options.required_friends.value = slot_data.get("required_friends", 0)
@@ -161,8 +168,15 @@ class OuterWildsWorld(World):
         # generate game-specific randomizations separate from AP items/locations
         self.eotu_coordinates = generate_random_coordinates(self.random) \
             if self.options.randomize_coordinates else "vanilla"
-        if self.options.randomize_warp_platforms:
-            self.warps.generate_random_warp_platform_mapping(self.random, self.options.spawn, self.options.enable_ac_mod.value)
+        if not self.options.randomize_warp_platforms:
+            self.warps.apply_vanilla_warp_platform_mapping()
+        if self.options.enable_eh_mod:
+            self.warps.apply_eh_modifications()
+        if len(self.options.warp_platform_plando) > 0:
+            self.warps.apply_warp_plando(self.options.warp_platform_plando.value)
+        if self.options.enable_ac_mod:
+            self.warps.apply_ac_modifications(self.random)
+        self.warps.randomize_unmapped_warps(self.random, self.options.spawn)
         (self.planet_order, self.orbit_angles) = generate_random_orbits(self.random, self.options) \
             if self.options.randomize_orbits else ("vanilla", "vanilla")
         self.rotation_axes = generate_random_rotations(self.random) \
@@ -260,7 +274,7 @@ class OuterWildsWorld(World):
             "goal", "required_friends", "spawn",         # affects tons of stuff, but also a client/mod faeture
             "logsanity", "enable_eote_dlc", "dlc_only",  # changes AP locations, needed by in-game tracker
             "enable_hn1_mod", "enable_hn2_mod",
-            "enable_outsider_mod", "enable_ac_mod", "enable_fq_mod", "enable_fc_mod", "enable_eh_mod",
+            "enable_outsider_mod", "enable_ac_mod", "enable_fq_mod", "enable_fc_mod", "enable_eh_mod", "enable_hs_mod",
             "split_translator",                          # changes AP items, and how client/mod implements Translator
             "shuffle_spacesuit",
         )
@@ -295,8 +309,8 @@ class OuterWildsWorld(World):
                                  '\n\nPlanet Order: %s\nOrbit Angles: %s\nRotation Axes: %s\n' %
                                  (self.multiworld.player_name[self.player],
                                   self.planet_order, self.orbit_angles, self.rotation_axes))
-        if self.options.randomize_warp_platforms:
-            spoiler_handle.write('\nRandomized Warp Platforms for %s:'
+        if self.options.randomize_warp_platforms or len(self.options.warp_platform_plando) > 0:
+            spoiler_handle.write('\nWarp Platforms for %s:'
                                  '\n\n%s\n' %
                                  (self.multiworld.player_name[self.player],
                                   self.warps.mappings))

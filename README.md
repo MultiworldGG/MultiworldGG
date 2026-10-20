@@ -157,6 +157,7 @@ Currently, the following games are supported:
 * Pokémon FireRed/LeafGreen
 * Pokémon Mystery Dungeon: Explorers of Sky
 * Pokémon Red/Blue
+* Pokémon Snap
 * Portal 2
 * Powerwash Simulator
 * Pseudoregalia

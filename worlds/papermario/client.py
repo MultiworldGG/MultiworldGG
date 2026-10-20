@@ -40,7 +40,10 @@ class PaperMarioClient(BizHawkClient):
             if game_name[0].decode("ascii") != "PAPER MARIO         ":
                 return False
 
-            pmr_magic_value = await bizhawk.read(ctx.bizhawk_ctx, [(TABLE_ADDRESS, 0x4, "ROM")])
+            pmr_magic_value = await bizhawk.read(
+                ctx.bizhawk_ctx,
+                [(TABLE_ADDRESS, 0x4, "ROM")]
+            )
             if pmr_magic_value[0] != MAGIC_VALUE:
                 logger.info("This Paper Mario ROM is invalid.")
                 return False
@@ -57,7 +60,10 @@ class PaperMarioClient(BizHawkClient):
         return True
 
     async def set_auth(self, ctx: "BizHawkClientContext") -> None:
-        auth_raw = (await bizhawk.read(ctx.bizhawk_ctx, [(AUTH_ADDRESS, 16, "ROM")]))[0]
+        auth_raw = (await bizhawk.read(
+            ctx.bizhawk_ctx,
+            [(AUTH_ADDRESS, 16, "ROM")]
+        ))[0]
         ctx.auth = base64.b64encode(auth_raw).decode("utf-8")
 
     async def game_watcher(self, ctx: "BizHawkClientContext") -> None:
@@ -86,8 +92,10 @@ class PaperMarioClient(BizHawkClient):
                 mod_flags = read_state[1]
                 game_flags = read_state[2]
                 received_items = int.from_bytes(bytearray(read_state[3]), "big")
-                current_location = (int.from_bytes(bytearray(read_state[4]), "big"),
-                                    int.from_bytes(bytearray(read_state[5]), "big"))
+                current_location = (
+                    int.from_bytes(bytearray(read_state[4]), "big"),
+                    int.from_bytes(bytearray(read_state[5]), "big"),
+                )
                 star_spirits = int.from_bytes(bytearray(read_state[6]), "big")
                 uir_flags = read_state[7]
 
@@ -99,28 +107,38 @@ class PaperMarioClient(BizHawkClient):
                 if received_items < len(ctx.items_received):
                     next_item = ctx.items_received[received_items]
 
-                    # check what id actually needs sent to the game, as some items have multiples
-                    # items in the player's game will have the biggest available ID,
-                    # when receiving we give the smallest
+                    # check what id actually needs sent to the game, as some
+                    # items have multiples
+                    # items in the player's game will have the biggest available
+                    # ID, when receiving we give the smallest
                     item_id = next_item.item - item_id_prefix
                     if item_id in item_multiples_ids.keys():
                         repeat_id = 0
 
-                        # magical seeds need to skip seed 1 if only 3 seeds required, 1 and 2 if 2 seeds required, etc
+                        # magical seeds need to skip seed 1 if only 3 seeds
+                        # required, 1 and 2 if 2 seeds required, etc
                         if item_id == item_table["Magical Seed"][2]:
-                            repeat_id = min(4 - ctx.slot_data["magical_seeds"], 3)  # maximum of 3 in case command used
+                            repeat_id = min(
+                                4 - ctx.slot_data["magical_seeds"],
+                                3 # maximum of 3 in case command used
+                            )
 
                         base_item_id = item_id
                         item_id = item_multiples_ids[base_item_id][repeat_id]
-                        while repeat_id < len(item_multiples_ids[base_item_id]) and uir_flags[item_id]:
+                        while (    repeat_id < len(item_multiples_ids[base_item_id])
+                               and uir_flags[item_id]
+                        ):
                             item_id = item_multiples_ids[base_item_id][repeat_id]
                             repeat_id += 1
 
                     item_id = item_id << 16
-                    await bizhawk.guarded_write(ctx.bizhawk_ctx,
-                                                [(KEY_RECV_BUFFER, item_id.to_bytes(4, "big"), "RDRAM")],
-                                                [(KEY_RECV_BUFFER, (0).to_bytes(4, "big"), "RDRAM"),
-                                                 (ITM_RCV_SEQ, read_state[3], "RDRAM")])
+                    await bizhawk.guarded_write(
+                        ctx.bizhawk_ctx,
+                        [(KEY_RECV_BUFFER, item_id.to_bytes(4, "big"), "RDRAM")],
+                        [
+                            (KEY_RECV_BUFFER, (0).to_bytes(4, "big"), "RDRAM"),
+                            (ITM_RCV_SEQ, read_state[3], "RDRAM")
+                        ])
 
                 # SEND ITEMS
                 mf_bytes = bytearray(mod_flags)
@@ -132,7 +150,8 @@ class PaperMarioClient(BizHawkClient):
                     loc_id = location_name_to_id[location]
                     loc_val = False
 
-                    # these flags are weird and require a helper function to do funny math, refer to doc linked in data
+                    # these flags are weird and require a helper function to do
+                    # funny math, refer to doc linked in data
                     if data[0] == "MF":
                         loc_val = get_flag_value(data[1], mf_bytes)
                     elif data[0] == "GF":
@@ -146,7 +165,10 @@ class PaperMarioClient(BizHawkClient):
                     self.local_checked_locations = locs_to_send
 
                     if locs_to_send is not None:
-                        await ctx.send_msgs([{"cmd": "LocationChecks", "locations": list(locs_to_send)}])
+                        await ctx.send_msgs([{
+                            "cmd": "LocationChecks",
+                            "locations": list(locs_to_send)
+                        }])
 
                 # AUTO HINTING
                 # Build list of items to scout
@@ -168,24 +190,38 @@ class PaperMarioClient(BizHawkClient):
                          location_name_to_id[loc] in ctx.missing_locations and
                          location_name_to_id[loc] not in ctx.locations_checked]
 
-                # scout the auto hint locations in the current area and store what we have scouted but not hinted
+                # scout the auto hint locations in the current area and store
+                # what we have scouted but not hinted
                 if hints:
-                    await ctx.send_msgs([{"cmd": "LocationScouts", "locations": hints, "create_as_hint": 0}])
+                    await ctx.send_msgs([{
+                        "cmd": "LocationScouts",
+                        "locations": hints,
+                        "create_as_hint": 0,
+                    }])
                     self.autohint_stored = hints
 
-                # send the hints for the unsent progression items in the stored locations
+                # send the hints for the unsent progression items in the stored
+                # locations
                 # these will have already been scouted
                 if self.autohint_stored:
                     await ctx.send_msgs([{
                         "cmd": "LocationScouts",
-                        "locations": [loc for loc, n_item in ctx.locations_info.items() if n_item.flags & 0b001],
-                        "create_as_hint": 2}])
+                        "locations": [
+                            loc
+                            for loc, n_item in ctx.locations_info.items()
+                            if n_item.flags & 0b001
+                        ],
+                        "create_as_hint": 2,
+                    }])
                     self.autohint_released.update(self.autohint_stored)
                     self.autohint_stored = hints
 
                 # GOAL CHECKING
                 if not ctx.finished_game and (get_flag_value(GOAL_FLAG, mf_bytes)):
-                    await ctx.send_msgs([{"cmd": "StatusUpdate", "status": ClientStatus.CLIENT_GOAL}])
+                    await ctx.send_msgs([{
+                        "cmd": "StatusUpdate",
+                        "status": ClientStatus.CLIENT_GOAL
+                    }])
 
         except bizhawk.RequestFailedError:
             # Exit handler and return to main loop to reconnect.
@@ -199,7 +235,9 @@ class PaperMarioClient(BizHawkClient):
     ):
         (current_area_id, current_map_id) = current_location
 
-        if current_area_id != self.current_area_id or current_map_id != self.current_map_id:
+        if (   current_area_id != self.current_area_id
+            or current_map_id != self.current_map_id
+        ):
             self.current_area_id = current_area_id
             self.current_map_id = current_map_id
 

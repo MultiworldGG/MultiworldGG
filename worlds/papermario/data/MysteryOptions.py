@@ -2,7 +2,8 @@
 from .ItemList import item_table
 
 
-# original items are, in order: mushroom, super shroom, fire flower, stone cap, dizzy dial, thunder rage, pebble
+# original items are, in order:
+# mushroom, super shroom, fire flower, stone cap, dizzy dial, thunder rage, pebble
 class MysteryOptions:
     def __init__(self):
         self.mystery_random_choice = 0

@@ -123,6 +123,15 @@ class TestWonderTradeFallbacks(unittest.TestCase):
         self.assertEqual(moves[2], 0)
         self.assertEqual(moves[3], 0)
 
+    def test_level_met_strips_caught_time_bits(self):
+        mon = bytearray(make_mon())
+        for caught_time in range(4):
+            with self.subTest(caught_time=caught_time):
+                mon[29] = (caught_time << 6) | 5
+                blob = pokemon_data_to_json(bytes(mon), make_nick(), make_ot(),
+                                            trainer_id=1, player_female=False)
+                self.assertEqual(json.loads(blob)["level_met"], 5)
+
     def test_location_met_uses_in_game_trade_sentinel_outbound(self):
         # A Crystal mon caught at LANDMARK_ROUTE_29 (=2) should not serialize
         # location_met=2, because foreign games would render that as some
@@ -244,6 +253,22 @@ class TestEligibilityFilter(unittest.TestCase):
         # ~0.015% per Emerald entry in practice; documented collision.
         self.assertFalse(trade_is_eligible(self._make_pool_entry(slot=1), own_id=1))
 
+    def test_rejects_malformed_entries_without_raising(self):
+        good = json.loads(self._make_pool_entry(slot=1)[1])
+        malformed = [
+            "not json",
+            json.dumps([1, 2, 3]),
+            json.dumps({**good, "moves": [["tackle", 35, 0]]}),
+            json.dumps({**good, "moves": [[33, 35, 0], [None, 1, 0]]}),
+            json.dumps({**good, "experience": "lots"}),
+            json.dumps({**good, "ivs": ["a"] * 6}),
+            json.dumps({**good, "trainer": "X"}),
+            None,
+        ]
+        for blob in malformed:
+            with self.subTest(blob=blob):
+                self.assertFalse(trade_is_eligible([1, blob], own_id=7))
+
 
 class TestWonderTradeSendFinally(unittest.IsolatedAsyncioTestCase):
     """Regression: wonder_trade_in_flight must clear when posting fails so the
@@ -256,12 +281,13 @@ class TestWonderTradeSendFinally(unittest.IsolatedAsyncioTestCase):
         # try/finally without bringing up the full BizHawk stack.
         client = PokemonCrystalClient.__new__(PokemonCrystalClient)
         client.wonder_trade_in_flight = True
+        client.wonder_trade_send_token = None
 
         async def fake_acquire(ctx, keep_trying=False):
             return None
 
         client.wonder_trade_acquire = fake_acquire
-        await client.wonder_trade_send(ctx=None, blob="{}", own_tid=0)
+        await client.wonder_trade_send(ctx=None, blob="{}", own_tid=0, send_buffer=bytes(70), token=None)
         self.assertFalse(client.wonder_trade_in_flight)
 
     async def test_in_flight_clears_when_acquire_raises(self):
@@ -269,15 +295,364 @@ class TestWonderTradeSendFinally(unittest.IsolatedAsyncioTestCase):
 
         client = PokemonCrystalClient.__new__(PokemonCrystalClient)
         client.wonder_trade_in_flight = True
+        client.wonder_trade_send_token = None
 
         async def boom(ctx, keep_trying=False):
             raise RuntimeError("connection lost")
 
         client.wonder_trade_acquire = boom
         with self.assertRaises(RuntimeError):
-            await client.wonder_trade_send(ctx=None, blob="{}", own_tid=0)
+            await client.wonder_trade_send(ctx=None, blob="{}", own_tid=0, send_buffer=bytes(70), token=None)
         self.assertFalse(client.wonder_trade_in_flight)
 
+
+class TestWonderTradePostedMarker(unittest.IsolatedAsyncioTestCase):
+    """Regression: a restarted client must not re-post a trade it already posted."""
+
+    async def test_zeroed_species_is_not_reposted(self):
+        from unittest.mock import AsyncMock, MagicMock, patch
+        from worlds.pokemon_crystal.client import PokemonCrystalClient
+
+        client = PokemonCrystalClient.__new__(PokemonCrystalClient)
+        client.initialize_wonder_trade()
+        client.wonder_trade_cooldown_timer = 1
+        ctx = MagicMock(stored_data={}, watcher_timeout=0.1)
+        send_blob = bytes(70)
+        read = AsyncMock(return_value=[b"\xa5\x5a\xc3", b"\x01", send_blob, b"\x12\x34"])
+        with patch("worlds._bizhawk.read", read), \
+                patch("worlds.pokemon_crystal.client_wonder_trade.Utils.async_start") as async_start:
+            await client.handle_wonder_trade(ctx)
+        async_start.assert_not_called()
+        self.assertTrue(client.wonder_trade_in_flight)
+
+
+def _make_client():
+    from worlds.pokemon_crystal.client import PokemonCrystalClient
+    client = PokemonCrystalClient.__new__(PokemonCrystalClient)
+    client.initialize_wonder_trade()
+    return client
+
+
+def _make_ctx(connected=True):
+    from unittest.mock import AsyncMock, MagicMock
+    ctx = MagicMock(team=0, stored_data={}, watcher_timeout=0.1)
+    ctx.server.socket.open = connected
+    ctx.server.socket.closed = not connected
+    ctx.send_msgs = AsyncMock()
+    ctx.exit_event.is_set.return_value = False
+    return ctx
+
+
+def _confirm_sets(client, ctx):
+    async def reply(msgs):
+        client.on_wonder_trade_reply({"uuid": msgs[0]["uuid"], "value": {"_lock": 0}, "original_value": {}})
+
+    ctx.send_msgs.side_effect = reply
+
+
+class TestWonderTradeSendMarker(unittest.IsolatedAsyncioTestCase):
+    async def asyncSetUp(self):
+        self.client = _make_client()
+        self.client.wonder_trade_in_flight = True
+        self.client.wonder_trade_send_token = None
+
+        async def fake_acquire(ctx, keep_trying=False):
+            return {"value": {"_lock": 1}}
+
+        self.client.wonder_trade_acquire = fake_acquire
+        self.send_buffer = bytes([25]) + bytes(69)
+
+    async def test_successful_post_zeroes_species_guarded_on_status_and_buffer(self):
+        from unittest.mock import AsyncMock, patch
+        from ..data import data
+
+        ctx = _make_ctx()
+        _confirm_sets(self.client, ctx)
+        guarded_write = AsyncMock(return_value=True)
+        with patch("worlds._bizhawk.guarded_write", guarded_write):
+            await self.client.wonder_trade_send(ctx, "{}", 0x1234, self.send_buffer, None)
+
+        ctx.send_msgs.assert_awaited_once()
+        send_addr = data.sram_addresses["sArchipelagoWonderTradeSendBuffer"]
+        status_addr = data.sram_addresses["sArchipelagoWonderTradeStatus"]
+        _, writes, guards = guarded_write.await_args.args
+        self.assertEqual(writes, [(send_addr, [0], "CartRAM")])
+        self.assertIn((status_addr, [1], "CartRAM"), guards)
+        self.assertIn((send_addr, self.send_buffer, "CartRAM"), guards)
+        self.assertTrue(self.client.wonder_trade_in_flight)
+
+    async def test_disconnected_post_is_retried_not_marked(self):
+        from unittest.mock import AsyncMock, patch
+
+        ctx = _make_ctx(connected=False)
+        guarded_write = AsyncMock(return_value=True)
+        with patch("worlds._bizhawk.guarded_write", guarded_write):
+            await self.client.wonder_trade_send(ctx, "{}", 0x1234, self.send_buffer, None)
+
+        ctx.send_msgs.assert_not_awaited()
+        guarded_write.assert_not_awaited()
+        self.assertFalse(self.client.wonder_trade_in_flight)
+
+    async def test_unconfirmed_post_is_retried_not_marked(self):
+        from unittest.mock import AsyncMock, patch
+
+        ctx = _make_ctx()
+        guarded_write = AsyncMock(return_value=True)
+        with patch("worlds._bizhawk.guarded_write", guarded_write), \
+                patch("worlds.pokemon_crystal.client_wonder_trade.REPLY_TIMEOUT_S", 0.01):
+            await self.client.wonder_trade_send(ctx, "{}", 0x1234, self.send_buffer, None)
+
+        ctx.send_msgs.assert_awaited_once()
+        guarded_write.assert_not_awaited()
+        self.assertFalse(self.client.wonder_trade_in_flight)
+        self.assertEqual(self.client.wonder_trade_pending_replies, {})
+
+    async def test_failed_marker_write_is_retried_by_watcher(self):
+        from unittest.mock import AsyncMock, patch
+        import worlds._bizhawk as bizhawk
+
+        ctx = _make_ctx()
+        _confirm_sets(self.client, ctx)
+        with patch("worlds._bizhawk.guarded_write", AsyncMock(side_effect=bizhawk.RequestFailedError)):
+            await self.client.wonder_trade_send(ctx, "{}", 0x1234, self.send_buffer, None)
+        self.assertTrue(self.client.wonder_trade_in_flight)
+        self.assertEqual(self.client.wonder_trade_unmarked_buffer, self.send_buffer)
+
+        read = AsyncMock(return_value=[b"\xa5\x5a\xc3", b"\x01", self.send_buffer, b"\x12\x34"])
+        guarded_write = AsyncMock(return_value=True)
+        with patch("worlds._bizhawk.read", read), patch("worlds._bizhawk.guarded_write", guarded_write):
+            await self.client.handle_wonder_trade(ctx)
+        guarded_write.assert_awaited_once()
+        self.assertIsNone(self.client.wonder_trade_unmarked_buffer)
+
+    async def test_stale_task_does_not_clear_newer_in_flight(self):
+        async def superseded_acquire(ctx, keep_trying=False):
+            self.client.wonder_trade_send_token = object()
+            return None
+
+        self.client.wonder_trade_acquire = superseded_acquire
+        await self.client.wonder_trade_send(_make_ctx(), "{}", 0x1234, self.send_buffer, None)
+        self.assertTrue(self.client.wonder_trade_in_flight)
+
+    async def test_handle_passes_full_send_buffer(self):
+        from unittest.mock import AsyncMock, MagicMock, patch
+
+        ctx = _make_ctx()
+        client = _make_client()
+        client.wonder_trade_send = MagicMock()
+        send_blob = bytes([25]) + bytes(range(1, 70))
+        read = AsyncMock(side_effect=[[b"\xa5\x5a\xc3", b"\x01", send_blob, b"\x12\x34"], [b"\x00"]])
+        with patch("worlds._bizhawk.read", read), \
+                patch("worlds.pokemon_crystal.client_wonder_trade.Utils.async_start"):
+            await client.handle_wonder_trade(ctx)
+        self.assertEqual(client.wonder_trade_send.call_args.args[3], send_blob)
+        self.assertIs(client.wonder_trade_send.call_args.args[4], client.wonder_trade_send_token)
+
+
+class TestWonderTradeMalformedPool(unittest.IsolatedAsyncioTestCase):
+    async def test_non_dict_pool_is_ignored(self):
+        from unittest.mock import AsyncMock, patch
+
+        client = _make_client()
+        client.wonder_trade_in_flight = True
+        ctx = _make_ctx()
+        ctx.stored_data = {"pokemon_wonder_trades_0": ["garbage"]}
+        read = AsyncMock(return_value=[b"\xa5\x5a\xc3", b"\x01", bytes(70), b"\x12\x34"])
+        with patch("worlds._bizhawk.read", read):
+            await client.handle_wonder_trade(ctx)
+        ctx.send_msgs.assert_not_awaited()
+
+    async def test_acquire_tolerates_original_value_without_lock(self):
+        client = _make_client()
+        ctx = _make_ctx()
+
+        async def reply(msgs):
+            msg = msgs[0]
+            lock = msg["operations"][0]["value"]["_lock"]
+            client.on_wonder_trade_reply({"uuid": msg["uuid"], "value": {"_lock": lock}, "original_value": {}})
+
+        ctx.send_msgs.side_effect = reply
+        result = await client.wonder_trade_acquire(ctx)
+        self.assertIsNotNone(result)
+        self.assertEqual(client.wonder_trade_cooldown, 5000)
+
+
+    async def test_acquire_tolerates_non_numeric_original_lock(self):
+        client = _make_client()
+        ctx = _make_ctx()
+
+        async def reply(msgs):
+            msg = msgs[0]
+            lock = msg["operations"][0]["value"]["_lock"]
+            client.on_wonder_trade_reply({"uuid": msg["uuid"], "value": {"_lock": lock},
+                                          "original_value": {"_lock": "x"}})
+
+        ctx.send_msgs.side_effect = reply
+        self.assertIsNotNone(await client.wonder_trade_acquire(ctx))
+
+    async def test_acquire_rejects_non_dict_value(self):
+        client = _make_client()
+        ctx = _make_ctx()
+
+        async def reply(msgs):
+            client.on_wonder_trade_reply({"uuid": msgs[0]["uuid"], "value": ["_lock"], "original_value": []})
+
+        ctx.send_msgs.side_effect = reply
+        self.assertIsNone(await client.wonder_trade_acquire(ctx))
+
+
+class TestWonderTradeReplyMatching(unittest.IsolatedAsyncioTestCase):
+    async def test_other_clients_replies_do_not_resolve_ours(self):
+        from unittest.mock import patch
+
+        client = _make_client()
+        ctx = _make_ctx()
+
+        async def reply(msgs):
+            for foreign in ({"uuid": "someone-else"}, {}, {"uuid": ["unhashable"]}, {"uuid": None}):
+                client.on_wonder_trade_reply({**foreign, "value": {"_lock": 0}})
+            self.assertEqual(len(client.wonder_trade_pending_replies), 1)
+            client.on_wonder_trade_reply({"uuid": msgs[0]["uuid"], "value": {"_lock": 7}})
+            client.on_wonder_trade_reply({"uuid": "someone-else", "value": {"_lock": 0}})
+
+        ctx.send_msgs.side_effect = reply
+        with patch("worlds.pokemon_crystal.client_wonder_trade.REPLY_TIMEOUT_S", 1):
+            result = await client._request_pool_update(ctx, [])
+        self.assertEqual(result["value"], {"_lock": 7})
+        self.assertEqual(client.wonder_trade_pending_replies, {})
+
+
+class TestWonderTradeBackgroundReceive(unittest.IsolatedAsyncioTestCase):
+    def _eligible_pool(self):
+        entry = TestEligibilityFilter()._make_pool_entry(slot=1)
+        return {"pokemon_wonder_trades_0": {"_lock": 0, "0": entry}}
+
+    async def test_watcher_spawns_receive_without_awaiting_it(self):
+        from unittest.mock import AsyncMock, MagicMock, patch
+
+        client = _make_client()
+        client.wonder_trade_in_flight = True
+        client.wonder_trade_receive = AsyncMock()
+        ctx = _make_ctx()
+        ctx.stored_data = self._eligible_pool()
+        read = AsyncMock(return_value=[b"\xa5\x5a\xc3", b"\x01", bytes(70), b"\x12\x34"])
+        with patch("worlds._bizhawk.read", read), \
+                patch("worlds.pokemon_crystal.client_wonder_trade.Utils.async_start") as async_start:
+            await client.handle_wonder_trade(ctx)
+            await client.handle_wonder_trade(ctx)
+        async_start.assert_called_once()
+        async_start.call_args.args[0].close()
+        client.wonder_trade_receive.assert_not_awaited()
+        self.assertTrue(client.wonder_trade_receiving)
+
+    def _receiving_client(self):
+        from unittest.mock import AsyncMock
+
+        client = _make_client()
+        client.wonder_trade_in_flight = True
+        client.wonder_trade_receiving = True
+        client.wonder_trade_cooldown = 20000
+        self.blob = TestEligibilityFilter()._make_pool_entry(slot=1)[1]
+        self.offer = bytes(range(1, 70))
+        self.send_blob = bytes([25]) + self.offer
+        client.wonder_trade_receive = AsyncMock(return_value=self.blob)
+        return client
+
+    async def test_received_trade_is_written_to_sram_immediately(self):
+        from unittest.mock import AsyncMock, patch
+        from ..data import data
+
+        client = self._receiving_client()
+        guarded_write = AsyncMock(return_value=True)
+        with patch("worlds._bizhawk.guarded_write", guarded_write):
+            await client._receive_in_background(_make_ctx(), 0x1234, self.offer)
+
+        _, writes, guards = guarded_write.await_args.args
+        status_addr = data.sram_addresses["sArchipelagoWonderTradeStatus"]
+        self.assertIn((status_addr, [3], "CartRAM"), writes)
+        self.assertIn((status_addr, [1], "CartRAM"), guards)
+        self.assertIn((data.sram_addresses["sArchipelagoWonderTradeMagic"], b"\xa5\x5a\xc3", "CartRAM"), guards)
+        self.assertIn((data.sram_addresses["sArchipelagoWonderTradeSendBuffer"] + 1, self.offer, "CartRAM"), guards)
+        self.assertIsNone(client.queued_received_trade)
+        self.assertFalse(client.wonder_trade_in_flight)
+        self.assertEqual(client.wonder_trade_cooldown, 5000)
+        self.assertFalse(client.wonder_trade_receiving)
+
+    async def test_unwritable_received_trade_is_queued_for_watcher(self):
+        from unittest.mock import AsyncMock, patch
+        import worlds._bizhawk as bizhawk
+
+        for outcome in (AsyncMock(return_value=False), AsyncMock(side_effect=bizhawk.RequestFailedError)):
+            with self.subTest(outcome=outcome):
+                client = self._receiving_client()
+                with patch("worlds._bizhawk.guarded_write", outcome):
+                    await client._receive_in_background(_make_ctx(), 0x1234, self.offer)
+                self.assertEqual(client.queued_received_trade, (self.blob, self.offer))
+                self.assertTrue(client.wonder_trade_in_flight)
+                self.assertFalse(client.wonder_trade_receiving)
+
+    async def test_watcher_keeps_queued_trade_until_written(self):
+        from unittest.mock import AsyncMock, patch
+
+        client = self._receiving_client()
+        client.wonder_trade_receiving = False
+        client.queued_received_trade = (self.blob, self.offer)
+        read = AsyncMock(return_value=[b"\xa5\x5a\xc3", b"\x01", self.send_blob, b"\x12\x34"])
+        with patch("worlds._bizhawk.read", read), \
+                patch("worlds._bizhawk.guarded_write", AsyncMock(return_value=False)):
+            await client.handle_wonder_trade(_make_ctx())
+        self.assertEqual(client.queued_received_trade, (self.blob, self.offer))
+        self.assertTrue(client.wonder_trade_in_flight)
+
+        with patch("worlds._bizhawk.read", read), \
+                patch("worlds._bizhawk.guarded_write", AsyncMock(return_value=True)):
+            await client.handle_wonder_trade(_make_ctx())
+        self.assertIsNone(client.queued_received_trade)
+        self.assertFalse(client.wonder_trade_in_flight)
+
+    async def test_queued_trade_for_previous_offer_is_dropped_and_new_offer_posts(self):
+        from unittest.mock import AsyncMock, MagicMock, patch
+
+        client = self._receiving_client()
+        client.wonder_trade_receiving = False
+        client.wonder_trade_send = MagicMock()
+        # The late write landed, the partner was collected, and the player offered a new mon.
+        client.queued_received_trade = (self.blob, self.offer)
+        new_send_blob = bytes([152]) + bytes(range(2, 71))
+        read = AsyncMock(side_effect=[[b"\xa5\x5a\xc3", b"\x01", new_send_blob, b"\x12\x34"], [b"\x00"]])
+        guarded_write = AsyncMock(return_value=True)
+        with patch("worlds._bizhawk.read", read), patch("worlds._bizhawk.guarded_write", guarded_write), \
+                patch("worlds.pokemon_crystal.client_wonder_trade.Utils.async_start"):
+            await client.handle_wonder_trade(_make_ctx())
+        guarded_write.assert_not_awaited()
+        self.assertIsNone(client.queued_received_trade)
+        self.assertEqual(client.wonder_trade_send.call_args.args[3], new_send_blob)
+        self.assertTrue(client.wonder_trade_in_flight)
+
+    async def test_failed_receive_backs_off(self):
+        from unittest.mock import AsyncMock
+
+        client = _make_client()
+        client.wonder_trade_receiving = True
+        client.wonder_trade_receive = AsyncMock(side_effect=RuntimeError("connection lost"))
+        with self.assertRaises(RuntimeError):
+            await client._receive_in_background(_make_ctx(), 0x1234, bytes(69))
+        self.assertIsNone(client.queued_received_trade)
+        self.assertEqual(client.wonder_trade_cooldown_timer, 5000)
+        self.assertGreaterEqual(client.wonder_trade_cooldown, 10000)
+        self.assertFalse(client.wonder_trade_receiving)
+
+    async def test_disconnected_receive_does_not_pop(self):
+        client = _make_client()
+        ctx = _make_ctx(connected=False)
+        entry = TestEligibilityFilter()._make_pool_entry(slot=1)
+
+        async def fake_acquire(ctx, keep_trying=False):
+            return {"value": {"_lock": 1, "0": entry}}
+
+        client.wonder_trade_acquire = fake_acquire
+        self.assertIsNone(await client.wonder_trade_receive(ctx, 0x1234))
+        ctx.send_msgs.assert_not_awaited()
 
 if __name__ == "__main__":
     unittest.main()

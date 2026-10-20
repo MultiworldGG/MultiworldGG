@@ -1,5 +1,7 @@
 from __future__ import annotations
 
+from .directional_abilities import requirements as directional_requirements, split_requirement_counts
+
 from .combat import SKILLS_BY_TIER, TOOLS_BY_TIER, build_requirements as build_combat_requirements
 from .eva import EVA_NODE, EVA_REWARDS, EVA_POINT, EVA_POINT_SOURCES, EVA_CREST_SLOTS, EVOLVED_HUNTER, YELLOW_VESTICREST, BLUE_VESTICREST
 
@@ -38,6 +40,7 @@ from .locations import (
     NEEDLE_UPGRADE_LOCATION_NAMES,
     PINMASTER_OIL_QUEST_LOCATION,
     QUEST_LOCATION_NAMES,
+    RETIRED_LOCATION_NAMES,
     SCROUNGE_RELIC_ITEM_BY_TURN_IN_LOCATION,
     SCROUNGE_RELIC_ITEM_NAMES,
     SILK_HEART_LOCATION_NAMES,
@@ -441,6 +444,7 @@ COMPILED_ROOM_GRAPH = replace(
 ROOM_GRAPH_CANONICAL_CHECK_NAMES: frozenset[str] = frozenset(
     canonicalize_location_name(name)
     for name in COMPILED_ROOM_GRAPH.authoritative_check_names
+    if canonicalize_location_name(name) not in RETIRED_LOCATION_NAMES
 )
 ROOM_GRAPH_QUARANTINED_CHECK_NAMES: frozenset[str] = frozenset(
     canonicalize_location_name(name)
@@ -531,10 +535,7 @@ CRAFTMETAL_MAXIMUM_CONSUMPTION = (
 # Routes which need only the run/ground-momentum half of Swift Step accept the
 # first progressive copy in split seeds.  Full dash routes continue to use
 # SWIFT_STEP_ITEM, which resolves to two progressive copies when split.
-SWIFT_STEP_OR_SPRINT_ITEMS: tuple[str, ...] = (
-    SWIFT_STEP_ITEM,
-    PROGRESSIVE_SWIFT_STEP_ITEM,
-)
+SWIFT_STEP_OR_SPRINT_ITEMS: tuple[str, ...] = ('Capability: Sprint',)
 # The far-right ledge in Shellwood_01 uses the same traversal alternatives as
 # the Longpin alcove above Bellhart. One shared movement tuple defines Longpin
 # and the three adjacent shard caches.
@@ -970,8 +971,6 @@ ALWAYS_JUNK_ONLY_MISSABLE_LOCATIONS: frozenset[str] = frozenset(
         # Handing in a Pale Oil before accepting this Wish can skip its
         # completion state permanently.
         "Wish: Pinmaster's Oil",
-        # Opening the Weaver Gate makes this inscription missable.
-        'The Slab - Weaver Gate Inscription',
     )
 )
 
@@ -1028,9 +1027,9 @@ MANUALLY_VERIFIED_MINOR_CACHE_LOCATIONS: frozenset[str] = frozenset(
         'Moss Grotto - Shell Shard Cache #6',
         'Moss Grotto - Shell Shard Cache #7',
         'Shellwood - Shell Shard Cache #12',
-        'Shellwood - Shell Shard Cache #4',
-        'Shellwood - Shell Shard Cache #5',
-        'Shellwood - Shell Shard Cache #6',
+        'Shell shard Cache: Outside Longpin 1',
+        'Shell shard Cache: Outside Longpin 2',
+        'Shell shard Cache: Outside Longpin 3',
         'The Marrow - Rosary Cache #1',
         'The Marrow - Rosary Cache #2',
         'The Marrow - Rosary Cache #3',
@@ -1063,15 +1062,15 @@ MANUALLY_VERIFIED_MINOR_CACHE_LOCATIONS: frozenset[str] = frozenset(
         'Mosshome - Rosary Cache #2',
         'Mosshome - Rosary Cache #3',
         'Mosshome - Rosary Cache #4',
-        'Greymoor - Rosary Cache #7',
-        'Greymoor - Rosary Cache #8',
-        'Greymoor - Rosary Cache #10',
-        'Greymoor - Rosary Cache #11',
-        'Greymoor - Rosary Cache #12',
-        'Greymoor - Rosary Cache #13',
-        'Greymoor - Rosary Cache #14',
-        'Greymoor - Shell Shard Cache #1',
-        'Greymoor - Shell Shard Cache #2',
+        'Greymoor - flying rat stolen rosaries above the west tower entrance',
+        'Greymoor - poor soul rosaries that were stolen by flying rats above the west tower entrance',
+        'Greymoor - Rosary cache below a spike wheel',
+        'Greymoor - hanging rosaries below scissor fucker',
+        'Greymoor - the other hanging rosaries below scissor fucker',
+        'Greymoor - that one rosary i hate in tiny platform to the right',
+        'Greymoor - Secret dead bug rosaries near rat tunnel',
+        'Greymoor - Shell Shard Cache next to the pit with with fat fuck',
+        'Greymoor - The other Shell Shard Cache in the pit with the fat fuck',
         # Deep Docks #1-3 share Bone_East_13 and require Magma Bell.
         'Deep Docks - Shell Shard Cache #1',
         'Deep Docks - Shell Shard Cache #2',
@@ -1155,9 +1154,7 @@ PATH_ORDER: tuple[str, ...] = (
     'Mosslands - Bonegrave',
     'Mosslands - Snail Shamans',
     'The Marrow - Mosshome Gate',
-    'Mosslands - Moss Druid',
     'The Marrow - Toll',
-    'The Marrow - Bellshrine', # Requires silkspear
     'The Marrow - Shooting Gallery',
     "Hunter's March - Trap",
     'Deep Docks - Toll', # Can't go west (blocked by lever)
@@ -1231,6 +1228,7 @@ PATH_ORDER: tuple[str, ...] = (
     'The Cradle - Surface Ascent',
     'Abyss - Void Tendrils',
     'Abyss - Escape',
+    'Wardenfly Capture',
     # Bellways
     'Bellways',
     'Bellway - Deep Docks',
@@ -1413,6 +1411,32 @@ def grindle_access(
             ),
         )
     )
+
+
+def _verdania_shard_requirements() -> dict[str, tuple[LocationRequirement, ...]]:
+    events = {
+        int(event.label.rsplit(' ', 1)[1]): 'Room Event: ' + event.id
+        for room in load_room_graph().rooms if room.area_id == 'verdania'
+        for event in room.events
+        if event.label.casefold().startswith('verdania essence ')
+    }
+    if set(events) != set(range(1, 18)):
+        raise ValueError('Verdania essence events are incomplete.')
+    result = {}
+    for prefix in range(1, 18):
+        for minimum in range(1, prefix + 1):
+            name = f"Verdania Shards: {minimum} of first {prefix}"
+            collect = (events[prefix],)
+            if minimum > 1:
+                collect += (f"Verdania Shards: {minimum - 1} of first {prefix - 1}",)
+            alternatives = (req(*collect, crest=False),)
+            if minimum < prefix:
+                alternatives += (req(f"Verdania Shards: {minimum} of first {prefix - 1}", crest=False),)
+            result[name] = alternatives
+    result.update({f"Verdania Shards: {minimum}":
+                   (req(f"Verdania Shards: {minimum} of first 17", crest=False),)
+                   for minimum in range(1, 18)})
+    return result
 
 
 def _compiled_room_clause_requirement(
@@ -1837,18 +1861,7 @@ PATH_REQUIREMENTS: Dict[str, tuple[LocationRequirement, ...]] = {
     ),
     'Path: The Marrow - Mosshome Gate': (
         req('Path: Mosslands - Bone Bottom'),
-        req('Path: Mosslands - Moss Druid'),
         req('Path: Wormways - Entrance'),
-    ),
-    'Path: Mosslands - Moss Druid': ( # Silk spear or run/dash or double jump
-        req('Path: The Marrow - Mosshome Gate', silk_spear=True),
-        req(
-            'Path: The Marrow - Mosshome Gate',
-            any_of=(
-                *SWIFT_STEP_OR_SPRINT_ITEMS,
-                'Ability: Faydown Cloak',
-            ),
-        ),
     ),
     'Path: Mosslands - Bonegrave': (
         req('Path: Wormways - Bottom'),
@@ -1865,14 +1878,11 @@ PATH_REQUIREMENTS: Dict[str, tuple[LocationRequirement, ...]] = {
         req('Path: Deep Docks - Toll'), # One way
         req('Path: Deep Docks - Forge'), # One way
     ),
-    'Path: The Marrow - Bellshrine': (
-        req('Path: The Marrow - Mosshome Gate', silk_spear=True),
-        # Blocked path to the East until Bellbeast has been freed
-    ),
     'Path: The Marrow - Shooting Gallery': (
         req(
-            'Path: The Marrow - Bellshrine',
+            'Path: The Marrow - Mosshome Gate',
             'Event: Bell Beast Defeated',
+            silk_spear=True,
         ),
         req('Path: Bellhart - Bellhart', 'Ancestral Art: Cling Grip'),
     ),
@@ -2235,7 +2245,7 @@ PATH_REQUIREMENTS: Dict[str, tuple[LocationRequirement, ...]] = {
         req(room_node_name("the-slab/slab-bellway#room")),
     ),
     'Path: The Slab - Window': (
-        req(room_node_name("the-slab/slab-window#room")),
+        req(room_node_name("the-slab/slab-window#left")),
     ),
     'Path: Mount Fay - Shakra': (
         # Clawline reaches Mount Fay and Shakra's entrance camp. Drifter's
@@ -2298,6 +2308,9 @@ PATH_REQUIREMENTS: Dict[str, tuple[LocationRequirement, ...]] = {
             'Ability: Faydown Cloak',
             'Ancestral Art: Clawline',
         ),
+    ),
+    'Path: Wardenfly Capture': (
+        req('Ancestral Art: Cling Grip', 'Event: Bell Beast Defeated', crest=False),
     ),
     # Bellways
     'Path: Bellways': (
@@ -2456,12 +2469,6 @@ LAST_JUDGE_ROOM_EVENT = room_event_name(
 EVENT_REQUIREMENTS: Dict[str, tuple[LocationRequirement, ...]] = {
     "Event: Ordinary Silk Blockades Cleared": (
         req("Room Event: event:mapper/95f1f75b-e452-4709-9fbc-ad8785ac520a", crest=False),
-    ),
-    'Event: Bell Beast Defeated': (
-        req(
-            'Path: The Marrow - Bellshrine',
-            crest=False,
-        ),
     ),
     'Event: Rite of the Pollip Completed': (
         req(POLLIP_RITE_ROOM_NODE, crest=False),
@@ -2781,6 +2788,7 @@ EVENT_REQUIREMENTS: Dict[str, tuple[LocationRequirement, ...]] = {
         req(
             'Event: Act 2 Started',
             'Path: Putrified Ducts - Fleatopia',
+            'Room Event: event:mapper/reviewed:caravan-reached-fleatopia',
             'Path: Choral Chambers - Songclave',
             'Event: Bellhart Full House Conversation',
             "Event: Trail's End Completed",
@@ -2836,20 +2844,17 @@ EVENT_REQUIREMENTS: Dict[str, tuple[LocationRequirement, ...]] = {
     'Event: Act 3 Started': (
         req('Event: Grand Mother Silk Snared', crest=False),
     ),
-    # Three standard Old Hearts are used instead of the optional Verdania
-    # substitute, which is not represented by the current path graph.
-    'Event: Three Old Hearts Awakened': (
+    'Event: Three Old Hearts Awakened': tuple(
         req(
             'Act: 3',
             'Path: Abyss - Escape',
-            'Pollen Heart',
-            "Hunter's Heart",
-            'Encrusted Heart',
+            *hearts,
             'Path: Mosslands - Snail Shamans',
             'Ancestral Art: Needolin',
             'Ancestral Art: Silk Soar',
             crest=False,
-        ),
+        )
+        for hearts in combinations(('Pollen Heart', "Hunter's Heart", 'Encrusted Heart', 'Conjoined Heart'), 3)
     ),
     'Event: Everbloom Obtained': (
         req(
@@ -2944,6 +2949,9 @@ if MAPPER_GRAPH_ENABLED:
     EVENT_REQUIREMENTS['Event: Everbloom Obtained'] = (
         req(room_event_name('event:mapper/owned/everbloom'), crest=False),
     )
+    EVENT_REQUIREMENTS['Event: Shrine Guardian Seth Defeated'] = (
+        req(room_event_name('event:mapper/66c01078-89ad-4aeb-ab46-a4ac05424109'), crest=False),
+    )
 
 PROFICIENT_COMBAT_REQUIREMENT = "Option: Proficient Combat"
 PROFICIENT_COMBAT_REQUIREMENTS = (req(crest=False),)
@@ -3008,9 +3016,11 @@ ABSTRACT_REQUIREMENTS = _VersionedRequirementMap(
     {
         PROFICIENT_COMBAT_REQUIREMENT: (),
         "Option: Proficient Movement": (),
+        "Option: Elite Ball Knowledge": (),
+        **directional_requirements(req),
         "Option: Flea Brew Jump Logic": (),
         **{f"Technique: {technique} {tier}": ()
-           for technique in ("Heal Stall", "Hazard Respawn", "Scuttlebrace", "Crest Pogo", "Needle Strike", "Enemy Pogo", "Drill Crystal Pogo", 'Flea Brew Stall', 'Flintslate Stall', 'Plasmium Phial Stall', 'Voltvessels Stall')
+           for technique in ("Damage Boost", "Heal Stall", "Hazard Respawn", "Scuttlebrace", "Crest Pogo", "Needle Strike", "Enemy Pogo", "Drill Crystal Pogo", 'Flea Brew Stall', 'Flintslate Stall', 'Plasmium Phial Stall', 'Voltvessels Stall')
            for tier in (1, 2, 3)},
         "Capability: Has Any Map": tuple(req("Map: " + area, crest=False) for area in (
             "Mosslands", "The Marrow", "Deep Docks", "Far Fields", "Wormways", "Hunter's March",
@@ -3051,6 +3061,7 @@ ABSTRACT_REQUIREMENTS = _VersionedRequirementMap(
         # The Bell Beast room event replaces the earlier path-derived event
         # of the same name.
         **ROOM_EVENT_REQUIREMENTS,
+        **_verdania_shard_requirements(),
     }
 )
 
@@ -3064,6 +3075,10 @@ if MAPPER_GRAPH_ENABLED:
         if name.startswith(('Room Node: ', 'Room Event: ')) and name not in ABSTRACT_REQUIREMENTS
     )
     ABSTRACT_REQUIREMENTS.update({name: () for name in MAPPER_UNRESOLVED_LEGACY_REFERENCES})
+
+WARDENFLY_OPEN_BELLWAY_REQUIREMENTS = (
+    req('Ancestral Art: Cling Grip', crest=False),
+)
 
 BELLWAY_RANDOMIZED_STATIONS_REQUIREMENTS = (
     req(
@@ -3150,11 +3165,13 @@ def technique_requirement_overrides(
     needle_strike_tier: int,
     enemy_pogo_tier: int,
     drill_crystal_pogo_tier: int = 0,
+    damage_boost_tier: int = 0,
 ) -> dict[str, tuple[LocationRequirement, ...]]:
     return {
         f"Technique: {name} {tier}": (req(crest=name == "Crest Pogo"),) if selected >= tier else ()
         for name, selected in (
             ("Heal Stall", heal_stall_tier),
+            ("Damage Boost", damage_boost_tier),
             ("Hazard Respawn", hazard_respawn_tier),
             ("Scuttlebrace", scuttlebrace_tier),
             ("Crest Pogo", crest_pogo_tier),
@@ -3179,7 +3196,9 @@ def get_abstract_requirements(
     randomize_ledge_grab: bool = False,
     randomize_swim: bool = False,
     proficient_combat: int = 0,
-    proficient_movement: bool = False,
+    platforming_capability: int = 0,
+    directional_abilities: tuple[str, ...] = (),
+    damage_boost_tier: int = 0,
     flea_brew_jump_logic: bool = False,
     sharpdart_logic: bool = True,
     red_tool_stall_tier: int = 0,
@@ -3220,7 +3239,9 @@ def get_abstract_requirements(
         and not randomize_ledge_grab
         and not randomize_swim
         and not proficient_combat
-        and not proficient_movement
+        and not platforming_capability
+        and not directional_abilities
+        and not damage_boost_tier
         and not flea_brew_jump_logic
         and sharpdart_logic
         and not heal_stall_tier
@@ -3238,6 +3259,8 @@ def get_abstract_requirements(
         return ABSTRACT_REQUIREMENTS
 
     adjusted_requirements = dict(ABSTRACT_REQUIREMENTS)
+    adjusted_requirements.update(directional_requirements(req, directional_abilities))
+    adjusted_requirements["Option: Elite Ball Knowledge"] = (req(crest=False),) if platforming_capability >= 2 else ()
     if steel_soul:
         adjusted_requirements["Option: Steel Soul On"] = (req(crest=False),)
         adjusted_requirements["Option: Steel Soul Off"] = ()
@@ -3246,7 +3269,7 @@ def get_abstract_requirements(
     if room_node_overrides:
         adjusted_requirements.update(room_node_overrides)
     adjusted_requirements['Event: Silk and Soul Offered'] = get_silk_and_soul_requirements(silk_and_soul_points)
-    if proficient_movement:
+    if platforming_capability:
         adjusted_requirements["Option: Proficient Movement"] = PROFICIENT_COMBAT_REQUIREMENTS
     if flea_brew_jump_logic:
         adjusted_requirements["Option: Flea Brew Jump Logic"] = (req(crest=False),)
@@ -3255,10 +3278,10 @@ def get_abstract_requirements(
         adjusted_requirements["Option: Bellshrinesanity Off"] = ()
     adjusted_requirements.update(technique_requirement_overrides(
         heal_stall_tier, hazard_respawn_tier, scuttlebrace_tier,
-        red_tool_stall_tier, crest_pogo_tier, needle_strike_tier, enemy_pogo_tier, drill_crystal_pogo_tier,
+        red_tool_stall_tier, crest_pogo_tier, needle_strike_tier, enemy_pogo_tier, drill_crystal_pogo_tier, damage_boost_tier,
     ))
     adjusted_requirements.update(combat_requirement_overrides(proficient_combat))
-    if randomize_ledge_grab:
+    if randomize_ledge_grab and "Ledge Grab" not in directional_abilities:
         adjusted_requirements[LEDGE_GRAB_CAPABILITY_REQUIREMENT] = (
             RANDOMIZED_INNATE_CAPABILITY_REQUIREMENTS[
                 LEDGE_GRAB_CAPABILITY_REQUIREMENT
@@ -3271,6 +3294,7 @@ def get_abstract_requirements(
             ]
         )
     if allow_bellways_before_bell_beast:
+        adjusted_requirements['Path: Wardenfly Capture'] = WARDENFLY_OPEN_BELLWAY_REQUIREMENTS
         adjusted_requirements['Path: Bellways'] = (
             BELLWAY_RANDOMIZED_STATIONS_REQUIREMENTS
         )
@@ -3328,6 +3352,9 @@ def get_abstract_requirements(
                 )
     if not sharpdart_logic:
         adjusted_requirements[USABLE_SHARPDART_REQUIREMENT] = ()
+    if directional_abilities:
+        adjusted_requirements = {name: split_requirement_counts(rules, directional_abilities)
+                                 for name, rules in adjusted_requirements.items()}
     return adjusted_requirements
 
 
@@ -3394,7 +3421,7 @@ def _minor_pickup_requirement(location_name: str) -> LocationRequirement:
     if scene_name == 'slab_22':
         return req(
             'Act: 2',
-            room_node_name("the-slab/slab-chilly-top#room"),
+            room_node_name("the-slab/slab-chilly-top#left-mid"),
             'Ancestral Art: Cling Grip',
             'Swift Step',
             act='Act 2',
@@ -3509,9 +3536,9 @@ def _minor_cache_requirement(location_name: str) -> LocationRequirement:
             SWIFT_STEP_ITEM,
         )
     if source_location_name in {
-        'Shellwood - Shell Shard Cache #4',
-        'Shellwood - Shell Shard Cache #5',
-        'Shellwood - Shell Shard Cache #6',
+        'Shell shard Cache: Outside Longpin 1',
+        'Shell shard Cache: Outside Longpin 2',
+        'Shell shard Cache: Outside Longpin 3',
     }:
         return area(
             1,
@@ -3549,15 +3576,15 @@ def _minor_cache_requirement(location_name: str) -> LocationRequirement:
         # Shooting Gallery rather than in the opening Toll section.
         return area(1, 'The Marrow - Shooting Gallery')
     if source_location_name in {
-        'Greymoor - Rosary Cache #7',
-        'Greymoor - Rosary Cache #8',
-        'Greymoor - Rosary Cache #10',
-        'Greymoor - Rosary Cache #11',
-        'Greymoor - Rosary Cache #12',
-        'Greymoor - Rosary Cache #13',
-        'Greymoor - Rosary Cache #14',
-        'Greymoor - Shell Shard Cache #1',
-        'Greymoor - Shell Shard Cache #2',
+        'Greymoor - flying rat stolen rosaries above the west tower entrance',
+        'Greymoor - poor soul rosaries that were stolen by flying rats above the west tower entrance',
+        'Greymoor - Rosary cache below a spike wheel',
+        'Greymoor - hanging rosaries below scissor fucker',
+        'Greymoor - the other hanging rosaries below scissor fucker',
+        'Greymoor - that one rosary i hate in tiny platform to the right',
+        'Greymoor - Secret dead bug rosaries near rat tunnel',
+        'Greymoor - Shell Shard Cache next to the pit with with fat fuck',
+        'Greymoor - The other Shell Shard Cache in the pit with the fat fuck',
     }:
         return area(
             act_number,
@@ -3637,22 +3664,6 @@ REQUIREMENT_ROW_SOURCE: tuple[tuple[str, LocationRequirement], ...] = (
     # ACT 1
     # Mosslands
     ('Tool Unlock: Rosary Magnet', area(1, 'Mosslands - Bone Bottom')),
-    ('Tool Unlock: Mosscreep Tool 1', area(
-        1,
-        'Mosslands - Moss Druid',
-        silk_spear=True,
-        item_counts=(item_count(3, MOSSBERRY_ITEM),),
-    )),
-    ('Tool Unlock: Mosscreep Tool 1', area(
-        1,
-        'Mosslands - Moss Druid',
-        any_of=(
-            *SWIFT_STEP_OR_SPRINT_ITEMS,
-            'Ability: Faydown Cloak',
-            USABLE_SHARPDART_REQUIREMENT,
-        ),
-        item_counts=(item_count(3, MOSSBERRY_ITEM),),
-    )),
     ('Crest Unlock: Wanderer', area(1, 'Mosslands - Bonegrave')),
 
     # Weavenest Atla
@@ -3666,11 +3677,6 @@ REQUIREMENT_ROW_SOURCE: tuple[tuple[str, LocationRequirement], ...] = (
     ('Spell Unlock: Silk Spear', area(1, 'The Marrow - Mosshome Gate')),
     ('Tool Unlock: Straight Pin', area(1, 'The Marrow - Shooting Gallery')),
 
-    ('Save Flea: The Marrow (Tangle)', area(
-        1,
-        'The Marrow - Bellshrine',
-        'Event: Bell Beast Defeated',
-    )),
 
     # Hunter's March
     ('Tool Unlock: Curve Claws', area(1, "Hunter's March - Trap", any_of=('Ancestral Art: Swift Step', 'Ability: Faydown Cloak', 'Ancestral Art: Clawline'))),
@@ -4109,15 +4115,6 @@ REQUIREMENT_ROW_SOURCE: tuple[tuple[str, LocationRequirement], ...] = (
         'Ability: Faydown Cloak',
     )),
 
-    # The second Moss Druid reward is claimed from the same physical room as
-    # the first. The seven randomized Mossberries are its actual gate. Some of
-    # those berries may naturally place it late without inventing an Act 3
-    # Abyss source.
-    ('Tool Unlock: Mosscreep Tool 2', area(
-        1,
-        'Mosslands - Moss Druid',
-        item_counts=(item_count(7, MOSSBERRY_ITEM),),
-    )),
 
     # ACT 3
     ('Crest Unlock: Shaman', area(3, 'Mosslands - Ruined Chapel')),
@@ -4153,20 +4150,6 @@ REQUIREMENT_ROW_SOURCE: tuple[tuple[str, LocationRequirement], ...] = (
         2,
         'Outlying Citadel - Library',
         'Ancestral Art: Cling Grip',
-    )),
-    ('Pale Oil: Great Taste of Pharloom', area(
-        2,
-        'Choral Chambers - Below Dining',
-        'Event: Last Judge Defeated',
-        'Path: Mosslands - Moss Druid',
-        'Path: Greymoor - Halfway House',
-        "Path: Far Fields - Pilgrim's Rest",
-        "Path: Sinner's Road - Styx",
-        'Path: Sands of Karak - Sands of Karak',
-        SWIFT_STEP_ITEM,
-        'Ancestral Art: Cling Grip',
-        'Ancestral Art: Clawline',
-        'Ability: Faydown Cloak',
     )),
     ('Pale Oil: Ecstasy of the End', area(
         3,
@@ -4306,11 +4289,6 @@ REQUIREMENT_ROW_SOURCE: tuple[tuple[str, LocationRequirement], ...] = (
     ('Relic Pickup: Ancient Egg Abyss Middle', area(3, 'Abyss - Void Tendrils')),
 
     # BELLSHRINES
-    ('Bell Shrine Completion: bellShrineBoneForest', area(
-        1,
-        'The Marrow - Bellshrine',
-        silk_spear=True,
-    )),
     ('Bell Shrine Completion: bellShrineWilds', area(
         1,
         'Deep Docks - Bellshrine',
@@ -4516,18 +4494,6 @@ REQUIREMENT_ROW_SOURCE: tuple[tuple[str, LocationRequirement], ...] = (
         'Ancestral Art: Cling Grip',
     )),
     ('Quest Completion: A Pinsmiths Tools', area(
-        2,
-        'Bellhart - Bellhart',
-        'Event: Widow Defeated',
-        'Path: Choral Chambers - First Shrine',
-        'Path: Mosslands - Moss Druid',
-        'Path: Greymoor - Halfway House',
-        'Event: Missing Brother Rescued',
-        'Path: Sands of Karak - Sands of Karak',
-        "Path: Sinner's Road - Styx",
-        'Ability: Faydown Cloak',
-    )),
-    ('Quest Completion: A Pinsmiths Tools', area(
         3,
         'Bellhart - Bellhart',
         'Event: Widow Defeated',
@@ -4639,17 +4605,6 @@ REQUIREMENT_ROW_SOURCE: tuple[tuple[str, LocationRequirement], ...] = (
         'Blasted Steps - Bellway',
         'Event: Widow Defeated',
         'Event: Everbloom Obtained',
-    )),
-    ('Quest Completion: Great Gourmand', area(
-        2,
-        'Choral Chambers - First Shrine',
-        'Event: Last Judge Defeated',
-        'Path: Mosslands - Moss Druid',
-        'Path: Greymoor - Halfway House',
-        'Event: Missing Brother Rescued',
-        'Path: Sands of Karak - Sands of Karak',
-        "Path: Sinner's Road - Styx",
-        'Ability: Faydown Cloak',
     )),
     ('Quest Completion: Journal', area(
         1,
@@ -5345,7 +5300,6 @@ REQUIREMENT_ROW_SOURCE: tuple[tuple[str, LocationRequirement], ...] = (
         crest=False,
     )),
     ('Mossberry: Bone Bottom', area(1, 'Mosslands - Bone Bottom')),
-    ('Mossberry: Mosshome', area(1, 'Mosslands - Moss Druid')),
     ('Mossberry: Bonegrave', area(1, 'Mosslands - Bonegrave')),
     ('Mossberry: Weavenest Atla', area(1, 'Weavenest - Atla')),
     ('Mossberry: Memorium', area(
@@ -5542,7 +5496,6 @@ REQUIREMENT_ROW_SOURCE: tuple[tuple[str, LocationRequirement], ...] = (
             ),
         )
         for source in LORE_TABLET_SOURCES
-        if source.location_name != "Verdania - Lake Plaque"
     ),
     (
         'Moss Grotto - Rosary Cache',
@@ -5581,38 +5534,11 @@ _ROOM_GRAPH_ESTABLISHED_ONLY_LOCATIONS: frozenset[str] = frozenset(
 )
 
 
-_CLAWLINE_GATED_LOCATIONS: frozenset[str] = frozenset(
-    (
-        'Whispering Vaults - Rosary Cache #5',
-        'Whispering Vaults - Shell Shard Cache #1',
-        'Songclave - Heavy Rosary Necklace',
-        'Relic: Psalm Cylinder (East Whispering Vaults)',
-        'Deep Docks - Shard Bundle #1',
-        'Deep Docks - Shell Shard Cache #5',
-        'Deep Docks - Rosary Cache #1',
-        'Deep Docks - Rosary Cache #2',
-        'Flintslate',
-        'Deep Docks - Shell Shard Cache #6',
-        'Deep Docks - Shell Shard Cache #7',
-        'Deep Docks - Shell Shard Cache #8',
-        'Deep Docks - Shell Shard Cache #9',
-        'Cogfly',
-        'High Halls - Shell Shard Cache #2',
-    )
-)
-
-
 # These local conditions remain attached to every room-graph source clause.
 # They supplement source geometry instead of becoming alternate routes.
 _ROOM_GRAPH_PRESERVED_LOCAL_GATES: Mapping[
     str, tuple[LocationRequirement, ...]
 ] = {
-    **{
-        location_name: (
-            req('Ancestral Art: Clawline', crest=False),
-        )
-        for location_name in _CLAWLINE_GATED_LOCATIONS
-    },
     'Throwing Ring': (
         req(
             "Event: Trail's End Completed",
@@ -5634,24 +5560,6 @@ _ROOM_GRAPH_PRESERVED_LOCAL_GATES: Mapping[
     ),
     # Forge Daughter consumes one Craftmetal for each of these purchases. The
     # Silkshot graph clause already carries its separate Ruined Tool gate.
-    'Greymoor - Bellshrine': (
-        req('Event: Craw Lake Cleared', crest=False),
-    ),
-    'Flea: Greymoor - Craw Lake': (
-        req('Event: Craw Lake Cleared', crest=False),
-    ),
-    'Threefold Pin': (
-        req('Event: Craw Lake Cleared', crest=False),
-    ),
-    'Thread Storm': (
-        req('Event: Craw Lake Cleared', crest=False),
-    ),
-    'Greymoor - Spool Fragment': (
-        req('Event: Craw Lake Cleared', crest=False),
-    ),
-    'Greymoor - Map Purchase': (
-        req('Event: Craw Lake Cleared', crest=False),
-    ),
     'Silkshot (Forge Daughter)': (
         req(CRAFTMETAL_ITEM, crest=False),
     ),
@@ -5956,6 +5864,8 @@ def _authoritative_requirement_rows() -> Iterable[
     """Resolve established rows against the authoritative room graph."""
 
     for location_name, established in _ESTABLISHED_REQUIREMENTS_BY_LOCATION.items():
+        if location_name in RETIRED_LOCATION_NAMES:
+            continue
         graph_sources = ROOM_CHECK_REQUIREMENTS.get(location_name)
         if MAPPER_GRAPH_ENABLED and not graph_sources and location_name != 'Goal':
             yield location_name, req(crest=False)
@@ -5995,6 +5905,7 @@ def _authoritative_requirement_rows() -> Iterable[
         (location_name, requirement)
         for location_name, requirements in ROOM_CHECK_REQUIREMENTS.items()
         if location_name not in _ESTABLISHED_REQUIREMENTS_BY_LOCATION
+        and location_name not in RETIRED_LOCATION_NAMES
         for requirement in _attach_preserved_local_gates(
             location_name,
             requirements,
@@ -6030,7 +5941,6 @@ UNVERIFIED_PROGRESSION_LOCATIONS: frozenset[str] = frozenset(
         'Blasted Steps - Mask Shard',
         'Pimpillo',
         'Greymoor - Silkeater',
-        'Far Fields - Shell Shard Cache #8',
         'Boss: Skull Tyrant (Bone Bottom)',
         'Tool Unlock: Reserve Bind',
         'Relic: Bone Scroll (Wisp Thicket)',
@@ -6154,27 +6064,14 @@ ALLOWED_DEAD_PATHS: frozenset[str] = frozenset(
 )
 
 
-def has_any_crest(state: CollectionState, player: int) -> bool:
-    return any(state.has(crest, player) for crest in CREST_ITEMS)
-
-
-def has_any_non_architect_crest(state: CollectionState, player: int) -> bool:
-    return any(state.has(crest, player) for crest in NON_ARCHITECT_CREST_ITEMS)
-
-
-def has_silk_spear(state: CollectionState, player: int) -> bool:
-    return (
-        state.has('Silkspear', player)
-        and has_any_non_architect_crest(state, player)
-    )
-
-
 _STATIC_ABSTRACT_REQUIREMENT_ITEMS = tuple(ABSTRACT_REQUIREMENTS.items())
 _STATIC_BELLWAY_ABSTRACT_REQUIREMENT_ITEMS = tuple(
     (
         requirement_name,
         BELLWAY_RANDOMIZED_STATIONS_REQUIREMENTS
         if requirement_name == 'Path: Bellways'
+        else WARDENFLY_OPEN_BELLWAY_REQUIREMENTS
+        if requirement_name == 'Path: Wardenfly Capture'
         else alternatives,
     )
     for requirement_name, alternatives in _STATIC_ABSTRACT_REQUIREMENT_ITEMS
@@ -6194,6 +6091,8 @@ _STATIC_BELLWAY_VANILLA_CREST_SLOT_ABSTRACT_REQUIREMENT_ITEMS = tuple(
         requirement_name,
         BELLWAY_RANDOMIZED_STATIONS_REQUIREMENTS
         if requirement_name == 'Path: Bellways'
+        else WARDENFLY_OPEN_BELLWAY_REQUIREMENTS
+        if requirement_name == 'Path: Wardenfly Capture'
         else VANILLA_CREST_SLOT_COLORED_TOOL_REQUIREMENTS.get(
             requirement_name,
             alternatives,
@@ -6213,7 +6112,9 @@ def _get_static_abstract_requirement_items(
     randomize_swim: bool = False,
     pollip_heart_count: int = 0,
     proficient_combat: int = 0,
-    proficient_movement: bool = False,
+    platforming_capability: int = 0,
+    directional_abilities: tuple[str, ...] = (),
+    damage_boost_tier: int = 0,
     flea_brew_jump_logic: bool = False,
     sharpdart_logic: bool = True,
     red_tool_stall_tier: int = 0,
@@ -6276,7 +6177,7 @@ def _get_static_abstract_requirement_items(
             for name, alternatives in requirement_items
         )
 
-    if proficient_movement:
+    if platforming_capability:
         requirement_items = tuple(
             (name, PROFICIENT_COMBAT_REQUIREMENTS if name == "Option: Proficient Movement" else alternatives)
             for name, alternatives in requirement_items
@@ -6296,7 +6197,7 @@ def _get_static_abstract_requirement_items(
 
     technique_overrides = technique_requirement_overrides(
         heal_stall_tier, hazard_respawn_tier, scuttlebrace_tier,
-        red_tool_stall_tier, crest_pogo_tier, needle_strike_tier, enemy_pogo_tier, drill_crystal_pogo_tier,
+        red_tool_stall_tier, crest_pogo_tier, needle_strike_tier, enemy_pogo_tier, drill_crystal_pogo_tier, damage_boost_tier,
     )
     requirement_items = tuple((name, technique_overrides.get(name, alternatives)) for name, alternatives in requirement_items)
 
@@ -6342,6 +6243,15 @@ def _get_static_abstract_requirement_items(
             )
             for requirement_name, alternatives in requirement_items
         )
+
+    overrides = directional_requirements(req, directional_abilities)
+    overrides['Option: Elite Ball Knowledge'] = (req(crest=False),) if platforming_capability >= 2 else ()
+    requirement_items = tuple((name, overrides.get(name, rules)) for name, rules in requirement_items)
+    existing = {name for name, _ in requirement_items}
+    requirement_items += tuple((name, rules) for name, rules in overrides.items() if name not in existing)
+    if directional_abilities:
+        requirement_items = tuple((name, split_requirement_counts(rules, directional_abilities))
+                                 for name, rules in requirement_items)
 
     if (
         starting_location == STARTING_LOCATION_VANILLA
@@ -6460,7 +6370,9 @@ def _compile_static_abstract_worklist_plan(
     randomize_swim: bool = False,
     pollip_heart_count: int = 0,
     proficient_combat: int = 0,
-    proficient_movement: bool = False,
+    platforming_capability: int = 0,
+    directional_abilities: tuple[str, ...] = (),
+    damage_boost_tier: int = 0,
     flea_brew_jump_logic: bool = False,
     sharpdart_logic: bool = True,
     red_tool_stall_tier: int = 0,
@@ -6485,7 +6397,9 @@ def _compile_static_abstract_worklist_plan(
         randomize_swim,
         pollip_heart_count,
         proficient_combat=proficient_combat,
-        proficient_movement=proficient_movement,
+        platforming_capability=platforming_capability,
+        directional_abilities=directional_abilities,
+        damage_boost_tier=damage_boost_tier,
         flea_brew_jump_logic=flea_brew_jump_logic,
         sharpdart_logic=sharpdart_logic,
         red_tool_stall_tier=red_tool_stall_tier,
@@ -6517,7 +6431,9 @@ def _matches_static_abstract_requirements(
     randomize_swim: bool = False,
     pollip_heart_count: int = 0,
     proficient_combat: int = 0,
-    proficient_movement: bool = False,
+    platforming_capability: int = 0,
+    directional_abilities: tuple[str, ...] = (),
+    damage_boost_tier: int = 0,
     flea_brew_jump_logic: bool = False,
     sharpdart_logic: bool = True,
     red_tool_stall_tier: int = 0,
@@ -6544,7 +6460,9 @@ def _matches_static_abstract_requirements(
         randomize_swim,
         pollip_heart_count,
         proficient_combat=proficient_combat,
-        proficient_movement=proficient_movement,
+        platforming_capability=platforming_capability,
+        directional_abilities=directional_abilities,
+        damage_boost_tier=damage_boost_tier,
         flea_brew_jump_logic=flea_brew_jump_logic,
         sharpdart_logic=sharpdart_logic,
         red_tool_stall_tier=red_tool_stall_tier,
@@ -6583,7 +6501,9 @@ def _compute_abstract_values(
     randomize_swim: bool = False,
     pollip_heart_count: int = 0,
     proficient_combat: int = 0,
-    proficient_movement: bool = False,
+    platforming_capability: int = 0,
+    directional_abilities: tuple[str, ...] = (),
+    damage_boost_tier: int = 0,
     flea_brew_jump_logic: bool = False,
     sharpdart_logic: bool = True,
     red_tool_stall_tier: int = 0,
@@ -6638,7 +6558,9 @@ def _compute_abstract_values(
             randomize_swim,
             pollip_heart_count,
             proficient_combat,
-            proficient_movement,
+            platforming_capability,
+            directional_abilities,
+            damage_boost_tier,
             flea_brew_jump_logic,
             sharpdart_logic,
             red_tool_stall_tier,
@@ -6708,7 +6630,9 @@ def _compute_abstract_values(
         randomize_ledge_grab=randomize_ledge_grab,
         randomize_swim=randomize_swim,
         proficient_combat=proficient_combat,
-        proficient_movement=proficient_movement,
+        platforming_capability=platforming_capability,
+        directional_abilities=directional_abilities,
+        damage_boost_tier=damage_boost_tier,
         flea_brew_jump_logic=flea_brew_jump_logic,
         sharpdart_logic=sharpdart_logic,
         red_tool_stall_tier=red_tool_stall_tier,
@@ -6734,7 +6658,9 @@ def _compute_abstract_values(
         randomize_swim,
         pollip_heart_count,
         proficient_combat=proficient_combat,
-        proficient_movement=proficient_movement,
+        platforming_capability=platforming_capability,
+        directional_abilities=directional_abilities,
+        damage_boost_tier=damage_boost_tier,
         flea_brew_jump_logic=flea_brew_jump_logic,
         sharpdart_logic=sharpdart_logic,
         red_tool_stall_tier=red_tool_stall_tier,
@@ -6759,7 +6685,9 @@ def _compute_abstract_values(
             randomize_swim,
             pollip_heart_count,
             proficient_combat=proficient_combat,
-            proficient_movement=proficient_movement,
+            platforming_capability=platforming_capability,
+            directional_abilities=directional_abilities,
+            damage_boost_tier=damage_boost_tier,
             flea_brew_jump_logic=flea_brew_jump_logic,
             sharpdart_logic=sharpdart_logic,
             red_tool_stall_tier=red_tool_stall_tier,
@@ -6986,7 +6914,9 @@ def _has_named_requirement(
     randomize_swim: bool = False,
     pollip_heart_count: int = 0,
     proficient_combat: int = 0,
-    proficient_movement: bool = False,
+    platforming_capability: int = 0,
+    directional_abilities: tuple[str, ...] = (),
+    damage_boost_tier: int = 0,
     flea_brew_jump_logic: bool = False,
     sharpdart_logic: bool = True,
     red_tool_stall_tier: int = 0,
@@ -7024,7 +6954,9 @@ def _has_named_requirement(
         randomize_swim,
         pollip_heart_count,
         proficient_combat=proficient_combat,
-        proficient_movement=proficient_movement,
+        platforming_capability=platforming_capability,
+        directional_abilities=directional_abilities,
+        damage_boost_tier=damage_boost_tier,
         flea_brew_jump_logic=flea_brew_jump_logic,
         sharpdart_logic=sharpdart_logic,
         red_tool_stall_tier=red_tool_stall_tier,
@@ -7065,7 +6997,9 @@ def _satisfies_requirement(
     randomize_swim: bool = False,
     pollip_heart_count: int = 0,
     proficient_combat: int = 0,
-    proficient_movement: bool = False,
+    platforming_capability: int = 0,
+    directional_abilities: tuple[str, ...] = (),
+    damage_boost_tier: int = 0,
     flea_brew_jump_logic: bool = False,
     sharpdart_logic: bool = True,
     red_tool_stall_tier: int = 0,
@@ -7104,7 +7038,9 @@ def _satisfies_requirement(
             randomize_swim,
             pollip_heart_count,
             proficient_combat=proficient_combat,
-            proficient_movement=proficient_movement,
+            platforming_capability=platforming_capability,
+            directional_abilities=directional_abilities,
+            damage_boost_tier=damage_boost_tier,
             flea_brew_jump_logic=flea_brew_jump_logic,
             sharpdart_logic=sharpdart_logic,
             red_tool_stall_tier=red_tool_stall_tier,
@@ -7149,7 +7085,9 @@ def make_requirements_rule(
     randomize_swim: bool = False,
     pollip_heart_count: int = 0,
     proficient_combat: int = 0,
-    proficient_movement: bool = False,
+    platforming_capability: int = 0,
+    directional_abilities: tuple[str, ...] = (),
+    damage_boost_tier: int = 0,
     flea_brew_jump_logic: bool = False,
     sharpdart_logic: bool = True,
     red_tool_stall_tier: int = 0,
@@ -7166,6 +7104,7 @@ def make_requirements_rule(
     silk_and_soul_points: int = 17,
     silk_heart_logic: bool = False,
 ):
+    requirements = split_requirement_counts(requirements, directional_abilities)
     def access_rule(state: CollectionState) -> bool:
         logic_item_dependencies = get_logic_item_dependencies(
             split_dash_and_sprint,
@@ -7186,7 +7125,9 @@ def make_requirements_rule(
                 randomize_swim,
                 pollip_heart_count,
                 proficient_combat=proficient_combat,
-                proficient_movement=proficient_movement,
+                platforming_capability=platforming_capability,
+                directional_abilities=directional_abilities,
+                damage_boost_tier=damage_boost_tier,
                 flea_brew_jump_logic=flea_brew_jump_logic,
                 sharpdart_logic=sharpdart_logic,
                 red_tool_stall_tier=red_tool_stall_tier,
@@ -7237,7 +7178,9 @@ def make_rule(
     randomize_swim: bool = False,
     pollip_heart_count: int = 0,
     proficient_combat: int = 0,
-    proficient_movement: bool = False,
+    platforming_capability: int = 0,
+    directional_abilities: tuple[str, ...] = (),
+    damage_boost_tier: int = 0,
     flea_brew_jump_logic: bool = False,
     sharpdart_logic: bool = True,
     red_tool_stall_tier: int = 0,
@@ -7274,7 +7217,9 @@ def make_rule(
         randomize_swim,
         pollip_heart_count,
         proficient_combat=proficient_combat,
-        proficient_movement=proficient_movement,
+        platforming_capability=platforming_capability,
+        directional_abilities=directional_abilities,
+        damage_boost_tier=damage_boost_tier,
         flea_brew_jump_logic=flea_brew_jump_logic,
         sharpdart_logic=sharpdart_logic,
         red_tool_stall_tier=red_tool_stall_tier,
@@ -7532,7 +7477,9 @@ def make_goal_rule(
     randomize_ledge_grab: bool = False,
     randomize_swim: bool = False,
     proficient_combat: int = 0,
-    proficient_movement: bool = False,
+    platforming_capability: int = 0,
+    directional_abilities: tuple[str, ...] = (),
+    damage_boost_tier: int = 0,
     flea_brew_jump_logic: bool = False,
     sharpdart_logic: bool = True,
     red_tool_stall_tier: int = 0,
@@ -7568,7 +7515,9 @@ def make_goal_rule(
         randomize_swim,
         pollip_heart_count,
         proficient_combat=proficient_combat,
-        proficient_movement=proficient_movement,
+        platforming_capability=platforming_capability,
+        directional_abilities=directional_abilities,
+        damage_boost_tier=damage_boost_tier,
         flea_brew_jump_logic=flea_brew_jump_logic,
         sharpdart_logic=sharpdart_logic,
         red_tool_stall_tier=red_tool_stall_tier,
@@ -7632,6 +7581,7 @@ def export_requirements(
     scuttlebrace_logic_enabled: bool = True,
     spelling_bee_item_names: tuple[str, ...] | None = None,
     randomized_relics: bool = False,
+    directional_abilities: tuple[str, ...] = (),
 ) -> Mapping[str, dict[str, object]]:
     exported: dict[str, dict[str, object]] = {}
     for name, requirements in REQUIREMENTS.items():
@@ -7707,7 +7657,7 @@ def export_requirements(
                 )
         group = _export_requirement_group(
             _apply_scuttlebrace_logic_option(
-                resolved_requirements,
+                split_requirement_counts(resolved_requirements, directional_abilities),
                 scuttlebrace_logic_enabled,
             )
         )
@@ -7766,7 +7716,9 @@ def export_abstract_requirements(
     randomize_ledge_grab: bool = False,
     randomize_swim: bool = False,
     proficient_combat: int = 0,
-    proficient_movement: bool = False,
+    platforming_capability: int = 0,
+    directional_abilities: tuple[str, ...] = (),
+    damage_boost_tier: int = 0,
     flea_brew_jump_logic: bool = False,
     sharpdart_logic: bool = True,
     red_tool_stall_tier: int = 0,
@@ -7802,7 +7754,9 @@ def export_abstract_requirements(
             randomize_ledge_grab=randomize_ledge_grab,
             randomize_swim=randomize_swim,
             proficient_combat=proficient_combat,
-            proficient_movement=proficient_movement,
+            platforming_capability=platforming_capability,
+            directional_abilities=directional_abilities,
+            damage_boost_tier=damage_boost_tier,
             flea_brew_jump_logic=flea_brew_jump_logic,
             sharpdart_logic=sharpdart_logic,
             red_tool_stall_tier=red_tool_stall_tier,
@@ -7831,6 +7785,7 @@ def export_abstract_requirements(
         'Event: Last Judge Defeated': 'Boss: Last Judge',
         'Event: Widow Defeated': 'Boss: Widow',
         'Room Event: event:mapper/reviewed:phantom-defeated': 'Boss: Phantom',
+        'Room Event: event:mapper/c4afe77b-1bc4-4258-a379-a5b74998ce59': 'Boss: Phantom',
         'Event: Act 2 Started': 'Act: 2',
     }.items():
         if event in exported:

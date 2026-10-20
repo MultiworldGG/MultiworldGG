@@ -1,8 +1,33 @@
 # Changelog
 
-## 0.6.7
+## 0.6.8
+
+### Changes to existing features
+
+* Death Link
+  * Since the option is not actually implemented yet, it has now been removed from the options list. This should no longer show the option in generated YAML files.
+
+### Bugfixes/Corrections
+
+* Fix consumable items in the Dry Dry Outpost shop not being considered logical progression, even if they are required for beating the seed. This only manifested in seeds failing to generate when setting `RandomPuzzles` to `True` and `ConsumableItemPool` to `mystery_only`.
+* Fix logic sometimes considering some Rowf, Koopa Koot, and Dojo locations as excluded, even if 5 or more star spirits were required to beat the seed. This would happen if the number of spirits needed to open Star Way was below 5, but the number of spirits required for the Star Beam item location was 5 or higher.
 
 ### Other
+
+* Migrate logic to AP's RuleBuilder system
+  * This change aims to make maintaining and understanding the logic easier.
+* Manifest
+  * Add `"minimum_ap_version": "0.6.7"` to the manifest, as Archipelago version 0.6.7 or newer is required for the newly added Rule Builder system
+* AI usage disclaimer
+  * Add an AI usage disclaimer block to the README file.
+* More tracker data
+  * Add the following slot data for trackers to read:
+    * `kent_c_koopa` option value
+    * `bowser_door_quiz` option value
+
+## 0.6.7
+
+### Other (0.6.7)
 
 * AP data for trackers
   * Add bouncing of the player's current location in the game world, so trackers and other tools can access this information live.

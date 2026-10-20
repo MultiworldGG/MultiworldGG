@@ -2,7 +2,6 @@ import tkinter as tk
 import argparse
 import logging
 import os
-import zipfile
 from itertools import chain
 
 from BaseClasses import MultiWorld
@@ -15,7 +14,7 @@ from .Options import (cosmetic_options, sfx_options, voice_options,
     DpadDungeonMenu, SpeedupMusicForLastTriforcePiece, SlowdownMusicWhenLowhp,
     UninvertYAxisInFirstPersonCamera, InputViewer, DisableBattleMusic, CreditsMusic)
 from .Rom import Rom, compress_rom_file
-from .N64Patch import apply_patch_file
+from .appp import patch_to_rom
 from .Utils import __version__ as oot_version
 from Utils import local_path, user_path, persistent_store, get_adjuster_settings_no_defaults
 
@@ -116,9 +115,8 @@ def main(launcher_args):
         save_adjuster_settings(args)
 
 def adjustGUI():
-    from tkinter import Tk, LEFT, BOTTOM, TOP, E, W, \
-        StringVar, IntVar, Checkbutton, Frame, Label, X, Entry, Button, \
-        OptionMenu, filedialog, messagebox, ttk
+    from tkinter import LEFT, BOTTOM, TOP, W, \
+        StringVar, IntVar, Frame, Label, X, filedialog, messagebox, ttk
     from argparse import Namespace
     import threading
     from queue import Empty, Queue
@@ -135,200 +133,160 @@ def adjustGUI():
     opts = Namespace()
     adjuster_settings = get_adjuster_settings()
 
-    # Select ROM
-    romDialogFrame = Frame(window)
-    romLabel = Label(romDialogFrame, text='Rom/patch to adjust')
-    vanillaLabel = Label(romDialogFrame, text='OoT Base Rom')
+    # ROM selection and actions stay visible while switching settings tabs.
+    rom_frame = ttk.LabelFrame(window, text="ROM Files", padding=10)
+    rom_frame.pack(side=TOP, fill=X, padx=10, pady=(10, 8))
+    rom_frame.columnconfigure(1, weight=1)
     opts.rom = StringVar(value=getattr(adjuster_settings, 'rom', ''))
     opts.vanilla_rom = StringVar(value=adjuster_settings.vanilla_rom)
-    romEntry = Entry(romDialogFrame, textvariable=opts.rom)
-    vanillaEntry = Entry(romDialogFrame, textvariable=opts.vanilla_rom)
 
     def RomSelect():
-        rom = filedialog.askopenfilename(filetypes=[("Rom Files", (".z64", ".n64", ".apz5")), ("All Files", "*")])
-        opts.rom.set(rom)
+        rom = filedialog.askopenfilename(filetypes=[("Rom Files", (".z64", ".n64", ".apoot")), ("All Files", "*")])
+        if rom:
+            opts.rom.set(rom)
+
     def VanillaSelect():
         rom = filedialog.askopenfilename(filetypes=[("Rom Files", (".z64", ".n64")), ("All Files", "*")])
-        opts.vanilla_rom.set(rom)
+        if rom:
+            opts.vanilla_rom.set(rom)
 
-    romSelectButton = Button(romDialogFrame, text='Select Rom', command=RomSelect)
-    vanillaSelectButton = Button(romDialogFrame, text='Select Rom', command=VanillaSelect)
-    romDialogFrame.pack(side=TOP, expand=True, fill=X)
-    romLabel.pack(side=LEFT)
-    romEntry.pack(side=LEFT, expand=True, fill=X)
-    romSelectButton.pack(side=LEFT)
-    vanillaLabel.pack(side=LEFT)
-    vanillaEntry.pack(side=LEFT, expand=True, fill=X)
-    vanillaSelectButton.pack(side=LEFT)
+    for row, (label, variable, command) in enumerate((
+        ("ROM / patch to adjust", opts.rom, RomSelect),
+        ("OoT Base ROM", opts.vanilla_rom, VanillaSelect),
+    )):
+        ttk.Label(rom_frame, text=label).grid(row=row, column=0, sticky=W, padx=(0, 10), pady=3)
+        ttk.Entry(rom_frame, textvariable=variable).grid(row=row, column=1, sticky="ew", pady=3)
+        ttk.Button(rom_frame, text="Select ROM", command=command).grid(row=row, column=2, padx=(10, 0), pady=3)
 
-    # Custom music folder picker
-    musicFolderFrame = Frame(window)
-    musicFolderLabel = Label(musicFolderFrame, text='Custom Music Folder (.ootrs/.mmrs)')
+    notebook = ttk.Notebook(window)
+    notebook.pack(side=TOP, fill="both", expand=True, padx=10, pady=(0, 8))
+
+    def tab(title):
+        frame = ttk.Frame(notebook, padding=10)
+        notebook.add(frame, text=title)
+        return frame
+
+    def section(parent, title):
+        frame = ttk.LabelFrame(parent, text=title, padding=10)
+        frame.pack(side=TOP, fill=X, pady=(0, 10))
+        return frame
+
+    def choice_control(parent, name, label, choices, row, column=0):
+        variable = StringVar(value=getattr(adjuster_settings, name))
+        setattr(opts, name, variable)
+        column *= 2
+        ttk.Label(parent, text=label).grid(row=row, column=column, sticky=W, padx=(0, 8), pady=4)
+        menu = ttk.Combobox(parent, textvariable=variable, values=tuple(choices), state="readonly", width=24)
+        menu.grid(row=row, column=column + 1, sticky="ew", padx=(0, 16), pady=4)
+        parent.columnconfigure(column + 1, weight=1)
+
+    def dropdown_option(parent, name, row, column=0):
+        option = cosmetic_options.get(name) or sfx_options[name]
+        if issubclass(option, Range):
+            choices = range(option.range_start, option.range_end + 1)
+        else:
+            choices = option.name_lookup.values()
+        choice_control(parent, name, option.display_name, choices, row, column)
+
+    def dropdowns(parent, names, columns=2):
+        for index, name in enumerate(names):
+            dropdown_option(parent, name, index // columns, index % columns)
+
+    def checkbox(parent, name, label, row, column=0):
+        variable = IntVar(value=getattr(adjuster_settings, name))
+        setattr(opts, name, variable)
+        ttk.Checkbutton(parent, text=label, variable=variable).grid(
+            row=row, column=column * 2, columnspan=2, sticky=W, padx=(0, 16), pady=4)
+
+    general_tab = tab("General")
+    from .Models import get_model_choices
+
+    models = section(general_tab, "Link Models")
+    choice_control(models, 'model_adult', 'Adult Link Model', get_model_choices(0), 0)
+    choice_control(models, 'model_child', 'Child Link Model', get_model_choices(1), 1)
+    controls = section(general_tab, "Controls and Display")
+    dropdowns(controls, ('default_targeting', 'display_dpad'))
+    checkbox(controls, 'dpad_dungeon_menu', "D-Pad Dungeon Info", 1)
+    checkbox(controls, 'input_viewer', "Input Viewer", 1, 1)
+    checkbox(controls, 'uninvert_y_axis_in_first_person_camera', "Uninvert Y-Axis (First Person)", 2)
+    multiplayer = section(general_tab, "Multiworld")
+    checkbox(multiplayer, 'deathlink', "DeathLink (Team Deaths)", 0)
+
+    equipment_tab = tab("Equipment")
+    tunics = section(equipment_tab, "Tunic Colors")
+    dropdowns(tunics, ('kokiri_color', 'goron_color', 'zora_color'), columns=1)
+    gauntlets = section(equipment_tab, "Gauntlet Colors")
+    dropdowns(gauntlets, ('silver_gauntlets_color', 'golden_gauntlets_color'))
+    shield = section(equipment_tab, "Mirror Shield Frame Color")
+    dropdown_option(shield, 'mirror_shield_frame_color', 0)
+
+    hud_tab = tab("HUD Colors")
+    meters = section(hud_tab, "Heart and Magic Colors")
+    dropdowns(meters, ('heart_color', 'magic_color'))
+    buttons = section(hud_tab, "Button Colors")
+    dropdowns(buttons, ('a_button_color', 'b_button_color', 'c_button_color', 'start_button_color'))
+    model_colors = section(hud_tab, "Item Model Colors")
+    checkbox(model_colors, 'correct_model_colors', "Item Model Colors Match Cosmetics", 0)
+
+    navi_tab = tab("Navi Colors")
+    navi = section(navi_tab, "Navi Colors")
+    dropdowns(navi, (
+        'navi_color_default_inner', 'navi_color_default_outer',
+        'navi_color_enemy_inner', 'navi_color_enemy_outer',
+        'navi_color_npc_inner', 'navi_color_npc_outer',
+        'navi_color_prop_inner', 'navi_color_prop_outer',
+    ))
+
+    trails_tab = tab("Trails")
+    sword = section(trails_tab, "Sword Trail")
+    dropdowns(sword, ('sword_trail_color_inner', 'sword_trail_color_outer', 'sword_trail_duration'))
+    bombchu = section(trails_tab, "Bombchu Trail")
+    dropdowns(bombchu, ('bombchu_trail_color_inner', 'bombchu_trail_color_outer'))
+    boomerang = section(trails_tab, "Boomerang Trail")
+    dropdowns(boomerang, ('boomerang_trail_color_inner', 'boomerang_trail_color_outer'))
+
+    music_tab = tab("Custom Music")
+    music_folder = section(music_tab, "Custom Music Folder (.ootrs / .mmrs)")
     opts.music_dir = StringVar(value=adjuster_settings.music_dir or '')
 
     def MusicDirSelect():
-        d = filedialog.askdirectory(title='Select Custom Music Folder')
-        if d:
-            opts.music_dir.set(d)
+        directory = filedialog.askdirectory(title='Select Custom Music Folder')
+        if directory:
+            opts.music_dir.set(directory)
 
-    musicFolderEntry = Entry(musicFolderFrame, textvariable=opts.music_dir)
-    musicFolderButton = Button(musicFolderFrame, text='Select Folder', command=MusicDirSelect)
-    musicFolderFrame.pack(side=TOP, expand=True, fill=X)
-    musicFolderLabel.pack(side=LEFT)
-    musicFolderEntry.pack(side=LEFT, expand=True, fill=X)
-    musicFolderButton.pack(side=LEFT)
+    ttk.Entry(music_folder, textvariable=opts.music_dir).pack(side=LEFT, expand=True, fill=X)
+    ttk.Button(music_folder, text='Select Folder', command=MusicDirSelect).pack(side=LEFT, padx=(10, 0))
+    music_settings = section(music_tab, "Music and Fanfares")
+    dropdowns(music_settings, ('background_music', 'fanfares', 'display_custom_song_names'))
+    checkbox(music_settings, 'ocarina_fanfares', "Ocarina Songs as Fanfares", 2)
+    checkbox(music_settings, 'credits_music', "Credits Music as BGM", 2, 1)
+    music_behavior = section(music_tab, "Music Behavior")
+    checkbox(music_behavior, 'disable_battle_music', "Disable Battle Music", 0)
+    checkbox(music_behavior, 'speedup_music_for_last_triforce_piece', "Speed Up Music (Last Triforce Piece)", 1)
+    checkbox(music_behavior, 'slowdown_music_when_lowhp', "Slowdown Music When Low HP", 2)
 
-    from .Models import get_model_choices
-
-    adultModelFrame = Frame(window)
-    adultModelLabel = Label(adultModelFrame, text='Adult Link Model')
-    opts.model_adult = StringVar(value=adjuster_settings.model_adult)
-    adultModelMenu = OptionMenu(adultModelFrame, opts.model_adult, *get_model_choices(0))
-    adultModelFrame.pack(side=TOP, expand=True, fill=X)
-    adultModelLabel.pack(side=LEFT)
-    adultModelMenu.pack(side=LEFT)
-
-    childModelFrame = Frame(window)
-    childModelLabel = Label(childModelFrame, text='Child Link Model')
-    opts.model_child = StringVar(value=adjuster_settings.model_child)
-    childModelMenu = OptionMenu(childModelFrame, opts.model_child, *get_model_choices(1))
-    childModelFrame.pack(side=TOP, expand=True, fill=X)
-    childModelLabel.pack(side=LEFT)
-    childModelMenu.pack(side=LEFT)
-
-    # Cosmetic options
-    romSettingsFrame = Frame(window)
-
-    def dropdown_option(type, option_name, row, column):
-        if type == 'cosmetic':
-            option = cosmetic_options[option_name]
-        elif type == 'sfx':
-            option = sfx_options[option_name]
-        optionFrame = Frame(romSettingsFrame)
-        optionFrame.grid(row=row, column=column, sticky=E)
-        optionLabel = Label(optionFrame, text=option.display_name)
-        optionLabel.pack(side=LEFT)
-        setattr(opts, option_name, StringVar())
-        getattr(opts, option_name).set(getattr(adjuster_settings, option_name))
-        optionMenu = OptionMenu(optionFrame, getattr(opts, option_name), *option.name_lookup.values())
-        optionMenu.pack(side=LEFT)
-
-    dropdown_option('cosmetic', 'default_targeting', 0, 0)
-    dropdown_option('cosmetic', 'display_dpad', 0, 1)
-    dropdown_option('cosmetic', 'correct_model_colors', 0, 2)
-    dropdown_option('cosmetic', 'background_music', 1, 0)
-    dropdown_option('cosmetic', 'fanfares', 1, 1)
-    dropdown_option('cosmetic', 'ocarina_fanfares', 1, 2)
-    dropdown_option('cosmetic', 'kokiri_color', 2, 0)
-    dropdown_option('cosmetic', 'goron_color', 2, 1)
-    dropdown_option('cosmetic', 'zora_color', 2, 2)
-    dropdown_option('cosmetic', 'silver_gauntlets_color', 3, 0)
-    dropdown_option('cosmetic', 'golden_gauntlets_color', 3, 1)
-    dropdown_option('cosmetic', 'mirror_shield_frame_color', 3, 2)
-    dropdown_option('cosmetic', 'navi_color_default_inner', 4, 0)
-    dropdown_option('cosmetic', 'navi_color_default_outer', 4, 1)
-    dropdown_option('cosmetic', 'navi_color_enemy_inner', 5, 0)
-    dropdown_option('cosmetic', 'navi_color_enemy_outer', 5, 1)
-    dropdown_option('cosmetic', 'navi_color_npc_inner', 6, 0)
-    dropdown_option('cosmetic', 'navi_color_npc_outer', 6, 1)
-    dropdown_option('cosmetic', 'navi_color_prop_inner', 7, 0)
-    dropdown_option('cosmetic', 'navi_color_prop_outer', 7, 1)
-    # sword_trail_duration, 8, 2
-    dropdown_option('cosmetic', 'sword_trail_color_inner', 8, 0)
-    dropdown_option('cosmetic', 'sword_trail_color_outer', 8, 1)
-    dropdown_option('cosmetic', 'bombchu_trail_color_inner', 9, 0)
-    dropdown_option('cosmetic', 'bombchu_trail_color_outer', 9, 1)
-    dropdown_option('cosmetic', 'boomerang_trail_color_inner', 10, 0)
-    dropdown_option('cosmetic', 'boomerang_trail_color_outer', 10, 1)
-    dropdown_option('cosmetic', 'heart_color', 11, 0)
-    dropdown_option('cosmetic', 'magic_color', 12, 0)
-    dropdown_option('cosmetic', 'a_button_color', 11, 1)
-    dropdown_option('cosmetic', 'b_button_color', 11, 2)
-    dropdown_option('cosmetic', 'c_button_color', 12, 1)
-    dropdown_option('cosmetic', 'start_button_color', 12, 2)
-
-    dropdown_option('cosmetic', 'display_custom_song_names', 13, 0)
-
-    opts.credits_music = IntVar(value=adjuster_settings.credits_music)
-    Checkbutton(romSettingsFrame, text="Credits Music as BGM", variable=opts.credits_music).grid(row=13, column=1, sticky=W)
-
-    opts.disable_battle_music = IntVar(value=adjuster_settings.disable_battle_music)
-    Checkbutton(romSettingsFrame, text="Disable Battle Music", variable=opts.disable_battle_music).grid(row=13, column=2, sticky=W)
-
-    dropdown_option('sfx', 'sfx_navi_overworld', 14, 0)
-    dropdown_option('sfx', 'sfx_navi_enemy', 14, 1)
-    dropdown_option('sfx', 'sfx_low_hp', 14, 2)
-    dropdown_option('sfx', 'sfx_menu_cursor', 15, 0)
-    dropdown_option('sfx', 'sfx_menu_select', 15, 1)
-    dropdown_option('sfx', 'sfx_nightfall', 15, 2)
-    dropdown_option('sfx', 'sfx_horse_neigh', 16, 0)
-    dropdown_option('sfx', 'sfx_hover_boots', 16, 1)
-    dropdown_option('sfx', 'sfx_ocarina', 16, 2)
-
-    dropdown_option('sfx', 'sfx_iron_boots', 17, 0)
-    dropdown_option('sfx', 'sfx_silver_rupee', 17, 1)
-    dropdown_option('sfx', 'sfx_boomerang_throw', 17, 2)
-    dropdown_option('sfx', 'sfx_hookshot_chain', 18, 0)
-    dropdown_option('sfx', 'sfx_arrow_shot', 18, 1)
-    dropdown_option('sfx', 'sfx_slingshot_shot', 18, 2)
-    dropdown_option('sfx', 'sfx_magic_arrow_shot', 19, 0)
-    dropdown_option('sfx', 'sfx_bombchu_move', 19, 1)
-    dropdown_option('sfx', 'sfx_get_small_item', 19, 2)
-    dropdown_option('sfx', 'sfx_explosion', 20, 0)
-    dropdown_option('sfx', 'sfx_daybreak', 20, 1)
-    dropdown_option('sfx', 'sfx_cucco', 20, 2)
-
-    def voice_dropdown(option_name, age, row, column):
-        option = voice_options[option_name]
-        optionFrame = Frame(romSettingsFrame)
-        optionFrame.grid(row=row, column=column, sticky=E)
-        optionLabel = Label(optionFrame, text=option.display_name)
-        optionLabel.pack(side=LEFT)
-        setattr(opts, option_name, StringVar(value=getattr(adjuster_settings, option_name)))
-        optionMenu = OptionMenu(optionFrame, getattr(opts, option_name), *get_voice_choices(age))
-        optionMenu.pack(side=LEFT)
-
-    voice_dropdown('sfx_link_adult', 1, 21, 0)
-    voice_dropdown('sfx_link_child', 0, 21, 1)
-
-    # Special cases
-    # Sword trail duration is a range
-    option = cosmetic_options['sword_trail_duration']
-    optionFrame = Frame(romSettingsFrame)
-    optionFrame.grid(row=8, column=2, sticky=E)
-    optionLabel = Label(optionFrame, text=option.display_name)
-    optionLabel.pack(side=LEFT)
-    setattr(opts, 'sword_trail_duration', StringVar())
-    getattr(opts, 'sword_trail_duration').set(adjuster_settings.sword_trail_duration)
-    optionMenu = OptionMenu(optionFrame, getattr(opts, 'sword_trail_duration'), *range(4, 21))
-    optionMenu.pack(side=LEFT)
-
-    # Toggle cosmetic options as checkboxes
-    opts.dpad_dungeon_menu = IntVar(value=adjuster_settings.dpad_dungeon_menu)
-    Checkbutton(romSettingsFrame, text="D-Pad Dungeon Info", variable=opts.dpad_dungeon_menu).grid(row=22, column=0, sticky=W)
-
-    opts.speedup_music_for_last_triforce_piece = IntVar(value=adjuster_settings.speedup_music_for_last_triforce_piece)
-    Checkbutton(romSettingsFrame, text="Speed Up Music (Last Triforce Piece)", variable=opts.speedup_music_for_last_triforce_piece).grid(row=22, column=1, sticky=W)
-
-    opts.slowdown_music_when_lowhp = IntVar(value=adjuster_settings.slowdown_music_when_lowhp)
-    Checkbutton(romSettingsFrame, text="Slowdown Music When Low HP", variable=opts.slowdown_music_when_lowhp).grid(row=22, column=2, sticky=W)
-
-    opts.uninvert_y_axis_in_first_person_camera = IntVar(value=adjuster_settings.uninvert_y_axis_in_first_person_camera)
-    Checkbutton(romSettingsFrame, text="Uninvert Y-Axis (First Person)", variable=opts.uninvert_y_axis_in_first_person_camera).grid(row=23, column=0, sticky=W)
-
-    opts.input_viewer = IntVar(value=adjuster_settings.input_viewer)
-    Checkbutton(romSettingsFrame, text="Input Viewer", variable=opts.input_viewer).grid(row=23, column=1, sticky=W)
-
-    opts.randomize_all_sfx = IntVar(value=adjuster_settings.randomize_all_sfx)
-    Checkbutton(romSettingsFrame, text="Randomize All SFX", variable=opts.randomize_all_sfx).grid(row=23, column=2, sticky=W)
-
-
-    # Deathlink is a checkbox
-    opts.deathlink = IntVar(value=adjuster_settings.deathlink)
-    deathlink_checkbox = Checkbutton(romSettingsFrame, text="DeathLink (Team Deaths)", variable=opts.deathlink)
-    deathlink_checkbox.grid(row=24, column=1, sticky=W)
-
-    romSettingsFrame.pack(side=TOP)
+    sfx_tab = tab("SFX")
+    sound_effects = section(sfx_tab, "Sound Effects (SFX)")
+    checkbox(sound_effects, 'randomize_all_sfx', "Randomize All SFX", 0)
+    ttk.Label(sound_effects, text="Also randomizes music settings; Link voices are selected separately.").grid(
+        row=1, column=0, columnspan=4, sticky=W, pady=(0, 6))
+    for index, name in enumerate((
+        'sfx_navi_overworld', 'sfx_navi_enemy',
+        'sfx_menu_cursor', 'sfx_menu_select',
+        'sfx_low_hp', 'sfx_silver_rupee',
+        'sfx_daybreak', 'sfx_nightfall',
+        'sfx_horse_neigh', 'sfx_cucco',
+        'sfx_hover_boots', 'sfx_iron_boots',
+        'sfx_boomerang_throw', 'sfx_hookshot_chain',
+        'sfx_arrow_shot', 'sfx_slingshot_shot',
+        'sfx_magic_arrow_shot', 'sfx_bombchu_move',
+        'sfx_explosion', 'sfx_get_small_item',
+        'sfx_ocarina',
+    )):
+        dropdown_option(sound_effects, name, index // 2 + 2, index % 2)
+    voices = section(sfx_tab, "Link Voices")
+    for column, (name, age) in enumerate((('sfx_link_adult', 1), ('sfx_link_child', 0))):
+        choice_control(voices, name, voice_options[name].display_name, get_voice_choices(age), 0, column)
 
     progress_overlay = None
 
@@ -438,8 +396,8 @@ def adjustGUI():
         window.after(100, check_result)
 
     # Adjust button
-    bottomFrame = Frame(window)
-    adjustButton = Button(bottomFrame, text='Adjust Rom', command=adjustRom)
+    bottomFrame = ttk.Frame(window)
+    adjustButton = ttk.Button(bottomFrame, text='Adjust Rom', command=adjustRom)
     adjustButton.pack(side=LEFT, padx=(5, 5))
 
     def saveGUISettings():
@@ -451,10 +409,12 @@ def adjustGUI():
         else:
             messagebox.showinfo(title="Success", message="Settings saved to persistent storage")
 
-    saveButton = Button(bottomFrame, text='Save Settings', command=saveGUISettings)
+    saveButton = ttk.Button(bottomFrame, text='Save Settings', command=saveGUISettings)
     saveButton.pack(side=LEFT, padx=(5, 5))
     bottomFrame.pack(side=BOTTOM, pady=(5, 5))
 
+    window.update_idletasks()
+    window.minsize(window.winfo_reqwidth(), window.winfo_reqheight())
     window.mainloop()
 
 def set_icon(window):
@@ -574,20 +534,11 @@ def adjust(args, status_callback=None):
         update_status("Loading ROM...")
         rom = Rom(file=args.rom, force_use=True)
         delete_zootdec = True
-    elif os.path.splitext(args.rom)[-1] in ['.apz5', '.zpf']:
-        # Load vanilla ROM
-        update_status("Loading base ROM...")
-        rom = Rom(file=args.vanilla_rom, force_use=True)
-        apz5_file = args.rom
-        base_name = os.path.splitext(apz5_file)[0]
-        # Patch file
+    elif os.path.splitext(args.rom)[-1] == '.apoot':
         update_status("Applying patch file...")
-        apply_patch_file(rom, apz5_file,
-            sub_file=(os.path.basename(base_name) + '.zpf'
-                if zipfile.is_zipfile(apz5_file)
-                else None))
+        rom = patch_to_rom(args.rom, args.vanilla_rom)
     else:
-        raise Exception("Invalid file extension; requires .n64, .z64, .apz5, .zpf")
+        raise Exception("Invalid file extension; requires .n64, .z64, .apoot")
     # Call patch_cosmetics
     try:
         update_status("Applying cosmetic changes...")

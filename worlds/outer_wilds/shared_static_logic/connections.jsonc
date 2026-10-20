@@ -421,6 +421,7 @@
         { "item": "Spacesuit" } ]
     },
     { "category": "eh", "from": "Forge via Threader", "to": "Black Hole Forge", "requires": []},
+    { "category": "eh", "from": "Forge via Threader", "to": "Hanging City Ceiling", "requires": []},
 
     // Alternate way to navigate the Stranger.
     { "category": "eh&dlc", "from": "Stranger Sunside Hangar", "to": "Stranger via Threader", "requires": [ { "item": "Threader" } ] },
@@ -432,5 +433,50 @@
     
     // Alternate way to reach FC Eye Signal Lab.
     { "category": "eh&fc", "from": "Magma's Recursion", "to": "Eye Signal Lab via Threader", "requires": [ { "item": "Threader" } ] },
-    { "category": "eh&fc", "from": "Eye Signal Lab via Threader", "to": "Eye Signal Lab", "requires": [] }
+    { "category": "eh&fc", "from": "Eye Signal Lab via Threader", "to": "Eye Signal Lab", "requires": [] },
+	
+    { "category": "hs", "from": "Space", "to": "Heliostudy", "requires": [ { "item": "Spacesuit" } ] }, // we don't have proper Heliostudy suitless logic, so simply require suit for all of it
+	{ "category": "hs", "from": "Heliostudy", "to": "Enclosed Structure", "requires": [
+		{ "item": "Nomai Warp Codes" },
+		{ "anyOf": [ { "item": "Daucus Orb" }, { "item": "Shattered Geode Orb" } ] }
+	] },
+	{ "category": "hs", "from": "Heliostudy", "to": "Daucus Surface", "requires": [ { "anyOf": [ { "item": "Daucus Orb" }, { "item": "The Big One Orb" } ] } ] },
+	{ "category": "hs", "from": "Heliostudy", "to": "Harmonic Convergence", "requires": [
+        // Harmonic Convergence needs you to stand on SG and point the Signalscope at the other 3 planets and the sun at the same time.
+        // SG must be moved to an outer orbit for this to work, so SG orb is always required.
+        // Daucus and TBO's starting positions line up with the sun well enough that SG + GA orbs alone are enough.
+        // SG + TBO orbs are *not* enough because Daucus and GA's starting positions don't line up with the sun.
+        // And SG + Daucus doesn't work because the other two planets are both in the outer orbit.
+		{ "anyOf": [ // so these are all the orb combinations that do work:
+			{ "allOf": [ { "item": "Shattered Geode Orb" }, { "item": "Glacial Abyss! Orb" } ] },
+			{ "allOf": [ { "item": "Daucus Orb" }, { "item": "The Big One Orb" }, { "item": "Glacial Abyss! Orb" } ] },
+			{ "allOf": [ { "item": "Daucus Orb" }, { "item": "The Big One Orb" }, { "item": "Shattered Geode Orb" } ] }
+        ] },
+		{ "item": "Signalscope" }, // and the proper signals
+		{ "item": "Heliochord Frequency" }
+	] },
+	{ "category": "hs", "from": "Heliostudy", "to": "Shattered Geode Quantum Cave", "requires": [ { "item": "Entanglement Rule" }, { "item": "Shattered Geode Orb" } ] },
+	{ "category": "hs", "from": "Heliostudy", "to": "The Big One Tower", "requires": [ { "item": "The Big One Orb" } ] },
+	{ "category": "hs", "from": "Heliostudy", "to": "The Big One Ghost Matter Cave", "requires": [ { "item": "Glacial Abyss! Orb" } ] },
+	{ "category": "hs", "from": "Heliostudy", "to": "Subsurface Ocean", "requires": [
+		{ "anyOf": [
+			{ "item": "Glacial Abyss! Orb" },
+			{ "allOf": [ { "item": "Shattered Geode Orb" }, { "item": "Nomai Warp Codes" } ] }
+		] }
+	] },
+	{ "category": "hs", "from": "Heliostudy", "to": "Glacial Abyss! Core", "requires": [
+		{ "anyOf": [ { "item": "Glacial Abyss! Orb" }, { "item": "Shattered Geode Orb" } ] },
+		{ "item": "Nomai Warp Codes" }
+	] },
+	{ "category": "hs", "from": "Glacial Abyss! Core", "to": "Submission Chamber", "requires": [
+		{ "item": "Nomai Warp Codes" }, // need to warp between Abyssal Core and Orrery Station to input any solution,
+                                        // since Core can only be entered while Requirement 2 is unfulfilled
+		{ "item": "The Big One Orb" }, // no alternative for Requirement 6: "The largest planet is not in the furthest orbit"
+		{ "item": "Glacial Abyss! Orb" } // no alternative for Requirement 2: "A planet has exposed geothermal activity"
+        // All other requirements can be met without moving Geode or Daucus directly: do the water + sand transfers,
+        // freeze TBO, place TBO opposite Daucus in the middle orbit, and place GA in the outer orbit behind SG.
+	] },
+	
+	// Alternate way to reach the top of The Big One Tower
+	{ "category": "eh&hs", "from": "Heliostudy", "to": "The Big One Tower", "requires": [ { "item": "Threader" } ] }
 ]

@@ -180,7 +180,7 @@ def pokemon_data_to_json(party_mon: bytes, nickname: bytes, ot: bytes,
         # Crystal landmark ids collide with the receiver's location ids;
         # sub the "in-game trade" sentinel.
         "location_met": POOL_METLOC_IN_GAME_TRADE,
-        "level_met": caught_level & 0x7F,
+        "level_met": caught_level & 0x3F,
         "game": 0,
         "ball": 4,
         "moves": [
@@ -301,14 +301,14 @@ def trade_is_eligible(item: List[Any], own_id: int) -> bool:
         return False
     try:
         payload = json.loads(blob)
-    except (ValueError, TypeError):
+        json_to_pokemon_data(blob)
+    except (ValueError, TypeError, AttributeError, KeyError, OverflowError, RecursionError):
         return False
     species = payload.get("species")
     if not isinstance(species, int) or species < 1 or species > CRYSTAL_MAX_SPECIES:
         return False
     moves = payload.get("moves") or []
-    has_compatible_move = any(
-        isinstance(m, (list, tuple)) and len(m) >= 1 and 1 <= int(m[0]) <= CRYSTAL_MAX_MOVE
+    return any(
+        isinstance(m, (list, tuple)) and len(m) >= 1 and isinstance(m[0], int) and 1 <= m[0] <= CRYSTAL_MAX_MOVE
         for m in moves
     )
-    return has_compatible_move

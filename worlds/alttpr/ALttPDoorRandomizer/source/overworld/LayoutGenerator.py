@@ -44,7 +44,9 @@ class WorldPiece:
     """
     __slots__ = ('screens', 'grid', 'width', 'height', 'north_edges', 'south_edges',
                  'west_edges', 'east_edges', 'north_edges_water', 'south_edges_water',
-                 'west_edges_water', 'east_edges_water')
+                 'west_edges_water', 'east_edges_water', 'north_counts', 'south_counts',
+                 'west_counts', 'east_counts', 'north_water_counts', 'south_water_counts',
+                 'west_water_counts', 'east_water_counts')
 
     def __init__(
         self,
@@ -73,6 +75,14 @@ class WorldPiece:
         self.south_edges_water = south_edges_water if south_edges_water is not None else []
         self.west_edges_water = west_edges_water if west_edges_water is not None else []
         self.east_edges_water = east_edges_water if east_edges_water is not None else []
+        self.north_counts = []
+        self.south_counts = []
+        self.west_counts = []
+        self.east_counts = []
+        self.north_water_counts = None
+        self.south_water_counts = None
+        self.west_water_counts = None
+        self.east_water_counts = None
 
 class Piece:
     """
@@ -115,7 +125,9 @@ class GridInfo:
     __slots__ = (
         'grid', 'north_edges_grid', 'south_edges_grid', 'west_edges_grid', 'east_edges_grid',
         'north_edges_water_grid', 'south_edges_water_grid', 'west_edges_water_grid', 'east_edges_water_grid',
-        'crossed_groups', 'edge_connection_seed'
+        'crossed_groups', 'edge_connection_seed',
+        'north_counts', 'south_counts', 'west_counts', 'east_counts',
+        'north_water_counts', 'south_water_counts', 'west_water_counts', 'east_water_counts'
     )
 
     def __init__(
@@ -130,7 +142,8 @@ class GridInfo:
         west_edges_water_grid: List[List[List[List[OWEdge]]]],
         east_edges_water_grid: List[List[List[List[OWEdge]]]],
         crossed_groups: List[List[int]],
-        edge_connection_seed: float
+        edge_connection_seed: float,
+        init_counts: bool = True
     ):
         self.grid = grid
         self.north_edges_grid = north_edges_grid
@@ -143,6 +156,30 @@ class GridInfo:
         self.east_edges_water_grid = east_edges_water_grid
         self.crossed_groups = crossed_groups
         self.edge_connection_seed = edge_connection_seed
+        if init_counts:
+            def init_edge_counts(info: GridInfo) -> None:
+                def blank_world_counts():
+                    return [[[0] * 8 for _ in range(8)] for _ in range(2)]
+
+                info.north_counts = blank_world_counts()
+                info.south_counts = blank_world_counts()
+                info.west_counts = blank_world_counts()
+                info.east_counts = blank_world_counts()
+                info.north_water_counts = blank_world_counts()
+                info.south_water_counts = blank_world_counts()
+                info.west_water_counts = blank_world_counts()
+                info.east_water_counts = blank_world_counts()
+
+            init_edge_counts(self)
+        else:
+            self.north_counts = None
+            self.south_counts = None
+            self.west_counts = None
+            self.east_counts = None
+            self.north_water_counts = None
+            self.south_water_counts = None
+            self.west_water_counts = None
+            self.east_water_counts = None
 
 class LayoutGeneratorOptions:
     """
@@ -262,6 +299,18 @@ class PiecePlacementResult:
 # GRID INITIALIZATION
 # ============================================================================
 
+def store_cell_counts(info: GridInfo, w: int, row: int, col: int, world_piece: WorldPiece, k: int, l: int) -> None:
+    info.north_counts[w][row][col] = world_piece.north_counts[k][l]
+    info.south_counts[w][row][col] = world_piece.south_counts[k][l]
+    info.west_counts[w][row][col] = world_piece.west_counts[k][l]
+    info.east_counts[w][row][col] = world_piece.east_counts[k][l]
+    if world_piece.north_water_counts is not None:
+        info.north_water_counts[w][row][col] = world_piece.north_water_counts[k][l]
+        info.south_water_counts[w][row][col] = world_piece.south_water_counts[k][l]
+        info.west_water_counts[w][row][col] = world_piece.west_water_counts[k][l]
+        info.east_water_counts[w][row][col] = world_piece.east_water_counts[k][l]
+
+
 def create_empty_grid_info(edge_connection_seed: float) -> GridInfo:
     return GridInfo(
         grid=[[[-1] * 8 for _ in range(8)] for _ in range(2)],
@@ -282,7 +331,7 @@ def copy_grid_info(source: GridInfo, edge_connection_seed: float) -> GridInfo:
     Create a deep copy of a GridInfo object with a new edge_connection_seed.
     Only copies the grid data structures, not the OWEdge references (which are shared).
     """
-    return GridInfo(
+    info = GridInfo(
         grid=[[row[:] for row in world_grid] for world_grid in source.grid],
         north_edges_grid=[[[cell[:] for cell in row] for row in world_grid] for world_grid in source.north_edges_grid],
         south_edges_grid=[[[cell[:] for cell in row] for row in world_grid] for world_grid in source.south_edges_grid],
@@ -293,8 +342,25 @@ def copy_grid_info(source: GridInfo, edge_connection_seed: float) -> GridInfo:
         west_edges_water_grid=[[[cell[:] for cell in row] for row in world_grid] for world_grid in source.west_edges_water_grid],
         east_edges_water_grid=[[[cell[:] for cell in row] for row in world_grid] for world_grid in source.east_edges_water_grid],
         crossed_groups=[row[:] for row in source.crossed_groups],
-        edge_connection_seed=edge_connection_seed
+        edge_connection_seed=edge_connection_seed,
+        init_counts=False
     )
+
+    def copy_edge_counts() -> None:
+        def copy_world_counts(counts):
+            return [[row[:] for row in world] for world in counts]
+
+        info.north_counts = copy_world_counts(source.north_counts)
+        info.south_counts = copy_world_counts(source.south_counts)
+        info.west_counts = copy_world_counts(source.west_counts)
+        info.east_counts = copy_world_counts(source.east_counts)
+        info.north_water_counts = copy_world_counts(source.north_water_counts)
+        info.south_water_counts = copy_world_counts(source.south_water_counts)
+        info.west_water_counts = copy_world_counts(source.west_water_counts)
+        info.east_water_counts = copy_world_counts(source.east_water_counts)
+
+    copy_edge_counts()
+    return info
 
 def initialize_screens(world: World, player: int) -> Dict[int, Screen]:
     overworld_screens: Dict[int, Screen] = {}
@@ -1144,6 +1210,9 @@ def add_world_piece_edge_info(world: World, player: int, piece: WorldPiece, larg
     Populate piece edge information
     Initializes 8x8 edge arrays and extracts edges from screens
     """
+    def count_edge_rows(edges):
+        return [[len(cell) for cell in row] for row in edges]
+
     piece.north_edges = [[] for _ in range(8)]
     piece.south_edges = [[] for _ in range(8)]
     piece.west_edges = [[] for _ in range(8)]
@@ -1219,6 +1288,21 @@ def add_world_piece_edge_info(world: World, player: int, piece: WorldPiece, larg
                             target = piece.east_edges[k][l] if world.owTerrain[player] or edge.terrain != Terrain.Water else piece.east_edges_water[k][l]
                             target.append(edge)
 
+    piece.north_counts = count_edge_rows(piece.north_edges)
+    piece.south_counts = count_edge_rows(piece.south_edges)
+    piece.west_counts = count_edge_rows(piece.west_edges)
+    piece.east_counts = count_edge_rows(piece.east_edges)
+    if world.owTerrain[player]:
+        piece.north_water_counts = None
+        piece.south_water_counts = None
+        piece.west_water_counts = None
+        piece.east_water_counts = None
+    else:
+        piece.north_water_counts = count_edge_rows(piece.north_edges_water)
+        piece.south_water_counts = count_edge_rows(piece.south_edges_water)
+        piece.west_water_counts = count_edge_rows(piece.west_edges_water)
+        piece.east_water_counts = count_edge_rows(piece.east_edges_water)
+
 def get_screen_id_from_cell(cell_id: int) -> int:
     """Get the base screen ID from a cell ID.
 
@@ -1236,7 +1320,7 @@ def get_screen_id_from_cell(cell_id: int) -> int:
 # PLACEMENT ALGORITHM
 # ============================================================================
 
-def random_place_piece(
+def random_place_piece_reference(
     world: World,
     player: int,
     grid_info: GridInfo,
@@ -1529,11 +1613,458 @@ def random_place_piece(
                     south_edges_water_grid[w][row_idx][col_idx] = world_piece.south_edges_water[k][l]
                     west_edges_water_grid[w][row_idx][col_idx] = world_piece.west_edges_water[k][l]
                     east_edges_water_grid[w][row_idx][col_idx] = world_piece.east_edges_water[k][l]
+                store_cell_counts(grid_info, w, row_idx, col_idx, world_piece, k, l)
 
             if use_crossed_groups:
                 crossed_groups[row_idx][col_idx] = piece_crossed_groups[k][l]
 
     return PiecePlacementResult(success=True, piece=piece, score_major=used_score_major, score_minor=used_score_minor)
+
+
+def finish_placement(world, player, grid_info, pieces, best_choices, max_score_major, max_score_minor, use_crossed_groups):
+    if not best_choices:
+        return PiecePlacementResult(success=False, piece=None, score_major=0, score_minor=0)
+
+    piece_index, row, column = random.choice(best_choices)
+    piece = pieces[piece_index]
+    wrld = piece.world
+    grid = grid_info.grid
+    north_edges_grid = grid_info.north_edges_grid
+    south_edges_grid = grid_info.south_edges_grid
+    west_edges_grid = grid_info.west_edges_grid
+    east_edges_grid = grid_info.east_edges_grid
+    north_edges_water_grid = grid_info.north_edges_water_grid
+    south_edges_water_grid = grid_info.south_edges_water_grid
+    west_edges_water_grid = grid_info.west_edges_water_grid
+    east_edges_water_grid = grid_info.east_edges_water_grid
+    crossed_groups = grid_info.crossed_groups
+    piece_crossed_groups = piece.crossed_groups
+    terrain_off = not world.owTerrain[player]
+
+    for k in range(piece.height):
+        row_idx = (row + k) % 8
+        for l in range(piece.width):
+            col_idx = (column + l) % 8
+            num_pieces = 2 if piece.parallel else 1
+            for p in range(num_pieces):
+                world_piece = piece.main if p == 0 else piece.parallel
+                w = wrld if p == 0 else 1 - wrld
+                grid[w][row_idx][col_idx] = world_piece.grid[k][l]
+                north_edges_grid[w][row_idx][col_idx] = world_piece.north_edges[k][l]
+                south_edges_grid[w][row_idx][col_idx] = world_piece.south_edges[k][l]
+                west_edges_grid[w][row_idx][col_idx] = world_piece.west_edges[k][l]
+                east_edges_grid[w][row_idx][col_idx] = world_piece.east_edges[k][l]
+                if terrain_off:
+                    north_edges_water_grid[w][row_idx][col_idx] = world_piece.north_edges_water[k][l]
+                    south_edges_water_grid[w][row_idx][col_idx] = world_piece.south_edges_water[k][l]
+                    west_edges_water_grid[w][row_idx][col_idx] = world_piece.west_edges_water[k][l]
+                    east_edges_water_grid[w][row_idx][col_idx] = world_piece.east_edges_water[k][l]
+                store_cell_counts(grid_info, w, row_idx, col_idx, world_piece, k, l)
+            if use_crossed_groups:
+                crossed_groups[row_idx][col_idx] = piece_crossed_groups[k][l]
+
+    return PiecePlacementResult(success=True, piece=piece, score_major=max_score_major, score_minor=max_score_minor)
+
+
+def random_place_piece_fast(world, player, grid_info, options, pieces, ignore_bonus_points):
+    def sides_1x1(world_piece: WorldPiece, terrain_count: int):
+        land = (
+            world_piece.north_counts[0][0],
+            world_piece.south_counts[0][0],
+            world_piece.west_counts[0][0],
+            world_piece.east_counts[0][0],
+        )
+        if terrain_count == 1:
+            return (land,)
+        return (land, (
+            world_piece.north_water_counts[0][0],
+            world_piece.south_water_counts[0][0],
+            world_piece.west_water_counts[0][0],
+            world_piece.east_water_counts[0][0],
+        ))
+
+    def scan_1x1_simple(world, player, grid_info, options, pieces, ignore_bonus_points):
+        """1x1 scan for the common case: no distortion, no crossed groups, not unrestricted."""
+        vertical_wrap = options.vertical_wrap
+        horizontal_wrap = options.horizontal_wrap
+        penalty_full = options.penalty_full_edge_mismatch
+        penalty_partial = options.penalty_partial_edge_mismatch
+        bonus_partial = 0 if ignore_bonus_points else options.bonus_partial_edge_match
+        bonus_full = 0 if ignore_bonus_points else options.bonus_full_edge_match
+        bonus_fill = 0 if ignore_bonus_points else options.bonus_fill_parallel
+        can_stop_early = penalty_full >= 0 and penalty_partial >= 0
+        terrain_count = 1 if world.owTerrain[player] else 2
+        grid = grid_info.grid
+        north_counts = grid_info.north_counts
+        south_counts = grid_info.south_counts
+        west_counts = grid_info.west_counts
+        east_counts = grid_info.east_counts
+        north_water = grid_info.north_water_counts
+        south_water = grid_info.south_water_counts
+        west_water = grid_info.west_water_counts
+        east_water = grid_info.east_water_counts
+
+        best_choices = []
+        max_major = -1000000
+        max_minor = -1000000
+
+        for c, piece in enumerate(pieces):
+            restriction = piece.restriction
+            restriction_set = set(restriction) if restriction else None
+            wrld = piece.world
+            other = 1 - wrld
+            main = piece.main
+            parallel = piece.parallel
+            main_screen = main.screens[0][0]
+            par_screen = parallel.screens[0][0] if parallel else None
+            main_sides = sides_1x1(main, terrain_count)
+            par_sides = sides_1x1(parallel, terrain_count) if par_screen else None
+            grid_main = grid[wrld]
+            grid_other = grid[other]
+
+            for i in range(8):
+                main_row = grid_main[i]
+                other_row = grid_other[i]
+                north_open = vertical_wrap or i != 0
+                south_open = vertical_wrap or i != 7
+                if north_open:
+                    nrow = (i - 1) % 8
+                    north_occ = (grid[0][nrow], grid[1][nrow])
+                    north_land = (south_counts[0][nrow], south_counts[1][nrow])
+                    north_sea = (south_water[0][nrow], south_water[1][nrow]) if terrain_count == 2 else None
+                if south_open:
+                    srow = (i + 1) % 8
+                    south_occ = (grid[0][srow], grid[1][srow])
+                    south_land = (north_counts[0][srow], north_counts[1][srow])
+                    south_sea = (north_water[0][srow], north_water[1][srow]) if terrain_count == 2 else None
+                west_land_row = (east_counts[0][i], east_counts[1][i])
+                east_land_row = (west_counts[0][i], west_counts[1][i])
+                occ_row = (grid[0][i], grid[1][i])
+                if terrain_count == 2:
+                    west_sea_row = (east_water[0][i], east_water[1][i])
+                    east_sea_row = (west_water[0][i], west_water[1][i])
+
+                for j in range(8):
+                    if restriction_set is not None and (i * 8 + j) not in restriction_set:
+                        continue
+                    if main_screen and main_row[j] != -1:
+                        continue
+                    if par_screen and other_row[j] != -1:
+                        continue
+
+                    major = 0
+                    minor = 0
+                    doomed = False
+                    if parallel is None and main_screen and other_row[j] != -1:
+                        minor += bonus_fill
+
+                    worlds = ((wrld, main_sides),) if not par_screen else ((wrld, main_sides), (other, par_sides))
+                    if not main_screen:
+                        worlds = ((other, par_sides),) if par_screen else ()
+
+                    west_open = horizontal_wrap or j != 0
+                    east_open = horizontal_wrap or j != 7
+                    west_col = (j - 1) % 8 if west_open else 0
+                    east_col = (j + 1) % 8 if east_open else 0
+
+                    for cw, sides in worlds:
+                        for terrain_index, (pn, ps, pw, pe) in enumerate(sides):
+                            if not vertical_wrap and i == 0:
+                                if pn:
+                                    major -= penalty_full
+                                else:
+                                    minor += bonus_full
+                            if not vertical_wrap and i == 7:
+                                if ps:
+                                    major -= penalty_full
+                                else:
+                                    minor += bonus_full
+                            if not horizontal_wrap and j == 0:
+                                if pw:
+                                    major -= penalty_full
+                                else:
+                                    minor += bonus_full
+                            if not horizontal_wrap and j == 7:
+                                if pe:
+                                    major -= penalty_full
+                                else:
+                                    minor += bonus_full
+                            if can_stop_early and major < max_major:
+                                doomed = True
+                                break
+
+                            if terrain_index == 0:
+                                north_edge = north_land if north_open else None
+                                south_edge = south_land if south_open else None
+                                west_edge = west_land_row
+                                east_edge = east_land_row
+                            else:
+                                north_edge = north_sea if north_open else None
+                                south_edge = south_sea if south_open else None
+                                west_edge = west_sea_row
+                                east_edge = east_sea_row
+
+                            if north_edge is not None and north_occ[cw][j] != -1:
+                                grid_edges = north_edge[cw][j]
+                                if pn == grid_edges:
+                                    minor += bonus_full
+                                elif (pn == 0) == (grid_edges == 0):
+                                    minor += bonus_partial
+                                    major -= penalty_partial
+                                else:
+                                    major -= penalty_full
+                                if can_stop_early and major < max_major:
+                                    doomed = True
+                                    break
+                            if south_edge is not None and south_occ[cw][j] != -1:
+                                grid_edges = south_edge[cw][j]
+                                if ps == grid_edges:
+                                    minor += bonus_full
+                                elif (ps == 0) == (grid_edges == 0):
+                                    minor += bonus_partial
+                                    major -= penalty_partial
+                                else:
+                                    major -= penalty_full
+                                if can_stop_early and major < max_major:
+                                    doomed = True
+                                    break
+                            if west_open and occ_row[cw][west_col] != -1:
+                                grid_edges = west_edge[cw][west_col]
+                                if pw == grid_edges:
+                                    minor += bonus_full
+                                elif (pw == 0) == (grid_edges == 0):
+                                    minor += bonus_partial
+                                    major -= penalty_partial
+                                else:
+                                    major -= penalty_full
+                                if can_stop_early and major < max_major:
+                                    doomed = True
+                                    break
+                            if east_open and occ_row[cw][east_col] != -1:
+                                grid_edges = east_edge[cw][east_col]
+                                if pe == grid_edges:
+                                    minor += bonus_full
+                                elif (pe == 0) == (grid_edges == 0):
+                                    minor += bonus_partial
+                                    major -= penalty_partial
+                                else:
+                                    major -= penalty_full
+                                if can_stop_early and major < max_major:
+                                    doomed = True
+                                    break
+                        if doomed:
+                            break
+                    if doomed:
+                        continue
+
+                    if major == max_major and minor == max_minor:
+                        best_choices.append((c, i, j))
+                    if major > max_major or (major == max_major and minor > max_minor):
+                        max_major = major
+                        max_minor = minor
+                        best_choices = [(c, i, j)]
+
+        return finish_placement(world, player, grid_info, pieces, best_choices, max_major, max_minor, False)
+
+    def scan_1x1_full(world, player, grid_info, options, pieces, ignore_bonus_points, use_crossed_groups, is_unrestricted, keep_similar):
+        """1x1 scan when crossed groups, unrestricted crossed, or keep-similar scoring is on."""
+        def bump_edge(piece_edges, grid_edges, major, minor, bonus_full, bonus_partial, penalty_full, penalty_partial, weight, keep_similar):
+            if piece_edges == grid_edges:
+                minor += bonus_full * weight
+            elif not keep_similar and ((piece_edges == 0) == (grid_edges == 0)):
+                minor += bonus_partial * weight
+                major -= penalty_partial * weight
+            else:
+                major -= penalty_full * weight
+            return major, minor
+
+        vertical_wrap = options.vertical_wrap
+        horizontal_wrap = options.horizontal_wrap
+        penalty_full = options.penalty_full_edge_mismatch
+        penalty_partial = options.penalty_partial_edge_mismatch
+        bonus_partial = 0 if ignore_bonus_points else options.bonus_partial_edge_match
+        bonus_full = 0 if ignore_bonus_points else options.bonus_full_edge_match
+        bonus_crossed = 0 if ignore_bonus_points else options.bonus_crossed_group_match
+        bonus_fill = 0 if ignore_bonus_points else options.bonus_fill_parallel
+        can_stop_early = penalty_full >= 0 and penalty_partial >= 0
+        terrain_count = 1 if world.owTerrain[player] else 2
+        crossed_chance = options.crossed_chance
+        crossworld_weights = (1 - crossed_chance, crossed_chance) if is_unrestricted else (1, 0)
+        grid = grid_info.grid
+        crossed_groups = grid_info.crossed_groups
+        count_sets = (
+            (grid_info.north_counts, grid_info.south_counts, grid_info.west_counts, grid_info.east_counts),
+        )
+        if terrain_count == 2:
+            count_sets = count_sets + ((
+                grid_info.north_water_counts, grid_info.south_water_counts,
+                grid_info.west_water_counts, grid_info.east_water_counts,
+            ),)
+
+        best_choices = []
+        max_major = -1000000
+        max_minor = -1000000
+
+        for c, piece in enumerate(pieces):
+            restriction = piece.restriction
+            restriction_set = set(restriction) if restriction else None
+            wrld = piece.world
+            main = piece.main
+            parallel = piece.parallel
+            main_screen = main.screens[0][0]
+            par_screen = parallel.screens[0][0] if parallel else None
+            main_sides = sides_1x1(main, terrain_count)
+            par_sides = sides_1x1(parallel, terrain_count) if par_screen else None
+            piece_group = piece.crossed_groups[0][0] if use_crossed_groups else 0
+            grid_main = grid[wrld]
+            grid_other = grid[1 - wrld]
+
+            for i in range(8):
+                main_row = grid_main[i]
+                other_row = grid_other[i]
+                for j in range(8):
+                    if restriction_set is not None and (i * 8 + j) not in restriction_set:
+                        continue
+                    if main_screen and main_row[j] != -1:
+                        continue
+                    if par_screen and other_row[j] != -1:
+                        continue
+                    if use_crossed_groups and crossed_groups[i][j] != -1 and crossed_groups[i][j] != piece_group:
+                        continue
+
+                    major = 0
+                    minor = 0
+                    doomed = False
+                    worlds = ((wrld, main_sides, main_screen),)
+                    if par_screen:
+                        worlds = ((wrld, main_sides, main_screen), (1 - wrld, par_sides, True))
+                    if not main_screen:
+                        worlds = ((1 - wrld, par_sides, True),) if par_screen else ()
+
+                    for cw, sides, has_screen in worlds:
+                        if not has_screen:
+                            continue
+                        if use_crossed_groups and parallel is None and crossed_groups[i][j] == piece_group:
+                            minor += bonus_crossed
+                        if parallel is None and grid_other[i][j] != -1:
+                            minor += bonus_fill
+
+                        for terrain_index in range(terrain_count):
+                            pn, ps, pw, pe = sides[terrain_index]
+                            gn, gs, gw, ge = count_sets[terrain_index]
+                            if not vertical_wrap and i == 0:
+                                if pn:
+                                    major -= penalty_full
+                                else:
+                                    minor += bonus_full
+                            if not vertical_wrap and i == 7:
+                                if ps:
+                                    major -= penalty_full
+                                else:
+                                    minor += bonus_full
+                            if not horizontal_wrap and j == 0:
+                                if pw:
+                                    major -= penalty_full
+                                else:
+                                    minor += bonus_full
+                            if not horizontal_wrap and j == 7:
+                                if pe:
+                                    major -= penalty_full
+                                else:
+                                    minor += bonus_full
+
+                            other_limit = 2 if is_unrestricted else 1
+                            for other_world_index in range(other_limit):
+                                if is_unrestricted:
+                                    weight = crossworld_weights[other_world_index]
+                                else:
+                                    weight = 1
+
+                                if vertical_wrap or i != 0:
+                                    nrow = (i - 1) % 8
+                                    if is_unrestricted:
+                                        w = cw if other_world_index == 0 else 1 - cw
+                                    elif use_crossed_groups and crossed_groups[nrow][j] != piece_group:
+                                        w = 1 - cw
+                                    else:
+                                        w = cw
+                                    if grid[w][nrow][j] != -1:
+                                        major, minor = bump_edge(pn, gs[w][nrow][j], major, minor, bonus_full, bonus_partial, penalty_full, penalty_partial, weight, keep_similar)
+
+                                if vertical_wrap or i != 7:
+                                    srow = (i + 1) % 8
+                                    if is_unrestricted:
+                                        w = cw if other_world_index == 0 else 1 - cw
+                                    elif use_crossed_groups and crossed_groups[srow][j] != piece_group:
+                                        w = 1 - cw
+                                    else:
+                                        w = cw
+                                    if grid[w][srow][j] != -1:
+                                        major, minor = bump_edge(ps, gn[w][srow][j], major, minor, bonus_full, bonus_partial, penalty_full, penalty_partial, weight, keep_similar)
+
+                                if horizontal_wrap or j != 0:
+                                    ncol = (j - 1) % 8
+                                    if is_unrestricted:
+                                        w = cw if other_world_index == 0 else 1 - cw
+                                    elif use_crossed_groups and crossed_groups[i][ncol] != piece_group:
+                                        w = 1 - cw
+                                    else:
+                                        w = cw
+                                    if grid[w][i][ncol] != -1:
+                                        major, minor = bump_edge(pw, ge[w][i][ncol], major, minor, bonus_full, bonus_partial, penalty_full, penalty_partial, weight, keep_similar)
+
+                                if horizontal_wrap or j != 7:
+                                    ncol = (j + 1) % 8
+                                    if is_unrestricted:
+                                        w = cw if other_world_index == 0 else 1 - cw
+                                    elif use_crossed_groups and crossed_groups[i][ncol] != piece_group:
+                                        w = 1 - cw
+                                    else:
+                                        w = cw
+                                    if grid[w][i][ncol] != -1:
+                                        major, minor = bump_edge(pe, gw[w][i][ncol], major, minor, bonus_full, bonus_partial, penalty_full, penalty_partial, weight, keep_similar)
+
+                                if can_stop_early and major < max_major:
+                                    doomed = True
+                                    break
+                            if doomed:
+                                break
+                        if doomed:
+                            break
+                    if doomed:
+                        continue
+
+                    if major == max_major and minor == max_minor:
+                        best_choices.append((c, i, j))
+                    if major > max_major or (major == max_major and minor > max_minor):
+                        max_major = major
+                        max_minor = minor
+                        best_choices = [(c, i, j)]
+
+        return finish_placement(world, player, grid_info, pieces, best_choices, max_major, max_minor, use_crossed_groups)
+
+    use_crossed_groups = (world.owCrossed[player] == 'polar' and world.owMixed[player]) or world.owCrossed[player] == 'grouped'
+    is_unrestricted = world.owCrossed[player] == 'unrestricted'
+    keep_similar = ENABLE_KEEP_SIMILAR_SPECIAL_HANDLING and world.owKeepSimilar[player]
+    if use_crossed_groups or is_unrestricted or keep_similar:
+        return scan_1x1_full(
+            world, player, grid_info, options, pieces, ignore_bonus_points,
+            use_crossed_groups, is_unrestricted, keep_similar
+        )
+    return scan_1x1_simple(world, player, grid_info, options, pieces, ignore_bonus_points)
+
+
+def random_place_piece(
+    world: World,
+    player: int,
+    grid_info: GridInfo,
+    options: LayoutGeneratorOptions,
+    pieces: List[Piece],
+    ignore_bonus_points: bool
+) -> PiecePlacementResult:
+    if options.distortion_chance > 0 or any(piece.width != 1 or piece.height != 1 for piece in pieces):
+        return random_place_piece_reference(world, player, grid_info, options, pieces, ignore_bonus_points)
+    return random_place_piece_fast(world, player, grid_info, options, pieces, ignore_bonus_points)
 
 def place_single_restriction_pieces(
     world: World,
@@ -1648,6 +2179,7 @@ def place_single_restriction_pieces(
                                 grid_info.south_edges_water_grid[w][row_idx][col_idx] = world_piece.south_edges_water[k][l]
                                 grid_info.west_edges_water_grid[w][row_idx][col_idx] = world_piece.west_edges_water[k][l]
                                 grid_info.east_edges_water_grid[w][row_idx][col_idx] = world_piece.east_edges_water[k][l]
+                            store_cell_counts(grid_info, w, row_idx, col_idx, world_piece, k, l)
 
                         if use_crossed_groups:
                             grid_info.crossed_groups[row_idx][col_idx] = piece_crossed_groups[k][l]

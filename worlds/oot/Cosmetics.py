@@ -224,7 +224,7 @@ def patch_tunic_colors(rom, ootworld, symbols):
             tunic_option = ootworld.random.choice(tunic_color_list)
         # handle completely random
         if tunic_option == 'Completely Random':
-            color = generate_random_color()
+            color = generate_random_color(ootworld.random)
         # grab the color from the list
         elif tunic_option in tunic_colors:
             color = list(tunic_colors[tunic_option])
@@ -302,7 +302,7 @@ def patch_navi_colors(rom, ootworld, symbols):
 
                 # completely random is random for every subgroup
                 if color is None and option == 'Completely Random':
-                    color = generate_random_color()
+                    color = generate_random_color(ootworld.random)
 
                 # grab the color from the list
                 if color is None and option in NaviColors:
@@ -380,7 +380,7 @@ def patch_sword_trails(rom, ootworld, symbols):
 
                 # completely random is random for every subgroup
                 if color is None and option == 'Completely Random':
-                    color = generate_random_color()
+                    color = generate_random_color(ootworld.random)
 
                 # grab the color from the list
                 if color is None and option in sword_trail_colors:
@@ -473,9 +473,9 @@ def patch_trails(rom, ootworld, trails):
                     color = [0, 0, 0]
                     # Avoid colors which have a low contrast so the bombchu ticking is still visible
                     while contrast_ratio(color, fixed_dark_color) <= 4:
-                        color = generate_random_color()
+                        color = generate_random_color(ootworld.random)
                 else:
-                    color = generate_random_color()
+                    color = generate_random_color(ootworld.random)
 
             # grab the color from the list
             if color is None and option in trail_color_dict:
@@ -512,7 +512,7 @@ def patch_gauntlet_colors(rom, ootworld, symbols):
             gauntlet_option = ootworld.random.choice(gauntlet_color_list)
         # handle completely random
         if gauntlet_option == 'Completely Random':
-            color = generate_random_color()
+            color = generate_random_color(ootworld.random)
         # grab the color from the list
         elif gauntlet_option in gauntlet_colors:
             color = list(gauntlet_colors[gauntlet_option])
@@ -578,7 +578,7 @@ def patch_heart_colors(rom, ootworld, symbols):
             heart_option = ootworld.random.choice(heart_color_list)
         # handle completely random
         if heart_option == 'Completely Random':
-            color = generate_random_color()
+            color = generate_random_color(ootworld.random)
         # grab the color from the list
         elif heart_option in heart_colors:
             color = list(heart_colors[heart_option])
@@ -617,7 +617,7 @@ def patch_magic_colors(rom, ootworld, symbols):
            magic_option = ootworld.random.choice(magic_color_list)
 
         if magic_option == 'Completely Random':
-            color = generate_random_color()
+            color = generate_random_color(ootworld.random)
         elif magic_option in magic_colors:
             color = list(magic_colors[magic_option])
         else:
@@ -685,7 +685,7 @@ def patch_button_colors(rom, ootworld, symbols):
             color = [0, 0, 0]
             # Avoid colors which have a low contrast with the font inside buttons (eg. the A letter)
             while contrast_ratio(color, fixed_font_color) <= 3:
-                color = generate_random_color()
+                color = generate_random_color(ootworld.random)
         # grab the color from the list
         elif button_option in button_colors:
             color_set = [button_colors[button_option]] if isinstance(button_colors[button_option][0], int) else list(button_colors[button_option])

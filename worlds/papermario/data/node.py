@@ -42,7 +42,11 @@ class Node:
         entrance = ("[" + format(self.entrance_id) + "] ") if self.entrance_id else ''
         itemkey = ("[" + format(self.key_name_item) + "] ") if self.key_name_item else ''
         item = self.current_item.name if self.current_item else ''
-        price = (" (" + format(self.current_item.base_price) + ")") if self.current_item and self.key_name_price else ''
+        price = (
+            " (" + format(self.current_item.base_price) + ")"
+            if self.current_item and self.key_name_price
+            else ''
+        )
 
         return f"[{self.identifier}]{entrance}{itemkey}{item}{price}"
 

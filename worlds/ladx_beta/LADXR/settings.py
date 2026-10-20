@@ -113,26 +113,43 @@ Spoiler logs can not be generated for ROMs generated with race mode enabled, and
 [Normal], requires magnifier to get the boomerang.
 [Trade], allows to trade an inventory item for a random other inventory item boomerang is shuffled.
 [Gift], You get a random gift of any item, and the boomerang is shuffled."""),
-            Setting('randomstartlocation', 'Entrances', 'r', 'Random start location', default=False,
-                description='Randomize where your starting house is located'),
-            Setting('dungeonshuffle', 'Entrances', 'u', 'Dungeon shuffle', default=False,
-                description='Randomizes the dungeon that each dungeon entrance leads to'),
-            Setting('entranceshuffle', 'Entrances', 'E', 'Entrance randomizer', options=[("none", '', "Default"), ("simple", 's', "Simple"), ("split", 'S', "Split"), ("mixed", 'm', "Mixed"), ("wild", 'w', "Wild"), ("chaos", "c", "Chaos"), ("insane", 'i', "Insane"), ("madness", 'M', "Madness")], default='none',
-                description="""Randomizes where overworld entrances lead to.
-[Simple] Single entrance caves that contain items are randomized.
-[Split] Connector caves are also randomized, in a separate pool from single entrance caves.
-[Mixed] Connector caves are also randomized, in the same pool as single entrance caves.
+            Setting('entrancerules', 'Entrances', 'E', 'Entrance rules', options=[("normal", 'n', "Normal"), ("wild", 'w', "Wild"), ("chaos", "c", "Chaos"), ("insane", 'i', "Insane"), ("madness", 'M', "Madness")], default='normal',
+                description="""Sets how doors work when shuffled.
+[Normal] Doors function normally.
 [Wild] Connections can go from overworld to overworld, or inside to inside.
 [Chaos] Entrance and exits are decoupled.
 [Insane] Combines chaos and wild, anything goes anywhere, there is no God.
 [Madness] Even worse then insane, it makes it so multiple entrances can lead to the same location.
-If random start location and/or dungeon shuffle is enabled, then these will be shuffled with all the entrances."""),
-            Setting('shufflejunk', 'Entrances', 'j', 'Shuffle itemless entrances', default=False,
-                description="Caves/houses without items are also randomized when entrance shuffle is set."),
-            Setting('shuffleannoying', 'Entrances', 'a', 'Shuffle annoying entrances', default=False,
-                description="A few very annoying entrances (Mamu and the Raft House) will also be randomized when entrance shuffle is set."),
-            Setting('shufflewater', 'Entrances', 'w', 'Shuffle water entrances', default=False,
-                description="Entrances that lead to water (Manbo and Damp Cave) will also be randomized when entrance shuffle is set. Use the warp-to-home from the Save & Quit menu if you get stuck (hold A+B+Start+Select until it works)."),
+This does nothing unless other settings are enabled to add entrances to the pool."""),
+            Setting('randomstartlocation', 'Entrances', 'r', 'Random start location', options=[("disabled", '', "Disabled"), ("limited", 'l', "Limited"), ("global", 'g', "Global")], default='disabled',
+                description="""Randomize where your starting house is located.
+[Limited] Your start location will be selected from a curated list of overworld locations.
+[Global] Your start location is shuffled into the global entrance pool."""),
+            Setting('dungeonshuffle', 'Entrances', 'u', 'Dungeon shuffle', options=[("disabled", '', "Disabled"), ("limited", 'l', "Limited"), ("global", 'g', "Global")], default='disabled',
+                description="""Randomizes where dungeon entrances lead to.
+[Limited] They are shuffled with each other.
+[Global] They are added to the global entrance pool."""),
+            Setting('shuffleconnectors', 'Entrances', 'y', 'Shuffle connectors', options=[("disabled", '', "Disabled"), ("limited", 'l', "Limited"), ("global", 'g', "Global")], default='disabled',
+                description="""Randomizes where caves/houses with two entrances lead to.
+[Limited] They are shuffled with each other.
+[Global] They are added to the global entrance pool."""),
+            Setting('shufflebasic', 'Entrances', 'z', 'Shuffle basic entrances', options=[("disabled", '', "Disabled"), ("limited", 'l', "Limited"), ("global", 'g', "Global")], default='disabled',
+                description="""Randomizes where caves/houses with items lead to.
+[Limited] They are shuffled with each other.
+[Global] They are added to the global entrance pool."""),
+            Setting('shufflejunk', 'Entrances', 'j', 'Shuffle itemless entrances', options=[("disabled", '', "Disabled"), ("limited", 'l', "Limited"), ("global", 'g', "Global")], default='disabled',
+                description="""Randomizes where caves/houses without items lead to.
+[Limited] They are shuffled with each other.
+[Global] They are added to the global entrance pool."""),
+            Setting('shuffleannoying', 'Entrances', 'a', 'Shuffle annoying entrances', options=[("disabled", '', "Disabled"), ("limited", 'l', "Limited"), ("global", 'g', "Global")], default='disabled',
+                description="""Randomizes where caves/houses with items lead to.
+[Limited] They are shuffled with each other.
+[Global] They are added to the global entrance pool."""),
+            Setting('shufflewater', 'Entrances', 'w', 'Shuffle water entrances', options=[("disabled", '', "Disabled"), ("limited", 'l', "Limited"), ("global", 'g', "Global")], default='disabled',
+                description="""Randomizes where caves/houses with items lead to.
+[Limited] They are shuffled with each other.
+[Global] They are added to the global entrance pool.
+Use the warp-to-home from the Save & Quit menu if you get stuck (hold A+B+Start+Select until it works)."""),
             Setting('boss', 'Gameplay', 'B', 'Boss shuffle', options=[('default', '', 'Normal'), ('shuffle', 's', 'Shuffle'), ('random', 'r', 'Randomize')], default='default',
                 description='Randomizes the dungeon bosses that each dungeon has'),
             Setting('miniboss', 'Gameplay', 'b', 'Miniboss shuffle', options=[('default', '', 'Normal'), ('shuffle', 's', 'Shuffle'), ('random', 'r', 'Randomize')], default='default',
@@ -154,6 +171,11 @@ If random start location and/or dungeon shuffle is enabled, then these will be s
 [Seashell hunt] egg will open once you collected 20 seashells. Instruments are replaced by seashells and shuffled.
 [Bingo] Generate a 5x5 bingo board with various goals. Complete one row/column or diagonal to win!
 [Bingo-25] Bingo, but need to fill the whole bingo card to win!"""),
+            Setting('goalcount', 'Gameplay', 'i', 'Goal count', options=[('8', '8', '8 instruments'), ('7', '7', '7 instruments'),
+                    ('6', '6', '6 instruments'), ('5', '5', '5 instruments'), ('4', '4', '4 instruments'),
+                    ('3', '3', '3 instruments'), ('2', '2', '2 instruments'), ('1', '1', '1 instrument'),
+                    ('0', '0', 'No instruments'), ('random', 'R', 'Random instrument count')], default='4',
+                description="""Amount of instruments to find for the instruments goal."""),
             Setting('itempool', 'Gameplay', 'P', 'Item pool', options=[('', '', 'Normal'), ('casual', 'c', 'Casual'), ('pain', 'p', 'Path of Pain'), ('keyup', 'k', 'More keys')], default='',
                 description="""Effects which items are shuffled.
 [Casual] places more inventory and key items so the seed is easier.

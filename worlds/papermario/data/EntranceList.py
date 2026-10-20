@@ -1,5 +1,6 @@
 # data for entrances in relevant settings
-# entrance name: (area id, map id, exit id), which correspond to the entrance you walk into a room from
+# entrance name: (area id, map id, exit id), which correspond to the entrance
+#                you walk into a room from
 bowser_shortened_entrances_rmv = [
     # remove these
     (22, 26, 0),  # Hall to Guard Door 1 -> Guard Door 1

@@ -2,42 +2,33 @@ import struct
 import itertools
 import re
 import zlib
-import zipfile
-import os
-import datetime
 from collections import defaultdict
 from functools import partial
+from typing import TYPE_CHECKING
+
+if TYPE_CHECKING:
+    from .appp.context import PatchContext
 
 from .Items import OOTItem, item_table
 from .ItemPool import trade_items
 from .Location import DisableType
 from .LocationList import business_scrubs
-from .Hints import writeGossipStoneHints, buildAltarHints, \
-        buildGanonText, getSimpleHintNoPrefix, HintArea, \
-        buildMiscItemHints, buildMiscLocationHints, buildMiscDualHints, get_item_hint_text
+from .Hints import HintArea
 from .Utils import data_path, encode_oot_player_name, __version_full__ as oot_version_full
-try:
-    from Utils import instance_name as apname
-except ImportError:
-    apname = "AP"
 
-from .Messages import read_messages, update_message_by_id, read_shop_items, update_warp_song_text, \
+from .Messages import read_messages, update_message_by_id, read_shop_items, \
         write_shop_items, remove_unused_messages, make_player_message, \
-        add_item_messages, update_map_compass_messages, repack_messages, shuffle_messages, \
+        add_item_messages, repack_messages, shuffle_messages, \
         get_message_by_id, Text_Code
 from .MQ import patch_files, File, update_dmadata, insert_space, add_relocations
 from .Rom import Rom
 from .SaveContext import SaveContext, Scenes, FlagType
-from .SceneFlags import build_xflag_tables, build_xflags_from_world, get_alt_list_bytes, \
-        get_collectible_flag_addresses
 from .TextBox import character_table, NORMAL_LINE_WIDTH, rom_safe_text, line_wrap
 from .texture_util import ci4_rgba16patch_to_ci8, rgba16_patch
 from .ntype import BigStream
 from .Cutscenes import patch_cutscenes, patch_wondertalk2
-from .OcarinaSongs import patch_songs
+from .ut.rom import tag_entrance
 
-from worlds.Files import APPatch
-from Utils import __version__ as ap_version
 
 AP_PROGRESSION = 0x11B
 AP_JUNK = 0x11C
@@ -69,27 +60,12 @@ def require_symbol_length(rom, symbol, min_length):
         )
 
 
-class OoTContainer(APPatch):
-    game: str = 'Ocarina of Time'
-    patch_file_ending = ".apz5"
-
-    def __init__(self, patch_data: bytes, base_path: str, output_directory: str,
-                 player = None, player_name: str = "", server: str = ""):
-        self.patch_data = patch_data
-        self.zpf_path = base_path + ".zpf"
-        container_path = os.path.join(output_directory, base_path + ".apz5")
-        super().__init__(container_path, player, player_name, server)
-
-    def write_contents(self, opened_zipfile: zipfile.ZipFile) -> None:
-        opened_zipfile.writestr(self.zpf_path, self.patch_data)
-        super().write_contents(opened_zipfile)
-
-
-def patch_rom(world, rom):
-    if world.multiworld.players > AP_MAX_PLAYER_ID:
+def patch_rom(context: "PatchContext", rom: Rom):
+    """Apply resolved seed data to the player's ROM without an AP world."""
+    if context.player_count > AP_MAX_PLAYER_ID:
         raise RuntimeError(
             f'Ocarina of Time ROM output supports up to {AP_MAX_PLAYER_ID} AP players, '
-            f'but this multiworld has {world.multiworld.players}.'
+            f'but this multiworld has {context.player_count}.'
         )
     require_symbol_length(rom, 'PLAYER_ID', 2)
     require_symbol_length(rom, 'PLAYER_NAMES', AP_PLAYER_TABLE_SIZE * 8)
@@ -153,7 +129,7 @@ def patch_rom(world, rom):
         ('object_gi_ap_triforce_fill', data_path('items/Triforce.zobj'), AP_JUNK_OBJECT, AP_TRIFORCE_GREY_PATCHES),  # AP filler
     ]
 
-    if world.key_appearance_match_dungeon:
+    if context.key_appearance_match_dungeon:
         rom.write_byte(rom.sym('CUSTOM_KEY_MODELS'), 0x01)
 
     extended_objects_start = start_address = rom.free_space()
@@ -353,7 +329,7 @@ def patch_rom(world, rom):
         write_rom_texture(rom, texture_id, entry)
 
     # Create an option so that recovery hearts no longer drop by changing the code which checks Link's health when an item is spawned.
-    if world.no_collectible_hearts:
+    if context.no_collectible_hearts:
         symbol = rom.sym('NO_COLLECTIBLE_HEARTS')
         rom.write_byte(symbol, 0x01)
 
@@ -363,7 +339,7 @@ def patch_rom(world, rom):
     rom.write_int32s(0x14B9F20, [0x00000000, 0x00000000, 0x00000000, 0x00000000]) # Boss Key (Gem)
 
     # Set default targeting option to Hold. I got fed up enough with this that I made it a main option
-    if world.default_targeting == 'hold':
+    if context.default_targeting == 'hold':
         rom.write_byte(0xB71E6D, 0x01)
     else:
         rom.write_byte(0xB71E6D, 0x00)
@@ -381,7 +357,7 @@ def patch_rom(world, rom):
     rom.write_byte(0x253C0E2, 0x03) # Moves sheik from pedestal
 
     # Fix Ice Cavern Alcove Camera
-    if not world.dungeon_mq['Ice Cavern']:
+    if not context.dungeon_mq['Ice Cavern']:
         rom.write_byte(0x2BECA25,0x01)
         rom.write_byte(0x2BECA2D,0x01)
 
@@ -414,13 +390,13 @@ def patch_rom(world, rom):
     rom.write_bytes(0x94FCDD, [0x08, 0x39, 0x39])
 
     # Remove locked door to Boss Key Chest in Fire Temple
-    if not world.keysanity and not world.dungeon_mq['Fire Temple']:
+    if not context.keysanity and not context.dungeon_mq['Fire Temple']:
         rom.write_byte(0x22D82B7, 0x3F)
     # Remove the unused locked door in water temple
-    if not world.dungeon_mq['Water Temple']:
+    if not context.dungeon_mq['Water Temple']:
         rom.write_byte(0x25B8197, 0x3F)
 
-    if world.free_bombchu_drops:
+    if context.free_bombchu_drops:
         rom.write_int32(rom.sym('FREE_BOMBCHU_DROPS'), 1)
 
     # show seed info on file select screen
@@ -440,19 +416,19 @@ def patch_rom(world, rom):
     version_str = "v" + oot_version_full
     rom.write_bytes(rom.sym('VERSION_STRING_TXT'), makebytes(version_str, 25))
 
-    if world.multiworld.players > 1:
-        world_str = f"{world.player} of {world.multiworld.players}"
+    if context.player_count > 1:
+        world_str = f"{context.player} of {context.player_count}"
     else:
         world_str = ""
     rom.write_bytes(rom.sym('WORLD_STRING_TXT'), makebytes(world_str, 12))
 
-    time_str = datetime.datetime.now(datetime.timezone.utc).strftime("%Y-%m-%d %H:%M") + " UTC"
+    time_str = context.generation_time
     rom.write_bytes(rom.sym('TIME_STRING_TXT'), makebytes(time_str, 25))
     rom.write_bytes(rom.sym('WEB_ID_STRING_TXT'), makebytes('', 12))
 
     rom.write_byte(rom.sym('CFG_SHOW_SETTING_INFO'), 0x01)
 
-    msg = [f"{apname} {ap_version}", world.multiworld.get_player_name(world.player)]
+    msg = [context.generator_version, context.player_names[context.player]]
     for idx,part in enumerate(msg):
         part_bytes = list(ord(c) for c in part) + [0] * (line_len+1)
         part_bytes = part_bytes[:(line_len+1)]
@@ -482,29 +458,29 @@ def patch_rom(world, rom):
 
     # songs as items flag
     song_item_names = {name for name, data in item_table.items() if data[0] == 'Song'}
-    random_start_items = getattr(world, 'randomized_starting_items', {})
+    random_start_items = getattr(context, 'randomized_starting_items', {})
     random_start_has_song = (
-        world.add_random_starting_items
-        and world.random_starting_items_count > 0
-        and 'songs' not in world.random_starting_items_exclude
+        context.add_random_starting_items
+        and context.random_starting_items_count > 0
+        and 'songs' not in context.random_starting_items_exclude
         and any(item_name in song_item_names for item_name in random_start_items)
     )
-    songs_as_items = ((world.shuffle_song_items != 'song') or world.songs_as_items
-                      or random_start_has_song or world.shuffle_individual_ocarina_notes)
+    songs_as_items = ((context.shuffle_song_items != 'song') or context.songs_as_items
+                      or random_start_has_song or context.shuffle_individual_ocarina_notes)
 
     if songs_as_items:
         rom.write_byte(rom.sym('SONGS_AS_ITEMS'), 1)
 
     rom.write_byte(rom.sym('REWARDS_AS_ITEMS'), 1)
 
-    if world.shuffle_individual_ocarina_notes:
+    if context.shuffle_individual_ocarina_notes:
         rom.write_byte(rom.sym('SHUFFLE_OCARINA_BUTTONS'), 1)
 
-    patch_cutscenes(rom, songs_as_items, world)
-    patch_wondertalk2(rom, world)
+    patch_cutscenes(rom, songs_as_items, context)
+    patch_wondertalk2(rom, context)
 
     # (song/dungeon cutscene patches moved to Cutscenes.py)
-    if world.shuffle_ocarinas:
+    if context.shuffle_ocarinas:
         symbol = rom.sym('OCARINAS_SHUFFLED')
         rom.write_byte(symbol,0x01)
 
@@ -626,7 +602,7 @@ def patch_rom(world, rom):
     # Change Pokey to check DT complete flag
     rom.write_bytes(0xE5400A, [0x8C, 0x4C])
     rom.write_bytes(0xE5400E, [0xB4, 0xA4])
-    if world.open_forest != 'closed':
+    if context.open_forest != 'closed':
         rom.write_bytes(0xE5401C, [0x14, 0x0B])
 
     # Remove the check on the number of days that passed for claim check.
@@ -648,7 +624,7 @@ def patch_rom(world, rom):
     rom.write_bytes(0xE304F0, [0x24, 0x0E, 0x00, 0x01])
 
     # Fix Vanilla Dodongo's Cavern Gossip Stone to not use a permanent flag for the fairy
-    if not world.dungeon_mq['Dodongos Cavern']:
+    if not context.dungeon_mq['Dodongos Cavern']:
         rom.write_byte(0x1F281FE, 0x38)
 
     # Fix "...???" textbox outside Child Colossus Fairy to use the right flag and disappear once the wall is destroyed
@@ -737,7 +713,7 @@ def patch_rom(world, rom):
 
         return exit_table
 
-    if (world.shuffle_bosses != 'off'):
+    if (context.shuffle_bosses != 'off'):
         # Credit to rattus128 for this ASM block.
         # Gohma's save/death warp is optimized to use immediate 0 for the
         # deku tree respawn. Use the delay slot before the switch table
@@ -758,7 +734,7 @@ def patch_rom(world, rom):
     def set_entrance_updates(entrances):
 
         # Boss shuffle: fix savewarp addresses in boss rooms that moved dungeon slots
-        if (world.shuffle_bosses != 'off'):
+        if (context.shuffle_bosses != 'off'):
             entrances = list(entrances)
             for entrance in entrances:
                 if entrance.type not in ('ChildBoss', 'AdultBoss', 'SpecialBoss') or not entrance.replaces:
@@ -786,28 +762,32 @@ def patch_rom(world, rom):
             new_entrance = entrance.data
             replaced_entrance = (entrance.replaces or entrance).data
 
+            # AP tags preserve the source entrance for UT discovery. The hooks in
+            # ASM/src/ap/entrances.asm resolve them to the real destination before loading.
             for address in new_entrance.get('addresses', []):
-                rom.write_int16(address, replaced_entrance.get('child_index', replaced_entrance['index']))
+                rom.write_int16(address, tag_entrance(
+                    rom, entrance.name, replaced_entrance.get('child_index', replaced_entrance['index'])))
 
             if entrance.type == 'BlueWarp' and replaced_entrance['index'] < 0x1000:
                 # Blue warps have multiple hardcodes. Update all 4 table slots; use child_index for
                 # child-safe warps (entries 0–1), adult index for entries 2–3.
                 child_idx = replaced_entrance.get('child_index', replaced_entrance['index'])
-                exit_updates.append((new_entrance['index'],     child_idx))
-                exit_updates.append((new_entrance['index'] + 1, child_idx + 1))
-                exit_updates.append((new_entrance['index'] + 2, replaced_entrance['index'] + 2))
-                exit_updates.append((new_entrance['index'] + 3, replaced_entrance['index'] + 3))
+                for variant, destination in enumerate((
+                        child_idx, child_idx + 1, replaced_entrance['index'] + 2, replaced_entrance['index'] + 3)):
+                    exit_updates.append((new_entrance['index'] + variant,
+                                         tag_entrance(rom, entrance.name, destination, variant)))
             elif entrance.type != 'Grotto':
-                exit_updates.append((new_entrance['index'], replaced_entrance.get('child_index', replaced_entrance['index'])))
+                exit_updates.append((new_entrance['index'], tag_entrance(
+                    rom, entrance.name, replaced_entrance.get('child_index', replaced_entrance['index']))))
 
     exit_table = generate_exit_lookup_table()
 
-    if world.disable_trade_revert:
+    if context.disable_trade_revert:
         # Disable trade quest timers and prevent trade items from ever reverting
         rom.write_byte(rom.sym('DISABLE_TIMERS'), 0x01)
         rom.write_int16s(0xB6D460, [0x0030, 0x0035, 0x0036]) # Change trade items revert table to prevent all reverts
 
-    if world.shuffle_overworld_entrances:
+    if context.shuffle_overworld_entrances:
         rom.write_byte(rom.sym('OVERWORLD_SHUFFLED'), 1)
 
         # Prevent the ocarina cutscene from leading straight to hyrule field
@@ -829,7 +809,7 @@ def patch_rom(world, rom):
         rom.write_int16(0xACAA2E, 0x0138) # 1st Impa escort
         rom.write_int16(0xD12D6E, 0x0138) # 2nd+ Impa escort
 
-    if world.shuffle_dungeon_entrances:
+    if context.shuffle_dungeon_entrances:
         rom.write_byte(rom.sym('DUNGEONS_SHUFFLED'), 1)
 
         # Make the Adult well blocking stone dissappear if the well has been drained by
@@ -845,18 +825,18 @@ def patch_rom(world, rom):
         # Purge temp flags on entrance to spirit from colossus through the front door.
         rom.write_byte(0x021862E3, 0xC2)
 
-    if world.shuffle_hideout_entrances:
+    if context.shuffle_hideout_entrances:
         rom.write_byte(rom.sym('HIDEOUT_SHUFFLED'), 1)
 
-    if world.spawn_positions:
+    if context.spawn_positions:
         # Fix save warping inside Link's House to not be a special case
         rom.write_int32(0xB06318, 0x00000000)
 
     # Blue warps also change when their connected overworld/dungeon exits are shuffled.
-    patch_blue_warps = (world.shuffle_overworld_entrances or world.shuffle_dungeon_entrances
-                        or world.shuffle_bosses != 'off')
+    patch_blue_warps = (context.shuffle_overworld_entrances or context.shuffle_dungeon_entrances
+                        or context.shuffle_bosses != 'off')
     set_entrance_updates(
-        entrance for entrance in world.get_shufflable_entrances()
+        entrance for entrance in context.entrances
         if entrance.type != 'Grotto' and (entrance.shuffled or (patch_blue_warps and entrance.type == 'BlueWarp'))
     )
 
@@ -871,36 +851,36 @@ def patch_rom(world, rom):
     rom.write_byte(0x2BECA25,0x01)
     rom.write_byte(0x2BECA2D,0x01)
 
-    configure_dungeon_info(rom, world)
+    context.apply_writes(rom, "dungeon_info")
 
-    rom.write_bytes(rom.sym('CFG_FILE_SELECT_HASH'), world.file_hash)
+    rom.write_bytes(rom.sym('CFG_FILE_SELECT_HASH'), context.file_hash)
 
     save_context = SaveContext()
-    if getattr(world, 'shuffle_gerudo_fortress_heart_piece', 'vanilla') == 'remove':
+    if getattr(context, 'shuffle_gerudo_fortress_heart_piece', 'vanilla') == 'remove':
         save_context.write_permanent_flag(Scenes.GERUDO_FORTRESS, FlagType.COLLECT, 0x3, 0x02)
 
     # Initial Save Data
-    if not world.useful_cutscenes and ('Forest Temple' not in world.dungeon_shortcuts):
+    if not context.useful_cutscenes and ('Forest Temple' not in context.dungeon_shortcuts):
         save_context.write_bits(0x00D4 + 0x03 * 0x1C + 0x04 + 0x0, 0x08) # Forest Temple switch flag (Poe Sisters cutscene)
 
-    if 'Deku Tree' in world.dungeon_shortcuts:
+    if 'Deku Tree' in context.dungeon_shortcuts:
         # Deku Tree, flags are the same between vanilla/MQ
         save_context.write_permanent_flag(Scenes.DEKU_TREE, FlagType.SWITCH, 0x1, 0x01) # Deku Block down
         save_context.write_permanent_flag(Scenes.DEKU_TREE, FlagType.CLEAR,  0x2, 0x02) # Deku 231/312
         save_context.write_permanent_flag(Scenes.DEKU_TREE, FlagType.SWITCH, 0x3, 0x20) # Deku 1st Web
         save_context.write_permanent_flag(Scenes.DEKU_TREE, FlagType.SWITCH, 0x3, 0x40) # Deku 2nd Web
 
-    if 'Dodongos Cavern' in world.dungeon_shortcuts:
+    if 'Dodongos Cavern' in context.dungeon_shortcuts:
         # Dodongo's Cavern, flags are the same between vanilla/MQ
         save_context.write_permanent_flag(Scenes.DODONGOS_CAVERN, FlagType.SWITCH, 0x3, 0x80) # DC Entrance Mud Wall
         save_context.write_permanent_flag(Scenes.DODONGOS_CAVERN, FlagType.SWITCH, 0x0, 0x04) # DC Mouth
         # Extra permanent flag in MQ for the child route
-        if world.dungeon_mq['Dodongos Cavern']:
+        if context.dungeon_mq['Dodongos Cavern']:
             save_context.write_permanent_flag(Scenes.DODONGOS_CAVERN, FlagType.SWITCH, 0x0, 0x02) # Armos wall switch
 
-    if 'Jabu Jabus Belly' in world.dungeon_shortcuts:
+    if 'Jabu Jabus Belly' in context.dungeon_shortcuts:
         # Jabu
-        if not world.dungeon_mq['Jabu Jabus Belly']:
+        if not context.dungeon_mq['Jabu Jabus Belly']:
             save_context.write_permanent_flag(Scenes.JABU_JABU, FlagType.SWITCH, 0x0, 0x20) # Jabu Pathway down
         else:
             save_context.write_permanent_flag(Scenes.JABU_JABU, FlagType.SWITCH, 0x1, 0x20) # Jabu Lobby Slingshot Door open
@@ -909,18 +889,18 @@ def patch_rom(world, rom):
             save_context.write_permanent_flag(Scenes.JABU_JABU, FlagType.SWITCH, 0x2, 0x08) # Jabu Red Slimy Thing not in front of boss lobby
             save_context.write_permanent_flag(Scenes.JABU_JABU, FlagType.SWITCH, 0x1, 0x10) # Jabu Boss Door Switch Activated
         
-    if 'Forest Temple' in world.dungeon_shortcuts:
+    if 'Forest Temple' in context.dungeon_shortcuts:
         # Forest, flags are the same between vanilla/MQ
         save_context.write_permanent_flag(Scenes.FOREST_TEMPLE, FlagType.SWITCH, 0x0, 0x10) # Forest Elevator up
         save_context.write_permanent_flag(Scenes.FOREST_TEMPLE, FlagType.SWITCH, 0x1, 0x01 + 0x02 + 0x04) # Forest Basement Puzzle Done
 
-    if 'Fire Temple' in world.dungeon_shortcuts:
+    if 'Fire Temple' in context.dungeon_shortcuts:
         # Fire, flags are the same between vanilla/MQ
         save_context.write_permanent_flag(Scenes.FIRE_TEMPLE, FlagType.SWITCH, 0x2, 0x40) # Fire Pillar down
 
-    if 'Spirit Temple' in world.dungeon_shortcuts:
+    if 'Spirit Temple' in context.dungeon_shortcuts:
         # Spirit
-        if not world.dungeon_mq['Spirit Temple']:
+        if not context.dungeon_mq['Spirit Temple']:
             save_context.write_permanent_flag(Scenes.SPIRIT_TEMPLE, FlagType.SWITCH, 0x1, 0x80) # Spirit Chains
             save_context.write_permanent_flag(Scenes.SPIRIT_TEMPLE, FlagType.SWITCH, 0x2, 0x02 + 0x08 + 0x10) # Spirit main room elevator (N block, Rusted Switch, E block)
             save_context.write_permanent_flag(Scenes.SPIRIT_TEMPLE, FlagType.SWITCH, 0x3, 0x10) # Spirit Face
@@ -930,9 +910,9 @@ def patch_rom(world, rom):
             save_context.write_permanent_flag(Scenes.SPIRIT_TEMPLE, FlagType.SWITCH, 0x1, 0x80) # Spirit Chains
             save_context.write_permanent_flag(Scenes.SPIRIT_TEMPLE, FlagType.SWITCH, 0x3, 0x10) # Spirit Face
         
-    if 'Shadow Temple' in world.dungeon_shortcuts:
+    if 'Shadow Temple' in context.dungeon_shortcuts:
         # Shadow
-        if not world.dungeon_mq['Shadow Temple']:
+        if not context.dungeon_mq['Shadow Temple']:
             save_context.write_permanent_flag(Scenes.SHADOW_TEMPLE, FlagType.SWITCH, 0x0, 0x08) # Shadow Truthspinner
             save_context.write_permanent_flag(Scenes.SHADOW_TEMPLE, FlagType.SWITCH, 0x0, 0x20) # Shadow Boat Block
             save_context.write_permanent_flag(Scenes.SHADOW_TEMPLE, FlagType.SWITCH, 0x1, 0x01) # Shadow Bird Bridge
@@ -944,12 +924,12 @@ def patch_rom(world, rom):
             save_context.write_permanent_flag(Scenes.SHADOW_TEMPLE, FlagType.SWITCH, 0x0, 0x20) # Shadow Boat Block
             save_context.write_permanent_flag(Scenes.SHADOW_TEMPLE, FlagType.SWITCH, 0x1, 0x01) # Shadow Bird Bridge
 
-    if world.region_has_shortcuts('King Dodongo Boss Room'):
+    if context.king_dodongo_shortcut:
         save_context.write_permanent_flag(Scenes.KING_DODONGO_LOBBY, FlagType.SWITCH, 0x3, 0x02) # DC Boss Floor
 
     set_spirit_shortcut_actors(rom) # Change elevator starting position to avoid waiting a half cycle from the temple entrance
 
-    if world.plant_beans:
+    if context.plant_beans:
         save_context.write_permanent_flag(Scenes.GRAVEYARD, FlagType.SWITCH, 0x3, 0x08) # Plant Graveyard bean
         save_context.write_permanent_flag(Scenes.ZORAS_RIVER, FlagType.SWITCH, 0x3, 0x08) # Plant Zora's River bean
         save_context.write_permanent_flag(Scenes.KOKIRI_FOREST, FlagType.SWITCH, 0x2, 0x02) # Plant Kokiri Forest bean
@@ -978,7 +958,7 @@ def patch_rom(world, rom):
     save_context.write_bits(0x0ED6, 0x10) # "Spoke to Mido After Deku Tree's Death"
     save_context.write_bits(0x0EDA, 0x08) # "Began Nabooru Battle"
     save_context.write_bits(0x0EDC, 0x80) # "Entered the Master Sword Chamber"
-    if world.skip_reward_from_rauru in ('free', 'free_forced'):
+    if context.skip_reward_from_rauru in ('free', 'free_forced'):
         save_context.write_bits(0x0EDD, 0x20) # "Pulled Master Sword from Pedestal"
     save_context.write_bits(0x0EE0, 0x80) # "Spoke to Kaepora Gaebora by Lost Woods"
     save_context.write_bits(0x0EE7, 0x20) # "Nabooru Captured by Twinrova"
@@ -989,7 +969,7 @@ def patch_rom(world, rom):
     save_context.write_bits(0x0EF9, 0x01) # "Greeted by Saria"
     save_context.write_bits(0x0F0A, 0x04) # "Spoke to Ingo Once as Adult"
     save_context.write_bits(0x0F0F, 0x40) # "Met Poe Collector in Ruined Market"
-    if not world.useful_cutscenes:
+    if not context.useful_cutscenes:
         save_context.write_bits(0x0F1A, 0x04) # "Met Darunia in Fire Temple"
 
     save_context.write_bits(0x0ED7, 0x01) # "Spoke to Child Malon at Castle or Market"
@@ -1002,7 +982,7 @@ def patch_rom(world, rom):
     save_context.write_bits(0x0F21, 0x02) # "Ruto in JJ (M2) Meet Ruto"
 
 
-    if world.ruto_already_f1_jabu and not world.dungeon_mq['Jabu Jabus Belly']:
+    if context.ruto_already_f1_jabu and not context.dungeon_mq['Jabu Jabus Belly']:
         save_context.write_bits(0x0F21, 0x80) # Ruto in JJ, Spawns on F1 instead of B1
 
     save_context.write_bits(0x0EE2, 0x01) # "Began Ganondorf Battle"
@@ -1036,11 +1016,11 @@ def patch_rom(world, rom):
     save_context.write_bits(0x0EEB, 0x01) # "Entered Dodongo's Cavern"
     save_context.write_bits(0x0F08, 0x08) # "Entered Hyrule Castle"
 
-    if world.dungeon_mq['Shadow Temple']:
+    if context.dungeon_mq['Shadow Temple']:
         save_context.write_bits(0x019F, 0x80) # "Turn On Clear Wall Blocking Hover Boots Room"
 
     # Set the number of chickens to collect
-    rom.write_byte(0x00E1E523, world.chicken_count)
+    rom.write_byte(0x00E1E523, context.chicken_count)
 
     # Change Anju to always say how many chickens are needed
     # Does not affect text for collecting item or afterwards
@@ -1051,21 +1031,21 @@ def patch_rom(world, rom):
     rom.write_int16(0x00E1F3CA, 0x5036)
     rom.write_int16(0x00E1F3CC, 0x5036)
 
-    if world.open_kakariko == 'open':
+    if context.open_kakariko == 'open':
         rom.write_byte(rom.sym('OPEN_KAKARIKO'), 2)
-    elif world.open_kakariko != 'closed':
+    elif context.open_kakariko != 'closed':
         rom.write_byte(rom.sym('OPEN_KAKARIKO'), 1)
 
     # Mark unreachable adult trade-ins as already traded when the quest starts mid-chain.
-    if not world.adult_trade_shuffle and world.adult_trade_start:
+    if not context.adult_trade_shuffle and context.adult_trade_start:
         traded_flags = 0
         reverting_item_map = {
             "Cojiro": ["Odd Mushroom"],
             "Prescription": ["Eyeball Frog", "Eyedrops"],
         }
-        trade_item = getattr(world, 'adult_trade_starting_inventory', '') or world.selected_adult_trade_item
+        trade_item = getattr(context, 'adult_trade_starting_inventory', '') or context.selected_adult_trade_item
         for item_name in trade_items:
-            if item_name in reverting_item_map and not world.disable_trade_revert:
+            if item_name in reverting_item_map and not context.disable_trade_revert:
                 if trade_item in reverting_item_map[item_name]:
                     break
             if item_name == trade_item:
@@ -1073,10 +1053,10 @@ def patch_rom(world, rom):
             traded_flags |= 0x1 << (trade_items.index(item_name) + 11)
         save_context.write_bytes(0x00D4 + 0x62 * 0x1C + 0x04 * 0x04, traded_flags.to_bytes(4, byteorder='big'))
 
-    if world.complete_mask_quest:
+    if context.complete_mask_quest:
         rom.write_byte(rom.sym('COMPLETE_MASK_QUEST'), 1)
 
-    if world.auto_equip_masks:
+    if context.auto_equip_masks:
         rom.write_byte(rom.sym('CFG_MASK_AUTOEQUIP'), 0x01)
         # Let actors outside the mask trade sequence use their regular dialogue
         # while Link keeps a mask equipped across scene changes.
@@ -1084,18 +1064,18 @@ def patch_rom(world, rom):
             if mask_segment_id not in (0x05, 0x06, 0x07, 0x0F, 0x15, 0x1C):
                 rom.write_int16s(0xB66E60 + mask_segment_id * 0x12, [0] * 9)
 
-    if world.skip_child_zelda:
-        save_context.give_item(world, 'Zeldas Letter')
+    if context.skip_child_zelda:
+        save_context.give_item(context, 'Zeldas Letter')
         # AP forces this item to be local so it can always be given to the player. Usually it's a song so it's no problem.
-        item = world.get_location('Song from Impa').item
-        save_context.give_item(world, item.name)
+        item = context.locations['Song from Impa'].item
+        save_context.give_item(context, item.name)
         if item.name == 'Slingshot':
-            save_context.give_item(world, "Deku Seeds (30)")
+            save_context.give_item(context, "Deku Seeds (30)")
         elif item.name == 'Bow': 
-            save_context.give_item(world, "Arrows (30)")
+            save_context.give_item(context, "Arrows (30)")
         elif item.name == 'Bomb Bag': 
-            save_context.give_item(world, "Bombs (20)")
-        if all(item not in world.shuffle_child_trade for item in ('Weird Egg', 'Chicken')):
+            save_context.give_item(context, "Bombs (20)")
+        if all(item not in context.shuffle_child_trade for item in ('Weird Egg', 'Chicken')):
             save_context.write_bits(0x0ED7, 0x04) # "Obtained Malon's Item"
         save_context.write_bits(0x0ED7, 0x08) # "Woke Talon in castle"
         save_context.write_bits(0x0ED7, 0x10) # "Talon has fled castle"
@@ -1103,151 +1083,151 @@ def patch_rom(world, rom):
         save_context.write_bits(0x0EDE, 0x02) # "Learned Zelda's Lullaby"
         save_context.write_bits(0x00D4 + 0x5F * 0x1C + 0x04 + 0x3, 0x10) # "Moved crates to access the courtyard"
 
-    if world.skip_child_zelda or 'Zeldas Letter' in world.starting_items:
-        if world.open_kakariko != 'closed':
+    if context.skip_child_zelda or 'Zeldas Letter' in context.starting_items:
+        if context.open_kakariko != 'closed':
             save_context.write_bits(0x0F07, 0x40) # "Spoke to Gate Guard About Mask Shop"
-        if world.complete_mask_quest:
+        if context.complete_mask_quest:
             save_context.write_bits(0x0F07, 0x80) # "Soldier Wears Keaton Mask"
             save_context.write_bits(0x0EF6, 0x8F) # "Sold Masks & Unlocked Masks" / "Obtained Mask of Truth"
             save_context.write_bits(0x0EE4, 0xF0) # "Paid Back Mask Fees"
 
-    if world.zora_fountain == 'open':
+    if context.zora_fountain == 'open':
         save_context.write_bits(0x0EDB, 0x08) # "Moved King Zora"
-    elif world.zora_fountain == 'adult':
+    elif context.zora_fountain == 'adult':
         rom.write_byte(rom.sym('MOVED_ADULT_KING_ZORA'), 1)
 
     # Make all chest opening animations fast
-    rom.write_byte(rom.sym('FAST_CHESTS'), int(world.fast_chests))
+    rom.write_byte(rom.sym('FAST_CHESTS'), int(context.fast_chests))
 
 
     # Set up Rainbow Bridge conditions
     symbol = rom.sym('RAINBOW_BRIDGE_CONDITION')
     count_symbol = rom.sym('RAINBOW_BRIDGE_COUNT')
-    if world.bridge == 'open':
+    if context.bridge == 'open':
         rom.write_int32(symbol, 0)
         save_context.write_bits(0xEDC, 0x20) # "Rainbow Bridge Built by Sages"
-    elif world.bridge == 'medallions':
+    elif context.bridge == 'medallions':
         rom.write_int32(symbol, 1)
-        rom.write_int16(count_symbol, world.bridge_medallions)
-    elif world.bridge == 'dungeons':
+        rom.write_int16(count_symbol, context.bridge_medallions)
+    elif context.bridge == 'dungeons':
         rom.write_int32(symbol, 2)
-        rom.write_int16(count_symbol, world.bridge_rewards)
-    elif world.bridge == 'stones':
+        rom.write_int16(count_symbol, context.bridge_rewards)
+    elif context.bridge == 'stones':
         rom.write_int32(symbol, 3)
-        rom.write_int16(count_symbol, world.bridge_stones)
-    elif world.bridge == 'vanilla':
+        rom.write_int16(count_symbol, context.bridge_stones)
+    elif context.bridge == 'vanilla':
         rom.write_int32(symbol, 4)
-    elif world.bridge == 'tokens':
+    elif context.bridge == 'tokens':
         rom.write_int32(symbol, 5)
-        rom.write_int16(count_symbol, world.bridge_tokens)
-    elif world.bridge == 'hearts':
+        rom.write_int16(count_symbol, context.bridge_tokens)
+    elif context.bridge == 'hearts':
         rom.write_int32(symbol, 6)
-        rom.write_int16(count_symbol, world.bridge_hearts * 0x10)
+        rom.write_int16(count_symbol, context.bridge_hearts * 0x10)
 
-    if world.triforce_hunt:
-        rom.write_int16(rom.sym('TRIFORCE_PIECES_REQUIRED'), world.triforce_goal)
+    if context.triforce_hunt:
+        rom.write_int16(rom.sym('TRIFORCE_PIECES_REQUIRED'), context.triforce_goal)
         rom.write_int16(rom.sym('TRIFORCE_HUNT_ENABLED'), 1)
 
     # Set up Ganon's Boss Key conditions.
     symbol = rom.sym('GANON_BOSS_KEY_CONDITION')
     count_symbol = rom.sym('GANON_BOSS_KEY_CONDITION_COUNT')
-    if world.shuffle_ganon_bosskey == 'medallions':
+    if context.shuffle_ganon_bosskey == 'medallions':
         rom.write_byte(symbol, 1)
-        rom.write_int16(count_symbol, world.ganon_bosskey_medallions)
-    elif world.shuffle_ganon_bosskey == 'dungeons':
+        rom.write_int16(count_symbol, context.ganon_bosskey_medallions)
+    elif context.shuffle_ganon_bosskey == 'dungeons':
         rom.write_byte(symbol, 2)
-        rom.write_int16(count_symbol, world.ganon_bosskey_rewards)
-    elif world.shuffle_ganon_bosskey == 'stones':
+        rom.write_int16(count_symbol, context.ganon_bosskey_rewards)
+    elif context.shuffle_ganon_bosskey == 'stones':
         rom.write_byte(symbol, 3)
-        rom.write_int16(count_symbol, world.ganon_bosskey_stones)
-    elif world.shuffle_ganon_bosskey == 'tokens':
+        rom.write_int16(count_symbol, context.ganon_bosskey_stones)
+    elif context.shuffle_ganon_bosskey == 'tokens':
         rom.write_byte(symbol, 4)
-        rom.write_int16(count_symbol, world.ganon_bosskey_tokens)
-    elif world.shuffle_ganon_bosskey == 'hearts':
+        rom.write_int16(count_symbol, context.ganon_bosskey_tokens)
+    elif context.shuffle_ganon_bosskey == 'hearts':
         rom.write_byte(symbol, 5)
-        rom.write_int16(count_symbol, world.ganon_bosskey_hearts * 0x10)
+        rom.write_int16(count_symbol, context.ganon_bosskey_hearts * 0x10)
     else:
         rom.write_byte(symbol, 0)
         rom.write_int16(count_symbol, 0)
 
     symbol = rom.sym('KEYRING_BOSSKEY_CONDITION')
-    if world.keyring_give_bk:
+    if context.keyring_give_bk:
         rom.write_byte(symbol, 1)
 
     # Set up LACS conditions.
     symbol = rom.sym('LACS_CONDITION')
     count_symbol = rom.sym('LACS_CONDITION_COUNT')
-    if world.lacs_condition == 'medallions':
+    if context.lacs_condition == 'medallions':
         rom.write_int32(symbol, 1)
-        rom.write_int16(count_symbol, world.lacs_medallions)
-    elif world.lacs_condition == 'dungeons':
+        rom.write_int16(count_symbol, context.lacs_medallions)
+    elif context.lacs_condition == 'dungeons':
         rom.write_int32(symbol, 2)
-        rom.write_int16(count_symbol, world.lacs_rewards)
-    elif world.lacs_condition == 'stones':
+        rom.write_int16(count_symbol, context.lacs_rewards)
+    elif context.lacs_condition == 'stones':
         rom.write_int32(symbol, 3)
-        rom.write_int16(count_symbol, world.lacs_stones)
-    elif world.lacs_condition == 'tokens':
+        rom.write_int16(count_symbol, context.lacs_stones)
+    elif context.lacs_condition == 'tokens':
         rom.write_int32(symbol, 4)
-        rom.write_int16(count_symbol, world.lacs_tokens)
-    elif world.lacs_condition == 'hearts':
+        rom.write_int16(count_symbol, context.lacs_tokens)
+    elif context.lacs_condition == 'hearts':
         rom.write_int32(symbol, 5)
-        rom.write_int16(count_symbol, world.lacs_hearts * 0x10)
+        rom.write_int16(count_symbol, context.lacs_hearts * 0x10)
     else:
         rom.write_int32(symbol, 0)
 
-    if world.open_forest == 'open':
+    if context.open_forest == 'open':
         save_context.write_bits(0xED5, 0x10) # "Showed Mido Sword & Shield"
 
     symbol = rom.sym('DOT_CONDITION')
-    if world.open_door_of_time == 'open':
+    if context.open_door_of_time == 'open':
         rom.write_byte(symbol, 0)
         save_context.write_bits(0xEDC, 0x08)  # "Opened the Door of Time"
-    elif world.open_door_of_time == 'sot':
+    elif context.open_door_of_time == 'sot':
         rom.write_byte(symbol, 1)
-    elif world.open_door_of_time == 'oot_sot':
+    elif context.open_door_of_time == 'oot_sot':
         rom.write_byte(symbol, 2)
-    elif world.open_door_of_time == 'stones':
+    elif context.open_door_of_time == 'stones':
         rom.write_byte(symbol, 3)
-    elif world.open_door_of_time == 'stones_sot':
+    elif context.open_door_of_time == 'stones_sot':
         rom.write_byte(symbol, 4)
-    elif world.open_door_of_time == 'stones_oot_sot':
+    elif context.open_door_of_time == 'stones_oot_sot':
         rom.write_byte(symbol, 5)
     else:
-        raise NotImplementedError(f'Unknown open_door_of_time option {world.open_door_of_time!r}')
+        raise NotImplementedError(f'Unknown open_door_of_time option {context.open_door_of_time!r}')
 
     # "fast-ganon" stuff
     symbol = rom.sym('NO_ESCAPE_SEQUENCE')
-    if world.no_escape_sequence:
+    if context.no_escape_sequence:
         rom.write_bytes(0xD82A12, [0x05, 0x17]) # Sets exit from Ganondorf fight to entrance to Ganon fight
         rom.write_bytes(0xB139A2, [0x05, 0x17]) # Sets Ganon deathwarp back to Ganon
         rom.write_byte(symbol, 0x01)
     else:
         rom.write_byte(symbol, 0x00)
-    if world.skipped_trials['Forest']:
+    if context.skipped_trials['Forest']:
         save_context.write_bits(0x0EEA, 0x08) # "Completed Forest Trial"
-    if world.skipped_trials['Fire']:
+    if context.skipped_trials['Fire']:
         save_context.write_bits(0x0EEA, 0x40) # "Completed Fire Trial"
-    if world.skipped_trials['Water']:
+    if context.skipped_trials['Water']:
         save_context.write_bits(0x0EEA, 0x10) # "Completed Water Trial"
-    if world.skipped_trials['Spirit']:
+    if context.skipped_trials['Spirit']:
         save_context.write_bits(0x0EE8, 0x20) # "Completed Spirit Trial"
-    if world.skipped_trials['Shadow']:
+    if context.skipped_trials['Shadow']:
         save_context.write_bits(0x0EEA, 0x20) # "Completed Shadow Trial"
-    if world.skipped_trials['Light']:
+    if context.skipped_trials['Light']:
         save_context.write_bits(0x0EEA, 0x80) # "Completed Light Trial"
-    if world.trials == 0:
+    if context.trials == 0:
         save_context.write_bits(0x0EED, 0x08) # "Dispelled Ganon's Tower Barrier"
 
     # open gerudo fortress
-    if world.gerudo_fortress == 'open':
-        if not world.shuffle_gerudo_card:
+    if context.gerudo_fortress == 'open':
+        if not context.shuffle_gerudo_card:
             save_context.write_bits(0x00A5, 0x40) # Give Gerudo Card
         save_context.write_bits(0x0EE7, 0x0F) # Free all 4 carpenters
         save_context.write_bits(0x00D4 + 0x0C * 0x1C + 0x04 + 0x1, 0x0F) # Thieves' Hideout switch flags (started all fights)
         save_context.write_bits(0x00D4 + 0x0C * 0x1C + 0x04 + 0x2, 0x01) # Thieves' Hideout switch flags (heard yells/unlocked doors)
         save_context.write_bits(0x00D4 + 0x0C * 0x1C + 0x04 + 0x3, 0xFE) # Thieves' Hideout switch flags (heard yells/unlocked doors)
         save_context.write_bits(0x00D4 + 0x0C * 0x1C + 0x0C + 0x2, 0xD4) # Thieves' Hideout collection flags (picked up keys, marks fights finished as well)
-    elif world.gerudo_fortress == 'fast':
+    elif context.gerudo_fortress == 'fast':
         save_context.write_bits(0x0EE7, 0x0E) # Free 3 carpenters
         save_context.write_bits(0x00D4 + 0x0C * 0x1C + 0x04 + 0x1, 0x0D) # Thieves' Hideout switch flags (started all fights)
         save_context.write_bits(0x00D4 + 0x0C * 0x1C + 0x04 + 0x2, 0x01) # Thieves' Hideout switch flags (heard yells/unlocked doors)
@@ -1261,24 +1241,24 @@ def patch_rom(world, rom):
     rom.write_int16s(0x21BD62C, new_gate_opening_guard)  # Adult Night
 
     # start with maps/compasses
-    if world.shuffle_map == 'startwith':
+    if context.shuffle_map == 'startwith':
         for dungeon in ['deku', 'dodongo', 'jabu', 'forest', 'fire', 'water', 'spirit', 'shadow', 'botw', 'ice']:
             save_context.addresses['dungeon_items'][dungeon]['map'].value = True
-    if world.shuffle_compass == 'startwith':
+    if context.shuffle_compass == 'startwith':
         for dungeon in ['deku', 'dodongo', 'jabu', 'forest', 'fire', 'water', 'spirit', 'shadow', 'botw', 'ice']:
             save_context.addresses['dungeon_items'][dungeon]['compass'].value = True
 
-    if world.shuffle_smallkeys == 'vanilla':
-        if world.dungeon_mq['Spirit Temple']:
+    if context.shuffle_smallkeys == 'vanilla':
+        if context.dungeon_mq['Spirit Temple']:
             save_context.addresses['keys']['spirit'].value = 3
-        if 'Shadow Temple' in world.dungeon_shortcuts:
+        if 'Shadow Temple' in context.dungeon_shortcuts:
             save_context.addresses['keys']['shadow'].value = 2
 
-    if world.start_with_rupees:
+    if context.start_with_rupees:
         rom.write_byte(rom.sym('MAX_RUPEES'), 0x01)
 
     # Set starting time of day
-    if world.starting_tod != 'default':
+    if context.starting_tod != 'default':
         tod = {
              'sunrise':       0x4555,
              'morning':       0x6000,
@@ -1290,9 +1270,9 @@ def patch_rom(world, rom):
              'witching-hour': 0x2000,
 
         }
-        save_context.addresses['time_of_day'].value = tod[world.starting_tod]
+        save_context.addresses['time_of_day'].value = tod[context.starting_tod]
 
-    if world.starting_age == 'adult':
+    if context.starting_age == 'adult':
         save_context.addresses['link_age'].value = False                    # Set link's age to adult
         save_context.addresses['scene_index'].value = 0x43                  # Set the scene index to Temple of Time
         save_context.addresses['equip_items']['master_sword'].value = True  # Equip Master Sword by default
@@ -1308,49 +1288,48 @@ def patch_rom(world, rom):
     rom.write_byte(0xAE587B, 0x14) # >= ITEM_BOTTLE
 
     # Revert change that Skips the Epona Race
-    if not world.no_epona_race:
+    if not context.no_epona_race:
         rom.write_int32(0xA9E838, 0x03E00008)
     else:
         save_context.write_bits(0xF0E, 0x01) # Set talked to Malon flag
 
     # skip castle guard stealth sequence
-    if world.no_guard_stealth:
+    if context.no_guard_stealth:
         # change the exit at child/day crawlspace to the end of zelda's goddess cutscene
         rom.write_bytes(0x21F60DE, [0x05, 0xF0])
 
     # patch mq scenes
     mq_scenes = []
-    if world.dungeon_mq['Deku Tree']:
+    if context.dungeon_mq['Deku Tree']:
         mq_scenes.append(0)
-    if world.dungeon_mq['Dodongos Cavern']:
+    if context.dungeon_mq['Dodongos Cavern']:
         mq_scenes.append(1)
-    if world.dungeon_mq['Jabu Jabus Belly']:
+    if context.dungeon_mq['Jabu Jabus Belly']:
         mq_scenes.append(2)
-    if world.dungeon_mq['Forest Temple']:
+    if context.dungeon_mq['Forest Temple']:
         mq_scenes.append(3)
-    if world.dungeon_mq['Fire Temple']:
+    if context.dungeon_mq['Fire Temple']:
         mq_scenes.append(4)
-    if world.dungeon_mq['Water Temple']:
+    if context.dungeon_mq['Water Temple']:
         mq_scenes.append(5)
-    if world.dungeon_mq['Spirit Temple']:
+    if context.dungeon_mq['Spirit Temple']:
         mq_scenes.append(6)
-    if world.dungeon_mq['Shadow Temple']:
+    if context.dungeon_mq['Shadow Temple']:
         mq_scenes.append(7)
-    if world.dungeon_mq['Bottom of the Well']:
+    if context.dungeon_mq['Bottom of the Well']:
         mq_scenes.append(8)
-    if world.dungeon_mq['Ice Cavern']:
+    if context.dungeon_mq['Ice Cavern']:
         mq_scenes.append(9)
     # Scene 10 has no layout changes, so it doesn't need to be patched
-    if world.dungeon_mq['Gerudo Training Ground']:
+    if context.dungeon_mq['Gerudo Training Ground']:
         mq_scenes.append(11)
-    if world.dungeon_mq['Ganons Castle']:
+    if context.dungeon_mq['Ganons Castle']:
         mq_scenes.append(13)
 
     patch_files(rom, mq_scenes)
 
     # Set the seed's Hylian Shield discount for every shopkeeper entry.
-    possible_discounts = [0x0005, 0x000A, 0x000F, 0x0014, 0x0019, 0x001E, 0x0023, 0x0028]
-    set_discount = world.random.choice(possible_discounts)
+    set_discount = context.hylian_shield_discount
     rom.write_int16s(0xC0290C, [set_discount] * 8)
 
     ### Load Shop File
@@ -1417,29 +1396,29 @@ def patch_rom(world, rom):
     update_message_by_id(messages, 0x305C, "Brrrring me the Claim Check...\x01to rrreceive anotherrrrrr item...")
 
     # Set Big Poe count to get reward from buyer
-    poe_points = world.big_poe_count * 100
+    poe_points = context.big_poe_count * 100
     rom.write_int16(0xEE69CE, poe_points)
-    if world.big_poe_count != 10:
+    if context.big_poe_count != 10:
         new_message = "\x1AOh, you brought a Poe today!\x04\x1AHmmmm!\x04\x1AVery interesting!\x01This is a \x05\x41Big Poe\x05\x40!\x04\x1AI'll buy it for \x05\x4150 Rupees\x05\x40.\x04On top of that, I'll put \x05\x41100\x01points \x05\x40on your card.\x04\x1AIf you earn \x05\x41%d points\x05\x40, you'll\x01be a happy man! Heh heh." % poe_points
         update_message_by_id(messages, 0x70f7, new_message)
         new_message = "\x1AWait a minute! WOW!\x04\x1AYou have earned \x05\x41%d points\x05\x40!\x04\x1AYoung man, you are a genuine\x01\x05\x41Ghost Hunter\x05\x40!\x04\x1AIs that what you expected me to\x01say? Heh heh heh!\x04\x1ABecause of you, I have extra\x01inventory of \x05\x41Big Poes\x05\x40, so this will\x01be the last time I can buy a \x01ghost.\x04\x1AYou're thinking about what I \x01promised would happen when you\x01earned %d points. Heh heh.\x04\x1ADon't worry, I didn't forget.\x01Just take this." % (poe_points, poe_points)
         update_message_by_id(messages, 0x70f8, new_message)
 
     # Update Child Anju's dialogue
-    new_message = "\x08What should I do!?\x01My \x05\x41Cuccos\x05\x40 have all flown away!\x04You, little boy, please!\x01Please gather at least \x05\x41%d Cuccos\x05\x40\x01for me.\x02" % world.chicken_count
+    new_message = "\x08What should I do!?\x01My \x05\x41Cuccos\x05\x40 have all flown away!\x04You, little boy, please!\x01Please gather at least \x05\x41%d Cuccos\x05\x40\x01for me.\x02" % context.chicken_count
     update_message_by_id(messages, 0x5036, new_message)
 
-    location = get_bigocto_location(world)
+    location = context.locations[context.bigocto_location] if context.bigocto_location else None
 
     if location is None or location.item is None or location.item.name == 'Nothing':
         jabu_item = None
         reward_text = None
     elif getattr(location.item, 'looks_like_item', None) is not None:
         jabu_item = location.item.looks_like_item
-        reward_text = create_fake_name(get_item_hint_text(location.item.looks_like_item, world))
+        reward_text = create_fake_name(location.item.looks_like_item.hint_text)
     else:
         jabu_item = location.item
-        reward_text = get_item_hint_text(location.item, world)
+        reward_text = location.item.hint_text
 
     # Update "Princess Ruto got the Spiritual Stone!" text before the midboss in Jabu
     if reward_text is None:
@@ -1463,18 +1442,14 @@ def patch_rom(world, rom):
     # Set the item model shown before Big Octo.
     # Keep the underlying Demo_Effect actor as vanilla Zora Sapphire so the
     # pickup cutscene still removes it correctly.
-    if location is not None and location.item is not None: #TODO make actor invisible if no item?
-        entry = get_override_entry(world, location)
-        if entry is not None:
-            rom.write_bytes(rom.sym('CFG_BIGOCTO_OVERRIDE_KEY'),
-                            override_key_struct.pack(entry[0], entry[1], entry[2]))
+    context.apply_writes(rom, "bigocto")
 
     # use faster jabu elevator
-    if not world.dungeon_mq['Jabu Jabus Belly'] and world.shuffle_scrubs == 'off':
+    if not context.dungeon_mq['Jabu Jabus Belly'] and context.shuffle_scrubs == 'off':
         symbol = rom.sym('JABU_ELEVATOR_ENABLE')
         rom.write_byte(symbol, 0x01)
 
-    if world.skip_some_minigame_phases:
+    if context.skip_some_minigame_phases:
         save_context.write_bits(0x00D4 + 0x48 * 0x1C + 0x08 + 0x3, 0x10) # Beat First Dampe Race (& Chest Spawned)
         rom.write_byte(rom.sym('CHAIN_HBA_REWARDS'), 1)
         # Update the first horseback archery text to make it clear both rewards are available from the start
@@ -1488,36 +1463,27 @@ def patch_rom(world, rom):
 
     symbol = rom.sym("GOSSIP_HINT_CONDITION")
 
-    if world.hints == 'none':
+    if context.hints == 'none':
         rom.write_int32(symbol, 0)
     else:
-        writeGossipStoneHints(world, messages)
+        context.apply_messages(messages, "gossip")
 
-        if world.hints == 'mask':
+        if context.hints == 'mask':
             rom.write_int32(symbol, 0)
-        elif world.hints == 'always':
+        elif context.hints == 'always':
             rom.write_int32(symbol, 2)
         else:
             rom.write_int32(symbol, 1)
 
 
-    # build silly ganon lines
-    if 'ganondorf' in world.misc_hints:
-        buildGanonText(world, messages)
+    context.apply_messages(messages, "misc")
 
-    # build misc. item hints
-    buildMiscItemHints(world, messages)
-
-    # build misc. location hints
-    buildMiscLocationHints(world, messages)
-    buildMiscDualHints(world, messages)
-
-    if 'mask_shop' in world.misc_hints:
+    if 'mask_shop' in context.misc_hints:
         rom.write_int32(rom.sym('CFG_MASK_SHOP_HINT'), 1)
 
     # Make the cursed Skulltula House residents descend immediately so their
     # reward hints can be read before reaching the matching token counts.
-    if any(hint_type in world.misc_hints for hint_type in (
+    if any(hint_type in context.misc_hints for hint_type in (
         '10_skulltulas',
         '20_skulltulas',
         '30_skulltulas',
@@ -1528,59 +1494,30 @@ def patch_rom(world, rom):
         rom.write_int16(0xEA185A, 0x44C8)
 
     # Patch freestanding items
-    if world.shuffle_freestanding_items:
+    if context.shuffle_freestanding_items:
     # Get freestanding item locations
-        actor_override_locations = [location for location in world.get_locations() if location.disabled == DisableType.ENABLED and location.type == 'ActorOverride']
+        actor_override_locations = [location for location in context.locations.values() if location.disabled == DisableType.ENABLED and location.type == 'ActorOverride']
 
         for location in actor_override_locations:
             patch_actor_override(location, rom)
 
-    # Write flag table data
-    xflags_tables, alt_list = build_xflags_from_world(world)
-    xflag_scene_table, xflag_room_table, xflag_room_blob, max_bit = build_xflag_tables(xflags_tables)
-    rom.write_bytes(rom.sym('xflag_scene_table'), xflag_scene_table)
-    if len(xflag_room_table) > rom.sym_length('xflag_room_table'):
-        raise RuntimeError(f'Exceeded xflag room table size: {len(xflag_room_table)}')
-    if len(xflag_room_blob) > rom.sym_length('xflag_room_blob'):
-        raise RuntimeError(f'Exceeded xflag blob table size: {len(xflag_room_blob)}')
-    rom.write_bytes(rom.sym('xflag_room_table'), xflag_room_table)
-    rom.write_bytes(rom.sym('xflag_room_blob'), xflag_room_blob)
-    num_collectible_flag_bytes = int(max_bit / 8) + 1
-    num_collectible_flag_bytes += num_collectible_flag_bytes % 8
-    rom.write_bytes(rom.sym('num_override_flags'), num_collectible_flag_bytes.to_bytes(2, 'big'))
-    alt_list_bytes = get_alt_list_bytes(alt_list)
-    if len(alt_list_bytes) > rom.sym_length('alt_overrides'):
-        raise RuntimeError(f'Exceeded alt override table size: {len(alt_list_bytes)}')
-    rom.write_bytes(rom.sym('alt_overrides'), alt_list_bytes)
-
-    # Gather addresses and bitflags for client
-    world.collectible_override_flags = rom.sym('collectible_override_flags') - rom.sym('RANDO_CONTEXT')
-    world.collectible_flag_offsets = get_collectible_flag_addresses(world, xflags_tables)
-    world.collectible_flags_available.set()
-
-    # Write item overrides
-    check_location_dupes(world)
-    override_table = get_override_table(world)
-    override_table_bytes = get_override_table_bytes(override_table)
-    if len(override_table_bytes) >= rom.sym_length('cfg_item_overrides'):
-        raise RuntimeError(f'Exceeded override table size: {len(override_table)}')
-    rom.write_bytes(rom.sym('cfg_item_overrides'), override_table_bytes)
-    write_ap_item_name_table(world, rom)
-    rom.write_int16(rom.sym('PLAYER_ID'), world.player) # Write player ID
+    context.apply_writes(rom, "collectibles")
+    context.apply_writes(rom, "overrides")
+    rom.write_int16(rom.sym('PLAYER_ID'), context.player) # Write player ID
     placeholder_name = encode_oot_player_name('a player')
     all_player_names = bytearray()
     for _ in range(AP_PLAYER_TABLE_SIZE):
         all_player_names.extend(placeholder_name)
-    for player in range(1, world.multiworld.players + 1):
-        player_name = encode_oot_player_name(world.multiworld.get_player_name(player))
+    for player in range(1, context.player_count + 1):
+        player_name = encode_oot_player_name(context.player_names[player])
         player_slot = player * 8
         all_player_names[player_slot:player_slot + 8] = player_name
-    own_name = encode_oot_player_name(world.multiworld.get_player_name(world.player))
-    own_slot = world.player * 8
+    own_name = encode_oot_player_name(context.player_names[context.player])
+    own_slot = context.player * 8
     all_player_names[own_slot:own_slot + 8] = own_name
     rom.write_bytes(rom.sym('PLAYER_NAMES'), all_player_names)
 
-    if world.death_link:
+    if context.death_link:
         rom.write_byte(rom.sym('DEATH_LINK'), 0x01)
 
     rom.write_byte(rom.sym('MW_SEND_OWN_ITEMS'), 0x01)
@@ -1601,32 +1538,32 @@ def patch_rom(world, rom):
 
 
     # Set damage multiplier
-    if world.damage_multiplier == 'half':
+    if context.damage_multiplier == 'half':
         rom.write_byte(rom.sym('CFG_DAMAGE_MULTIPLYER'), 0xFF)
-    if world.damage_multiplier == 'normal':
+    if context.damage_multiplier == 'normal':
         rom.write_byte(rom.sym('CFG_DAMAGE_MULTIPLYER'), 0)
-    if world.damage_multiplier == 'double':
+    if context.damage_multiplier == 'double':
         rom.write_byte(rom.sym('CFG_DAMAGE_MULTIPLYER'), 1)
-    if world.damage_multiplier == 'quadruple':
+    if context.damage_multiplier == 'quadruple':
         rom.write_byte(rom.sym('CFG_DAMAGE_MULTIPLYER'), 2)
-    if world.damage_multiplier == 'ohko':
+    if context.damage_multiplier == 'ohko':
         rom.write_byte(rom.sym('CFG_DAMAGE_MULTIPLYER'), 3)
 
-    if world.deadly_bonks != 'none':
+    if context.deadly_bonks != 'none':
         rom.write_int32(rom.sym('CFG_DEADLY_BONKS'), 1)
-        if world.deadly_bonks == 'half':
+        if context.deadly_bonks == 'half':
             rom.write_int16(rom.sym('CFG_BONK_DAMAGE'), 0x0004)
-        if world.deadly_bonks == 'normal':
+        if context.deadly_bonks == 'normal':
             rom.write_int16(rom.sym('CFG_BONK_DAMAGE'), 0x0008)
-        if world.deadly_bonks == 'double':
+        if context.deadly_bonks == 'double':
             rom.write_int16(rom.sym('CFG_BONK_DAMAGE'), 0x0010)
-        if world.deadly_bonks == 'quadruple':
+        if context.deadly_bonks == 'quadruple':
             rom.write_int16(rom.sym('CFG_BONK_DAMAGE'), 0x0020)
-        if world.deadly_bonks == 'ohko':
+        if context.deadly_bonks == 'ohko':
             rom.write_int16(rom.sym('CFG_BONK_DAMAGE'), 0xFFFE)
 
     # Patch songs and boss rewards
-    for location in world.multiworld.get_filled_locations(world.player):
+    for location in (location for location in context.locations.values() if location.item is not None):
         item = location.item
         special = item.special if item.game == 'Ocarina of Time' else {}  # this shouldn't matter hopefully
         locationaddress = location.address1
@@ -1698,9 +1635,9 @@ def patch_rom(world, rom):
     shuffle_messages.shop_item_messages = []
 
     # kokiri shop
-    shop_locations = [location for location in world.get_region(
-        'KF Kokiri Shop').locations if location.type == 'Shop'] # Need to filter because of the freestanding item in KF Shop
-    shop_objs = place_shop_items(rom, world, shop_items, messages,
+    shop_locations = [location for location in context.region_locations[
+        'KF Kokiri Shop'] if location.type == 'Shop'] # Need to filter because of the freestanding item in KF Shop
+    shop_objs = place_shop_items(rom, context, shop_items, messages,
         shop_locations, True)
     shop_objs |= {0x00FC, 0x00B2, 0x0101, 0x0102, 0x00FD, 0x00C5} # Shop objects
     rom.write_byte(0x2587029, len(shop_objs))
@@ -1708,64 +1645,64 @@ def patch_rom(world, rom):
     rom.write_int16s(0x2596600, list(shop_objs))
 
     # kakariko bazaar
-    shop_objs = place_shop_items(rom, world, shop_items, messages,
-        world.get_region('Kak Bazaar').locations)
+    shop_objs = place_shop_items(rom, context, shop_items, messages,
+        context.region_locations['Kak Bazaar'])
     shop_objs |= {0x005B, 0x00B2, 0x00C5, 0x0107, 0x00C9, 0x016B} # Shop objects
     rom.write_byte(0x28E4029, len(shop_objs))
     rom.write_int32(0x28E402C, 0x03007A40)
     rom.write_int16s(0x28EBA40, list(shop_objs))
 
     # castle town bazaar
-    shop_objs = place_shop_items(rom, world, shop_items, messages,
-        world.get_region('Market Bazaar').locations)
+    shop_objs = place_shop_items(rom, context, shop_items, messages,
+        context.region_locations['Market Bazaar'])
     shop_objs |= {0x005B, 0x00B2, 0x00C5, 0x0107, 0x00C9, 0x016B} # Shop objects
     rom.write_byte(bazaar_room_file.start + 0x29, len(shop_objs))
     rom.write_int32(bazaar_room_file.start + 0x2C, 0x03007A40)
     rom.write_int16s(bazaar_room_file.start + 0x7A40, list(shop_objs))
 
     # goron shop
-    shop_objs = place_shop_items(rom, world, shop_items, messages,
-        world.get_region('GC Shop').locations)
+    shop_objs = place_shop_items(rom, context, shop_items, messages,
+        context.region_locations['GC Shop'])
     shop_objs |= {0x00C9, 0x00B2, 0x0103, 0x00AF} # Shop objects
     rom.write_byte(0x2D33029, len(shop_objs))
     rom.write_int32(0x2D3302C, 0x03004340)
     rom.write_int16s(0x2D37340, list(shop_objs))
 
     # zora shop
-    shop_objs = place_shop_items(rom, world, shop_items, messages,
-        world.get_region('ZD Shop').locations)
+    shop_objs = place_shop_items(rom, context, shop_items, messages,
+        context.region_locations['ZD Shop'])
     shop_objs |= {0x005B, 0x00B2, 0x0104, 0x00FE} # Shop objects
     rom.write_byte(0x2D5B029, len(shop_objs))
     rom.write_int32(0x2D5B02C, 0x03004B40)
     rom.write_int16s(0x2D5FB40, list(shop_objs))
 
     # kakariko potion shop
-    shop_objs = place_shop_items(rom, world, shop_items, messages,
-        world.get_region('Kak Potion Shop Front').locations)
+    shop_objs = place_shop_items(rom, context, shop_items, messages,
+        context.region_locations['Kak Potion Shop Front'])
     shop_objs |= {0x0159, 0x00B2, 0x0175, 0x0122} # Shop objects
     rom.write_byte(0x2D83029, len(shop_objs))
     rom.write_int32(0x2D8302C, 0x0300A500)
     rom.write_int16s(0x2D8D500, list(shop_objs))
 
     # market potion shop
-    shop_objs = place_shop_items(rom, world, shop_items, messages,
-        world.get_region('Market Potion Shop').locations)
+    shop_objs = place_shop_items(rom, context, shop_items, messages,
+        context.region_locations['Market Potion Shop'])
     shop_objs |= {0x0159, 0x00B2, 0x0175, 0x00C5, 0x010C, 0x016B} # Shop objects
     rom.write_byte(0x2DB0029, len(shop_objs))
     rom.write_int32(0x2DB002C, 0x03004E40)
     rom.write_int16s(0x2DB4E40, list(shop_objs))
 
     # bombchu shop
-    shop_objs = place_shop_items(rom, world, shop_items, messages,
-        world.get_region('Market Bombchu Shop').locations)
+    shop_objs = place_shop_items(rom, context, shop_items, messages,
+        context.region_locations['Market Bombchu Shop'])
     shop_objs |= {0x0165, 0x00B2} # Shop objects
     rom.write_byte(0x2DD8029, len(shop_objs))
     rom.write_int32(0x2DD802C, 0x03006A40)
     rom.write_int16s(0x2DDEA40, list(shop_objs))
 
     # mask shop
-    shop_objs = place_shop_items(rom, world, shop_items, messages,
-        list(filter(lambda loc: loc.type == 'MaskShop', world.get_region('Market Mask Shop Storefront').locations)))
+    shop_objs = place_shop_items(rom, context, shop_items, messages,
+        list(filter(lambda loc: loc.type == 'MaskShop', context.region_locations['Market Mask Shop Storefront'])))
     shop_objs |= {0x013E, 0x00B2, 0x0111, 0x00C5, 0x0165} # Shop objects
     rom.write_byte(0x340A029, len(shop_objs))
     rom.write_int32(0x340A02C, 0x0300D400)
@@ -1785,13 +1722,13 @@ def patch_rom(world, rom):
         return message
 
     single_item_scrubs = {
-        0x3E: world.get_location("HF Deku Scrub Grotto"),
-        0x77: world.get_location("LW Deku Scrub Near Bridge"),
-        0x79: world.get_location("LW Deku Scrub Grotto Front"),
+        0x3E: context.locations["HF Deku Scrub Grotto"],
+        0x77: context.locations["LW Deku Scrub Near Bridge"],
+        0x79: context.locations["LW Deku Scrub Grotto Front"],
     }
 
     scrub_message_dict = {}
-    if world.shuffle_scrubs == 'off':
+    if context.shuffle_scrubs == 'off':
         # Revert Deku Scrubs changes
         rom.write_int32s(0xEBB85C, [
             0x24010002, # addiu at, zero, 2
@@ -1811,7 +1748,7 @@ def patch_rom(world, rom):
         # Rebuild Business Scrub Item Table
         rom.seek_address(0xDF8684)
         for (scrub_item, default_price, text_id, text_replacement) in business_scrubs:
-            price = world.scrub_prices[scrub_item]
+            price = context.scrub_prices[scrub_item]
             rom.write_int16(None, price)       # Price
             rom.write_int16(None, 1)           # Count
             rom.write_int32(None, scrub_item)  # Item
@@ -1827,35 +1764,35 @@ def patch_rom(world, rom):
     shuffle_messages.scrubs_message_ids = []
     for text_id, message in scrub_message_dict.items():
         update_message_by_id(messages, text_id, message)
-        if world.shuffle_scrubs == 'random':
+        if context.shuffle_scrubs == 'random':
             shuffle_messages.scrubs_message_ids.append(text_id)
 
-    if world.shuffle_grotto_entrances:
+    if context.shuffle_grotto_entrances:
         # Build the Grotto Load Table based on grotto entrance data
-        for entrance in world.get_shuffled_entrances(type='Grotto'):
+        for entrance in context.shuffled_grotto_entrances:
             if entrance.primary:
                 load_table_pointer = rom.sym('GROTTO_LOAD_TABLE') + 4 * entrance.data['grotto_id']
                 rom.write_int16(load_table_pointer, entrance.data['entrance'])
                 rom.write_byte(load_table_pointer + 2, entrance.data['content'])
 
         # Update grotto actors based on their new entrance
-        set_grotto_shuffle_data(rom, world)
+        set_grotto_shuffle_data(rom, context)
 
-    if world.shuffle_cows:
+    if context.shuffle_cows:
         rom.write_byte(rom.sym('SHUFFLE_COWS'), 0x01)
         # Move some cows because they are too close from each other in vanilla
         rom.write_bytes(0x33650CA, [0xFE, 0xD3, 0x00, 0x00, 0x00, 0x6E, 0x00, 0x00, 0x4A, 0x34]) # LLR Tower right cow
         rom.write_bytes(0x2C550AE, [0x00, 0x82]) # LLR Stable right cow
-        set_cow_id_data(rom, world)
+        set_cow_id_data(rom, context)
 
-    if world.shuffle_beans:
+    if context.shuffle_beans:
         rom.write_byte(rom.sym('SHUFFLE_BEANS'), 0x01)
         # Update bean salesman messages to better fit the fact that he sells a randomized item
-        if 'unique_merchants' not in world.misc_hints:
+        if 'unique_merchants' not in context.misc_hints:
             update_message_by_id(messages, 0x405E, "\x1AChomp chomp chomp...\x01We have... \x05\x41a mysterious item\x05\x40! \x01Do you want it...huh? Huh?\x04\x05\x41\x0860 Rupees\x05\x40 and it's yours!\x01Keyahahah!\x01\x1B\x05\x42Yes\x01No\x05\x40\x02")
         else:
-            location = world.get_location("ZR Magic Bean Salesman")
-            item_text = get_item_hint_text(location.item, world)
+            location = context.locations["ZR Magic Bean Salesman"]
+            item_text = location.item.hint_text
             wrapped_item_text = line_wrap(item_text, False, False, False)
             if wrapped_item_text != item_text:
                 update_message_by_id(messages, 0x405E, "\x1AChomp chomp chomp...We have...\x01\x05\x41" + wrapped_item_text + "\x05\x40!\x04\x05\x41\x0860 Rupees\x05\x40 and it's yours!\x01Keyahahah!\x01\x1B\x05\x42Yes\x01No\x05\x40\x02")
@@ -1866,14 +1803,14 @@ def patch_rom(world, rom):
         # Change first magic bean to cost 60 (is used as the price for the one time item when beans are shuffled)
         rom.write_byte(0xE209FD, 0x3C)
 
-    if world.shuffle_expensive_merchants:
+    if context.shuffle_expensive_merchants:
         rom.write_byte(rom.sym('SHUFFLE_CARPET_SALESMAN'), 0x01)
         # Update carpet salesman messages to better fit the fact that he sells a randomized item
-        if 'unique_merchants' not in world.misc_hints:
+        if 'unique_merchants' not in context.misc_hints:
             update_message_by_id(messages, 0x6077, "\x06\x41Well Come!\x04I am selling stuff, strange and \x01rare, from all over the world to \x01everybody.\x01Today's special is...\x04A mysterious item! \x01Intriguing! \x01I won't tell you what it is until \x01I see the money....\x04How about \x05\x41200 Rupees\x05\x40?\x01\x01\x1B\x05\x42Buy\x01Don't buy\x05\x40\x02")
         else:
-            location = world.get_location("Wasteland Bombchu Salesman")
-            item_text = get_item_hint_text(location.item, world)
+            location = context.locations["Wasteland Bombchu Salesman"]
+            item_text = location.item.hint_text
             wrapped_item_text = line_wrap(item_text, False, False, False)
             if wrapped_item_text != item_text:
                 update_message_by_id(messages, 0x6077, "\x06\x41Well Come!\x04I am selling stuff, strange and \x01rare. Today's special is...\x01\x05\x41"+ wrapped_item_text + "\x05\x40!\x04How about \x05\x41200 Rupees\x05\x40?\x01\x01\x1B\x05\x42Buy\x01Don't buy\x05\x40\x02")
@@ -1885,11 +1822,11 @@ def patch_rom(world, rom):
         # Update medigoron messages to better fit the fact that he sells a randomized item
         update_message_by_id(messages, 0x304C, "I have something cool right here.\x01How about it...\x07\x30\x4F\x02")
         update_message_by_id(messages, 0x304D, "How do you like it?\x02")
-        if 'unique_merchants' not in world.misc_hints:
+        if 'unique_merchants' not in context.misc_hints:
             update_message_by_id(messages, 0x304F, "How about buying this cool item for \x01200 Rupees?\x01\x1B\x05\x42Buy\x01Don't buy\x05\x40\x02")
         else:
-            location = world.get_location("GC Medigoron")
-            item_text = get_item_hint_text(location.item, world)
+            location = context.locations["GC Medigoron"]
+            item_text = location.item.hint_text
             wrapped_item_text = line_wrap(item_text, False, False, False)
             if wrapped_item_text != item_text:
                 update_message_by_id(messages, 0x304F, "For 200 Rupees, how about buying...\x04\x05\x41" + wrapped_item_text + "\x05\x40?\x01\x1B\x05\x42Buy\x01Don't buy\x05\x40\x02")
@@ -1897,36 +1834,36 @@ def patch_rom(world, rom):
                 update_message_by_id(messages, 0x304F, "For 200 Rupees, how about buying \x01\x05\x41" + item_text + "\x05\x40?\x01\x1B\x05\x42Buy\x01Don't buy\x05\x40\x02")
 
         rom.write_byte(rom.sym('SHUFFLE_GRANNYS_POTION_SHOP'), 0x01)
-        if 'unique_merchants' not in world.misc_hints:
+        if 'unique_merchants' not in context.misc_hints:
             update_message_by_id(messages, 0x500C, "Mysterious item! How about\x01\x05\x41100 Rupees\x05\x40?\x01\x1B\x05\x42Buy\x01Don't buy\x05\x40\x02")
         else:
-            location = world.get_location("Kak Granny Buy Blue Potion")
-            item_text = get_item_hint_text(location.item, world)
+            location = context.locations["Kak Granny Buy Blue Potion"]
+            item_text = location.item.hint_text
             wrapped_item_text = line_wrap(item_text, False, False, False)
             if wrapped_item_text != item_text:
                 update_message_by_id(messages, 0x500C, "How about \x05\x41100 Rupees\x05\x40 for...\x04\x05\x41"+ wrapped_item_text +"\x05\x40?\x01\x1B\x05\x42Buy\x01Don't buy\x05\x40\x02")
             else:
                 update_message_by_id(messages, 0x500C, "How about \x05\x41100 Rupees\x05\x40 for\x01\x05\x41"+ item_text +"\x05\x40?\x01\x1B\x05\x42Buy\x01Don't buy\x05\x40\x02")
 
-    if world.adult_trade_shuffle or world.item_pool_value in ('plentiful', 'ludicrous'):
+    if context.adult_trade_shuffle or context.item_pool_value in ('plentiful', 'ludicrous'):
         rom.write_byte(rom.sym('CFG_ADULT_TRADE_SHUFFLE'), 0x01)
         move_fado_in_lost_woods(rom)
-    if world.shuffle_child_trade or world.logic_rules == 'advanced':
+    if context.shuffle_child_trade or context.logic_rules == 'advanced':
         rom.write_byte(rom.sym('CFG_CHILD_TRADE_SHUFFLE'), 0x01)
 
-    if world.shuffle_silver_rupees != 'vanilla':
+    if context.shuffle_silver_rupees != 'vanilla':
         rom.write_byte(rom.sym('SHUFFLE_SILVER_RUPEES'), 1)
-        if world.shuffle_silver_rupees != 'remove':
+        if context.shuffle_silver_rupees != 'remove':
             rom.write_byte(rom.sym('CFG_DUNGEON_INFO_SILVER_RUPEES'), 1)
 
         # Match the permanent switch flags used by the silver rupee item effects.
-        if world.dungeon_mq['Dodongos Cavern']:
+        if context.dungeon_mq['Dodongos Cavern']:
             rom.write_byte(0x1F12190 + 15, 0x9F)  # MQ staircase transition door: switch 0x1F.
-        if world.dungeon_mq['Spirit Temple']:
+        if context.dungeon_mq['Spirit Temple']:
             rom.write_byte(0x2B08CE4 + 13, 0x1F)  # MQ lobby chest: switch 0x1F.
 
         # Prevent Shadow Temple ReDeads from sharing silver rupee switch flags.
-        if world.dungeon_mq['Shadow Temple']:
+        if context.dungeon_mq['Shadow Temple']:
             rom.write_byte(0x280CDDE, 0)
             rom.write_byte(0x280CDEE, 0)
         else:
@@ -1934,17 +1871,17 @@ def patch_rom(world, rom):
             rom.write_byte(0x280906E, 0)
 
     update_message_by_id(messages, 0x908B, "All right. You don't have to play\x01if you don't want to.\x0B\x02", 0x00)
-    if world.shuffle_tcgkeys != 'vanilla':
-        if world.shuffle_tcgkeys == 'remove':
+    if context.shuffle_tcgkeys != 'vanilla':
+        if context.shuffle_tcgkeys == 'remove':
             rom.write_byte(rom.sym('SHUFFLE_CHEST_GAME'), 0x02)
         else:
             rom.write_byte(rom.sym('SHUFFLE_CHEST_GAME'), 0x01)
         # Update Chest Game Salesman to better fit the fact he sells a randomized item
-        if 'unique_merchants' not in world.misc_hints:
+        if 'unique_merchants' not in context.misc_hints:
             update_message_by_id(messages, 0x6D, "I seem to have misplaced my\x01keys, but I have a fun item to\x01sell instead.\x04How about \x05\x4110 Rupees\x05\x40?\x01\x01\x1B\x05\x42Buy\x01Don't Buy\x05\x40\x02")
         else:
-            location = world.get_location("Market Treasure Chest Game Salesman")
-            item_text = get_item_hint_text(location.item, world)
+            location = context.locations["Market Treasure Chest Game Salesman"]
+            item_text = location.item.hint_text
             wrapped_item_text = line_wrap(item_text, False, False, False)
             if wrapped_item_text != item_text:
                 update_message_by_id(messages, 0x6D, "I seem to have misplaced my\x01keys, but I have a fun item to\x01sell instead.\x01How about \x05\x4110 Rupees\x05\x40 for...\x04\x05\x41" + wrapped_item_text + "\x05\x40?\x01\x1B\x05\x42Buy\x01Don't Buy\x05\x40\x02")
@@ -1957,15 +1894,15 @@ def patch_rom(world, rom):
         for i in range(1, 8):
             rom.revert_patch(f'TCG_SHUFFLE_PATCH_{i}')
 
-    if world.tcg_requires_lens:
+    if context.tcg_requires_lens:
         rom.write_byte(rom.sym('TCG_REQUIRES_LENS'), 0x01)
 
-    if world.shuffle_100_skulltula_rupee:
+    if context.shuffle_100_skulltula_rupee:
         rom.write_int16(0xEA7164, 0x8000)
 
-    if world.shuffle_pots != 'off': # Update the first BK door in ganon's castle to use a separate flag so it can be unlocked to get to the pots
+    if context.shuffle_pots != 'off': # Update the first BK door in ganon's castle to use a separate flag so it can be unlocked to get to the pots
         patch_ganons_tower_bk_door(rom, 0x15) # Using flag 0x15 for the door. GBK doors normally use 0x14.
-    locked_doors = get_doors_to_unlock(rom, world)
+    locked_doors = get_doors_to_unlock(rom, context)
     for _, [door_byte, door_bits] in locked_doors.items():
         save_context.write_bits(door_byte, door_bits)
 
@@ -1980,29 +1917,29 @@ def patch_rom(world, rom):
     HEART_CHEST_BIG = 17
     FILLER_CHEST = 18
 
-    if world.shuffle_tcgkeys == 'vanilla':
+    if context.shuffle_tcgkeys == 'vanilla':
         # Keep vanilla Treasure Chest Game from being revealed by chest texture matching.
         item = read_rom_item(rom, 0x71)
         item['chest_type'] = BROWN_CHEST
         write_rom_item(rom, 0x71, item)
 
-    if world.free_bombchu_drops or 'bombchus' in world.minor_items_as_major_chest:
+    if context.free_bombchu_drops or 'bombchus' in context.minor_items_as_major_chest:
         bombchu_ids = [0x6A, 0x03, 0x6B]
         for i in bombchu_ids:
             item = read_rom_item(rom, i)
             item['chest_type'] = GILDED_CHEST
             write_rom_item(rom, i, item)
-    if world.bridge == 'tokens' or world.lacs_condition == 'tokens' or world.shuffle_ganon_bosskey == 'tokens':
+    if context.bridge == 'tokens' or context.lacs_condition == 'tokens' or context.shuffle_ganon_bosskey == 'tokens':
         item = read_rom_item(rom, 0x5B)
         item['chest_type'] = SKULL_CHEST_BIG
         write_rom_item(rom, 0x5B, item)
-    if world.bridge == 'hearts' or world.lacs_condition == 'hearts' or world.shuffle_ganon_bosskey == 'hearts':
+    if context.bridge == 'hearts' or context.lacs_condition == 'hearts' or context.shuffle_ganon_bosskey == 'hearts':
         heart_ids = [0x3D, 0x3E, 0x76]
         for i in heart_ids:
             item = read_rom_item(rom, i)
             item['chest_type'] = HEART_CHEST_BIG
             write_rom_item(rom, i, item)
-    if 'shields' in world.minor_items_as_major_chest:
+    if 'shields' in context.minor_items_as_major_chest:
         # Deku
         item = read_rom_item(rom, 0x29)
         item['chest_type'] = GILDED_CHEST
@@ -2011,7 +1948,7 @@ def patch_rom(world, rom):
         item = read_rom_item(rom, 0x2A)
         item['chest_type'] = GILDED_CHEST
         write_rom_item(rom, 0x2A, item)
-    if 'capacity' in world.minor_items_as_major_chest:
+    if 'capacity' in context.minor_items_as_major_chest:
         # Nuts
         item = read_rom_item(rom, 0x87)
         item['chest_type'] = GILDED_CHEST
@@ -2029,32 +1966,32 @@ def patch_rom(world, rom):
         if item_id == AP_PROGRESSION:
             item['chest_type'] = GILDED_CHEST
         else:
-            item['chest_type'] = FILLER_CHEST if 'ap_filler' in world.chest_textures_specific else BROWN_CHEST
+            item['chest_type'] = FILLER_CHEST if 'ap_filler' in context.chest_textures_specific else BROWN_CHEST
         write_rom_item(rom, item_id, item)
 
     # Update chest type appearance
-    if world.correct_chest_appearances == 'textures':
+    if context.correct_chest_appearances == 'textures':
         symbol = rom.sym('CHEST_TEXTURE_MATCH_CONTENTS')
         rom.write_int32(symbol, 0x00000001)
-    if world.correct_chest_appearances == 'classic':
+    if context.correct_chest_appearances == 'classic':
         symbol = rom.sym('CHEST_SIZE_MATCH_CONTENTS')
         rom.write_int32(symbol, 0x00000001)
-    if world.correct_chest_appearances == 'both':
+    if context.correct_chest_appearances == 'both':
         symbol = rom.sym('CHEST_SIZE_TEXTURE')
         rom.write_int32(symbol, 0x00000001)
 
-    rom.write_byte(rom.sym('CHEST_GILDED_TEXTURE'), 'major' in world.chest_textures_specific)
-    rom.write_byte(rom.sym('CHEST_GOLD_TEXTURE'), 'bosskeys' in world.chest_textures_specific)
-    rom.write_byte(rom.sym('CHEST_SILVER_TEXTURE'), 'keys' in world.chest_textures_specific)
-    rom.write_byte(rom.sym('CHEST_SKULL_TEXTURE'), 'tokens' in world.chest_textures_specific)
-    rom.write_byte(rom.sym('CHEST_HEART_TEXTURE'), 'hearts' in world.chest_textures_specific)
-    rom.write_byte(rom.sym('SOA_UNLOCKS_CHEST_TEXTURE'), world.soa_unlocks_chest_texture)
+    rom.write_byte(rom.sym('CHEST_GILDED_TEXTURE'), 'major' in context.chest_textures_specific)
+    rom.write_byte(rom.sym('CHEST_GOLD_TEXTURE'), 'bosskeys' in context.chest_textures_specific)
+    rom.write_byte(rom.sym('CHEST_SILVER_TEXTURE'), 'keys' in context.chest_textures_specific)
+    rom.write_byte(rom.sym('CHEST_SKULL_TEXTURE'), 'tokens' in context.chest_textures_specific)
+    rom.write_byte(rom.sym('CHEST_HEART_TEXTURE'), 'hearts' in context.chest_textures_specific)
+    rom.write_byte(rom.sym('SOA_UNLOCKS_CHEST_TEXTURE'), context.soa_unlocks_chest_texture)
 
     # Move Ganon's Castle's Zelda's Lullaby Chest back so is reachable if large
-    if world.correct_chest_appearances == 'classic' or world.correct_chest_appearances == 'both':
-        if not world.dungeon_mq['Ganons Castle']:
+    if context.correct_chest_appearances == 'classic' or context.correct_chest_appearances == 'both':
+        if not context.dungeon_mq['Ganons Castle']:
             chest_name = 'Ganons Castle Light Trial Lullaby Chest'
-            location = world.get_location(chest_name)
+            location = context.locations[chest_name]
             if not location.item.trap:
                 if location.item.game == 'Ocarina of Time':
                     item_id = get_oot_item_id(location.item)
@@ -2062,16 +1999,16 @@ def patch_rom(world, rom):
                 else:
                     item = read_rom_item(rom, AP_PROGRESSION if location.item.advancement else AP_JUNK)
             else:
-                looks_like_index = get_override_entry(world, location)[5]
+                looks_like_index = context.trap_appearances[location.address].index
                 item = read_rom_item(rom, looks_like_index)
             if item['chest_type'] in (GOLD_CHEST, GILDED_CHEST, SKULL_CHEST_BIG, HEART_CHEST_BIG, FILLER_CHEST):
                 rom.write_int16(0x321B176, 0xFC40) # original 0xFC48
 
         # Move Spirit Temple Compass Chest if it is a small chest so it is reachable with hookshot
-        if not world.dungeon_mq['Spirit Temple']:
+        if not context.dungeon_mq['Spirit Temple']:
             chest_name = 'Spirit Temple Compass Chest'
             chest_address = 0x2B6B07C
-            location = world.get_location(chest_name)
+            location = context.locations[chest_name]
             if not location.item.trap:
                 if location.item.game == 'Ocarina of Time':
                     item_id = get_oot_item_id(location.item)
@@ -2079,18 +2016,18 @@ def patch_rom(world, rom):
                 else:
                     item = read_rom_item(rom, AP_PROGRESSION if location.item.advancement else AP_JUNK)
             else:
-                looks_like_index = get_override_entry(world, location)[5]
+                looks_like_index = context.trap_appearances[location.address].index
                 item = read_rom_item(rom, looks_like_index)
             if item['chest_type'] in (BROWN_CHEST, SILVER_CHEST, SKULL_CHEST_SMALL, HEART_CHEST_SMALL):
                 rom.write_int16(chest_address + 2, 0x0190) # X pos
                 rom.write_int16(chest_address + 6, 0xFABC) # Z pos
 
         # Move Silver Gauntlets chest if it is small so it is reachable from Spirit Hover Seam
-        if world.logic_rules != 'glitchless':
+        if context.logic_rules != 'glitchless':
             chest_name = 'Spirit Temple Silver Gauntlets Chest'
             chest_address_0 = 0x21A02D0  # Address in setup 0
             chest_address_2 = 0x21A06E4  # Address in setup 2
-            location = world.get_location(chest_name)
+            location = context.locations[chest_name]
             if not location.item.trap:
                 if location.item.game == 'Ocarina of Time':
                     item_id = get_oot_item_id(location.item)
@@ -2098,14 +2035,14 @@ def patch_rom(world, rom):
                 else:
                     item = read_rom_item(rom, AP_PROGRESSION if location.item.advancement else AP_JUNK)
             else:
-                looks_like_index = get_override_entry(world, location)[5]
+                looks_like_index = context.trap_appearances[location.address].index
                 item = read_rom_item(rom, looks_like_index)
             if item['chest_type'] in (BROWN_CHEST, SILVER_CHEST, SKULL_CHEST_SMALL, HEART_CHEST_SMALL):
                 rom.write_int16(chest_address_0 + 6, 0x0172)  # Z pos
                 rom.write_int16(chest_address_2 + 6, 0x0172)  # Z pos
 
     # Make all chests invisible
-    if world.invisible_chests:
+    if context.invisible_chests:
         symbol = rom.sym('CHEST_LENS_ONLY')
         rom.write_int32(symbol, 0x00000001)
 
@@ -2116,32 +2053,30 @@ def patch_rom(world, rom):
         'textures_unchecked': 2,
     }
     symbol = rom.sym('POTCRATE_TEXTURES_MATCH_CONTENTS')
-    rom.write_byte(symbol, ptmc_options[world.correct_potcrate_appearances])
-    rom.write_byte(rom.sym('POTCRATE_GILDED_TEXTURE'), 'major' in world.potcrate_textures_specific)
-    rom.write_byte(rom.sym('POTCRATE_GOLD_TEXTURE'), 'bosskeys' in world.potcrate_textures_specific)
-    rom.write_byte(rom.sym('POTCRATE_SILVER_TEXTURE'), 'keys' in world.potcrate_textures_specific)
-    rom.write_byte(rom.sym('POTCRATE_SKULL_TEXTURE'), 'tokens' in world.potcrate_textures_specific)
-    rom.write_byte(rom.sym('POTCRATE_HEART_TEXTURE'), 'hearts' in world.potcrate_textures_specific)
-    rom.write_byte(rom.sym('SOA_UNLOCKS_POTCRATE_TEXTURE'), world.soa_unlocks_potcrate_texture)
+    rom.write_byte(symbol, ptmc_options[context.correct_potcrate_appearances])
+    rom.write_byte(rom.sym('POTCRATE_GILDED_TEXTURE'), 'major' in context.potcrate_textures_specific)
+    rom.write_byte(rom.sym('POTCRATE_GOLD_TEXTURE'), 'bosskeys' in context.potcrate_textures_specific)
+    rom.write_byte(rom.sym('POTCRATE_SILVER_TEXTURE'), 'keys' in context.potcrate_textures_specific)
+    rom.write_byte(rom.sym('POTCRATE_SKULL_TEXTURE'), 'tokens' in context.potcrate_textures_specific)
+    rom.write_byte(rom.sym('POTCRATE_HEART_TEXTURE'), 'hearts' in context.potcrate_textures_specific)
+    rom.write_byte(rom.sym('SOA_UNLOCKS_POTCRATE_TEXTURE'), context.soa_unlocks_potcrate_texture)
 
     # give dungeon items the correct messages
-    add_item_messages(messages, shop_items, world)
-    update_map_compass_messages(messages, world)
+    add_item_messages(messages, shop_items, context.player_count)
+    context.apply_messages(messages, "map_compass")
 
     # Set hints on the altar inside ToT
     rom.write_int16(0xE2ADB2, 0x707A)
     rom.write_int16(0xE2ADB6, 0x7057)
-    buildAltarHints(world, messages,
-        include_rewards='altar' in world.misc_hints and 'compass_reward' not in world.enhance_map_compass,
-        include_wincons='altar' in world.misc_hints)
+    context.apply_messages(messages, "altar")
 
     # Fix Dead Hand spawn coordinates in vanilla shadow temple and bottom of the well to be the exact centre of the room
     # This prevents the extremely small possibility of Dead Hand spawning outside of collision
-    if not world.dungeon_mq['Shadow Temple']:
+    if not context.dungeon_mq['Shadow Temple']:
         rom.write_int16(0x27DC0AE, 0xF67E) # x
         rom.write_int16(0x27DC0B0, 0x0003) # y
         rom.write_int16(0x27DC0B2, 0xFE6B) # z
-    if not world.dungeon_mq['Bottom of the Well']:
+    if not context.dungeon_mq['Bottom of the Well']:
         rom.write_int16(0x32FB08E, 0x0500) # x
         rom.write_int16(0x32FB090, 0x0032) # y
         rom.write_int16(0x32FB092, 0x00D2) # z
@@ -2153,7 +2088,7 @@ def patch_rom(world, rom):
     rom.write_int16(0xB6D57E, 0x0003)
     rom.write_int16(0xB6EC52, 999)
     tycoon_message = "\x08\x13\x57You got a \x05\x43Tycoon's Wallet\x05\x40!\x01Now you can hold\x01up to \x05\x46999\x05\x40 \x05\x46Rupees\x05\x40."
-    if world.multiworld.players > 1:
+    if context.player_count > 1:
        tycoon_message = make_player_message(tycoon_message)
     update_message_by_id(messages, 0x00F8, tycoon_message, 0x23)
 
@@ -2179,15 +2114,15 @@ def patch_rom(world, rom):
     permutation = None
 
     # text shuffle
-    if world.text_shuffle == 'except_hints':
-        permutation = shuffle_messages(messages, world.random, except_hints=True)
-    elif world.text_shuffle == 'complete':
-        permutation = shuffle_messages(messages, world.random, except_hints=False)
+    if context.text_shuffle == 'except_hints':
+        permutation = shuffle_messages(messages, context.random, except_hints=True)
+    elif context.text_shuffle == 'complete':
+        permutation = shuffle_messages(messages, context.random, except_hints=False)
 
     # update warp song preview text boxes
-    update_warp_song_text(messages, world)
+    context.apply_messages(messages, "warp")
 
-    if world.blue_fire_arrows:
+    if context.blue_fire_arrows:
         rom.write_byte(0xC230C1, 0x29) #Adds AT_TYPE_OTHER to arrows to allow collision with red ice
         rom.write_byte(0xDB38FE, 0xEF) #disables ice arrow collision on secondary cylinder for red ice crystals
         rom.write_byte(0xC9F036, 0x10) #enable ice arrow collision on mud walls
@@ -2196,7 +2131,7 @@ def patch_rom(world, rom):
         rom.write_byte(0xDB3927, 0x5A)
 
         bfa_message = "\x08\x13\x0CYou got the \x05\x43Blue Fire Arrow\x05\x40!\x01This is a cool arrow you can\x01use on red ice."
-        if world.multiworld.players > 1:
+        if context.player_count > 1:
             bfa_message = make_player_message(bfa_message)
         update_message_by_id(messages, 0x0071, bfa_message, 0x23)
 
@@ -2214,8 +2149,8 @@ def patch_rom(world, rom):
     #        f.write("\t0x%04X: \"%s\",\n" % (m.id, m.get_python_string()))
     #     f.write('}\n')
 
-    if world.scarecrow_behavior != 'vanilla':
-        if world.scarecrow_behavior == 'free':
+    if context.scarecrow_behavior != 'vanilla':
+        if context.scarecrow_behavior == 'free':
             # Played song as adult
             save_context.write_bits(0x0EE6, 0x10)
         # Direct scarecrow behavior
@@ -2223,22 +2158,22 @@ def patch_rom(world, rom):
         rom.write_byte(symbol, 0x01)
 
     # Enable MM-like Bunny Hood behavior (1.5× speed)
-    if world.fast_bunny_hood:
+    if context.fast_bunny_hood:
         symbol = rom.sym('FAST_BUNNY_HOOD_ENABLED')
         rom.write_byte(symbol, 0x01)
 
     # Removed rupees are precollected for AP logic, but excluded from starting_items.
-    if world.shuffle_silver_rupees == 'remove':
-        for puzzle in world.silver_rupee_puzzles():
-            save_context.give_item(world, f'Silver Rupee ({puzzle})', float('inf'))
+    if context.shuffle_silver_rupees == 'remove':
+        for puzzle in context.removed_silver_rupee_puzzles:
+            save_context.give_item(context, f'Silver Rupee ({puzzle})', float('inf'))
 
     # actually write the save table to rom
-    for (name, count) in world.starting_items.items():
+    for (name, count) in context.starting_items.items():
         if count == 0:
             continue
-        save_context.give_item(world, name, count)
+        save_context.give_item(context, name, count)
 
-    if world.fix_broken_drops:
+    if context.fix_broken_drops:
         symbol = rom.sym('FIX_BROKEN_DROPS')
         rom.write_byte(symbol, 0x01)
 
@@ -2252,26 +2187,26 @@ def patch_rom(world, rom):
 
     # Have the Gold Skulltula Count in the pause menu turn red when equal to the
     # available number of skulls in the world instead of 100.
-    rom.write_int16(0xBB340E, world.available_tokens)
+    rom.write_int16(0xBB340E, context.available_tokens)
 
-    patch_songs(world, rom)
+    context.apply_writes(rom, "songs")
 
-    if world.shuffle_individual_ocarina_notes:
-        epona_notes = str(world.song_notes['Eponas Song'])
+    if context.shuffle_individual_ocarina_notes:
+        epona_notes = str(context.song_notes['Eponas Song'])
         required_notes = {'A': 0, '^': 1, 'v': 2, '<': 3, '>': 4}
         note_mask = sum(1 << bit for note, bit in required_notes.items() if note in epona_notes)
         rom.write_byte(rom.sym('EPONAS_SONG_NOTES'), note_mask)
 
     # Sets the torch count to open the entrance to Shadow Temple
-    if world.easier_fire_arrow_entry:
-        torch_count = world.fae_torch_count
+    if context.easier_fire_arrow_entry:
+        torch_count = context.fae_torch_count
         rom.write_byte(0xCA61E3, torch_count)
 
     # Fix crash when hitting white bubble enemies with Din's Fire
     rom.write_byte(0xCB4397, 0x00)
 
     # Match upstream's easier Hyrule Loach behavior.
-    if world.shuffle_loach_reward == 'easy':
+    if context.shuffle_loach_reward == 'easy':
         # Always spawn the loach, and record that easy behavior is enabled.
         rom.write_int32(0xDBF1E4, 0xA201B057)
 
@@ -2295,7 +2230,7 @@ def patch_rom(world, rom):
         rom.write_int32(0xDC6540, 0xA6010192)
         rom.write_int32(0xDC6550, 0xE60601AC)
 
-    if world.blue_fire_arrows:
+    if context.blue_fire_arrows:
         rom.write_byte(0xC230C1, 0x29) #Adds AT_TYPE_OTHER to arrows to allow collision with red ice
         rom.write_byte(0xDB38FE, 0xEF) #disables ice arrow collision on secondary cylinder for red ice crystals
         rom.write_byte(0xC9F036, 0x10) #enable ice arrow collision on mud walls
@@ -2303,16 +2238,16 @@ def patch_rom(world, rom):
         rom.write_byte(0xDB391B, 0x50)
         rom.write_byte(0xDB3927, 0x5A)
 
-    if world.starting_age == 'adult':
+    if context.starting_age == 'adult':
         # When starting as adult, the pedestal doesn't handle child default equips when going back child the first time, so we have to equip them ourselves
         save_context.equip_default_items('child')
-    save_context.equip_current_items(world.starting_age)
+    save_context.equip_current_items(context.starting_age)
     save_context.write_save_table(rom)
     rom.write_byte(0xC57AE2, 0x32)
 
     # Convert temporary flags used for locked doors in Treasure Chest Game to permanent flags.
     # Without this, shuffled TCG can reset doors/chests across reloads even when keys are in the pool.
-    if world.shuffle_tcgkeys != 'vanilla':
+    if context.shuffle_tcgkeys != 'vanilla':
         rom.write_byte(0x33A607F, 0xDF)
         rom.write_byte(0x33A608F, 0xDE)
         rom.write_byte(0x33A609F, 0xDD)
@@ -2320,7 +2255,7 @@ def patch_rom(world, rom):
         rom.write_byte(0x33A60BF, 0xDB)
         rom.write_byte(0x33A60CF, 0xDA)
 
-        if world.shuffle_tcgkeys == 'remove':
+        if context.shuffle_tcgkeys == 'remove':
             rom.write_byte(0x33A607F, 0x80)
             rom.write_byte(0x33A608F, 0x80)
             rom.write_byte(0x33A609F, 0x80)
@@ -2330,7 +2265,7 @@ def patch_rom(world, rom):
 
     # Write numeric seed truncated to 32 bits for rng seeding
     # Overwritten with new seed every time a new rng value is generated
-    rng_seed = world.random.getrandbits(32)
+    rng_seed = context.rng_seed
     rom.write_int32(rom.sym('RNG_SEED_INT'), rng_seed)
     # Static initial seed value for one-time random actions like the Hylian Shield discount
     rom.write_int32(rom.sym('RANDOMIZER_RNG_SEED'), rng_seed)
@@ -2338,28 +2273,28 @@ def patch_rom(world, rom):
     # Write data into AP autotracking context
     rom.write_int32(rom.sym('DUNGEON_IS_MQ_ADDRESS'), rom.sym('CFG_DUNGEON_IS_MQ'))
     rom.write_int32(rom.sym('DUNGEON_REWARDS_ADDRESS'), rom.sym('CFG_DUNGEON_REWARDS'))
-    rom.write_byte(rom.sym('BIG_POE_COUNT'), world.big_poe_count)
-    if 'map_mq' in world.enhance_map_compass:
+    rom.write_byte(rom.sym('BIG_POE_COUNT'), context.big_poe_count)
+    if 'map_mq' in context.enhance_map_compass:
         rom.write_byte(rom.sym('ENHANCE_MAP_COMPASS'), 0x01)
-    if 'compass_reward' in world.enhance_map_compass or 'altar' in world.misc_hints:
+    if 'compass_reward' in context.enhance_map_compass or 'altar' in context.misc_hints:
         rom.write_byte(rom.sym('SHOW_DUNGEON_REWARDS'), 0x01)
-    if world.shuffle_smallkeys == 'remove':
+    if context.shuffle_smallkeys == 'remove':
         rom.write_byte(rom.sym('SMALL_KEY_SHUFFLE'), 0x01)
-    elif world.shuffle_smallkeys in ['overworld', 'any_dungeon', 'keysanity', 'regional']:
+    elif context.shuffle_smallkeys in ['overworld', 'any_dungeon', 'keysanity', 'regional']:
         rom.write_byte(rom.sym('SMALL_KEY_SHUFFLE'), 0x02)
-    if world.shuffle_scrubs != 'off':
+    if context.shuffle_scrubs != 'off':
         rom.write_byte(rom.sym('SHUFFLE_SCRUBS'), 0x01)
-    if world.open_forest == 'closed_deku':
+    if context.open_forest == 'closed_deku':
         rom.write_byte(rom.sym('OPEN_FOREST'), 0x01)
-    elif world.open_forest == 'closed':
+    elif context.open_forest == 'closed':
         rom.write_byte(rom.sym('OPEN_FOREST'), 0x02)
-    if world.zora_fountain == 'adult':
+    if context.zora_fountain == 'adult':
         rom.write_byte(rom.sym('OPEN_FOUNTAIN'), 0x01)
-    elif world.zora_fountain == 'closed':
+    elif context.zora_fountain == 'closed':
         rom.write_byte(rom.sym('OPEN_FOUNTAIN'), 0x02)
 
     shop_slots = [
-        sum(f'{shop} Item {idx}' in world.shop_prices for idx in ('7', '5', '8', '6'))
+        sum(f'{shop} Item {idx}' in context.shop_prices for idx in ('7', '5', '8', '6'))
         for shop in ('KF Shop', 'Market Bazaar', 'Market Potion Shop', 'Market Bombchu Shop',
             'Kak Bazaar', 'Kak Potion Shop', 'GC Shop', 'ZD Shop')
     ]
@@ -2450,7 +2385,7 @@ def read_rom_item(rom, item_id):
 
 def get_oot_item_id(item):
     item_id = item.index
-    if item_id is None and isinstance(item, OOTItem) and item.type == 'DungeonReward':
+    if item_id is None and item.game == 'Ocarina of Time' and item.type == 'DungeonReward':
         item_id = item.special.get('gi_id')
     return item_id
 
@@ -2756,7 +2691,7 @@ def remove_entrance_blockers(rom):
                 rom.write_int16(actor + 14, 0x0700)
     get_actor_list(rom, remove_entrance_blockers_do)
 
-def set_cow_id_data(rom, world):
+def set_cow_id_data(rom, context):
     def set_cow_id(rom, actor_id, actor, scene):
         nonlocal last_scene
         nonlocal cow_count
@@ -2770,7 +2705,7 @@ def set_cow_id_data(rom, world):
 
             last_scene = scene
             last_actor = actor
-            if world.dungeon_mq['Jabu Jabus Belly'] and scene == 2: #If its an MQ jabu cow
+            if context.dungeon_mq['Jabu Jabus Belly'] and scene == 2: #If its an MQ jabu cow
                 rom.write_int16(actor + 0x8, 1 if cow_count == 17 else 0) #Give all wall cows ID 0, and set cow 11's ID to 1
             else:
                 rom.write_int16(actor + 0x8, cow_count)
@@ -2782,7 +2717,7 @@ def set_cow_id_data(rom, world):
     get_actor_list(rom, set_cow_id)
 
 
-def set_grotto_shuffle_data(rom, world):
+def set_grotto_shuffle_data(rom, context):
     def override_grotto_data(rom, actor_id, actor, scene):
         if actor_id == 0x009B: #Grotto
             actor_zrot = rom.read_int16(actor + 12)
@@ -2794,13 +2729,16 @@ def set_grotto_shuffle_data(rom, world):
             rom.write_byte(actor + 14, grotto_type + 0x20)
 
     # Build the override table based on shuffled grotto entrances
+    # Tag both directions so UT can identify the source despite shared grotto
+    # indices; the AP hook resolves each tag before upstream grotto translation.
     grotto_entrances_override = {}
-    for entrance in world.get_shuffled_entrances(type='Grotto'):
+    for entrance in context.shuffled_grotto_entrances:
         if entrance.primary:
             grotto_actor_id = (entrance.data['scene'] << 8) + entrance.data['content']
-            grotto_entrances_override[grotto_actor_id] = entrance.replaces.data['index']
+            grotto_entrances_override[grotto_actor_id] = tag_entrance(rom, entrance.name, entrance.replaces.data['index'])
         else:
-            rom.write_int16(rom.sym('GROTTO_EXIT_LIST') + 2 * entrance.data['grotto_id'], entrance.replaces.data['index'])
+            rom.write_int16(rom.sym('GROTTO_EXIT_LIST') + 2 * entrance.data['grotto_id'],
+                            tag_entrance(rom, entrance.name, entrance.replaces.data['index']))
 
     # Override grotto actors data with the new data
     get_actor_list(rom, override_grotto_data)
@@ -2843,7 +2781,7 @@ def set_spirit_shortcut_actors(rom):
 # If boss keys are set to remove, returns boss key doors
 # If ganons boss key is set to remove, returns ganons boss key doors
 # If pot/crate shuffle is enabled, returns the first ganon's boss key door so that it can be unlocked separately to allow access to the room w/ the pots..
-def get_doors_to_unlock(rom, world):
+def get_doors_to_unlock(rom, context):
     def get_door_to_unlock(rom, actor_id, actor, scene):
         actor_var = rom.read_int16(actor + 14)
         door_type = actor_var >> 6
@@ -2854,7 +2792,7 @@ def get_doors_to_unlock(rom, world):
         flag_bits = 1 << (switch_flag & 0x07)
 
         # Return small key doors that should be unlocked
-        if world.shuffle_smallkeys == 'remove':
+        if context.shuffle_smallkeys == 'remove':
             if actor_id == 0x0009 and door_type == 0x02:
                 return [0x00D4 + scene * 0x1C + 0x04 + flag_byte, flag_bits]
             if actor_id == 0x002E and door_type == 0x0B and scene != 0x10:
@@ -2866,13 +2804,13 @@ def get_doors_to_unlock(rom, world):
                 0x03: 'Forest Temple', 0x04: 'Fire Temple', 0x05: 'Water Temple',
                 0x06: 'Spirit Temple', 0x07: 'Shadow Temple',
             }
-            if scene in boss_dungeons and world.keyring_gives_boss_key(boss_dungeons[scene]):
-                setting = world.shuffle_smallkeys
+            if scene in boss_dungeons and boss_dungeons[scene] in context.boss_key_rings:
+                setting = context.shuffle_smallkeys
             elif scene == 0x0A:
-                setting = world.shuffle_ganon_bosskey
+                setting = context.shuffle_ganon_bosskey
             else:
-                setting = world.shuffle_bosskeys
-            if setting == 'remove' or (world.shuffle_pots != 'off' and scene == 0x0A and switch_flag == 0x15):
+                setting = context.shuffle_bosskeys
+            if setting == 'remove' or (context.shuffle_pots != 'off' and scene == 0x0A and switch_flag == 0x15):
                 return [0x00D4 + scene * 0x1C + 0x04 + flag_byte, flag_bits]
 
     return get_actor_list(rom, get_door_to_unlock)
@@ -2883,16 +2821,16 @@ def create_fake_name(item_name):
     return item_name + "???"
 
 
-def place_shop_items(rom, world, shop_items, messages, locations, init_shop_id=False):
+def place_shop_items(rom, context, shop_items, messages, locations, init_shop_id=False):
     if init_shop_id:
-        world.current_shop_id = 0x32
-        world.shop_location_flags = {}
+        context.current_shop_id = 0x32
+        # Shop allocations were resolved alongside AP slot data during generation.
 
     shop_objs = { 0x0148 } # "Sold Out" object
     for location in locations:
-        selected_mask_shop_item = location.type == 'MaskShop' and location.vanilla_item in world.shuffle_child_trade
+        selected_mask_shop_item = location.type == 'MaskShop' and location.vanilla_item in context.shuffle_child_trade
         custom_shop_item = True
-        if (isinstance(location.item, OOTItem) and location.item.type == 'Shop') or (
+        if (location.item.game == 'Ocarina of Time' and location.item.type == 'Shop') or (
             location.type == 'MaskShop' and not selected_mask_shop_item
         ):
             custom_shop_item = False
@@ -2901,7 +2839,7 @@ def place_shop_items(rom, world, shop_items, messages, locations, init_shop_id=F
                 rom.write_int16(location.address1, location.item.index)
         else:
             if location.item.trap:
-                item_display = world.trap_appearances[location.address]
+                item_display = context.trap_appearances[location.address]
             else:
                 item_display = location.item
 
@@ -2923,7 +2861,7 @@ def place_shop_items(rom, world, shop_items, messages, locations, init_shop_id=F
                 shop_objs.add(obj_id)
                 model = (AP_PROGRESSION_MODEL_GRAPHIC - 1) if location.item.advancement else (AP_JUNK_MODEL_GRAPHIC - 1)
 
-            shop_id = world.current_shop_id
+            shop_id = context.current_shop_id
             rom.write_int16(location.address1, shop_id)
             shop_item = shop_items[shop_id]
 
@@ -2937,11 +2875,11 @@ def place_shop_items(rom, world, shop_items, messages, locations, init_shop_id=F
             shop_item.func3 = 0x00000000
             shop_item.func4 = 0x80863FB4
 
-            if (not world.complete_mask_quest and
-              ((location.vanilla_item == 'Mask of Truth' and 'Mask of Truth' in world.shuffle_child_trade) or
-               ('mask_shop' in world.misc_hints and location.vanilla_item == 'Goron Mask' and 'Goron Mask' in world.shuffle_child_trade) or
-               ('mask_shop' in world.misc_hints and location.vanilla_item == 'Zora Mask' and 'Zora Mask' in world.shuffle_child_trade) or
-               ('mask_shop' in world.misc_hints and location.vanilla_item == 'Gerudo Mask' and 'Gerudo Mask' in world.shuffle_child_trade))):
+            if (not context.complete_mask_quest and
+              ((location.vanilla_item == 'Mask of Truth' and 'Mask of Truth' in context.shuffle_child_trade) or
+               ('mask_shop' in context.misc_hints and location.vanilla_item == 'Goron Mask' and 'Goron Mask' in context.shuffle_child_trade) or
+               ('mask_shop' in context.misc_hints and location.vanilla_item == 'Zora Mask' and 'Zora Mask' in context.shuffle_child_trade) or
+               ('mask_shop' in context.misc_hints and location.vanilla_item == 'Gerudo Mask' and 'Gerudo Mask' in context.shuffle_child_trade))):
                 shop_item.func2 = 0x80863714
 
             message_id = (shop_id - 0x32) * 2
@@ -2958,24 +2896,24 @@ def place_shop_items(rom, world, shop_items, messages, locations, init_shop_id=F
                 if location.item.name == 'Ice Trap':
                     split_item_name[0] = create_fake_name(split_item_name[0])
 
-                if len(world.multiworld.worlds) > 1: # OOTWorld.MultiWorld.AutoWorld[]
-                    description_text = '\x08\x05\x41%s  %d Rupees\x01%s\x01\x05\x42%s\x05\x40\x01Special deal! ONE LEFT!\x09\x0A\x02' % (split_item_name[0], shop_item.price, split_item_name[1], rom_safe_text(world.multiworld.get_player_name(location.item.player)))
+                if context.show_shop_recipient:
+                    description_text = '\x08\x05\x41%s  %d Rupees\x01%s\x01\x05\x42%s\x05\x40\x01Special deal! ONE LEFT!\x09\x0A\x02' % (split_item_name[0], shop_item.price, split_item_name[1], rom_safe_text(context.player_names[location.item.player]))
                 else:
                     description_text = '\x08\x05\x41%s  %d Rupees\x01%s\x01\x05\x40Special deal! ONE LEFT!\x01Get it while it lasts!\x09\x0A\x02' % (split_item_name[0], shop_item.price, split_item_name[1])
                 purchase_text = '\x08%s  %d Rupees\x09\x01%s\x01\x1B\x05\x42Buy\x01Don\'t buy\x05\x40\x02' % (split_item_name[0], shop_item.price, split_item_name[1])
             else:
                 if item_display.game == "Ocarina of Time":
-                    shop_item_name = getSimpleHintNoPrefix(item_display)
+                    shop_item_name = item_display.simple_hint
                 else:
                     shop_item_name = item_display.name
 
                 if location.item.trap:
                     shop_item_name = create_fake_name(shop_item_name)
 
-                if len(world.multiworld.worlds) > 1:
+                if context.show_shop_recipient:
                     shop_item_name = rom_safe_text(shop_item_name)
                     do_line_break = sum(character_table[char] for char in f"{shop_item_name}  {shop_item.price} Rupees") > NORMAL_LINE_WIDTH
-                    description_text = '\x08\x05\x41%s%s%d Rupees\x01\x05\x42%s\x05\x40\x01Special deal! ONE LEFT!\x09\x0A\x02' % (shop_item_name, '\x01' if do_line_break else '  ', shop_item.price, rom_safe_text(world.multiworld.get_player_name(location.item.player)))
+                    description_text = '\x08\x05\x41%s%s%d Rupees\x01\x05\x42%s\x05\x40\x01Special deal! ONE LEFT!\x09\x0A\x02' % (shop_item_name, '\x01' if do_line_break else '  ', shop_item.price, rom_safe_text(context.player_names[location.item.player]))
                 else:
                     description_text = '\x08\x05\x41%s  %d Rupees\x01\x05\x40Special deal! ONE LEFT!\x01Get it while it lasts!\x09\x0A\x02' % (shop_item_name, shop_item.price)
                 purchase_text = '\x08%s  %d Rupees\x09\x01\x01\x1B\x05\x42Buy\x01Don\'t buy\x05\x40\x02' % (shop_item_name, shop_item.price)
@@ -2983,13 +2921,13 @@ def place_shop_items(rom, world, shop_items, messages, locations, init_shop_id=F
             update_message_by_id(messages, shop_item.description_message, description_text, 0x03)
             update_message_by_id(messages, shop_item.purchase_message, purchase_text, 0x03)
 
-            world.shop_location_flags[location.name] = shop_id - 0x32
+            assert context.shop_location_flags[location.name] == shop_id - 0x32, location.name
 
         if location.type == 'MaskShop':
             if custom_shop_item:
-                world.current_shop_id += 1
+                context.current_shop_id += 1
         elif any(filter(lambda c: c in location.name, {'5', '6', '7', '8'})):
-            world.current_shop_id += 1
+            context.current_shop_id += 1
 
     return shop_objs
 

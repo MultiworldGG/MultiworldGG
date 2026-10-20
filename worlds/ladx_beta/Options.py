@@ -3,7 +3,8 @@ import logging
 from typing import Any, Tuple
 from enum import IntEnum
 from Options import (Choice, Toggle, DefaultOnToggle, Range, PerGameCommonOptions, OptionGroup, Removed,
-                     DeathLink, StartInventoryPool, ItemSet)
+                     DeathLink, StartInventoryPool, ItemSet, OptionDict, NamedRange)
+from schema import Schema, Optional
 
 DefaultOffToggle = Toggle
 
@@ -59,7 +60,7 @@ class Logic(Choice, LADXROption):
     display_name = "Logic"
     rich_text_doc = True
     ladxr_name = "logic"
-    # option_casual = 0
+    option_casual = 0
     option_normal = 1
     option_hard = 2
     option_glitched = 3
@@ -68,7 +69,7 @@ class Logic(Choice, LADXROption):
     default = option_normal
 
 
-class TradeQuest(DefaultOffToggle, LADXROption):
+class TradeQuest(DefaultOnToggle, LADXROption):
     """
     Trade quest items are randomized. Each NPC takes its normal trade quest
     item and gives a randomized item in return.
@@ -96,78 +97,147 @@ class Rooster(DefaultOnToggle, LADXROption):
     ladxr_name = "rooster"
 
 
-class RandomStartLocation(DefaultOffToggle, LADXROption):
+class EntranceRules(Choice, LADXROption):
     """
-    Randomize where your starting house is located.
+    Sets how doors work when shuffled.
+
+    **Normal:** Doors function normally.
+
+    **Wild:** Connections can go from overworld to overworld, or inside to inside.
+
+    **Chaos:** Entrances and exits are decoupled.
+
+    **Insane:** Combines chaos and wild.
+
+    **Madness:** Insane, but multiple entrances can lead to the same location.
+
+    This does nothing unless other settings are enabled to select entrances to shuffle.
+    """
+    option_normal = 0
+    option_wild = 1
+    option_chaos = 2
+    option_insane = 3
+    option_madness = 4
+    default = option_normal
+    display_name = "Entrance Rules"
+    rich_text_doc = True
+    ladxr_name = "entrancerules"
+             
+
+class EntranceShuffle(Choice, LADXROption):
+    option_disabled = 0
+    option_limited = 1
+    option_global = 2
+    default = option_disabled
+    rich_text_doc = True
+
+
+class ShuffleStart(EntranceShuffle):
+    """
+    Randomizes where your starting house is located.
+
+    **Limited:** Your start location will be selected from a curated list of overworld locations.
+
+    **Global:** Your start location is shuffled into the global entrance pool.
     """
     display_name = "Random Start Location"
     ladxr_name = "randomstartlocation"
 
 
-class DungeonShuffle(DefaultOffToggle, LADXROption):
+class ShuffleDungeons(EntranceShuffle):
     """
-    Randomizes dungeon entrances with each other.
+    Randomizes where dungeon entrances lead to.
+
+    **Limited:** They are shuffled with each other.
+
+    **Global:** They are shuffled into the global entrance pool.
     """
-    display_name = "Dungeon Shuffle"
+    display_name = "Shuffle Dungeons"
     ladxr_name = "dungeonshuffle"
 
 
-class EntranceShuffle(Choice, LADXROption):
+class ShuffleBasic(EntranceShuffle):
     """
-    Randomizes where overworld entrances lead.
+    Randomizes where caves/houses with one entrance and an item lead to.
 
-    **Simple:** Single-entrance caves/houses that contain items are shuffled.
+    **Limited:** They are shuffled with each other.
 
-    **Split:** Connector caves are also shuffled, in a separate pool from single entrance caves.
-
-    **Mixed:** Connector caves are also shuffled, in the same pool as single entrance caves.
-
-    **Wild:** Connections can go from overworld to overworlds, or inside to inside.
-
-    **Chaos:** Entrances and exits are decoupled.
-
-    **Insane:** Combines chaos and wild, anything goes anywhere, there is no God.
-
-    If *Random Start Location* and/or *Dungeon Shuffle* is enabled, then these will be shuffled with all the
-    other entrances.
+    **Global:** They are shuffled into the global entrance pool.
     """
-    option_none = 0
-    option_simple = 1
-    option_split = 2
-    option_mixed = 3
-    option_wild = 4
-    option_chaos = 5
-    option_insane = 6
-    default = option_none
-    display_name = "Entrance Shuffle"
-    rich_text_doc = True
-    ladxr_name = "entranceshuffle"
+    display_name = "Shuffle Basic"
+    ladxr_name = "shufflebasic"
 
 
-class ShuffleJunk(DefaultOffToggle, LADXROption):
+class ShuffleJunk(EntranceShuffle):
     """
-    Caves/houses without items are also shuffled when entrance shuffle is set.
+    Randomizes where caves/houses with one entrance and no items lead to.
+
+    **Limited:** They are shuffled with each other.
+
+    **Global:** They are shuffled into the global entrance pool.
     """
     display_name = "Shuffle Junk"
     ladxr_name = "shufflejunk"
 
 
-class ShuffleAnnoying(DefaultOffToggle, LADXROption):
+class ShuffleConnectors(EntranceShuffle):
     """
-    A few very annoying entrances (Mamu and the Raft House) will also be shuffled when entrance shuffle is set.
+    Randomizes where caves/houses with two entrances lead to.
+
+    **Limited:** They are shuffled with each other.
+
+    **Global:** They are shuffled into the global entrance pool.
     """
-    display_name = "Shuffle Annoying"
-    ladxr_name = "shuffleannoying"
+    display_name = "Shuffle Connectors"
+    ladxr_name = "shuffleconnectors"
 
 
-class ShuffleWater(DefaultOffToggle, LADXROption):
+class ShuffleWater(EntranceShuffle):
     """
-    Entrances that lead to water (Manbo and Damp Cave) will also be shuffled when entrance shuffle is set.
+    Randomizes water entrances lead to (Manbo and Damp Cave).
+
+    **Limited:** They are shuffled with each other.
+
+    **Global:** They are shuffled into the global entrance pool.
 
     Use the warp-to-home from the Save & Quit menu if you get stuck (hold A+B+Start+Select until it works).
     """
     display_name = "Shuffle Water"
     ladxr_name = "shufflewater"
+
+
+class ShuffleAnnoying(EntranceShuffle):
+    """
+    Randomizes where a few very annoying entrances lead to (Mamu and the Raft House). 
+
+    **Limited:** They are shuffled with each other.
+
+    **Global:** They are shuffled into the global entrance pool.
+    """
+    display_name = "Shuffle Annoying"
+    ladxr_name = "shuffleannoying"
+
+
+class EntranceShuffleSeed(Range):
+    """
+    Specify seed number for entrance shuffle.
+    Everybody with the same seed will get the same entrance shuffle result
+    as long as their entrance shuffle and logic settings are the same.
+    At zero, no seed is used.
+    """
+    display_name = "Entrance Shuffle Seed"
+    range_start = 0
+    range_end = 1000000
+
+
+class EntrancePlando(OptionDict):
+    """
+    Define some or all entrance connections.
+    """
+    display_name = "Entrance Plando"
+    schema = Schema({
+        Optional(str): str
+    })
 
 
 class APTitleScreen(DefaultOnToggle, LADXROption):
@@ -341,10 +411,13 @@ class InstrumentCount(Range, LADXROption):
     Sets the number of instruments required to open the Egg.
     """
     display_name = "Instrument Count"
-    ladxr_name = None
+    ladxr_name = "goalcount"
     range_start = 0
     range_end = 8
     default = 8
+
+    def to_ladxr_option(self, all_options):
+        return (self.ladxr_name, int(all_options["instrument_count"]))
 
 
 class NagMessages(DefaultOffToggle, LADXROption):
@@ -415,6 +488,8 @@ class Overworld(Choice, LADXROption):
     rich_text_doc = True
     option_normal = 0
     option_open_mabe = 1
+    option_no_dungeons = 2
+    option_dungeon_dive = 3
     default = option_normal
 
 
@@ -679,15 +754,23 @@ class InGameHintPriorityItems(ItemSet):
     rich_text_doc = True
 
 
-class ExpandStart(Range):
+class ExpandStart(NamedRange):
     """
     Starting from Tarin's Gift, locally place progression items until the target
     number of locations or more can be reached. Does nothing if set to *1*.
+    When set to *2* it will only ever place an item on Tarin's Gift.
+    May interfere with plando.
     """
     display_name = "Expand Start"
     range_start = 1
     range_end = 10
     default = 5
+    special_range_names = {
+        "disabled": 1,
+        "only_tarins_gift": 2,
+        "recommended": 5,
+        "high": 10,
+    }
 
 
 class MoreFiller(DefaultOnToggle):
@@ -749,12 +832,15 @@ ladx_option_groups = [
     OptionGroup("World Layout", [
         Overworld,
         Warps,
-        RandomStartLocation,
-        DungeonShuffle,
-        EntranceShuffle,
+        EntranceRules,
+        ShuffleStart,
+        ShuffleDungeons,
+        ShuffleBasic,
         ShuffleJunk,
-        ShuffleAnnoying,
+        ShuffleConnectors,
         ShuffleWater,
+        ShuffleAnnoying,
+        EntranceShuffleSeed,
     ]),
     OptionGroup("Item Pool", [
         ShuffleInstruments,
@@ -797,12 +883,14 @@ class LinksAwakeningOptions(PerGameCommonOptions):
     logic: Logic
     tradequest: TradeQuest
     rooster: Rooster
-    random_start_location: RandomStartLocation
-    dungeon_shuffle: DungeonShuffle
-    entrance_shuffle: EntranceShuffle
+    entrance_rules: EntranceRules
+    shuffle_start: ShuffleStart
+    shuffle_dungeons: ShuffleDungeons
+    shuffle_basic: ShuffleBasic
     shuffle_junk: ShuffleJunk
-    shuffle_annoying: ShuffleAnnoying
+    shuffle_connectors: ShuffleConnectors
     shuffle_water: ShuffleWater
+    shuffle_annoying: ShuffleAnnoying
     goal: Goal
     instrument_count: InstrumentCount
     link_palette: LinkPalette
@@ -840,6 +928,8 @@ class LinksAwakeningOptions(PerGameCommonOptions):
     expand_start: ExpandStart
     follower: Follower
     block_free_powder: BlockFreePowder
+    entrance_plando: EntrancePlando
+    entrance_shuffle_seed: EntranceShuffleSeed
 
     warp_improvements: Removed
     additional_warp_points: Removed

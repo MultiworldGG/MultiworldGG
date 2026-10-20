@@ -381,6 +381,10 @@
       {
         "scene": "slab_10b",
         "path": "Boss Scene/Shrine First Weaver NPC"
+      },
+      {
+        "scene": "slab_10b",
+        "path": "Shrine First Weaver"
       }
     ],
     "battles": [],
@@ -720,7 +724,9 @@
     "events": [
       "Room Event: event:mapper/reviewed:phantom-defeated"
     ],
-    "combat": [],
+    "combat": [
+      "Combat: Phantom"
+    ],
     "actors": [
       {
         "scene": "organ_01",
@@ -741,7 +747,7 @@
   },
   {
     "boss": "Boss: Pinstress",
-    "item": "Soul of Pinstress",
+    "item": "Soul of Pinstress (Boss)",
     "item_id": 842025,
     "events": [
       "Room Event: event:mapper/reviewed:pinstress-defeated"
@@ -1033,7 +1039,7 @@
     "item": "Soul of Widow",
     "item_id": 842037,
     "events": [
-      "Room Event: event:mapper/f00c4d34-3d84-4746-b034-961203e08150"
+      "Room Event: event:mapper/dc5a5a3f-8e91-4056-b23b-e0f0f5d933a0"
     ],
     "combat": [
       "Combat: Widow"
@@ -1213,7 +1219,7 @@
   },
   {
     "boss": "Boss: Shakra",
-    "item": "Soul of Shakra",
+    "item": "Soul of Shakra (Boss)",
     "item_id": 842105,
     "act": 2,
     "events": [],

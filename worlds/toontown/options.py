@@ -400,7 +400,7 @@ class BountiesRequired(Range):
     """
     display_name = "Bounties Required"
     range_start = 0
-    range_end = 34
+    range_end = 36
     default = 7
 
 
@@ -413,7 +413,7 @@ class TotalBounties(Range):
     """
     display_name = "Total Bounties"
     range_start = 1
-    range_end = 34
+    range_end = 36
     default = 15
 
 
@@ -432,6 +432,12 @@ class WinConditionRandomizedWeb(Range):
     range_end = len(WinConditions.valid_keys)
     default = 0
     visibility = Visibility.simple_ui|Visibility.complex_ui
+
+
+class RestrictJump(Toggle):
+    """Enable to lock the ability to jump behind receiving it as an item."""
+    display_name = "Restricted Jump"
+    default = False
 
 
 class TPSanity(Choice):
@@ -478,6 +484,15 @@ class JokesPerStreet(Range):
     range_start = 0
     range_end = 10
     default = 3
+
+
+class DisguisePartsToggle(Toggle):
+    """
+    Turns the "Cog Disguise" items into 5 "Cog Disguise Part" items each (4 -> 20 Items)
+    All 5 disguise parts will be needed to access the HQ's boss.
+    """
+    display_name = "Split Disguises Into Parts"
+    default = False
 
 
 class ChecksPerBoss(Range):
@@ -1087,10 +1102,12 @@ class ToontownOptions(PerGameCommonOptions):
     bounties_required: BountiesRequired
     total_bounties: TotalBounties
     hint_bounties: BountiesHinted
+    restrict_jump: RestrictJump
     tpsanity: TPSanity
     treasures_per_location: TreasuresPerLocation
     jokes_per_street: JokesPerStreet
     joke_books: JokeBookToggle
+    disguise_parts: DisguisePartsToggle
     checks_per_boss: ChecksPerBoss
     gag_training_check_behavior: GagTrainingCheckBehavior
     gag_frame_item_behavior: GagTrainingFrameBehavior
@@ -1151,8 +1168,8 @@ toontown_option_groups: list[OptionGroup] = [
         BaseGlobalGagXPRange, MaxGlobalGagXPRange, DamageRandoOption,
         StartDamageMultiplierRange, MaxDamageMultiplierRange, OverflowModRange, HardCombatLogic,
         StartMoneyOption, StartingTaskCapacityOption, MaxTaskCapacityOption, DeathLinkOption,
-        RingLinkOption, DoodlePriceRando, CatalogPriceRando, FlowerGardening, AutoFlowerGrowing, TreeGardening, TreeGardeningBehavior,
-        CatalogChecks, NeedCatalog
+        RingLinkOption, DoodlePriceRando, CatalogPriceRando, AutoFlowerGrowing
+
     ]),
     OptionGroup("Win Condition", [
         WinConditions, WinConditionRandomizedWeb, OmitRandomWinConditions,
@@ -1165,11 +1182,12 @@ toontown_option_groups: list[OptionGroup] = [
         WinConditionBountyWeb, BountiesRequired, TotalBounties, BountiesHinted
         ], False),
     OptionGroup("Check/Item Behavior", [
-        TPSanity, TreasuresPerLocation, ChecksPerBoss, GagTrainingCheckBehavior,
+        TPSanity, RestrictJump, TreasuresPerLocation, DisguisePartsToggle, ChecksPerBoss, GagTrainingCheckBehavior,
         GagTrainingFrameBehavior, LogicalTasksPerPlayground, LogicalMaxedCogGallery,
         MaxedCogGalleryQuota, FacilityLocking, WantCGCMazes, FishChecks, FishLocations,
         FishProgression, FishPity, RacingOption, GolfingOption, TrolleyOption, SeedGenerationTypeOption,
-        JokesPerStreet, JokeBookToggle
+        JokesPerStreet, JokeBookToggle, CatalogChecks, NeedCatalog,
+        FlowerGardening, TreeGardening, TreeGardeningBehavior
     ], False),
     OptionGroup("Junk Weights", [
         BeanWeightOption, GagExpWeightOption, SOSWeightOption, UniteWeightOption, SummonWeightOption, FireWeightOption, HealWeightOption, FishWeightOption

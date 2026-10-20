@@ -110,7 +110,7 @@ def create_exits(world, regions):
     from BaseClasses import EntranceType
     from .native_regions import native_rule_options
     from .requirement_rules import build_requirements_rule
-    from .entrance_randomization import POOL, area, scope
+    from .entrance_randomization import pairing_group, scope
     from .silk_economy import attach_exit
 
     world.scene_exits = {}
@@ -134,6 +134,5 @@ def create_exits(world, regions):
         if exit.shuffled:
             attach_exit(world, entrance, exit.transport_requirements)
             entrance.randomization_type = EntranceType.TWO_WAY
-            group = POOL[exit.id]['group']
-            entrance.randomization_group = (area(exit.id), group) if scope(world) == 'within_areas' else group
+            entrance.randomization_group = pairing_group(exit.id, scope(world))
             world._entrance_exits[exit.id] = entrance

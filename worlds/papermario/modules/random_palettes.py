@@ -2,8 +2,14 @@
 """Module for modifying sprite palettes"""
 
 from ..data.enum_options import RandomPalettes
-from ..data.palettes_meta import mario_n_partner_sprite_names, boss_sprite_names, enemy_sprite_names, \
-    hammer_sprite_names, special_vanilla_palette_ids, palette_table
+from ..data.palettes_meta import (
+    mario_n_partner_sprite_names,
+    boss_sprite_names,
+    enemy_sprite_names,
+    hammer_sprite_names,
+    special_vanilla_palette_ids,
+    palette_table,
+)
 
 class CoinPalette:
     def __init__(self, data=None, targets=None, crcs=None) -> None:
@@ -186,7 +192,8 @@ def get_randomized_palettes(world) -> list:
         palette_info = palette_table[cur_sprite_name]
         palette_count = palette_info[2]
 
-        # sprite value is 0 for vanilla, 1 to x for a chosen palette, 10 to 12 for one of the random options
+        # sprite value is 0 for vanilla, 1 to x for a chosen palette,
+        # 10 to 12 for one of the random options
 
         if 0 <= cur_option < palette_count:
             chosen_palette = cur_option

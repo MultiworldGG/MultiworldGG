@@ -1,4 +1,4 @@
-﻿from __future__ import annotations
+from __future__ import annotations
 
 from .eva import EVA_NODE, EVA_REWARDS, EVA_POINT, EVA_POINT_SOURCES, EVA_CREST_SLOTS, EVOLVED_HUNTER, YELLOW_VESTICREST, BLUE_VESTICREST
 
@@ -164,7 +164,6 @@ SILK_AND_SOUL_MANDATORY_EVENTS: tuple[WishLogicEvent, ...] = (
 
 _SILK_AND_SOUL_FULL_POINT_SOURCES: tuple[tuple[str, str], ...] = (
     ("Final Audience point", "Wish: Final Audience"),
-    ("Berry Picking point", "Tool Unlock: Mosscreep Tool 2"),
     (
         "An Icon of Hope point",
         "Quest Completion: Building Materials (Statue)",
@@ -206,6 +205,11 @@ SILK_AND_SOUL_FULL_POINT_EVENTS: tuple[WishLogicEvent, ...] = tuple(
     _location_event(label, SILK_AND_SOUL_WISH_POINT_ITEM, source)
     for label, source in _SILK_AND_SOUL_FULL_POINT_SOURCES
 ) + (
+    _region_event(
+        "Berry Picking point",
+        SILK_AND_SOUL_WISH_POINT_ITEM,
+        "Room Event: event:mapper/82399cd2-c16b-42ad-b615-e698dae6245d",
+    ),
     _region_event(
         "Rite of the Pollip point",
         SILK_AND_SOUL_WISH_POINT_ITEM,

@@ -39,3 +39,7 @@ Die folgenden Befehle stehen nur im OoTClient, um mit Archipelago zu spielen, zu
 
 - `/n64` Überprüffe den Verbindungsstatus deiner N64
 - `/deathlink` Schalte den "Deathlink" des Clients um. Überschreibt die zuvor konfigurierten Einstellungen.
+
+## Universal Tracker
+
+Seeds unterstützen YAML-freies Tracking mit den exakten Entrances. Entrance Information wird angezeigt, nachdem ein Raum betreten wurde.

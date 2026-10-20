@@ -130,7 +130,7 @@ class ToontownLocationName(Enum):
     SQUIRT_SQUIRTGUN_UNLOCKED =                 "Squirt Gun Trained (Squirt Training)"
     SQUIRT_SELTZER_UNLOCKED =                   "Seltzer Bottle Trained (Squirt Training)"
     SQUIRT_HOSE_UNLOCKED =                      "Firehose Trained (Squirt Training)"
-    SQUIRT_CLOUD_UNLOCKED =                     "Stormcloud Trained (Squirt Training)"
+    SQUIRT_CLOUD_UNLOCKED =                     "Storm Cloud Trained (Squirt Training)"
     SQUIRT_GEYSER_UNLOCKED =                    "Geyser Trained (MAXED Squirt)"
     DROP_FLOWERPOT_UNLOCKED =                   "Flowerpot Trained (Drop Training)"
     DROP_SANDBAG_UNLOCKED =                     "Sandbag Trained (Drop Training)"
@@ -391,6 +391,18 @@ class ToontownLocationName(Enum):
     DDL_SHOP_1 =                                "Bozo (DDL Pet Shop)"
     DDL_SHOP_2 =                                "Brainchild (DDL Pet Shop)"
     DDL_SHOP_3 =                                "Critter (DDL Pet Shop)"
+    FLYING_TREASURE_TTC =                       "Flying AP Treasure TTC"
+    FLYING_TREASURE_DD =                        "Flying AP Treasure DD"
+    FLYING_TREASURE_DG =                        "Flying AP Treasure DG"
+    FLYING_TREASURE_MML =                       "Flying AP Treasure MML"
+    FLYING_TREASURE_TB =                        "Flying AP Treasure TB"
+    FLYING_TREASURE_DDL =                       "Flying AP Treasure DDL"
+    FLYING_TREASURE_AA =                        "Flying AP Treasure AA"
+    FLYING_TREASURE_GS =                        "Flying AP Treasure GS"
+    FLYING_TREASURE_SBHQ =                      "Flying AP Treasure SBHQ"
+    FLYING_TREASURE_CBHQ =                      "Flying AP Treasure CBHQ"
+    FLYING_TREASURE_LBHQ =                      "Flying AP Treasure LBHQ"
+    FLYING_TREASURE_BBHQ =                      "Flying AP Treasure BBHQ"
     TTC_TREASURE_1 =                            "Toontown Central AP Treasure 1"
     TTC_TREASURE_2 =                            "Toontown Central AP Treasure 2"
     TTC_TREASURE_3 =                            "Toontown Central AP Treasure 3"
@@ -761,55 +773,55 @@ class ToontownLocationName(Enum):
     GARDEN_FLOWER_TINTED_ROSE =                 "6 Bean Flower (Tinted Rose)"
     GARDEN_FLOWER_STINKING_ROSE =               "7 Bean Flower (Stinking Rose)"
     GARDEN_FLOWER_ISTILLA_ROSE =                "8 Bean Flower (Istilla Rose)"
-    GARDEN_TREE_TOONUP_1 =                      "Gag Tree (Toon-Up Level 1)"
-    GARDEN_TREE_TOONUP_2 =                      "Gag Tree (Toon-Up Level 2)"
-    GARDEN_TREE_TOONUP_3 =                      "Gag Tree (Toon-Up Level 3)"
-    GARDEN_TREE_TOONUP_4 =                      "Gag Tree (Toon-Up Level 4)"
-    GARDEN_TREE_TOONUP_5 =                      "Gag Tree (Toon-Up Level 5)"
-    GARDEN_TREE_TOONUP_6 =                      "Gag Tree (Toon-Up Level 6)"
-    GARDEN_TREE_TOONUP_7 =                      "Gag Tree (Toon-Up Level 7)"
-    GARDEN_TREE_TRAP_1 =                        "Gag Tree (Trap Level 1)"
-    GARDEN_TREE_TRAP_2 =                        "Gag Tree (Trap Level 2)"
-    GARDEN_TREE_TRAP_3 =                        "Gag Tree (Trap Level 3)"
-    GARDEN_TREE_TRAP_4 =                        "Gag Tree (Trap Level 4)"
-    GARDEN_TREE_TRAP_5 =                        "Gag Tree (Trap Level 5)"
-    GARDEN_TREE_TRAP_6 =                        "Gag Tree (Trap Level 6)"
-    GARDEN_TREE_TRAP_7 =                        "Gag Tree (Trap Level 7)"
-    GARDEN_TREE_LURE_1 =                        "Gag Tree (Lure Level 1)"
-    GARDEN_TREE_LURE_2 =                        "Gag Tree (Lure Level 2)"
-    GARDEN_TREE_LURE_3 =                        "Gag Tree (Lure Level 3)"
-    GARDEN_TREE_LURE_4 =                        "Gag Tree (Lure Level 4)"
-    GARDEN_TREE_LURE_5 =                        "Gag Tree (Lure Level 5)"
-    GARDEN_TREE_LURE_6 =                        "Gag Tree (Lure Level 6)"
-    GARDEN_TREE_LURE_7 =                        "Gag Tree (Lure Level 7)"
-    GARDEN_TREE_SOUND_1 =                       "Gag Tree (Sound Level 1)"
-    GARDEN_TREE_SOUND_2 =                       "Gag Tree (Sound Level 2)"
-    GARDEN_TREE_SOUND_3 =                       "Gag Tree (Sound Level 3)"
-    GARDEN_TREE_SOUND_4 =                       "Gag Tree (Sound Level 4)"
-    GARDEN_TREE_SOUND_5 =                       "Gag Tree (Sound Level 5)"
-    GARDEN_TREE_SOUND_6 =                       "Gag Tree (Sound Level 6)"
-    GARDEN_TREE_SOUND_7 =                       "Gag Tree (Sound Level 7)"
-    GARDEN_TREE_THROW_1 =                       "Gag Tree (Throw Level 1)"
-    GARDEN_TREE_THROW_2 =                       "Gag Tree (Throw Level 2)"
-    GARDEN_TREE_THROW_3 =                       "Gag Tree (Throw Level 3)"
-    GARDEN_TREE_THROW_4 =                       "Gag Tree (Throw Level 4)"
-    GARDEN_TREE_THROW_5 =                       "Gag Tree (Throw Level 5)"
-    GARDEN_TREE_THROW_6 =                       "Gag Tree (Throw Level 6)"
-    GARDEN_TREE_THROW_7 =                       "Gag Tree (Throw Level 7)"
-    GARDEN_TREE_SQUIRT_1 =                      "Gag Tree (Squirt Level 1)"
-    GARDEN_TREE_SQUIRT_2 =                      "Gag Tree (Squirt Level 2)"
-    GARDEN_TREE_SQUIRT_3 =                      "Gag Tree (Squirt Level 3)"
-    GARDEN_TREE_SQUIRT_4 =                      "Gag Tree (Squirt Level 4)"
-    GARDEN_TREE_SQUIRT_5 =                      "Gag Tree (Squirt Level 5)"
-    GARDEN_TREE_SQUIRT_6 =                      "Gag Tree (Squirt Level 6)"
-    GARDEN_TREE_SQUIRT_7 =                      "Gag Tree (Squirt Level 7)"
-    GARDEN_TREE_DROP_1 =                        "Gag Tree (Drop Level 1)"
-    GARDEN_TREE_DROP_2 =                        "Gag Tree (Drop Level 2)"
-    GARDEN_TREE_DROP_3 =                        "Gag Tree (Drop Level 3)"
-    GARDEN_TREE_DROP_4 =                        "Gag Tree (Drop Level 4)"
-    GARDEN_TREE_DROP_5 =                        "Gag Tree (Drop Level 5)"
-    GARDEN_TREE_DROP_6 =                        "Gag Tree (Drop Level 6)"
-    GARDEN_TREE_DROP_7 =                        "Gag Tree (Drop Level 7)"
+    GARDEN_TREE_TOONUP_1 =                      "Gag Tree (Feather)"
+    GARDEN_TREE_TOONUP_2 =                      "Gag Tree (Megaphone)"
+    GARDEN_TREE_TOONUP_3 =                      "Gag Tree (Lipstick)"
+    GARDEN_TREE_TOONUP_4 =                      "Gag Tree (Bamboo Cane)"
+    GARDEN_TREE_TOONUP_5 =                      "Gag Tree (Pixie Dust)"
+    GARDEN_TREE_TOONUP_6 =                      "Gag Tree (Juggling Cubes)"
+    GARDEN_TREE_TOONUP_7 =                      "Gag Tree (High Dive)"
+    GARDEN_TREE_TRAP_1 =                        "Gag Tree (Banana Peel)"
+    GARDEN_TREE_TRAP_2 =                        "Gag Tree (Rake)"
+    GARDEN_TREE_TRAP_3 =                        "Gag Tree (Marbles)"
+    GARDEN_TREE_TRAP_4 =                        "Gag Tree (Quicksand)"
+    GARDEN_TREE_TRAP_5 =                        "Gag Tree (Trapdoor)"
+    GARDEN_TREE_TRAP_6 =                        "Gag Tree (TNT)"
+    GARDEN_TREE_TRAP_7 =                        "Gag Tree (Railroad)"
+    GARDEN_TREE_LURE_1 =                        "Gag Tree ($1 Bill)"
+    GARDEN_TREE_LURE_2 =                        "Gag Tree (Small Magnet)"
+    GARDEN_TREE_LURE_3 =                        "Gag Tree ($5 Bill)"
+    GARDEN_TREE_LURE_4 =                        "Gag Tree (Big Magnet)"
+    GARDEN_TREE_LURE_5 =                        "Gag Tree ($10 Bill)"
+    GARDEN_TREE_LURE_6 =                        "Gag Tree (Hypno-Goggles)"
+    GARDEN_TREE_LURE_7 =                        "Gag Tree (Presentation)"
+    GARDEN_TREE_SOUND_1 =                       "Gag Tree (Bike Horn)"
+    GARDEN_TREE_SOUND_2 =                       "Gag Tree (Whistle)"
+    GARDEN_TREE_SOUND_3 =                       "Gag Tree (Bugle)"
+    GARDEN_TREE_SOUND_4 =                       "Gag Tree (Aoogah)"
+    GARDEN_TREE_SOUND_5 =                       "Gag Tree (Elephant Trunk)"
+    GARDEN_TREE_SOUND_6 =                       "Gag Tree (Foghorn)"
+    GARDEN_TREE_SOUND_7 =                       "Gag Tree (Opera Singer)"
+    GARDEN_TREE_THROW_1 =                       "Gag Tree (Cupcake)"
+    GARDEN_TREE_THROW_2 =                       "Gag Tree (Fruit Pie Slice)"
+    GARDEN_TREE_THROW_3 =                       "Gag Tree (Cream Pie Slice)"
+    GARDEN_TREE_THROW_4 =                       "Gag Tree (Whole Fruit Pie)"
+    GARDEN_TREE_THROW_5 =                       "Gag Tree (Whole Cream Pie)"
+    GARDEN_TREE_THROW_6 =                       "Gag Tree (Birthday Cake)"
+    GARDEN_TREE_THROW_7 =                       "Gag Tree (Wedding Cake)"
+    GARDEN_TREE_SQUIRT_1 =                      "Gag Tree (Squirting Flower)"
+    GARDEN_TREE_SQUIRT_2 =                      "Gag Tree (Glass of Water)"
+    GARDEN_TREE_SQUIRT_3 =                      "Gag Tree (Squirt Gun)"
+    GARDEN_TREE_SQUIRT_4 =                      "Gag Tree (Seltzer Bottle)"
+    GARDEN_TREE_SQUIRT_5 =                      "Gag Tree (Firehose)"
+    GARDEN_TREE_SQUIRT_6 =                      "Gag Tree (Storm Cloud)"
+    GARDEN_TREE_SQUIRT_7 =                      "Gag Tree (Geyser)"
+    GARDEN_TREE_DROP_1 =                        "Gag Tree (Flowerpot)"
+    GARDEN_TREE_DROP_2 =                        "Gag Tree (Sandbag)"
+    GARDEN_TREE_DROP_3 =                        "Gag Tree (Anvil)"
+    GARDEN_TREE_DROP_4 =                        "Gag Tree (Big Weight)"
+    GARDEN_TREE_DROP_5 =                        "Gag Tree (Safe)"
+    GARDEN_TREE_DROP_6 =                        "Gag Tree (Piano)"
+    GARDEN_TREE_DROP_7 =                        "Gag Tree (Toontanic)"
     GARDEN_TREE_LEVEL_1 =                       "Gag Tree (Level 1)"
     GARDEN_TREE_LEVEL_2 =                       "Gag Tree (Level 2)"
     GARDEN_TREE_LEVEL_3 =                       "Gag Tree (Level 3)"
@@ -858,6 +870,7 @@ class ToontownLocationType(IntEnum):
     PLAYGROUND_4    = auto()  # Locations for discovering playground treasures
     PLAYGROUND_5    = auto()  # Locations for discovering playground treasures
     PLAYGROUND_6    = auto()  # Locations for discovering playground treasures
+    FLYING_PG       = auto()  # Locations for flying ap treasures
     CATALOG_1       = auto()  # Locations for purchasing cattlelog checks
     CATALOG_2       = auto()  # Locations for purchasing cattlelog checks
     CATALOG_3       = auto()  # Locations for purchasing cattlelog checks
@@ -1869,48 +1882,48 @@ LOCATION_DEFINITIONS: List[ToontownLocationDefinition] = [
     ToontownLocationDefinition(ToontownLocationName.FRONT_FACTORY_BARREL_1, ToontownLocationType.FACILITIES, ToontownRegionName.SBHQ, [Rule.FrontFactoryKey, Rule.HasLevelFourOffenseGag, Rule.Has40PercentMax]),
     ToontownLocationDefinition(ToontownLocationName.FRONT_FACTORY_BARREL_2, ToontownLocationType.FACILITIES, ToontownRegionName.SBHQ, [Rule.FrontFactoryKey, Rule.HasLevelFourOffenseGag, Rule.Has40PercentMax]),
     ToontownLocationDefinition(ToontownLocationName.FRONT_FACTORY_BARREL_3, ToontownLocationType.FACILITIES, ToontownRegionName.SBHQ, [Rule.FrontFactoryKey, Rule.HasLevelFourOffenseGag, Rule.Has40PercentMax]),
-    ToontownLocationDefinition(ToontownLocationName.FRONT_FACTORY_BARREL_4, ToontownLocationType.FACILITIES, ToontownRegionName.SBHQ, [Rule.FrontFactoryKey, Rule.HasLevelFourOffenseGag, Rule.Has40PercentMax]),
+    ToontownLocationDefinition(ToontownLocationName.FRONT_FACTORY_BARREL_4, ToontownLocationType.FACILITIES, ToontownRegionName.SBHQ, [Rule.FrontFactoryKey, Rule.HasLevelFourOffenseGag, Rule.Has40PercentMax, Rule.CanJump]),
     ToontownLocationDefinition(ToontownLocationName.CLEAR_FRONT_FACTORY,    ToontownLocationType.FACILITIES, ToontownRegionName.SBHQ, [Rule.FrontFactoryKey, Rule.HasLevelFourOffenseGag, Rule.Has40PercentMax]),
     ToontownLocationDefinition(ToontownLocationName.SIDE_FACTORY_BARREL_1,  ToontownLocationType.FACILITIES, ToontownRegionName.SBHQ, [Rule.SideFactoryKey,  Rule.HasLevelFiveOffenseGag, Rule.Has40PercentMax]),
     ToontownLocationDefinition(ToontownLocationName.SIDE_FACTORY_BARREL_2,  ToontownLocationType.FACILITIES, ToontownRegionName.SBHQ, [Rule.SideFactoryKey,  Rule.HasLevelFiveOffenseGag, Rule.Has40PercentMax]),
     ToontownLocationDefinition(ToontownLocationName.SIDE_FACTORY_BARREL_3,  ToontownLocationType.FACILITIES, ToontownRegionName.SBHQ, [Rule.SideFactoryKey,  Rule.HasLevelFiveOffenseGag, Rule.Has40PercentMax]),
-    ToontownLocationDefinition(ToontownLocationName.SIDE_FACTORY_BARREL_4,  ToontownLocationType.FACILITIES, ToontownRegionName.SBHQ, [Rule.SideFactoryKey,  Rule.HasLevelFiveOffenseGag, Rule.Has40PercentMax]),
+    ToontownLocationDefinition(ToontownLocationName.SIDE_FACTORY_BARREL_4,  ToontownLocationType.FACILITIES, ToontownRegionName.SBHQ, [Rule.SideFactoryKey,  Rule.HasLevelFiveOffenseGag, Rule.Has40PercentMax, Rule.CanJump]),
     ToontownLocationDefinition(ToontownLocationName.CLEAR_SIDE_FACTORY,     ToontownLocationType.FACILITIES, ToontownRegionName.SBHQ, [Rule.SideFactoryKey,  Rule.HasLevelFiveOffenseGag, Rule.Has40PercentMax]),
-    ToontownLocationDefinition(ToontownLocationName.COIN_MINT_BARREL_1,     ToontownLocationType.FACILITIES, ToontownRegionName.CBHQ, [Rule.CoinMintKey,     Rule.HasLevelFourOffenseGag, Rule.Has40PercentMax]),
-    ToontownLocationDefinition(ToontownLocationName.COIN_MINT_BARREL_2,     ToontownLocationType.FACILITIES, ToontownRegionName.CBHQ, [Rule.CoinMintKey,     Rule.HasLevelFourOffenseGag, Rule.Has40PercentMax]),
-    ToontownLocationDefinition(ToontownLocationName.COIN_MINT_BARREL_3,     ToontownLocationType.FACILITIES, ToontownRegionName.CBHQ, [Rule.CoinMintKey,     Rule.HasLevelFourOffenseGag, Rule.Has40PercentMax]),
-    ToontownLocationDefinition(ToontownLocationName.COIN_MINT_BARREL_4,     ToontownLocationType.FACILITIES, ToontownRegionName.CBHQ, [Rule.CoinMintKey,     Rule.HasLevelFourOffenseGag, Rule.Has40PercentMax]),
-    ToontownLocationDefinition(ToontownLocationName.CLEAR_COIN_MINT,        ToontownLocationType.FACILITIES, ToontownRegionName.CBHQ, [Rule.CoinMintKey,     Rule.HasLevelFourOffenseGag, Rule.Has40PercentMax]),
-    ToontownLocationDefinition(ToontownLocationName.DOLLAR_MINT_BARREL_1,   ToontownLocationType.FACILITIES, ToontownRegionName.CBHQ, [Rule.DollarMintKey,   Rule.HasLevelFiveOffenseGag, Rule.Has40PercentMax]),
-    ToontownLocationDefinition(ToontownLocationName.DOLLAR_MINT_BARREL_2,   ToontownLocationType.FACILITIES, ToontownRegionName.CBHQ, [Rule.DollarMintKey,   Rule.HasLevelFiveOffenseGag, Rule.Has40PercentMax]),
-    ToontownLocationDefinition(ToontownLocationName.DOLLAR_MINT_BARREL_3,   ToontownLocationType.FACILITIES, ToontownRegionName.CBHQ, [Rule.DollarMintKey,   Rule.HasLevelFiveOffenseGag, Rule.Has40PercentMax]),
-    ToontownLocationDefinition(ToontownLocationName.DOLLAR_MINT_BARREL_4,   ToontownLocationType.FACILITIES, ToontownRegionName.CBHQ, [Rule.DollarMintKey,   Rule.HasLevelFiveOffenseGag, Rule.Has40PercentMax]),
-    ToontownLocationDefinition(ToontownLocationName.CLEAR_DOLLAR_MINT,      ToontownLocationType.FACILITIES, ToontownRegionName.CBHQ, [Rule.DollarMintKey,   Rule.HasLevelFiveOffenseGag, Rule.Has40PercentMax]),
-    ToontownLocationDefinition(ToontownLocationName.BULLION_MINT_BARREL_1,  ToontownLocationType.FACILITIES, ToontownRegionName.CBHQ, [Rule.BullionMintKey,  Rule.HasLevelSixOffenseGag,  Rule.Has60PercentMax]),
-    ToontownLocationDefinition(ToontownLocationName.BULLION_MINT_BARREL_2,  ToontownLocationType.FACILITIES, ToontownRegionName.CBHQ, [Rule.BullionMintKey,  Rule.HasLevelSixOffenseGag,  Rule.Has60PercentMax]),
-    ToontownLocationDefinition(ToontownLocationName.BULLION_MINT_BARREL_3,  ToontownLocationType.FACILITIES, ToontownRegionName.CBHQ, [Rule.BullionMintKey,  Rule.HasLevelSixOffenseGag,  Rule.Has60PercentMax]),
-    ToontownLocationDefinition(ToontownLocationName.BULLION_MINT_BARREL_4,  ToontownLocationType.FACILITIES, ToontownRegionName.CBHQ, [Rule.BullionMintKey,  Rule.HasLevelSixOffenseGag,  Rule.Has60PercentMax]),
-    ToontownLocationDefinition(ToontownLocationName.CLEAR_BULLION_MINT,     ToontownLocationType.FACILITIES, ToontownRegionName.CBHQ, [Rule.BullionMintKey,  Rule.HasLevelSixOffenseGag,  Rule.Has60PercentMax]),
-    ToontownLocationDefinition(ToontownLocationName.A_OFFICE_BARREL_1,      ToontownLocationType.FACILITIES, ToontownRegionName.LBHQ, [Rule.OfficeAKey,      Rule.HasLevelFourOffenseGag, Rule.Has40PercentMax]),
-    ToontownLocationDefinition(ToontownLocationName.A_OFFICE_BARREL_2,      ToontownLocationType.FACILITIES, ToontownRegionName.LBHQ, [Rule.OfficeAKey,      Rule.HasLevelFourOffenseGag, Rule.Has40PercentMax]),
-    ToontownLocationDefinition(ToontownLocationName.A_OFFICE_BARREL_3,      ToontownLocationType.FACILITIES, ToontownRegionName.LBHQ, [Rule.OfficeAKey,      Rule.HasLevelFourOffenseGag, Rule.Has40PercentMax]),
-    ToontownLocationDefinition(ToontownLocationName.A_OFFICE_BARREL_4,      ToontownLocationType.FACILITIES, ToontownRegionName.LBHQ, [Rule.OfficeAKey,      Rule.HasLevelFourOffenseGag, Rule.Has40PercentMax]),
-    ToontownLocationDefinition(ToontownLocationName.CLEAR_A_OFFICE,         ToontownLocationType.FACILITIES, ToontownRegionName.LBHQ, [Rule.OfficeAKey,      Rule.HasLevelFourOffenseGag, Rule.Has40PercentMax]),
-    ToontownLocationDefinition(ToontownLocationName.B_OFFICE_BARREL_1,      ToontownLocationType.FACILITIES, ToontownRegionName.LBHQ, [Rule.OfficeBKey,      Rule.HasLevelFiveOffenseGag, Rule.Has40PercentMax]),
-    ToontownLocationDefinition(ToontownLocationName.B_OFFICE_BARREL_2,      ToontownLocationType.FACILITIES, ToontownRegionName.LBHQ, [Rule.OfficeBKey,      Rule.HasLevelFiveOffenseGag, Rule.Has40PercentMax]),
-    ToontownLocationDefinition(ToontownLocationName.B_OFFICE_BARREL_3,      ToontownLocationType.FACILITIES, ToontownRegionName.LBHQ, [Rule.OfficeBKey,      Rule.HasLevelFiveOffenseGag, Rule.Has40PercentMax]),
-    ToontownLocationDefinition(ToontownLocationName.B_OFFICE_BARREL_4,      ToontownLocationType.FACILITIES, ToontownRegionName.LBHQ, [Rule.OfficeBKey,      Rule.HasLevelFiveOffenseGag, Rule.Has40PercentMax]),
-    ToontownLocationDefinition(ToontownLocationName.CLEAR_B_OFFICE,         ToontownLocationType.FACILITIES, ToontownRegionName.LBHQ, [Rule.OfficeBKey,      Rule.HasLevelFiveOffenseGag, Rule.Has40PercentMax]),
-    ToontownLocationDefinition(ToontownLocationName.C_OFFICE_BARREL_1,      ToontownLocationType.FACILITIES, ToontownRegionName.LBHQ, [Rule.OfficeCKey,      Rule.HasLevelSixOffenseGag,  Rule.Has60PercentMax]),
-    ToontownLocationDefinition(ToontownLocationName.C_OFFICE_BARREL_2,      ToontownLocationType.FACILITIES, ToontownRegionName.LBHQ, [Rule.OfficeCKey,      Rule.HasLevelSixOffenseGag,  Rule.Has60PercentMax]),
-    ToontownLocationDefinition(ToontownLocationName.C_OFFICE_BARREL_3,      ToontownLocationType.FACILITIES, ToontownRegionName.LBHQ, [Rule.OfficeCKey,      Rule.HasLevelSixOffenseGag,  Rule.Has60PercentMax]),
-    ToontownLocationDefinition(ToontownLocationName.C_OFFICE_BARREL_4,      ToontownLocationType.FACILITIES, ToontownRegionName.LBHQ, [Rule.OfficeCKey,      Rule.HasLevelSixOffenseGag,  Rule.Has60PercentMax]),
-    ToontownLocationDefinition(ToontownLocationName.CLEAR_C_OFFICE,         ToontownLocationType.FACILITIES, ToontownRegionName.LBHQ, [Rule.OfficeCKey,      Rule.HasLevelSixOffenseGag,  Rule.Has60PercentMax]),
-    ToontownLocationDefinition(ToontownLocationName.D_OFFICE_BARREL_1,      ToontownLocationType.FACILITIES, ToontownRegionName.LBHQ, [Rule.OfficeDKey,      Rule.HasLevelSevenOffenseGag, Rule.Has60PercentMax]),
-    ToontownLocationDefinition(ToontownLocationName.D_OFFICE_BARREL_2,      ToontownLocationType.FACILITIES, ToontownRegionName.LBHQ, [Rule.OfficeDKey,      Rule.HasLevelSevenOffenseGag, Rule.Has60PercentMax]),
-    ToontownLocationDefinition(ToontownLocationName.D_OFFICE_BARREL_3,      ToontownLocationType.FACILITIES, ToontownRegionName.LBHQ, [Rule.OfficeDKey,      Rule.HasLevelSevenOffenseGag, Rule.Has60PercentMax]),
-    ToontownLocationDefinition(ToontownLocationName.D_OFFICE_BARREL_4,      ToontownLocationType.FACILITIES, ToontownRegionName.LBHQ, [Rule.OfficeDKey,      Rule.HasLevelSevenOffenseGag, Rule.Has60PercentMax]),
-    ToontownLocationDefinition(ToontownLocationName.CLEAR_D_OFFICE,         ToontownLocationType.FACILITIES, ToontownRegionName.LBHQ, [Rule.OfficeDKey,      Rule.HasLevelSevenOffenseGag, Rule.Has60PercentMax]),
+    ToontownLocationDefinition(ToontownLocationName.COIN_MINT_BARREL_1,     ToontownLocationType.FACILITIES, ToontownRegionName.CBHQ, [Rule.CoinMintKey,     Rule.HasLevelFourOffenseGag, Rule.Has40PercentMax, Rule.CanJump]),
+    ToontownLocationDefinition(ToontownLocationName.COIN_MINT_BARREL_2,     ToontownLocationType.FACILITIES, ToontownRegionName.CBHQ, [Rule.CoinMintKey,     Rule.HasLevelFourOffenseGag, Rule.Has40PercentMax, Rule.CanJump]),
+    ToontownLocationDefinition(ToontownLocationName.COIN_MINT_BARREL_3,     ToontownLocationType.FACILITIES, ToontownRegionName.CBHQ, [Rule.CoinMintKey,     Rule.HasLevelFourOffenseGag, Rule.Has40PercentMax, Rule.CanJump]),
+    ToontownLocationDefinition(ToontownLocationName.COIN_MINT_BARREL_4,     ToontownLocationType.FACILITIES, ToontownRegionName.CBHQ, [Rule.CoinMintKey,     Rule.HasLevelFourOffenseGag, Rule.Has40PercentMax, Rule.CanJump]),
+    ToontownLocationDefinition(ToontownLocationName.CLEAR_COIN_MINT,        ToontownLocationType.FACILITIES, ToontownRegionName.CBHQ, [Rule.CoinMintKey,     Rule.HasLevelFourOffenseGag, Rule.Has40PercentMax, Rule.CanJump]),
+    ToontownLocationDefinition(ToontownLocationName.DOLLAR_MINT_BARREL_1,   ToontownLocationType.FACILITIES, ToontownRegionName.CBHQ, [Rule.DollarMintKey,   Rule.HasLevelFiveOffenseGag, Rule.Has40PercentMax, Rule.CanJump]),
+    ToontownLocationDefinition(ToontownLocationName.DOLLAR_MINT_BARREL_2,   ToontownLocationType.FACILITIES, ToontownRegionName.CBHQ, [Rule.DollarMintKey,   Rule.HasLevelFiveOffenseGag, Rule.Has40PercentMax, Rule.CanJump]),
+    ToontownLocationDefinition(ToontownLocationName.DOLLAR_MINT_BARREL_3,   ToontownLocationType.FACILITIES, ToontownRegionName.CBHQ, [Rule.DollarMintKey,   Rule.HasLevelFiveOffenseGag, Rule.Has40PercentMax, Rule.CanJump]),
+    ToontownLocationDefinition(ToontownLocationName.DOLLAR_MINT_BARREL_4,   ToontownLocationType.FACILITIES, ToontownRegionName.CBHQ, [Rule.DollarMintKey,   Rule.HasLevelFiveOffenseGag, Rule.Has40PercentMax, Rule.CanJump]),
+    ToontownLocationDefinition(ToontownLocationName.CLEAR_DOLLAR_MINT,      ToontownLocationType.FACILITIES, ToontownRegionName.CBHQ, [Rule.DollarMintKey,   Rule.HasLevelFiveOffenseGag, Rule.Has40PercentMax, Rule.CanJump]),
+    ToontownLocationDefinition(ToontownLocationName.BULLION_MINT_BARREL_1,  ToontownLocationType.FACILITIES, ToontownRegionName.CBHQ, [Rule.BullionMintKey,  Rule.HasLevelSixOffenseGag,  Rule.Has60PercentMax, Rule.CanJump]),
+    ToontownLocationDefinition(ToontownLocationName.BULLION_MINT_BARREL_2,  ToontownLocationType.FACILITIES, ToontownRegionName.CBHQ, [Rule.BullionMintKey,  Rule.HasLevelSixOffenseGag,  Rule.Has60PercentMax, Rule.CanJump]),
+    ToontownLocationDefinition(ToontownLocationName.BULLION_MINT_BARREL_3,  ToontownLocationType.FACILITIES, ToontownRegionName.CBHQ, [Rule.BullionMintKey,  Rule.HasLevelSixOffenseGag,  Rule.Has60PercentMax, Rule.CanJump]),
+    ToontownLocationDefinition(ToontownLocationName.BULLION_MINT_BARREL_4,  ToontownLocationType.FACILITIES, ToontownRegionName.CBHQ, [Rule.BullionMintKey,  Rule.HasLevelSixOffenseGag,  Rule.Has60PercentMax, Rule.CanJump]),
+    ToontownLocationDefinition(ToontownLocationName.CLEAR_BULLION_MINT,     ToontownLocationType.FACILITIES, ToontownRegionName.CBHQ, [Rule.BullionMintKey,  Rule.HasLevelSixOffenseGag,  Rule.Has60PercentMax, Rule.CanJump]),
+    ToontownLocationDefinition(ToontownLocationName.A_OFFICE_BARREL_1,      ToontownLocationType.FACILITIES, ToontownRegionName.LBHQ, [Rule.OfficeAKey,      Rule.HasLevelFourOffenseGag, Rule.Has40PercentMax, Rule.CanJump]),
+    ToontownLocationDefinition(ToontownLocationName.A_OFFICE_BARREL_2,      ToontownLocationType.FACILITIES, ToontownRegionName.LBHQ, [Rule.OfficeAKey,      Rule.HasLevelFourOffenseGag, Rule.Has40PercentMax, Rule.CanJump]),
+    ToontownLocationDefinition(ToontownLocationName.A_OFFICE_BARREL_3,      ToontownLocationType.FACILITIES, ToontownRegionName.LBHQ, [Rule.OfficeAKey,      Rule.HasLevelFourOffenseGag, Rule.Has40PercentMax, Rule.CanJump]),
+    ToontownLocationDefinition(ToontownLocationName.A_OFFICE_BARREL_4,      ToontownLocationType.FACILITIES, ToontownRegionName.LBHQ, [Rule.OfficeAKey,      Rule.HasLevelFourOffenseGag, Rule.Has40PercentMax, Rule.CanJump]),
+    ToontownLocationDefinition(ToontownLocationName.CLEAR_A_OFFICE,         ToontownLocationType.FACILITIES, ToontownRegionName.LBHQ, [Rule.OfficeAKey,      Rule.HasLevelFourOffenseGag, Rule.Has40PercentMax, Rule.CanJump]),
+    ToontownLocationDefinition(ToontownLocationName.B_OFFICE_BARREL_1,      ToontownLocationType.FACILITIES, ToontownRegionName.LBHQ, [Rule.OfficeBKey,      Rule.HasLevelFiveOffenseGag, Rule.Has40PercentMax, Rule.CanJump]),
+    ToontownLocationDefinition(ToontownLocationName.B_OFFICE_BARREL_2,      ToontownLocationType.FACILITIES, ToontownRegionName.LBHQ, [Rule.OfficeBKey,      Rule.HasLevelFiveOffenseGag, Rule.Has40PercentMax, Rule.CanJump]),
+    ToontownLocationDefinition(ToontownLocationName.B_OFFICE_BARREL_3,      ToontownLocationType.FACILITIES, ToontownRegionName.LBHQ, [Rule.OfficeBKey,      Rule.HasLevelFiveOffenseGag, Rule.Has40PercentMax, Rule.CanJump]),
+    ToontownLocationDefinition(ToontownLocationName.B_OFFICE_BARREL_4,      ToontownLocationType.FACILITIES, ToontownRegionName.LBHQ, [Rule.OfficeBKey,      Rule.HasLevelFiveOffenseGag, Rule.Has40PercentMax, Rule.CanJump]),
+    ToontownLocationDefinition(ToontownLocationName.CLEAR_B_OFFICE,         ToontownLocationType.FACILITIES, ToontownRegionName.LBHQ, [Rule.OfficeBKey,      Rule.HasLevelFiveOffenseGag, Rule.Has40PercentMax, Rule.CanJump]),
+    ToontownLocationDefinition(ToontownLocationName.C_OFFICE_BARREL_1,      ToontownLocationType.FACILITIES, ToontownRegionName.LBHQ, [Rule.OfficeCKey,      Rule.HasLevelSixOffenseGag,  Rule.Has60PercentMax, Rule.CanJump]),
+    ToontownLocationDefinition(ToontownLocationName.C_OFFICE_BARREL_2,      ToontownLocationType.FACILITIES, ToontownRegionName.LBHQ, [Rule.OfficeCKey,      Rule.HasLevelSixOffenseGag,  Rule.Has60PercentMax, Rule.CanJump]),
+    ToontownLocationDefinition(ToontownLocationName.C_OFFICE_BARREL_3,      ToontownLocationType.FACILITIES, ToontownRegionName.LBHQ, [Rule.OfficeCKey,      Rule.HasLevelSixOffenseGag,  Rule.Has60PercentMax, Rule.CanJump]),
+    ToontownLocationDefinition(ToontownLocationName.C_OFFICE_BARREL_4,      ToontownLocationType.FACILITIES, ToontownRegionName.LBHQ, [Rule.OfficeCKey,      Rule.HasLevelSixOffenseGag,  Rule.Has60PercentMax, Rule.CanJump]),
+    ToontownLocationDefinition(ToontownLocationName.CLEAR_C_OFFICE,         ToontownLocationType.FACILITIES, ToontownRegionName.LBHQ, [Rule.OfficeCKey,      Rule.HasLevelSixOffenseGag,  Rule.Has60PercentMax, Rule.CanJump]),
+    ToontownLocationDefinition(ToontownLocationName.D_OFFICE_BARREL_1,      ToontownLocationType.FACILITIES, ToontownRegionName.LBHQ, [Rule.OfficeDKey,      Rule.HasLevelSevenOffenseGag, Rule.Has60PercentMax, Rule.CanJump]),
+    ToontownLocationDefinition(ToontownLocationName.D_OFFICE_BARREL_2,      ToontownLocationType.FACILITIES, ToontownRegionName.LBHQ, [Rule.OfficeDKey,      Rule.HasLevelSevenOffenseGag, Rule.Has60PercentMax, Rule.CanJump]),
+    ToontownLocationDefinition(ToontownLocationName.D_OFFICE_BARREL_3,      ToontownLocationType.FACILITIES, ToontownRegionName.LBHQ, [Rule.OfficeDKey,      Rule.HasLevelSevenOffenseGag, Rule.Has60PercentMax, Rule.CanJump]),
+    ToontownLocationDefinition(ToontownLocationName.D_OFFICE_BARREL_4,      ToontownLocationType.FACILITIES, ToontownRegionName.LBHQ, [Rule.OfficeDKey,      Rule.HasLevelSevenOffenseGag, Rule.Has60PercentMax, Rule.CanJump]),
+    ToontownLocationDefinition(ToontownLocationName.CLEAR_D_OFFICE,         ToontownLocationType.FACILITIES, ToontownRegionName.LBHQ, [Rule.OfficeDKey,      Rule.HasLevelSevenOffenseGag, Rule.Has60PercentMax, Rule.CanJump]),
     ToontownLocationDefinition(ToontownLocationName.FRONT_ONE_BARREL_1,     ToontownLocationType.FACILITIES, ToontownRegionName.BBHQ, [Rule.FrontOneKey,     Rule.HasLevelFiveOffenseGag, Rule.Has40PercentMax]),
     ToontownLocationDefinition(ToontownLocationName.FRONT_ONE_BARREL_2,     ToontownLocationType.FACILITIES, ToontownRegionName.BBHQ, [Rule.FrontOneKey,     Rule.HasLevelFiveOffenseGag, Rule.Has40PercentMax]),
     ToontownLocationDefinition(ToontownLocationName.CLEAR_FRONT_ONE,        ToontownLocationType.FACILITIES, ToontownRegionName.BBHQ, [Rule.FrontOneKey,     Rule.HasLevelFiveOffenseGag, Rule.Has40PercentMax]),
@@ -1999,6 +2012,20 @@ LOCATION_DEFINITIONS: List[ToontownLocationDefinition] = [
     ToontownLocationDefinition(ToontownLocationName.TROLLEY_DDL_1,                ToontownLocationType.TROLLEY, ToontownRegionName.DDL, [Rule.CanReachDDL]),
     ToontownLocationDefinition(ToontownLocationName.TROLLEY_DDL_2,                ToontownLocationType.TROLLEY, ToontownRegionName.DDL, [Rule.CanReachDDL]),
     # endregion
+    # start region Fly treasures
+    ToontownLocationDefinition(ToontownLocationName.FLYING_TREASURE_TTC,                ToontownLocationType.FLYING_PG, ToontownRegionName.TTC, [Rule.CanReachTTC, Rule.CanJump]),
+    ToontownLocationDefinition(ToontownLocationName.FLYING_TREASURE_DD,                 ToontownLocationType.FLYING_PG, ToontownRegionName.DD, [Rule.CanReachDD, Rule.CanJump]),
+    ToontownLocationDefinition(ToontownLocationName.FLYING_TREASURE_DG,                 ToontownLocationType.FLYING_PG, ToontownRegionName.DG, [Rule.CanReachDG, Rule.CanJump]),
+    ToontownLocationDefinition(ToontownLocationName.FLYING_TREASURE_MML,                ToontownLocationType.FLYING_PG, ToontownRegionName.MML, [Rule.CanReachMML, Rule.CanJump]),
+    ToontownLocationDefinition(ToontownLocationName.FLYING_TREASURE_TB,                 ToontownLocationType.FLYING_PG, ToontownRegionName.TB, [Rule.CanReachTB, Rule.CanJump]),
+    ToontownLocationDefinition(ToontownLocationName.FLYING_TREASURE_DDL,                ToontownLocationType.FLYING_PG, ToontownRegionName.DDL, [Rule.CanReachDDL, Rule.CanJump]),
+    ToontownLocationDefinition(ToontownLocationName.FLYING_TREASURE_GS,                 ToontownLocationType.FLYING_PG, ToontownRegionName.GS, [Rule.CanReachGS, Rule.CanJump]),
+    ToontownLocationDefinition(ToontownLocationName.FLYING_TREASURE_AA,                 ToontownLocationType.FLYING_PG, ToontownRegionName.AA, [Rule.CanReachAA, Rule.CanJump]),
+    ToontownLocationDefinition(ToontownLocationName.FLYING_TREASURE_SBHQ,               ToontownLocationType.FLYING_PG, ToontownRegionName.SBHQ, [Rule.CanReachSBHQ, Rule.CanJump]),
+    ToontownLocationDefinition(ToontownLocationName.FLYING_TREASURE_CBHQ,               ToontownLocationType.FLYING_PG, ToontownRegionName.CBHQ, [Rule.CanReachCBHQ, Rule.CanJump]),
+    ToontownLocationDefinition(ToontownLocationName.FLYING_TREASURE_LBHQ,               ToontownLocationType.FLYING_PG, ToontownRegionName.LBHQ, [Rule.CanReachLBHQ, Rule.CanJump]),
+    ToontownLocationDefinition(ToontownLocationName.FLYING_TREASURE_BBHQ,               ToontownLocationType.FLYING_PG, ToontownRegionName.BBHQ, [Rule.CanReachBBHQ, Rule.CanJump]),
+    # endregion
     ]
 
 LOCATION_NAME_TO_DEFINITION: dict[ToontownLocationName, ToontownLocationDefinition] = {
@@ -2059,6 +2086,7 @@ BOUNTY_LOCATIONS = [
     ToontownLocationName.THROW_WEDDING_UNLOCKED, ToontownLocationName.SQUIRT_GEYSER_UNLOCKED, ToontownLocationName.DROP_BOAT_UNLOCKED,  # Gag bounty locations (2)
     ToontownLocationName.LEVEL_TWELVE_COG_DEFEATED,  # Cog tier bounty locations
     ToontownLocationName.FIVE_STORY_FIFTH_FLOOR,  # Building bounty locations
+    ToontownLocationName.GARDEN_FLOWER_PLATOONIA, ToontownLocationName.CATALOG_CHECK_12  # Estate bounty locations
 ]
 
 BOSS_BOUNTIES = [ToontownLocationName.SELLBOT_PROOF_1, ToontownLocationName.CASHBOT_PROOF_1, ToontownLocationName.LAWBOT_PROOF_1, ToontownLocationName.BOSSBOT_PROOF_1]
@@ -2069,6 +2097,8 @@ FISH_ALBUM_BOUNTIES = [ToontownLocationName.FISHING_COMPLETE_ALBUM]
 ALL_FISH_BOUNTIES = [ToontownLocationName.DOG_FISH_1, ToontownLocationName.FISHING_COMPLETE_ALBUM]
 GAG_BOUNTIES = [ToontownLocationName.TOONUP_HIGHDIVE_UNLOCKED, ToontownLocationName.TRAP_TRAIN_UNLOCKED, ToontownLocationName.LURE_PRESENTATION_UNLOCKED, ToontownLocationName.SOUND_OPERA_UNLOCKED,
                 ToontownLocationName.THROW_WEDDING_UNLOCKED, ToontownLocationName.SQUIRT_GEYSER_UNLOCKED, ToontownLocationName.DROP_BOAT_UNLOCKED]
+FLOWER_BOUNTIES = [ToontownLocationName.GARDEN_FLOWER_PLATOONIA]
+CATTLELOG_BOUNTIES = [ToontownLocationName.CATALOG_CHECK_12]
 
 def get_location_def_from_name(name: ToontownLocationName) -> ToontownLocationDefinition:
     return LOCATION_NAME_TO_DEFINITION[name]

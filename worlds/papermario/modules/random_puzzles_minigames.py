@@ -186,9 +186,15 @@ def get_puzzles_minigames(random_puzzles: bool, world) -> (list, list):
                             dro_shop_nonuniques.append(code_item_3)
                             dro_shop_nonuniques.append(code_item_4)
                 if name == "ShopCodeRedJar1":
-                    buy_order = (item_table[shopcode_redjar[1]][2] << 16) + item_table[shopcode_redjar[2]][2]
+                    buy_order = (
+                        (item_table[shopcode_redjar[1]][2] << 16)
+                        + item_table[shopcode_redjar[2]][2]
+                    )
                 else:
-                    buy_order = (item_table[shopcode_redjar[3]][2] << 16) + item_table[shopcode_redjar[4]][2]
+                    buy_order = (
+                        (item_table[shopcode_redjar[3]][2] << 16)
+                        + item_table[shopcode_redjar[4]][2]
+                    )
                 spoilerlog_additions["ShopCodeRedJar"] = (
                     f"{shopcode_redjar[1]}, {shopcode_redjar[2]}, "
                     f"{shopcode_redjar[3]}, {shopcode_redjar[4]}"
@@ -615,13 +621,18 @@ def _lavadam_pushblock_positions(random) -> int:
 
 
 def get_dro_shop_items(world) -> list:
-    if (2 in world.excluded_spirits and
-            world.options.spirit_requirements.value == SpiritRequirements.option_Specific_And_Limit_Chapter_Logic):
+    if (    2 in world.excluded_spirits
+        and world.options.spirit_requirements.value == SpiritRequirements.option_Specific_And_Limit_Chapter_Logic
+    ):
         dro_shop_items = ["Dried Shroom", "Dusty Hammer", "Dried Pasta"]
     else:
-        dro_shop_items = [world.multiworld.get_location(f"DDO Outpost 1 Shop Item {n}", world.player).item.name
-                          if world.multiworld.get_location(f"DDO Outpost 1 Shop Item {n}", world.player).item.player
-                          == world.player else "MultiWorldGeneric" for n in range(1, 7)]
+        dro_shop_items = []
+        for n in range(1, 7):
+            shop_loc = world.multiworld.get_location(f"DDO Outpost 1 Shop Item {n}", world.player)
+            if shop_loc.item.player == world.player:
+                dro_shop_items.append(shop_loc.item.name)
+            else:
+                dro_shop_items.append("MultiWorldGeneric")
 
     return dro_shop_items
 

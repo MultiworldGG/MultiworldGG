@@ -1,11 +1,22 @@
 import argparse
+import hashlib
 import json
+import zipfile
 from collections import Counter, defaultdict
 from pathlib import Path
 
-from PIL import Image
 from location_positions import LOCATION_POSITIONS
 from wishes import CHECKS, TURN_INS
+
+
+def map_frame(room, image_path):
+    # Song_20b's image covers the top 80 units of its 243-unit native scene.
+    if room['in_game_id'] == 'Song_20b' and tuple(room[k] for k in
+            ('scene_min_x', 'scene_min_y', 'scene_max_x', 'scene_max_y')) == (0, 0, 50, 80):
+        if hashlib.sha256(image_path.read_bytes()).hexdigest() != '39cc2abe070ae316a5fec4a02b85e57608349a47288b5858291b26c3915a172b':
+            raise ValueError('Rotating Tunnel image changed; review its map crop before rebuilding.')
+        return dict(room, scene_min_y=163, scene_max_y=243)
+    return room
 
 
 def load(path):
@@ -49,7 +60,8 @@ def marker(room, names, point, name=None):
     }
 
 
-def build(geometry_path, image_root, output, world, catalogue_path=None):
+def build(geometry_path, image_root, output, world, catalogue_path=None, pack_path=None, manifest_path=None):
+    from PIL import Image
     geometry = load(geometry_path)
     graph = load(world / "room_graph_data.json")
     pool = load(world / "entrance_pool.json")
@@ -65,7 +77,9 @@ def build(geometry_path, image_root, output, world, catalogue_path=None):
     names = {e["id"]: f"{room['name']} - {e['name']} ({e['alias']})"
              for room in graph["rooms"] for e in room.get("transitions", [])}
     pool_names = {e["name"] for e in pool}
-    pool_gates = {member: e["gate"] for e in pool for member in e.get("members", [e["id"]])}
+    pool_gates = {e['id']: e['gate'] for e in pool}
+    pool_gates.update({alias['port']: alias['gate'] for e in pool for alias in e.get('aliases', [])
+                       if alias['port'] != e['id']})
     native_gates = {}
     map_groups = {}
     catalogue_path = catalogue_path or geometry_path.parent / "silksong-room-catalogue.json"
@@ -80,6 +94,8 @@ def build(geometry_path, image_root, output, world, catalogue_path=None):
                         "annotation_x": gate.get("annotationSceneUnitX"),
                         "annotation_y": gate.get("annotationSceneUnitY"),
                         "annotation_enabled": gate.get("enableAnnotation", False),
+                        "in_game_x": gate.get('inGamePositionX'),
+                        "in_game_y": gate.get('inGamePositionY'),
                     }
     for entrance in pool:
         for member in entrance.get("members", [entrance["id"]]):
@@ -96,11 +112,17 @@ def build(geometry_path, image_root, output, world, catalogue_path=None):
                     checks[key].append(name)
                 check_rooms[name].add(room["name"])
 
+    for room_id, label, name in (
+            ('the-slab/slab-first-sinner', 'Boss: First Sinner', 'Journal: First Sinner'),
+            ('the-abyss/abyss-cocoon', 'Lost Lace Boss 1', 'Journal: Lost Lace')):
+        if name in expected:
+            checks[room_id, label].append(name)
+
     rooms = {room["id"]: room for room in geometry["rooms"]}
     scenes = {(room["in_game_id"] or "").casefold() for room in rooms.values()}
     # We're going to build it up as an arbitrary list of dicts, then print it into a file
     # we need a map from scene name to map index, and i want it in python so it's easier to import
-    maps, locations, mapping = [], [], {}
+    maps, locations, mapping, image_manifest = [], [], {}, {}
     missing_images, image_mismatches, rejected, unknown_checks, unknown_entrances = [], [], [], [], []
     physical_entrances, positioned_entrances, positioned_checks = set(), set(), set()
     missing_links, turn_ins, entrance_details = [], {}, {}
@@ -108,7 +130,8 @@ def build(geometry_path, image_root, output, world, catalogue_path=None):
 
     ## Assemble maps
 
-    for room in geometry["rooms"]:
+    for original_room in geometry["rooms"]:
+        room = original_room
         scene = room["in_game_id"]
         width, height = room["image_pixel_width"], room["image_pixel_height"]
         image_name = f"01-geometry/{room['image_guid']}.webp"
@@ -117,6 +140,7 @@ def build(geometry_path, image_root, output, world, catalogue_path=None):
         if image_path.is_file():
             with Image.open(image_path) as image:
                 actual_size = image.size
+            room = map_frame(room, image_path)
         elif scene:
             missing_images.append({"room": room["name"], "scene": scene, "image": image_name})
         if width and height:
@@ -183,11 +207,24 @@ def build(geometry_path, image_root, output, world, catalogue_path=None):
                 physical_entrances.add(name)
                 entrance_details[name] = {"name": name, "room": room["name"], "scene": scene,
                                           "id": entrance["id"], "gate": entrance.get("in_game_id")}
-            point = image_point(entrance, room, width, height, entrance=True)
-            gate = entrance.get("in_game_id") or pool_gates.get(entrance["id"])
+            gate = pool_gates.get(entrance['id']) or entrance.get('in_game_id')
             native = native_gates.get(((scene or "").casefold(), gate))
+            corrected_gate = gate != entrance.get('in_game_id')
+            point = None if corrected_gate else image_point(entrance, room, width, height, entrance=True)
             if point is None and native:
-                point = image_point(native, room, width, height, entrance=True)
+                point = (scene_point(native['in_game_x'], native['in_game_y'], room, width, height, entrance=True)
+                         if corrected_gate else image_point(native, room, width, height, entrance=True))
+            if (point is None and scene == 'Last_Dive' and entrance['id'] == 'the-abyss/last-dive@d2'
+                    and entrance.get('target') == 'the-abyss/abyss-cocoon@d'):
+                # The cinematic leaves from the same spot, there isn't a second door.
+                arrival = next((e for e in room['transitions'] if e.get('in_game_id') == 'door_cutscenePosition'), None)
+                if arrival:
+                    point = image_point(arrival, room, width, height, entrance=True)
+            # These left-hand gates sit beyond the cropped edge of the column image.
+            if point is None and scene == 'Shadow_09' and gate in {'left1', 'left2', 'left3'}:
+                x, y = entrance.get('annotation_x'), entrance.get('annotation_y')
+                if x is not None and 15 <= x < room['scene_min_x'] == 28:
+                    point = scene_point(room['scene_min_x'], y, room, width, height, entrance=True)
             if point is None:
                 continue
             # Keep existing markers for scripted links, without adding new ones.
@@ -232,6 +269,8 @@ def build(geometry_path, image_root, output, world, catalogue_path=None):
             turn_ins[host] = None
 
         if children:
+            if actual_size is None:
+                raise ValueError(f"Map markers have no image: {room['name']}")
             if not scene or scene in mapping:
                 raise ValueError(f"Room map has no unique scene: {room['name']}")
             mapping[scene] = len(maps)
@@ -240,6 +279,8 @@ def build(geometry_path, image_root, output, world, catalogue_path=None):
                 temp_map["location_size"] = max(int(3 * height / room["scene_height"]), 1) # Three scene units tall
                 temp_map["location_border_thickness"] = max(int(0.5 * height / room["scene_height"]), 1)
             maps.append(temp_map)
+            image_manifest[image_name] = dict(sha256=hashlib.sha256(image_path.read_bytes()).hexdigest(),
+                                             width=width, height=height)
             locations.append({"name": room["name"], "children": children}) # Don't add a map with nothing on it
             if "room_group_name" in room:
                 if room["room_group_name"] not in map_groups:
@@ -275,16 +316,49 @@ def build(geometry_path, image_root, output, world, catalogue_path=None):
                     "aliases_resolved_elsewhere": [row for row in unknown_checks if row["name"] not in missing],
                     "nonphysical_links": [row for row in missing_links if row["name"] not in positioned_entrances]},
     }
+    if image_mismatches:
+        raise ValueError('Map images do not match the exported dimensions: ' +
+                         ', '.join(row['room'] for row in image_mismatches))
+    if (output / 'mapping.py').exists():
+        import ast
+        old = ast.parse((output / 'mapping.py').read_text(encoding='utf-8'))
+        previous = next(ast.literal_eval(node.value) for node in old.body
+                        if isinstance(node, ast.Assign) and any(isinstance(t, ast.Name) and t.id == 'mapping'
+                                                               for t in node.targets))
+        lost = previous.keys() - mapping.keys()
+        if lost:
+            raise ValueError('Rebuild would remove existing room maps: ' + ', '.join(sorted(lost)))
     output.mkdir(parents=True, exist_ok=True)
     for filename, data in [("maps.json", maps), ("locations.json", locations), ("errors.json", errors)]:
         (output / filename).write_text(json.dumps(data, indent=1), encoding="utf-8")
     source = "# Generated File\n\nfrom typing import Any\n\nmapping = {\n"
     source += "".join(f"\t{json.dumps(scene)}:{index},\n" for scene, index in mapping.items())
-    source += "}\n\n\ndef ut_page_index(data: Any) -> int:\n\tif data in mapping:\n\t\treturn mapping[data]\n\treturn 0\n\n"
+    source += "}\n\n\ndef ut_page_index(data: Any) -> int:\n\treturn mapping.get(data, -1) if isinstance(data, str) else -1\n\n"
     source += "tracker_map_groups = [\n"
-    source += "".join(f"\t({json.dumps(group)}, [{', '.join(f'({json.dumps(imap)},{json.dumps(imap)})' for imap in maps)}]),\n" for group, maps in map_groups.items())
+    for group, pages in map_groups.items():
+        source += f"\t({json.dumps(group)}, [\n"
+        source += "".join(f"\t\t({json.dumps(page)}, {json.dumps(page)}),\n" for page in pages)
+        source += "\t]),\n"
     source += "]\n\n"
     (output / "mapping.py").write_text(source, encoding="utf-8")
+    if manifest_path:
+        manifest = dict(images=image_manifest,
+                        files={name: hashlib.sha256((output / name).read_bytes()).hexdigest()
+                               for name in ('maps.json', 'locations.json', 'mapping.py')},
+                        inputs={name: hashlib.sha256(path.read_bytes()).hexdigest() for name, path in (
+                            ('geometry', geometry_path), ('catalogue', catalogue_path),
+                            ('graph', world / 'room_graph_data.json'), ('pool', world / 'entrance_pool.json'),
+                            ('logic', world / 'map_logic.json'), ('generator', Path(__file__)),
+                            ('positions', Path(__file__).with_name('location_positions.py')),
+                            ('wishes', Path(__file__).with_name('wishes.py'))) if path.is_file()})
+        manifest_path.parent.mkdir(parents=True, exist_ok=True)
+        manifest_path.write_text(json.dumps(manifest, indent=1), encoding='utf-8')
+    if pack_path:
+        pack_path.parent.mkdir(parents=True, exist_ok=True)
+        with zipfile.ZipFile(pack_path, 'w', compression=zipfile.ZIP_STORED) as pack:
+            for name in sorted(image_manifest):
+                info = zipfile.ZipInfo(name, date_time=(2026, 1, 1, 0, 0, 0))
+                pack.writestr(info, (image_root / Path(name).name).read_bytes())
     return errors
 
 
@@ -294,9 +368,11 @@ if __name__ == "__main__":
     parser.add_argument("--images", type=Path)
     parser.add_argument("--catalogue", type=Path, help="Room catalogue containing native gate annotations")
     parser.add_argument("--output", type=Path, default=Path(__file__).resolve().parent)
+    parser.add_argument('--pack', type=Path, help='Write the matching UT image pack')
+    parser.add_argument('--manifest', type=Path, help='Write validation metadata to this separate file')
     args = parser.parse_args()
     errors = build(args.geometry, args.images or args.geometry.parent / "01-geometry",
-                   args.output, Path(__file__).resolve().parent.parent, args.catalogue)
+                   args.output, Path(__file__).resolve().parent.parent, args.catalogue, args.pack, args.manifest)
     print(f"Missing locations: {len(errors['missing_locs'])}; physical entrances: {len(errors['missing_ents'])}; "
           f"room images: {len(errors['missing_images'])}")
 

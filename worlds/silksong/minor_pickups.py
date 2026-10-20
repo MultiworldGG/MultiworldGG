@@ -27,10 +27,10 @@ MINOR_PICKUP_SOURCE: tuple[tuple[str, str, str, float, float], ...] = (
     ('Deep Docks - Beast Shard', 'dock_11', 'Great Shard', 100.63, 6.28),
     ("Sinner's Road - Frayed Rosary String", 'dust_01', 'Rosary_Set_Frayed', 76.43, 2.7178),
     ("Sinner's Road - Shard Bundle", 'dust_06', 'Shard Pouch', 26.11, 96.25),
-    ('Greymoor - Shard Bundle #1', 'greymoor_05', 'Shard Pouch', 59.01, 62.74),
-    ('Greymoor - Shard Bundle #2', 'greymoor_12', 'Shard Pouch', 61.29, 14.4),
-    ('Greymoor - Frayed Rosary String #1', 'greymoor_15', 'Rosary_Set_Frayed', 64.41, 24.21),
-    ('Greymoor - Frayed Rosary String #2', 'greymoor_15b', 'Rosary_Set_Frayed', 91.86, 35.26),
+    ('Greymor - totally free to take shell shard cache at the top', 'greymoor_05', 'Shard Pouch', 59.01, 62.74),
+    ('Greymoor that shard bundle i hate at the left side of the room', 'greymoor_12', 'Shard Pouch', 61.29, 14.4),
+    ('Greymoor - Frayed Rosary String from dead bug guarded by rat', 'greymoor_15', 'Rosary_Set_Frayed', 64.41, 24.21),
+    ('Greymoor - Frayed Rosary String in tiny ass hole above left lower entrance', 'greymoor_15b', 'Rosary_Set_Frayed', 91.86, 35.26),
     ('High Halls - Pale Rosary Necklace', 'hang_06_bank', 'Rosary_Set_Huge_White', 73.41, 35.3895),
     ('High Halls - Frayed Rosary String', 'hang_16', 'Rosary_Set_Frayed', 68.15, 6.38),
     ('Whispering Vaults - Heavy Rosary Necklace', 'library_02', 'Rosary_Set_Large', 76.437, 48.02),
@@ -57,7 +57,7 @@ MINOR_PICKUP_SOURCE: tuple[tuple[str, str, str, float, float], ...] = (
     ('Underworks - Pristine Core', 'under_17', 'Pristine Core', 75.44, 23.37),
     ('Underworks - Shard Bundle #2', 'under_18', 'Shard Pouch', 34.14, 34.3),
     ('Wisp Thicket - Rosary Necklace', 'wisp_02', 'Rosary_Set_Medium', 111.32, 37.99),
-    ('Greymoor - Frayed Rosary String #3', 'wisp_03', 'Rosary_Set_Frayed', 62.89, 35.37),
+    ('Greymoor - Yanarby stash with a Frayed Rosary', 'wisp_03', 'Rosary_Set_Frayed', 62.89, 35.37),
 )
 
 MINOR_PICKUP_REWARD_BY_ASSET: dict[str, str] = {

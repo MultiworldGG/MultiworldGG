@@ -1159,10 +1159,16 @@ def get_players_string(ctx: Context):
 
 def get_status_string(ctx: Context, team: int, tag: str):
     text = f"Player Status on team {team}:"
+    total_locations = 0
+    total_checked = 0
     for slot in ctx.locations:
         connected = len(ctx.clients[team][slot])
         tagged = len([client for client in ctx.clients[team][slot] if tag in client.tags])
-        completion_text = f"({len(ctx.location_checks[team, slot])}/{len(ctx.locations[slot])})"
+        checked = len(ctx.location_checks[team, slot])
+        locations = len(ctx.locations[slot])
+        total_checked += checked
+        total_locations += locations
+        completion_text = f"({checked}/{locations})"
         tag_text = f" {tagged} of which are tagged {tag}" if connected and tag else ""
         status_text = (
             " and has finished." if ctx.client_game_state[team, slot] == ClientStatus.CLIENT_GOAL else
@@ -1171,7 +1177,7 @@ def get_status_string(ctx: Context, team: int, tag: str):
             )
         text += f"\n{ctx.get_aliased_name(team, slot)} has {connected} connection{'' if connected == 1 else 's'}" \
                 f"{tag_text}{status_text} {completion_text}"
-    return text
+    return text + f"\nMultiworld locations checked: {total_checked}/{total_locations}"
 
 
 def get_received_items(ctx: Context, team: int, player: int, remote_items: bool) -> typing.List[NetworkItem]:
@@ -1672,7 +1678,7 @@ class ClientMessageProcessor(CommonCommandProcessor):
         return True
 
     def _cmd_status(self, tag:str="") -> bool:
-        """Get status information about your team.
+        """Get status information about your team, including checked and total multiworld locations.
         Optionally mention a Tag name and get information on who has that Tag.
         For example: DeathLink or EnergyLink."""
         self.output(get_status_string(self.ctx, self.client.team, tag))
@@ -2513,7 +2519,7 @@ class ServerCommandProcessor(CommonCommandProcessor):
         return True
 
     def _cmd_status(self, tag: str = "") -> bool:
-        """Get status information about teams.
+        """Get status information about teams, including checked and total multiworld locations.
         Optionally mention a Tag name and get information on who has that Tag.
         For example: DeathLink or EnergyLink."""
         for team in self.ctx.clients:

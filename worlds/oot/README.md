@@ -18,8 +18,11 @@ The setup guide also covers the current client/adjuster requirement: use the new
 ## Requirements
 
 - Archipelago 0.6.4 or newer
-- An Ocarina of Time v1.0 NTSC-U or NTSC-J ROM
+- An Ocarina of Time v1.0 NTSC-U or NTSC-J ROM (only needed to patch and play)
 - A supported N64 emulator
+
+Generation produces a new `.apoot` procedural patch and requires no ROM. Each player
+applies their patch with the Ocarina of Time Client or Adjuster and their own base ROM.
 
 ## Documentation
 

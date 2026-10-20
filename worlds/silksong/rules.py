@@ -4,7 +4,7 @@ from .options import get_silk_and_soul_points
 
 from BaseClasses import Item, ItemClassification
 from Options import OptionError
-from rule_builder.rules import Has, HasAny, True_
+from rule_builder.rules import Has, HasAny, False_, True_
 from worlds.generic.Rules import add_item_rule
 
 from .items import (
@@ -285,7 +285,7 @@ def set_silksong_rules(world) -> None:
     )
     skips_tier = 0
     proficient_combat = world.get_proficient_combat_mode()
-    proficient_movement = bool(getattr(getattr(world.options, "proficient_movement", None), "value", 0))
+    platforming_capability = int(world.options.platforming_capability.value)
     flea_brew_jump_logic = bool(getattr(getattr(world.options, "flea_brew_jump_logic", None), "value", 0))
     sharpdart_logic = bool(getattr(getattr(world.options, "sharpdart_logic", None), "value", 0))
     red_tool_stall_tier = int(world.options.red_tool_stall_logic.value)
@@ -402,7 +402,9 @@ def set_silksong_rules(world) -> None:
                     )
                 ),
                 proficient_combat=proficient_combat,
-                proficient_movement=proficient_movement,
+                platforming_capability=platforming_capability,
+                directional_abilities=world.get_directional_abilities(),
+                damage_boost_tier=int(world.options.damage_boost_logic.value),
                 flea_brew_jump_logic=flea_brew_jump_logic,
                 sharpdart_logic=sharpdart_logic,
                 red_tool_stall_tier=red_tool_stall_tier,
@@ -443,7 +445,9 @@ def set_silksong_rules(world) -> None:
                     )
                 ),
                 proficient_combat=proficient_combat,
-                proficient_movement=proficient_movement,
+                platforming_capability=platforming_capability,
+                directional_abilities=world.get_directional_abilities(),
+                damage_boost_tier=int(world.options.damage_boost_logic.value),
                 flea_brew_jump_logic=flea_brew_jump_logic,
                 sharpdart_logic=sharpdart_logic,
                 red_tool_stall_tier=red_tool_stall_tier,
@@ -482,7 +486,9 @@ def set_silksong_rules(world) -> None:
                     pollip_heart_count=pollip_heart_count,
                     native_abstract_regions=True,
                     proficient_combat=proficient_combat,
-                    proficient_movement=proficient_movement,
+                    platforming_capability=platforming_capability,
+                    directional_abilities=world.get_directional_abilities(),
+                    damage_boost_tier=int(world.options.damage_boost_logic.value),
                     flea_brew_jump_logic=flea_brew_jump_logic,
                     sharpdart_logic=sharpdart_logic,
                     red_tool_stall_tier=red_tool_stall_tier,
@@ -518,7 +524,9 @@ def set_silksong_rules(world) -> None:
                 pollip_heart_count=pollip_heart_count,
                 native_abstract_regions=True,
                 proficient_combat=proficient_combat,
-                proficient_movement=proficient_movement,
+                platforming_capability=platforming_capability,
+                directional_abilities=world.get_directional_abilities(),
+                damage_boost_tier=int(world.options.damage_boost_logic.value),
                 flea_brew_jump_logic=flea_brew_jump_logic,
                 sharpdart_logic=sharpdart_logic,
                 red_tool_stall_tier=red_tool_stall_tier,
@@ -545,6 +553,7 @@ def set_silksong_rules(world) -> None:
         if (
             randomize_needle_upgrades
             and location_name == RESTORATION_OF_BELLHART_QUEST_LOCATION
+            and shuffled_requirements is None
         ):
             # FullQuestBase Belltown House Start requires nailUpgrades > 0.
             # The client mirrors received Progressive Needle Upgrades into
@@ -556,6 +565,7 @@ def set_silksong_rules(world) -> None:
         if (
             relic_mode != 'vanilla'
             and location_name == RESTORATION_OF_BELLHART_QUEST_LOCATION
+            and shuffled_requirements is None
         ):
             # BelltownRelicDealerGaveRelic is set only when Scrounge takes at
             # least one deposited relic. In vanilla mode the free Moss Grotto
@@ -568,7 +578,7 @@ def set_silksong_rules(world) -> None:
         if location_name in logic_unknown_locations and (
             MAPPER_GRAPH_ENABLED or location_name not in LOGIC_UNKNOWN_LOCATIONS
         ):
-            location_rule = True_()
+            location_rule = False_() if getattr(world.multiworld, 'generation_is_fake', False) else True_()
 
         if (
             crest_slot_locket_logic
@@ -665,7 +675,9 @@ def set_silksong_rules(world) -> None:
                         )
                     ),
                     proficient_combat=proficient_combat,
-                    proficient_movement=proficient_movement,
+                    platforming_capability=platforming_capability,
+                    directional_abilities=world.get_directional_abilities(),
+                    damage_boost_tier=int(world.options.damage_boost_logic.value),
                     flea_brew_jump_logic=flea_brew_jump_logic,
                     sharpdart_logic=sharpdart_logic,
                     red_tool_stall_tier=red_tool_stall_tier,
@@ -740,7 +752,9 @@ def set_silksong_rules(world) -> None:
         randomize_swim=randomize_swim,
         native_abstract_regions=True,
         proficient_combat=proficient_combat,
-        proficient_movement=proficient_movement,
+        platforming_capability=platforming_capability,
+        directional_abilities=world.get_directional_abilities(),
+        damage_boost_tier=int(world.options.damage_boost_logic.value),
         flea_brew_jump_logic=flea_brew_jump_logic,
         sharpdart_logic=sharpdart_logic,
         red_tool_stall_tier=red_tool_stall_tier,

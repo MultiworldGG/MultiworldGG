@@ -384,8 +384,8 @@ def lum_color_ratio(val):
         return pow((val + 0.055) / 1.055, 2.4)
 
 
-def generate_random_color():
-    return [random.getrandbits(8), random.getrandbits(8), random.getrandbits(8)]
+def generate_random_color(rng=random):
+    return [rng.getrandbits(8), rng.getrandbits(8), rng.getrandbits(8)]
 
 
 def hex_to_color(option):

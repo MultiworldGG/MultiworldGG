@@ -2,7 +2,14 @@
 Option definitions for Paper Mario 64
 """
 
-from Options import Choice, Range, DeathLink, Toggle, DefaultOnToggle, FreeText, PerGameCommonOptions
+from Options import (
+    Choice,
+    Range,
+    Toggle,
+    DefaultOnToggle,
+    FreeText,
+    PerGameCommonOptions,
+)
 from dataclasses import dataclass
 
 
@@ -1224,5 +1231,3 @@ class PaperMarioOptions(PerGameCommonOptions):
     mute_danger_beeps: MuteDangerBeeps
 
     pmr_settings_string: PMRSiteSettingsString
-
-    death_link: DeathLink

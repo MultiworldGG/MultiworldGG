@@ -14,6 +14,8 @@ def get_weights(path):
             return yaml.load(f, Loader=yaml.SafeLoader)
     elif urllib.parse.urlparse(path).scheme in ['http', 'https']:
         return yaml.load(urllib.request.urlopen(path), Loader=yaml.FullLoader)
+    else:
+        raise FileNotFoundError(f"Settings file not found: '{path}'")
 
 def roll_settings(weights):
     while True:
@@ -120,18 +122,27 @@ def roll_settings(weights):
     ret.accessibility = get_choice('accessibility')
     ret.restrict_boss_items = get_choice('restrict_boss_items')
 
+    # overworld_layout is the direct key. overworld_shuffle is a layout alias
+    # (vanilla/grid/wild), with legacy parallel/full meaning wild + a default
+    # parallel flag. overworld_parallel always wins when present.
     overworld_layout = get_choice('overworld_layout')
-    ret.ow_layout = overworld_layout if overworld_layout != 'none' else 'vanilla'
-    ret.ow_parallel = get_choice_bool('overworld_parallel')
     overworld_shuffle = get_choice('overworld_shuffle')
-    if overworld_shuffle == 'parallel':
+    if overworld_layout is not None:
+        ret.ow_layout = overworld_layout if overworld_layout != 'none' else 'vanilla'
+    elif overworld_shuffle in ('parallel', 'full'):
         ret.ow_layout = 'wild'
+    elif overworld_shuffle is not None:
+        ret.ow_layout = overworld_shuffle if overworld_shuffle != 'none' else 'vanilla'
+
+    if overworld_shuffle == 'parallel':
         ret.ow_parallel = True
     elif overworld_shuffle == 'full':
-        ret.ow_layout = 'wild'
         ret.ow_parallel = False
+    ow_parallel = get_choice_bool('overworld_parallel')
+    if ow_parallel is not None:
+        ret.ow_parallel = ow_parallel
     ret.ow_terrain = get_choice_bool('overworld_terrain')
-    valid_options = {'none': 'none', 'polar': 'polar', 'grouped': 'polar', 'chaos': 'unrestricted', 'unrestricted': 'unrestricted'}
+    valid_options = {'none': 'none', 'polar': 'polar', 'grouped': 'grouped', 'chaos': 'unrestricted', 'unrestricted': 'unrestricted'}
     ret.ow_crossed = get_choice('overworld_crossed')
     ret.ow_crossed = valid_options[ret.ow_crossed] if ret.ow_crossed in valid_options else 'none'
     ret.ow_keepsimilar = get_choice_bool('overworld_keepsimilar')

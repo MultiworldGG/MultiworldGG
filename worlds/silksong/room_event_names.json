@@ -1666,11 +1666,6 @@
       "Flea: Pilgrim's Rest"
     ]
   },
-  "event:mapper/cb3993fd-b414-4c2f-b348-5126c86110a0": {
-    "name": "Far Fields Pilgrim's Rest Church - Rhinogrund miniboss fight",
-    "kind": "miniboss",
-    "locations": []
-  },
   "event:mapper/155d2d7d-749c-43c7-a626-f90e59b6f78c": {
     "name": "Far Fields Pilgrim's Rest Church - Door switch",
     "kind": "switch",
@@ -1906,11 +1901,6 @@
       "Far Fields - Rosary Cache #6"
     ]
   },
-  "event:mapper/ad86a3dd-97bb-489f-9a5c-770535255953": {
-    "name": "Far Fields Skull Room West - Hoker enemy",
-    "kind": "enemy",
-    "locations": []
-  },
   "event:mapper/fed44522-1cb6-4044-bb55-d5ba6af1bb5a": {
     "name": "Far Fields Skull Room West - Spine break blast rock",
     "kind": "blockade",
@@ -1950,11 +1940,6 @@
       "Far Fields - Rosary Cache #8"
     ]
   },
-  "event:mapper/ad488f84-fc0c-4e3b-9d67-12cf15721e4a": {
-    "name": "Far Fields Skull Room East - Hoker enemy",
-    "kind": "enemy",
-    "locations": []
-  },
   "event:mapper/c5fc9095-edd9-4228-a2dc-899833c115b8": {
     "name": "Far Fields Skull Room East - Mister Mushroom Meeting Far Fields",
     "kind": "event",
@@ -1968,9 +1953,7 @@
   "event:mapper/4569d53f-f69a-47be-a1ac-46736e1da290": {
     "name": "Far Fields - Shell Shard Cache #8",
     "kind": "collectible",
-    "locations": [
-      "Far Fields - Shell Shard Cache #8"
-    ]
+    "locations": []
   },
   "event:mapper/c9aa76d7-d547-4ebf-a38d-9db81e7cd644": {
     "name": "Far Fields (Skull Cave) - Mask Shard",
@@ -2451,10 +2434,10 @@
     ]
   },
   "event:mapper/55df7d93-322d-4514-b91e-e79ecb43e782": {
-    "name": "Shellwood - Pollip Heart #3",
+    "name": "Pollip Heart Cling Grip Room",
     "kind": "collectible",
     "locations": [
-      "Shellwood - Pollip Heart #3"
+      "Pollip Heart Cling Grip Room"
     ]
   },
   "event:mapper/27c9f587-ce44-47a5-8a93-494bdf16f46b": {
@@ -2519,10 +2502,10 @@
     "locations": []
   },
   "event:mapper/3e10ff53-11cc-4ef7-ad85-596283eb81d5": {
-    "name": "Shellwood - Pollip Heart #1",
+    "name": "Pollip Heart Left Big Room",
     "kind": "collectible",
     "locations": [
-      "Shellwood - Pollip Heart #1"
+      "Pollip Heart Left Big Room"
     ]
   },
   "event:mapper/131cbcdb-bcc5-4dfd-98f7-ef7901cfb691": {
@@ -2570,10 +2553,10 @@
     "locations": []
   },
   "event:mapper/e00aa296-5eff-4a52-963d-79e46f92d5d7": {
-    "name": "Shellwood - Pollip Heart #2",
+    "name": "Pollip Heart Flower Room",
     "kind": "collectible",
     "locations": [
-      "Shellwood - Pollip Heart #2"
+      "Pollip Heart Flower Room"
     ]
   },
   "event:mapper/906d3bff-5700-4551-acf8-32b63d7611e8": {
@@ -2582,10 +2565,10 @@
     "locations": []
   },
   "event:mapper/395cf407-2776-4a46-b3db-abdc118bf21c": {
-    "name": "Shellwood - Pollip Heart #5",
+    "name": "Pollip Heart Hidden Room",
     "kind": "collectible",
     "locations": [
-      "Shellwood - Pollip Heart #5"
+      "Pollip Heart Hidden Room"
     ]
   },
   "event:mapper/de6a65d1-7fe6-42b4-b493-584013701de8": {
@@ -2626,10 +2609,10 @@
     "locations": []
   },
   "event:mapper/bc01a957-802d-4d96-81c9-8e8585ec8a2a": {
-    "name": "Shellwood - Mask Shard",
+    "name": "Mask Shard: Shellwood",
     "kind": "collectible",
     "locations": [
-      "Shellwood - Mask Shard"
+      "Mask Shard: Shellwood"
     ]
   },
   "event:mapper/06276091-a0f2-4789-a76f-c74c45bbaf39": {
@@ -2640,10 +2623,10 @@
     ]
   },
   "event:mapper/73f29fa5-ad19-466b-a0c5-55396e3644c6": {
-    "name": "Shellwood - Pollip Heart #6",
+    "name": "Pollip Heart Right Side Big Room",
     "kind": "collectible",
     "locations": [
-      "Shellwood - Pollip Heart #6"
+      "Pollip Heart Right Side Big Room"
     ]
   },
   "event:mapper/066e35f0-51e1-4bc6-891a-ed8e49ff006a": {
@@ -3037,13 +3020,6 @@
       "Flea: Bellhart"
     ]
   },
-  "event:mapper/f00c4d34-3d84-4746-b034-961203e08150": {
-    "name": "Boss: Widow",
-    "kind": "boss",
-    "locations": [
-      "Boss: Widow"
-    ]
-  },
   "event:mapper/94ea2d54-b8d0-4055-8c36-edc237378236": {
     "name": "Bellhart - Bellshrine",
     "kind": "collectible",
@@ -3223,7 +3199,7 @@
     "locations": []
   },
   "event:mapper/bbbfbd7e-87e1-44ce-9d77-34356f89f0b9": {
-    "name": "Greymoor Crow Court - Crow Father",
+    "name": "Greymoor Craw Court - Crow Father",
     "kind": "boss",
     "locations": []
   },
@@ -3235,27 +3211,27 @@
     ]
   },
   "event:mapper/b39d642d-8a47-4e88-a14d-90dba73dbf1f": {
-    "name": "Greymoor Crow Court - Crow bell",
+    "name": "Greymoor Craw Court - Crow bell",
     "kind": "collectible",
     "locations": []
   },
   "event:mapper/26d1e6f5-b722-4821-ab61-42504c901169": {
-    "name": "Greymoor Crow Court - Wood wall",
+    "name": "Greymoor Craw Court - Wood wall",
     "kind": "blockade",
     "locations": []
   },
   "event:mapper/reviewed:crawfather-defeated": {
-    "name": "Greymoor Crow Court - Crawfather Defeated",
+    "name": "Greymoor Craw Court - Crawfather Defeated",
     "kind": "event",
     "locations": []
   },
   "event:mapper/dc2f7438-35b4-4939-a1f1-c6a046bdcb08": {
-    "name": "Greymoor Crow Nest - Balloon lever",
+    "name": "Greymoor Craw Nest - Balloon lever",
     "kind": "switch",
     "locations": []
   },
   "event:mapper/39352487-8748-4f63-99f8-05f29a14caa7": {
-    "name": "Greymoor Crow Nest - Craw Lake Gauntlet",
+    "name": "Greymoor Craw Nest - Craw Lake Gauntlet",
     "kind": "gauntlet",
     "locations": []
   },
@@ -3389,10 +3365,10 @@
     "locations": []
   },
   "event:mapper/399ff2f5-9205-4154-852f-68dd2752327a": {
-    "name": "Relic: Bone Scroll (Greymoor)",
+    "name": "Relic: Bone Scroll (Greymoor) at bugs lonely resting place",
     "kind": "collectible",
     "locations": [
-      "Relic: Bone Scroll (Greymoor)"
+      "Relic: Bone Scroll (Greymoor) at bugs lonely resting place"
     ]
   },
   "event:mapper/d46d73d0-a65d-4132-b613-a2d7981a3c7b": {
@@ -4720,16 +4696,6 @@
     "kind": "switch",
     "locations": []
   },
-  "event:mapper/4abc52e9-4841-4c56-b8e6-688817e2f3ff": {
-    "name": "Underworks Clawline Room - Underworks: Gauntlet #3",
-    "kind": "gauntlet",
-    "locations": []
-  },
-  "event:mapper/c5d0fd1a-0170-482b-847d-106937db8af5": {
-    "name": "Underworks East Shaft - Underworks: Flip Switch #3",
-    "kind": "switch",
-    "locations": []
-  },
   "event:mapper/1733ac4b-c34e-4248-9585-fe16f874a928": {
     "name": "Underworks Eastern Gauntlet - Underworks: Lever #1",
     "kind": "switch",
@@ -4815,29 +4781,14 @@
     "kind": "travel",
     "locations": []
   },
-  "event:mapper/7954d0d0-4544-449f-ab7e-6dcfbd843718": {
-    "name": "Broken Elevator - Locked Door",
-    "kind": "blockade",
-    "locations": []
-  },
-  "event:mapper/7f216e4a-24b2-4053-8528-a008c394a594": {
-    "name": "Underworks Map Room - Underworks: Break Wall #4",
-    "kind": "blockade",
-    "locations": []
-  },
   "event:mapper/reviewed:underworks-western-gauntlet": {
     "name": "Underworks Western Gauntlet - Underworks Western Gauntlet",
     "kind": "event",
     "locations": []
   },
   "event:mapper/f0e546ed-9791-4077-bcee-2bb58e51fe49": {
-    "name": "Songclave Bellshrine - bellshrine switch",
+    "name": "Songclave - Lever Bellshrine Enclave",
     "kind": "switch",
-    "locations": []
-  },
-  "event:mapper/b7e3016e-56c1-4f49-869a-83c908b46ac8": {
-    "name": "Songclave Bellshrine - bench",
-    "kind": "bench",
     "locations": []
   },
   "event:mapper/reviewed:songclave-bellshrine-activated": {
@@ -4930,16 +4881,6 @@
     "kind": "event",
     "locations": []
   },
-  "event:mapper/a4d09e81-8fd7-4c22-8c2c-d2a90c4c4e71": {
-    "name": "Choral Chambers Outside Spa - Gauntlet Fight",
-    "kind": "gauntlet",
-    "locations": []
-  },
-  "event:mapper/c2a9d8b0-280e-4cee-8aad-0ccf34e05fb2": {
-    "name": "Choral Chambers Outside Spa - Second Sentinel Encounter",
-    "kind": "resource",
-    "locations": []
-  },
   "event:mapper/reviewed:choral-spa-gauntlet": {
     "name": "Choral Chambers Outside Spa - Choral Spa Gauntlet",
     "kind": "event",
@@ -4987,11 +4928,6 @@
   },
   "event:mapper/reviewed:wandering-merchant-completed": {
     "name": "Choral Chambers Merchant Room - Wandering Merchant Completed",
-    "kind": "event",
-    "locations": []
-  },
-  "event:mapper/05da2ea3-0da3-421e-b7cd-1317630a6461": {
-    "name": "Choral Chambers Below Spa - Second Sentinel Encounter",
     "kind": "event",
     "locations": []
   },
@@ -5059,11 +4995,6 @@
     "kind": "blockade",
     "locations": []
   },
-  "event:mapper/806bfab6-defa-49c9-9ef8-967920cc7b07": {
-    "name": "Memorium Entrance Tunnel - Second Sentinel Encounter",
-    "kind": "event",
-    "locations": []
-  },
   "event:mapper/c4e1c790-d019-4fdb-94d1-e1f5f6b35a87": {
     "name": "Grand Bellway Shaft - Lace Second Encounter",
     "kind": "event",
@@ -5118,13 +5049,8 @@
     "locations": []
   },
   "event:mapper/84efce81-d731-423a-ab13-d9b197c0bdd6": {
-    "name": "Choral Chambers East to West - door switch",
+    "name": "Choral Chambers East to West - Lever East to West",
     "kind": "switch",
-    "locations": []
-  },
-  "event:mapper/098ca929-dddd-4ee1-b241-40db9799bfbe": {
-    "name": "Choral Chambers East to West - Second Sentinel Encounter",
-    "kind": "event",
     "locations": []
   },
   "event:mapper/282aae6f-3964-4935-93ea-5beaa6ef9fa4": {
@@ -5178,28 +5104,8 @@
     "kind": "bench",
     "locations": []
   },
-  "event:mapper/becd88f4-9704-4ec2-85cf-4d414b2369bf": {
-    "name": "Cogwork Core Breakable Walls - Cogwork Core: Break Wall #3",
-    "kind": "blockade",
-    "locations": []
-  },
-  "event:mapper/ad10cfff-02de-4eb6-be1d-44946d48355f": {
-    "name": "Cogwork Core Breakable Walls - Cogwork Core: Break Wall #4",
-    "kind": "blockade",
-    "locations": []
-  },
   "event:mapper/8ad12e59-d813-497e-a5f7-ffae9a9d534e": {
     "name": "Cogwork Core Breakable Walls - Cogwork Core: Break Wall #5",
-    "kind": "blockade",
-    "locations": []
-  },
-  "event:mapper/fc6a5c06-5a71-4e89-a4b0-47a536e48e5d": {
-    "name": "Cogwork Core Breakable Walls - Cogwork Core: Break Wall #6",
-    "kind": "blockade",
-    "locations": []
-  },
-  "event:mapper/cc013dd5-6e87-498b-97aa-cfdb8068a587": {
-    "name": "Cogwork Core Breakable Walls - Cogwork Core: Break Wall #7",
     "kind": "blockade",
     "locations": []
   },
@@ -5853,6 +5759,16 @@
     "kind": "event",
     "locations": []
   },
+  "event:mapper/reviewed:khann-memory-entry": {
+    "name": "Coral Tower - Enter Khann's Memory",
+    "kind": "event",
+    "locations": []
+  },
+  "event:mapper/reviewed:khann-memory-enemies": {
+    "name": "Coral Tower - Memory Gauntlet Combat",
+    "kind": "event",
+    "locations": []
+  },
   "event:mapper/d3f813ea-2390-46b9-ba81-a529dcec533f": {
     "name": "Coral Tower Entrance - Resting Site: Sands of Karak",
     "kind": "event",
@@ -5947,9 +5863,11 @@
     ]
   },
   "event:mapper/260cb049-e57d-4d5e-8b29-983c717b1af5": {
-    "name": "Slab Arena - Key of Heretic",
+    "name": "Key of Heretic",
     "kind": "collectible",
-    "locations": []
+    "locations": [
+      "Key of Heretic"
+    ]
   },
   "event:mapper/26123de3-3769-41c2-9cdf-ec537fbd4f68": {
     "name": "Slab Arena - Gauntlet Fight",
@@ -6009,14 +5927,11 @@
     "locations": []
   },
   "event:mapper/89c81e1d-f72a-49a0-9d2a-914ed763e7fc": {
-    "name": "Slab Indolent Room - Indolent Key",
+    "name": "Key of Indolent",
     "kind": "collectible",
-    "locations": []
-  },
-  "event:mapper/fefde6db-e7a0-4bee-863d-06cb5f2a2512": {
-    "name": "Slab Poodle - Exit Breakable Wall Blockade",
-    "kind": "blockade",
-    "locations": []
+    "locations": [
+      "Key of Indolent"
+    ]
   },
   "event:mapper/3c32a463-f570-4ecd-af18-f8f49d1275af": {
     "name": "Slab Secret Side Room - Breakable Wall Blockade",
@@ -7118,6 +7033,455 @@
   "event:mapper/f09d3b24-064c-4d34-9884-cb828131858e": {
     "name": "Bilewater West Secret Rooms - bud hall wall 3",
     "kind": "blockade",
+    "locations": []
+  },
+  "event:mapper/27d2fcc9-a7a9-47b0-b544-19cc0ff98a1c": {
+    "name": "Slab Capture: Far Fields",
+    "kind": "logic-point",
+    "locations": []
+  },
+  "event:mapper/82e5438a-c4d7-411c-9dca-71bc23d6a2e4": {
+    "name": "Memorium Entrance Tunnel - Second Sentinel Encounter",
+    "kind": "event",
+    "locations": []
+  },
+  "event:mapper/b779369b-04de-4ae6-a301-e35e82de1b40": {
+    "name": "Choral Chambers East to West - Second Sentinel Encounter",
+    "kind": "event",
+    "locations": []
+  },
+  "event:mapper/5c93f00c-6c72-4316-b5ff-3e13d2009d7d": {
+    "name": "Greymoor Towers Patio - Sleeping Garmond",
+    "kind": "event",
+    "locations": []
+  },
+  "event:mapper/338a5fbb-6f58-4a2d-a357-8ec089601ac5": {
+    "name": "Choral Chambers Below Spa - Second Sentinel Encounter",
+    "kind": "event",
+    "locations": []
+  },
+  "event:mapper/dbefa28e-af56-4324-8410-439ca7da5851": {
+    "name": "Slab Arena - Bench Upper",
+    "kind": "bench",
+    "locations": []
+  },
+  "event:mapper/8dd9205d-4b92-4ef4-94de-f359badde026": {
+    "name": "Slab Arena - Bench Lower",
+    "kind": "bench",
+    "locations": []
+  },
+  "event:mapper/7b48b918-7dd5-4cf5-8ffa-f6f2f1e65385": {
+    "name": "Slab Cell - apostate door mask shard",
+    "kind": "lock",
+    "locations": []
+  },
+  "event:mapper/88445b54-102c-4fae-91c4-e515df880f22": {
+    "name": "Slab Cell - heretic door first sinner",
+    "kind": "lock",
+    "locations": []
+  },
+  "event:mapper/87c776f4-cb65-4c93-93f8-e17cf1ca84b2": {
+    "name": "Slab Bellway - Bench",
+    "kind": "bench",
+    "locations": []
+  },
+  "event:mapper/a1869328-015b-47d8-90a4-cee45c1b3745": {
+    "name": "Slab Cavern Exit - cavern blockade",
+    "kind": "blockade",
+    "locations": []
+  },
+  "event:mapper/87da0564-cb35-47e7-8fb3-55a5e95f5788": {
+    "name": "Slab Cavern Exit - indolent door",
+    "kind": "lock",
+    "locations": []
+  },
+  "event:mapper/f8038f26-66d1-4827-9dc2-168038ad6536": {
+    "name": "Slab Cavern Exit - enemy gauntlet",
+    "kind": "gauntlet",
+    "locations": []
+  },
+  "event:mapper/6a15b962-9c27-46ed-9281-5d5df248cca2": {
+    "name": "Slab Chilly Top - slab_jail_lever",
+    "kind": "switch",
+    "locations": []
+  },
+  "event:mapper/9721a931-d5d6-47ea-8b1f-e11c21d14fd5": {
+    "name": "Slab First Sinner Antechamber - door_lock_1",
+    "kind": "lock",
+    "locations": []
+  },
+  "event:mapper/ced05d73-bfb1-4d0d-ac99-a5a645fad125": {
+    "name": "Slab First Sinner Antechamber - door_lock_2",
+    "kind": "lock",
+    "locations": []
+  },
+  "event:mapper/175019d8-c1d9-4640-8622-36357ed24189": {
+    "name": "Slab First Sinner Antechamber - door_lock_3",
+    "kind": "lock",
+    "locations": []
+  },
+  "event:mapper/36d3d047-e426-4573-ae69-cceb5ea3b846": {
+    "name": "Slab First Sinner Antechamber - door_lock_4",
+    "kind": "lock",
+    "locations": []
+  },
+  "event:mapper/1ce486d0-78c0-41fb-90f3-eb363f661211": {
+    "name": "Clover Dancers - Conjoined heart",
+    "kind": "collectible",
+    "locations": []
+  },
+  "event:mapper/399c5eda-e776-4279-a0f0-ba20a4913047": {
+    "name": "Boss: Clover Dancers",
+    "kind": "boss",
+    "locations": [
+      "Boss: Clover Dancers"
+    ]
+  },
+  "event:mapper/f7ff1826-8efc-46f1-92a2-82bd5666acf9": {
+    "name": "Clover Dancers - Clover Dancers 2",
+    "kind": "boss",
+    "locations": []
+  },
+  "event:mapper/8b856b65-4f98-495a-9924-0b2bbe47ddca": {
+    "name": "Dead Verdania Bench - Dead Verdania Bench",
+    "kind": "bench",
+    "locations": []
+  },
+  "event:mapper/d957010c-3c3f-45fc-933f-a07211b2a4dd": {
+    "name": "Verdania - Map Pickup",
+    "kind": "collectible",
+    "locations": [
+      "Verdania - Map Pickup"
+    ]
+  },
+  "event:mapper/42ee8ec7-1a86-4857-8002-dc2ae6f42649": {
+    "name": "Dead Verdania Main - Dead Verdania Breakable Wall Left Side",
+    "kind": "blockade",
+    "locations": []
+  },
+  "event:mapper/6f5a2f7c-308d-427a-bdad-1398c045e4ca": {
+    "name": "Dead Verdania Main - Dead Verdania Breakable Wall Right Side",
+    "kind": "blockade",
+    "locations": []
+  },
+  "event:mapper/eaca2aab-749c-4919-8c8b-ec178d17a991": {
+    "name": "Palestag - Verdania Essence 3",
+    "kind": "collectible",
+    "locations": []
+  },
+  "event:mapper/ca4ae3ad-472a-4c14-a0f4-61a228696853": {
+    "name": "Palestag - Verdania Essence 4",
+    "kind": "collectible",
+    "locations": []
+  },
+  "event:mapper/9d26e16d-b819-414d-8120-3bc5cbdf84ff": {
+    "name": "Palestag - Verdania Essence 5",
+    "kind": "collectible",
+    "locations": []
+  },
+  "event:mapper/b991b62f-80a8-4df9-813e-b59d7a316fd5": {
+    "name": "Palestag - Verdania Essence 6",
+    "kind": "collectible",
+    "locations": []
+  },
+  "event:mapper/4831951b-3a5c-41ac-bb5b-3b93d185aaa9": {
+    "name": "Palestag - Verdania Essence 7",
+    "kind": "collectible",
+    "locations": []
+  },
+  "event:mapper/7e414719-d452-4954-8204-827c64b71b24": {
+    "name": "Boss: Palestag",
+    "kind": "boss",
+    "locations": [
+      "Boss: Palestag"
+    ]
+  },
+  "event:mapper/fd0cb7fe-a628-4913-a770-da27fed1ce2a": {
+    "name": "Verdania Big Button Room - Button LR",
+    "kind": "switch",
+    "locations": []
+  },
+  "event:mapper/e05d0b0e-ee06-4cad-ae61-51110df5ddc8": {
+    "name": "Verdania Big Button Room - Button UR",
+    "kind": "switch",
+    "locations": []
+  },
+  "event:mapper/3b6c560d-679b-4261-9067-c05a8af22f42": {
+    "name": "Verdania Big Button Room - Button L",
+    "kind": "switch",
+    "locations": []
+  },
+  "event:mapper/1700ef24-8183-4077-bebe-819eba9b293c": {
+    "name": "Verdania Big Button Room - Big Button",
+    "kind": "switch",
+    "locations": []
+  },
+  "event:mapper/e3336589-3b8b-431f-aaba-d4a0e9007afd": {
+    "name": "Verdania Big Button Room - Verdania Essence 13",
+    "kind": "collectible",
+    "locations": []
+  },
+  "event:mapper/47ed8486-a783-4f62-87fc-5bc9ca11f767": {
+    "name": "Verdania Big Button Room - Verdania Essence 14",
+    "kind": "collectible",
+    "locations": []
+  },
+  "event:mapper/2099f907-2e47-4a34-bfcc-70eb2d3e3349": {
+    "name": "Verdania Big Button Room - Verdania Essence 15",
+    "kind": "collectible",
+    "locations": []
+  },
+  "event:mapper/e768b048-eaa4-4d8e-af2b-4adc95703c1b": {
+    "name": "Verdania Big Button Room - Verdania Essence 16",
+    "kind": "collectible",
+    "locations": []
+  },
+  "event:mapper/05b6de30-43e2-4b96-a05b-542b256d2969": {
+    "name": "Verdania Big Button Room - Verdania Essence 17",
+    "kind": "collectible",
+    "locations": []
+  },
+  "event:mapper/11fd9758-1581-4479-8176-25a208e50c4c": {
+    "name": "Verdania Big Room - Verdania Essence 1",
+    "kind": "resource",
+    "locations": []
+  },
+  "event:mapper/fb54c34d-db27-42d0-8c51-f3db2fd1f943": {
+    "name": "Verdania Big Room - Verdania Big Room Shortcut",
+    "kind": "blockade",
+    "locations": []
+  },
+  "event:mapper/70969911-69ad-4894-96f2-01f2292e009f": {
+    "name": "Verdania Capital - Verdanir Arena",
+    "kind": "gauntlet",
+    "locations": []
+  },
+  "event:mapper/81ede374-045d-4997-a059-af6c65cf1eb2": {
+    "name": "Verdania Cloverstag Steps - Verdania Essence 9",
+    "kind": "collectible",
+    "locations": []
+  },
+  "event:mapper/3ba45e6a-59a6-4e13-9b95-2db291a62940": {
+    "name": "Verdania Cloverstag Steps - Verdania Essence 10",
+    "kind": "collectible",
+    "locations": []
+  },
+  "event:mapper/bd843228-1b83-4ed0-9290-b355ff32395f": {
+    "name": "Verdania Cloverstag Steps - Cloverstag Wall",
+    "kind": "blockade",
+    "locations": []
+  },
+  "event:mapper/213c526c-798f-4164-b8a6-272b9051e81e": {
+    "name": "Verdania Kindanir egg Room - Verdania Essence 8",
+    "kind": "collectible",
+    "locations": []
+  },
+  "event:mapper/e00b9119-538a-4b04-a563-deb7ef54e7d8": {
+    "name": "Verdania Left Side Essence Shrine - Verdania essence 11",
+    "kind": "collectible",
+    "locations": []
+  },
+  "event:mapper/70ec9b24-9c04-49ca-ba35-f7d36159c62f": {
+    "name": "Verdania Left Side Tall Room - Verdania Gate",
+    "kind": "switch",
+    "locations": []
+  },
+  "event:mapper/ac2cb3cc-93b1-4a6e-8aff-51af15482f67": {
+    "name": "Verdania Right Side Tall Room - Verdania Essence 2",
+    "kind": "collectible",
+    "locations": []
+  },
+  "event:mapper/98c7c476-26be-443a-bfd5-428822f098b9": {
+    "name": "Verdania Top Room - Verdania Essence 12",
+    "kind": "collectible",
+    "locations": []
+  },
+  "event:mapper/05091324-bccf-408c-893f-61b88fb50590": {
+    "name": "Choral Chambers Outside Spa - Switch - Outside Spa",
+    "kind": "switch",
+    "locations": []
+  },
+  "event:mapper/87a6e1fc-4ab9-490f-a1f5-612f80d5d8ac": {
+    "name": "Choral Chambers Flea Shaft - Lever Flea shaft",
+    "kind": "switch",
+    "locations": []
+  },
+  "event:mapper/e54aed5d-25ca-4209-b377-8c877e377a7f": {
+    "name": "Reed's personal chest",
+    "kind": "collectible",
+    "locations": [
+      "Reed's personal chest"
+    ]
+  },
+  "event:mapper/896f5186-1d21-4908-9361-b9b3b8e1b46e": {
+    "name": "Choral Chambers Over Dininig - Rosary Necklace - Choral Chambers #2",
+    "kind": "collectible",
+    "locations": []
+  },
+  "event:mapper/7e81a4e7-8e9e-4cae-a7b6-2594226a6c6b": {
+    "name": "Choral Chambers Over Dininig - Switch over dining",
+    "kind": "switch",
+    "locations": []
+  },
+  "event:mapper/498a1170-2ed8-4c38-8b23-a6b64a8d350b": {
+    "name": "Choral Chambers Dining Room - Lever - Dining #1",
+    "kind": "switch",
+    "locations": []
+  },
+  "event:mapper/03ef73ad-bb73-4e3a-b1a1-e86ebfdcc069": {
+    "name": "Choral Chambers Dining Room - Lever - Dining #2",
+    "kind": "switch",
+    "locations": []
+  },
+  "event:mapper/e56c43f4-f833-4b65-bdf1-2f9383ea42a6": {
+    "name": "Choral Chambers - Rosary Necklace #1",
+    "kind": "collectible",
+    "locations": [
+      "Choral Chambers - Rosary Necklace #1"
+    ]
+  },
+  "event:mapper/936ce385-67b7-432c-b258-22445485f9d6": {
+    "name": "Choristor's precious belongings",
+    "kind": "collectible",
+    "locations": [
+      "Choristor's precious belongings"
+    ]
+  },
+  "event:mapper/932fba53-6a79-47ce-a4ef-d0456a986508": {
+    "name": "Old Ventrica gains",
+    "kind": "collectible",
+    "locations": [
+      "Old Ventrica gains"
+    ]
+  },
+  "event:mapper/c0c57e6d-2417-46c7-8b6f-d1ec15b1a193": {
+    "name": "Old Ventrica treasury",
+    "kind": "collectible",
+    "locations": [
+      "Old Ventrica treasury"
+    ]
+  },
+  "event:mapper/acdc4350-d378-43f6-93d6-e0d420e0e217": {
+    "name": "Choral Chambers Ventrica Room - Lever Ventrica",
+    "kind": "switch",
+    "locations": []
+  },
+  "event:mapper/73ba7475-f2f5-4c03-84f3-d42864ae2a1d": {
+    "name": "Grand bellway hidden chest",
+    "kind": "collectible",
+    "locations": [
+      "Grand bellway hidden chest"
+    ]
+  },
+  "event:mapper/7fd15653-2492-4020-bb58-842787851ce1": {
+    "name": "Grand Bellway - Beastling Call",
+    "kind": "collectible",
+    "locations": []
+  },
+  "event:mapper/ee8a0436-e281-44b9-856d-ceadf809de0f": {
+    "name": "Slab Cell - poodle blockade",
+    "kind": "blockade",
+    "locations": []
+  },
+  "event:mapper/3217cb04-cdc1-478d-99a1-b3ce5e0c6954": {
+    "name": "Slab Cell - heretic lever upper",
+    "kind": "switch",
+    "locations": []
+  },
+  "event:mapper/0b547d15-6aa6-417a-8a2f-6db28b472360": {
+    "name": "Slab Cell - heretic lever lower",
+    "kind": "switch",
+    "locations": []
+  },
+  "event:mapper/18f510d7-77d8-42ad-aaf6-9bcca701bed6": {
+    "name": "Slab Cell - upper blockade",
+    "kind": "blockade",
+    "locations": []
+  },
+  "event:mapper/79296215-4345-42e9-b606-d45e6b628d86": {
+    "name": "Slab Cell - upper bridge key",
+    "kind": "lock",
+    "locations": []
+  },
+  "event:mapper/reviewed:verdania-memory-entry": {
+    "name": "Dead Verdania Main - Verdania Memory Entry",
+    "kind": "event",
+    "locations": []
+  },
+  "event:mapper/007f3c9a-50b0-4802-8f2b-4d87bffafe98": {
+    "name": "Choral Chambers Outside Spa - Gauntlet Fight",
+    "kind": "gauntlet",
+    "locations": []
+  },
+  "event:mapper/67d0412e-1ffe-43fd-9128-da5814b210a9": {
+    "name": "Choral Chambers Spa - Lever Chambers Spa",
+    "kind": "switch",
+    "locations": []
+  },
+  "event:mapper/6ac7d595-f0ee-4599-afd8-85ccdf03c323": {
+    "name": "Choral Chambers Spa - Lever Chambers Spa 2",
+    "kind": "switch",
+    "locations": []
+  },
+  "event:mapper/f95b192b-1ce4-4298-b7e7-93dd6e46c032": {
+    "name": "Choral Chambers Below Ventrica - Lever Below Ventrica",
+    "kind": "switch",
+    "locations": []
+  },
+  "event:mapper/2e7b660c-234b-41ce-a90a-ad0e7c5246e7": {
+    "name": "Boss: First Sinner",
+    "kind": "enemy",
+    "locations": [
+      "Boss: First Sinner"
+    ]
+  },
+  "event:mapper/a50abec1-8b34-4363-9057-ec99263bcf06": {
+    "name": "Crest: Architect",
+    "kind": "collectible",
+    "locations": [
+      "Crest: Architect"
+    ]
+  },
+  "event:mapper/c6157655-3d4f-46cc-b301-bb8266d47d89": {
+    "name": "Underworks Outside Choral Chambers - Switch Outside Choral Chambers",
+    "kind": "switch",
+    "locations": []
+  },
+  "event:mapper/f30f8794-c647-456f-aefc-ef464466e126": {
+    "name": "Bellway Centipede Arena - Bell Eater",
+    "kind": "boss",
+    "locations": []
+  },
+  "event:mapper/5536617d-a390-461a-8f22-9dd629833250": {
+    "name": "Choral Chambers Outside Spa - Second Sentinel Encounter",
+    "kind": "event",
+    "locations": []
+  },
+  "event:mapper/4d44e40c-3534-42dc-807e-80d6bfabcdc1": {
+    "name": "Greymoor Craw Lake - Greymoor Stand Lever",
+    "kind": "switch",
+    "locations": []
+  },
+  "event:mapper/7e04acc9-5735-4193-924c-6aa3652d94c7": {
+    "name": "Greymoor East Bellshrine Room - cooler bridge lever",
+    "kind": "switch",
+    "locations": []
+  },
+  "event:mapper/dc5a5a3f-8e91-4056-b23b-e0f0f5d933a0": {
+    "name": "Boss: Widow",
+    "kind": "boss",
+    "locations": [
+      "Boss: Widow"
+    ]
+  },
+  "event:mapper/498a6a37-8793-447e-a72b-4f4e1fd08b64": {
+    "name": "Shellgrave - Save Plinney",
+    "kind": "event",
+    "locations": []
+  },
+  "event:mapper/6b37d230-4333-4c5a-822d-c3ac73ea10db": {
+    "name": "Shellwood Sister Splinter Bench - Shellwood Toll Bench Arena",
+    "kind": "gauntlet",
     "locations": []
   }
 }

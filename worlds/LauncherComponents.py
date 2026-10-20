@@ -1,16 +1,17 @@
 import bisect
 import gzip
 import hashlib
+import importlib.machinery
 import json
 import logging
 import os
 import pathlib
-import pkgutil
 import subprocess
 import sys
 import tempfile
 import time
 import weakref
+import zipimport
 from enum import Enum
 from typing import Any, Optional, Callable, Iterable, Tuple
 
@@ -866,6 +867,32 @@ def resolve_icon_path(icon_path: str) -> str:
     return _normalize_cached_icon_path(icon_path)
 
 
+def _icon_module_spec(module_name: str):
+    """Find resource loaders without executing world modules for their icons."""
+    worlds_module = sys.modules.get("worlds")
+    apworld_specs = getattr(worlds_module, "_apworld_module_specs", {})
+    search_path = None
+    parts = module_name.split(".")
+    for index in range(len(parts)):
+        name = ".".join(parts[:index + 1])
+        spec = getattr(sys.modules.get(name), "__spec__", None) or apworld_specs.get(name)
+        if spec is None:
+            spec = importlib.machinery.PathFinder.find_spec(name, search_path)
+        if spec is None and index == 1 and parts[0] == "worlds":
+            # A cache hit has not registered the installed .apworld import specs.
+            for source in getattr(worlds_module, "world_sources", []):
+                if source.is_zip and source.name == parts[1]:
+                    spec = zipimport.zipimporter(source.resolved_path).find_spec(name)
+                    if spec is not None:
+                        break
+        if spec is None:
+            return None
+        search_path = spec.submodule_search_locations
+        if index < len(parts) - 1 and search_path is None:
+            return None
+    return spec
+
+
 def _materialize_ap_icon(icon_path: str) -> str:
     module_resource_path = icon_path.removeprefix("ap:")
     module_name, separator, resource_name = module_resource_path.partition("/")
@@ -873,7 +900,14 @@ def _materialize_ap_icon(icon_path: str) -> str:
         return _DEFAULT_ICON_PATH
 
     try:
-        resource_data = pkgutil.get_data(module_name, resource_name)
+        spec = _icon_module_spec(module_name)
+        if spec is None or not spec.origin or not hasattr(spec.loader, "get_data"):
+            return _DEFAULT_ICON_PATH
+        resource_path = os.path.join(os.path.dirname(spec.origin), resource_name)
+        # Loose-file icons can be decoded directly by the asynchronous image loader.
+        if os.path.isfile(resource_path):
+            return resource_path
+        resource_data = spec.loader.get_data(resource_path)
     except Exception:
         resource_data = None
     if not resource_data:

@@ -1842,8 +1842,7 @@ def set_bunny_rules(world, player, inverted):
     all_single_exit_dungeons = ['Eastern Palace', 'Tower of Hera', 'Castle Tower', 'Palace of Darkness', 'Swamp Palace', 'Thieves Town', 'Ice Palace', 'Misery Mire', 'Ganons Tower']
     hmg_single_exit_dungeons = [d for d in all_single_exit_dungeons if d not in ['Tower of Hera', 'Misery Mire', 'Thieves Town']]
     bunny_impassable_caves = ['Bumper Cave (top)', 'Bumper Cave (bottom)', 'Two Brothers House',
-                              'Hookshot Cave (Middle)', 'Pyramid', 'Spiral Cave (Top)', 'Fairy Ascension Cave (Drop)',
-                              'Death Mountain Return Cave (right)', 'Paradox Cave (Top)']
+                              'Hookshot Cave (Middle)', 'Pyramid', 'Spiral Cave (Top)', 'Fairy Ascension Cave (Drop)']
     bunny_accessible_locations = ['Link\'s Uncle', 'Sahasrahla', 'Sick Kid', 'Lost Woods Hideout', 'Lumberjack Tree',
                                   'Checkerboard Cave', 'Potion Shop', 'Spectacle Rock Cave', 'Pyramid', 'Old Man',
                                   'Hype Cave - Generous Guy', 'Peg Cave', 'Bumper Cave Ledge', 'Dark Blacksmith Ruins',
@@ -2025,6 +2024,13 @@ def set_bunny_rules(world, player, inverted):
         rule = get_rule_to_add(region)
         for ext in region.exits:
             add_rule(ext, rule)
+    if world.is_tile_swapped(0x03, player) and world.shuffle[player] in ['vanilla', 'dungeonssimple', 'dungeonsfull', 'simple', 'district']:
+        # Add bunny rule for Death Mountain Return Cave if ER keeps this cave vanilla/vanilla-like
+        region = world.get_region('Death Mountain Return Cave (right)', player)
+        if is_bunny(region):
+            rule = get_rule_to_add(region)
+            for ext in region.exits:
+                add_rule(ext, rule)
 
     paradox_shop = world.get_region('Paradox Shop', player)
     if is_bunny(paradox_shop):

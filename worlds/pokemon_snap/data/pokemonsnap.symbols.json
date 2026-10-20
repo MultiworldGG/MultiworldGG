@@ -1,0 +1,147 @@
+{
+  "meta": {
+    "endian": "big",
+    "addressing": "KSEG0 virtual; physical RDRAM = addr & 0x1FFFFFFF",
+    "requires": "8MB Expansion Pak"
+  },
+  "symbols": {
+    "gLevelID": {
+      "addr": "0x800AC0C0",
+      "type": "s32",
+      "access": "r",
+      "desc": "Most recently entered level (defaults to -1)"
+    },
+    "gExpansionMagic": {
+      "addr": "0x80400000",
+      "type": "u32",
+      "access": "r",
+      "desc": "0x534E4150 'SNAP' in ROM, becomes 0x4F4B4159 'OKAY' once loaded"
+    },
+    "gMaxFilm": {
+      "addr": "0x80400004",
+      "type": "s32",
+      "access": "rw",
+      "desc": "film cap (below 60)"
+    },
+    "gCanUseOverride": {
+      "addr": "0x80400008",
+      "type": "s32",
+      "access": "rw",
+      "desc": "!=0: all items usable"
+    },
+    "gCanUseMask": {
+      "addr": "0x8040000C",
+      "type": "u32",
+      "access": "rw",
+      "desc": "bit0=apple, 1=pester, 2=flute, 3=dash, 4=sign detector, 5=L to stop, 6=technique scoring, 7=multiple scoring, 8=multiple scoring w/o technique (used when gCanUseOverride==0)"
+    },
+    "gCanUsePerLevelMask": {
+      "addr": "0x80400010",
+      "type": "u32[7]",
+      "access": "rw",
+      "desc": "[0]=Beach, [1]=Tunnel, [2]=Volcano, [3]=River, [4]=Cave, [5]=Valley, [6]=Rainbow. Bits within each u32 are the same as gCanUseMask. gCanUseMask takes priority."
+    },
+    "gCourseOverride": {
+      "addr": "0x8040002C",
+      "type": "s32",
+      "access": "rw",
+      "desc": "!=0: all courses unlocked"
+    },
+    "gCourseUnlockMask": {
+      "addr": "0x80400030",
+      "type": "u32",
+      "access": "rw",
+      "desc": "bit0=Beach, 1=Tunnel, 2=Volcano, 3=River, 4=Cave, 5=Valley, 6=Rainbow (used when gCourseOverride==0)"
+    },
+    "gDialogRequestFlags": {
+      "addr": "0x80400034",
+      "type": "u32",
+      "access": "rw",
+      "desc": "Dialog flags: bit0=Cloud, 1=Apple, 2=Pester, 3=Flute, 4=6 Pokemon, 5=22 Pokemon, 6=40 Pokemon, 7=Credits"
+    },
+    "gDialogPlayedFlags": {
+      "addr": "0x80400038",
+      "type": "u32",
+      "access": "rw",
+      "desc": "Dialog flags: bit0=Cloud, 1=Apple, 2=Pester, 3=Flute, 4=6 Pokemon, 5=22 Pokemon, 6=40 Pokemon, 7=Credits"
+    },
+    "gCameraInversionYAMLOption": {
+      "addr": "0x8040003C",
+      "type": "u32",
+      "access": "rw",
+      "desc": "0=inverted, 1=normal; applied only once on entering first course"
+    },
+    "apMagic": {
+      "addr": "0x80400044",
+      "type": "u32",
+      "access": "r",
+      "desc": "0x53414431 'SAD1' when the AP block is valid"
+    },
+    "apChecksum": {
+      "addr": "0x80400048",
+      "type": "u32",
+      "access": "r",
+      "desc": "checksum over speciesScores"
+    },
+    "speciesScores": {
+      "addr": "0x8040004C",
+      "type": "s16[73][7]",
+      "access": "r",
+      "desc": "[slot][0=special, 1=pose, 2=size, 3=technique, 4=samePkmn, 5=poseFlags, 6=totalScore]; slot=getSpeciesSlot(pokemonID, levelID)"
+    },
+    "signsFound": {
+      "addr": "0x8040044A",
+      "type": "u8[6]",
+      "access": "r",
+      "desc": "[beach, tunnel, volcano, river, cave, valley]"
+    },
+    "secretExits": {
+      "addr": "0x80400450",
+      "type": "u8",
+      "access": "r",
+      "desc": "Bit flags for secret exits taken. bit1=Tunnel,3=River,5=Valley"
+    }
+  },
+  "idents": {
+    "auth": {
+      "addr": "0x804004C4",
+      "rom_offset": "0x010004D4",
+      "len": 16,
+      "type": "u8[16]",
+      "access": "rw",
+      "desc": "per-seed auth token; client connects with base64(token)"
+    }
+  },
+  "save": {
+    "savePtr": {
+      "addr": "0x800C21B0",
+      "type": "ptr",
+      "access": "r",
+      "desc": "pointer to the save struct (deref for base; == saveBase)"
+    },
+    "saveBase": {
+      "addr": "0x800C21C0",
+      "type": "UnkBigBoy",
+      "access": "r",
+      "desc": "main save struct base; full layout in src/more_funcs/more_funcs.h"
+    },
+    "rank": {
+      "addr": "0x800C2224",
+      "type": "u32",
+      "access": "r",
+      "desc": "current rank = (value >> 29) & 7"
+    },
+    "reportScores": {
+      "addr": "0x800C222C",
+      "type": "s32[69]",
+      "access": "r",
+      "desc": "best PKMN Report score per species slot"
+    },
+    "registeredPhotos": {
+      "addr": "0x800C2340",
+      "type": "PhotoData[69]",
+      "access": "r",
+      "desc": "registered photo per species slot (stride 0x3A0); registered if s32 at +0x04 != -1"
+    }
+  }
+}

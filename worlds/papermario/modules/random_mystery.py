@@ -46,7 +46,13 @@ def get_random_mystery(mystery_option: int, random) -> MysteryOptions:
         # double-chance of occurring
         while len(chosen_items) < 7:
             random_item = random.choice(possible_items)
-            if not (random_item == mystery_itemid and len([x for x in chosen_items if x == mystery_itemid]) >= 4):
+            if not (    random_item == mystery_itemid
+                    and len([
+                            x
+                            for x in chosen_items
+                            if x == mystery_itemid
+                        ]) >= 4
+            ):
                 chosen_items.append(random_item)
             if chosen_items[0] == mystery_itemid:
                 chosen_items.pop(0)

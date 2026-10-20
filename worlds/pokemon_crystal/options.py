@@ -3035,6 +3035,9 @@ class CrystalPlandoConnections(PlandoConnections):
         - entrance: "Silver Cave Entrance"
           exit: "Silver Cave Entrance"
           direction: both
+
+    You can find a list of all entrance and exit names at:
+    https://github.com/gerbiljames/Archipelago-Crystal/blob/pokecrystal-develop/worlds/pokemon_crystal/data/friendly_connection_names.json
     """
     entrances = set(data.entrance_connections.keys()) \
         | {friendly_entrance_name(name) for name in data.entrance_connections}

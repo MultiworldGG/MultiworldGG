@@ -16,10 +16,11 @@ except ImportError:
 from .emu_loader import EmuLoaderClient
 from ..LocationList import business_scrubs, location_table
 from ..Utils import OOT_PLAYER_NAME_LENGTH, encode_oot_player_name
+from ..ut.discovery import EntranceDiscovery
 
-SCRIPT_VERSION = 9
+SCRIPT_VERSION = 10
 AP_MAX_PLAYER_ID = 1024
-CONNECT_PORT   = 28921
+CONNECT_PORT = 28921
 OUTGOING_KEY_POLL_FRAMES = 6
 PROTOCOL_EXCHANGE_FRAMES = 10
 FULL_STATE_FRAMES = 30
@@ -90,6 +91,7 @@ class OoTBridgeState:
         "collectible_offsets", "item_queue", "first_connect",
         "player_names_initialized", "game_complete", "num_big_poes_required",
         "shop_flag_offsets", "location_cache", "location_cache_dirty",
+        "entrance_discovery",
     )
 
     def __init__(self) -> None:
@@ -105,6 +107,7 @@ class OoTBridgeState:
         self.shop_flag_offsets:       dict             = {}
         self.location_cache:          Optional[dict]   = None
         self.location_cache_dirty:    bool             = True
+        self.entrance_discovery = EntranceDiscovery()
 
     def reset_connection(self) -> None:
         self.temp_context_history = set()
@@ -880,12 +883,18 @@ def _build_state_uncached(
         payload["collectibles"]= _check_collectibles(emu, st)
         payload["isDead"]      = _get_death_state(emu)
         payload["gameComplete"]= _is_game_complete(emu, st)
+        st.entrance_discovery.poll(emu)
+        payload["foundEntrances"] = sorted(st.entrance_discovery.found)
     return payload
 
 
 def _process_block(emu: EmuLoaderClient, st: OoTBridgeState, block: dict) -> None:
     if not block:
         return
+    rom_name = _get_player_name(emu)
+    # Ignore slot data still in flight when the emulator changes ROMs.
+    names = block.get("entranceNames", []) if block.get("entranceRom") == rom_name else []
+    st.entrance_discovery.configure(rom_name, names)
 
     # Write player names on first connect or while in menu/logo/file-select modes.
     cur_mode = _get_current_game_mode(emu)

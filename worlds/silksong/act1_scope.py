@@ -5,7 +5,7 @@ from __future__ import annotations
 from typing import Mapping
 
 from .eva import EVA_CREST_SLOTS, EVA_REWARDS
-from .locations import HUNTER_CREST_SLOT_LOCATION_NAMES, INDIVIDUAL_RELIC_ITEM_BY_TURN_IN_LOCATION
+from .locations import INDIVIDUAL_RELIC_ITEM_BY_TURN_IN_LOCATION
 from .requirements import (
     COMPILED_ROOM_GRAPH,
     _ESTABLISHED_REQUIREMENTS_BY_LOCATION,
@@ -99,6 +99,7 @@ _ACT_ONE_DEPENDENCY_EXCLUDED_LOCATION_NAMES = frozenset(
         'Craw Memento',
         "Hunter's Heart",
         "Encrusted Heart",
+        "Conjoined Heart",
         "Twisted Bud",
         "Maiden Soul",
         "Hermit Soul",
@@ -120,9 +121,9 @@ _ACT_ONE_DEPENDENCY_EXCLUDED_LOCATION_NAMES = frozenset(
         "Boss: Groal the Great",
         "Boss: Voltvyrm",
         "Boss: Crawfather",
-        "Greymoor - Rosary Cache #35",
-        "Greymoor - Rosary Cache #36",
-        "Greymoor - Rosary Cache #37",
+        'Greymoor - craw court rosary vault stash',
+        'Greymoor - the other craw court rosary vault stash',
+        'Greymoor - the final craw court rosary vault stash',
         "Boss: Father of the Flame",
         "Wispfire Lantern",
         "Pinmaster Plinney: Shining Needle",
@@ -141,9 +142,9 @@ _ACT_ONE_DEPENDENCY_EXCLUDED_LOCATION_NAMES = frozenset(
         "Shellwood - Shard Bundle",
         "Shellwood - Rosary String #2",
         "Relic: Weaver Effigy (Keelal, Shellwood)",
-        "Shellwood - Shell Shard Cache #1",
-        "Shellwood - Shell Shard Cache #2",
-        "Shellwood - Shell Shard Cache #3",
+        'Shell Shard Cache: Greyroots Diddy Basement 1',
+        'Shell Shard Cache: Greyroots Diddy Basement 2',
+        'Shell Shard Cache: Greyroots Diddy Basement 3',
         "Shellwood - Shell Shard Cache #12",
         "Grindle (Blasted Steps) - Spool Fragment",
         "Relic: Psalm Cylinder (Grindle)",
@@ -255,8 +256,6 @@ def get_act_one_excluded_location_names(
             frozenset(),
         )
     )
-    if starting_crest_item in excluded:
-        excluded |= HUNTER_CREST_SLOT_LOCATION_NAMES
     if (
         requirements.get(_BONE_BOTTOM_REPAIRS_LOCATION_NAME, 0)
         > ACT_ONE_TOOL_POUCH_SUPPLY

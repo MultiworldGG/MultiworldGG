@@ -142,7 +142,10 @@ def write_patch(
         )
         return cur_pos + len(immutable_bytes)
 
-    patch.write_file("base_pmr_patch.bsdiff4", pkgutil.get_data(__name__, "data/base_pmr_patch.bsdiff4"))
+    patch.write_file(
+        "base_pmr_patch.bsdiff4",
+        pkgutil.get_data(__name__, "data/base_pmr_patch.bsdiff4")
+    )
 
     seed_id = world.random.randint(0, 0xFFFFFFFF)
 
@@ -302,20 +305,26 @@ def generate_output(world, output_dir: str) -> None:
     # mario stats
     if world.options.random_start_stats.value:
         world.options.starting_hp.value, world.options.starting_fp.value, world.options.starting_bp.value = (
-            generate_random_stats(world.options.random_start_stats_level.value, world.random))
+            generate_random_stats(
+                world.options.random_start_stats_level.value,
+                world.random
+            )
+        )
 
     # enemy stats
     enemy_stats, chapter_changes = get_shuffled_chapter_difficulty(
-        world.options.enemy_difficulty.value, world.options.starting_map.value, world.random)
+        world.options.enemy_difficulty.value, world.options.starting_map.value, world.random
+    )
 
     battle_formations = []
 
     if (world.options.formation_shuffle.value
             or world.options.enemy_difficulty.value == EnemyDifficulty.option_Progressive_Scaling):
-        battle_formations = get_random_formations(chapter_changes,
-                                                  world.options.enemy_difficulty.value ==
-                                                  EnemyDifficulty.option_Progressive_Scaling,
-                                                  world.random)
+        battle_formations = get_random_formations(
+            chapter_changes,
+            world.options.enemy_difficulty.value == EnemyDifficulty.option_Progressive_Scaling,
+            world.random
+        )
 
     # Coin palette values
     coin_palette_data, coin_palette_targets, coin_palette_crcs = (
@@ -325,25 +334,35 @@ def generate_output(world, output_dir: str) -> None:
     quiz_data = get_randomized_quizzes(world.random)
 
     # randomized puzzles
-    puzzle_list, world.spoilerlog_puzzles = get_puzzles_minigames(world.options.random_puzzles.value, world)
+    puzzle_list, world.spoilerlog_puzzles = get_puzzles_minigames(
+        world.options.random_puzzles.value,
+        world
+    )
 
     # Default mystery options for now
-    mystery_opts = get_random_mystery(world.options.mystery_shuffle.value, world.random)
+    mystery_opts = get_random_mystery(
+        world.options.mystery_shuffle.value,
+        world.random
+    )
 
     # Non-coin palettes
     palette_data = get_randomized_palettes(world)
 
     # Move costs
-    move_costs = get_randomized_moves(world.options.badge_bp_shuffle.value,
-                                      world.options.badge_fp_shuffle.value,
-                                      world.options.partner_fp_shuffle.value,
-                                      world.options.sp_shuffle.value,
-                                      world.random)
+    move_costs = get_randomized_moves(
+        world.options.badge_bp_shuffle.value,
+        world.options.badge_fp_shuffle.value,
+        world.options.partner_fp_shuffle.value,
+        world.options.sp_shuffle.value,
+        world.random
+    )
 
     # Randomized music
-    music_list = get_randomized_audio(world.options.shuffle_music.value,
-                                      world.options.shuffle_jingles.value,
-                                      world.random)
+    music_list = get_randomized_audio(
+        world.options.shuffle_music.value,
+        world.options.shuffle_jingles.value,
+        world.random
+    )
 
     # mirror mode is always off at the moment
     static_map_mirroring = get_mirrored_map_list()
@@ -353,24 +372,26 @@ def generate_output(world, output_dir: str) -> None:
 
     star_beam_area = get_star_beam_area(world)
 
-    write_patch(output_directory=output_dir,
-                world=world,
-                placed_items=placed_items,
-                entrance_list=world.entrance_list,
-                enemy_stats=enemy_stats,
-                battle_formations=battle_formations,
-                move_costs=move_costs,
-                itemhints=item_hints,
-                coin_palette_data=coin_palette_data,
-                coin_palette_targets=coin_palette_targets,
-                coin_palette_crcs=coin_palette_crcs,
-                palette_data=palette_data,
-                quiz_data=quiz_data,
-                music_list=music_list,
-                mapmirror_list=static_map_mirroring,
-                puzzle_list=puzzle_list,
-                mystery_opts=mystery_opts,
-                star_beam_area=star_beam_area)
+    write_patch(
+        output_directory = output_dir,
+        world = world,
+        placed_items = placed_items,
+        entrance_list = world.entrance_list,
+        enemy_stats = enemy_stats,
+        battle_formations = battle_formations,
+        move_costs = move_costs,
+        itemhints = item_hints,
+        coin_palette_data = coin_palette_data,
+        coin_palette_targets = coin_palette_targets,
+        coin_palette_crcs = coin_palette_crcs,
+        palette_data = palette_data,
+        quiz_data = quiz_data,
+        music_list = music_list,
+        mapmirror_list = static_map_mirroring,
+        puzzle_list = puzzle_list,
+        mystery_opts = mystery_opts,
+        star_beam_area = star_beam_area
+    )
 
 
 # Paper Mario Rando operates off of a node list with item IDs and prices
@@ -378,7 +399,10 @@ def get_filled_node_list(world):
     placed_items = []
     mw_keys = 0
 
-    all_locations = [location for location in world.multiworld.get_locations(world.player)]
+    all_locations = [
+        location
+        for location in world.multiworld.get_locations(world.player)
+    ]
     all_locations.extend(world.ch_excluded_locations)
 
     for location in all_locations:
@@ -409,30 +433,44 @@ def get_filled_node_list(world):
         if pm_loc.item.player == world.player:
             cur_node.current_item = pm_loc.item
         else:
-            # Multiworld items in replenishable locations get IDs that cause them to stop spawning after being obtained
+            # Multiworld items in replenishable locations get IDs that cause
+            # them to stop spawning after being obtained
             if cur_node.identifier in replenishing_itemlocations:
                 mw_key_name = "MultiWorldKey" + f"{mw_keys:02x}".upper()
-                cur_node.current_item = PMItem("MultiWorldItem", world.player, item_table[mw_key_name], False)
+                cur_node.current_item = PMItem(
+                    "MultiWorldItem",
+                    world.player,
+                    item_table[mw_key_name],
+                    False
+                )
                 mw_keys += 1
 
             # The rest can get the generic id
             else:
-                cur_node.current_item = PMItem("MultiWorldItem", world.player, item_table["MultiWorldGeneric"], False)
+                cur_node.current_item = PMItem(
+                    "MultiWorldItem",
+                    world.player,
+                    item_table["MultiWorldGeneric"],
+                    False
+                )
 
         # set prices, descriptions for items in shops
         if "Shop" in cur_node.identifier:
             if pm_loc.item.player != world.player:
-                cur_node.shop_string_location, cur_node.shop_string = (multiworld_item_info_to_pmString(
-                                                     world.multiworld.get_player_name(pm_loc.item.player),
-                                                     pm_loc.item.name,
-                                                     pm_loc.item.classification,
-                                                     cur_node.identifier))
-            cur_node.current_item.base_price = get_shop_price(pm_loc,
-                                                              cur_node.current_item,
-                                                              world.options.include_shops.value,
-                                                              world.options.merlow_rewards_pricing.value,
-                                                              world.options.total_power_stars.value,
-                                                              world.random)
+                (cur_node.shop_string_location, cur_node.shop_string) = multiworld_item_info_to_pmString(
+                    world.multiworld.get_player_name(pm_loc.item.player),
+                    pm_loc.item.name,
+                    pm_loc.item.classification,
+                    cur_node.identifier
+                )
+            cur_node.current_item.base_price = get_shop_price(
+                pm_loc,
+                cur_node.current_item,
+                world.options.include_shops.value,
+                world.options.merlow_rewards_pricing.value,
+                world.options.total_power_stars.value,
+                world.random,
+            )
 
         placed_items.append(cur_node)
 
@@ -441,10 +479,14 @@ def get_filled_node_list(world):
 
 def get_star_beam_area(world):
     if world.options.shuffle_star_beam.value:
-        item_locations = world.multiworld.find_item_locations("Star Beam", world.player)
+        item_locations = world.multiworld.find_item_locations(
+            "Star Beam",
+            world.player
+        )
         if item_locations:
             location = item_locations[0]
-            # if the location is not in the player's game, the area must be an invalid one so fallback text is used
+            # if the location is not in the player's game, the area must be an
+            # invalid one so fallback text is used
             if location.player != world.player:
                 return 28
             # local star beam gets its area hinted

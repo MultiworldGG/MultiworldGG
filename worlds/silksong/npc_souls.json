@@ -121,6 +121,7 @@
   },
   {
     "name": "Shakra",
+    "item": "Soul of Shakra (NPC)",
     "actors": [
       {
         "scene": "ant_04_mid",
@@ -287,6 +288,10 @@
       {
         "scene": "mosstown_02c",
         "path": "moss_hut_set/NPC Scene/Moss Creep NPC"
+      },
+      {
+        "scene": "mosstown_02",
+        "path": "Audio Loop Moss Druid"
       }
     ],
     "checks": [
@@ -668,6 +673,12 @@
       {
         "scene": "coral_33",
         "path": "Black Thread States/Normal World/Dice Game Control/Dice Game/Dice Pilgrim"
+      }
+    ],
+    "interactions": [
+      {
+        "scene": "coral_33",
+        "path": "Black Thread States/Normal World/Dice Game Control/Dice Game/Play Point"
       }
     ],
     "checks": [],
@@ -1404,7 +1415,8 @@
     ],
     "checks": [],
     "events": [
-      "Combat: Clover Dancers"
+      "Combat: Clover Dancers",
+      "Room Event: event:mapper/reviewed:verdania-memory-entry"
     ],
     "item_id": 839038,
     "act": 1,
@@ -1448,11 +1460,8 @@
         "path": "Caravan_States/Flea Festival/Flea Game - Bouncing/Flea Games Host NPC"
       }
     ],
-    "checks": [
-      "Flea: Greymoor - Kratt"
-    ],
+    "checks": [],
     "events": [
-      "Room Event: event:mapper/f9c80fa4-3dca-448c-a508-27c9257f30cd",
       "Room Event: event:mapper/41133206-b008-4501-8c55-9f9440e2728b",
       "Room Event: event:mapper/0d8438fa-157f-4192-8b6a-3b6ac91bf8b3"
     ],
@@ -1523,7 +1532,9 @@
         "path": "Caravan/Caravan Troup Member Short Greymoor"
       }
     ],
-    "checks": [],
+    "checks": [
+      "Flea Brew"
+    ],
     "events": [],
     "item_id": 839041,
     "act": 1
@@ -1598,6 +1609,7 @@
   },
   {
     "name": "Pinstress",
+    "item": "Soul of Pinstress (NPC)",
     "actors": [
       {
         "scene": "room_pinstress",
@@ -1677,6 +1689,7 @@
   },
   {
     "name": "Styx",
+    "game_mode": "classic",
     "actors": [
       {
         "scene": "dust_11",
@@ -1696,6 +1709,7 @@
   },
   {
     "name": "Skynx",
+    "game_mode": "steel_soul",
     "actors": [
       {
         "scene": "dust_11",
@@ -1831,6 +1845,7 @@
   },
   {
     "name": "Steel Seer Zi",
+    "game_mode": "steel_soul",
     "actors": [
       {
         "scene": "coral_37",
@@ -2131,7 +2146,8 @@
   },
   {
     "name": "Eva",
-    "actors": [
+    "actors": [],
+    "interactions": [
       {
         "scene": "weave_10",
         "path": "Crest Upgrade Shrine"
@@ -2191,5 +2207,22 @@
         "path": "Gourmand/Great Gourmand Scene/Gourmand Servant"
       }
     ]
+  },
+  {
+    "name": "Fearful Pilgrim",
+    "actors": [
+      {
+        "scene": "bellway_01",
+        "path": "Black Thread States Thread Only Variant/Normal World/Bellway Pilgrim Stuff/Bellway Pilgrim"
+      },
+      {
+        "scene": "bone_02",
+        "path": "Bellway Pilgrim Corpse"
+      }
+    ],
+    "checks": [],
+    "events": [],
+    "act": 1,
+    "item_id": 839062
   }
 ]

@@ -230,7 +230,14 @@ def decompress_form_group(settings_string: str, cur_map: list, world):
         else:
             current_substring = settings_string[i]
 
-        cur_model = next((x for x in cur_map if x.compressed_string.lower() == current_substring.lower()), None)
+        cur_model = next(
+            (
+                x
+                for x in cur_map
+                if x.compressed_string.lower() == current_substring.lower()
+            ),
+            None
+        )
 
         if cur_model is None:
             i += 1
@@ -239,7 +246,10 @@ def decompress_form_group(settings_string: str, cur_map: list, world):
                 case "formGroup":
                     i += 1
                     nesting_levels = len([x for x in cur_model.map if x.type == "formGroup"]) + 1
-                    form_group_end_index = index_of_nth_occurence(settings_string[i:], ")", nesting_levels) + i
+                    form_group_end_index = index_of_nth_occurence(
+                        settings_string[i:], ")",
+                        nesting_levels
+                    ) + i
                     nested_group_substring = settings_string[i:form_group_end_index + 1]
 
                     i += len(nested_group_substring)
@@ -248,9 +258,13 @@ def decompress_form_group(settings_string: str, cur_map: list, world):
                 # boolean settings are uppercase for true, lowercase for false
                 case "bool":
                     if cur_model.key in world.options.__dict__:
-                        world.options.__dict__[cur_model.key].value = (current_substring.upper() == current_substring)
+                        world.options.__dict__[cur_model.key].value = (
+                            current_substring.upper() == current_substring
+                        )
                     # store start with random items value
-                    elif cur_model.key == "startWithRandomItems" or cur_model.key == "startWithRandomItems":
+                    elif (   cur_model.key == "startWithRandomItems"
+                          or cur_model.key == "startWithRandomItems"
+                    ):
                         start_random_items = current_substring
 
                     i += 1
@@ -260,20 +274,25 @@ def decompress_form_group(settings_string: str, cur_map: list, world):
                 case "number":
                     i += 1
                     value = ""
-                    while settings_string[i].isnumeric() or settings_string[i] == "-" or settings_string[i] == ".":
+                    while (   settings_string[i].isnumeric()
+                           or settings_string[i] == "-"
+                           or settings_string[i] == "."
+                    ):
                         value += settings_string[i]
                         i += 1
 
                     if cur_model.key in world.options.__dict__:
                         match cur_model.key:
-                            # double xp multiplier, settings string may have 1.5 and we can only use integers
+                            # double xp multiplier, settings string may have 1.5
+                            # and we can only use integers
                             case "enemy_xp_multiplier":
                                 world.options.__dict__[cur_model.key].value = int(float(value) * 2)
                             case "starting_map":
                                 for option, data in starting_maps.items():
                                     if data[0] == int(value):
                                         world.options.__dict__[cur_model.key].value = option
-                            # -1 is used as a random value for some settings, 5 was also used at one point
+                            # -1 is used as a random value for some settings,
+                            # 5 was also used at one point
                             case "coin_palette" | "magical_seeds":
                                 option = int(value)
                                 if option == 5 or option == -1:
@@ -288,25 +307,33 @@ def decompress_form_group(settings_string: str, cur_map: list, world):
                                 try:
                                     world.options.__dict__[cur_model.key].value = int(value)
                                 except ValueError:
-                                    raise ValueError(f'Invalid Paper Mario Settings String: invalid value for '
-                                                     f'{cur_model.key}.')
+                                    raise ValueError(
+                                        'Invalid Paper Mario Settings String: invalid value for '
+                                        f'{cur_model.key}.'
+                                    )
                     elif cur_model.key.startswith("start_partners_"):
                         if start_partners_min == -1:
                             start_partners_min = int(value)
                         else:
                             start_partners_max = int(value)
-                            start_partners_max, start_partners_min = (max(start_partners_max, start_partners_min),
-                                                                      min(start_partners_max, start_partners_min))
-                            world.options.start_partners.value = world.random.randint(start_partners_min,
-                                                                                      start_partners_max)
+                            start_partners_max, start_partners_min = (
+                                max(start_partners_max, start_partners_min),
+                                min(start_partners_max, start_partners_min)
+                            )
+                            world.options.start_partners.value = world.random.randint(
+                                start_partners_min,
+                                start_partners_max
+                            )
 
                     elif cur_model.key.startswith("start_items_"):
                         if start_items_min == -1:
                             start_items_min = int(value)
                         else:
                             start_items_max = int(value)
-                            start_items_max, start_items_min = (max(start_items_max, start_items_min),
-                                                                min(start_items_max, start_items_min))
+                            start_items_max, start_items_min = (
+                                max(start_items_max, start_items_min),
+                                min(start_items_max, start_items_min)
+                            )
 
                 case "sprite":
                     i += 1
@@ -337,7 +364,8 @@ def decompress_form_group(settings_string: str, cur_map: list, world):
                 case "glitches":
                     i += 1
 
-            # Not only do we need to check for the min/max, but that the field is actually set in the first place
+            # Not only do we need to check for the min/max, but that the field
+            # is actually set in the first place
             if start_random_items == "R" and start_items_min > 0 and start_items_max > 0:
                 world.options.random_start_items.value = world.random.randint(start_items_min, start_items_max)
                 start_random_items = "r"  # reset this so that we don't roll for item count repeatedly

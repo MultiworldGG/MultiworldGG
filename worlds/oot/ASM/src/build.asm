@@ -17,7 +17,6 @@
 
 .include "constants.asm"
 .include "addresses.asm"
-.include "ap.asm"
 
 ;==================================================================================================
 ; Base game editing region
@@ -138,6 +137,9 @@ RANDO_CONTEXT:
 
 .align 0x10
 .importobj "../build/bundle.o"
+
+.align 0x10
+.include "ap.asm"
 
 .align 0x10
 

@@ -1,8 +1,6 @@
 from dataclasses import dataclass
-
-from schema import Schema, And, Optional
-
-from Options import Choice, DefaultOnToggle, PerGameCommonOptions, Range, StartInventoryPool, Toggle, OptionCounter
+from schema import Schema, And, Optional, Or
+from Options import Choice, DefaultOnToggle, PerGameCommonOptions, Range, StartInventoryPool, Toggle, OptionCounter, OptionDict
 
 
 class Goal(Choice):
@@ -85,6 +83,19 @@ class TrapTypeWeights(OptionCounter):
         "Ice Physics Trap": 0,
         "Supernova Trap": 0,
     }
+
+
+class ShuffleEquipment(Choice):
+    """Choose how much of your non-progression equipment gets taken away and shuffled into the item pool.
+
+    Easy: Surface Integrity Scanner, Eject Button, Landing Camera
+    Normal: Autopilot, Velocity Matcher + everything above
+    Hard: Velocity Indicator, Distance Indicator, Ship Medkit, Ship Jetpack Refueler, Ship Lights + everything above"""
+    display_name = "Shuffle Equipment"
+    option_easy = 0
+    option_normal = 1
+    option_hard = 2
+    default = 1
 
 
 class UpgradeCounts(OptionCounter):
@@ -220,6 +231,26 @@ class RandomizeWarpPlatforms(Toggle):
     display_name = "Randomize Warp Platforms"
 
 
+class WarpPlatformPlando(OptionDict):
+    """
+    Allows you to connect warp platforms manually. Any undefined platforms will be connected randomly, regardless of randomize_warp_platforms option.
+    Example (connects Ash Twin Tower -> Ash Twin Project and Timber Hearth -> Black Hole Forge):
+      warp_platform_plando:
+        ATT: ATP
+        TH: BHF
+    Warp platform abbreviations:
+      SS (Sun Station), ET, ATP, TH, BHNG (Brittle Hollow Northern Glacier), BHF, GD,
+      ST (Sun Tower), ETT, ATT, THT, BHT, GDT, WHS
+    """
+    display_name = "Warp Platform Plando"
+    default = {}
+
+    warp_platforms = {"SS", "ST", "ET", "ETT", "ATP", "ATT", "TH", "THT", "BHNG", "WHS", "BHF", "BHT", "GD", "GDT"}
+    schema = Schema({
+        Optional(Or(*warp_platforms)): Optional(Or(*warp_platforms))
+    })
+
+
 class EnableEchoesOfTheEyeDLC(Toggle):
     """
     Incorporates Echoes of the Eye content into the randomizer with an additional 10 items and 34 locations.
@@ -315,6 +346,13 @@ class EnableEchoHikeMod(Toggle):
     """
     display_name = "Enable Echo Hike Story Mod"
 
+class EnableHeliostudyMod(Toggle):
+    """
+    Incorporates Heliostudy story mod content into the randomizer with an additional 5 items and 20 locations.
+    If logsanity is enabled, that will add another 28 locations, for a total of 48 HS locations.
+    """
+    display_name = "Enable Heliostudy Story Mod"
+
 
 @dataclass
 class OuterWildsGameOptions(PerGameCommonOptions):
@@ -329,9 +367,11 @@ class OuterWildsGameOptions(PerGameCommonOptions):
     randomize_orbits: RandomizeOrbits
     randomize_rotations: RandomizeRotations
     randomize_warp_platforms: RandomizeWarpPlatforms
+    warp_platform_plando: WarpPlatformPlando
     randomize_dark_bramble_layout: RandomizeDarkBrambleLayout
     trap_chance: TrapChance
     trap_type_weights: TrapTypeWeights
+    shuffle_equipment: ShuffleEquipment
     upgrade_counts: UpgradeCounts
     death_link: DeathLink
     logsanity: Logsanity
@@ -344,6 +384,7 @@ class OuterWildsGameOptions(PerGameCommonOptions):
     enable_fq_mod: EnableFretsQuestMod
     enable_fc_mod: EnableForgottenCastawaysMod
     enable_eh_mod: EnableEchoHikeMod
+    enable_hs_mod: EnableHeliostudyMod
 
 
 def get_creation_settings(options: OuterWildsGameOptions) -> set[str]:

@@ -12,7 +12,7 @@ BY_NAME = {row['name']: row for row in CATALOGUE}
 
 
 def item_name(npc):
-    return 'NPC Soul: ' + npc
+    return BY_NAME[npc].get('item', 'Soul of ' + npc)
 
 
 def soul_requirement(world, npc):
@@ -28,7 +28,10 @@ def enabled_npcs(world):
         validate_slot_data(passthrough)
         return tuple(passthrough.get('npc_soul_npcs', ()))
     act = int(world.get_content_scope().removeprefix("act_"))
-    return tuple(row["name"] for row in CATALOGUE if not row.get("legacy") and row.get("act", 1) <= act)
+    mode = 'steel_soul' if world.is_steel_soul() else 'classic'
+    return tuple(row["name"] for row in CATALOGUE
+                 if not row.get("legacy") and row.get("act", 1) <= act
+                 and row.get('game_mode', mode) == mode)
 
 
 def validate_slot_data(data):
@@ -110,14 +113,15 @@ def export_world(world, slot_data):
     slot_data['npc_soul_npcs'] = list(npcs)
     if not npcs:
         return
-    from .requirements import _export_requirement_group
+    from .requirements import _export_requirement_group, LOGIC_UNKNOWN_LOCATIONS
+    unknown = world.get_logic_unknown_locations() - world.get_goal_excluded_location_names()
     affected = {name for npc in npcs for name in (*BY_NAME[npc]['checks'], *BY_NAME[npc].get('alternatives', {}))}
     overrides = location_overrides(world, world._progression_location_rules)
     for name in affected:
         if name in slot_data['requirements']:
             rules = overrides[name]
             group = _export_requirement_group(rules)
-            if name in world.get_logic_unknown_locations():
+            if name in unknown or name in LOGIC_UNKNOWN_LOCATIONS:
                 group['logic_unknown'] = True
             slot_data['requirements'][name] = group
     for npc in npcs:

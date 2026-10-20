@@ -2,7 +2,9 @@ from __future__ import annotations
 
 from copy import deepcopy
 
+from .boss_journal import BY_LOCATION, COMPLETIONS
 from .requirements import REQUIREMENTS
+from .room_graph import load_room_graph
 
 VOG_HINT_ROOM_AREA_NAMES: dict[str, str] = {
     "bone-bottom": "Mosslands",
@@ -21,7 +23,7 @@ VOG_HINT_ROOM_AREA_NAMES: dict[str, str] = {
     "moss-grotto": "Mosslands",
     "sinner-s-road": "Sinner's Road",
     "underworks": "Underworks",
-    "whisp-thicket": "Greymoor",
+    "wisp-thicket": "Greymoor",
     "blasted-steps": "Blasted Steps",
     "the-mist": "The Mist",
     "whispering-vaults": "Whispering Vaults",
@@ -50,6 +52,9 @@ VOG_HINT_PATH_AREA_NAMES: dict[str, str] = {
 # Folder names usually match Vog's hint areas. The Choral Chambers folder also
 # holds Grand Bellway and Songclave rooms, so those rooms need their own entries.
 VOG_HINT_ROOM_ID_AREA_NAMES: dict[str, str] = {
+    "wish-menus/bone-bottom-wish-wall": "Mosslands",
+    "wish-menus/bellhart-wish-wall": "Bellhart",
+    "wish-menus/songclave-wish-wall": "Songclave",
     "choral-chambers/choral-chambers-below-ventrica": "Choral Chambers",
     "choral-chambers/choral-chambers-flea-room": "Choral Chambers",
     "choral-chambers/choral-chambers-flea-shaft": "Choral Chambers",
@@ -167,10 +172,29 @@ def copy_vog_hint_plan(plan: dict[str, object]) -> dict[str, object]:
     return deepcopy(plan)
 
 
+def _room_area(node_name: str) -> str | None:
+    room_id = node_name.removeprefix('Room Node: ').split('#', 1)[0]
+    return VOG_HINT_ROOM_ID_AREA_NAMES.get(room_id) or VOG_HINT_ROOM_AREA_NAMES.get(room_id.split('/', 1)[0])
+
+
 def get_vog_hint_areas(location_name: str) -> frozenset[str]:
     override_areas = VOG_HINT_AREA_OVERRIDES.get(location_name)
     if override_areas is not None:
         return override_areas
+
+    journal = BY_LOCATION.get(location_name) or COMPLETIONS.get(location_name)
+    if journal is not None:
+        areas = set()
+        for source in journal['sources']:
+            boss_areas = get_vog_hint_areas(source['boss'])
+            areas.update(boss_areas)
+            if not boss_areas:
+                for name in source.get('events', ()):
+                    event = load_room_graph().event_by_id.get(name.removeprefix('Room Event: '))
+                    area = _room_area(event.node_id) if event is not None else None
+                    if area:
+                        areas.add(area)
+        return frozenset(areas)
 
     areas: set[str] = set()
     for requirement in REQUIREMENTS.get(location_name, ()):
@@ -185,17 +209,7 @@ def get_vog_hint_areas(location_name: str) -> frozenset[str]:
         for dependency in (*requirement.all_of, *requirement.any_of):
             if not dependency.startswith("Room Node: "):
                 continue
-            room_id = dependency.removeprefix("Room Node: ").split(
-                "#",
-                1,
-            )[0]
-            area_name = VOG_HINT_ROOM_ID_AREA_NAMES.get(room_id)
-            area_id = room_id.split(
-                "/",
-                1,
-            )[0]
-            if area_name is None:
-                area_name = VOG_HINT_ROOM_AREA_NAMES.get(area_id)
+            area_name = _room_area(dependency)
             if area_name:
                 areas.add(area_name)
 

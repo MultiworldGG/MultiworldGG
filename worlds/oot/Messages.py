@@ -903,6 +903,11 @@ class Message:
 # wrapper for updating the text of a message, given its message id
 # if the id does not exist in the list, then it will add it
 def update_message_by_id(messages, id, text, opts=None, allow_duplicates=False):
+    # Procedural patch generation records updates before the ROM's message
+    # table is available. In particular, opts=None must retain the ROM value.
+    if hasattr(messages, 'record'):
+        messages.record(id, text, opts)
+        return
     # get the message index
     index = next( (m.index for m in messages if m.id == id), -1)
     # update if it was found
@@ -1106,10 +1111,10 @@ def make_player_message(text):
 
 # reduce item message sizes and add new item messages
 # make sure to call this AFTER move_shop_item_messages()
-def update_item_messages(messages, world):
+def update_item_messages(messages, player_count):
     new_item_messages = {**ITEM_MESSAGES, **IMPORTANT_ITEM_MESSAGES}
     for id, text in new_item_messages.items():
-        if world.multiworld.players > 1:
+        if player_count > 1:
             update_message_by_id(messages, id, make_player_message(text), 0x23)
         else:
             update_message_by_id(messages, id, text, 0x23)
@@ -1119,9 +1124,9 @@ def update_item_messages(messages, world):
 
 
 # run all keysanity related patching to add messages for dungeon specific items
-def add_item_messages(messages, shop_items, world):
+def add_item_messages(messages, shop_items, player_count):
     move_shop_item_messages(messages, shop_items)
-    update_item_messages(messages, world)
+    update_item_messages(messages, player_count)
 
 
 # reads each of the game's messages into a list of Message objects

@@ -38,3 +38,8 @@ The following commands are only available when using the OoTClient to play with 
 
 - `/n64` Check N64 Connection State
 - `/deathlink` Toggle deathlink from client. Overrides default option.
+
+
+## Universal Tracker
+
+Seds support YAML-free tracking with the exact generated entrance layout. With UT's deferred connections enabled, shuffled connections become available to its logic as you discover them.

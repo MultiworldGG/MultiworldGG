@@ -342,7 +342,8 @@
     "act": 1,
     "nodes": [
       "greymoor/greymoor-western-tower#lower-section",
-      "greymoor/greymoor-western-tower#guarded-platforms",
+      "greymoor/greymoor-western-tower#first-guarded-platform",
+      "greymoor/greymoor-western-tower#second-guarded-platform",
       "greymoor/greymoor-western-tower#lower-spike-wheel",
       "greymoor/greymoor-western-tower#upper-spike-wheel",
       "greymoor/greymoor-western-tower#tower-top-section",
@@ -748,7 +749,12 @@
     "room": "the-slab/slab-chilly-top",
     "act": 2,
     "nodes": [
-      "the-slab/slab-chilly-top#room"
+      "the-slab/slab-chilly-top#bottom-right-entrance",
+      "the-slab/slab-chilly-top#right",
+      "the-slab/slab-chilly-top#mid-lower-1",
+      "the-slab/slab-chilly-top#left-lower",
+      "the-slab/slab-chilly-top#left-mid",
+      "the-slab/slab-chilly-top#bottom-left-entrance"
     ],
     "exits": [
       "the-slab/slab-chilly-top@bl",
@@ -760,13 +766,13 @@
     "room": "the-slab/slab-infleatween-bottom",
     "act": 2,
     "nodes": [
-      "the-slab/slab-infleatween-bottom#top",
-      "the-slab/slab-infleatween-bottom#bottom",
-      "the-slab/slab-infleatween-bottom#mid"
+      "the-slab/slab-infleatween-bottom#upper",
+      "the-slab/slab-infleatween-bottom#lower",
+      "the-slab/slab-infleatween-bottom#middle"
     ],
     "exits": [
       "the-slab/slab-infleatween-bottom@b",
-      "the-slab/slab-infleatween-bottom@t",
+      "the-slab/slab-infleatween-bottom@u",
       "the-slab/slab-infleatween-bottom@r"
     ]
   },

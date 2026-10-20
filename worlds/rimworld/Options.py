@@ -1,6 +1,6 @@
 import typing
 from dataclasses import dataclass
-from Options import Option, Choice, PerGameCommonOptions, Range
+from Options import Option, Choice, PerGameCommonOptions, Range, DeathLink
 
 max_research_locations = 200
 
@@ -40,6 +40,27 @@ class ResearchBaseCost(Range):
     range_end = 8000
     default = 500
 
+class ResearchCostVariance(Range):
+    """
+    The max amount research points will vary by for research locations.
+    If the base cost is 500 and the variance is 800, every research will cost between 500 and 1300 points.
+    """
+    display_name = "Research Cost Variance"
+    range_start = 0
+    range_end = 8000
+    default = 1000
+
+class ResearchCostIncreasePerTier(Range):
+    """
+    The amount of points that will increase per research tier.
+    For example, if the base cost is 500, the variance is 800, and the Increase Per Tier is 100, a third-tier (third column) research will be
+    between 700 and 1500 points.
+    """
+    display_name = "Research Cost Increase Per Tier"
+    range_start = 0
+    range_end = 8000
+    default = 100
+
 class ResearchMaxPrerequisites(Range):
     """
     The max number of prerequisites for the generated Archipelago research. The higher this is, the more restricted your selection of research will be.
@@ -64,7 +85,7 @@ class RaidLocationCount(Range):
     """
     display_name = "Raid Location Count"
     range_start = 0
-    range_end = max_research_locations * 2
+    range_end = 50
     default = 10
 
 class TradeLocationCount(Range):
@@ -73,8 +94,17 @@ class TradeLocationCount(Range):
     """
     display_name = "Trade Location Count"
     range_start = 0
-    range_end = max_research_locations
+    range_end = 50
     default = 10
+
+class QuestLocationCount(Range):
+    """
+    The number of quest locations in the game. These locations require completing a quest for a location item.
+    """
+    display_name = "Quest Location Count"
+    range_start = 0
+    range_end = 30
+    default = 5
 
 class RaidTrapCount(Range):
     """
@@ -167,7 +197,7 @@ class RoyaltyEnabled(Choice):
     display_name = "Royalty Enabled"
     option_disabled = 0
     option_enabled = 1
-    default = 1
+    default = 0
 
 class IdeologyEnabled(Choice):
     """
@@ -176,7 +206,7 @@ class IdeologyEnabled(Choice):
     display_name = "Ideology Enabled"
     option_disabled = 0
     option_enabled = 1
-    default = 1
+    default = 0
 
 class BiotechEnabled(Choice):
     """
@@ -185,7 +215,7 @@ class BiotechEnabled(Choice):
     display_name = "Biotech Enabled"
     option_disabled = 0
     option_enabled = 1
-    default = 1
+    default = 0
 
 class AnomalyEnabled(Choice):
     """
@@ -194,7 +224,7 @@ class AnomalyEnabled(Choice):
     display_name = "Anomoly Enabled"
     option_disabled = 0
     option_enabled = 1
-    default = 1
+    default = 0
 
 class OdysseyEnabled(Choice):
     """
@@ -303,10 +333,13 @@ class RimworldOptions(PerGameCommonOptions):
     HiTechResearchLocationCount: HiTechResearchLocationCount
     MultiAnalyzerResearchLocationCount: MultiAnalyzerResearchLocationCount
     ResearchBaseCost: ResearchBaseCost
+    ResearchCostVariance: ResearchCostVariance
+    ResearchCostIncreasePerTier: ResearchCostIncreasePerTier
     ResearchMaxPrerequisites: ResearchMaxPrerequisites
     CraftLocationCount: CraftLocationCount
     RaidLocationCount: RaidLocationCount
     TradeLocationCount: TradeLocationCount
+    QuestLocationCount: QuestLocationCount
     RaidTrapCount: RaidTrapCount
     ColonistItemCount: ColonistItemCount
     PlayerNamesAsColonistItems: PlayerNamesAsColonistItems
@@ -331,17 +364,17 @@ class RimworldOptions(PerGameCommonOptions):
     SpacerItemWeight: SpacerItemWeight
     HardToMakeItemWeight: HardToMakeItemWeight
     AnomalyItemWeight: AnomalyItemWeight
-    
+    DeathLink: DeathLink
 
 rimworld_options: typing.Dict[str, type(Option)] = {
     **{
         option.__name__: option
         for option in {
             BasicResearchLocationCount, HiTechResearchLocationCount, MultiAnalyzerResearchLocationCount,
-            ResearchBaseCost, ResearchMaxPrerequisites, CraftLocationCount, RaidLocationCount, TradeLocationCount,
-            PlayerNamesAsColonistItems, VictoryCondition, RoyaltyEnabled, IdeologyEnabled, BiotechEnabled,
-            AnomalyEnabled, OdysseyEnabled, StartingResearchLevel, BonusResearchItems, ResearchScoutType,
-            ResearchScoutSecretTraps
+            ResearchBaseCost, ResearchCostVariance, ResearchCostIncreasePerTier, ResearchMaxPrerequisites, CraftLocationCount,
+            RaidLocationCount, TradeLocationCount, QuestLocationCount, PlayerNamesAsColonistItems, VictoryCondition, RoyaltyEnabled,
+            IdeologyEnabled, BiotechEnabled, AnomalyEnabled, OdysseyEnabled, StartingResearchLevel, BonusResearchItems,
+            ResearchScoutType, ResearchScoutSecretTraps, DeathLink
         }
     }
 }

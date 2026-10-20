@@ -9,7 +9,7 @@ from Options import OptionError
 
 BOSS = "Boss: Groal the Great"
 SOUL = "Soul of Groal the Great"
-SETH_SOUL = "Progressive Seth Soul"
+SETH_SOUL = "Soul of Seth (Progressive)"
 SETH_BOSS = "Boss: Shrine Guardian Seth"
 EVENT = "Room Event: event:mapper/c072b5f9-82a5-469b-8bf6-b91bb53e5180"
 
@@ -19,8 +19,7 @@ BOSS_EVENTS = {row["boss"]: row["events"][0] if row["events"] else None for row 
 
 
 def item_name(boss):
-    name = "Skull Tyrant" if boss.startswith("Boss: Skull Tyrant (") else boss.removeprefix("Boss: ")
-    return "Soul of " + name
+    return BY_BOSS[boss]['item']
 
 
 def progressive_seth(world):

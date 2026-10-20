@@ -33,4 +33,6 @@ def should_generate(category: str | None, options: OuterWildsGameOptions) -> boo
         return options.enable_fc_mod.value == 1
     elif category == 'eh':
         return options.enable_eh_mod.value == 1
+    elif category == 'hs':
+        return options.enable_hs_mod.value == 1
     raise ValueError(f'Invalid category: {category}')

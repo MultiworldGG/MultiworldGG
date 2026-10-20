@@ -1,5 +1,14 @@
 # Changelog
 
+# 0.8.0.2
+- Paradox Cave pearl rule is removed
+- DM Descent Cave pearl rule only applies if Inverted 2.0 and not advanced ER modes (vanilla or semi-vanilla placed DM Descent cave)
+- Fixed issue in ER that could result in locked out regions
+- Fixed issue with Customizer replacing Grouped Crossed OWR with Polar Crossed
+- Speedup improvements for Grid OWR
+- Some fixes to Grid OW tile changes
+- Fix deprecation error with Multiworld
+
 # 0.8.0.1
 - \~Merged in DR v1.5.7~
   - Static Key Logic

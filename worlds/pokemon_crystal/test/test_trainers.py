@@ -80,7 +80,7 @@ class MoveSelectionWeightingTest(PokemonCrystalTestBase):
         tm_names = []
         for i, move in enumerate(self.TMHM_MOVES):
             tm_name = f"TEST_TM_{i}"
-            self.world.generated_tms[tm_name] = TMHMData(move, i + 1, "NORMAL", False, 0)
+            self.world.generated_tms[tm_name] = TMHMData(move, i + 1, False, 0)
             tm_names.append(tm_name)
         self.world.generated_pokemon[pokemon_name] = replace(base, learnset=learnset, tm_hm=tm_names)
         return pokemon_name

@@ -13,8 +13,16 @@
   - [RetroArch](https://www.retroarch.com/?page=platforms) (funktioniert auch auf MacOS) 
 - Der integrierte MultiworldGG Ocarina of Time Client, welcher [hier](https://github.com/MultiworldGG/MultiworldGG/releases) installiert
   werden kann.
-- Falls du AP nutzen willst: Die neueste Version der APWorld von [hier](https://github.com/TreZc0/OoTR-APWorld/releases)
-- Eine `Ocarina of Time v1.0 NTSC-U oder NTSC-J ROM`. (Nicht aus Europa und keine Master-Quest oder Debug-Rom!)
+- Mit AP: Die neueste Version der APWorld von [hier](https://github.com/TreZc0/OoTR-APWorld/releases)
+- Eine `Ocarina of Time v1.0 NTSC-U oder NTSC-J ROM`, die erst beim Patchen benötigt wird. (Nicht aus Europa und keine Master-Quest oder Debug-Rom!)
+
+## Optionale Software
+
+- [Universal Tracker APWorld](https://github.com/FarisTheAncient/Archipelago/releases) (nur mit AP)
+
+Wenn Universal Tracker installiert ist, enthält der Ocarina of Time Client den Tab **Tracker Page**.
+Verbinde den Client mit deinem Spiel, um den Tracker zu laden. Ein separater Tracker-Client oder eine YAML-Datei ist nicht nötig.
+Ohne Universal Tracker funktioniert der Client wie gewohnt ohne den Tracker-Tab.
 
 ## APWorld installieren (nur mit AP)
 
@@ -68,8 +76,9 @@ teilnehmenden Spieler (bzw. Welten) aufgelistet sind. Du solltest dich dann auf 
 und klicke dann auf `Download Patch File...`.
 ![Screenshot of a Multiworld Room with an Ocarina of Time Player](MultiWorld-Room_oot.png)
 
-Führe die `.apz5`-Datei mit einem Doppelklick aus, um deinen Ocarina Of Time-Client zu starten, sowie das patchen
-deiner ROM. Ist dieser Prozess fertig (kann etwas dauern), startet sich der Client und der Emulator automatisch
+Für die Generierung der `.apoot`-Datei benötigt der Host keine ROM. Wähle im Launcher **Open Patch** und öffne
+deine `.apoot`-Datei. Wenn die Dateiendung registriert ist, funktioniert auch ein Doppelklick. Der Client fragt bei
+Bedarf nach deiner Basis-ROM. Ist das Patchen fertig (kann etwas dauern), startet sich der Client und der Emulator automatisch
 (sofern das "Öffnen mit..." ausgewählt wurde).
 Alternativ kannst du den `Ocarina of Time Adjuster` vom Launcher aus nutzen, um viele Visuals und Soundeinstellungen anzupassen, wie eigene Musik, Models, Farben, usw.
 Nach dem Patch Vorgang im Adjuster wird der Client automatisch gestartet.

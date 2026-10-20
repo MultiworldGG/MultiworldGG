@@ -159,8 +159,6 @@ Paper Mario:
     shuffle_jingles: False                  # Other options: True
     random_pitch: False                     # Other options: True
     mute_danger_beeps: True                 # Other options: False
-
-    death_link: False                       # NYI
 description: Sample Paper Mario AP World YAML
 game: Paper Mario
 name: JKB

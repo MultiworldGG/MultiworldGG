@@ -535,6 +535,7 @@ class CustomSettings(object):
             settings_dict[p]['beemizer'] = world.beemizer[p]
             settings_dict[p]['aga_randomness'] = world.aga_randomness[p]
             settings_dict[p]['money_balance'] = world.money_balance[p]
+            settings_dict[p]['free_lamp_cone'] = world.free_lamp_cone[p]
             if world.precollected_items:
                 start_inv[p] = []
         for item in world.precollected_items:

@@ -1,8 +1,11 @@
-from .patches import enemies, bingo
+from .patches import enemies
 from .locations.items import *
 from .entranceInfo import ENTRANCE_INFO
 from . import logic
 from .utils import Error
+from .explorer import Explorer
+from .settings import Settings
+from .logic.location import Location
 
 
 MULTI_CHEST_OPTIONS = [MAGIC_POWDER, BOMB, MEDICINE, RUPEES_50, RUPEES_20, RUPEES_100, RUPEES_200, RUPEES_500, SEASHELL, GEL, ARROWS_10, SINGLE_ARROW]
@@ -22,6 +25,31 @@ start_locations = [
     "animal_phone",
 ]
 
+# Blacklist entrances that need multiple items to leave
+start_blacklist = [
+    # multiple items
+    "mamu",
+    "prairie_madbatter_connector_entrance",
+    "castle_jump_cave",
+    "richard_house:inside",
+    "d6_connecter_entrance:inside",
+    "d6_connector_exit:inside",
+    # excluding for bomb/feather combination needed for high exit
+    "prairie_right_cave_top:inside",
+    "prairie_right_cave_bottom:inside",
+    "prairie_right_cave_high:inside",
+    # excluding these because of the castle gate
+    "castle_main_entrance",
+    "castle_secret_exit",
+    # problem when connectors not shuffled
+    "prairie_madbatter",
+]
+
+class EntranceConnectionException(Exception):
+    pass
+
+class ItemFillException(Exception):
+    pass
 
 class WorldSetup:
     def __init__(self):
@@ -37,178 +65,37 @@ class WorldSetup:
             "moblin_cave": "MOBLIN_KING",
             "armos_temple": "ARMOS_KNIGHT",
         }
-        self.goal = None
+        self.goal = "8"
         self.bingo_goals = None
         self.multichest = RUPEES_20
         self.map = None  # Randomly generated map data
-        self.inside_to_outside = True
-        self.keep_two_way = True
-        self.one_on_one = True
+        self.is_partial = False
 
-    def getEntrancePool(self, settings, connectorsOnly=False):
-        entrances = []
 
-        if connectorsOnly:
-            if settings.entranceshuffle in {"split", "mixed", "wild", "chaos", "insane", "madness"}:
-                entrances = [k for k, v in ENTRANCE_INFO.items() if v.type == "connector"]
-            entrances += [f"{k}:inside" for k in entrances]
-            return entrances
+    def pickEntrances(self, settings, itempool, rnd, world_setup, plando: dict[str, str]):
+        MAX_RETRIES = 5
+        retries = 0
+        done = False
+        entrance_shuffler = EntranceShuffler(settings, plando)
+        while(not done):
+            try:
+                self.entrance_mapping = entrance_shuffler.shuffle_entrances(rnd, world_setup, itempool)
+                done = True
+            except ItemFillException as e:
+                print('failed fill, retrying')
+                if retries >= MAX_RETRIES:
+                    raise e
+            except EntranceConnectionException as e:
+                print('failed to connect, retrying')
+                if retries >= MAX_RETRIES:
+                    raise e
+                if plando: # this should only really happen from an invalid entrance plando
+                    plando = {}
+                    entrance_shuffler = EntranceShuffler(settings, plando)
+            retries += 1
 
-        if settings.dungeonshuffle and settings.entranceshuffle == "none":
-            entrances = [k for k, v in ENTRANCE_INFO.items() if v.type == "dungeon"]
-        if settings.entranceshuffle in {"simple", "split", "mixed", "wild", "chaos", "insane", "madness"}:
-            types = {"single"}
-            if settings.tradequest:
-                types.add("trade")
-            if settings.shufflejunk:
-                types.update(["dummy", "trade"])
-            if settings.shuffleannoying:
-                types.add("insanity")
-            if settings.shufflewater:
-                types.add("water")
-            if settings.randomstartlocation:
-                types.add("start")
-            if settings.dungeonshuffle:
-                types.add("dungeon")
-            if settings.entranceshuffle in {"mixed", "wild", "chaos", "insane", "madness"}:
-                types.add("connector")
-            entrances = [k for k, v in ENTRANCE_INFO.items() if v.type in types]
 
-        entrances += [f"{k}:inside" for k in entrances]
-        return entrances
-
-    def _swapEntrances(self, a, b):
-        # Two two two-way entrances to connect disconnecting islands
-        assert self.keep_two_way
-        temp = self.entrance_mapping[a]
-        self.entrance_mapping[a] = self.entrance_mapping[b]
-        self.entrance_mapping[b] = temp
-        self.entrance_mapping[self.entrance_mapping[a]] = a
-        self.entrance_mapping[self.entrance_mapping[b]] = b
-
-    def _injectEntrance(self, source, target):
-        # Inject an entrance into a chain of entrances with decoupled mode
-        assert not self.keep_two_way
-        to_source = None
-        for k, v in self.entrance_mapping.items():
-            if v == source:
-                to_source = k
-                break
-        assert to_source is not None
-        temp = self.entrance_mapping[target]
-        self.entrance_mapping[target] = source
-        self.entrance_mapping[to_source] = temp
-
-    def _addConnectionTowards(self, sources, rnd, target):
-        # When no one-on-one requirement is needed, we can simply disconnect
-        # one of the doulble connected entrances.
-        entrance_to = {}
-        for s in sources:
-            if self.entrance_mapping[s] not in entrance_to:
-                entrance_to[self.entrance_mapping[s]] = []
-            entrance_to[self.entrance_mapping[s]].append(s)
-        options = []
-        for k, v in entrance_to.items():
-            if len(v) > 1:
-                options += v
-        option = rnd.choice(options)
-        self.entrance_mapping[option] = target
-
-    def inaccessibleEntrances(self, settings, entrancePool):
-        log = logic.Logic(settings, world_setup=self)
-        return [x for x in entrancePool if log.world.entrances[x].location and log.world.entrances[x].location not in log.location_list]
-
-    def _randomizeEntrances(self, rnd, entrancePool):
-        unmappedEntrances = list(entrancePool)
-
-        done = set()
-        for entrance in [x for x in entrancePool]:
-            if entrance in done:
-                continue
-            while entrance not in done:
-                pick_idx = rnd.randrange(len(unmappedEntrances))
-                pick = unmappedEntrances[pick_idx]
-                if pick == entrance:
-                    if len(unmappedEntrances) < 2:
-                        raise Error("Cannot map entrance to itself")
-                    continue
-                if self.inside_to_outside and entrance.endswith(":inside") == pick.endswith(":inside"):
-                    continue
-                if self.one_on_one:
-                    unmappedEntrances.pop(pick_idx)
-                self.entrance_mapping[entrance] = pick
-                done.add(entrance)
-                if self.keep_two_way:
-                    unmappedEntrances.remove(entrance)
-                    self.entrance_mapping[pick] = entrance
-                    done.add(pick)
-
-    def pickEntrances(self, settings, rnd):
-        if settings.overworld in {"random", "dungeonchain", "alttp"}:
-            return
-        if settings.overworld == "dungeondive":
-            self.entrance_mapping = {"d%d" % (n): "d%d:inside" % (n) for n in range(9)}
-            self.entrance_mapping.update({"d%d:inside" % (n): "d%d" % (n) for n in range(9)})
-        if settings.randomstartlocation and settings.entranceshuffle == "none":
-            start_location = start_locations[rnd.randrange(len(start_locations))]
-            if start_location != "start_house":
-                self.entrance_mapping[start_location] = "start_house:inside"
-                self.entrance_mapping["start_house:inside"] = start_location
-                self.entrance_mapping["start_house"] = f"{start_location}:inside"
-                self.entrance_mapping[f"{start_location}:inside"] = "start_house"
-
-        entrancePool = self.getEntrancePool(settings)
-        self._randomizeEntrances(rnd, entrancePool)
-
-        if settings.entranceshuffle == 'split':
-            # Shuffle connectors among themselves
-            # entrancePool is intentionally overwritten so we're only swapping connectors
-            entrancePool = self.getEntrancePool(settings, connectorsOnly=True)
-            self._randomizeEntrances(rnd, entrancePool)
-
-        # Make sure all entrances in the pool are accessible
-        for _ in range(1000):
-            islands = self.inaccessibleEntrances(settings, entrancePool)
-
-            if not islands:
-                break
-
-            island = rnd.choice(islands)
-            mains = [x for x in entrancePool if x not in islands]
-            main = rnd.choice(mains)
-
-            if self.inside_to_outside:
-                if island.endswith(":inside") != main.endswith(":inside"):
-                    continue
-
-            if not self.one_on_one:
-                self._addConnectionTowards(mains, rnd, island)
-            elif self.keep_two_way:
-                self._swapEntrances(island, main)
-            else:
-                self._injectEntrance(island, main)
-
-        if self.inaccessibleEntrances(settings, entrancePool):
-            raise Error("Failed to make all entrances accessible after a bunch of retries")
-        self._checkEntranceRules()
-
-    def _checkEntranceRules(self):
-        if self.inside_to_outside:
-            for k, v in self.entrance_mapping.items():
-                if k.endswith(":inside"):
-                    assert not v.endswith(":inside"), f"inside-to-outside rule violated: {k}->{v}"
-                else:
-                    assert v.endswith(":inside"), f"inside-to-outside rule violated: {k}->{v}"
-        if self.keep_two_way:
-            for k, v in self.entrance_mapping.items():
-                assert self.entrance_mapping[v] == k, f"keep-two-way rule violated: {k}->{v}"
-        if self.one_on_one:
-            found = set()
-            for k, v in self.entrance_mapping.items():
-                assert v not in found, f"one-on-one rule violated: {k}->{v}"
-                found.add(v)
-
-    def randomize(self, settings, rnd, ap_options):
+    def randomize(self, settings, itempool, rnd, plando: dict[str, str]={}):
         if settings.boss != "default":
             values = list(range(9))
             if settings.heartcontainers:
@@ -230,33 +117,24 @@ class WorldSetup:
                 if settings.miniboss == 'shuffle':
                     values.remove(self.miniboss_mapping[key])
 
-        if settings.goal == 'random':
-            self.goal = rnd.randint(-1, 8)
-        elif settings.goal == 'open':
+        if settings.goal == 'open':
             self.goal = -1
-        elif settings.goal in {"seashells", "bingo", "bingo-full"}:
+        elif settings.goal == "seashells":
             self.goal = settings.goal
         elif settings.goal == "specific":
-            instrument_count = max(1, ap_options.instrument_count.value)
+            instrument_count = max(1, int(settings.goalcount))
             instruments = [c for c in "12345678"]
             rnd.shuffle(instruments)
             self.goal = "=" + "".join(instruments[:instrument_count])
-        elif "-" in settings.goal:
-            a, b = settings.goal.split("-")
-            if a == "open":
-                a = -1
-            self.goal = rnd.randint(int(a), int(b))
         else:
             self.goal = int(settings.goal)
-        if self.goal in {"bingo", "bingo-full"}:
-            self.bingo_goals = bingo.randomizeGoals(rnd, settings)
 
         self.multichest = rnd.choices(MULTI_CHEST_OPTIONS, MULTI_CHEST_WEIGHTS)[0]
-
-        self.inside_to_outside = settings.entranceshuffle not in {"wild", "insane", "madness"}
-        self.keep_two_way = settings.entranceshuffle not in {"chaos", "insane", "madness"}
-        self.one_on_one = settings.entranceshuffle not in {"madness"}
-        self.pickEntrances(settings, rnd)
+        if settings.overworld == 'dungeondive':
+            self.entrance_mapping = {"d%d" % (n): "d%d:inside" % (n) for n in range(9)}
+            self.entrance_mapping.update({"d%d:inside" % (n): "d%d" % (n) for n in range(9)})
+        else:
+            self.pickEntrances(settings, itempool, rnd, self, plando)
 
     def loadFromRom(self, rom):
         import patches.overworld
@@ -269,3 +147,353 @@ class WorldSetup:
         self.boss_mapping = patches.enemies.readBossMapping(rom)
         self.miniboss_mapping = patches.enemies.readMiniBossMapping(rom)
         self.goal = 8 # Better then nothing
+
+
+class Zone:
+    """
+    Represents a contiguous region of locations.
+    """
+    logic: "logic.Logic"
+    locations: set[Location]
+    paths: dict[str, str]
+
+    def __init__(self, logic: "logic.Logic", all_shuffled_entrances: set[str], initial_entrance: str):
+        self.logic = logic
+        self.locations = set()
+        entrances = set()
+        self._recursive_find_contiguous(logic.world.entrances[initial_entrance].location, self.locations, entrances)
+        self.paths = { initial_entrance: entrances & all_shuffled_entrances - {initial_entrance} }
+
+    def merge(self, other) -> None:
+        assert self.locations == other.locations and self.logic == other.logic
+        self.paths.update(other.paths)
+
+    def subtract(self, other) -> None:
+        assert self.locations > other.locations and self.logic == other.logic
+        self.locations -= other.locations
+
+    def _recursive_find_contiguous(self, location:Location, seen_locations:set[Location], seen_entrances:set[str]) -> None:
+        """
+        updates seen_locations and seen_entrances based on everything reachable from the provided location
+        """
+        if not location or location in seen_locations:
+            return
+        seen_locations.add(location)
+        entrances = {k for k, v in self.logic.world.entrances.items() if v.location == location}
+        seen_entrances.update(entrances)
+        for location, condition in location.connections:
+            self._recursive_find_contiguous(location, seen_locations, seen_entrances)
+
+
+class EntranceShuffler:
+    settings: Settings
+    inside_to_outside: bool
+    keep_two_way: bool
+    one_on_one: bool
+
+    initial_entrance_mapping: dict[str, str]
+    entrance_mapping: dict[str, str]
+    all_entrances: set[str]
+    all_shuffled_entrances: set[str]
+    entrance_pools: dict[str, set[str]]
+
+    verification_logic: "logic.Logic"
+    logic: "logic.Logic"
+
+    zones: set[Zone]
+    no_path_to: set[str]
+    entrance_pairs: dict[str, str]
+
+    def __init__(self, settings, plando: dict[str, str] = {}):
+        self.settings = settings
+        self.inside_to_outside = settings.entrancerules in {"normal", "chaos"}
+        self.keep_two_way = settings.entrancerules in {"normal", "wild"}
+        self.one_on_one = settings.entrancerules != "madness"
+
+        self.initial_entrance_mapping = {k: f"{k}:inside" for k in ENTRANCE_INFO.keys()}
+        self.initial_entrance_mapping.update({f"{k}:inside": k for k in ENTRANCE_INFO.keys()})
+
+        self.all_entrances = {k for k in self.initial_entrance_mapping.keys()}
+        self.all_shuffled_entrances = set()
+        self.entrance_pools = { "global": set() }
+        self.zones = set()
+
+        # categorize entrances into types
+        entrance_type_groups: dict[str, set[str]] = {
+            "dungeon": set(),
+            "connector": set(),
+            "single": set(),
+            "dummy": set(),
+            "insanity": set(),
+            "water": set(),
+            "trade": set(),
+            "start": set(),
+        }
+        for k, v in ENTRANCE_INFO.items():
+            if k not in self.all_entrances:
+                continue
+            entrance_type_groups[v.type].add(k)
+            entrance_type_groups[v.type].add(f"{k}:inside")
+        if self.settings.tradequest:
+            entrance_type_groups["single"].update(entrance_type_groups["trade"])
+        else:
+            entrance_type_groups["dummy"].update(entrance_type_groups["trade"])
+        del entrance_type_groups["trade"]
+
+        # break entrances into pools based on settings
+        shuffles: dict[str, str] = {
+            "dungeon": self.settings.dungeonshuffle,
+            "connector": self.settings.shuffleconnectors,
+            "single": self.settings.shufflebasic,
+            "dummy": self.settings.shufflejunk,
+            "insanity": self.settings.shuffleannoying,
+            "water": self.settings.shufflewater,
+        }
+        for type_group, scope in shuffles.items():
+            if scope == "limited":
+                self.entrance_pools[type_group] = entrance_type_groups[type_group]
+                self.all_shuffled_entrances.update(self.entrance_pools[type_group])
+            elif scope == "global":
+                self.entrance_pools["global"].update(entrance_type_groups[type_group])
+        if self.settings.randomstartlocation == "global":
+            self.entrance_pools["global"].add("start_house")
+            self.entrance_pools["global"].add("start_house:inside")
+        self.all_shuffled_entrances.update(self.entrance_pools["global"])
+
+        # create a logic before messing with entrances for verification later
+        world_setup = WorldSetup()
+        world_setup.entrance_mapping = self.initial_entrance_mapping
+        self.verification_logic = logic.Logic(self.settings, world_setup=world_setup)
+
+        # unmap entrances to be shuffled
+        to_unmap = { en for pool in self.entrance_pools.values() for en in pool }
+        self.initial_entrance_mapping = { k:v for k, v in self.initial_entrance_mapping.items() if k not in to_unmap }
+
+        # apply plando
+        self.initial_entrance_mapping.update(plando)
+        if self.keep_two_way:
+            for en, ex in plando.items():
+                self.initial_entrance_mapping[ex] = en
+
+        # create a partial logic for our disconnected state
+        world_setup.entrance_mapping = self.initial_entrance_mapping
+        world_setup.is_partial = True
+        self.logic = logic.Logic(self.settings, world_setup=world_setup)
+
+        # set up zones while categorizing some entrances
+        has_path_to = set()
+        possible_entrance_pairs = {}
+        for en in self.logic.world.entrances.keys():
+            zone = Zone(self.logic, self.all_shuffled_entrances, en)
+            self.zones.add(zone)
+            if en in self.all_shuffled_entrances and zone.paths[en]:
+                has_path_to.update(zone.paths[en])
+                if len(zone.paths[en]) == 1:
+                    possible_entrance_pairs[en] = next(iter(zone.paths[en]))
+        self.no_path_to = self.all_shuffled_entrances - has_path_to
+        self.entrance_pairs = {a: b for a, b in possible_entrance_pairs.items() if possible_entrance_pairs.get(b) == a}
+
+        # merge zones with the same location set
+        zones_by_location = {}
+        zones_to_remove = set()
+        for zone in self.zones:
+            key = frozenset(zone.locations)
+            if key not in zones_by_location:
+                zones_by_location[key] = zone
+            else:
+                zones_by_location[key].merge(zone)
+                zones_to_remove.add(zone)
+        self.zones -= zones_to_remove
+
+        # subtract any subset zones from larger ones
+        ordered_zones = sorted(self.zones, key=lambda zone: len(zone.locations), reverse=True)
+        for i, a in enumerate(ordered_zones):
+            for b in ordered_zones[i + 1:]:
+                if a.locations > b.locations:
+                    a.subtract(b)
+        
+    def shuffle_entrances(self, rnd, world_setup: WorldSetup, itempool: dict[str, int]):
+        self.entrance_mapping = self.initial_entrance_mapping.copy()
+
+        if self.settings.randomstartlocation == "limited":
+            start_location = rnd.choice(start_locations)
+            self.entrance_mapping["start_house"] = f"{start_location}:inside"
+            self.entrance_mapping["start_house:inside"] = start_location
+            self.entrance_mapping[start_location] = "start_house:inside"
+            self.entrance_mapping[f"{start_location}:inside"] = "start_house"
+
+        fill_stage = 0
+        # 0: expand
+        # 1: dont contract
+        # 2: dead ends
+        # 3: connect entrance pairs
+        # 4: insert entrance pairs
+
+        entrances_reached = set()
+        self._recursive_traverse_entrances("start_house:inside", entrances_reached)
+        seen_zones = {zone for zone in self.zones if entrances_reached & set(zone.paths)}
+        while(len(self.entrance_mapping) < len(self.all_entrances)):
+            mapped_entrances = set(self.entrance_mapping.keys())
+            mapped_exits = set(self.entrance_mapping.values())
+            entrances = sorted(entrances_reached - mapped_entrances)
+            rnd.shuffle(entrances)
+            ex: str|None = None
+            # pick an entrance and exit to connect
+            for en in entrances:
+                exits = self._find_targets_for_entrance(en, self.one_on_one, self.inside_to_outside)
+
+                # save entrance pairs for the end
+                if fill_stage < 3:
+                    exits -= set(self.entrance_pairs)
+
+                # if half of the unmapped exits in the pool have no path to them
+                # force one so we don't get stuck with a pair later
+                if en != 'start_house:inside' and len((exits - mapped_exits) & self.no_path_to) * 2 >= len(exits):
+                    exits &= self.no_path_to  
+
+                # fill stage 0, strictly expand map
+                # fill stage 1, anything that doesnt reduce exits is fine
+                if fill_stage <= 1:
+                    valid_exits = set()
+                    for zone in self.zones:
+                        for entrance, destinations in zone.paths.items():
+                            if len(destinations - entrances_reached) >= (2 - fill_stage):
+                                valid_exits.add(entrance)
+                    # avoid problem starts while we're here
+                    if en == 'start_house:inside':
+                        valid_exits.difference_update(start_blacklist)
+                    exits &= valid_exits
+
+                # drop exits to seen zones if it doesnt empty the pool
+                exits_to_seen_zones = {en for zone in seen_zones for en in set(zone.paths)}
+                if exits - exits_to_seen_zones:
+                    exits -= exits_to_seen_zones
+                
+                if fill_stage == 2:
+                    exits &= self.no_path_to
+
+                if not exits:
+                    continue
+
+                ex = rnd.choice(sorted(exits))
+                if ex:
+                    seen_zones.update({zone for zone in self.zones if entrances_reached & set(zone.paths)})
+                    self._connect(en, ex)
+                    self._recursive_traverse_entrances(ex, entrances_reached)
+                    break
+            if not ex: # no valid exits for any entrances, move to next fill stage
+                fill_stage += 1
+                #print(f'----moving to fill_stage {fill_stage}----')
+                if fill_stage == 4:
+                    break
+
+        if not self.inside_to_outside:
+            # insert remaining entrance pairs
+            entrances = sorted(self.entrance_pairs.keys())
+            rnd.shuffle(entrances)
+            for en in entrances:
+                if en in self.entrance_mapping:
+                    continue
+                targets = self._find_targets_for_entrance(en, False, False)
+                targets &= set(self.entrance_mapping)
+                targets.discard(self.entrance_mapping['start_house:inside']) # avoid start connection
+                if targets:
+                    target = rnd.choice(sorted(targets))
+                    self._insert(en, self.entrance_pairs[en], target)
+
+            # if decoupled, leftover unmapped entrances can be inserted paired with itself
+            if not self.keep_two_way:
+                entrances = sorted(self.all_entrances - set(self.entrance_mapping) - set(self.entrance_mapping.values()))
+                rnd.shuffle(entrances)
+                for en in entrances:
+                    targets = self._find_targets_for_entrance(en, False, False)
+                    targets &= set(self.entrance_mapping)
+                    targets.discard(self.entrance_mapping['start_house:inside']) # avoid start connection
+                    if targets:
+                        target = rnd.choice(sorted(targets))
+                        self._insert(en, en, target)
+        
+        # verify valid mapping
+        world_setup = WorldSetup()
+        world_setup.entrance_mapping = self.entrance_mapping
+        
+        if len(self.all_shuffled_entrances - set(self.entrance_mapping)):
+            raise EntranceConnectionException
+        final_logic = logic.Logic(self.settings, world_setup=world_setup)
+        valid_location_list = len(final_logic.location_list) == len(self.verification_logic.location_list)
+        valid_iteminfo_list = len(final_logic.iteminfo_list) == len(self.verification_logic.iteminfo_list)
+        if not valid_location_list or not valid_iteminfo_list:
+            raise EntranceConnectionException
+
+
+        # if we can explore forward to a handful of locations, it should be valid to fill
+        def explore(extra_items: list[str] = []) -> tuple[int, set[str]]:
+            explorer = Explorer()
+            for item in items_selected + extra_items:
+                explorer.addItem(item, 1)
+            explorer.visit(final_logic.start)
+            locs = len([l for l in explorer.getAccessableLocations()
+                for l in l.items if l.metadata.area != "None"])
+            return locs, explorer.getRequiredItemsForNextLocations()
+
+        possible_items = []
+        for item, amount in itempool.items():
+            if not item.startswith('RUPEE') and not item.startswith('KEY'):
+                possible_items.extend([item]*amount)
+        ITEMS_TO_REACH = 10
+        items_selected = []
+        location_count, advancement_items = explore()
+        while len(items_selected) < ITEMS_TO_REACH:
+            selected_an_item = False
+            items_to_try = [item for item in possible_items if item in advancement_items]
+            rnd.shuffle(items_to_try)
+            for item in items_to_try:
+                new_location_count, new_advancement_items = explore([item])
+                if new_location_count > location_count:
+                    items_selected.append(item)
+                    possible_items.remove(item)
+                    location_count = new_location_count
+                    advancement_items = new_advancement_items
+                    selected_an_item = True
+                    break
+            if not selected_an_item:
+                raise ItemFillException
+        
+        
+        return self.entrance_mapping
+
+    def _connect(self, en: str, ex: str) -> None:
+        #print(f'{en} -> {ex}')
+        self.entrance_mapping[en] = ex
+        if self.keep_two_way:
+            self.entrance_mapping[ex] = en
+
+    def _insert(self, en: str, ex: str, target: str) -> None:
+        target_ex = self.entrance_mapping[target]
+        self._connect(target, ex)
+        self._connect(en, target_ex)
+
+    def _find_targets_for_entrance(self, en: str, one_on_one: bool, inside_to_outside: bool) -> set[str]:
+        # exit must come from same pool as entrance
+        targets = next(v for v in self.entrance_pools.values() if en in v).copy()
+        targets.discard(en)             
+
+        # enforce entrance rules
+        if one_on_one:
+            targets -= set(self.entrance_mapping.values())
+        if inside_to_outside:
+            targets = {t for t in targets if t.endswith(":inside") != en.endswith(":inside")}
+        
+        return targets
+
+    def _recursive_traverse_entrances(self, entrance: str, seen_entrances: set[str]) -> None:
+        if entrance in seen_entrances:
+            return
+        seen_entrances.add(entrance)
+        mapped_exit = self.entrance_mapping.get(entrance, None)
+        if mapped_exit:
+            self._recursive_traverse_entrances(mapped_exit, seen_entrances)
+        zone = next((z for z in self.zones if entrance in z.paths), None)
+        if zone:
+            for destination in zone.paths[entrance]:
+                self._recursive_traverse_entrances(destination, seen_entrances)
