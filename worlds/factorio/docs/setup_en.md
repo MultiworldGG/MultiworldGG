@@ -119,14 +119,14 @@ This allows you to host your own Factorio game.
 ## Hosting Your Own Factorio Game
 
 1. Obtain the Factorio mod for this MultiworldGG seed. It should be named `AP_*.zip`, where `*` is the seed number.
-2. Install the mod into your Factorio Server by copying the zip file into the `mods` folder.
+2. Install the mod into your Factorio Server by copying the zip file into the `factorio/mods` sub-folder of your Archipelago directory.
 3. Disable Space Age on your server by editing `mods-list.json` in the server's `mods` folder, going to the Space Age section, and changing `enabled: true` to `enabled: false`.
 4. Install the mod into your Factorio Client by copying the zip file into the `mods` folder, which is likely located
    at `C:\Users\YourName\AppData\Roaming\Factorio\mods`. If you're on Linux, it will be located at `~/.factorio/mods`.
 5. Obtain the MultiworldGG Server address from the website's host room, or from the server host.
 6. Open your MultiworldGG client. Type `/connect <server-address>` into the input box at the bottom of the client and press enter.
 
-![Factorio Client for Archipelago Connection Command](connect-to-ap-server.png)
+![Factorio Client for MultiworldGG Connection Command](connect-to-ap-server.png)
 
 7. Launch your Factorio Client
 8. Click on "Multiplayer" in the main menu
