@@ -3,6 +3,7 @@ import time
 from typing import TYPE_CHECKING
 
 from .address_maps import GHOST_RATCHET_ADDRESSES
+from .ghost_treehouse import TreehouseGhost, pointer
 
 if TYPE_CHECKING:
     from ..pypine import Pine
@@ -83,7 +84,7 @@ class GhostRatchetAddresses:
         return f"GhostRatchetAddresses(base=0x{self.base:08X}, visibility={self.visibility})"
 
 
-# Fixed values for the non-position fields, confirmed in-game.
+
 _ROTATION_SCALE_1 = 0x3F76EAAC
 _ROTATION_1       = 0x3E872D1A
 _BASE_FIELD       = 0x3F7FFFFE
@@ -113,6 +114,32 @@ class GhostRatchetInventory:
         self._follow_planet_id: int | None = None
         self._follow_addr: GhostRatchetAddresses | None = None
         self._follow_trigger: int | None = None
+        self.treehouse = TreehouseGhost(pine)
+
+    def resolve_addresses(self, planet_id):
+        if planet_id == 24:
+            return self.treehouse.resolve(self._valid_ghost)
+        return GHOST_RATCHET_ADDRESSES.get(planet_id)
+
+    def _valid_ghost(self, planet_addrs):
+        p = self.pine
+        obj = planet_addrs.trigger - 0x40
+        matrix = planet_addrs.ghost_base - 0x14
+        player = planet_addrs.player_position - 0x30
+        if not all(pointer(value) for value in (obj, matrix, player)):
+            return False
+        if (p.read_int32(obj + 0x24) != 0x0805C334
+                or p.read_int32(obj + 0xC) != matrix
+                or p.read_int32(matrix + 0x40) != obj):
+            return False
+        player_obj = p.read_int32(player + 0x40)
+        definition = p.read_int32(obj + 0x10)
+        payload = p.read_int32(matrix + 0x58)
+        if not all(pointer(value) for value in (player_obj, definition, payload)):
+            return False
+        return (p.read_int32(player_obj + 0x24) == 0x36919224
+                and p.read_int32(player_obj + 0xC) == player
+                and p.read_int32(definition + 0x1C) == 0x18C)
 
     def _prepare_ghost(self, planet_addrs) -> bool:
         """Initialize an unused native ghost before enabling its callbacks.
@@ -121,33 +148,20 @@ class GhostRatchetInventory:
         Its update/destructor dereference the owner at offset zero. Validate
         reciprocal object links and the native payload size before writing.
         """
+        if not self._valid_ghost(planet_addrs):
+            return False
         p = self.pine
-        obj = planet_addrs.trigger - 0x40
         matrix = planet_addrs.ghost_base - 0x14
         player = planet_addrs.player_position - 0x30
-        if (p.read_int32(obj + 0x24) != 0x0805C334
-                or p.read_int32(obj + 0xC) != matrix
-                or p.read_int32(matrix + 0x40) != obj):
-            return False
-        player_obj = p.read_int32(player + 0x40)
-        definition = p.read_int32(obj + 0x10)
         payload = p.read_int32(matrix + 0x58)
-        if not all(0x100000 <= value < 0x1E00000 - 0x18C
-                   for value in (player_obj, definition, payload)):
-            return False
-        if (p.read_int32(player_obj + 0x24) != 0x36919224
-                or p.read_int32(player_obj + 0xC) != player
-                or p.read_int32(definition + 0x1C) != 0x18C):
-            return False
         if p.read_int32(matrix + 0x64) == 0x8000:
             p.write_bytes(payload, struct.pack('<I', player) + bytes(0x188))
         return p.read_int32(payload) == player
 
     def spawn(self, planet_id: int) -> bool:
         """Spawn a ghost at Ratchet's current position on `planet_id`.
-        Returns False (no-op) if that planet isn't in
-        GHOST_RATCHET_ADDRESSES yet."""
-        planet_addrs = GHOST_RATCHET_ADDRESSES.get(planet_id)
+        Returns False until validated addresses are available for the planet."""
+        planet_addrs = self.resolve_addresses(planet_id)
         if planet_addrs is None:
             return False
 
@@ -178,6 +192,10 @@ class GhostRatchetInventory:
             self.active = False
             self._spawned_at = None
             return
+        if planet_id == 24 and not self._treehouse_matches(self._addr):
+            self.active = False
+            self._spawned_at = None
+            return
         if self._spawned_at is not None and time.monotonic() - self._spawned_at >= _DESPAWN_AFTER_SECONDS:
             self._despawn()
             return
@@ -200,8 +218,8 @@ class GhostRatchetInventory:
 
     def read_own_position(self, planet_id: int) -> tuple[float, float, float] | None:
         """Read this client's own live X/Y/Z on `planet_id`, for GhostLink to broadcast
-        to other linked players. None if `planet_id` isn't in GHOST_RATCHET_ADDRESSES."""
-        planet_addrs = GHOST_RATCHET_ADDRESSES.get(planet_id)
+        to other linked players. None until its addresses are resolved."""
+        planet_addrs = self.resolve_addresses(planet_id)
         if planet_addrs is None:
             return None
         return struct.unpack_from("<3f", self.pine.read_bytes(planet_addrs.player_position, 12))
@@ -210,12 +228,13 @@ class GhostRatchetInventory:
         """Render another GhostLink player at (x, y, z) on `planet_id`, rewriting X/Y/Z
         every call so the ghost tracks movement. No despawn timer — caller must call
         stop_following() once that peer's data goes stale or they leave the planet."""
-        planet_addrs = GHOST_RATCHET_ADDRESSES.get(planet_id)
+        planet_addrs = self.resolve_addresses(planet_id)
         if planet_addrs is None:
             return False
         if not self._prepare_ghost(planet_addrs):
             return False
-        if self._follow_planet_id != planet_id:
+        if (self._follow_planet_id != planet_id or self._follow_addr is None
+                or self._follow_addr.base != planet_addrs.ghost_base):
             self._follow_addr = GhostRatchetAddresses(planet_addrs.ghost_base, self.pine)
             self._follow_trigger = planet_addrs.trigger
             self._follow_planet_id = planet_id
@@ -237,10 +256,22 @@ class GhostRatchetInventory:
 
     def stop_following(self) -> None:
         """Hide whichever peer's ghost follow() last rendered, if any."""
-        if self._follow_active and self._follow_addr is not None:
+        if (self._follow_active and self._follow_addr is not None
+                and (self._follow_planet_id != 24 or self._treehouse_matches(self._follow_addr))):
             self._follow_addr.visibility = _HIDDEN
         self._follow_active = False
         self._follow_planet_id = None
 
+    def _treehouse_matches(self, addr):
+        current = self.resolve_addresses(24)
+        if current is None or current.ghost_base != addr.base:
+            return False
+        # A same-level reload may reuse all addresses but reset the payload.
+        # Do not hide/re-arm that new object before _prepare_ghost initializes it.
+        payload = self.pine.read_int32(current.ghost_base + 0x44)
+        return (self.pine.read_int32(current.ghost_base + 0x50) != 0x8000
+                and self.pine.read_int32(payload) == current.player_position - 0x30)
+
     def __repr__(self) -> str:
-        return f"GhostRatchetInventory(active={self.active}, planet_id={self._planet_id!r}, addr={self._addr!r})"
+        return (f"GhostRatchetInventory(active={self.active}, planet_id={self._planet_id!r}, "
+                f"addr={self._addr!r}, treehouse={self.treehouse.addresses!r})")

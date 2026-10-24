@@ -1,5 +1,3 @@
-from __future__ import annotations
-
 from collections.abc import Callable
 from enum import IntEnum
 from typing import TYPE_CHECKING
@@ -48,7 +46,7 @@ class WeaponCyclerInventory:
     current_weapon = WeaponCyclerField("current_addr")
     stored_weapon  = WeaponCyclerField("stored_addr")
 
-    def __init__(self, pine: Pine) -> None:
+    def __init__(self, pine: "Pine") -> None:
         self.pine = pine
         self.apply_addr:   int | None = None
         self.state_addr:   int | None = None

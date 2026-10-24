@@ -18,6 +18,7 @@ class Rac5ShrinkRayGrindrail:
     OUTPOST_OMEGA_GRINDRAIL = "Outpost Omega: Shrink Ray Grindrail"
     CHALLAX_SECOND_PUZZLE = "Challax: Shrink Ray Second Puzzle"
     OUTPOST_OMEGA_SECOND_GRINDRAIL = "Outpost Omega: Shrink Ray Second Grindrail"
+    HIG_TREEHOUSE_GRINDRAIL = "HIG Treehouse: Shrink Ray Grindrail"
 
 
 class ShrinkRayPuzzleBit(IntFlag):

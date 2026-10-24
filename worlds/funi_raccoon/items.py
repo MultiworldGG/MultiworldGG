@@ -465,7 +465,7 @@ def create_all_items(world: FuniRaccoonWorld) -> None:
     if world.options.hatsanity:
         itempool += [world.create_item(name) for name in _HATS]
 
-    if world.options.gemsanity:
+    if world.options.gemsanity and "lugh" in world.options.goal.value:
         itempool += [world.create_item("Progressive Mystical Jewel") for _ in range(4)]
         
     itempool.append(world.create_item("Kei Truck Radio"))

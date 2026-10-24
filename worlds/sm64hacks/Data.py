@@ -10,6 +10,7 @@ import re
 import os
 import shutil
 import logging
+import string
 logger = logging.getLogger("SM64 Romhack")
 
 
@@ -122,7 +123,8 @@ sm64hack_items: Tuple[str, ...] = (
     "Extra Stage",
     "+1 Power Point",
     "-1 Life",
-    "Aya Speed"
+    "Aya Speed",
+    "Glitch" #not a real item - only for UT
 )
 
 sr8traps: Tuple[str, ...] = (
@@ -309,6 +311,18 @@ star_like: Tuple[str, ...] = (
     "Bowser 2 Cannon Star"
 )
 
+glitches: Tuple[str, ...] = ( #UT glitched stuff
+    "reasonable",             #purposefully exclude major skips as they are more of a self-imposed restriction in a lot of cases
+    "obscure",
+    "hard",
+    "Bomb Clips",
+    "Chuckya Clips",
+    "BLJs",
+    "Bomb Walking",
+    "Framewalks"
+)
+
+
 c1 = [{"exists": True}, {"exists": True}, {"exists": True}, {"exists": True}, {"exists": True}, {"exists": True, "Requirements": ["Wing Cap"]}, {"exists": True, "Requirements": ["Vanish Cap"]}]
 c2 = [{"exists": True}, {"exists": True}, {"exists": True}, {"exists": True}, {"exists": True}, {"exists": True, "Requirements": ["Wing Cap"]}, {"exists": True, "Requirements": ["Vanish Cap"]}]
 c3 = [{"exists": True}, {"exists": True}, {"exists": True}, {"exists": True}, {"exists": True}, {"exists": True, "Requirements": ["Wing Cap"]}, {"exists": True, "Requirements": ["Vanish Cap"]}]
@@ -410,17 +424,64 @@ class Data:
         #Other represents the keys + caps; the "star" ids 1 and 2 are keys 1 and 2, and 3-5 are wing, vanish, and metal cap
         #respectively
     }
-    def __init__(self):
+    ut_locations = {}
+    def __init__(self, player, multiworld):
         self.required_items = set()
+        self.progression_courses = set()
+        self.maxstarcount = 0
+        self.player = player
+        self.multiworld = multiworld
 
+    def get_location_data(self, location_name, ut = True):
+        if ut:
+            locations = self.ut_locations
+        else:
+            locations = self.locations 
+        for course, data in locations.items():
+            if location_name.startswith(course):
+                match location_name[len(course) + 1:]:
+                    case "Sign":
+                        return data["Sign"]
+                    case "Troll Star":
+                        return data["Troll Star"]
+                    case "Cannon":
+                        return data["Cannon"]
+                starnum = int(location_name[-1]) - 1
+                if "Blue Star" in location_name:
+                    starnum += 7
+                return data["Stars"][starnum]
+        if location_name in sm64hack_items[:6]:
+            return locations["Other"]["Stars"][sm64hack_items.index(location_name)]
+        if "Switch" in location_name:
+            return locations["Other"]["Stars"][5]
+        if location_name in sr6_25_locations:
+            return locations["Extra"]["Stars"][sr6_25_locations.index(location_name) - 1]
+        if location_name in badges:
+            return locations["Other"]["Stars"][badges.index(location_name) + 7]
+        if location_name == "Victory":
+            return locations["Other"]["Stars"][6]
+        
     def import_json(self, file_name):
         json_dir = os.path.join(Utils.user_path(), "sm64hack_jsons")
         custom_json_dir = os.path.join(json_dir, "custom_jsons")
         downloaded_json_dir = os.path.join(json_dir, "downloaded_jsons")
 
-        json_file = list(Path(custom_json_dir).rglob(file_name)) #custom takes priority over downloaded
+        if not file_name.endswith(".json"):
+            file_name = file_name + ".json"
+
+        file_name = re.sub(r"[/<>:\"\\\|\?\*]+", "", file_name) #characters which cannot be put in filenames
+
+        json_file = list(Path(custom_json_dir).rglob(file_name, case_sensitive=False)) #custom takes priority over downloaded
         if json_file == []:
-            json_file = list(Path(downloaded_json_dir).rglob(file_name))
+            json_file = list(Path(downloaded_json_dir).rglob(file_name, case_sensitive=False))
+        else:
+            logger.warning("Custom JSON %s used - JSON may be outdated (ignore this if you are testing a new json)", file_name)
+        if json_file == []:
+            json_file = list(Path(custom_json_dir).rglob(re.sub(r"\s+", "", file_name), case_sensitive=False)) #last ditch effort, remove whitespace
+            if json_file != []:
+                logger.warning("Custom JSON %s used - JSON may be outdated (ignore this if you are testing a new json)", re.sub(r"\s+", "", file_name))
+        if json_file == []:
+            json_file = list(Path(downloaded_json_dir).rglob(re.sub(r"\s+", "", file_name), case_sensitive=False)) #last ditch effort, remove whitespace
         if len(json_file) > 1:
             raise ValueError("Multiple JSON files with the same name detected")
         if len(json_file) == 0:
@@ -434,8 +495,11 @@ class Data:
                 raise AssertionError(f"There are no star requirements in {file_name}; this is most likely a mistake")
             else:
                 self.maxstarcount = max(starcounts)
+            self.ut_locations = json.loads(filetext) #so the fake edited requirement string doesnt show up in UT
+            if hasattr(self.multiworld, "generation_is_fake"): #glitched UT
+                for glitch in glitches:
+                    filetext = filetext.replace(f"|!{glitch}|", f"(|!{glitch}| or |Glitch|)")
             self.locations = json.loads(filetext)
             if self.locations["Other"]["Settings"].get("Entrances"):
-                self.progression_courses = set() 
                 for entrance in self.locations["Other"]["Entrances"]:
                     self.progression_courses |= set((entrance[0], entrance[2]))

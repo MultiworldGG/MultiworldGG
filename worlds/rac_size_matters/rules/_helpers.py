@@ -1,29 +1,32 @@
-from typing import TYPE_CHECKING
+from dataclasses import dataclass
 
-from rule_builder.rules import And, Has, HasAll, HasAny, HasAnyCount, Or, True_
+from rule_builder.rules import (
+    And,
+    CanReachLocation,
+    Has,
+    HasAll,
+    HasAny,
+    HasAnyCount,
+    HasGroup,
+    Or,
+    Rule,
+    True_,
+    TWorld,
+)
+from typing_extensions import override
 
 from ..constants import Rac5Gadgets, Rac5Infobots
-from ..data.weapons import WEAPON_DATA
 from ..items import (
     ARMOUR_SETS,
     CLANK_PACK_NAME,
+    LONG_PROJECTILE_WEAPONS_GROUP,
     PROGRESSIVE_ARMOUR_NAME,
     PROGRESSIVE_ARMOUR_UNIFIED_NAME,
     PROGRESSIVE_CHALLENGE_MODE_NAME,
     PROGRESSIVE_WEAPON_NAME,
-    WEAPON_DISPLAY_TO_INTERNAL,
+    PROJECTILE_WEAPONS_GROUP,
 )
-if TYPE_CHECKING:
-    from ..world import RACSizeMatterWorld
-_PROJECTILE_WEAPONS = [
-    display for display, internal in WEAPON_DISPLAY_TO_INTERNAL.items() if WEAPON_DATA[internal].is_projectile
-]
-_LONG_PROJECTILE_WEAPONS = [
-    display for display, internal in WEAPON_DISPLAY_TO_INTERNAL.items() if WEAPON_DATA[internal].is_long_projectile
-]
-_PROJECTILE_WEAPONS_ALL_NAMES = [*_PROJECTILE_WEAPONS, *(PROGRESSIVE_WEAPON_NAME[name] for name in _PROJECTILE_WEAPONS)]
-_LONG_PROJECTILE_WEAPONS_ALL_NAMES = [*_LONG_PROJECTILE_WEAPONS, *(PROGRESSIVE_WEAPON_NAME[name] for name in _LONG_PROJECTILE_WEAPONS)]
-PROJECTILE_WEAPON_ITEM_NAMES = frozenset(_PROJECTILE_WEAPONS_ALL_NAMES)
+
 _ARMOUR_PIECE_INDEX: dict[str, int] = {"Chestplate": 1, "Helmet": 2, "Gloves": 3, "Boots": 4}
 _ARMOUR_SET_ORDER_INDEX: dict[str, int] = {display: i for i, (display, _internal) in enumerate(ARMOUR_SETS)}
 
@@ -33,67 +36,120 @@ def _unified_armour_count(set_display: str, piece_name: str) -> int:
     return _ARMOUR_SET_ORDER_INDEX[set_display] * 4 + _ARMOUR_PIECE_INDEX[piece_name]
 
 
-def HasProjectileWeapon() -> HasAny:
-    return HasAny(*_PROJECTILE_WEAPONS_ALL_NAMES)
-
-def HasLongProjectileWeapon() -> HasAny:
-    return HasAny(*_LONG_PROJECTILE_WEAPONS_ALL_NAMES)
-
-
-def HasArmourPiece(set_display: str, piece_name: str) -> HasAnyCount:
-    return HasAnyCount(
-        {
-            f"{set_display} {piece_name}": 1,
-            PROGRESSIVE_ARMOUR_NAME[set_display]: _ARMOUR_PIECE_INDEX[piece_name],
-            PROGRESSIVE_ARMOUR_UNIFIED_NAME: _unified_armour_count(set_display, piece_name),
-        }
-    )
+@dataclass
+class HasProjectileWeapon(Rule[TWorld], game="Ratchet & Clank: Size Matters"):
+    @override
+    def _instantiate(self, world: TWorld) -> Rule.Resolved:
+        return HasGroup(PROJECTILE_WEAPONS_GROUP).resolve(world)
 
 
-def HasTitanPrereq(world: "RACSizeMatterWorld", weapon: str) -> HasAny | Has:
-    """Weapon Titan variant purchase prerequisite: reaching level 4 is what unlocks the purchase in-game (see core/vendor.py's Titan-purchase handling, which floors the weapon to level 5 the moment it's bought)."""
-    if world.options.progressive_weapons:
-        return Has(PROGRESSIVE_WEAPON_NAME[weapon], 4)
-    return HasAny(weapon, PROGRESSIVE_WEAPON_NAME[weapon])
+@dataclass
+class HasLongProjectileWeapon(Rule[TWorld], game="Ratchet & Clank: Size Matters"):
+    @override
+    def _instantiate(self, world: TWorld) -> Rule.Resolved:
+        return HasGroup(LONG_PROJECTILE_WEAPONS_GROUP).resolve(world)
 
 
-def HasArmourSet(set_display: str) -> And:
-    return And(*(HasArmourPiece(set_display, piece) for piece in _ARMOUR_PIECE_INDEX))
+@dataclass
+class HasArmourPiece(Rule[TWorld], game="Ratchet & Clank: Size Matters"):
+    set_display: str
+    piece_name: str
+
+    @override
+    def _instantiate(self, world: TWorld) -> Rule.Resolved:
+        return HasAnyCount(
+            {
+                f"{self.set_display} {self.piece_name}": 1,
+                PROGRESSIVE_ARMOUR_NAME[self.set_display]: _ARMOUR_PIECE_INDEX[self.piece_name],
+                PROGRESSIVE_ARMOUR_UNIFIED_NAME: _unified_armour_count(self.set_display, self.piece_name),
+            }
+        ).resolve(world)
 
 
-def weapon_enabled(world: "RACSizeMatterWorld", weapon: str) -> bool:
-    """EnabledWeapons option (options.py): whether `weapon` (display name) is still in the pool at all."""
-    return weapon in world.options.enabled_weapons.value
+@dataclass
+class HasWeaponLevel(Rule[TWorld], game="Ratchet & Clank: Size Matters"):
+    """Weapon at `level` or higher. Without progressive weapons, levelling isn't an item, so owning it is enough."""
+
+    weapon: str
+    level: int
+
+    @override
+    def _instantiate(self, world: TWorld) -> Rule.Resolved:
+        rule = HasAny(self.weapon, PROGRESSIVE_WEAPON_NAME[self.weapon])
+        if world.options.progressive_weapons:
+            rule = Has(PROGRESSIVE_WEAPON_NAME[self.weapon], self.level)
+        return rule.resolve(world)
 
 
-def HasChallengeMode(world: "RACSizeMatterWorld", tier: int) -> Has | True_:
+@dataclass
+class HasChallengeMode(Rule[TWorld], game="Ratchet & Clank: Size Matters"):
     """Challenge Mode tier gate for content options.py's ChallengeMode option makes exist at all (RYNO, Titan variants, Challenge-Mode-only mods, Hyperborean/Chameleon pickups)."""
-    if not world.options.progressive_challenge_mode:
-        return True_()
-    return Has(PROGRESSIVE_CHALLENGE_MODE_NAME, tier)
+
+    tier: int
+
+    @override
+    def _instantiate(self, world: TWorld) -> Rule.Resolved:
+        rule = True_()
+        if world.options.progressive_challenge_mode:
+            rule = Has(PROGRESSIVE_CHALLENGE_MODE_NAME, self.tier)
+        return rule.resolve(world)
 
 
-def HasClankPack(world: "RACSizeMatterWorld") -> Has | True_:
+@dataclass
+class HasClankPack(Rule[TWorld], game="Ratchet & Clank: Size Matters"):
     """Clank Pack gate for checks that need the backpack; free when the ClankPack option leaves it vanilla."""
-    if not world.options.clank_pack:
-        return True_()
-    return Has(CLANK_PACK_NAME)
+
+    @override
+    def _instantiate(self, world: TWorld) -> Rule.Resolved:
+        rule = True_()
+        if world.options.clank_pack:
+            rule = Has(CLANK_PACK_NAME)
+        return rule.resolve(world)
 
 
-def HasGoodExpPlanet() -> Or:
-    return Or(
-        HasAll(Rac5Infobots.QUODRONA, Rac5Gadgets.SHRINK_RAY),
-        HasAll(Rac5Infobots.DAYNI_MOON, Rac5Gadgets.SPROUT_O_MATIC),
-        HasAll(Rac5Infobots.CHALLAX, Rac5Gadgets.POLARIZER, Rac5Gadgets.SHRINK_RAY),
-        HasAll(Rac5Infobots.OUTPOST_OMEGA, Rac5Gadgets.HYPERSHOT, Rac5Gadgets.SPROUT_O_MATIC),
-    )
+@dataclass
+class HasGoodExpPlanet(Rule[TWorld], game="Ratchet & Clank: Size Matters"):
+    @override
+    def _instantiate(self, world: TWorld) -> Rule.Resolved:
+        return Or(
+            HasAll(Rac5Infobots.QUODRONA, Rac5Gadgets.SHRINK_RAY),
+            HasAll(Rac5Infobots.DAYNI_MOON, Rac5Gadgets.SPROUT_O_MATIC),
+            HasAll(Rac5Infobots.CHALLAX, Rac5Gadgets.POLARIZER, Rac5Gadgets.SHRINK_RAY),
+            HasAll(Rac5Infobots.OUTPOST_OMEGA, Rac5Gadgets.HYPERSHOT, Rac5Gadgets.SPROUT_O_MATIC),
+        ).resolve(world)
 
-def HasExpAccess() -> Or:
-    return Or(
-        HasAll(Rac5Infobots.QUODRONA, Rac5Gadgets.SHRINK_RAY),
-        HasAll(Rac5Infobots.DAYNI_MOON),
-        HasAll(Rac5Infobots.CHALLAX, Rac5Gadgets.POLARIZER, Rac5Gadgets.SHRINK_RAY),
-        HasAll(Rac5Infobots.METALIS, Rac5Gadgets.POLARIZER),
-        HasAll(Rac5Infobots.KALIDON, Rac5Gadgets.HYPERSHOT),
-        HasAny(Rac5Infobots.POKITARU,Rac5Infobots.RYLLUS, Rac5Infobots.OUTPOST_OMEGA),
-    )
+
+@dataclass
+class HasExpAccess(Rule[TWorld], game="Ratchet & Clank: Size Matters"):
+    @override
+    def _instantiate(self, world: TWorld) -> Rule.Resolved:
+        return Or(
+            HasAll(Rac5Infobots.QUODRONA, Rac5Gadgets.SHRINK_RAY),
+            Has(Rac5Infobots.DAYNI_MOON),
+            HasAll(Rac5Infobots.CHALLAX, Rac5Gadgets.POLARIZER, Rac5Gadgets.SHRINK_RAY),
+            HasAll(Rac5Infobots.METALIS, Rac5Gadgets.POLARIZER),
+            HasAll(Rac5Infobots.KALIDON, Rac5Gadgets.HYPERSHOT),
+            HasAny(Rac5Infobots.POKITARU, Rac5Infobots.RYLLUS, Rac5Infobots.OUTPOST_OMEGA),
+        ).resolve(world)
+
+
+@dataclass
+class CanReachAllSkillPoints(Rule[TWorld], game="Ratchet & Clank: Size Matters"):
+    """Every skill point location the SkillPoints/Clank/Skyboard Challenge options put in this seed."""
+
+    @override
+    def _instantiate(self, world: TWorld) -> Rule.Resolved:
+        from ..locations.shared import required_skill_points
+
+        return And(*(CanReachLocation(name) for name in required_skill_points(world.options))).resolve(world)
+
+
+@dataclass
+class CanReachAllClankChallenges(Rule[TWorld], game="Ratchet & Clank: Size Matters"):
+    """Every Clank Challenge location the ClankChallenges/ClankChallengeGroups options put in this seed."""
+
+    @override
+    def _instantiate(self, world: TWorld) -> Rule.Resolved:
+        from ..locations.shared import required_clank_challenges
+
+        return And(*(CanReachLocation(name) for name in required_clank_challenges(world.options))).resolve(world)

@@ -1,12 +1,12 @@
-from .address_maps import save_address
-from .traps import set_clank_pack_ownership
 from dataclasses import dataclass
 
-from ..constants import Rac5Locations
+from ..constants import Rac5Gadgets, Rac5Locations
+from .address_maps import save_address
 from .armour import ARMOUR_FLAG_TO_LOCATION, ArmourPiece
 from .planets import AUTO_UNLOCK_ADDRESSES, INFOBOT_UNLOCK_VALUE
+from .traps import set_clank_pack_ownership
 
-_SCRIPTED_GADGET_LOCATIONS = {"sprout_o_matic": Rac5Locations.RYLLUS_SPROUT, "shrink_ray": Rac5Locations.KALIDON_SHRINK}
+_SCRIPTED_GADGET_LOCATIONS = {Rac5Gadgets.SPROUT_O_MATIC: Rac5Locations.RYLLUS_SPROUT, Rac5Gadgets.SHRINK_RAY: Rac5Locations.KALIDON_SHRINK}
 
 
 @dataclass
@@ -34,6 +34,10 @@ class InventorySync:
             core.pine, enabled=core.options.clank_pack_enabled, owned=clank_pack
         )
         core.planet_unlock.set_unlocked_planets(infobot_planets)
+        # The Treehouse has no story unlock byte; its ship-menu row reads a native flag instead.
+        core.native.treehouse_unlocked = (
+            not core.options.hig_treehouse_enabled or "HIG_TREEHOUSE" in infobot_planets
+        )
         if core.progressive_challenge_mode_enabled:
             core.planet.weapons.challenge_mode = challenge_mode
             core.vendor.challenge_mode = challenge_mode

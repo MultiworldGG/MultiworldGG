@@ -1,5 +1,3 @@
-from __future__ import annotations
-
 import struct
 from enum import IntEnum
 from typing import TYPE_CHECKING
@@ -89,7 +87,7 @@ class PlayerInventory:
     health         = PlayerHealthSlot()
     max_health     = PlayerMaxHealthSlot()
 
-    def __init__(self, pine: Pine) -> None:
+    def __init__(self, pine: "Pine") -> None:
         self.pine = pine
         self.movement_addr:  int | None = None
         self.health_addr:    int | None = None
@@ -100,6 +98,21 @@ class PlayerInventory:
         self.movement_addr = addrs[0] if addrs else None
         self.health_addr   = addrs[1] if addrs else None
         self.max_health_addr = MAX_HEALTH_ADDR_BY_PLANET_ID.get(planet_id)
+
+    @property
+    def is_ratchet(self) -> bool:
+        """Whether the active player object is Ratchet, rather than challenge Clank."""
+        if self.movement_addr is None:
+            return False
+        base = self.movement_addr - 0x100
+        # The same player-object slots are used by NoClank to avoid touching
+        # the backpack while controlling Clank.
+        ratchet = self.pine.read_int32(base + 0x5B0)
+        return (
+            0x100000 <= ratchet < 0x1E00000
+            and ratchet % 4 == 0
+            and self.pine.read_int32(base + 0x59C) == ratchet
+        )
 
     @property
     def is_dead(self) -> bool:

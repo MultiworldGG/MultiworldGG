@@ -1085,7 +1085,7 @@ item_table: Dict[str, ItemData] = {
     "Trap - Oregon Trap": ItemData(TRAP, 4 + trap_index_offset, ItemClassification.trap, 0),
     "Trap - Teleport Trap": ItemData(TRAP, 5 + trap_index_offset, ItemClassification.trap, 0),
     "Trap - Moon Jump Trap": ItemData(TRAP, 6 + trap_index_offset, ItemClassification.trap, 0),
-    "Trap - Snail Jump Trap": ItemData(TRAP, 7 + trap_index_offset, ItemClassification.trap, 0),
+    "Trap - Bounce Trap": ItemData(TRAP, 7 + trap_index_offset, ItemClassification.trap, 0),
     "Trap - Dismount Trap": ItemData(TRAP, 8 + trap_index_offset, ItemClassification.trap, 0),
     "Trap - Dunk Tank Trap": ItemData(TRAP, 9 + trap_index_offset, ItemClassification.trap, 0),
     "Trap - Trap Pack Trap": ItemData(TRAP, 10 + trap_index_offset, ItemClassification.trap, 0),
@@ -1891,10 +1891,14 @@ def get_starting_jobs(world: "CrystalProjectWorld") -> List[str]:
         return default_starting_job_list
 
 def get_random_starting_jobs(self, count:int) -> List[str]:
+    job_list: List[str] = []
     if self.options.use_mods.value == self.options.use_mods.option_true:
-        return self.random.sample(list(self.item_name_groups[JOB]), count)
+        job_list = list(self.item_name_groups[JOB])
     else:
-        return self.random.sample(list(self.base_game_jobs), count)
+        job_list = list(self.base_game_jobs)
+
+    job_list.sort()
+    return self.random.sample(job_list, count)
 
 def set_jobs_at_default_locations(world: "CrystalProjectWorld", player_name:str) -> Tuple[int, List[str]]:
     job_crystal_dictionary: Dict[str, str] = job_crystal_beginner_dictionary.copy() #if we don't use copy it means updating job_crystal_dictionary messes with the beginner dict too

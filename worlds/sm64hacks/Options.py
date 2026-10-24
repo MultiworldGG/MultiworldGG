@@ -1,5 +1,6 @@
 from dataclasses import dataclass
-from Options import Toggle, Range, Choice, FreeText, PerGameCommonOptions, DeathLink, TextChoice, OptionGroup, StartInventoryPool, Visibility, OptionSet
+from Options import Toggle, Range, NamedRange, Choice, FreeText, PerGameCommonOptions, TextChoice, DeathLink, OptionSet, OptionGroup, Visibility, StartInventoryPool
+
 import requests
 import json
 import os
@@ -218,6 +219,19 @@ class FillerTrapWeight(Range):
     default = 30
     range_end = 100
 
+class StartingWallkickFrames(NamedRange):
+    """How many wallkick frames do you start with, before any +1 wallkick frames? Set to -1 for the default amount in the hack you are playing
+    
+    Recommended not to set the value to 1 if you are playing a kaizo hack as in those hacks you may be required to do second frame wallkicks, and there is no logic for extra wallkick frames."""
+    range_start = 1
+    range_end = 10
+    default = -1
+
+    special_range_names = {
+        "default": -1
+    }
+
+
 class TurnOffTraps(OptionSet):
     """Turns off specific traps from generating. Has no effect if filler_trap_weight is set to 0."""
     valid_keys = ["Green Demon Trap", "Heave-Ho Trap", "Mario Choir", "Squish Trap", "Spin Trap", "Tempo Trap"]
@@ -261,11 +275,14 @@ class StartingJump(Choice):
 
     Nothing - You will not start with a random jump. This may lead to significant generation issues with solo generations, especially with hacks with no levels you can enter without jumping, and if you're playing in a large multiworld, be prepared to do nothing for a long time. 
     Expect logic to be a little unintuitive without jumping.
+
+    Fast Move - You start with either long jump or dive, since both of those moves speed up gameplay significantly. Intended for syncs.
     """
     option_jumps = 0
     option_single_jump = 1
     option_rollout = 2
     option_nothing = 3
+    option_fast_move = 4
     default = 0
 
 class StartingTickets(Range):
@@ -347,6 +364,7 @@ option_groups = [
         FillerUsefulWeight,
         FillerJunkWeight,
         FillerTrapWeight,
+        StartingWallkickFrames,
         TurnOffTraps
     ]),
     OptionGroup("Logic Options", [
@@ -377,6 +395,7 @@ class SM64HackOptions(PerGameCommonOptions):
     filler_trap_weight: FillerTrapWeight
     filler_junk_weight: FillerJunkWeight
     filler_useful_weight: FillerUsefulWeight
+    starting_wallkick_frames: StartingWallkickFrames
     turn_off_traps: TurnOffTraps
     logic_difficulty: LogicDifficulty
     glitches_in_logic: LogicGlitches

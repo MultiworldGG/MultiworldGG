@@ -1,14 +1,12 @@
-from __future__ import annotations
-
 import asyncio
 import time
 
 from CommonClient import logger
 
-from ..core import TextColour, colored_text, reconcile_traps
-from ..universal_tracker import PLANET_ID_TO_REGION
+from ..core import TextColour, address_maps, colored_text, reconcile_traps
 from ..core.address_maps import SUPPORTED_GAMES
 from ..core.save_data import highest_weapon_levels
+from ..universal_tracker import PLANET_ID_TO_REGION
 from .constants import PINE_CONNECT_SETTLE_DELAY_S, POLL_INTERVAL
 from .other_ratchet_games import GAME_ID_TO_OTHER_RATCHET
 
@@ -16,7 +14,7 @@ _WEAPON_STATE_PUSH_INTERVAL: float = 5.0
 
 
 class PineMixin:
-    """Detect the supported region before driving Core and recheck every poll."""
+    """Detect the supported region before driving Core and recheck every poll. Runs in the worker process."""
 
     def _select_game_region(self, game_id: str) -> None:
         """Called under the PINE lock, before any initial reads or game ticks."""
@@ -39,6 +37,13 @@ class PineMixin:
             self.pine.disconnect()
         except Exception:
             logger.debug("[RAC] pine.disconnect() raised during teardown", exc_info=True)
+        # The emulator can travel/reset while disconnected. Retain AP ownership,
+        # but never reuse a previous overlay's patches, inventory, or XP baseline.
+        self._wiring.select_game(address_maps.GAME_ID, reset_connection=True)
+        self._weapon_state_restored = False
+        self._ap_loadout_restored = False
+        self._connection_sync_pending = True
+        self._pending_item_apply = True
 
     async def reconnect_pine(self) -> None:
         async with self._pine_lock:
@@ -150,12 +155,9 @@ class PineMixin:
                 try:
                     await self._poll_game()
                 except Exception as exc:
-                    logger.warning(f"[RAC] Lost PINE connection or poll failed: {exc}")
-                    try:
-                        self._wiring.native.close()
-                    except Exception:
-                        logger.debug("[RAC] Could not release native loader gate after poll failure", exc_info=True)
-                    self.pine_connected = False
+                    logger.warning(f"[RAC] Lost PINE connection or poll failed: {exc}", exc_info=True)
+                    async with self._pine_lock:
+                        await self._teardown_pine_connection()
         finally:
             try:
                 self._wiring.native.close()
@@ -175,9 +177,7 @@ class PineMixin:
             await self.force_sync()
         prev_planet = self.current_planet
         async with self._pine_lock:
-            self._wiring.native.ap_connected = bool(
-                self.slot is not None and self.server and self.server.socket
-                and not self.server.socket.closed)
+            self._wiring.native.ap_connected = self.slot is not None and self.ap_connected
             if self._items_received_ready and self._save_data_received:
                 self._try_restore_weapon_state()
                 self._wiring.tick()

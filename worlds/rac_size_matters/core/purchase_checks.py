@@ -1,14 +1,14 @@
 from dataclasses import dataclass
 
-from ..constants import Rac5Locations
-from ..locations import TITAN_INTERNAL_TO_LOCATION
+from ..constants import Rac5Gadgets, Rac5Locations, Rac5Weapons
+from ..locations import TITAN_TO_LOCATION
 from .inventory_sync import _SCRIPTED_GADGET_LOCATIONS
 from .location_checks import LocationChecks
 from .menu import MenuStateValue
 
-_GAME_FORCED_WEAPONS = frozenset(("lacerator", "acid_bomb_glove"))
-_GAME_FORCED_GADGETS = frozenset(("hypershot", "sprout_o_matic", "shrink_ray", "map_o_matic", "box_breaker"))
-_BONUS_TRIGGER_WEAPONS = frozenset(("concussion_gun",))
+_GAME_FORCED_WEAPONS = frozenset((Rac5Weapons.LACERATOR, Rac5Weapons.ACID_BOMB_GLOVE))
+_GAME_FORCED_GADGETS = frozenset((Rac5Gadgets.HYPERSHOT, Rac5Gadgets.SPROUT_O_MATIC, Rac5Gadgets.SHRINK_RAY, Rac5Gadgets.MAP_O_MATIC, Rac5Gadgets.BOX_BREAKER))
+_BONUS_TRIGGER_WEAPONS = frozenset((Rac5Weapons.CONCUSSION_GUN,))
 _SCRIPTED_PICKUP_GADGETS = frozenset()
 _POKITARU_ID = 1
 
@@ -98,7 +98,7 @@ class PurchaseChecks:
                 LocationChecks(core).weapon_levels(changed["levels"])
             core.on_weapon_level_up()
         for name in changed["titans"]:
-            titan_loc = TITAN_INTERNAL_TO_LOCATION.get(name)
+            titan_loc = TITAN_TO_LOCATION.get(name)
             if titan_loc:
                 core.planet.weapons.titan_purchased[name] = True
                 core.send_location(titan_loc)

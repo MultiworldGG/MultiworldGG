@@ -1,21 +1,15 @@
-from __future__ import annotations
-
 import struct as _struct
 from collections.abc import Callable
 from contextlib import contextmanager
 from functools import wraps
 from typing import TYPE_CHECKING
 
-from ..constants import Rac5GadgetKeys, Rac5WeaponKeys
+from ..constants import Rac5Gadgets, Rac5Weapons
 from ..data.weapons import (
     GADGET_DATA,
     WEAPON_DATA,
     WEAPON_EXP_THRESHOLDS,
     WEAPON_MAX_LEVELS,
-    WEAPON_MOD_COUNTS as WEAPON_MOD_COUNTS,
-    WEAPON_VENDOR_DISPLAY_AMMO as WEAPON_VENDOR_DISPLAY_AMMO,
-    Gadget as Gadget,
-    Weapon as Weapon,
 )
 from .inventory import InventoryEntry, InventoryField
 from .locations import weapon_locations as _weapon_locations
@@ -33,7 +27,7 @@ PROGRESSIVE_MANUAL = 1
 PROGRESSIVE_AUTOMATIC = 2
 
 
-TITAN_ELIGIBLE_WEAPONS: frozenset[str] = frozenset(key for key in WEAPON_DATA if key != Rac5WeaponKeys.RYNO)
+TITAN_ELIGIBLE_WEAPONS: frozenset[str] = frozenset(key for key in WEAPON_DATA if key != Rac5Weapons.RYNO)
 
 
 def exp_threshold_for_level(weapon: str, level: int) -> int | None:
@@ -195,7 +189,7 @@ class WeaponAddresses(InventoryMemory):
     mod_unlock_three = WeaponByteField("mod_unlock_three")
     unlocked = WeaponByteField("unlocked")
 
-    def __init__(self, base: int, pine: Pine) -> None:
+    def __init__(self, base: int, pine: "Pine") -> None:
         self.base = base
         self.pine = pine
 
@@ -212,7 +206,7 @@ class GadgetAddresses(InventoryMemory):
 
     unlocked = WeaponByteField("unlocked")
 
-    def __init__(self, base: int, pine: Pine) -> None:
+    def __init__(self, base: int, pine: "Pine") -> None:
         self.base = base
         self.pine = pine
 
@@ -221,36 +215,36 @@ class GadgetAddresses(InventoryMemory):
 
 
 WEAPON_ORDER: list[str | None] = [
-    Rac5WeaponKeys.LACERATOR,
-    Rac5WeaponKeys.CONCUSSION_GUN,
-    Rac5WeaponKeys.ACID_BOMB_GLOVE,
-    Rac5WeaponKeys.AGENTS_OF_DOOM,
-    Rac5WeaponKeys.BEE_MINE_GLOVE,
-    Rac5WeaponKeys.STATIC_BARRIER,
-    Rac5WeaponKeys.SHOCK_ROCKET,
-    Rac5WeaponKeys.SNIPER_MINE,
-    Rac5WeaponKeys.SCORCHER,
-    Rac5WeaponKeys.LASER_TRACER,
-    Rac5WeaponKeys.SUCK_CANNON,
-    Rac5WeaponKeys.MOOTATOR,
+    Rac5Weapons.LACERATOR,
+    Rac5Weapons.CONCUSSION_GUN,
+    Rac5Weapons.ACID_BOMB_GLOVE,
+    Rac5Weapons.AGENTS_OF_DOOM,
+    Rac5Weapons.BEE_MINE_GLOVE,
+    Rac5Weapons.STATIC_BARRIER,
+    Rac5Weapons.SHOCK_ROCKET,
+    Rac5Weapons.SNIPER_MINE,
+    Rac5Weapons.SCORCHER,
+    Rac5Weapons.LASER_TRACER,
+    Rac5Weapons.SUCK_CANNON,
+    Rac5Weapons.MOOTATOR,
     None,
-    Rac5WeaponKeys.RYNO,
+    Rac5Weapons.RYNO,
 ]
 
 GADGET_ORDER: list[str | None] = [
-    Rac5GadgetKeys.HYPERSHOT,
-    Rac5GadgetKeys.SPROUT_O_MATIC,
-    Rac5GadgetKeys.POLARIZER,
-    Rac5GadgetKeys.PDA,
-    Rac5GadgetKeys.SHRINK_RAY,
-    Rac5GadgetKeys.BOLT_GRABBER,
+    Rac5Gadgets.HYPERSHOT,
+    Rac5Gadgets.SPROUT_O_MATIC,
+    Rac5Gadgets.POLARIZER,
+    Rac5Gadgets.PDA,
+    Rac5Gadgets.SHRINK_RAY,
+    Rac5Gadgets.BOLT_GRABBER,
     None,
-    Rac5GadgetKeys.MAP_O_MATIC,
-    Rac5GadgetKeys.BOX_BREAKER,
+    Rac5Gadgets.MAP_O_MATIC,
+    Rac5Gadgets.BOX_BREAKER,
 ]
 
 
-def build_weapons(array_base: int | None, pine: Pine) -> tuple[dict[str, WeaponAddresses], dict[str, GadgetAddresses]]:
+def build_weapons(array_base: int | None, pine: "Pine") -> tuple[dict[str, WeaponAddresses], dict[str, GadgetAddresses]]:
     if array_base is None:
         return {}, {}
 
@@ -291,7 +285,7 @@ class WeaponInventory:
     _weapon_addrs = InventoryField("address", gadget=False)
     _gadget_addrs = InventoryField("address", gadget=True)
 
-    def __init__(self, pine: Pine) -> None:
+    def __init__(self, pine: "Pine") -> None:
         self.entries = {
             name: InventoryEntry(name, name in GADGET_DATA)
             for name in (*WEAPON_ORDER, *GADGET_ORDER)
@@ -757,7 +751,7 @@ class WeaponInventory:
                 if getattr(addr, slot):
                     setattr(addr, slot, False)
 
-    def sync_from_ap(self, checked_locations: set[str]) -> None:
+    def sync_from_ap(self, checked_locations: "set[str]") -> None:
         for loc in checked_locations:
             if loc in self.vendor_locations:
                 self.vendor_locations[loc] = True

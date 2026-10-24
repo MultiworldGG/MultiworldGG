@@ -8,20 +8,21 @@ from worlds.AutoWorld import WebWorld, World
 from .constants import Rac5Infobots
 from .constants.options import Rac5Options
 from .core.starting_planet import PLANET_TO_ID, PLANET_TO_INFOBOT, choose_starting_planets
-from .core.weapons import WEAPON_MOD_COUNTS
-from .data.models import RACItem as RACItem, RACLocation as RACLocation
-from .data.weapons import WEAPON_DATA
+from .data.models import RACItem
+from .data.weapons import WEAPON_DATA, WEAPON_MOD_COUNTS
+from .goals import validate_goals
 from .items import (
     ALL_ITEMS,
-    CLANK_PACK_NAME,
     ARMOUR_DISPLAY_TO_INTERNAL,
     ARMOUR_ITEM_TABLE,
     ARMOUR_PROGRESSIVE_ITEM_TABLE,
     ARMOUR_PROGRESSIVE_UNIFIED_ITEM_TABLE,
     ARMOUR_SETS,
+    CLANK_PACK_NAME,
     GADGET_ITEM_TABLE,
     GLITCHES_ITEM_NAME,
     INFOBOT_ITEM_TABLE,
+    ITEM_NAME_GROUPS,
     NG_PLUS_ARMOUR_SETS,
     NG_PLUS_WEAPON_MODS,
     NG_PLUS_WEAPONS,
@@ -30,23 +31,22 @@ from .items import (
     PROGRESSIVE_CHALLENGE_MODE_NAME,
     PROGRESSIVE_MOD_NAME,
     PROGRESSIVE_WEAPON_NAME,
+    PROJECTILE_WEAPONS_GROUP,
     TRAP_ITEM_TABLE,
-    WEAPON_DISPLAY_TO_INTERNAL,
     WEAPON_ITEM_TABLE,
     WEAPON_MOD_ITEM_TABLE,
     WEAPON_MOD_NAME_TO_SLOT,
     WEAPON_NG_PLUS_MOD_COUNTS,
     WEAPON_PROGRESSIVE_STEPS,
-    enabled_weapon_names,
 )
-from .locations import ALL_LOCATIONS, ARMOUR_SET_CHECK_LOCATIONS
+from .locations import ALL_LOCATIONS, ARMOUR_SET_CHECK_LOCATIONS, LOCATION_NAME_GROUPS
 from .options import (
     AllCutscenes,
     AllMissions,
     ArmourSetChecks,
     ClankChallenges,
-    EnabledWeapons,
     EnableClankChallengeSkillPoints,
+    EnabledWeapons,
     EnableSkyboardChallengeSkillPoints,
     ExperimentalSkins,
     ProgressiveArmour,
@@ -64,7 +64,6 @@ from .options import (
 )
 from .regions import create_regions
 from .rules import set_rules
-from .rules._helpers import PROJECTILE_WEAPON_ITEM_NAMES
 from .settings import RACSizeMatterSettings
 from .universal_tracker import setup_options_from_slot_data, tracker_world
 
@@ -103,7 +102,7 @@ class RACSizeMatterWorld(World):
     """Ratchet & Clank: Size Matters is a 2007 PSP/PS2 action platformer following
     Ratchet and Clank as they unravel the mystery of the Technomites across ten planets.
     Weapons, gadgets, and armour pieces are shuffled across all locations.
-    Defeat Otto Destruct on Quodrona to complete your goal."""
+    Defeat Otto Destruct on Quodrona, or complete your chosen goals, to finish."""
 
     game = "Ratchet & Clank: Size Matters"
     web = RACWeb()
@@ -113,6 +112,8 @@ class RACSizeMatterWorld(World):
 
     item_name_to_id: dict[str, int] = {name: data.code for name, data in ALL_ITEMS.items()}
     location_name_to_id: dict[str, int] = {name: data.code for name, data in ALL_LOCATIONS.items()}
+    item_name_groups = ITEM_NAME_GROUPS
+    location_name_groups = LOCATION_NAME_GROUPS
 
     using_ut: bool = False
     passthrough: dict[str, Any]
@@ -154,6 +155,7 @@ class RACSizeMatterWorld(World):
         setup_options_from_slot_data(self)
         self._validate_weapon_options()
         self._validate_skin_options()
+        validate_goals(self)
         self._clamp_nanotech_level_max()
 
     def _clamp_nanotech_level_max(self) -> None:
@@ -174,11 +176,11 @@ class RACSizeMatterWorld(World):
 
     def _validate_weapon_options(self) -> None:
         """Require a long-range projectile weapon that will actually survive item-pool filtering."""
-        enabled_weapons = enabled_weapon_names(dict(self.options.enabled_weapons.value))
+        enabled_weapons = frozenset(self.options.enabled_weapons.value)
         if not self.options.ng_plus_items:
             enabled_weapons -= NG_PLUS_WEAPONS
         player_name = self.multiworld.get_player_name(self.player)
-        if not any(WEAPON_DATA[WEAPON_DISPLAY_TO_INTERNAL[name]].is_long_projectile for name in enabled_weapons):
+        if not any(WEAPON_DATA[name].is_long_projectile for name in enabled_weapons):
             raise OptionError(
                 f"{player_name}'s RAC Size Matters: {EnabledWeapons.display_name} must include at least "
                 "one long-range projectile weapon available with NG+ Items applied - many locations "
@@ -252,7 +254,7 @@ class RACSizeMatterWorld(World):
             preplaced += [Rac5Infobots.POKITARU]
 
         ng_plus = bool(self.options.ng_plus_items)
-        enabled_weapons = enabled_weapon_names(dict(self.options.enabled_weapons.value))
+        enabled_weapons = self.options.enabled_weapons.value
         weapon_count = self.options.starting_weapons.value
         if weapon_count > 0:
             if self.options.progressive_weapons:
@@ -281,7 +283,7 @@ class RACSizeMatterWorld(World):
 
         pool: list[str] = []
         ng_plus = bool(self.options.ng_plus_items)
-        enabled_weapons = enabled_weapon_names(dict(self.options.enabled_weapons.value))
+        enabled_weapons = self.options.enabled_weapons.value
         if self.options.progressive_weapons:
             for display, steps in WEAPON_PROGRESSIVE_STEPS.items():
                 if not ng_plus and display in NG_PLUS_WEAPONS:
@@ -300,10 +302,9 @@ class RACSizeMatterWorld(World):
             for display in PROGRESSIVE_MOD_NAME:
                 if display not in enabled_weapons:
                     continue
-                internal = WEAPON_DISPLAY_TO_INTERNAL[display]
-                steps = WEAPON_MOD_COUNTS.get(internal, 0)
+                steps = WEAPON_MOD_COUNTS.get(display, 0)
                 if not ng_plus:
-                    steps -= WEAPON_NG_PLUS_MOD_COUNTS.get(internal, 0)
+                    steps -= WEAPON_NG_PLUS_MOD_COUNTS.get(display, 0)
                 pool += [PROGRESSIVE_MOD_NAME[display]] * steps
         else:
             pool += [
@@ -315,23 +316,18 @@ class RACSizeMatterWorld(World):
         pool += list(GADGET_ITEM_TABLE)
         if self.options.clank_pack:
             pool.append(CLANK_PACK_NAME)
-        pool += list(INFOBOT_ITEM_TABLE)
+        pool += [
+            name for name in INFOBOT_ITEM_TABLE
+            if name != Rac5Infobots.HIG_TREEHOUSE or self.options.enable_hig_treehouse
+        ]
 
         if self.options.progressive_challenge_mode:
             pool += [PROGRESSIVE_CHALLENGE_MODE_NAME] * self.options.challenge_mode.value
 
-        # Hyperborean/Chameleon are also gated behind Challenge Mode tiers 1/2,
-        # independent of the NG+ Items toggle above; both gates must agree.
-        challenge_mode = self.options.challenge_mode.value
-
+        # Hyperborean/Chameleon items follow NG+ Items only, like RYNO; Challenge Mode
+        # gates their pickup and armour-set locations, not whether the items exist.
         def _armour_set_enabled(internal: str) -> bool:
-            if not ng_plus and internal in NG_PLUS_ARMOUR_SETS:
-                return False
-            if internal == "hyperborean" and challenge_mode < 1:
-                return False
-            if internal == "chameleon" and challenge_mode < 2:
-                return False
-            return True
+            return ng_plus or internal not in NG_PLUS_ARMOUR_SETS
 
         progressive_armour_mode = self.options.progressive_armour.value
         if progressive_armour_mode == ProgressiveArmour.option_per_set:
@@ -385,12 +381,13 @@ class RACSizeMatterWorld(World):
     def _ensure_early_projectile_weapon(self, pool: list[str]) -> None:
         """Most starting-planet checks need a projectile weapon; with the vanilla vendors disabled,
         sphere 0 can shrink to a single slot, and fill fails whenever anything else lands there."""
-        if any(name in PROJECTILE_WEAPON_ITEM_NAMES for name in self.preplaced_items):
+        projectile_weapons = self.item_name_groups[PROJECTILE_WEAPONS_GROUP]
+        if any(name in projectile_weapons for name in self.preplaced_items):
             return
         early_items = self.multiworld.local_early_items[self.player]
-        if any(name in PROJECTILE_WEAPON_ITEM_NAMES for name in early_items):
+        if any(name in projectile_weapons for name in early_items):
             return
-        candidates = sorted({name for name in pool if name in PROJECTILE_WEAPON_ITEM_NAMES})
+        candidates = sorted({name for name in pool if name in projectile_weapons})
         if candidates:
             early_items[self.random.choice(candidates)] = 1
 
@@ -449,6 +446,8 @@ class RACSizeMatterWorld(World):
         return {
             "vendor_rules": build_vendor_rules(self),
             "split_infobots": True,
+            Rac5Options.GOAL: self.options.goal.value,
+            Rac5Options.PICK_AND_MIX_GOALS: sorted(self.options.pick_and_mix_goals.value),
             Rac5Options.DEATH_LINK: bool(self.options.death_link.value),
             Rac5Options.AMMO_LINK: bool(self.options.ammo_link.value),
             Rac5Options.BOLT_LINK: bool(self.options.bolt_link.value),
@@ -457,8 +456,9 @@ class RACSizeMatterWorld(World):
             Rac5Options.ALL_MISSIONS: bool(self.options.all_missions.value),
             Rac5Options.ALL_CUTSCENES: bool(self.options.all_cutscenes.value),
             Rac5Options.GIANT_CLANK: bool(self.options.giant_clank.value),
+            Rac5Options.ENABLE_HIG_TREEHOUSE: bool(self.options.enable_hig_treehouse.value),
             Rac5Options.CLANK_CHALLENGES: self.options.clank_challenges.value,
-            Rac5Options.CLANK_CHALLENGE_GROUPS: dict(self.options.clank_challenge_groups.value),
+            Rac5Options.CLANK_CHALLENGE_GROUPS: sorted(self.options.clank_challenge_groups.value),
             Rac5Options.SKYBOARD_CHALLENGES: self.options.skyboard_challenges.value,
             Rac5Options.SHRINK_RAY_OPTIONS: self.options.shrink_ray_options.value,
             Rac5Options.SKILL_POINTS: self.options.skill_points.value,
@@ -478,7 +478,7 @@ class RACSizeMatterWorld(World):
             Rac5Options.PROGRESSIVE_WEAPONS: self.options.progressive_weapons.value,
             Rac5Options.PROGRESSIVE_MODS: self.options.progressive_mods.value,
             Rac5Options.PROGRESSIVE_ARMOUR: self.options.progressive_armour.value,
-            Rac5Options.ENABLED_WEAPONS: dict(self.options.enabled_weapons.value),
+            Rac5Options.ENABLED_WEAPONS: sorted(self.options.enabled_weapons.value),
             Rac5Options.STARTING_WEAPONS: self.options.starting_weapons.value,
             Rac5Options.STARTING_GADGETS: self.options.starting_gadgets.value,
             Rac5Options.RANDOM_STARTING_PLANET: self.options.random_starting_planet.value,

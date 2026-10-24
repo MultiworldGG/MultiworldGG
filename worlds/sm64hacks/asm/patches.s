@@ -404,6 +404,8 @@ _wallkick_frames:
     ADDU T1, T0, R0 ;same as above
     JR RA
     NOP
+_capmoatflags:
+    .word 0
 _wkframes:
     .halfword 5
 _vctimer:
@@ -555,6 +557,11 @@ _frames:
 .endarea
 .close
 
+.create "capswitch_moat_patch", 0x802A6F80
+.area 0x8
+    LW V0, _capmoatflags
+.endarea
+.close
 ;single jump = 0x0001, 
 ;double jump = 0x0002, 
 ;triple jump = 0x0004, 

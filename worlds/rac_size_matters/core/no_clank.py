@@ -10,7 +10,6 @@ from dataclasses import dataclass
 from . import address_maps
 from .patches.loader_gate import LoaderGate
 
-
 HIDDEN = 0x20
 BACKPACK_SLOTS = (0x5A0, 0x5AC)
 
@@ -43,7 +42,7 @@ class NoClank:
             return None
         planet = p.read_int32(address_maps.CURRENT_PLANET_ADDRESS)
         # Exclude races and other special modes even if a player address is known.
-        if planet not in (*range(1, 11), 0x17):
+        if planet not in (*range(1, 11), 0x17, 0x18):
             return None
         config = address_maps.PLANET_ADDRESSES.get(planet)
         if config is None:

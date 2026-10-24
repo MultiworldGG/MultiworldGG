@@ -4,8 +4,7 @@ from .cutscenes import Rac5CutsceneLocations
 from .flag_locations import Rac5FlagLocations
 from .gadgets import Rac5Gadgets
 from .general import Rac5Locations
-from .internal_keys import Rac5GadgetKeys, Rac5WeaponKeys
-from .items import Rac5Armours, Rac5Filler, Rac5Infobots, Rac5ProgressiveArmours, Rac5Traps
+from .items import Rac5Armours, Rac5EventInfobots, Rac5Filler, Rac5Infobots, Rac5ProgressiveArmours, Rac5Traps
 from .nanotech_levels import Rac5NanotechLevels
 from .planets import Rac5Planets
 from .shrink_ray import Rac5ShrinkRayGrindrail
@@ -24,10 +23,10 @@ from .weapons import (
 __all__ = [
     "Rac5ClankChallenges",
     "Rac5FlagLocations",
-    "Rac5GadgetKeys",
     "Rac5Gadgets",
     "Rac5Armours",
     "Rac5Filler",
+    "Rac5EventInfobots",
     "Rac5Infobots",
     "Rac5ProgressiveArmours",
     "Rac5Traps",
@@ -44,9 +43,8 @@ __all__ = [
     "Rac5ModVendorLocations",
     "Rac5TitanVendorLocations",
     "Rac5VendorLocations",
-    "Rac5WeaponKeys",
+    "Rac5Weapons",
     "Rac5WeaponLevels",
     "Rac5WeaponMods",
-    "Rac5Weapons",
     "Rac5CutsceneLocations",
 ]

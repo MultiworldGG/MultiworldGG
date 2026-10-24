@@ -1,4 +1,5 @@
 import json
+import pkgutil
 from . import entityData
 
 
@@ -191,7 +192,7 @@ class RoomEditor:
         self.tileset_index = 0x0F
         self.palette_index = 0x01
         
-        data = json.load(open(filename))
+        data = json.loads(pkgutil.get_data(__name__, filename).decode('utf-8'))
         
         for prop in data.get("properties", []):
             if prop["name"] == "palette":

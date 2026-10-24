@@ -2,7 +2,7 @@
 See docs/research/jp_address_research.md for validation limits.
 """
 
-from .us_addresses import PlanetAddresses, GhostRatchetPlanetAddresses
+from .us_addresses import GhostRatchetPlanetAddresses, PlanetAddresses
 
 ARMOUR_BASE = 0x1f4b194
 ARMOUR_SET_COLLECTED_ADDR = 0x1f4b282
@@ -54,6 +54,16 @@ PLANET_UNLOCK_ADDRESSES = {
 SHRINK_RAY_SKIP_ADDRESSES = {}
 
 PLANET_ADDRESSES = {
+    # LEVEL_24.REL references and weapon table: docs/research/treehouse_addresses.md.
+    0x18: PlanetAddresses(
+        "HIG Treehouse", 0xF85240, 0xF85AAC,
+        menu=0x1078A40, weapon_array=0xF47E97,
+        small_text_box=0xF50E68, multi_line_text_box=0xF50FA8,
+        controller_pause_select=0xF85214, controller_pause_select_v2=0xF8B342,
+        weapon_cycler_apply=0xF85B00, weapon_cycler_state=0xF85B04,
+        weapon_cycler_current=0xF85AE0, weapon_cycler_stored=0xF85AEC,
+        max_health=0xF85AB0,
+    ),
     0x01: PlanetAddresses(
         name='Pokitaru',
         player_state=0xf800c0,

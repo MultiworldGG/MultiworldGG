@@ -1,3 +1,5 @@
+from ..data.planets import INFOBOT_ITEM_TO_PLANET
+from ..data.weapons import WEAPON_MAX_LEVELS, WEAPON_MOD_COUNTS
 from .address_maps import CURRENT_PLANET_ADDRESS, PLAYER_ADDRS, PLAYER_HEALTH, PLAYER_STATE
 from .armour import ARMOUR_FLAG_TO_LOCATION, ArmourPiece
 from .controller import GlobalButtonState
@@ -6,7 +8,6 @@ from .locations.armour_set_locations import ARMOUR_SET_CHECKS
 from .planets import (
     AUTO_UNLOCK_ADDRESSES,
     BY_ID as PLANETS_BY_ID,
-    INFOBOT_ITEM_TO_PLANET,
     INFOBOT_UNLOCK_VALUE,
     PLANET_STATE_ADDRESSES,
 )
@@ -15,7 +16,6 @@ from .save_data import RAC5SaveData
 from .skill_points import SKILL_POINT_ADDRESS, SKILL_POINTS
 from .titanium_bolts import TITANIUM_BOLTS
 from .traps import ALL_TRAPS, activate_trap, reconcile_traps, set_trap_durations
-from .weapons import WEAPON_MAX_LEVELS, WEAPON_MOD_COUNTS
 
 # Core/WeaponVendorMenu/ModVendorMenu are deliberately not re-exported here.
 
@@ -35,6 +35,7 @@ __all__ = [
     "PLAYER_HEALTH",
     "PLAYER_STATE",
     "PlayerMovementState",
+    "RAC5SaveData",
     "SKILL_POINT_ADDRESS",
     "SKILL_POINTS",
     "SmallTextBoxAddrs",

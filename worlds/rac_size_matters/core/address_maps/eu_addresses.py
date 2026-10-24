@@ -5,7 +5,7 @@ per-level addresses differ. Unused/unverified preload and prompt fields
 are deliberately left unset. GhostLink on first Outpost Omega is unmapped.
 """
 
-from .us_addresses import PlanetAddresses, GhostRatchetPlanetAddresses
+from .us_addresses import GhostRatchetPlanetAddresses, PlanetAddresses
 
 ARMOUR_BASE = 0x1f4b354
 ARMOUR_SET_COLLECTED_ADDR = 0x1f4b442
@@ -46,6 +46,16 @@ PLANET_UNLOCK_ADDRESSES = {'POKITARU': 32818785, 'RYLLUS': 32818786, 'KALIDON': 
 SHRINK_RAY_SKIP_ADDRESSES = {}
 
 PLANET_ADDRESSES = {
+    # LEVEL_24.REL references and weapon table: docs/research/treehouse_addresses.md.
+    0x18: PlanetAddresses(
+        "HIG Treehouse", 0xF85540, 0xF85DAC,
+        menu=0x1078D00, weapon_array=0xF48717,
+        small_text_box=0xF516E8, multi_line_text_box=0xF51828,
+        controller_pause_select=0xF85514, controller_pause_select_v2=0xF8B642,
+        weapon_cycler_apply=0xF85E00, weapon_cycler_state=0xF85E04,
+        weapon_cycler_current=0xF85DE0, weapon_cycler_stored=0xF85DEC,
+        max_health=0xF85DB0,
+    ),
     0x01: PlanetAddresses(
         name='Pokitaru',
         player_state=0x00f80640,

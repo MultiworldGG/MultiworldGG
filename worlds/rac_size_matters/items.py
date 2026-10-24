@@ -5,18 +5,15 @@ from BaseClasses import ItemClassification
 from .constants import (
     Rac5Armours,
     Rac5Filler,
-    Rac5GadgetKeys,
-    Rac5Gadgets,
     Rac5ProgressiveArmours,
     Rac5ProgressiveWeaponMods,
     Rac5ProgressiveWeapons,
-    Rac5WeaponKeys,
     Rac5WeaponMods,
     Rac5Weapons,
 )
 from .data.planets import INFOBOT_ITEM_TO_PLANET
 from .data.traps import TRAP_DURATIONS
-from .data.weapons import GADGET_DATA, WEAPON_DATA, WEAPON_MAX_LEVELS, WEAPON_MOD_COUNTS
+from .data.weapons import GADGETS, WEAPON_DATA, WEAPONS
 
 BASE_ID = 77_700_000
 
@@ -26,33 +23,6 @@ class RACItemData:
     code: int
     classification: ItemClassification
 
-
-WEAPON_DISPLAY_TO_INTERNAL: dict[str, str] = {
-    Rac5Weapons.LACERATOR: Rac5WeaponKeys.LACERATOR,
-    Rac5Weapons.CONCUSSION_GUN: Rac5WeaponKeys.CONCUSSION_GUN,
-    Rac5Weapons.ACID_BOMB_GLOVE: Rac5WeaponKeys.ACID_BOMB_GLOVE,
-    Rac5Weapons.AGENTS_OF_DOOM: Rac5WeaponKeys.AGENTS_OF_DOOM,
-    Rac5Weapons.BEE_MINE_GLOVE: Rac5WeaponKeys.BEE_MINE_GLOVE,
-    Rac5Weapons.STATIC_BARRIER: Rac5WeaponKeys.STATIC_BARRIER,
-    Rac5Weapons.SHOCK_ROCKET: Rac5WeaponKeys.SHOCK_ROCKET,
-    Rac5Weapons.SNIPER_MINE: Rac5WeaponKeys.SNIPER_MINE,
-    Rac5Weapons.SCORCHER: Rac5WeaponKeys.SCORCHER,
-    Rac5Weapons.LASER_TRACER: Rac5WeaponKeys.LASER_TRACER,
-    Rac5Weapons.SUCK_CANNON: Rac5WeaponKeys.SUCK_CANNON,
-    Rac5Weapons.MOOTATOR: Rac5WeaponKeys.MOOTATOR,
-    Rac5Weapons.RYNO: Rac5WeaponKeys.RYNO,
-}
-
-GADGET_DISPLAY_TO_INTERNAL: dict[str, str] = {
-    Rac5Gadgets.HYPERSHOT: Rac5GadgetKeys.HYPERSHOT,
-    Rac5Gadgets.SPROUT_O_MATIC: Rac5GadgetKeys.SPROUT_O_MATIC,
-    Rac5Gadgets.POLARIZER: Rac5GadgetKeys.POLARIZER,
-    Rac5Gadgets.PDA: Rac5GadgetKeys.PDA,
-    Rac5Gadgets.SHRINK_RAY: Rac5GadgetKeys.SHRINK_RAY,
-    Rac5Gadgets.BOLT_GRABBER: Rac5GadgetKeys.BOLT_GRABBER,
-    Rac5Gadgets.MAP_O_MATIC: Rac5GadgetKeys.MAP_O_MATIC,
-    Rac5Gadgets.BOX_BREAKER: Rac5GadgetKeys.BOX_BREAKER,
-}
 
 ARMOUR_DISPLAY_TO_INTERNAL: dict[str, tuple[str, int]] = {
     Rac5Armours.WILDFIRE_CHESTPLATE: ("wildfire", 0x01),
@@ -104,13 +74,11 @@ NG_PLUS_WEAPON_MODS: frozenset[str] = frozenset(
 )
 
 WEAPON_ITEM_TABLE: dict[str, RACItemData] = {
-    name: RACItemData(BASE_ID + idx, WEAPON_DATA[internal].classification)
-    for idx, (name, internal) in enumerate(WEAPON_DISPLAY_TO_INTERNAL.items(), start=1)
+    weapon.name: RACItemData(BASE_ID + idx, weapon.classification) for idx, weapon in enumerate(WEAPONS, start=1)
 }
 
 WEAPON_PROGRESSIVE_STEPS: dict[str, int] = {
-    display: 1 + max(0, WEAPON_MAX_LEVELS.get(internal, 1) - 1)
-    for display, internal in WEAPON_DISPLAY_TO_INTERNAL.items()
+    weapon.name: 1 + max(0, weapon.max_level - 1) for weapon in WEAPONS
 }
 
 PROGRESSIVE_WEAPON_NAME: dict[str, str] = {
@@ -131,12 +99,10 @@ PROGRESSIVE_WEAPON_NAME: dict[str, str] = {
 
 WEAPON_PROGRESSIVE_ITEM_TABLE: dict[str, RACItemData] = {
     PROGRESSIVE_WEAPON_NAME[display]: RACItemData(BASE_ID + 350 + idx, ItemClassification.progression)
-    for idx, display in enumerate(WEAPON_DISPLAY_TO_INTERNAL)
+    for idx, display in enumerate(WEAPON_DATA)
 }
 
-_WEAPONS_WITH_MODS: list[str] = [
-    display for display, internal in WEAPON_DISPLAY_TO_INTERNAL.items() if WEAPON_MOD_COUNTS.get(internal, 0) > 0
-]
+_WEAPONS_WITH_MODS: list[str] = [weapon.name for weapon in WEAPONS if weapon.mod_count > 0]
 
 PROGRESSIVE_MOD_NAME: dict[str, str] = {
     Rac5Weapons.LACERATOR: Rac5ProgressiveWeaponMods.LACERATOR,
@@ -221,14 +187,13 @@ WEAPON_MOD_NAME_TO_SLOT: dict[str, tuple[str, int]] = {
 }
 
 WEAPON_NG_PLUS_MOD_COUNTS: dict[str, int] = {
-    WEAPON_DISPLAY_TO_INTERNAL[display]: sum(1 for name in mods if name in NG_PLUS_WEAPON_MODS)
+    display: sum(1 for name in mods if name in NG_PLUS_WEAPON_MODS)
     for display, mods in WEAPON_MOD_SLOT_NAMES.items()
 }
 
 
 GADGET_ITEM_TABLE: dict[str, RACItemData] = {
-    name: RACItemData(BASE_ID + 100 + idx, GADGET_DATA[internal].classification)
-    for idx, (name, internal) in enumerate(GADGET_DISPLAY_TO_INTERNAL.items(), start=1)
+    gadget.name: RACItemData(BASE_ID + 100 + idx, gadget.classification) for idx, gadget in enumerate(GADGETS, start=1)
 }
 
 ARMOUR_SETS: list[tuple[str, str]] = [
@@ -317,20 +282,29 @@ ALL_ITEMS: dict[str, RACItemData] = {
     **GLITCHES_ITEM_TABLE,
 }
 
-DEFAULT_ENABLED_WEAPONS: dict[str, int] = dict.fromkeys(WEAPON_DISPLAY_TO_INTERNAL, 1)
+PROJECTILE_WEAPONS_GROUP = "Projectile Weapons"
+LONG_PROJECTILE_WEAPONS_GROUP = "Long Range Projectile Weapons"
 
-
-def enabled_weapon_names(weights: dict[str, int]) -> frozenset[str]:
-    """Weapon display names the EnabledWeapons option keeps in the pool — shared by
-    world.py (item pool), regions.py (location creation), and every rules/<planet>.py
-    file (rule assignment), all of which must agree on the same exclusion.
-
-    Presence in `weights`, not `.get(name, 1) > 0` — ItemDict (see options.py's
-    EnabledWeapons) culls zero-valued entries on its own __init__, so a weapon the
-    player explicitly disabled is simply absent here, not present with value 0.
-    Defaulting a missing key to "enabled" would silently re-enable exactly the
-    weapon the player turned off."""
-    return frozenset(name for name in WEAPON_DISPLAY_TO_INTERNAL if name in weights)
-
-
-ITEM_ID_TO_NAME: dict[int, str] = {data.code: name for name, data in ALL_ITEMS.items()}
+ITEM_NAME_GROUPS: dict[str, set[str]] = {
+    "Weapons": set(WEAPON_ITEM_TABLE),
+    "Progressive Weapons": set(WEAPON_PROGRESSIVE_ITEM_TABLE),
+    "Weapon Mods": set(WEAPON_MOD_ITEM_TABLE),
+    "Progressive Weapon Mods": set(WEAPON_PROGRESSIVE_MOD_ITEM_TABLE),
+    "Gadgets": set(GADGET_ITEM_TABLE),
+    "Armour": set(ARMOUR_ITEM_TABLE),
+    "Progressive Armours": {*ARMOUR_PROGRESSIVE_ITEM_TABLE, *ARMOUR_PROGRESSIVE_UNIFIED_ITEM_TABLE},
+    "Infobots": set(INFOBOT_ITEM_TABLE),
+    "Traps": set(TRAP_ITEM_TABLE),
+    PROJECTILE_WEAPONS_GROUP: {
+        name
+        for weapon in WEAPONS
+        if weapon.is_projectile
+        for name in (weapon.name, PROGRESSIVE_WEAPON_NAME[weapon.name])
+    },
+    LONG_PROJECTILE_WEAPONS_GROUP: {
+        name
+        for weapon in WEAPONS
+        if weapon.is_long_projectile
+        for name in (weapon.name, PROGRESSIVE_WEAPON_NAME[weapon.name])
+    },
+}

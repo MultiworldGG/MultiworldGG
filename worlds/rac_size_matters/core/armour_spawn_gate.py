@@ -1,7 +1,5 @@
 """Compatibility fallback for clients without the native armour journal."""
 
-from __future__ import annotations
-
 from ..pypine import Pine
 from . import address_maps
 from .patches import asm as m

@@ -17,3 +17,4 @@ class Rac5Planets:
     DAYNI_MOON = "Dayni Moon"
     INSIDE_CLANK = "Inside Clank"
     QUODRONA = "Quodrona"
+    HIG_TREEHOUSE = "HIG Treehouse"

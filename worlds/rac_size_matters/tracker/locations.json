@@ -1991,6 +1991,48 @@
             "icon": "icons/Crate.png"
           }
         ]
+      },
+      {
+        "name": "11",
+        "map_locations": [
+          {
+            "map": "Galaxy",
+            "x": 950,
+            "y": 330
+          }
+        ],
+        "sections": [
+          {
+            "name": "HIG Treehouse: Clank Challenge: ^_________^",
+            "item_count": 1,
+            "icon": "icons/Clank_Challanges.png"
+          },
+          {
+            "name": "HIG Treehouse: Clank Challenge: (>'.')>",
+            "item_count": 1,
+            "icon": "icons/Clank_Challanges.png"
+          },
+          {
+            "name": "HIG Treehouse: Clank Challenge: (\"\\(.:...:.)/\")",
+            "item_count": 1,
+            "icon": "icons/Clank_Challanges.png"
+          },
+          {
+            "name": "HIG Treehouse: Clank Challenge: \\m/>_<\\m/",
+            "item_count": 1,
+            "icon": "icons/Clank_Challanges.png"
+          },
+          {
+            "name": "HIG Treehouse: Shrink Ray Grindrail",
+            "item_count": 1,
+            "icon": "icons/Crate.png"
+          },
+          {
+            "name": "HIG Treehouse: All Skill Points",
+            "item_count": 1,
+            "icon": "icons/Crate.png"
+          }
+        ]
       }
     ]
   },

@@ -1,5 +1,3 @@
-from __future__ import annotations
-
 from dataclasses import dataclass
 from enum import IntEnum, IntFlag
 
@@ -29,7 +27,7 @@ class ChallengePickup:
 class SkyboardPickup:
     attempted_addr: int
     completed_addr: int  # Four packed two-bit win counters, each saturating at 3.
-    mask: SkyboardBit
+    mask: "SkyboardBit"
     name: str
     planet: str
 

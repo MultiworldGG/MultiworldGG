@@ -128,6 +128,7 @@ class CrystalProjectWorld(World):
         self.jobs_not_to_exclude: List[str] = []
         self.included_regions: List[str] = []
         self.statically_placed_jobs: int = 0
+        self.trap_item_list: List[str] = []
 
     def generate_early(self):
         # implement .yaml-less Universal Tracker support
@@ -178,7 +179,9 @@ class CrystalProjectWorld(World):
             self.multiworld.push_precollected(self.create_item(TREASURE_FINDER))
 
         if self.options.start_with_maps.value == self.options.start_with_maps.option_true:
-            for map_name in self.item_name_groups[MAP]:
+            map_list:List[str] = list(self.item_name_groups[MAP])
+            map_list.sort()
+            for map_name in map_list:
                 self.multiworld.push_precollected(self.create_item(map_name))
 
     def create_regions(self) -> None:
@@ -318,9 +321,12 @@ class CrystalProjectWorld(World):
                         raise OptionError(f"For player {self.player_name}: YAML settings were contradictory. Starting inventory from pool contains {item_name}, "
                                         f"but that region is not in {self.options.included_regions}. Change settings and regenerate.")
 
+
+            display_regions_forbidden_from_being_starters: list[str] = [MENU_DISPLAY_NAME, THE_OLD_WORLD_DISPLAY_NAME, SEQUOIA_ATHENAEUM_DISPLAY_NAME, MODDED_ZONE_DISPLAY_NAME]
+
             if len(starting_passes_list) > 0:
                 for display_region_name in display_region_name_to_pass_dict:
-                    if display_region_name_to_pass_dict[display_region_name] == starting_passes_list[0]:
+                    if display_region_name_to_pass_dict[display_region_name] == starting_passes_list[0] and display_region_name not in display_regions_forbidden_from_being_starters:
                         # The first subregion (AP Region) in a display region will be the starter region if a player puts that display region's pass in their starting inventory
                         self.starter_ap_region = display_region_subregions_dictionary[display_region_name][0]
                         break
@@ -330,7 +336,6 @@ class CrystalProjectWorld(World):
             # If this is UT re-gen the value isn't empty and we skip trying to pick a starter_region since we already have one
             if self.starter_ap_region == "":
                 valid_starting_regions = []
-                display_regions_forbidden_from_being_starters: list[str] = [MENU_DISPLAY_NAME, THE_OLD_WORLD_DISPLAY_NAME, MODDED_ZONE_DISPLAY_NAME]
                 actual_starting_level_value = self.options.starting_level.value
 
                 if self.options.regionsanity_starter_region_max_level.value < self.options.regionsanity_starter_region_min_level.value:
@@ -508,7 +513,10 @@ class CrystalProjectWorld(World):
         trap_chance: int = self.options.trap_likelihood.value
 
         if trap_chance > 0 and self.random.random() < (trap_chance / 100):
-             return self.random.choice(list(self.item_name_groups[TRAP]))
+            if len(self.trap_item_list) == 0:
+                self.trap_item_list = list(self.item_name_groups[TRAP])
+                self.trap_item_list.sort()
+            return self.random.choice(self.trap_item_list)
         else:
             return self.random.choice(filler_items)
 
@@ -632,22 +640,35 @@ class CrystalProjectWorld(World):
         for name, data in item_table.items():
             if name not in excluded_items:
                 #Check region type and add the region-type amounts; then check Shopsanity and add the shop amounts
-                amount:int = int(data.beginnerAmount or 0)
+                beginner_amount:int = int(data.beginnerAmount or 0)
+                advanced_amount:int = int(data.advancedAmount or 0)
+                expert_amount:int = int(data.expertAmount or 0)
+                end_game_amount:int = int(data.endGameAmount or 0)
+
+                beginner_shop_amount:int = int(data.beginnerShops or 0)
+                advanced_shop_amount:int = int(data.advancedShops or 0)
+                expert_shop_amount:int = int(data.expertShops or 0)
+                end_game_shop_amount:int = int(data.endGameShops or 0)
+
+                amount:int = beginner_amount
                 if self.options.shopsanity.value != self.options.shopsanity.option_disabled:
-                    amount = amount + int(data.beginnerShops or 0)
-                if self.options.included_regions == self.options.included_regions.option_advanced:
-                    amount = amount + int(data.advancedAmount or 0)
+                    amount = amount + beginner_shop_amount
+
+                if self.options.included_regions.value >= self.options.included_regions.option_advanced:
+                    amount = amount + advanced_amount
                     if self.options.shopsanity.value != self.options.shopsanity.option_disabled:
-                        amount = amount + int(data.advancedShops or 0)
-                elif self.options.included_regions == self.options.included_regions.option_expert:
-                    amount = amount + int(data.advancedAmount or 0) + int(data.expertAmount or 0)
+                        amount = amount + advanced_shop_amount
+
+                if self.options.included_regions.value >= self.options.included_regions.option_expert:
+                    amount = amount + expert_amount
                     if self.options.shopsanity.value != self.options.shopsanity.option_disabled:
-                        amount = amount + int(data.expertShops or 0)
-                elif self.options.included_regions == self.options.included_regions.option_all:
-                    amount = amount + int(data.advancedAmount or 0) + int(data.expertAmount or 0) + int(data.endGameAmount or 0)
+                        amount = amount + expert_shop_amount
+
+                if self.options.included_regions.value == self.options.included_regions.option_all:
+                    amount = amount + end_game_amount
                     #atm there are no end-game specific shopsanity items
                     if self.options.shopsanity.value != self.options.shopsanity.option_disabled:
-                        amount = amount + int(data.endGameShops or 0)
+                        amount = amount + end_game_shop_amount
 
                 # Make sure new world pass is included if regionsanity is on and its required for the goal
                 if (self.options.regionsanity.value != self.options.regionsanity.option_disabled and
@@ -856,5 +877,6 @@ class CrystalProjectWorld(World):
             "maximumPassivePoints": self.options.maximum_passive_points.value,
             "startingPassivePoints": self.options.starting_passive_points.value,
             "passivePointBoostSize": self.options.passive_point_boost_size.value,
-            "skipQuizardQuiz": bool(self.options.skip_quizard_quiz.value)
+            "skipQuizardQuiz": bool(self.options.skip_quizard_quiz.value),
+            "deathLink": bool(self.options.death_link.value),
         }

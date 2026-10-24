@@ -1,5 +1,3 @@
-from __future__ import annotations
-
 from enum import IntEnum
 from typing import TYPE_CHECKING
 
@@ -71,7 +69,7 @@ class MenuInventory:
     current = MenuStateSlot()
     update  = MenuUpdateSlot()
 
-    def __init__(self, pine: Pine) -> None:
+    def __init__(self, pine: "Pine") -> None:
         self.pine = pine
         self.base: int | None = None
 

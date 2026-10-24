@@ -1,3 +1,4 @@
+from functools import lru_cache
 from .Options import SM64HackOptions
 from .Data import Data, star_like, sm64hack_items, sr8courseorder, sr8extraorder
 from BaseClasses import CollectionState
@@ -6,6 +7,17 @@ import re
 itemregex = r"(\|[^|]*\|)" #matches |anything|
 macroregex = r"(\|@[^|]*\|)" #matches |@anything|
 operand = r"[0-9]"
+
+stored_macros = {}
+stored_options: SM64HackOptions
+
+def set_macros(m:dict[str, str]):
+    global stored_macros
+    stored_macros = m
+
+def set_options(o:SM64HackOptions):
+    global stored_options
+    stored_options = o
 
 def combine(t: list) -> list:
     l = []
@@ -17,22 +29,23 @@ def combine(t: list) -> list:
             l.append(item)
     return l
 
-
-def evaluate_nested_macros(input: str, macro_dict: dict[str, str]) -> str:
+@lru_cache(maxsize=1024)
+def evaluate_nested_macros(input: str, player:int) -> str: #player is in this function to avoid using cached data across different players
     macros = re.findall(macroregex, input)
     for macro in macros:
-        nested_macro_data = macro_dict[macro[2:-1]]
-        evaluated_nested_macro = evaluate_nested_macros(nested_macro_data, macro_dict)
+        nested_macro_data = stored_macros[macro[2:-1]]
+        evaluated_nested_macro = evaluate_nested_macros(nested_macro_data, player)
         input = input.replace(macro, f"({evaluated_nested_macro})")
     return input
 
-def parse_requirement_string_to_postfix(string: str, macros: dict[str, str]) -> tuple[list[str], list[str]] | None:
+@lru_cache(maxsize=1024)
+def parse_requirement_string_to_postfix(string: str, player:int) -> tuple[list[str], list[str]] | None:
     if string is None:
         return None
     if string == "" or string == []:
         return None
     
-    string = evaluate_nested_macros(string, macros)
+    string = evaluate_nested_macros(string, player)
     requirements = re.findall(itemregex, string)
     for index, requirement in enumerate(requirements):
         string = string.replace(requirement, str(index), 1) #easier to keep track of numbers during later calculations
@@ -71,7 +84,9 @@ def parse_requirement_string_to_postfix(string: str, macros: dict[str, str]) -> 
 
     return result, requirements
 
-def evaluate_postfix_requirements(postfix: list[str], requirements: list[bool]) -> bool:
+
+@lru_cache(maxsize=1024)
+def evaluate_postfix_requirements(postfix: tuple[str], requirements: tuple[bool]) -> bool:
     stack = []
     for token in postfix:
         if token == '&': #would use match case if > 2 operators
@@ -86,7 +101,7 @@ def evaluate_postfix_requirements(postfix: list[str], requirements: list[bool]) 
             stack.append(requirements[int(token)])
     return stack.pop()
 
-def simplify_postfix_requirements(postfix: list[str], requirements: list[bool | str], data:Data, requirement_string) -> bool:
+def simplify_postfix_requirements(postfix: list[str], requirements: list[bool | str], data:Data) -> bool:
     stack = []
     for token in postfix:
         if token == '&': #would use match case if > 2 operators
@@ -136,30 +151,33 @@ def simplify_postfix_requirements(postfix: list[str], requirements: list[bool | 
     
     return returnval
 
-def check_if_option_enabled(option:str, enabled_options: SM64HackOptions) -> bool:
+@lru_cache(maxsize=1024)
+def check_if_option_enabled(option:str, player:int) -> bool: #player is in this function to avoid the function using stored cached results from a different player
     match option:
         case "reasonable":
-            return enabled_options.logic_difficulty >= 1
+            return stored_options.logic_difficulty >= 1
         case "obscure":
-            return enabled_options.logic_difficulty >= 2
+            return stored_options.logic_difficulty >= 2
         case "hard":
-            return enabled_options.logic_difficulty >= 3
+            return stored_options.logic_difficulty >= 3
         case "Major Skips":
-            return enabled_options.major_skips
+            return stored_options.major_skips
         case _:
-            return (option in enabled_options.glitches_in_logic and enabled_options.logic_difficulty != 0) or option in enabled_options.hack_specific_options
+            return (option in stored_options.glitches_in_logic and stored_options.logic_difficulty != 0) or option in stored_options.hack_specific_options
 
 def check_if_location_exists(requirement_string: str, options: SM64HackOptions, macros: dict[str, str], data: Data) -> bool: #this does not check if you can access the zone. making locations not exist if the zone isnt accessible from options sounds too complicated to do, theres workarounds anyway
-    result = parse_requirement_string_to_postfix(requirement_string, macros)
+    set_macros(macros)
+    result = parse_requirement_string_to_postfix(requirement_string, data.player)
     if(result is None): #no requirements = always possible
         return True
     result, requirements = result #unpack tuple
     boolean_array = []
+    set_options(options)
     for requirement in requirements:
         if requirement.startswith("|!"):
-            boolean_array.append(check_if_option_enabled(requirement[2:-1], options))
+            boolean_array.append(check_if_option_enabled(requirement[2:-1], data.player))
         elif requirement.startswith("|?"):
-            boolean_array.append(not check_if_option_enabled(requirement[2:-1], options))
+            boolean_array.append(not check_if_option_enabled(requirement[2:-1], data.player))
         elif requirement.startswith("|#"):
             boolean_array.append("level")
         else:
@@ -169,7 +187,7 @@ def check_if_location_exists(requirement_string: str, options: SM64HackOptions, 
                 boolean_array.append("jump")
             else:
                 boolean_array.append(requirement[1:-1])
-    return simplify_postfix_requirements(result, boolean_array, data, requirement_string)
+    return simplify_postfix_requirements(result, boolean_array, data)
 
 def has_star_count(state: CollectionState, player: int, star_count: int) -> bool:
     return (state.count_from_list(star_like, player) + state.count("Star Bundle", player) * 2) >= star_count
@@ -194,38 +212,41 @@ def check_requirement_string(state: CollectionState,
                              ) -> bool:
     if entrancedata is not None and options.level_tickets:
         for level in entrancedata:
+            if data.locations[level].get("Overworld"):
+                continue
+            item = f"{level} Ticket"
+            count = 1
             if "touhou" in options.hack_specific_options and (level in sr8courseorder or level in sr8extraorder):
                 if level in sr8courseorder:
-                    count = sr8courseorder.index(level)
-                    if not state.has("Next Stage", player, count + 1):
-                        return False
+                    item = "Next Stage"
+                    count = sr8courseorder.index(level) + 1
                 else:
-                    count = sr8extraorder.index(level)
-                    if not state.has("Extra Stage", player, count + 1):
-                        return False
-            else:
-                if options.level_tickets == 1 and level.startswith("Course"):
+                    item = "Extra Stage"
+                    count = sr8extraorder.index(level) + 1
+            elif options.level_tickets == 1:
+                if level.startswith("Course"):
                     count = int(level[7:])
-                    if not state.has("Progressive Main Course", player, count) and not data.locations[level].get("Overworld"):
-                        return False
-                elif options.level_tickets == 1 and level.startswith("Bowser"):
+                    item = "Progressive Main Course"
+                elif level.startswith("Bowser"):
                     count = int(level[7:])
-                    if not state.has("Progressive Bowser Course", player, count) and not data.locations[level].get("Overworld"):
-                        return False
-                elif not state.has(f"{level} Ticket", player) and not data.locations[level].get("Overworld"):
-                    return False
+                    item = "Progressive Bowser Course"
+            if not state.has(item, player, count):
+                return False
 
     macros = data.locations["Other"]["Macros"]
-    result = parse_requirement_string_to_postfix(requirement_string, macros)
+    set_macros(macros)
+    result = parse_requirement_string_to_postfix(requirement_string, player)
     if result is None: #no requirements = always possible
         return True
+    
+    set_options(options)
     result, requirements = result #unpack tuple
     boolean_array = []
     for requirement in requirements:
         if requirement.startswith("|!"):
-            boolean_array.append(check_if_option_enabled(requirement[2:-1], options))
+            boolean_array.append(check_if_option_enabled(requirement[2:-1], player))
         elif requirement.startswith("|?"):
-            boolean_array.append(not check_if_option_enabled(requirement[2:-1], options))
+            boolean_array.append(not check_if_option_enabled(requirement[2:-1], player))
         elif requirement.startswith("|#"):
             course, zone = requirement[2:-1].split(':')
             boolean_array.append(state.can_reach_region(f"{course} Zone {zone}", player))
@@ -277,4 +298,4 @@ def check_requirement_string(state: CollectionState,
                         boolean_array.append(True)
                     else:
                         boolean_array.append(state.has(item, player))
-    return evaluate_postfix_requirements(result, boolean_array)
+    return evaluate_postfix_requirements(tuple(result), tuple(boolean_array))

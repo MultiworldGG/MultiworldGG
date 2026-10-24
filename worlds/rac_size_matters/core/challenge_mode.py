@@ -1,5 +1,3 @@
-from __future__ import annotations
-
 from typing import TYPE_CHECKING
 
 from .structs.game import ChallengeModeStruct
@@ -36,7 +34,7 @@ class ChallengeModeState:
 
     tier = ChallengeModeSlot("tier")
 
-    def __init__(self, pine: Pine) -> None:
+    def __init__(self, pine: "Pine") -> None:
         self.pine = pine
         self._tier: int = 0
 

@@ -1,11 +1,10 @@
-from __future__ import annotations
-
 from collections.abc import Callable, Mapping
-from dataclasses import dataclass, field
+from dataclasses import dataclass
 from itertools import count
 from typing import Any, ClassVar
 
 from rule_builder.options import OptionFilter
+from rule_builder.rules import Rule
 
 BASE_ID = 77_700_000
 _LOCATION_IDS = count(BASE_ID + 1)
@@ -48,12 +47,18 @@ class Rac5Categories:
     SKYBOARD_ITEM = "skyboard_item"
     STORY_MISSION = "story_mission"
     ALL_CLANK = "all_clank"
+    ALL_SKILL_POINTS = "all_skill_points"
     WEAPON_LEVEL = "weapon_level"
     WEAPON_MAX_LEVEL = "weapon_max_level"
     WEAPON_MOD_VENDOR = "weapon_mod_vendor"
     WEAPON_SUB_MAX_LEVEL = "weapon_sub_max_level"
     WEAPON_TITAN_VENDOR = "weapon_titan_vendor"
     WEAPON_VENDOR = "weapon_vendor"
+
+
+# Easy covers the easy tier; hard covers easy + hard, since hard-tier locations only
+# exist when Skill Points is hard. Clank/Skyboard Challenge skill points don't count.
+TIERED_SKILL_POINT_CATEGORIES = frozenset((Rac5Categories.EASY_SKILL_POINT, Rac5Categories.HARD_SKILL_POINT))
 
 
 REGION_CATEGORY_ORDER = (
@@ -70,6 +75,7 @@ REGION_CATEGORY_ORDER = (
     Rac5Categories.HARD_SKILL_POINT,
     Rac5Categories.CLANK_CHALLENGE_SKILL_POINT,
     Rac5Categories.SKYBOARD_CHALLENGE_SKILL_POINT,
+    Rac5Categories.ALL_SKILL_POINTS,
     Rac5Categories.WEAPON_MOD_VENDOR,
     Rac5Categories.CHALLENGE,
     Rac5Categories.ALL_CLANK,
@@ -189,7 +195,7 @@ class ArmourSetCompletion:
 class Rac5Locations:
     name: str
     planet: str
-    rule: Callable
+    rule: Rule
     completed: Callable
     code: int | None = None  # None takes the next sequential ID; pass one to pin a location added after the originals.
     options: LocationOptions | None = None

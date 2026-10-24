@@ -4,7 +4,8 @@ Dictionary identities stay stable for inventories that import lookup tables.
 Selection is synchronous and must run under the client's PINE lock.
 """
 import os as _os
-from . import us_addresses, eu_addresses, jp_addresses
+
+from . import eu_addresses, jp_addresses, us_addresses
 
 SUPPORTED_GAMES = {"SCUS-97615": "US", "SCES-55019": "EU", "SCPS-15120": "JP"}
 _MAPS = {"SCUS-97615": us_addresses, "SCES-55019": eu_addresses, "SCPS-15120": jp_addresses}
@@ -86,6 +87,14 @@ def save_address(canonical_address: int) -> int:
     if not 0x1F4AB00 <= canonical_address < 0x1F4C800:
         raise ValueError(f"Not a canonical save address: {canonical_address:#x}")
     return canonical_address + ARMOUR_BASE - 0x1F4B354
+
+
+def bind_treehouse(code_start: int, code: bytes) -> None:
+    """Publish verified live overlay addresses before Treehouse inventory access."""
+    from .treehouse import resolve
+
+    PLANET_ADDRESSES[24] = resolve(GAME_ID, PLANET_ADDRESSES[24], code_start, code)
+    _derive_tables()
 
 
 class Address:

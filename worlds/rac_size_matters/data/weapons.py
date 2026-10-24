@@ -3,7 +3,7 @@ from dataclasses import dataclass
 
 from BaseClasses import ItemClassification
 
-from ..constants import Rac5GadgetKeys, Rac5WeaponKeys
+from ..constants import Rac5Gadgets, Rac5Weapons
 
 
 @dataclass(frozen=True, slots=True)
@@ -49,7 +49,7 @@ class AttributeView(Mapping):
 
 WEAPONS = (
     Weapon(
-        Rac5WeaponKeys.LACERATOR,
+        Rac5Weapons.LACERATOR,
         is_projectile=True,
         is_long_projectile=True,
         classification=ItemClassification.progression,
@@ -59,7 +59,7 @@ WEAPONS = (
         vendor_ammo=VendorDisplayAmmo(base=60, titan=120),
     ),
     Weapon(
-        Rac5WeaponKeys.CONCUSSION_GUN,
+        Rac5Weapons.CONCUSSION_GUN,
         is_projectile=True,
         classification=ItemClassification.progression,
         max_level=8,
@@ -68,7 +68,7 @@ WEAPONS = (
         vendor_ammo=VendorDisplayAmmo(base=25, titan=30),
     ),
     Weapon(
-        Rac5WeaponKeys.ACID_BOMB_GLOVE,
+        Rac5Weapons.ACID_BOMB_GLOVE,
         is_projectile=False,
         classification=ItemClassification.progression,
         max_level=8,
@@ -77,7 +77,7 @@ WEAPONS = (
         vendor_ammo=VendorDisplayAmmo(base=5, titan=10),
     ),
     Weapon(
-        Rac5WeaponKeys.AGENTS_OF_DOOM,
+        Rac5Weapons.AGENTS_OF_DOOM,
         is_projectile=False,
         classification=ItemClassification.progression,
         max_level=8,
@@ -86,7 +86,7 @@ WEAPONS = (
         vendor_ammo=VendorDisplayAmmo(base=6, titan=10),
     ),
     Weapon(
-        Rac5WeaponKeys.BEE_MINE_GLOVE,
+        Rac5Weapons.BEE_MINE_GLOVE,
         is_projectile=False,
         classification=ItemClassification.progression,
         max_level=8,
@@ -95,7 +95,7 @@ WEAPONS = (
         vendor_ammo=VendorDisplayAmmo(base=8, titan=8),
     ),
     Weapon(
-        Rac5WeaponKeys.STATIC_BARRIER,
+        Rac5Weapons.STATIC_BARRIER,
         is_projectile=False,
         classification=ItemClassification.useful,
         max_level=8,
@@ -104,7 +104,7 @@ WEAPONS = (
         vendor_ammo=VendorDisplayAmmo(base=5, titan=5),
     ),
     Weapon(
-        Rac5WeaponKeys.SHOCK_ROCKET,
+        Rac5Weapons.SHOCK_ROCKET,
         is_projectile=True,
         is_long_projectile=True,
         classification=ItemClassification.progression,
@@ -114,7 +114,7 @@ WEAPONS = (
         vendor_ammo=VendorDisplayAmmo(base=20, titan=22),
     ),
     Weapon(
-        Rac5WeaponKeys.SNIPER_MINE,
+        Rac5Weapons.SNIPER_MINE,
         is_projectile=True,
         is_long_projectile=True,
         classification=ItemClassification.progression,
@@ -124,7 +124,7 @@ WEAPONS = (
         vendor_ammo=VendorDisplayAmmo(base=8, titan=10),
     ),
     Weapon(
-        Rac5WeaponKeys.SCORCHER,
+        Rac5Weapons.SCORCHER,
         is_projectile=True,
         classification=ItemClassification.progression,
         max_level=8,
@@ -133,7 +133,7 @@ WEAPONS = (
         vendor_ammo=VendorDisplayAmmo(base=60, titan=90),
     ),
     Weapon(
-        Rac5WeaponKeys.LASER_TRACER,
+        Rac5Weapons.LASER_TRACER,
         is_projectile=True,
         is_long_projectile=True,
         classification=ItemClassification.progression,
@@ -143,7 +143,7 @@ WEAPONS = (
         vendor_ammo=VendorDisplayAmmo(base=200, titan=300),
     ),
     Weapon(
-        Rac5WeaponKeys.SUCK_CANNON,
+        Rac5Weapons.SUCK_CANNON,
         is_projectile=False,
         classification=ItemClassification.useful,
         max_level=8,
@@ -152,7 +152,7 @@ WEAPONS = (
         vendor_ammo=VendorDisplayAmmo(base=8, titan=16),
     ),
     Weapon(
-        Rac5WeaponKeys.MOOTATOR,
+        Rac5Weapons.MOOTATOR,
         is_projectile=False,
         classification=ItemClassification.progression,
         max_level=8,
@@ -161,7 +161,7 @@ WEAPONS = (
         vendor_ammo=VendorDisplayAmmo(base=0, titan=0),
     ),
     Weapon(
-        Rac5WeaponKeys.RYNO,
+        Rac5Weapons.RYNO,
         is_projectile=True,
         is_long_projectile=True,
         classification=ItemClassification.progression,
@@ -173,14 +173,14 @@ WEAPONS = (
 )
 
 GADGETS = (
-    Gadget(Rac5GadgetKeys.HYPERSHOT, ItemClassification.progression),
-    Gadget(Rac5GadgetKeys.SPROUT_O_MATIC, ItemClassification.progression),
-    Gadget(Rac5GadgetKeys.POLARIZER, ItemClassification.progression),
-    Gadget(Rac5GadgetKeys.PDA, ItemClassification.useful),
-    Gadget(Rac5GadgetKeys.SHRINK_RAY, ItemClassification.progression),
-    Gadget(Rac5GadgetKeys.BOLT_GRABBER, ItemClassification.useful),
-    Gadget(Rac5GadgetKeys.MAP_O_MATIC, ItemClassification.useful),
-    Gadget(Rac5GadgetKeys.BOX_BREAKER, ItemClassification.useful),
+    Gadget(Rac5Gadgets.HYPERSHOT, ItemClassification.progression),
+    Gadget(Rac5Gadgets.SPROUT_O_MATIC, ItemClassification.progression),
+    Gadget(Rac5Gadgets.POLARIZER, ItemClassification.progression),
+    Gadget(Rac5Gadgets.PDA, ItemClassification.useful),
+    Gadget(Rac5Gadgets.SHRINK_RAY, ItemClassification.progression),
+    Gadget(Rac5Gadgets.BOLT_GRABBER, ItemClassification.useful),
+    Gadget(Rac5Gadgets.MAP_O_MATIC, ItemClassification.useful),
+    Gadget(Rac5Gadgets.BOX_BREAKER, ItemClassification.useful),
 )
 
 WEAPON_DATA = AttributeView(WEAPONS)

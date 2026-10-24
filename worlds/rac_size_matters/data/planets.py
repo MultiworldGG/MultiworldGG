@@ -9,4 +9,5 @@ INFOBOT_ITEM_TO_PLANET: dict[str, tuple[str, ...]] = {
     Rac5Infobots.DAYNI_MOON: ("dayni_moon",),
     Rac5Infobots.QUODRONA: ("quodrona",),
     Rac5Infobots.RYLLUS: ("ryllus",),
+    Rac5Infobots.HIG_TREEHOUSE: ("hig_treehouse",),
 }

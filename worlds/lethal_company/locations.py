@@ -2,7 +2,7 @@ import math
 from typing import Dict, List, TYPE_CHECKING
 from BaseClasses import Location
 from .imported import data
-from .options import ChecksPerMoon, NumQuotas
+from .options import GradeLocationsPerMoon, NumQuotas
 from .custom_content import custom_content
 
 if TYPE_CHECKING:
@@ -36,15 +36,14 @@ def get_default_location_map():
         "Work"
     ]
 
-    bestiary_names = [[key for key in monster.keys()][0] for monster in data["bestiary"]]
+    bestiary_names = [monster for monster in data["bestiary"]]
 
     moons = [moon for moon in data.get("moons")]
 
     scrap_names = []
 
     for item in data["scrap"]:
-        key = [key for key in item.keys()][0]
-        scrap_names.append(key)
+        scrap_names.append(item)
 
     for moon in moons:
         if not f"AP Apparatus - {moon}" in scrap_names:
@@ -53,10 +52,10 @@ def get_default_location_map():
     location_result = {}
 
     for i in range(len(moons)):
-        for j in range(ChecksPerMoon.range_end):
-            location_result.update(check_location(f"{moons[i]} check {j + 1}")) # maybe change this to Offense Grade check 1...The current name seems to confuse people
+        for j in range(GradeLocationsPerMoon.range_end):
+            location_result.update(check_location(f"{moons[i]} Grade Location {j + 1}"))
     for i in range(NumQuotas.range_end):
-        location_result.update(check_location(f"Quota check {i + 1}"))
+        location_result.update(check_location(f"Quota Location {i + 1}"))
     for i in range(len(log_names)):
         location_result.update(check_location(f"Log - {log_names[i]}"))
     for i in range(len(bestiary_names)):
@@ -87,23 +86,21 @@ def generate_locations(world: "LethalCompanyWorld"):
 
     #world.bestiary_names = [[key for key in monster.keys() if any(moon["chance"] > 0 for moon in monster[key])][0] for monster in world.imported_data["bestiary"]]
     world.bestiary_names = []
-    for monster in world.imported_data["bestiary"]:
-        key = [key for key in monster.keys()][0]
-        if any(moon["chance"] > 0 for moon in monster[key]):
-            world.bestiary_names.append(key)
+    for monster, spawn_locations in world.imported_data["bestiary"].items():
+        if any(moon["chance"] > 0 for moon in spawn_locations):
+            world.bestiary_names.append(monster)
 
     moons = [moon for moon in world.imported_data.get("moons")]
 
     world.scrap_names = []
     removed_scrap = []
 
-    for item in world.imported_data["scrap"]:
-        key = [key for key in item.keys()][0]
+    for item, spawn_locations in world.imported_data["scrap"].items():
         # check if the scrap can be found on at least one moon, and add it if so
-        if any(moon["chance"] > 0 for moon in item[key]):
-            world.scrap_names.append(key)
+        if any(moon["chance"] > 0 for moon in spawn_locations):
+            world.scrap_names.append(item)
         else: 
-            removed_scrap.append(key)
+            removed_scrap.append(item)
 
     if len(removed_scrap) > 0:
         import logging
@@ -121,10 +118,10 @@ def generate_locations(world: "LethalCompanyWorld"):
     location_result = {}
 
     for i in range(len(moons)):
-        for j in range(world.options.checks_per_moon.value):
-            location_result.update(check_location(f"{moons[i]} check {j + 1}")) # maybe change this to Offense Grade check 1...The current name seems to confuse people
+        for j in range(world.options.grade_locations_per_moon.value):
+            location_result.update(check_location(f"{moons[i]} Grade Location {j + 1}")) 
     for i in range(world.options.num_quotas.value):
-        location_result.update(check_location(f"Quota check {i + 1}"))
+        location_result.update(check_location(f"Quota Location {i + 1}"))
     for i in range(len(world.log_names)):
         location_result.update(check_location(f"Log - {world.log_names[i]}"))
     for i in range(len(world.bestiary_names)):
@@ -140,21 +137,19 @@ def generate_bestiary_moons(world: "LethalCompanyWorld", chance: float) -> Dict[
 
     }
 
-    bestiary_data = world.imported_data["bestiary"]
-    for entry in bestiary_data:
-        key = [key for key in entry.keys()][0]
+    for monster, spawn_locations in world.imported_data["bestiary"].items():
         b_moons = []
-        for moon in entry[key]:
-            if moon["chance"] >= chance:
+        for moon in spawn_locations:
+            if moon["chance"] >= chance and moon["chance"] > 0:
                 b_moons.append(moon["moon_name"])
         if b_moons == []:
-                best_moon = max(entry[key], key=lambda moon_spawns: moon_spawns["chance"])
+                best_moon = max(spawn_locations, key=lambda moon_spawns: moon_spawns["chance"])
                 if best_moon["chance"] > 0:
                     b_moons.append(best_moon["moon_name"])    # ensures that the location is still 'accessible' as long as it can be found SOMEWHERE
                     b_moons.append("excluded")     # special indicator that this location should be excluded
                 else:
                     continue            # if the item isn't found ANYWHERE, don't add it
-        bestiary_moons[key] = b_moons
+        bestiary_moons[monster] = b_moons
 
     return bestiary_moons
 
@@ -177,21 +172,19 @@ def generate_scrap_moons(world: "LethalCompanyWorld", chance: float) -> Dict[str
 
     }
 
-    scrap_data = world.imported_data["scrap"]
-    for entry in scrap_data:
-        key = [key for key in entry.keys()][0]
+    for item, spawn_locations in world.imported_data["scrap"].items():
         s_moons = []
-        for moon in entry[key]:
-            if moon["chance"] >= chance:
+        for moon in spawn_locations:
+            if moon["chance"] >= chance and moon["chance"] > 0:
                 s_moons.append(moon["moon_name"])
         if s_moons == []:
-            best_moon = max(entry[key], key=lambda moon_spawns: moon_spawns["chance"])
+            best_moon = max(spawn_locations, key=lambda moon_spawns: moon_spawns["chance"])
             if best_moon["chance"] > 0:
                 s_moons.append(best_moon["moon_name"])    # ensures that the location is still 'accessible' as long as it can be found SOMEWHERE
                 s_moons.append("excluded")     # special indicator that this location should be excluded
             else:
                 continue            # if the item isn't found ANYWHERE, don't add it
-        scrap_moons[key] = s_moons
+        scrap_moons[item] = s_moons
 
     return scrap_moons
 
@@ -237,18 +230,7 @@ def generate_scrap_moons_alt(world: 'LethalCompanyWorld') -> Dict[str, List[str]
     world.scrap_map = scrap_moons
 
     inverse_scrap_map = {
-        "Common": [],
-        "Experimentation": [],
-        "Assurance": [],
-        "Vow": [],
-        "Offense": [],
-        "March": [],
-        "Adamance": [],
-        "Embrion": [],
-        "Rend": [],
-        "Dine": [],
-        "Titan": [],
-        "Artifice": []
+        "Common": []
     }
 
     for scrap, moons in world.scrap_map.items():
@@ -257,10 +239,10 @@ def generate_scrap_moons_alt(world: 'LethalCompanyWorld') -> Dict[str, List[str]
                 inverse_scrap_map[moon] = []
             inverse_scrap_map[moon].append(scrap)
 
-    spoiler_string = f"\n{world.player_name}'s Randomized scrap placements:"
+    spoiler_string = f"\n{world.player_name}'s randomized scrap placements:\n"
 
     for moon, scrap in inverse_scrap_map.items():
-        spoiler_string += f"{moon}: {', '.join(scrap)}\n"
+        spoiler_string += f"  {moon}: {', '.join(scrap)}\n"
 
     world.spoiler_text = spoiler_string
 

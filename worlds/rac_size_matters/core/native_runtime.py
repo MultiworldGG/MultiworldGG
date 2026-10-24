@@ -3,11 +3,10 @@
 import logging
 from collections import deque
 
-from ..constants import Rac5Locations
-from ..locations import GADGET_INTERNAL_TO_LOCATION, TITAN_INTERNAL_TO_LOCATION, WEAPON_INTERNAL_TO_LOCATION
-from . import vendor_presentation
-from . import address_maps
-from .address_maps import CURRENT_PLANET_ADDRESS, NEW_PLANET_START_LOAD_ADDR, PLANET_ADDRESSES
+from ..constants import Rac5Locations, Rac5ShrinkRayGrindrail
+from ..locations import GADGET_TO_LOCATION, TITAN_TO_LOCATION, WEAPON_TO_LOCATION
+from . import address_maps, vendor_presentation
+from .address_maps import PLANET_ADDRESSES
 from .armour import ARMOUR_PICKUPS, ArmourPiece, ArmourStruct
 from .menu import MenuStateValue
 from .patches import (
@@ -22,12 +21,13 @@ from .patches import (
     ship_menu,
     skins,
     sprout_pickup,
+    treehouse_grindrail,
     vendor as vendor_patch,
 )
 from .patches.loader_gate import LoaderGate
 from .patches.starting_planet import StartingPlanet
-from .vendor import WEAPON_VENDOR_IDS
 from .traps import close_no_clank_trap
+from .vendor import WEAPON_VENDOR_IDS
 
 logger = logging.getLogger("CommonClient")
 
@@ -51,6 +51,9 @@ class NativeRuntime:
         self.plans = []
         self.module = None
         self.pickup = None
+        self.treehouse_grindrail = None
+        self.ship_menu = None
+        self._treehouse_unlocked = True
         self.toast = None
         self.connection_warning = None
         self.ap_connected = False
@@ -62,6 +65,28 @@ class NativeRuntime:
         self.balance = None
         self.balance_callback = None
         self._installed_balance_option = self.patch_options.balance_patch
+        self._installed_multiplayer_skins_option = self.patch_options.multiplayer_skins
+        self._installed_skins_option = self.patch_options.skins
+
+    @property
+    def treehouse_unlocked(self):
+        return self._treehouse_unlocked
+
+    @treehouse_unlocked.setter
+    def treehouse_unlocked(self, value):
+        """Show or hide the ship menu's Treehouse row, live if the menu patch is installed."""
+        value = bool(value)
+        if value == self._treehouse_unlocked:
+            return
+        self._treehouse_unlocked = value
+        if self.ship_menu is not None and self.ship_menu.installed:
+            self.pine.write_int32(self.ship_menu.treehouse_flag, int(value))
+
+    def _prepare_ship_menu(self, base, code):
+        self.ship_menu = ship_menu.prepare(
+            self.pine, code_start=base, code=code, treehouse_unlocked=self._treehouse_unlocked,
+        )
+        return self.ship_menu
 
     def close(self):
         if self.pine.get_game_id() != self.gate.game_id:
@@ -100,15 +125,25 @@ class NativeRuntime:
         self._presentation_pending = None
         self.plans = []
         self.pickup = None
+        self.treehouse_grindrail = None
+        self.ship_menu = None
         self.toast = None
         self.connection_warning = None
         self.skin = None
         self.armour = None
         self.vendor.native_plan = None
+        # The old overlay is gone. Special levels return before bind(), so
+        # retaining its Shrink Ray plan would validate stale code and reload
+        # the new level indefinitely. Do not restore into the new overlay.
+        if self.shrink_ray is not None:
+            self.shrink_ray.plan = None
+            self.shrink_ray.planet = None
         self.balance = None
         self.balance_callback = None
         self._installed_balance_option = self.patch_options.balance_patch
-        if target not in PLANET_ADDRESSES and not (target == 15 and self.patch_options.balance_patch):
+        self._installed_multiplayer_skins_option = self.patch_options.multiplayer_skins
+        self._installed_skins_option = self.patch_options.skins
+        if target not in PLANET_ADDRESSES and target != 24 and not (target == 15 and self.patch_options.balance_patch):
             if target == 15:
                 self.module = target
                 self._attach_reload_requested = False
@@ -118,6 +153,21 @@ class NativeRuntime:
         # Include relocated switch tables too (Dayni Moon's ship-menu table
         # lies beyond the old 0x240000-byte executable-only window).
         code = b"".join(p.read_bytes(base + offset, 0x10000) for offset in range(0, 0x280000, 0x10000))
+        if target == 24:
+            address_maps.bind_treehouse(base, code)
+            if options.ship_menu:
+                self.plans.append(self._prepare_ship_menu(base, code))
+            name = Rac5ShrinkRayGrindrail.HIG_TREEHOUSE_GRINDRAIL
+            if self.allowed_locations is None or name in self.allowed_locations:
+                self.treehouse_grindrail = treehouse_grindrail.prepare(
+                    p, code_start=base, code=code, checked=name in self.checked,
+                )
+                self.plans.append(self.treehouse_grindrail)
+            for plan in self.plans:
+                plan.install()
+            self.module = target
+            self._attach_reload_requested = False
+            return
         if options.balance_patch:
             self.balance = balance_patch.prepare(p, planet=target, code_start=base, code=code)
         if target not in PLANET_ADDRESSES:
@@ -157,12 +207,12 @@ class NativeRuntime:
         )
         base_locations = {
             WEAPON_VENDOR_IDS[name]: loc
-            for name, loc in (WEAPON_INTERNAL_TO_LOCATION | GADGET_INTERNAL_TO_LOCATION).items()
+            for name, loc in (WEAPON_TO_LOCATION | GADGET_TO_LOCATION).items()
             if self.allowed_locations is None or loc in self.allowed_locations
         }
         titans = {
             WEAPON_VENDOR_IDS[name]: loc
-            for name, loc in TITAN_INTERNAL_TO_LOCATION.items()
+            for name, loc in TITAN_TO_LOCATION.items()
             if self.allowed_locations is None or loc in self.allowed_locations
         }
         plan = (
@@ -252,7 +302,7 @@ class NativeRuntime:
                 self.armour,
                 *skin_plans,
                 self.balance,
-                ship_menu.prepare(p, code_start=base, code=code) if options.ship_menu else None,
+                self._prepare_ship_menu(base, code) if options.ship_menu else None,
                 plan,
                 *hud_plans,
                 *planet_plans,
@@ -282,7 +332,7 @@ class NativeRuntime:
     def _eligible_titans(self):
         if not self.vendor.planet.is_ready or self.vendor.planet.planet_id != self.module:
             return set()
-        return {WEAPON_VENDOR_IDS[name] for name in TITAN_INTERNAL_TO_LOCATION if self.vendor._is_titan_pending(name)}
+        return {WEAPON_VENDOR_IDS[name] for name in TITAN_TO_LOCATION if self.vendor._is_titan_pending(name)}
 
     def notify(self, text):
         self.notifications.append(text)
@@ -293,6 +343,10 @@ class NativeRuntime:
             self.checked.add(name)
 
     def _poll(self):
+        if self.treehouse_grindrail is not None:
+            self.treehouse_grindrail._validate(replacement=True)
+            if self.pine.read_int8(self.treehouse_grindrail.journals[0][0]) == 2:
+                self._report(Rac5ShrinkRayGrindrail.HIG_TREEHOUSE_GRINDRAIL)
         if (self.balance_callback is not None and self.balance_callback.needs_doors
                 and self.vendor.planet.is_ready):
             balance_patch.bind_doors(self.balance_callback)
@@ -390,8 +444,13 @@ class NativeRuntime:
         target = p.read_int32(address_maps.CURRENT_PLANET_ADDRESS)
         if self._installed_balance_option != self.patch_options.balance_patch:
             self.module = None
+        # Only planets with a skin patch need reloading to add or drop the skin or multiplayer loader.
+        if ((self._installed_skins_option != self.patch_options.skins
+             or self._installed_multiplayer_skins_option != self.patch_options.multiplayer_skins)
+                and target in PLANET_ADDRESSES):
+            self.module = None
         if self.module == target and (
-            self.vendor.native_plan is not None or not self.patch_options.vendor or target == 15
+            self.vendor.native_plan is not None or not self.patch_options.vendor or target in (15, 24)
         ):
             try:
                 if self.vendor.native_plan is not None:
@@ -406,11 +465,13 @@ class NativeRuntime:
                 self._poll()
                 return False
         balance_flying_level = target == 15 and (self.patch_options.balance_patch or self.balance is not None)
-        if (target in PLANET_ADDRESSES or balance_flying_level) and self.module != target and not self._attach_reload_requested:
+        if (target in PLANET_ADDRESSES or target == 24 or balance_flying_level) and self.module != target and not self._attach_reload_requested:
             if p.read_int32(address_maps.NEW_PLANET_START_LOAD_ADDR) == 0xFFFFFFFF:
                 self._attach_reload_requested = True
                 self.vendor.planet.is_ready = False
                 p.write_int32(address_maps.NEW_PLANET_START_LOAD_ADDR, target)
                 self.log("[RAC] Reloading this planet once to install native checks before object initialization.")
                 return True
-        return False
+        # The game can remain in state 6 for several polls after a reload is
+        # requested. Do not run Core against the previous overlay in that gap.
+        return self._attach_reload_requested

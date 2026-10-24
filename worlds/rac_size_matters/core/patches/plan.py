@@ -1,6 +1,5 @@
 """Checked writes shared by the native patch experiments."""
 
-from .asm import Patch as Patch
 
 
 def supported_game_id(pine):

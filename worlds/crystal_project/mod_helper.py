@@ -21,7 +21,7 @@ import json
 if TYPE_CHECKING:
     from . import CrystalProjectWorld, home_point_location_index_offset
 
-MAX_SUPPORTED_EDITOR_VERSION: int = 32
+MAX_SUPPORTED_EDITOR_VERSION: int = 34
 
 NPC_ENTITY_TYPE: int = 0 #Could be a boss or an npc check or a store or not a check at all
 SPARK_ENTITY_TYPE: int = 2 #Could be a boss or not a boss

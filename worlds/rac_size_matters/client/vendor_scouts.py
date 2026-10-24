@@ -2,7 +2,7 @@
 from dataclasses import dataclass
 
 from ..core.vendor import WEAPON_VENDOR_IDS
-from ..locations import GADGET_INTERNAL_TO_LOCATION, WEAPON_INTERNAL_TO_LOCATION, TITAN_INTERNAL_TO_LOCATION, MOD_INTERNAL_TO_LOCATION
+from ..locations import GADGET_TO_LOCATION, MOD_TO_LOCATION, TITAN_TO_LOCATION, WEAPON_TO_LOCATION
 
 
 @dataclass(frozen=True)
@@ -31,12 +31,12 @@ class VendorScouts:
     def __init__(self, location_ids):
         self.location_ids = dict(location_ids)
         self.locations = {}
-        for kind, mapping in ((0, WEAPON_INTERNAL_TO_LOCATION | GADGET_INTERNAL_TO_LOCATION),
-                              (2, TITAN_INTERNAL_TO_LOCATION)):
+        for kind, mapping in ((0, WEAPON_TO_LOCATION | GADGET_TO_LOCATION),
+                              (2, TITAN_TO_LOCATION)):
             self.locations.update({(kind, WEAPON_VENDOR_IDS[key]): location_ids[name]
                                    for key, name in mapping.items() if name in location_ids})
         self.allowed = set(self.locations.values()) | {
-            location_ids[name] for name in MOD_INTERNAL_TO_LOCATION.values() if name in location_ids}
+            location_ids[name] for name in MOD_TO_LOCATION.values() if name in location_ids}
         self.rewards = {}
 
     def request(self, server_locations):

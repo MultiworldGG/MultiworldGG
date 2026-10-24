@@ -1,33 +1,34 @@
-from typing import TYPE_CHECKING
+from rule_builder.options import OptionFilter
+from rule_builder.rules import Has, Rule
 
-from rule_builder.rules import Has, HasAll, And
+from ..constants import Rac5CutsceneLocations, Rac5EventInfobots, Rac5Infobots, Rac5Planets
+from ..locations import ALL_LOCATIONS, MENU_REGION
+from ..options import EnableHIGTreehouse
 
-from ..constants import Rac5Gadgets, Rac5Infobots
-from ._helpers import HasClankPack, HasProjectileWeapon
+# (region, rule) of the event location granting each event-only infobot. Each region must only be
+# entered from Menu, so vendor_rules.py can inline the region's entrance rule plus this rule wherever
+# the event item is required.
+EVENT_INFOBOT_RULES: dict[str, tuple[str, Rule]] = {
+    Rac5EventInfobots.DREAMTIME: (MENU_REGION, Has(Rac5Infobots.OUTPOST_OMEGA)),
+    Rac5EventInfobots.OUTPOST_OMEGA_1: (MENU_REGION, Has(Rac5Infobots.OUTPOST_OMEGA)),
+    # Beating Luna on Dayni Moon is what opens Inside Clank.
+    Rac5EventInfobots.INSIDE_CLANK: (Rac5Planets.DAYNI_MOON, ALL_LOCATIONS[Rac5CutsceneLocations.DAYNI_MOON_LUNA].rule),
+}
 
-if TYPE_CHECKING:
-    from ..world import RACSizeMatterWorld
-
-
-def set_entrance_rules(world: "RACSizeMatterWorld") -> None:
-    player = world.player
-    mw = world.multiworld
-    world.set_rule(mw.get_entrance("To Pokitaru", player), Has(Rac5Infobots.POKITARU))
-    world.set_rule(mw.get_entrance("To Ryllus", player), Has(Rac5Infobots.RYLLUS))
-    world.set_rule(mw.get_entrance("To Kalidon", player), Has(Rac5Infobots.KALIDON))
-    world.set_rule(mw.get_entrance("To Metalis", player), Has(Rac5Infobots.METALIS))
-    world.set_rule(
-        mw.get_entrance("To Dreamtime", player),
-        Has(Rac5Infobots.OUTPOST_OMEGA),
-    )
-    world.set_rule(mw.get_entrance("To Outpost Omega", player), Has(Rac5Infobots.OUTPOST_OMEGA))
-    world.set_rule(mw.get_entrance("To Challax", player), HasAll(Rac5Infobots.CHALLAX))
-    world.set_rule(mw.get_entrance("To Dayni Moon", player), Has(Rac5Infobots.DAYNI_MOON))
-    world.set_rule(
-        mw.get_entrance("To Inside Clank", player),
-        And(HasAll(Rac5Infobots.DAYNI_MOON, Rac5Gadgets.SPROUT_O_MATIC),
-            HasProjectileWeapon(),
-            HasClankPack(world),
-        )
-    )
-    world.set_rule(mw.get_entrance("To Quodrona", player), Has(Rac5Infobots.QUODRONA))
+# Access rule for each Menu -> planet entrance, keyed by planet region name.
+ENTRANCE_RULES: dict[str, Rule] = {
+    Rac5Planets.POKITARU: Has(Rac5Infobots.POKITARU),
+    Rac5Planets.RYLLUS: Has(Rac5Infobots.RYLLUS),
+    Rac5Planets.KALIDON: Has(Rac5Infobots.KALIDON),
+    Rac5Planets.METALIS: Has(Rac5Infobots.METALIS),
+    Rac5Planets.DREAMTIME: Has(Rac5EventInfobots.DREAMTIME),
+    Rac5Planets.OUTPOST_OMEGA: Has(Rac5EventInfobots.OUTPOST_OMEGA_1),
+    Rac5Planets.CHALLAX: Has(Rac5Infobots.CHALLAX),
+    Rac5Planets.DAYNI_MOON: Has(Rac5Infobots.DAYNI_MOON),
+    Rac5Planets.INSIDE_CLANK: Has(Rac5EventInfobots.INSIDE_CLANK),
+    Rac5Planets.QUODRONA: Has(Rac5Infobots.QUODRONA),
+    # Without its checks the Treehouse stays open, as the ship menu shows it unconditionally then.
+    Rac5Planets.HIG_TREEHOUSE: Has(
+        Rac5Infobots.HIG_TREEHOUSE, options=[OptionFilter(EnableHIGTreehouse, 1)], filtered_resolution=True
+    ),
+}

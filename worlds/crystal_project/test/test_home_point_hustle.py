@@ -124,6 +124,11 @@ class TestHomePointHustle(CrystalProjectTestBase):
             entrances_not_expected_list = pristine_entrances_not_expected_list.copy()
 
             self.collect(self.get_item_by_name(key))
+
+            if home_point_name_to_ap_region_dict[key] == HOMEPOINT_ANCIENT_LABYRINTH_CORE_AP_REGION:
+                # We add this so that the test for labrynth core region doesn't fail because it requires a caster
+                self.collect((self.get_items_by_name(SHAMAN_JOB)))
+
             expected_entrances_list.append(home_point_name_to_ap_region_dict[key])
             entrances_not_expected_list.remove(home_point_name_to_ap_region_dict[key])
 

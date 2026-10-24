@@ -1,9 +1,7 @@
-from __future__ import annotations
-
-from ...constants import Rac5WeaponKeys, Rac5WeaponLevels
+from ...constants import Rac5WeaponLevels, Rac5Weapons
 
 WEAPON_LEVEL_NAMES: dict[str, dict[int, str]] = {
-    Rac5WeaponKeys.LACERATOR: {
+    Rac5Weapons.LACERATOR: {
         2: Rac5WeaponLevels.LACERATOR_LEVEL_2,
         3: Rac5WeaponLevels.LACERATOR_LEVEL_3,
         4: Rac5WeaponLevels.LACERATOR_LEVEL_4,
@@ -12,7 +10,7 @@ WEAPON_LEVEL_NAMES: dict[str, dict[int, str]] = {
         7: Rac5WeaponLevels.LACERATOR_LEVEL_7,
         8: Rac5WeaponLevels.LACERATOR_LEVEL_8,
     },
-    Rac5WeaponKeys.CONCUSSION_GUN: {
+    Rac5Weapons.CONCUSSION_GUN: {
         2: Rac5WeaponLevels.CONCUSSION_GUN_LEVEL_2,
         3: Rac5WeaponLevels.CONCUSSION_GUN_LEVEL_3,
         4: Rac5WeaponLevels.CONCUSSION_GUN_LEVEL_4,
@@ -21,7 +19,7 @@ WEAPON_LEVEL_NAMES: dict[str, dict[int, str]] = {
         7: Rac5WeaponLevels.CONCUSSION_GUN_LEVEL_7,
         8: Rac5WeaponLevels.CONCUSSION_GUN_LEVEL_8,
     },
-    Rac5WeaponKeys.ACID_BOMB_GLOVE: {
+    Rac5Weapons.ACID_BOMB_GLOVE: {
         2: Rac5WeaponLevels.ACID_BOMB_GLOVE_LEVEL_2,
         3: Rac5WeaponLevels.ACID_BOMB_GLOVE_LEVEL_3,
         4: Rac5WeaponLevels.ACID_BOMB_GLOVE_LEVEL_4,
@@ -30,7 +28,7 @@ WEAPON_LEVEL_NAMES: dict[str, dict[int, str]] = {
         7: Rac5WeaponLevels.ACID_BOMB_GLOVE_LEVEL_7,
         8: Rac5WeaponLevels.ACID_BOMB_GLOVE_LEVEL_8,
     },
-    Rac5WeaponKeys.AGENTS_OF_DOOM: {
+    Rac5Weapons.AGENTS_OF_DOOM: {
         2: Rac5WeaponLevels.AGENTS_OF_DOOM_LEVEL_2,
         3: Rac5WeaponLevels.AGENTS_OF_DOOM_LEVEL_3,
         4: Rac5WeaponLevels.AGENTS_OF_DOOM_LEVEL_4,
@@ -39,7 +37,7 @@ WEAPON_LEVEL_NAMES: dict[str, dict[int, str]] = {
         7: Rac5WeaponLevels.AGENTS_OF_DOOM_LEVEL_7,
         8: Rac5WeaponLevels.AGENTS_OF_DOOM_LEVEL_8,
     },
-    Rac5WeaponKeys.BEE_MINE_GLOVE: {
+    Rac5Weapons.BEE_MINE_GLOVE: {
         2: Rac5WeaponLevels.BEE_MINE_GLOVE_LEVEL_2,
         3: Rac5WeaponLevels.BEE_MINE_GLOVE_LEVEL_3,
         4: Rac5WeaponLevels.BEE_MINE_GLOVE_LEVEL_4,
@@ -48,7 +46,7 @@ WEAPON_LEVEL_NAMES: dict[str, dict[int, str]] = {
         7: Rac5WeaponLevels.BEE_MINE_GLOVE_LEVEL_7,
         8: Rac5WeaponLevels.BEE_MINE_GLOVE_LEVEL_8,
     },
-    Rac5WeaponKeys.STATIC_BARRIER: {
+    Rac5Weapons.STATIC_BARRIER: {
         2: Rac5WeaponLevels.STATIC_BARRIER_LEVEL_2,
         3: Rac5WeaponLevels.STATIC_BARRIER_LEVEL_3,
         4: Rac5WeaponLevels.STATIC_BARRIER_LEVEL_4,
@@ -57,7 +55,7 @@ WEAPON_LEVEL_NAMES: dict[str, dict[int, str]] = {
         7: Rac5WeaponLevels.STATIC_BARRIER_LEVEL_7,
         8: Rac5WeaponLevels.STATIC_BARRIER_LEVEL_8,
     },
-    Rac5WeaponKeys.SHOCK_ROCKET: {
+    Rac5Weapons.SHOCK_ROCKET: {
         2: Rac5WeaponLevels.SHOCK_ROCKET_LEVEL_2,
         3: Rac5WeaponLevels.SHOCK_ROCKET_LEVEL_3,
         4: Rac5WeaponLevels.SHOCK_ROCKET_LEVEL_4,
@@ -66,7 +64,7 @@ WEAPON_LEVEL_NAMES: dict[str, dict[int, str]] = {
         7: Rac5WeaponLevels.SHOCK_ROCKET_LEVEL_7,
         8: Rac5WeaponLevels.SHOCK_ROCKET_LEVEL_8,
     },
-    Rac5WeaponKeys.SNIPER_MINE: {
+    Rac5Weapons.SNIPER_MINE: {
         2: Rac5WeaponLevels.SNIPER_MINE_LEVEL_2,
         3: Rac5WeaponLevels.SNIPER_MINE_LEVEL_3,
         4: Rac5WeaponLevels.SNIPER_MINE_LEVEL_4,
@@ -75,7 +73,7 @@ WEAPON_LEVEL_NAMES: dict[str, dict[int, str]] = {
         7: Rac5WeaponLevels.SNIPER_MINE_LEVEL_7,
         8: Rac5WeaponLevels.SNIPER_MINE_LEVEL_8,
     },
-    Rac5WeaponKeys.SCORCHER: {
+    Rac5Weapons.SCORCHER: {
         2: Rac5WeaponLevels.SCORCHER_LEVEL_2,
         3: Rac5WeaponLevels.SCORCHER_LEVEL_3,
         4: Rac5WeaponLevels.SCORCHER_LEVEL_4,
@@ -84,7 +82,7 @@ WEAPON_LEVEL_NAMES: dict[str, dict[int, str]] = {
         7: Rac5WeaponLevels.SCORCHER_LEVEL_7,
         8: Rac5WeaponLevels.SCORCHER_LEVEL_8,
     },
-    Rac5WeaponKeys.LASER_TRACER: {
+    Rac5Weapons.LASER_TRACER: {
         2: Rac5WeaponLevels.LASER_TRACER_LEVEL_2,
         3: Rac5WeaponLevels.LASER_TRACER_LEVEL_3,
         4: Rac5WeaponLevels.LASER_TRACER_LEVEL_4,
@@ -93,7 +91,7 @@ WEAPON_LEVEL_NAMES: dict[str, dict[int, str]] = {
         7: Rac5WeaponLevels.LASER_TRACER_LEVEL_7,
         8: Rac5WeaponLevels.LASER_TRACER_LEVEL_8,
     },
-    Rac5WeaponKeys.SUCK_CANNON: {
+    Rac5Weapons.SUCK_CANNON: {
         2: Rac5WeaponLevels.SUCK_CANNON_LEVEL_2,
         3: Rac5WeaponLevels.SUCK_CANNON_LEVEL_3,
         4: Rac5WeaponLevels.SUCK_CANNON_LEVEL_4,
@@ -102,7 +100,7 @@ WEAPON_LEVEL_NAMES: dict[str, dict[int, str]] = {
         7: Rac5WeaponLevels.SUCK_CANNON_LEVEL_7,
         8: Rac5WeaponLevels.SUCK_CANNON_LEVEL_8,
     },
-    Rac5WeaponKeys.MOOTATOR: {
+    Rac5Weapons.MOOTATOR: {
         2: Rac5WeaponLevels.MOOTATOR_LEVEL_2,
         3: Rac5WeaponLevels.MOOTATOR_LEVEL_3,
         4: Rac5WeaponLevels.MOOTATOR_LEVEL_4,
@@ -111,7 +109,7 @@ WEAPON_LEVEL_NAMES: dict[str, dict[int, str]] = {
         7: Rac5WeaponLevels.MOOTATOR_LEVEL_7,
         8: Rac5WeaponLevels.MOOTATOR_LEVEL_8,
     },
-    Rac5WeaponKeys.RYNO: {
+    Rac5Weapons.RYNO: {
         2: Rac5WeaponLevels.RYNO_LEVEL_2,
         3: Rac5WeaponLevels.RYNO_LEVEL_3,
         4: Rac5WeaponLevels.RYNO_LEVEL_4,

@@ -2,7 +2,6 @@ from dataclasses import dataclass, field
 from functools import lru_cache
 
 from ..core import address_maps
-from ..core.address_maps import SKILL_POINTS_BASE, TITANIUM_BOLT_BASE
 from .shared import LOCATIONS
 
 

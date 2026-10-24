@@ -1,11 +1,9 @@
-from __future__ import annotations
-
 import logging
 import time
 from collections.abc import Callable
 from typing import TYPE_CHECKING
 
-from .address_maps import CURRENT_PLANET_ADDRESS
+from ..constants import Rac5Gadgets
 from . import address_maps
 from .armour import ArmourInventory
 from .armour_spawn_gate import ArmourSpawnGate
@@ -59,7 +57,7 @@ class Core:
     all_missions_enabled = ClientOption()
     all_cutscenes_enabled = ClientOption()
 
-    def __init__(self, pine: Pine, log: Callable[[str], None] | None = None, *, patch_options=None) -> None:
+    def __init__(self, pine: "Pine", log: Callable[[str], None] | None = None, *, patch_options=None) -> None:
         self.pine = pine
         self._log = log or logger.info
 
@@ -120,6 +118,7 @@ class Core:
         self.death_amnesty: Callable[[], int] = lambda: 1
         self.death_link_enabled: Callable[[], bool] = lambda: False
         self.on_goal: Callable[[], None] = lambda: None
+        self._goal_reported = False
         self._death_count: int = 0
 
         self.on_planet_ready: Callable[[], None] = lambda: None
@@ -139,7 +138,7 @@ class Core:
         self._planet_settle_until: float = float("inf")
         self._main_menu_state_known: bool = False
 
-    def select_game(self, game_id: str) -> bool:
+    def select_game(self, game_id: str, *, reset_connection: bool = False) -> bool:
         """Bind a detected region before ticking; retain AP state and callbacks.
 
         The caller holds the PINE lock. Old native objects keep their original
@@ -147,10 +146,13 @@ class Core:
         """
         if game_id not in address_maps.SUPPORTED_GAMES:
             raise ValueError(f"Unsupported Size Matters serial: {game_id!r}")
-        if self.native.gate.game_id == game_id and address_maps.GAME_ID == game_id:
+        if not reset_connection and self.native.gate.game_id == game_id and address_maps.GAME_ID == game_id:
             return False
         previous_native = self.native
-        previous_native.close()
+        # Teardown already attempted cleanup. Never retry stale patch restores
+        # while discarding a failed connection's memory bindings.
+        if not reset_connection:
+            previous_native.close()
         address_maps.select_game(game_id)
 
         # Recreate live planet caches, preserving the AP-owned weapon inventory
@@ -184,7 +186,7 @@ class Core:
             self.pine, self.vendor, previous_native.send_location, self._log,
             self.shrink_ray, patch_options=previous_native.patch_options,
         )
-        for name in ("vendor_scouts", "enabled", "checked", "allowed_locations",
+        for name in ("vendor_scouts", "enabled", "checked", "allowed_locations", "treehouse_unlocked",
                      "progressive_challenge_mode_enabled", "ap_connected"):
             setattr(self.native, name, getattr(previous_native, name))
         self._ap_inventory_ready = False
@@ -311,8 +313,7 @@ class Core:
         return InventorySync(self).sync_from_ap(checked_locations)
 
     def spawn_ghost_ratchet(self) -> bool:
-        """Manually triggered via /spawn_ghost. Only works on planets present
-        in GHOST_RATCHET_ADDRESSES — returns False on any other planet."""
+        """Manually triggered via /spawn_ghost; requires validated ghost addresses."""
         if self.at_main_menu:
             return False
         planet_id = self.planet.planet_id
@@ -327,6 +328,7 @@ class Core:
     def tick(self) -> None:
         """One poll cycle, called once per tick by the client's poll loop. Doesn't
         manage its own timing or swallow errors, so connection problems surface to the caller."""
+        LocationChecks(self).goal()
         service_traps(self.pine)
         if self.native.tick():
             return
@@ -399,12 +401,14 @@ class Core:
         self.quick_select.check()
 
         if self._planet_settled():
+            if self.planet.planet_id == 24:
+                self.ghost_ratchet.resolve_addresses(24)
             LocationChecks(self).world()
         self.shrink_ray.set_skip(
             self.planet.planet_id,
             self.shrink_ray_skips_enabled
             and not self.shrink_ray_locations_enabled
-            and self._ap_owned_gadgets.get("shrink_ray", False),
+            and self._ap_owned_gadgets.get(Rac5Gadgets.SHRINK_RAY, False),
         )
 
         if self.planet.planet_id is not None:

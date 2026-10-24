@@ -1,5 +1,3 @@
-from __future__ import annotations
-
 import time
 from collections.abc import Callable
 from typing import TYPE_CHECKING
@@ -17,7 +15,7 @@ _WRITE_COOLDOWN_S: float = 0.3
 
 class QuickSelectState(BaseState):
 
-    def __init__(self, pine: Pine) -> None:
+    def __init__(self, pine: "Pine") -> None:
         super().__init__()
         self.pine = pine
         self._snapshot: dict[str, int] = dict.fromkeys(QuickSelectStruct.SLOT_ORDER, 0)

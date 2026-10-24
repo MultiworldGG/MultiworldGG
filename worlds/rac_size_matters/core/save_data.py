@@ -1,5 +1,3 @@
-from __future__ import annotations
-
 from dataclasses import asdict, dataclass, field
 
 from ..data.weapons import WEAPON_MAX_LEVELS
@@ -24,7 +22,7 @@ class RAC5SaveData:
         return asdict(self)
 
     @classmethod
-    def from_dict(cls, data: dict | None) -> RAC5SaveData:
+    def from_dict(cls, data: dict | None) -> "RAC5SaveData":
         if not isinstance(data, dict):
             return cls()
         # Accept the old [level, experience] format, discarding experience.

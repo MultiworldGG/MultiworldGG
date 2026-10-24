@@ -20,6 +20,7 @@ STARTING_PLANET_CANDIDATES: tuple[str, ...] = (
     Rac5Planets.OUTPOST_OMEGA,
     Rac5Planets.CHALLAX,
     Rac5Planets.DAYNI_MOON,
+    Rac5Planets.HIG_TREEHOUSE,
 )
 
 PLANET_TO_INFOBOT: dict[str, str] = {
@@ -30,6 +31,7 @@ PLANET_TO_INFOBOT: dict[str, str] = {
     Rac5Planets.OUTPOST_OMEGA: Rac5Infobots.OUTPOST_OMEGA,
     Rac5Planets.CHALLAX:       Rac5Infobots.CHALLAX,
     Rac5Planets.DAYNI_MOON:    Rac5Infobots.DAYNI_MOON,
+    Rac5Planets.HIG_TREEHOUSE: Rac5Infobots.HIG_TREEHOUSE,
 }
 
 PLANET_TO_ID: dict[str, int] = {
@@ -40,6 +42,7 @@ PLANET_TO_ID: dict[str, int] = {
     Rac5Planets.OUTPOST_OMEGA: Planets.OUTPOST_OMEGA_2.planet_id,
     Rac5Planets.CHALLAX:       Planets.CHALLAX.planet_id,
     Rac5Planets.DAYNI_MOON:    Planets.DAYNI_MOON.planet_id,
+    Rac5Planets.HIG_TREEHOUSE: Planets.HIG_TREEHOUSE.planet_id,
 }
 
 _WEAPON_LOCATION_NAMES = frozenset(WEAPON_VENDOR_LOCATIONS) | frozenset(WEAPON_MOD_VENDOR_LOCATIONS)
@@ -65,9 +68,13 @@ def _planet_location_weight(world: "RACSizeMatterWorld", planet: str) -> int:
 
 
 def choose_starting_planets(world: "RACSizeMatterWorld", weighted: bool, count: int = 2) -> list[str]:
-    """Pick `count` distinct planets from STARTING_PLANET_CANDIDATES. weighted=True
+    """Pick `count` distinct planets from STARTING_PLANET_CANDIDATES (HIG Treehouse only with
+    Enable HIG Treehouse on). weighted=True
     samples by _planet_location_weight; weighted=False samples uniformly at random."""
-    candidates = list(STARTING_PLANET_CANDIDATES)
+    candidates = [
+        planet for planet in STARTING_PLANET_CANDIDATES
+        if planet != Rac5Planets.HIG_TREEHOUSE or world.options.enable_hig_treehouse
+    ]
     count = min(count, len(candidates))
     if not weighted:
         return world.random.sample(candidates, count)

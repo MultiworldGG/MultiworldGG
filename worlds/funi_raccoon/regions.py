@@ -134,7 +134,7 @@ def create_and_connect_regions(world: FuniRaccoonWorld) -> None:
     connect("Blimbo City", "Pub")
     connect("Blimbo City", "Purgatory")
     connect("Blimbo City", "The Forklift Problem")
-    connect("Blimbo City", "BLMB Reactor Core", Has("Progressive Cooling Rod", 1))
+    connect("Blimbo City", "BLMB Reactor Core", items(act4_threshold) & Has("Progressive Cooling Rod", 1))
 
     # --- Act 4 (Act 4 items + Kei Truck) ---
     connect("BLMB Reactor Core", "Messed Up Canyon", items(act4_threshold) & Has("Progressive Cooling Rod", 1))

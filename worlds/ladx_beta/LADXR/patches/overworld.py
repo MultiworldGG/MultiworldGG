@@ -45,15 +45,16 @@ def createDungeonOnlyOverworld(rom):
     rom.patch(0x14, 0x0453, "75", "73")
 
     instrument_rooms = [0x102, 0x12A, 0x159, 0x162, 0x182, 0x1B5, 0x22C, 0x230, 0x301]
-    path = os.path.dirname(__file__)
 
     # Start with clearing all the maps, because this just generates a bunch of room in the rom.
     for n in range(0x100):
         re = RoomEditor(rom, n)
         re.entities = []
         re.objects = []
-        if os.path.exists("%s/overworld/dive/%02X.json" % (path, n)):
-            re.loadFromJson("%s/overworld/dive/%02X.json" % (path, n))
+        n_str = f'{n:02X}'
+        if n_str in ('00', '01', '06', '16', '62', '6C', '71', '72', '73', '81', '82', '83', '91', '92', '93',
+            'A1', 'A2', 'A3', 'B0', 'B1', 'B2', 'B3'):
+            re.loadFromJson(f"patches/overworld/dive/{n_str}.json")
         entrances = list(filter(lambda obj: obj.type_id in WARP_TYPE_IDS, re.objects))
         for obj in re.objects:
             if isinstance(obj, ObjectWarp) and entrances:

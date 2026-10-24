@@ -1,5 +1,3 @@
-from __future__ import annotations
-
 import ctypes
 
 from ..address_maps import Address

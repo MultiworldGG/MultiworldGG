@@ -1,5 +1,3 @@
-from __future__ import annotations
-
 import asyncio
 import time
 
@@ -71,7 +69,7 @@ class GhostLinkMixin:
             self._log(f"[RAC] GhostLink push: planet=0x{planet_id:02X} pos={pos}")
             asyncio.create_task(self._push_ghost_link_position(planet_id, *pos))
         else:
-            self._log(f"[RAC] GhostLink push skipped: planet 0x{planet_id:02X} not in GHOST_RATCHET_ADDRESSES"
+            self._log(f"[RAC] GhostLink push skipped: no validated ghost addresses for planet 0x{planet_id:02X}"
                        if planet_id is not None else "[RAC] GhostLink push skipped: no planet_id")
 
     async def _push_ghost_link_position(self, planet_id: int, x: float, y: float, z: float) -> None:

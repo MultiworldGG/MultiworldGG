@@ -1,5 +1,3 @@
-from __future__ import annotations
-
 import ctypes
 from typing import Any
 
@@ -29,7 +27,7 @@ class MemoryStruct(ctypes.LittleEndianStructure):
         return [name for name, *_ in cls._fields_]
 
     @classmethod
-    def from_bytes(cls, raw: bytes) -> MemoryStruct:
+    def from_bytes(cls, raw: bytes) -> "MemoryStruct":
         instance = cls()
         ctypes.memmove(ctypes.addressof(instance), raw, ctypes.sizeof(cls))
         return instance

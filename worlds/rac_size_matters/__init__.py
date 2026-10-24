@@ -8,14 +8,14 @@ from worlds.LauncherComponents import (
     launch_subprocess,
 )
 
-from worlds.rac_size_matters.world import (
-    RACSizeMatterWorld,
-)
+from .world import RACSizeMatterWorld
+
+__all__ = ["RACSizeMatterWorld"]
 
 
 def run_client(_url: str | None = None):
     """Launch the R&C: Size Matters Archipelago client."""
-    from worlds.rac_size_matters.client import run_client as _run
+    from .client import run_client as _run
     launch_subprocess(_run, name="RACSmClient")
 
 

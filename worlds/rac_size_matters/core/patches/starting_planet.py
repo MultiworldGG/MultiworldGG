@@ -4,7 +4,7 @@ from .asm import Patch, jump, packed
 from .loader_gate import LoaderGate
 from .plan import Plan, supported_game_id
 
-ELIGIBLE = frozenset((1, 2, 3, 4, 7, 8, 23))
+ELIGIBLE = frozenset((1, 2, 3, 4, 7, 8, 23, 24))
 INIT = 0x2F80
 INIT_SIGNATURE = packed(0x27BDFED0, 0xFFB10108, 0xFFB30118)
 SAVE = 0x3024

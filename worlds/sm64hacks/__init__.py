@@ -19,7 +19,10 @@ logger = logging.getLogger("SM64 Romhack")
 class SM64HackSettings(settings.Group):
     class AutoUpdate(settings.Bool):
         """Automatically download updated json files from GitHub when generating SM64Hack worlds"""
+    class UTUpdate(settings.Bool):
+        """Run the auto-updater in Universal Tracker's fake generation"""
     auto_update: AutoUpdate | bool = True
+    ut_update: UTUpdate | bool = True
 
 
 
@@ -35,6 +38,8 @@ class SM64HackWorld(World):
     topology_present = True
     explicit_indirect_conditions = False #it might be possible to avoid doing this by checking the requirements but that sounds quite annoying to do and regardless this feels safer incase i fuck up.
     data: Data
+    glitches_item_name = "Glitch"
+    ut_can_gen_without_yaml = True
 
     base_id = 40693
 
@@ -91,13 +96,26 @@ class SM64HackWorld(World):
         self.stars_created = 0
         self.no_ticket_courses = set()
         super().__init__(multiworld, player)
-        self.data = Data()
+        self.data = Data(player, multiworld)
 
     @classmethod
     def stage_assert_generate(cls, multiworld): # this is supposed to be used for rom files but its the only bit of code that i could find that runs before everything and only once before generation so im using it
-        create_json_folders(get_settings()["sm64hacks_options"]["auto_update"] and not hasattr(multiworld, "generation_is_fake"))
+        create_json_folders(
+            get_settings()["sm64hacks_options"]["auto_update"] and (
+                not hasattr(multiworld, "generation_is_fake") or get_settings()["sm64hacks_options"]["ut_update"]
+            )
+        )
 
     def generate_early(self):
+        re_gen_passthrough = getattr(self.multiworld, "re_gen_passthrough", {})
+        if re_gen_passthrough and self.game in re_gen_passthrough:
+            slot_data = re_gen_passthrough[self.game]
+            slot_options = slot_data.get("options", {})
+            for key, value in slot_options.items():
+                opt = getattr(self.options, key, None)
+                if opt is not None:
+                    setattr(self.options, key, opt.from_any(value))
+
         # MWGG adjustment to handle json_file values from web and local yamls
         json_val = self.options.json_file.value
         if isinstance(json_val, int):
@@ -128,6 +146,9 @@ class SM64HackWorld(World):
                     self.options.start_inventory.value |= {self.starting_jump:1}
                 case 2:
                     self.starting_jump = self.random.choice(["Dive", "Slidekick"])
+                    self.options.start_inventory.value |= {self.starting_jump:1}
+                case 4:
+                    self.starting_jump = self.random.choice(["Dive", "Long Jump"])
                     self.options.start_inventory.value |= {self.starting_jump:1}
                 case _:
                     self.starting_jump = None
@@ -205,6 +226,8 @@ class SM64HackWorld(World):
                 self.stars_created += 1
             elif item.endswith("Ticket") or item in ("Progressive Main Course", "Progressive Bowser Course", "Next Stage", "Extra Stage"):
                 classification = ItemClassification.progression #non-progressive tickets just dont exist
+            elif item == "Glitch": #ut glitched item
+                classification = ItemClassification.progression
             else:
                 classification = ItemClassification.progression if item_is_important(item, self.data) else ItemClassification.useful
 
@@ -402,6 +425,11 @@ class SM64HackWorld(World):
             self.multiworld.itempool += [self.create_item("Power Star", False) for _ in range(stars)]
             self.multiworld.itempool += [self.create_item("Blue Star Bundle", False) for _ in range(blue_star_bundles)]
             self.multiworld.itempool += [self.create_item("Blue Star", False) for _ in range(bluestars)]
+
+        if self.options.starting_wallkick_frames.value != -1 and self.options.starting_wallkick_frames.value < 5 and num_locations != 0: #try to add up to 5 wallkick frames before anything else
+            wallkickframes = min(5 - self.options.starting_wallkick_frames.value, num_locations)
+            self.multiworld.itempool += [self.create_item("+1 Wallkick Frame", False) for _ in range(wallkickframes)]
+            num_locations -= wallkickframes
         
         if num_locations != 0:            
             self.multiworld.itempool += [self.create_item(self.get_filler_item_name(), False) for _ in range(num_locations)]
@@ -614,6 +642,23 @@ class SM64HackWorld(World):
 
         visualize_regions(self.multiworld.get_region("Menu", self.player), "sm64hacks.puml")
 
+    @staticmethod
+    def interpret_slot_data(slot_data: dict[str, Any]) -> dict[str, Any]: #ut yamlless
+        return slot_data
+
+    def explain_rule(self, target_name: str, state:CollectionState): #ut explain
+        if target_name.startswith("|@"):
+            macros = self.data.ut_locations["Other"]["Macros"]
+            if target_name[2:-1] in macros.keys():
+                return [{"type":"text", "text":f"{macros[target_name[2:-1]]}"}]
+        if self.data.get_location_data(target_name).get("Requirements"):
+            return [{"type": "text", "text": f"{self.data.get_location_data(target_name).get("Requirements")}"}]
+
+    def explain_more(self, target_name: str, state:CollectionState): #ut explain_more
+        return [{"type": "text", "text": f"{self.data.get_location_data(target_name).get("Comment")}"}]
+
+
+
     def fill_slot_data(self) -> Mapping[str, Any]:
         decadeslater = 0
         if "decadeslater" in self.data.locations["Other"]["Settings"]:
@@ -632,5 +677,7 @@ class SM64HackWorld(World):
             "version": self.data.locations["Other"]["Settings"].get("Version"),
             "tickets": self.options.level_tickets.value > 0,
             "moves": self.options.move_randomization.value == True,
-            "NoTicketCourses": self.no_ticket_courses
+            "NoTicketCourses": self.no_ticket_courses,
+            "StartingWallkickFrames": self.options.starting_wallkick_frames.value,
+            "options": self.options.as_dict("json_file", "troll_stars", "sign_randomization", "level_tickets", "move_randomization", "force_move_randomization", "logic_difficulty", "major_skips", "hack_specific_options") #yamlless UT
         }

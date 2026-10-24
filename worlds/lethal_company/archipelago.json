@@ -1,1 +1,7 @@
-{"compatible_version": 7, "version": 7, "game": "Lethal Company", "authors": ["T0r1nn"], "world_version": "0.7.13"}
+{
+    "compatible_version": 7, 
+    "version": 7, 
+    "game": "Lethal Company", 
+    "authors": ["T0r1nn, ThisGuyHere"], 
+    "world_version": "0.8.0"
+}

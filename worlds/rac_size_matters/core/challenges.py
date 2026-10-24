@@ -1,12 +1,9 @@
-from __future__ import annotations
-
-from .address_maps import save_address
-
 from typing import TYPE_CHECKING
 
 from ..constants import Rac5Planets
 from ..locations import ALL_LOCATIONS
 from ..locations.observation import LocationObservation
+from .address_maps import save_address
 from .locations.challenge_locations import (
     ALL_CLANK_ADDRESS_MAP,
     CHALLENGE_ADDRESS_MAP,
@@ -28,7 +25,7 @@ _CLANK_ADDRESSES: tuple[int, ...] = tuple(ALL_CLANK_ADDRESS_MAP)
 class ChallengeInventory:
     """Pine-backed live accessor for every clank-challenge completion byte."""
 
-    def __init__(self, pine: Pine) -> None:
+    def __init__(self, pine: "Pine") -> None:
         self.pine = pine
         self._name_to_address: dict[str, int] = {n: addr for addr, n in ALL_CLANK_ADDRESS_MAP.items()}
         self._counts: dict[str, int] = dict.fromkeys(ALL_CLANK_ADDRESS_MAP.values(), 0)
@@ -106,7 +103,7 @@ class ChallengeInventory:
             elif count >= 2:
                 self.completed.add(name)
 
-    def sync_from_ap(self, checked_locations: set[str]) -> None:
+    def sync_from_ap(self, checked_locations: "set[str]") -> None:
         self.completed.update(name for name in checked_locations if name in ALL_CLANK_ADDRESS_MAP.values())
 
     def __repr__(self) -> str:
@@ -120,7 +117,7 @@ class SkyboardInventory:
     """Pine-backed live accessor + completion tracking for every skyboard
     race's two-bit win counter, keyed by (address, mask)."""
 
-    def __init__(self, pine: Pine) -> None:
+    def __init__(self, pine: "Pine") -> None:
         self.pine = pine
         self._name_to_addr_mask: dict[str, tuple[int, int]] = {n: k for k, n in SKYBOARD_ADDRESS_MASK_MAP.items()}
         self.completed: set[str] = set()
@@ -169,7 +166,7 @@ class SkyboardInventory:
             if raw_by_address[address] & mask:
                 self.completed.add(name)
 
-    def sync_from_ap(self, checked_locations: set[str]) -> None:
+    def sync_from_ap(self, checked_locations: "set[str]") -> None:
         self.completed.update(name for name in checked_locations if name in SKYBOARD_ADDRESS_MASK_MAP.values())
 
     def __repr__(self) -> str:

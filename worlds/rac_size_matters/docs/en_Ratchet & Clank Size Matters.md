@@ -55,6 +55,8 @@ of everything specific to this game:
 
 | Option | Default | What it does |
 |---|---|---|
+| Goal | Defeat Otto | Defeat Otto, All Skill Points, All Clank Challenges, or Pick and Mix. See [What is the goal?](#what-is-the-goal). |
+| Pick and Mix Goals | none | With Goal set to Pick and Mix, every selected goal must be completed. |
 | Starting Weapons | 2 | Number of random weapons precollected at the start. |
 | Starting Gadgets | 1 | Number of random gadgets precollected at the start (1 grants the Hypershot). |
 | Clank Pack | Off | Adds one Clank Pack unlock item. Ratchet starts without Clank's backpack abilities and regains them when it arrives. This is not a progressive item. |
@@ -74,6 +76,7 @@ of everything specific to this game:
 | All Missions | On | Adds story mission completions as location checks. |
 | All Cutscenes | Off | Adds cutscene/flag-event triggers as location checks. |
 | Giant Clank | Off | On: the Giant Clank Metalis and Giant Clank Challax sequences become playable and their completion/armour/skill point checks are added. Off: entering either sequence immediately forces a load back out, as in vanilla before this option existed. |
+| Enable HIG Treehouse | Off | Adds four Treehouse Gadgetbot challenges, the grind rail when Shrink Ray Options is set to Locations, and an All Skill Points check when Skill Points is on (completes once every Easy skill point, or every Easy and Hard skill point on Hard, is done; Clank/Skyboard Challenge skill points don't count). Challenges require Clank Challenges to be on (either tier) and Gadgetbot included in Clank Challenge Groups. Disabling Gadgetbot leaves the other checks enabled. Treehouse remains available in the planet menu even with this toggle off. |
 | Clank Challenges | Item Challenges | Off: none. Item Challenges: only the armour/gadget reward per arena. All: every individual challenge completion is its own check. |
 | Clank Challenge Groups | every group on | Selects which Clank Challenge groups (Demolition Derby / Gadgetbot Toss / Gadgetbot) get location checks at all, once Clank Challenges is on. Setting a group to 0 excludes all of its locations (both tiers) from generation — the challenge itself is still fully playable in-game, it just has no AP check. |
 | Enable Clank Challenge Skill Points | Off | Adds skill points earned from Clank Challenge arenas as checks, regardless of the Clank Challenges option. |
@@ -86,7 +89,7 @@ of everything specific to this game:
 | Nanotech Level Interval | Off | Off: no Nanotech (health) level checks. All: every level is its own check, up to Nanotech Level Max. every_5 / every_10 / every_25: one check for every level that's a multiple of the interval, up to Nanotech Level Max. Levels above 20 need access to a good EXP planet. |
 | Nanotech Level Max | 75 | Highest Nanotech Level Nanotech Level Interval will create a check for — e.g. every_5 with this set to 25 checks only levels 10, 15, 20, 25. No effect while Nanotech Level Interval is Off. |
 | NG+ Items | On | Off: removes RYNO and the Chameleon/Hyperborean armour sets from generation (along with their Weapon Level and Armour Set checks, and Stalker/Ice II, which need a Chameleon or Hyperborean piece), since these are New Game Plus exclusives that would be unobtainable on a fresh playthrough. |
-| Max Challenge Mode | 0 | Enables the game's Challenge Mode (New Game Plus) tier and controls how far generation reaches into it. 0: vanilla, no Challenge Mode content. 1: adds the RYNO vendor purchase, 10 Challenge-Mode-only weapon mod purchases, and the 4 Hyperborean armour pieces. 2: everything from tier 1, plus the 4 Chameleon armour pieces. Without Progressive Challenge Mode, this is the tier the game starts in (written to memory on connect); with it, this is the highest tier the progressive items can raise you to. Everything this unlocks is still gated by NG+ Items — with that off, this option alone has no effect. |
+| Max Challenge Mode | 0 | Enables the game's Challenge Mode (New Game Plus) tier and controls how far generation reaches into it. 0: vanilla, no Challenge Mode content. 1: adds the RYNO vendor purchase, 10 Challenge-Mode-only weapon mod purchases, and the 4 Hyperborean armour pickup locations. 2: everything from tier 1, plus the 4 Chameleon armour pickup locations (the armour items themselves are controlled by NG+ Items alone). Without Progressive Challenge Mode, this is the tier the game starts in (written to memory on connect); with it, this is the highest tier the progressive items can raise you to. Everything this unlocks is still gated by NG+ Items — with that off, this option alone has no effect. |
 | Progressive Challenge Mode | Off | On: adds one Progressive Challenge Mode item per tier (Max Challenge Mode 2 adds 2 copies). Tier 1 content requires 1 copy received, tier 2 content requires 2, and the in-game Challenge Mode tier rises as copies arrive instead of being fixed at connect. Off: Challenge Mode content is reachable as soon as its planet is. |
 | Death Amnesty | 0 | Number of deaths allowed before items are removed from your inventory on death. Higher is more forgiving. |
 | Experimental Skins | Off | Patches the thirteen red multiplayer skins into the single-player skin menu. Experimental. When off, the multiplayer skins aren't patched in and Starting Skin can't be set to one of them. |
@@ -121,12 +124,19 @@ Cross-player options, each with a matching client-side toggle you also need to t
 | Ghost Link | Off | Renders another linked, connected player as a static ghost clone whenever you're both on the same planet. Only one ghost can ever be shown at once — if multiple linked players share your planet, the lowest slot number wins. Has an additional host.yaml-level kill switch (applied at generation time, not by the running server — see [dynamicpine's docs](../../dynamicpine/docs/adding_to_apworld.md) for the distinction if you host on a different machine than you generate on). |
 | Ghost Link Update Interval | 5s | How often (in seconds) your position is broadcast to other Ghost Link players. 0 broadcasts as fast as possible (every poll tick, no throttling). |
 
-Plus the standard MultiworldGG options (Death Link, Progression Balancing, Accessibility, Start Inventory From Pool,
+Plus the standard Archipelago options (Death Link, Progression Balancing, Accessibility, Start Inventory From Pool,
 etc.) shared across every game.
 
 ## What is the goal?
 
-Defeat **Otto Destruct** on Quodrona. The client detects the end-boss cutscene completing and automatically sends goal completion to the MultiworldGG server.
+Set by the **Goal** option (default: Defeat Otto):
+
+- **Defeat Otto:** Defeat **Otto Destruct** on Quodrona.
+- **All Skill Points:** Complete every skill point of your Skill Points tier: every Easy skill point on Easy, or every Easy and Hard skill point on Hard. Clank/Skyboard Challenge skill points don't count. Requires Skill Points to be on.
+- **All Clank Challenges:** Complete every Clank Challenge check in your seed (the reward challenges on Item Challenges, every challenge on All, filtered by Clank Challenge Groups and including HIG Treehouse when enabled). Requires Clank Challenges to be on.
+- **Pick and Mix:** Complete every goal you select in **Pick and Mix Goals** (`defeat_otto`, `all_skill_points`, `all_clank_challenges`). At least one must be selected.
+
+The client detects completion and automatically sends goal completion to the MultiworldGG server.
 
 ## What items can be in another player's world?
 
@@ -152,4 +162,4 @@ With Challenge Mode 1+, a Titan-eligible weapon's kiosk also lists its Titan var
 
 ## Setup guide
 
-See [the Setup Guide](setup_en.md) for full instructions on connecting PCSX2 to MultiworldGG.
+See [the Setup Guide](/tutorial/Ratchet%20&%20Clank:%20Size%20Matters/setup_en) for full instructions on connecting PCSX2 to MultiworldGG.

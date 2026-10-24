@@ -1,11 +1,8 @@
-from __future__ import annotations
-
 from typing import TYPE_CHECKING
 
 from ..locations import ALL_LOCATIONS
 from ..locations.observation import LocationObservation
 from . import address_maps
-from .address_maps import TITANIUM_BOLT_BASE
 from .locations.titanium_bolt_locations import BOLT_BY_PLANET_AND_DELTA, TITANIUM_BOLTS, TitaniumBolt
 
 if TYPE_CHECKING:
@@ -71,7 +68,7 @@ class TitaniumBoltInventory:
     pickup = TitaniumBoltSlot()
     total = TitaniumBoltTotalSlot()
 
-    def __init__(self, pine: Pine) -> None:
+    def __init__(self, pine: "Pine") -> None:
         self.pine = pine
         self.completed: set[str] = set()
         self._last: int = 0
@@ -109,7 +106,7 @@ class TitaniumBoltInventory:
             self.pickup = new_val
         self._last = new_val
 
-    def sync_from_ap(self, checked_location_names: set[str]) -> None:
+    def sync_from_ap(self, checked_location_names: "set[str]") -> None:
         mask = 0
         for name, bolt in TITANIUM_BOLTS.items():
             if name in checked_location_names:

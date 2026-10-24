@@ -497,6 +497,13 @@ class TrapLikelihood(Range):
     range_end = 100
     default = 0
 
+class DeathLink(Toggle):
+    """
+    When enabled, links death between this game and other games that also have death link enabled.
+    When receiving a death link if the player is in combat they will die, if the player is not in combat they will be teleported to their start location.
+    """
+    display_name = "Fill Full Map"
+
 class ItemInfoMode(Choice):
     """
     For Full, all treasure and store icons on the map will display if they are progression, useful, or filler items.
@@ -595,6 +602,7 @@ class CrystalProjectOptions(PerGameCommonOptions):
     include_summon_abilities: IncludeSummonAbilities
     include_scholar_abilities: IncludeScholarAbilities
     trap_likelihood: TrapLikelihood
+    death_link: DeathLink
     item_info_mode: ItemInfoMode
     earned_item_info_percent: EarnedItemInfoPercent
     randomize_music: RandomizeMusic

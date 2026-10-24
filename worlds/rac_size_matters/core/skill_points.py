@@ -1,5 +1,3 @@
-from __future__ import annotations
-
 from typing import TYPE_CHECKING
 
 from ..locations import ALL_LOCATIONS
@@ -59,7 +57,7 @@ class SkillPointInventory:
 
     bits = SkillPointSlot()
 
-    def __init__(self, pine: Pine) -> None:
+    def __init__(self, pine: "Pine") -> None:
         self.pine = pine
         self.completed: set[str] = set()
         self._last: int = 0
@@ -97,7 +95,7 @@ class SkillPointInventory:
             self.bits = new_val
         self._last = new_val
 
-    def sync_from_ap(self, checked_locations: set[str]) -> None:
+    def sync_from_ap(self, checked_locations: "set[str]") -> None:
         mask = 0
         for name, sp in SKILL_POINTS.items():
             if name in checked_locations:

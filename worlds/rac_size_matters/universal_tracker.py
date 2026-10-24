@@ -1,11 +1,11 @@
-from .constants.options import Rac5Options
-
 """Universal Tracker integration for Ratchet & Clank: Size Matters"""
 
 from typing import TYPE_CHECKING, Any
 
+from .constants.options import Rac5Options
+
 if TYPE_CHECKING:
-    from worlds.rac_size_matters.world import RACSizeMatterWorld
+    from .world import RACSizeMatterWorld
 
 PLANET_TO_MAP_INDEX: dict[str, int] = {
     "Pokitaru": 1,
@@ -33,6 +33,7 @@ PLANET_ID_TO_REGION: dict[int, str] = {
     0x0A: "Quodrona",
     0x16: "Kalidon",
     0x17: "Outpost Omega",
+    0x18: "HIG Treehouse",
 }
 
 
@@ -42,21 +43,24 @@ def setup_options_from_slot_data(world: "RACSizeMatterWorld") -> None:
         if world.game in world.multiworld.re_gen_passthrough:
             world.using_ut = True
             world.passthrough = world.multiworld.re_gen_passthrough[world.game]
+            world.options.goal.value = world.passthrough.get(Rac5Options.GOAL, 0)
+            world.options.pick_and_mix_goals.value = set(world.passthrough.get(Rac5Options.PICK_AND_MIX_GOALS, ()))
             world.options.all_missions.value = world.passthrough.get(Rac5Options.ALL_MISSIONS, True)
             world.options.clank_pack.value = world.passthrough.get(Rac5Options.CLANK_PACK, False)
             world.options.all_cutscenes.value = world.passthrough.get(Rac5Options.ALL_CUTSCENES, False)
             world.options.giant_clank.value = world.passthrough.get(Rac5Options.GIANT_CLANK, False)
+            world.options.enable_hig_treehouse.value = world.passthrough.get(Rac5Options.ENABLE_HIG_TREEHOUSE, False)
             world.options.progressive_weapons.value = world.passthrough[Rac5Options.PROGRESSIVE_WEAPONS]
             world.options.progressive_mods.value = world.passthrough.get(Rac5Options.PROGRESSIVE_MODS, False)
             world.options.progressive_armour.value = world.passthrough[Rac5Options.PROGRESSIVE_ARMOUR]
-            world.options.enabled_weapons.value = world.passthrough.get(
-                Rac5Options.ENABLED_WEAPONS, dict(world.options.enabled_weapons.default)
-            )
+            world.options.enabled_weapons.value = set(world.passthrough.get(
+                Rac5Options.ENABLED_WEAPONS, world.options.enabled_weapons.default
+            ))
             world.options.death_link.value = world.passthrough[Rac5Options.DEATH_LINK]
             world.options.clank_challenges.value = world.passthrough.get(Rac5Options.CLANK_CHALLENGES, 0)
-            world.options.clank_challenge_groups.value = world.passthrough.get(
-                Rac5Options.CLANK_CHALLENGE_GROUPS, dict(world.options.clank_challenge_groups.default)
-            )
+            world.options.clank_challenge_groups.value = set(world.passthrough.get(
+                Rac5Options.CLANK_CHALLENGE_GROUPS, world.options.clank_challenge_groups.default
+            ))
             world.options.skyboard_challenges.value = world.passthrough.get(Rac5Options.SKYBOARD_CHALLENGES, 0)
             world.options.shrink_ray_options.value = world.passthrough.get(Rac5Options.SHRINK_RAY_OPTIONS, 1)
             world.options.skill_points.value = world.passthrough.get(Rac5Options.SKILL_POINTS, True)

@@ -1,21 +1,12 @@
-from __future__ import annotations
-
 import asyncio
 import logging
 import time
 from typing import TYPE_CHECKING
 
 from ..constants import Rac5Traps
-from ..data.traps import TRAP_DURATIONS as TRAP_DURATIONS
+from ..data.traps import TRAP_DURATIONS
 from . import address_maps
 from .no_clank import NoClank
-from .address_maps import (
-    BRIGHTNESS_ADDRESS,
-    CHEATS,
-    CURRENT_PLANET_ADDRESS,
-    DREAMTIME_EFFECT,
-    NEW_PLANET_START_LOAD_ADDR,
-)
 
 if TYPE_CHECKING:
     from ..pypine import Pine
@@ -51,14 +42,12 @@ def set_trap_durations(overrides: dict[str, float]) -> None:
 
 _active_deadlines: dict[str, float] = {}
 _revert_handles: dict[str, asyncio.TimerHandle] = {}
-# Expired traps whose game-memory effect hasn't been confirmed cleared yet. Retried every
-# tick so a revert that lands during a PINE hiccup or level load can't leave a trap stuck.
 _needs_clear: set[str] = set()
 _no_clank_effects: dict[object, NoClank] = {}
 _missing_clank_pack: set[object] = set()
 
 
-def set_clank_pack_ownership(pine: Pine, *, enabled: bool, owned: bool) -> None:
+def set_clank_pack_ownership(pine: "Pine", *, enabled: bool, owned: bool) -> None:
     """Combine permanent AP ownership with the temporary trap in one controller."""
     if enabled and not owned:
         _missing_clank_pack.add(pine)
@@ -77,7 +66,7 @@ def _expire(trap_name: str) -> None:
         _needs_clear.add(trap_name)
 
 
-def _write_effect(pine: Pine, trap_name: str, on: bool) -> None:
+def _write_effect(pine: "Pine", trap_name: str, on: bool) -> None:
     """Write a memory-flag trap's effect, only touching memory when it differs."""
     field = _DIRECT_ADDRESSES.get(trap_name)
     if field is not None:
@@ -93,7 +82,7 @@ def _write_effect(pine: Pine, trap_name: str, on: bool) -> None:
         pine.write_int8(address_maps.CHEATS, wanted)
 
 
-def service_traps(pine: Pine) -> None:
+def service_traps(pine: "Pine") -> None:
     """Called every tick: expire overdue traps and re-assert every trap's effect, so
     effects the game resets (level loads, save loads) are re-applied while active and
     reverts that failed to write are retried until they stick. Write errors propagate."""
@@ -118,7 +107,7 @@ def service_traps(pine: Pine) -> None:
         _needs_clear.discard(trap_name)
 
 
-def close_no_clank_trap(pine: Pine) -> None:
+def close_no_clank_trap(pine: "Pine") -> None:
     """Restore backpack objects before closing the emulator connection."""
     _missing_clank_pack.discard(pine)
     if pine not in _no_clank_effects:
@@ -127,7 +116,7 @@ def close_no_clank_trap(pine: Pine) -> None:
     service_traps(pine)
 
 
-def activate_trap(pine: Pine, trap_name: str) -> None:
+def activate_trap(pine: "Pine", trap_name: str) -> None:
     """Activate a trap by name and schedule it to automatically revert. Re-activating
     a still-active trap extends (stacks) its deadline rather than reverting at the first."""
     if trap_name == Rac5Traps.TRAP_RESET_LEVEL:
@@ -167,7 +156,7 @@ def activate_trap(pine: Pine, trap_name: str) -> None:
     service_traps(pine)
 
 
-def reconcile_traps(pine: Pine) -> None:
+def reconcile_traps(pine: "Pine") -> None:
     """Clear any trap effect in game memory with no bookkeeping in _active_deadlines,
     called on PINE (re)connect and on each save load — catches a bit left stuck by a client
     restart, a dropped revert, or a save written while a trap was active."""

@@ -7,6 +7,11 @@ from dataclasses import dataclass
 class Rac5ClankChallenges:
     """String constants for Clank Challenge locations"""
 
+    HIG_TREEHOUSE_1 = "HIG Treehouse: Clank Challenge: ^_________^"
+    HIG_TREEHOUSE_2 = "HIG Treehouse: Clank Challenge: (>'.')>"
+    HIG_TREEHOUSE_3 = 'HIG Treehouse: Clank Challenge: ("\\(.:...:.)/")'
+    HIG_TREEHOUSE_4 = r"HIG Treehouse: Clank Challenge: \m/>_<\m/"
+
     METALIS_BRAIN = "Metalis: Clank Challenge: Brain Trip"
     METALIS_GAP = "Metalis: Clank Challenge: Bridge The Gap"
     METALIS_BUZZSAW = "Metalis: Clank Challenge: Buzzsaw Blitz"

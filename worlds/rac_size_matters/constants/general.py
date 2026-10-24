@@ -7,6 +7,8 @@ from dataclasses import dataclass
 class Rac5Locations:
     """String constants for locations"""
 
+    HIG_TREEHOUSE_ALL_SKILL_POINTS = "HIG Treehouse: All Skill Points"
+
     POKITARU_FIGHT = "Pokitaru: Fight some robots (Complete Luna's photoshoot)"
     POKITARU_CHESTPLATE = "Pokitaru: Wildfire Chestplate on bridge"
     POKITARU_GLOVES = "Pokitaru: Wildfire Gloves in the skuttle crab cave"

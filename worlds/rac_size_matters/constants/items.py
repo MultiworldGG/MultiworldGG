@@ -70,6 +70,16 @@ class Rac5Infobots:
     CHALLAX = "Infobot: Challax"
     DAYNI_MOON = "Infobot: Dayni Moon"
     QUODRONA = "Infobot: Quodrona"
+    HIG_TREEHOUSE = "Infobot: HIG Treehouse"
+
+
+@dataclass(frozen=True)
+class Rac5EventInfobots:
+    """String constants for infobots that only exist as logic events, never as real items"""
+
+    DREAMTIME = "Infobot: Dreamtime"
+    OUTPOST_OMEGA_1 = "Infobot: Outpost Omega 1"
+    INSIDE_CLANK = "Infobot: Inside Clank"
 
 
 class Rac5Filler:

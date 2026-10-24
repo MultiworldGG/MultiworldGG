@@ -14,7 +14,7 @@ class SM64HackLocation(Location):
         self.event = code is None
 
 @lru_cache(maxsize=None)
-def location_names(data = Data()) -> List[str]:
+def location_names(data = Data(-1, -1)) -> List[str]:
     output: List[str] = []
     for course, info in data.locations.items():
         

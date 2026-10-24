@@ -13,11 +13,10 @@ if TYPE_CHECKING:
 def has_location_access_rule(multiworld: MultiWorld, moon: str, player: int, item_number: int,
                              options: LCOptions) -> None:
     if item_number == 1:
-        multiworld.get_location(f"{moon} check {item_number}", player).access_rule = \
-            lambda state: ((state.has("Inventory Slot", player) or options.starting_inventory_slots.value >= 2) and
-                           (state.has("Stamina Bar", player) or options.starting_stamina_bars.value >= 1))
+        multiworld.get_location(f"{moon} Grade Location {item_number}", player).access_rule = \
+            lambda state: (state.has("Inventory Slot", player, 2) and state.has("Stamina Bar", player))
     else:
-        multiworld.get_location(f"{moon} check {item_number}", player).access_rule = \
+        multiworld.get_location(f"{moon} Grade Location {item_number}", player).access_rule = \
             lambda state: check_location(moon=moon, player=player, state=state, item_number=item_number)
 
 
@@ -29,21 +28,21 @@ def has_quota_access_rule(multiworld: MultiWorld, player: int, item_number: int,
     if item_number % checkpoint_every == 0:
 
         if item_number < num_quotas:
-            multiworld.get_location(f"Quota check {item_number}", player).access_rule = \
+            multiworld.get_location(f"Quota Location {item_number}", player).access_rule = \
                 lambda state, ci=item_number // checkpoint_every, n=item_number: check_quota(
                     player=player, state=state, item_number=n
                 ) and state.has(f"Completed quota checkpoint {ci}", player)
             return
-    multiworld.get_location(f"Quota check {item_number}", player).access_rule = \
+    multiworld.get_location(f"Quota Location {item_number}", player).access_rule = \
         lambda state, n=item_number: check_quota(player=player, state=state, item_number=n)
 
 
 def check_location(state, moon: str, player: int, item_number: int) -> None:
-    return state.can_reach(f"{moon} check {item_number - 1}", "Location", player)
+    return state.can_reach(f"{moon} Grade Location {item_number - 1}", "Location", player)
 
 
 def check_quota(state, player: int, item_number: int) -> None:
-    return state.can_reach(f"Quota check {item_number - 1}", "Location", player)
+    return state.can_reach(f"Quota Location {item_number - 1}", "Location", player)
 
 
 def set_rules(lc_world: 'LethalCompanyWorld') -> None:
@@ -51,7 +50,7 @@ def set_rules(lc_world: 'LethalCompanyWorld') -> None:
     multiworld = lc_world.multiworld
     options: LCOptions = lc_world.options
     for moon in lc_world.slot_item_data.moons:
-        for i in range(options.checks_per_moon.value):
+        for i in range(options.grade_locations_per_moon.value):
             has_location_access_rule(multiworld, moon, player, i + 1, options)
     
     for i in range(options.num_quotas.value):
@@ -82,9 +81,6 @@ def set_rules(lc_world: 'LethalCompanyWorld') -> None:
 
             if lc_world.scrap_names[scrap_index] == "Kitchen knife" and options.exclude_killing.value == 1:
                 multiworld.get_location("Scrap - Kitchen knife", player).progress_type = LocationProgressType.EXCLUDED
-
-            if lc_world.scrap_names[scrap_index] == "Gold bar":
-                multiworld.get_location("Scrap - Gold bar", player).progress_type = LocationProgressType.EXCLUDED
 
     multiworld.completion_condition[player] = lambda state: state.has("Victory", player)
 

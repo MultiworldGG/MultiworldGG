@@ -326,7 +326,7 @@ def init_areas(world: "CrystalProjectWorld", locations: List[LocationData], opti
     fancy_add_exits(world, DELENDE_HIGH_BRIDGES_AP_REGION, [DELENDE_PLAINS_AP_REGION, GRAN_AP_REGION, BELOW_GRAN_AP_REGION, DELENDE_MESA_OVER_SPOOKY_CAVE_AP_REGION, DELENDE_PEAK_AP_REGION, HEART_TARN_AP_REGION, YAMAGAWA_MA_AP_REGION, FENCERS_KEEP_CHEST_AP_REGION, THE_PALE_GROTTO_AP_REGION, SEASIDE_CLIFFS_AP_REGION, CLIFF_OVER_SEASIDE_CAMP_AP_REGION, PROVING_MEADOWS_AP_REGION, CAPITAL_MOAT_AP_REGION, EAST_GREENSHIRE_AP_REGION, LAKE_DELENDE_AP_REGION],
                     {GRAN_AP_REGION: lambda state: logic.can_fight_gran(state),
                      BELOW_GRAN_AP_REGION: lambda _: logic.obscure_routes_on(),
-                     DELENDE_PEAK_AP_REGION: lambda state: logic.has_vertical_movement(state),
+                     DELENDE_PEAK_AP_REGION: lambda state: logic.has_vertical_movement(state) or (logic.obscure_routes_on() and logic.is_hop_to_it_at_least_fancy_footwork()),
                      HEART_TARN_AP_REGION: lambda state: logic.has_vertical_movement(state) and logic.has_glide(state),
                      FENCERS_KEEP_CHEST_AP_REGION: lambda state: logic.has_vertical_movement(state) or logic.has_glide(state),
                      CLIFF_OVER_SEASIDE_CAMP_AP_REGION: lambda _: logic.obscure_routes_on(),

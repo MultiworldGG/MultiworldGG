@@ -15,7 +15,6 @@ See docs/balance_patch.md and balance_patch_sources.json for provenance.
 
 from .balance_types import PatchGroup, RegionalOffsets, RegionalWords, f32
 
-
 POKITARU = (
     PatchGroup(
         name="Lacerator damage",

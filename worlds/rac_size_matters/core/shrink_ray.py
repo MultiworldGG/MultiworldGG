@@ -1,10 +1,10 @@
 from typing import TYPE_CHECKING
 
 from ..constants.shrink_ray import (
-    SHRINK_RAY_PUZZLE_BITS, SHRINK_RAY_LOCATION_PLANETS,
+    SHRINK_RAY_LOCATION_PLANETS,
+    SHRINK_RAY_PUZZLE_BITS,
 )
 from . import address_maps
-from .address_maps import SHRINK_RAY_GATE_ADDRESS
 from .patches import shrink_ray as native
 
 if TYPE_CHECKING:

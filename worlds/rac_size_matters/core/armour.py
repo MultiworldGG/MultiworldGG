@@ -1,5 +1,3 @@
-from __future__ import annotations
-
 from dataclasses import dataclass, replace
 from enum import IntEnum, IntFlag
 
@@ -11,7 +9,6 @@ from ..locations.model import LocationView
 from ..locations.shared import LOCATIONS
 from ..pypine import Pine
 from . import address_maps
-from .address_maps import ARMOUR_BASE
 from .states.base_state import BaseState
 
 _BOOTS_MASK = 0xF0
@@ -41,7 +38,7 @@ class ArmourPiece(IntFlag):
     ALL = 0x17
 
     @classmethod
-    def from_raw(cls, value: int) -> ArmourPiece:
+    def from_raw(cls, value: int) -> "ArmourPiece":
         """Normalize raw value of armour piece because boots are represented by any value with bit 4 set"""
         normalized = value & 0x0F
         if value & _BOOTS_MASK:
@@ -69,7 +66,7 @@ class ArmourSnapshot:
     chameleon: ArmourPiece | None = None
 
     @classmethod
-    def read_bytes(cls, raw: bytes) -> ArmourSnapshot:
+    def read_bytes(cls, raw: bytes) -> "ArmourSnapshot":
         if len(raw) != 13:
             raise ValueError("Incomplete armour snapshot")
         slots = [ArmourSet(value) if value else None for value in raw[:6]]

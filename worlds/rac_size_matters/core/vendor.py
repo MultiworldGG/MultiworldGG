@@ -1,16 +1,16 @@
 from collections.abc import Callable
 from typing import TYPE_CHECKING
 
-from ..constants import Rac5GadgetKeys, Rac5ModVendorLocations
+from ..constants import Rac5Gadgets, Rac5ModVendorLocations, Rac5Weapons
 from ..locations import (
-    GADGET_INTERNAL_TO_LOCATION,
-    MOD_INTERNAL_TO_LOCATION,
-    TITAN_INTERNAL_TO_LOCATION,
-    WEAPON_INTERNAL_TO_LOCATION,
+    GADGET_TO_LOCATION,
+    MOD_TO_LOCATION,
+    TITAN_TO_LOCATION,
     WEAPON_LEVEL_LOOKUP,
+    WEAPON_TO_LOCATION,
 )
 from . import address_maps
-from .address_maps import PLANET_ADDRESSES, WEAPON_VENDOR_ITEMS, WEAPON_VENDOR_SLOTS
+from .address_maps import PLANET_ADDRESSES
 from .controller import GlobalButtonState, PauseSelectButtons
 from .menu import MenuStateValue
 from .weapons import TITAN_ELIGIBLE_WEAPONS
@@ -24,27 +24,27 @@ MAX_VENDOR_SLOTS = (address_maps.WEAPON_VENDOR_SLOTS - address_maps.WEAPON_VENDO
 
 # array slot index + 2 offset. Confirmed in-game.
 WEAPON_VENDOR_IDS: dict[str, int] = {
-    "lacerator":        0x02,  # confirmed
-    "concussion_gun":   0x03,
-    "acid_bomb_glove":  0x04,
-    "agents_of_doom":   0x05,
-    "bee_mine_glove":   0x06,
-    "static_barrier":   0x07,
-    "shock_rocket":     0x08,
-    "sniper_mine":      0x09,
-    "scorcher":         0x0A,
-    "laser_tracer":     0x0B,
-    "suck_cannon":      0x0C,
-    "mootator":         0x0D,
-    "ryno":             0x0F,
-    "hypershot":        0x10,
-    "sprout_o_matic":   0x11,
-    "polarizer":        0x12,
-    "pda":              0x13,
-    "shrink_ray":       0x14,
-    "bolt_grabber":     0x15,
-    "map_o_matic":      0x17,
-    "box_breaker":      0x18,
+    Rac5Weapons.LACERATOR:        0x02,  # confirmed
+    Rac5Weapons.CONCUSSION_GUN:   0x03,
+    Rac5Weapons.ACID_BOMB_GLOVE:  0x04,
+    Rac5Weapons.AGENTS_OF_DOOM:   0x05,
+    Rac5Weapons.BEE_MINE_GLOVE:   0x06,
+    Rac5Weapons.STATIC_BARRIER:   0x07,
+    Rac5Weapons.SHOCK_ROCKET:     0x08,
+    Rac5Weapons.SNIPER_MINE:      0x09,
+    Rac5Weapons.SCORCHER:         0x0A,
+    Rac5Weapons.LASER_TRACER:     0x0B,
+    Rac5Weapons.SUCK_CANNON:      0x0C,
+    Rac5Weapons.MOOTATOR:         0x0D,
+    Rac5Weapons.RYNO:             0x0F,
+    Rac5Gadgets.HYPERSHOT:        0x10,
+    Rac5Gadgets.SPROUT_O_MATIC:   0x11,
+    Rac5Gadgets.POLARIZER:        0x12,
+    Rac5Gadgets.PDA:              0x13,
+    Rac5Gadgets.SHRINK_RAY:       0x14,
+    Rac5Gadgets.BOLT_GRABBER:     0x15,
+    Rac5Gadgets.MAP_O_MATIC:      0x17,
+    Rac5Gadgets.BOX_BREAKER:      0x18,
 }
 
 
@@ -53,34 +53,34 @@ _ITEM_IDS: dict[str, int] = WEAPON_VENDOR_IDS
 # Legacy reachability tables below are used only when slot data has no vendor_rules.
 # New seeds export their location and entrance rules; edit those definitions instead.
 _WEAPON_TO_PLANET_KEY: dict[str, str] = {
-    "lacerator":       "POKITARU",
-    "acid_bomb_glove": "POKITARU",
-    "concussion_gun":  "POKITARU",
-    "agents_of_doom":  "RYLLUS",
-    "scorcher":        "KALIDON",
-    "suck_cannon":     "DREAMTIME",
-    "bee_mine_glove":  "OUTPOST_OMEGA",
-    "sniper_mine":     "CHALLAX",
-    "shock_rocket":    "DAYNI_MOON",
-    "static_barrier":  "INSIDE_CLANK",
-    "laser_tracer":    "QUODRONA",
-    "ryno":            "POKITARU",
+    Rac5Weapons.LACERATOR:       "POKITARU",
+    Rac5Weapons.ACID_BOMB_GLOVE: "POKITARU",
+    Rac5Weapons.CONCUSSION_GUN:  "POKITARU",
+    Rac5Weapons.AGENTS_OF_DOOM:  "RYLLUS",
+    Rac5Weapons.SCORCHER:        "KALIDON",
+    Rac5Weapons.SUCK_CANNON:     "DREAMTIME",
+    Rac5Weapons.BEE_MINE_GLOVE:  "OUTPOST_OMEGA",
+    Rac5Weapons.SNIPER_MINE:     "CHALLAX",
+    Rac5Weapons.SHOCK_ROCKET:    "DAYNI_MOON",
+    Rac5Weapons.STATIC_BARRIER:  "INSIDE_CLANK",
+    Rac5Weapons.LASER_TRACER:    "QUODRONA",
+    Rac5Weapons.RYNO:            "POKITARU",
 }
 
-_CHALLENGE_MODE_ONLY_WEAPONS: frozenset[str] = frozenset({"ryno"})
+_CHALLENGE_MODE_ONLY_WEAPONS: frozenset[str] = frozenset({Rac5Weapons.RYNO})
 
 _TITAN_TO_PLANET_KEY: dict[str, str] = {
     **_WEAPON_TO_PLANET_KEY,
-    "mootator": "DAYNI_MOON",
+    Rac5Weapons.MOOTATOR: "DAYNI_MOON",
 }
-del _TITAN_TO_PLANET_KEY["ryno"]
+del _TITAN_TO_PLANET_KEY[Rac5Weapons.RYNO]
 
 _GADGET_TO_PLANET_KEY: dict[str, str] = {
-    "hypershot":    "POKITARU",
-    "pda":          "CHALLAX",
-    "map_o_matic":  "DAYNI_MOON",
-    "bolt_grabber": "CHALLAX",
-    "box_breaker":  "OUTPOST_OMEGA",
+    Rac5Gadgets.HYPERSHOT:    "POKITARU",
+    Rac5Gadgets.PDA:          "CHALLAX",
+    Rac5Gadgets.MAP_O_MATIC:  "DAYNI_MOON",
+    Rac5Gadgets.BOLT_GRABBER: "CHALLAX",
+    Rac5Gadgets.BOX_BREAKER:  "OUTPOST_OMEGA",
 }
 
 _MOD_LOCATION_TO_PLANET_KEY: dict[str, str] = {
@@ -123,13 +123,13 @@ _CHALLENGE_MODE_MOD_LOCATIONS: frozenset[str] = frozenset({
 })
 
 _MOD_VENDOR_EXTRA_GADGETS: dict[str, tuple[str, ...]] = {
-    "CHALLAX": (Rac5GadgetKeys.SHRINK_RAY, Rac5GadgetKeys.POLARIZER),
+    "CHALLAX": (Rac5Gadgets.SHRINK_RAY, Rac5Gadgets.POLARIZER),
 }
 
 _WEAPON_VENDOR_EXTRA_GADGETS: dict[str, tuple[str, ...]] = {
     "INSIDE_CLANK": (
-        Rac5GadgetKeys.HYPERSHOT, Rac5GadgetKeys.SPROUT_O_MATIC,
-        Rac5GadgetKeys.SHRINK_RAY, Rac5GadgetKeys.POLARIZER,
+        Rac5Gadgets.HYPERSHOT, Rac5Gadgets.SPROUT_O_MATIC,
+        Rac5Gadgets.SHRINK_RAY, Rac5Gadgets.POLARIZER,
     ),
 }
 
@@ -237,7 +237,7 @@ class VendorInventory:
         if kind == "base":
             self.weapons.vendor_locations[location] = True
         else:
-            name = next(name for name, loc in TITAN_INTERNAL_TO_LOCATION.items() if loc == location)
+            name = next(name for name, loc in TITAN_TO_LOCATION.items() if loc == location)
             self.weapons.titan_purchased[name] = True
 
     def controller(self) -> GlobalButtonState | None:
@@ -257,7 +257,7 @@ class VendorInventory:
         return frozenset(owned)
 
     def _is_purchased(self, name: str) -> bool:
-        loc = WEAPON_INTERNAL_TO_LOCATION.get(name) or GADGET_INTERNAL_TO_LOCATION.get(name)
+        loc = WEAPON_TO_LOCATION.get(name) or GADGET_TO_LOCATION.get(name)
         return bool(loc and self.weapons.vendor_locations.get(loc, False))
 
     def _is_weapon_vendor_accessible(self, planet_key: str) -> bool:
@@ -273,7 +273,7 @@ class VendorInventory:
         Challenge Mode 1+, one of TITAN_ELIGIBLE_WEAPONS, not yet bought."""
         if self.location_rules is not None:
             return (not self.weapons.titan_purchased.get(name, False)
-                    and self._location_accessible(TITAN_INTERNAL_TO_LOCATION.get(name)))
+                    and self._location_accessible(TITAN_TO_LOCATION.get(name)))
         return (self.challenge_mode >= 1 and name in TITAN_ELIGIBLE_WEAPONS
                 and not self.weapons.titan_purchased.get(name, False))
 
@@ -283,7 +283,7 @@ class VendorInventory:
         ownership), so its own base location can still be sent. Mootator goes by real level."""
         if not self._is_titan_eligible(name):
             return False
-        base_loc = WEAPON_INTERNAL_TO_LOCATION.get(name)
+        base_loc = WEAPON_TO_LOCATION.get(name)
         if base_loc is None:
             return self.weapons.get_level(name) >= 3
         return self._is_purchased(name)
@@ -299,18 +299,18 @@ class VendorInventory:
         variant is bought; Mootator has no base listing, so it only appears Titan-pending."""
         if self.location_rules is not None:
             names = []
-            for name, location in WEAPON_INTERNAL_TO_LOCATION.items():
-                target = TITAN_INTERNAL_TO_LOCATION.get(name) if self._is_purchased(name) else location
+            for name, location in WEAPON_TO_LOCATION.items():
+                target = TITAN_TO_LOCATION.get(name) if self._is_purchased(name) else location
                 if self._is_purchased(name) and self.weapons.titan_purchased.get(name, False):
                     continue
                 if self._location_accessible(target):
                     names.append(name)
             # Mootator has no base purchase location.
-            for name, location in TITAN_INTERNAL_TO_LOCATION.items():
-                if name not in WEAPON_INTERNAL_TO_LOCATION and not self.weapons.titan_purchased.get(name, False):
+            for name, location in TITAN_TO_LOCATION.items():
+                if name not in WEAPON_TO_LOCATION and not self.weapons.titan_purchased.get(name, False):
                     if self.weapons.get_level(name) >= 3 and self._location_accessible(location):
                         names.append(name)
-            for name, location in GADGET_INTERNAL_TO_LOCATION.items():
+            for name, location in GADGET_TO_LOCATION.items():
                 if not self._is_purchased(name) and self._location_accessible(location):
                     names.append(name)
             return names
@@ -322,10 +322,10 @@ class VendorInventory:
                 continue
             if self._is_titan_eligible(name) or not self._is_purchased(name):
                 names.append(name)
-        if self._is_titan_eligible("mootator") and self.weapons.get_level("mootator") >= 3:
-            mootator_planet_key = _TITAN_TO_PLANET_KEY["mootator"]
+        if self._is_titan_eligible(Rac5Weapons.MOOTATOR) and self.weapons.get_level(Rac5Weapons.MOOTATOR) >= 3:
+            mootator_planet_key = _TITAN_TO_PLANET_KEY[Rac5Weapons.MOOTATOR]
             if self._is_weapon_vendor_accessible(mootator_planet_key):
-                names.append("mootator")
+                names.append(Rac5Weapons.MOOTATOR)
         for name, planet_key in _GADGET_TO_PLANET_KEY.items():
             if self._is_weapon_vendor_accessible(planet_key) and not self._is_purchased(name):
                 names.append(name)
@@ -337,9 +337,9 @@ class VendorInventory:
         locations: list[str] = []
         for name in self._purchasable_names():
             if self._is_titan_pending(name):
-                loc = TITAN_INTERNAL_TO_LOCATION.get(name)
+                loc = TITAN_TO_LOCATION.get(name)
             else:
-                loc = WEAPON_INTERNAL_TO_LOCATION.get(name) or GADGET_INTERNAL_TO_LOCATION.get(name)
+                loc = WEAPON_TO_LOCATION.get(name) or GADGET_TO_LOCATION.get(name)
             if loc:
                 locations.append(loc)
         return locations
@@ -348,7 +348,7 @@ class VendorInventory:
         """AP location names for every mod slot currently reachable, same hinting
         purpose as purchasable_locations() but for the mod vendor."""
         return [
-            loc for (_weapon, _slot), loc in MOD_INTERNAL_TO_LOCATION.items()
+            loc for (_weapon, _slot), loc in MOD_TO_LOCATION.items()
             if self._is_mod_location_accessible(loc)
         ]
 
@@ -371,7 +371,7 @@ class VendorInventory:
         """Weapons that should appear in the mod vendor's selection list: at least one of
         their mod locations is reachable, regardless of ownership (which only gates purchasability)."""
         weapons: list[str] = []
-        for (weapon, _slot), loc in MOD_INTERNAL_TO_LOCATION.items():
+        for (weapon, _slot), loc in MOD_TO_LOCATION.items():
             if self._is_mod_location_accessible(loc) and weapon not in weapons:
                 weapons.append(weapon)
         return weapons
@@ -381,7 +381,7 @@ class VendorInventory:
         accessibility sweep assumes these locations are reachable regardless. Also forces
         the weapon's `unlocked` byte to match; temporary, undone by close()'s revert_unowned()."""
         reachable_weapons = set(self._mod_vendor_weapons())
-        for (weapon, slot), loc in MOD_INTERNAL_TO_LOCATION.items():
+        for (weapon, slot), loc in MOD_TO_LOCATION.items():
             reachable = self._is_mod_location_accessible(loc)
             unlock_attr = _SLOT_TO_UNLOCK_ATTR[slot]
             self.weapons.set_mod_unlock(weapon, unlock_attr, reachable)
@@ -470,7 +470,7 @@ class VendorInventory:
 
         newly_purchased = False
         for weapon, slot in changed["mods"]:
-            loc = MOD_INTERNAL_TO_LOCATION.get((weapon, slot))
+            loc = MOD_TO_LOCATION.get((weapon, slot))
             if loc:
                 self.weapons.vendor_locations[loc] = True
                 self.send_location(loc)

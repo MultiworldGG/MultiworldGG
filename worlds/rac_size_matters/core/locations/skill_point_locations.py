@@ -1,5 +1,3 @@
-from __future__ import annotations
-
 from dataclasses import dataclass
 
 
@@ -14,7 +12,7 @@ class SkillPoint:
         return 1 << self.bit
 
 
-from ...locations.model import LocationView
+from ...locations.model import TIERED_SKILL_POINT_CATEGORIES, LocationView
 from ...locations.shared import LOCATIONS
 
 SKILL_POINTS = LocationView(
@@ -25,6 +23,9 @@ SKILL_POINTS = LocationView(
     ),
 )
 HARD_SKILL_POINTS = frozenset(location.name for location in LOCATIONS if "hard_skill_point" in location.categories)
+TIERED_SKILL_POINTS = frozenset(
+    location.name for location in LOCATIONS if location.categories & TIERED_SKILL_POINT_CATEGORIES
+)
 CLANK_CHALLENGE_SKILL_POINTS = frozenset(
     location.name for location in LOCATIONS if "clank_challenge_skill_point" in location.categories
 )

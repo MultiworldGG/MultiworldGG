@@ -1,5 +1,3 @@
-﻿from __future__ import annotations
-
 from dataclasses import dataclass
 
 ARMOUR_BASE                = 0x1F4B354
@@ -153,6 +151,16 @@ class PlanetAddresses:
 
 
 PLANET_ADDRESSES: dict[int, PlanetAddresses] = {
+    # LEVEL_24.REL references and weapon table: docs/research/treehouse_addresses.md.
+    0x18: PlanetAddresses(
+        "HIG Treehouse", 0xF85CC0, 0xF8652C,
+        menu=0x1079480, weapon_array=0xF48E97,
+        small_text_box=0xF51E68, multi_line_text_box=0xF51FA8,
+        controller_pause_select=0xF85C94, controller_pause_select_v2=0xF8BDC2,
+        weapon_cycler_apply=0xF86580, weapon_cycler_state=0xF86584,
+        weapon_cycler_current=0xF86560, weapon_cycler_stored=0xF8656C,
+        max_health=0xF86530,
+    ),
     0x01: PlanetAddresses("Pokitaru",        0xF805C0, 0xF80E2C, menu=0x1073DC0, preload_menu=0xF4C8C0, weapon_array=0xF3EA17, mission=0x1F4B3C4, vendor_prompt_id=0xBF48, small_text_box=0xF479E8, multi_line_text_box=0xF47B28, controller_pause_select=0xF80594, controller_pause_select_v2=0xF866C2, weapon_cycler_apply=0xF80E80, weapon_cycler_state=0xF80E84, weapon_cycler_current=0xF80E60, weapon_cycler_stored=0xF80E6C, max_health=0xF80E30),
     0x02: PlanetAddresses("Ryllus",          0xF7F2D0, 0xF7FB3C, menu=0x1072AC0, preload_menu=0xF49080, weapon_array=0xF3AE97, mission=0x1F4B3C6, vendor_prompt_id=0xBF35, small_text_box=0xF441A8, multi_line_text_box=0xF442E8, controller_pause_select=0xF7F2A4, controller_pause_select_v2=0xF853C2, weapon_cycler_apply=0xF7FB90, weapon_cycler_state=0xF7FB94, weapon_cycler_current=0xF7FB70, weapon_cycler_stored=0xF7FB7C, max_health=0xF7FB40),
     0x03: PlanetAddresses("Kalidon",         0xF7F440, 0xF7FCAC, menu=0x1072C40, preload_menu=0xF48F40, weapon_array=0xF3B097, mission=0x1F4B3C8, vendor_prompt_id=0x3F37, skyboard_base=0x1F4B407, small_text_box=0xF44068, multi_line_text_box=0xF441A8, controller_pause_select=0xF7F414, controller_pause_select_v2=0xF85542, weapon_cycler_apply=0xF7FD00, weapon_cycler_state=0xF7FD04, weapon_cycler_current=0xF7FCE0, weapon_cycler_stored=0xF7FCEC, max_health=0xF7FCB0),

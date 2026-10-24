@@ -1,4 +1,5 @@
 import string
+import math
 
 from .items import LethalCompanyItem, item_table, generate_items, calculate_credits, get_default_item_map
 from .locations import LethalCompanyLocation, generate_locations, locations, get_default_location_map
@@ -20,40 +21,43 @@ class LethalCompanyWeb(WebWorld):
         OptionGroup("Goal", [
             options.Goal,
             options.CollectathonScrapGoal,
+            options.CollectathonRandomScrap,
             options.CreditReplacement,
             options.RequiredCredits
         ]),
-        OptionGroup("Checks", [
-            options.ChecksPerMoon,
+        OptionGroup("Location Options", [
+            options.GradeLocationsPerMoon,
             options.NumQuotas,
             options.QuotaCheckpointEvery,
-            options.MoneyPerQuotaCheck,
-            options.Scrapsanity,
+            options.MoneyPerQuotaLocation,
+            options.Scrapsanity
+        ], True),
+        OptionGroup("Item Options", [
             options.RandomizeCompanyBuilding,
             options.RandomizeScanner,
             options.RandomizeTerminal
         ], True),
-        OptionGroup("Starting Info", [
+        OptionGroup("Starting Options", [
             options.StartingMoon,
             options.StartingStaminaBars,
             options.StartingInventorySlots
         ], True),
-        OptionGroup("Logic Config", [
-            options.MoonCheckGrade,
+        OptionGroup("Logic Options", [
+            options.GradeLocationRequiredGrade,
             options.SplitMoonGrades,
-            options.EasyMoonCheckGrade,
-            options.MedMoonCheckGrade,
-            options.HighMoonCheckGrade,
+            options.EasyMoonLocationGrade,
+            options.MedMoonLocationGrade,
+            options.HardMoonLocationGrade,
             options.ScrapSpawnChance,
             options.MonsterSpawnChance,
-            options.MinMoneyCheck,
-            options.MaxMoneyCheck,
+            options.MinMoneyPerMoneyItem,
+            options.MaxMoneyPerMoneyItem,
             options.ModifyScrapSpawns,
             options.ExcludeShotguns,
             options.ExcludeHive,
             options.ExcludeEgg
         ], True),
-        OptionGroup("Weights", [
+        OptionGroup("Trap/Filler Weights", [
             options.MoneyWeight,
             options.BirthdayGiftWeight,
             options.WeightReducers,
@@ -88,7 +92,7 @@ class LethalCompanyWorld(World):
     monsters, which are often referred to as "anomalies", "entities", or "creatures", and the hostile fauna. 
     As employees of "The Company", players must sell enough scrap to meet a series of increasing profit quotas until they inevitably fail and the game starts over.
     """
-    game = f"Lethal Company{name}"
+    game = f"Lethal Company{" - " + name if name != "" else ""}"
     options_dataclass = LCOptions
     options: LCOptions
     topology_present = False
@@ -115,6 +119,7 @@ class LethalCompanyWorld(World):
     web = LethalCompanyWeb()
     initial_world: string
     scrap_map = {}
+    required_collectathon_scrap: List[str] = []
     required_credit_count: int = 0
     imported_data = {}
     moons = []
@@ -163,6 +168,11 @@ class LethalCompanyWorld(World):
         self.multiworld.push_precollected(self.create_item(unlock))
         self.initial_world = unlock
 
+        for _ in range(self.options.starting_inventory_slots.value):
+            self.multiworld.push_precollected(self.create_item("Inventory Slot"))
+        for _ in range(self.options.starting_stamina_bars.value):
+            self.multiworld.push_precollected(self.create_item("Stamina Bar"))
+
     def create_items(self) -> None:
         # Generate item pool
         itempool: List = []
@@ -172,6 +182,12 @@ class LethalCompanyWorld(World):
             for name in names:
                 if not name == self.initial_world:
                     itempool.append(name)
+        
+        if self.options.game_mode == 2:
+            num_credits = math.ceil((self.location_count - len(itempool)) * (self.options.credit_replacement.value/100.0))
+            self.required_credit_count = round(num_credits * (self.options.required_credits.value/100.0))
+            for _ in range(num_credits):
+                itempool.append("Company Credit")
 
         # Fill remaining items with randomly generated junk
         while len(itempool) < self.location_count:
@@ -195,9 +211,9 @@ class LethalCompanyWorld(World):
         create_events(self.multiworld, self.player, self.options)
 
     def fill_slot_data(self):
-        calculate_credits(self)
 
         slot_data = {
+            "worldversion": self.world_version.as_simple_string(),
             "deathLink": self.options.death_link.value,
             "deathLinkScrapLossPercent": self.options.death_link_percent_scrap_lost.value
         }
@@ -209,6 +225,8 @@ class LethalCompanyWorld(World):
 
         if self.options.game_mode == 2:
             slot_data["companycreditsgoal"] = self.required_credit_count
+        elif self.options.game_mode == 1:
+            slot_data["collectathonrequiredscrap"] = self.required_collectathon_scrap
 
         if self.options.modify_scrap_spawns.value == 1:
             slot_data["moon_to_scrap_map"] = self.scrap_map

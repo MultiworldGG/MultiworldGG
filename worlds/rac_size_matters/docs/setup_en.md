@@ -7,7 +7,7 @@ The following are required in order to play Ratchet & Clank: Size Matters in Mul
 - Installed the latest version of [MultiworldGG](https://github.com/MultiworldGG/MultiworldGG/releases)
 - The latest version of the Ratchet & Clank: Size Matters apworld (ships with MultiworldGG)
 - [PCSX2 emulator](https://pcsx2.net/downloads/) (2.x or later recommended for the required PINE support)
-- A copy of **Ratchet & Clank: Size Matters** — US (`SCUS-97615`), EU (`SCES-55019`), or JP (`SCPS-15120`).
+- A copy of **Ratchet & Clank: Size Matters** - US (`SCUS-97615`), EU (`SCES-55019`), or JP (`SCPS-15120`).
 ---
 
 ## Enabling PINE in PCSX2
@@ -46,7 +46,7 @@ This section is for players who want to host a solo or multiplayer game.
 2. In the MultiworldGG Launcher, select "Generate" to create your multiworld.
     - The generated zip file will appear in the `output` folder.
 
-3. To host online, upload the zip file from the `output` folder to the [MultiworldGG Website](https://multiworld.gg/uploads).
+3. To host online, upload the zip file from the `output` folder to the [MultiworldGG Website](/uploads).
     - To host locally, select "Host" in the MultiworldGG Launcher and choose the zip file from the `output` folder.
 
 ### Starting a Game

@@ -65,22 +65,23 @@ class LCItem:
             return []
         return names
 
-
+# moved all of this logic into init.create_items for now (so we can directly look at the location count and item pool)
 def calculate_credits(world: "LethalCompanyWorld"):
     if not world.options.game_mode.value == 2:
         return 0
 
     location_count = world.location_count
-    location_count -= 7
+    location_count -= len(world.moons)
     location_count -= world.options.randomize_company_building.value
     location_count -= world.options.randomize_scanner.value
     location_count -= world.options.randomize_terminal.value
     location_count -= (4 - world.options.starting_stamina_bars.value)
     location_count -= (4 - world.options.starting_inventory_slots.value)
-    location_count -= 16
+    location_count -= (len(world.imported_data["store"]) + len(world.imported_data["vehicles"]))
+    location_count -= 4     # ship upgrades
 
-    credit_count = math.ceil(location_count * (world.options.credit_replacement/100.0))
-    world.required_credit_count = round(credit_count * (world.options.required_credits/100.0))
+    credit_count = math.ceil(location_count * (world.options.credit_replacement.value/100.0))
+    world.required_credit_count = round(credit_count * (world.options.required_credits.value/100.0))
     return credit_count
 
 
@@ -107,7 +108,8 @@ def generate_items(imported_data) -> Tuple[List[LCItem], SlotItemData]:
                classification=ItemClassification.progression),
         LCItem(slot_item_data, "Stamina Bar", 2, lambda w: 4 - w.options.starting_stamina_bars.value,
                classification=ItemClassification.progression),
-        LCItem(slot_item_data, "Company Credit", 2, calculate_credits, classification=ItemClassification.progression),
+        LCItem(slot_item_data, "Company Credit", 0, 0,
+               classification=ItemClassification.progression_deprioritized_skip_balancing),
         LCItem(slot_item_data, "Strength Training", 3, "weight_reducers",
                classification=ItemClassification.filler),
         LCItem(slot_item_data, "Scanner", 1, "randomize_scanner", classification=ItemClassification.progression),

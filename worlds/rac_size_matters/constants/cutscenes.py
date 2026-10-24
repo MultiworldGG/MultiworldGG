@@ -30,12 +30,10 @@ class Rac5CutsceneLocations:
     METALIS_WAR = "Metalis: Survive Robot War III (Complete Buzzsaw Blitz)"
     METALIS_ESCAPE = "Metalis: Escape the planet (Giant Clank)"
 
-    # TODO: add in missing cutscenes
     DREAMTIME_ENTER = "Dreamtime: Enter Planet"
     DREAMTIME_SLEEPING_RATCHET = "Dreamtime: Clank finds sleeping Ratchet"
     DREAMTIME_COMPLETE = "Dreamtime: Complete Dreamtime"
 
-    # TODO: One Cutscene is missing from this list
     OUTPOST_OMEGA_ENTER = "Outpost Omega: Enter Planet"
     OUTPOST_OMEGA = "Outpost Omega: Escape from facility pt 1"
     OUTPOST_OMEGA_ESCAPE = "Outpost Omega: Escape the medical facility"
@@ -51,7 +49,6 @@ class Rac5CutsceneLocations:
     DAYNI_MOON = "Dayni Moon: Catch Luna"
     DAYNI_MOON_LUNA = "Dayni Moon: Defeat Luna"
 
-    # TODO: One Cutscene is missing from this list
     INSIDE_CLANK_ENTER = "Inside Clank: Enter Planet"
     INSIDE_CLANK_ESCAPE = "Inside Clank: Escape from Clank"
     INSIDE_CLANK_TECHNOMITES = "Inside Clank: Defeat all Technomites"

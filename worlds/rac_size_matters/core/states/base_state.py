@@ -1,5 +1,3 @@
-from __future__ import annotations
-
 
 class BaseState:
     """Lightweight lifecycle marker for state classes wanting enter()/exit()

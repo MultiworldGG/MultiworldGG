@@ -9,7 +9,7 @@ class SM64HackItem(Item):
 def star_count(data):
     return len(["Star" for location in location_names(data) if "Star" in location])
 
-def item_is_important(item_name, data = Data()):
+def item_is_important(item_name, data = Data(-1, -1)):
     if item_name == "Progressive Key":
         return item_is_important("Key 1", data) or item_is_important("Key 2", data)
     if item_name == "Progressive Stomp Badge":

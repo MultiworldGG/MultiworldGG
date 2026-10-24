@@ -1,5 +1,3 @@
-from __future__ import annotations
-
 from dataclasses import dataclass
 from enum import Enum
 from typing import TYPE_CHECKING
@@ -85,7 +83,7 @@ class SkinInventory:
     unlocked = SkinSlot("unlocked")
     equipped = SkinSlot("equipped")
 
-    def __init__(self, pine: Pine) -> None:
+    def __init__(self, pine: "Pine") -> None:
         self.pine = pine
         self._skin: Skin = Skin.DEFAULT
         self._apply_pending = False
@@ -104,6 +102,11 @@ class SkinInventory:
 
     def delete(self) -> None:
         self.set(Skin.DEFAULT)
+
+    def clear_multiplayer(self) -> None:
+        """Fall back to the default skin so a planet without the multiplayer loader can load Ratchet."""
+        if self._skin.unlock_mask is None or self.get().unlock_mask is None:
+            self.set(Skin.DEFAULT)
 
     def setup(self) -> None:
         """Write the currently selected skin's unlock/equip bytes into game memory."""

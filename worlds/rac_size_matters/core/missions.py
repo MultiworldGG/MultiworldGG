@@ -1,11 +1,8 @@
-from __future__ import annotations
-
-from .address_maps import save_address
-
 from typing import TYPE_CHECKING
 
 from ..locations import ALL_LOCATIONS
 from ..locations.observation import LocationObservation
+from .address_maps import save_address
 from .locations.mission_locations import VALIDATED_MISSION_MAP
 
 if TYPE_CHECKING:
@@ -26,7 +23,7 @@ _ADDRESSES: tuple[int, ...] = tuple(sorted({address for address, _mask in _NAME_
 class MissionInventory:
     """Pine-backed live accessor + completion tracking for story/cutscene missions."""
 
-    def __init__(self, pine: Pine) -> None:
+    def __init__(self, pine: "Pine") -> None:
         self.pine = pine
         self.completed: set[str] = set()
 
@@ -70,7 +67,7 @@ class MissionInventory:
             if raw_by_address[address] & mask:
                 self.completed.add(name)
 
-    def sync_from_ap(self, checked_locations: set[str]) -> None:
+    def sync_from_ap(self, checked_locations: "set[str]") -> None:
         self.completed.update(name for name in checked_locations if name in VALIDATED_MISSION_MAP.values())
 
     def __repr__(self) -> str:

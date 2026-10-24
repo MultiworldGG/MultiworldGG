@@ -1,5 +1,3 @@
-from __future__ import annotations
-
 import asyncio
 import struct
 from dataclasses import dataclass
@@ -30,7 +28,6 @@ from . import address_maps
 from .address_maps import (
     MULTI_LINE_TEXT_BOX_BY_PLANET,
     SMALL_TEXT_BOX_BY_PLANET,
-    STATIC_TEXT_BUFFER as _STATIC_TEXT_BUFFER,
 )
 
 
@@ -104,7 +101,7 @@ class TextBoxInventory:
     """Pine-backed accessor for a planet's text box (small or multi-line).
     Planet-dependent: call set_base(planet_id) whenever the loaded planet changes."""
 
-    def __init__(self, pine: Pine, boxes: list[TextBoxConfig]) -> None:
+    def __init__(self, pine: "Pine", boxes: list[TextBoxConfig]) -> None:
         self.pine = pine
         self._by_planet: dict[int, TextBoxConfig] = {tb.planet_id: tb for tb in boxes}
         self._config: TextBoxConfig | None = None
@@ -146,9 +143,9 @@ class TextBoxInventory:
         return f"TextBoxInventory(displayed={self.is_displayed})"
 
 
-def small_text_box_inventory(pine: Pine) -> TextBoxInventory:
+def small_text_box_inventory(pine: "Pine") -> TextBoxInventory:
     return TextBoxInventory(pine, [SmallTextBox(pid, addr) for pid, addr in SMALL_TEXT_BOX_BY_PLANET.items()])
 
 
-def multi_line_text_box_inventory(pine: Pine) -> TextBoxInventory:
+def multi_line_text_box_inventory(pine: "Pine") -> TextBoxInventory:
     return TextBoxInventory(pine, [MultiLineTextBox(pid, addr) for pid, addr in MULTI_LINE_TEXT_BOX_BY_PLANET.items()])

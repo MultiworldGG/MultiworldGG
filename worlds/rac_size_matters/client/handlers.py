@@ -1,13 +1,9 @@
-from __future__ import annotations
-
 import asyncio
 
 from CommonClient import logger
 from NetUtils import ClientStatus
 
-from ..core import ARMOUR_SET_CHECKS
-from ..core import address_maps
-from ..core.address_maps import PLAYER_BOLT_COUNT
+from ..core import ARMOUR_SET_CHECKS, address_maps
 from ..core.player_bolts import MAX_PLAYER_BOLTS
 
 

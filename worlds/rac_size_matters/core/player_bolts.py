@@ -1,9 +1,6 @@
-from __future__ import annotations
-
 from typing import TYPE_CHECKING
 
 from . import address_maps
-from .address_maps import PLAYER_BOLT_COUNT
 
 if TYPE_CHECKING:
     from ..pypine import Pine
@@ -15,7 +12,7 @@ class PlayerBoltInventory:
     """Pine-backed accessor + gain-multiplier tracking for the player's
     spendable bolt count (global fixed address, no per-planet base)."""
 
-    def __init__(self, pine: Pine) -> None:
+    def __init__(self, pine: "Pine") -> None:
         self.pine = pine
         self.multiplier: int = 1
         self._prev: int | None = None

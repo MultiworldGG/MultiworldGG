@@ -1,16 +1,14 @@
-from __future__ import annotations
-
 import asyncio
 import random
 import time
 from typing import Any
 
 from CommonClient import logger
-from ..core import address_maps
 
 from ..core import (
     PlayerMovementState as PlayerState,
     TextColour,
+    address_maps,
     colored_text,
 )
 

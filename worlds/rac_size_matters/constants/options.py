@@ -2,6 +2,8 @@ class Rac5Options:
     """Shared option keys for world definitions, requirements, and slot data."""
 
     START_INVENTORY_FROM_POOL = "start_inventory_from_pool"
+    GOAL = "goal"
+    PICK_AND_MIX_GOALS = "pick_and_mix_goals"
     PROGRESSIVE_WEAPONS = "progressive_weapons"
     CLANK_PACK = "clank_pack"
     PROGRESSIVE_MODS = "progressive_mods"
@@ -16,6 +18,7 @@ class Rac5Options:
     ALL_MISSIONS = "all_missions"
     ALL_CUTSCENES = "all_cutscenes"
     GIANT_CLANK = "giant_clank"
+    ENABLE_HIG_TREEHOUSE = "enable_hig_treehouse"
     CLANK_CHALLENGES = "clank_challenges"
     CLANK_CHALLENGE_GROUPS = "clank_challenge_groups"
     ENABLE_CLANK_CHALLENGE_SKILL_POINTS = "enable_clank_challenge_skill_points"

@@ -8,6 +8,7 @@ from Options import (
     ItemDict,
     OptionCounter,
     OptionGroup,
+    OptionSet,
     PerGameCommonOptions,
     ProgressionBalancing,
     Range,
@@ -16,14 +17,9 @@ from Options import (
 )
 
 from .constants.options import Rac5Options
-from .data.challenges import (
-    CHALLENGE_GROUP_DERBY,
-    CHALLENGE_GROUP_GADGETBOT,
-    CHALLENGE_GROUP_GADGETBOT_TOSS,
-    DEFAULT_CLANK_CHALLENGE_GROUPS,
-)
+from .data.challenges import DEFAULT_CLANK_CHALLENGE_GROUPS
 from .data.traps import TRAP_DURATIONS
-from .items import DEFAULT_ENABLED_WEAPONS, WEAPON_DISPLAY_TO_INTERNAL
+from .data.weapons import WEAPON_DATA
 
 
 class ClankPack(Toggle):
@@ -80,20 +76,17 @@ class ProgressiveArmour(Choice):
     default = 0
 
 
-class EnabledWeapons(ItemDict):
-    """Selects which weapons are included in generation at all. Set a weapon to 0 to
+class EnabledWeapons(OptionSet):
+    """Selects which weapons are included in generation at all. Leave a weapon out to
     remove it entirely: its own item(s) (including its Progressive Weapon/Mod items),
     its vendor/collectible location, its mod-vendor locations, and its Weapon Level
     Checks locations are all excluded from the pool, exactly as if the weapon didn't
-    exist in this seed. Default 1 includes every weapon. At least one long-range
-    projectile weapon must remain available after applying NG+ Items."""
+    exist in this seed. Defaults to every weapon. At least one long-range projectile
+    weapon must remain available after applying NG+ Items."""
 
     display_name = "Enabled Weapons"
-    verify_item_name = False
-    min = 0
-    max = 1
-    valid_keys = tuple(WEAPON_DISPLAY_TO_INTERNAL.keys())
-    default = DEFAULT_ENABLED_WEAPONS
+    valid_keys = frozenset(WEAPON_DATA)
+    default = frozenset(WEAPON_DATA)
 
 
 class ClankChallenges(Choice):
@@ -108,19 +101,51 @@ class ClankChallenges(Choice):
     default = 1
 
 
-class ClankChallengeGroups(ItemDict):
-    """Selects which Clank Challenge groups (Metalis/Dayni Moon) are included
-    as location checks, whenever Clank Challenges is on. Set a group to 0 to
+class Goal(Choice):
+    """Determines what the player needs to complete to achieve their goal.
+    - Defeat Otto: Defeat Otto Destruct on Quodrona.
+    - All Skill Points: Complete every skill point of the Skill Points tier (Easy, or Easy and Hard).
+      Clank/Skyboard Challenge skill points don't count. Requires Skill Points to be on.
+    - All Clank Challenges: Complete every Clank Challenge check in the seed. Requires Clank Challenges to be on.
+    - Pick and Mix: Complete every goal you select in Pick and Mix Goals."""
+
+    display_name = "Goal"
+    option_defeat_otto = 0
+    option_all_skill_points = 1
+    option_all_clank_challenges = 2
+    option_pick_and_mix = 3
+    default = 0
+
+
+class PickAndMixGoals(OptionSet):
+    """Add or remove victory conditions. All selected conditions must be completed.
+    At least one must be selected when Goal is Pick and Mix.
+    The valid options are: defeat_otto, all_skill_points, all_clank_challenges"""
+
+    display_name = "Pick and Mix Goals"
+    valid_keys = {"defeat_otto", "all_skill_points", "all_clank_challenges"}
+    default = frozenset()
+
+
+class EnableHIGTreehouse(Toggle):
+    """Include the HIG Treehouse's four Gadgetbot challenges as locations, plus its grind rail when Shrink Ray Options is
+    set to Locations and an All Skill Points check when Skill Points is on
+    (every skill point of the chosen Easy/Hard tier). Challenges also require Clank Challenges to be on
+    and Gadgetbot to be included in Clank Challenge Groups. The planet remains
+    available in the ship menu regardless of these settings."""
+
+    display_name = "Enable HIG Treehouse"
+
+
+class ClankChallengeGroups(OptionSet):
+    """Selects which Clank Challenge groups (including enabled HIG Treehouse) are included
+    as location checks, whenever Clank Challenges is on. Leave a group out to
     exclude all of its locations (both the item-reward and individual-
     completion tiers) from generation entirely — the challenge is still
-    playable in-game, it just has no AP checks. Default 1 includes every
-    group."""
+    playable in-game, it just has no AP checks. Defaults to every group."""
 
     display_name = "Clank Challenge Groups"
-    verify_item_name = False
-    min = 0
-    max = 1
-    valid_keys = (CHALLENGE_GROUP_DERBY, CHALLENGE_GROUP_GADGETBOT_TOSS, CHALLENGE_GROUP_GADGETBOT)
+    valid_keys = DEFAULT_CLANK_CHALLENGE_GROUPS
     default = DEFAULT_CLANK_CHALLENGE_GROUPS
 
 
@@ -534,6 +559,8 @@ class ApIcon(Choice):
 class RACSizeMatterOptions(PerGameCommonOptions):
     __annotations__ = {
         Rac5Options.START_INVENTORY_FROM_POOL: StartInventoryPool,
+        Rac5Options.GOAL: Goal,
+        Rac5Options.PICK_AND_MIX_GOALS: PickAndMixGoals,
         Rac5Options.PROGRESSIVE_WEAPONS: ProgressiveWeapons,
         Rac5Options.CLANK_PACK: ClankPack,
         Rac5Options.PROGRESSIVE_MODS: ProgressiveMods,
@@ -548,6 +575,7 @@ class RACSizeMatterOptions(PerGameCommonOptions):
         Rac5Options.ALL_MISSIONS: AllMissions,
         Rac5Options.ALL_CUTSCENES: AllCutscenes,
         Rac5Options.GIANT_CLANK: GiantClank,
+        Rac5Options.ENABLE_HIG_TREEHOUSE: EnableHIGTreehouse,
         Rac5Options.CLANK_CHALLENGES: ClankChallenges,
         Rac5Options.CLANK_CHALLENGE_GROUPS: ClankChallengeGroups,
         Rac5Options.ENABLE_CLANK_CHALLENGE_SKILL_POINTS: EnableClankChallengeSkillPoints,
@@ -588,6 +616,7 @@ racsm_option_groups = [
             BalancePatch,
         ],
     ),
+    OptionGroup("RACSM Goal Options", [Goal, PickAndMixGoals]),
     OptionGroup(
         "RACSM Game Links",
         [
@@ -624,6 +653,7 @@ racsm_option_groups = [
         [
             ClankChallenges,
             ClankChallengeGroups,
+            EnableHIGTreehouse,
             EnableClankChallengeSkillPoints,
             SkyboardChallenges,
             EnableSkyboardChallengeSkillPoints,

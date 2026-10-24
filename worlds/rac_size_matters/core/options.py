@@ -1,6 +1,7 @@
 from dataclasses import dataclass
 
 from ..constants.options import Rac5Options
+from ..goals import selected_goals
 
 
 @dataclass(slots=True)
@@ -17,6 +18,8 @@ class ClientOptions:
     progressive_challenge_mode_enabled: bool = False
     all_missions_enabled: bool = True
     all_cutscenes_enabled: bool = False
+    hig_treehouse_enabled: bool = False
+    goals: tuple[int, ...] = (0,)
 
     @classmethod
     def from_slot_data(cls, data):
@@ -39,6 +42,8 @@ class ClientOptions:
             progressive_challenge_mode_enabled=bool(data.get(Rac5Options.PROGRESSIVE_CHALLENGE_MODE, False)),
             all_missions_enabled=bool(data.get(Rac5Options.ALL_MISSIONS, True)),
             all_cutscenes_enabled=bool(data.get(Rac5Options.ALL_CUTSCENES, False)),
+            hig_treehouse_enabled=bool(data.get(Rac5Options.ENABLE_HIG_TREEHOUSE, False)),
+            goals=selected_goals(int(data.get(Rac5Options.GOAL, 0)), data.get(Rac5Options.PICK_AND_MIX_GOALS, ())),
         )
 
 
