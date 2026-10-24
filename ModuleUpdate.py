@@ -5,11 +5,11 @@ import multiprocessing
 import warnings
 warnings.filterwarnings("ignore", message="pkg_resources is deprecated as an API") # temporarily disable that warning as pkg_resources can't easily be updated right now.
 
-if sys.platform in ("win32", "darwin") and not (3, 12, 0) <= sys.version_info < (3, 14, 0):
+if sys.platform in ("win32", "darwin") and not (3, 13, 0) <= sys.version_info < (3, 14, 0):
     # Official micro version updates. This should match the number in docs/running from source.md.
     raise RuntimeError(f"Incompatible Python Version found: {sys.version_info}. "
-                       "Official 3.12.0 through 3.13.x is supported.")
-elif not (3, 12, 0) <= sys.version_info < (3, 14, 0):
+                       "Official 3.13.x are supported.")
+elif not (3, 13, 0) <= sys.version_info < (3, 14, 0):
     # Other platforms may get security backports instead of micro updates, so the number is unreliable.
     raise RuntimeError(f"Incompatible Python Version found: {sys.version_info}. 3.12.0 through 3.13.x is supported.")
 
