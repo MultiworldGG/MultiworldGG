@@ -136,11 +136,6 @@ cross_chapter_locations: dict = {
             group=LocationGroups.castle_town,
         ),
         LocationData(
-            LocationIDs.cc_rock_video_raise_up_your_bat_Z_hard,
-            should_be_included=rock_video_sanity_hard_enabled,
-            group=LocationGroups.castle_town,
-        ),
-        LocationData(
             LocationIDs.cc_rock_video_raise_up_your_bat_C_hard,
             should_be_included=rock_video_sanity_hard_enabled,
             group=LocationGroups.castle_town,
@@ -193,11 +188,6 @@ cross_chapter_locations: dict = {
         LocationData(
             LocationIDs.cc_rock_video_tv_time_T,
             should_be_included=rock_video_sanity_enabled,
-            group=LocationGroups.castle_town,
-        ),
-        LocationData(
-            LocationIDs.cc_rock_video_tv_time_Z_hard,
-            should_be_included=rock_video_sanity_hard_enabled,
             group=LocationGroups.castle_town,
         ),
         LocationData(
@@ -256,11 +246,6 @@ cross_chapter_locations: dict = {
             group=LocationGroups.castle_town,
         ),
         LocationData(
-            LocationIDs.cc_rock_video_knock_you_down_Z_hard,
-            should_be_included=rock_video_sanity_hard_enabled,
-            group=LocationGroups.castle_town,
-        ),
-        LocationData(
             LocationIDs.cc_rock_video_knock_you_down_C_hard,
             should_be_included=rock_video_sanity_hard_enabled,
             group=LocationGroups.castle_town,
@@ -315,11 +300,6 @@ cross_chapter_locations: dict = {
         LocationData(
             LocationIDs.cc_rock_video_4rd_sanctuary_T,
             should_be_included=rock_video_sanity_enabled_ch5,
-            group=LocationGroups.castle_town,
-        ),
-        LocationData(
-            LocationIDs.cc_rock_video_4rd_sanctuary_Z_hard,
-            should_be_included=rock_video_sanity_hard_enabled_ch5,
             group=LocationGroups.castle_town,
         ),
         LocationData(

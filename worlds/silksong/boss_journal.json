@@ -283,7 +283,7 @@
       {
         "boss": "Boss: Lace (Cradle)",
         "events": [
-          "Room Event: event:mapper/0ecf7e04-42c8-48f7-a444-bb46478a58ad"
+          "Room Event: event:mapper/6491dc3e-3012-4fec-bacd-806f85487759"
         ],
         "act": 1,
         "scene": "Song_Tower_01",
@@ -292,7 +292,7 @@
       {
         "boss": "Boss: Lace (Deep Docks)",
         "events": [
-          "Room Event: event:mapper/4092e48f-ea2e-4d19-9a3a-71fa7b4fcbda"
+          "Room Event: event:mapper/ed2b70bf-b2f6-4cbc-9718-eb268b77fd90"
         ],
         "act": 1,
         "scene": "Bone_East_12",
@@ -351,7 +351,7 @@
       {
         "boss": "Boss: Nyleth",
         "events": [
-          "Room Event: event:mapper/29d0cefc-ffa4-455c-bb21-acfe20c70ed6"
+          "Room Event: event:mapper/39a1e8fe-96bb-4e45-96b7-1eba5e03566f"
         ],
         "act": 1
       }
@@ -421,7 +421,7 @@
       {
         "boss": "Boss: Shrine Guardian Seth",
         "events": [
-          "Room Event: event:mapper/66c01078-89ad-4aeb-ab46-a4ac05424109"
+          "Room Event: event:mapper/d3ccc449-7545-469b-abb9-596a597df834"
         ],
         "act": 1
       }
@@ -449,7 +449,7 @@
       {
         "boss": "Boss: Skarrsinger Karmelita",
         "events": [
-          "Room Event: event:mapper/61ba8ef0-8610-4b13-8ca4-854de0780bd5"
+          "Room Event: event:mapper/960ed513-cb0f-41af-b192-d027d33a9fb1"
         ],
         "act": 1
       }
@@ -526,7 +526,7 @@
       {
         "boss": "Boss: Voltvyrm",
         "events": [
-          "Room Event: event:mapper/c245a3a8-e4da-44e6-96bf-329e94ea8298"
+          "Room Event: event:mapper/a6c761eb-15e4-448e-ab9e-4f3928c35821"
         ],
         "act": 1
       }
@@ -568,7 +568,7 @@
       {
         "boss": "Boss: Lost Lace",
         "events": [
-          "Room Event: event:mapper/a4febb13-a6cc-49c4-a655-a40e40ea43b5"
+          "Room Event: event:mapper/9f029df3-d3db-4afa-9da2-16c4227b55a8"
         ],
         "act": 3
       }

@@ -258,7 +258,10 @@ DEFINES = {
     "wOriginalMinimapGroup": "$c09d",  # Custom address
     "wOriginalDungeonIndex": "$c09e",  # Custom address
     "wMinimapCycleToNextMode": "$c09f",  # Custom address
-    "wWarpCheck": "$c086",
+    "wWarpCheck": "$c086", # Custom address
+    "wWarpTextLow": "$c087", # Custom address
+    "wWarpTextHigh": "$c088", # Custom address
+    "wFailedToWarpLastFrame": "$c089", # Custom address
     "wBigBuffer": "$c300",
     "wKeysPressed":"$c481",
     "wKeysJustPressed":"$c482",
@@ -273,6 +276,7 @@ DEFINES = {
     "wMapMenu_mode":"$cbb3",
     "cinematicState":"$cbb5",
     "wMapMenu_cursorIndex":"$cbb6",
+    "wDisableLinkCollisionsAndMenu": "$cbca",
     "wInventorySubmenu0CursorPos": "$cbd0",
     "wInventorySubmenu1CursorPos":"$cbd1",
     "wRingMenu_mode":"$cbd3",

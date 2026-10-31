@@ -8,8 +8,8 @@ class VendorAccess(Choice):
     """
     Determines if vendor items should become available after a planet is visited or once its infobot has been collected.
     ------------------------------------------------------------------------------
-    Visit:      Vendor items are available after visiting a planet.
-    Infobot:    Vendor items are available when the infobot is collected.
+    Visit:    Vendor items are available after visiting a planet.
+    Infobot:  Vendor items are available when the infobot is collected.
     ------------------------------------------------------------------------------
     The Holo-shield glove is normally accessible after defeating the Noid Queen on Tyhrranosis instead of just visiting.
     """

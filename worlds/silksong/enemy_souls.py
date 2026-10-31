@@ -22,6 +22,30 @@ STYX_EVENTS = frozenset((
     'Room Event: event:mapper/reviewed:styx-first-grub-grown',
     'Room Event: event:mapper/reviewed:courier-queens-egg-delivered',
 ))
+COMBAT_BATTLES = {
+    requirement_name('gauntlet:lost-verdania-center'): ('clover_04b', 'Battle Scene'),
+    requirement_name('gauntlet:hunter-s-march-east'): ('ant_05b', 'Black Thread States Thread Only Variant/Normal World/Battle Scene'),
+    requirement_name('gauntlet:halfway-home'): ('ant_08', 'Battle Scene'),
+    requirement_name('gauntlet:black-threaded-skarrgard'): ('bone_east_25', 'Battle Scene'),
+    requirement_name('gauntlet:whispering-vaults-entrance'): ('library_02', 'GameObject/Battle Scene Control/Battle Scene'),
+    requirement_name('gauntlet:whispering-vaults-entrance-2'): ('library_02', 'GameObject/Battle Scene Control/Battle Scene Acolyte'),
+    requirement_name('gauntlet:deep-docks-southeast'): ('dock_03c', 'Battle Scene'),
+    requirement_name('gauntlet:hunter-s-march-center-2'): ('ant_04_mid', 'Black Thread States Thread Only Variant/Black Thread World/Battle Scene Black Thread'),
+    requirement_name('gauntlet:shellwood-east'): ('shellwood_01b', 'Battle Scene'),
+    requirement_name('gauntlet:craw-lake'): ('room_crowcourt', 'Battle Scene'),
+    requirement_name('gauntlet:greymoor-tower'): ('greymoor_04', 'Black Thread States Thread Only Variant/Normal World/Battle Scene'),
+    requirement_name('gauntlet:greymoor-tower-act-3'): ('greymoor_04', 'Black Thread States Thread Only Variant/Black Thread World/Black Thread Battle Scene'),
+    requirement_name('gauntlet:the-cauldron-gauntlet'): ('under_18', 'Battle Scene'),
+    requirement_name('gauntlet:underworks-northwest'): ('under_07', 'Battle Scene'),
+    requirement_name('gauntlet:choral-chambers-west'): ('song_04', 'Black Thread States/Normal World/Scene States/Battle Scene'),
+    requirement_name('gauntlet:cogwork-core-southeast'): ('cog_07', 'Battle Scene Test/Battle Scene'),
+    requirement_name('gauntlet:cogwork-core-southwest'): ('cog_05', 'Battle Scene'),
+    requirement_name('gauntlet:the-slab-east'): ('slab_16', 'Event Control/Battle Cloaked Scene'),
+}
+EVENT_BATTLES = {
+    'Room Event: event:mapper/c30170be-d6b7-43ec-823c-7eee5622a5cb': ('under_07', 'Battle Scene'),
+    'Room Event: event:mapper/007f3c9a-50b0-4802-8f2b-4d87bffafe98': ('song_04', 'Black Thread States/Normal World/Scene States/Battle Scene'),
+}
 ACT_3_INTRO_NODE = 'Room Node: cogwork-core/cogwork-core-breakable-walls#northern-gauntlet'
 ACT_3_INTRO_EVENT = 'Room Event: event:mapper/82aabe64-d7cd-4911-9a15-f1338e0400c0'
 ACT_3_INTRO_SPECIES = frozenset(row['name'] for row in CATALOGUE
@@ -87,7 +111,7 @@ def check_requirements(name, enabled=None):
                   *(item_name(soul) for soul in route.get('souls', ()) if soul in enabled))
         if 'mapped_encounters' in route or route.get('mapper_generated'):
             result.extend(replace(rule, all_of=tuple(dict.fromkeys((*prefix, *rule.all_of))),
-                                  require_any_crest=True) for rule in _mapped_requirements(name, index))
+                                  require_any_crest=True) for rule in _mapped_requirements(name, index, enabled))
         else:
             result.append(req(*prefix, *('Room Node: ' + node for node in route['nodes'])))
     if name in ACT_3_INTRO_SPECIES:
@@ -106,11 +130,12 @@ def _mapped_route_error(name, index, detail):
 
 
 @lru_cache(maxsize=None)
-def _mapped_requirements(name, index):
+def _mapped_requirements(name, index, enabled=None):
     from .room_graph import load_room_graph, RequirementMode, RequirementSpec
     from .room_graph_logic import _compile_spec
     from .requirements import _compiled_room_clause_requirement
     route = BY_NAME[name]['routes'][index]
+    enabled = frozenset(BY_NAME if enabled is None else enabled)
     graph = load_room_graph()
     if route.get('mapper_source') != graph.source_aggregate_sha256:
         raise _mapped_route_error(name, index,
@@ -123,8 +148,15 @@ def _mapped_requirements(name, index):
             raise _mapped_route_error(name, index,
                 f'Placement {node!r} is missing or outside its reviewed room. '
                 f'Node exists: {node in graph.node_by_id}. Reviewed rooms: {sorted(rooms)!r}.')
-        spec = RequirementSpec('', RequirementMode.EXPRESSION,
-                               tuple(tuple(clause) for clause in encounter['dnf']), (), (), 0)
+        dnf = []
+        for clause in encounter['dnf']:
+            present = {atom.removeprefix('mapper:enemy-presence:') for atom in clause
+                       if atom.startswith('mapper:enemy-presence:')}
+            if present - BY_NAME.keys():
+                raise _mapped_route_error(name, index, 'Unknown enemy presence: ' + ', '.join(sorted(present - BY_NAME.keys())))
+            souls = ('received:' + item_name(species) for species in sorted(present & enabled))
+            dnf.append(tuple(dict.fromkeys((*clause, *souls))))
+        spec = RequirementSpec('', RequirementMode.EXPRESSION, tuple(dnf), (), (), 0)
         rules.extend(_compiled_room_clause_requirement(clause)
                      for clause in _compile_spec(spec, 'Room Node: ' + node))
     if not rules:
@@ -170,7 +202,11 @@ def pogo_graph(names):
             spec = row.requirement
             dnf = []
             for branch in spec.dnf:
-                needed = souls if any(atom.startswith('mapper:enemy-pogo:') for atom in branch) else ()
+                present = {atom.removeprefix('mapper:enemy-presence:') for atom in branch if atom.startswith('mapper:enemy-presence:')}
+                if present - BY_NAME.keys():
+                    raise ValueError('Unknown enemy presence: ' + ', '.join(sorted(present - BY_NAME.keys())))
+                needed = souls if not present and any(atom.startswith('mapper:enemy-pogo:') for atom in branch) else ()
+                needed += tuple('received:' + item_name(name) for name in names if name in present)
                 needed += tuple(connections.get(row.id, ()))
                 records = {atom.split(':')[2] for atom in branch if atom.startswith(('mapper:enemy-type-pogo:', 'mapper:enemy-damage-boost:'))}
                 if records:
@@ -242,8 +278,11 @@ def gate_graph(world, graph):
             owner = 'Room Event: ' + event.id
             if (souls and event.kind in {'enemy', 'miniboss', 'gauntlet'} and owner in result
                     and owner not in BOSS_EVENTS and owner != ACT_3_INTRO_EVENT):
-                result[owner] = tuple(rule if BOSS_COMBAT.intersection(rule.all_of) else
-                                      replace(rule, all_of=tuple(dict.fromkeys((*rule.all_of, *souls)))) for rule in result[owner])
+                result[owner] = tuple(
+                    rule if BOSS_COMBAT.intersection(rule.all_of) else
+                    replace(rule, all_of=tuple(dict.fromkeys((*rule.all_of, *(_battle_souls(names, {EVENT_BATTLES[owner]}) if owner in EVENT_BATTLES
+                        else _combat_souls(rule, names, {room.id}))))))
+                    for rule in result[owner])
     for name in names:
         for event in BY_NAME[name].get('events', ()):
             alternatives = (item_name(name), 'Act: 3') if name == 'Muckroach' and event in STYX_EVENTS else (item_name(name),)
@@ -287,11 +326,25 @@ def _boss_summons(names):
     return result
 
 
+def _battle_souls(names, battles):
+    return tuple(item_name(name) for name in names if any(
+        (battle['scene'].lower(), battle['path']) in battles
+        for battle in BY_NAME[name].get('battles', ())))
+
+
+def _combat_souls(rule, names, rooms):
+    combat = {token for token in rule.all_of if token.startswith('Combat: ')}
+    if combat and combat <= COMBAT_BATTLES.keys():
+        battles = {COMBAT_BATTLES[token] for token in combat}
+        return _battle_souls(names, battles)
+    return tuple(item_name(name) for name in names if rooms.intersection(BY_NAME[name]['rooms']))
+
+
 def _combat_gate(rule, names):
     if BOSS_COMBAT.intersection(rule.all_of) or not any(token.startswith('Combat: ') for token in rule.all_of):
         return rule
     rooms = {token.removeprefix('Room Node: ').split('#')[0] for token in rule.all_of if token.startswith('Room Node: ')}
-    souls = tuple(item_name(name) for name in names if rooms.intersection(BY_NAME[name]['rooms']))
+    souls = _combat_souls(rule, names, rooms)
     return replace(rule, all_of=tuple(dict.fromkeys((*rule.all_of, *souls))))
 
 

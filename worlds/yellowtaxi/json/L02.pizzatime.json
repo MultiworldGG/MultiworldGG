@@ -315,7 +315,8 @@
       "Pizza Time - Second Main Island Mountain Lower": "X3/J1/B1",
       "Pizza Time - High Ground": "J1/B1",
       "Pizza Time - Bunny Island Upper": "NOS+B2+J2 | X1+J2 | X2+J1",
-      "Pizza Time - Floating Orange Island": "B2 & X1/OS | B1+J1+OS | NOS+B2+J1 | X2+B1 & NOS/X3"
+      "Pizza Time - Floating Orange Island": "B2 & X1/OS | B1+J1+OS | NOS+B2+J1 | X2+B1 & NOS/X3",
+      "Pizza Time - Pizza King's Quest": "Pizza"
     },
     "subwarps": {
       "Pizza Time - Hat World Entrance": ["Pizza Time Hat World", ""],
@@ -595,7 +596,7 @@
       "Pizza Time - Cheese on Plateau on First Main Island": 22100004
     },
     "connections": {
-      "Pizza Time - Pizza King's Quest": "X1/B1",
+      "Pizza Time - Pizza King's Path Upper Area": "X1/B1/J2",
       "Pizza Time - Bunny Island Lower": "X2+B1"
     }
   },
@@ -746,6 +747,13 @@
       "Pizza Time - Coin Surrounding Safe on Spire Near Start #4": 20300137,
       "Pizza Time - Coin Surrounding Safe on Spire Near Start #5": 20300141,
       "Pizza Time - Coin Surrounding Safe on Spire Near Start #6": 20300138
+    }
+  },
+  "Pizza Time - Pizza King's Path Upper Area": {
+    "level": "Pizza Time",
+    "sublevel": "Pizza Time",
+    "connections": {
+      "Pizza Time - Pizza King's Quest": "NoPizza"
     }
   },
   "Pizza Time - Pizza King's Quest": {

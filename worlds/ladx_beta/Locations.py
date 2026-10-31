@@ -88,6 +88,12 @@ class LinksAwakeningLocation(Location):
         name = meta_to_name(ladxr_item.metadata)
         address = None
 
+        # dungeon dive alt addresses
+        if ladxr_item.nameId == '0x0B1':
+            name = "Ballad of the Wind Fish (Mabe Village)"
+        elif ladxr_item.nameId == '0x0B2':
+            name = "Sword on the Beach (Toronbo Shores)"
+
         if ladxr_item.event is not None:
             name = ladxr_item.event
         else:

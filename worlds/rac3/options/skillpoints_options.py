@@ -32,4 +32,5 @@ class SkillPoints(Choice):
     option_none = 0
     option_simple = 1
     option_all = 2
+    option_pick_and_mix = 3
     default = 1

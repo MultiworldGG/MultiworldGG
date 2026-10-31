@@ -52,6 +52,7 @@ class DK64MemoryMap:
     memory_pointer = 0x807FFF1C
     rom_flags = 0x807FF8C4
     rom_flag_ap_status = 0x10
+    seed_hash = 0x807FF929
     counter_offset = 0x000
     start_flag = 0x002
     arch_items = 0x004
@@ -91,6 +92,10 @@ class DK64MemoryMap:
     sent_trap = 0x063
     helm_hurry_item = 0x064
     can_receive_shopkeeper = 0x065
+    receive_damage = 0x066
+    send_knockback = 0x067  # Game sets this to 1 when the kong is knocked back. Set it back to 0 once sent
+    receive_knockback = 0x068  # Set to 1 to knock the kong back. The game sets it back to 0 once it has
+    health = 0x807FCC4B  # CollectableBase.Health
     current_kong = 0x8074E77C
     count_struct_pointer = 0x807FFFB8  # Pointer to CountStruct containing item counts
 

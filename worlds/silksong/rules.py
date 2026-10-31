@@ -2,9 +2,9 @@ from __future__ import annotations
 
 from .options import get_silk_and_soul_points
 
-from BaseClasses import Item, ItemClassification
+from BaseClasses import Item, ItemClassification, LocationProgressType
 from Options import OptionError
-from rule_builder.rules import Has, HasAny, False_, True_
+from rule_builder.rules import Has, HasAny
 from worlds.generic.Rules import add_item_rule
 
 from .items import (
@@ -275,6 +275,12 @@ def set_silksong_rules(world) -> None:
             + ", ".join(blocked_priorities)
             + ". Remove them from priority_locations, including any groups that contain them."
         )
+    unknown_checks = [location for location in world.get_locations()
+                      if location.address is not None and location.name in logic_unknown_locations]
+    for location in unknown_checks:
+        location.progress_type = LocationProgressType.EXCLUDED
+        add_item_rule(location, lambda item: not (item.advancement or item.useful))
+        world.set_rule(location, Has("Victory"))
     split_dash_and_sprint = world.is_split_dash_and_sprint()
     randomize_ledge_grab = world.is_ledgegrab_ability_rando_enabled()
     randomize_swim = world.is_swim_ability_rando_enabled()
@@ -331,7 +337,7 @@ def set_silksong_rules(world) -> None:
         'Wish: An Icon of Hope',
         0,
     )
-    excluded_location_names = world.get_goal_excluded_location_names()
+    excluded_location_names = world.get_goal_excluded_location_names() | logic_unknown_locations
     world._silksong_rule_builder_rules = {}
     world._crest_slot_base_rules = {}
 
@@ -574,11 +580,6 @@ def set_silksong_rules(world) -> None:
             location_rule = location_rule & HasAny(
                 *SCROUNGE_RELIC_ITEM_NAMES
             )
-
-        if location_name in logic_unknown_locations and (
-            MAPPER_GRAPH_ENABLED or location_name not in LOGIC_UNKNOWN_LOCATIONS
-        ):
-            location_rule = False_() if getattr(world.multiworld, 'generation_is_fake', False) else True_()
 
         if (
             crest_slot_locket_logic

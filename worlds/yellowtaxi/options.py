@@ -1,21 +1,9 @@
+import random
 from dataclasses import dataclass
 
 from Options import (Choice, OptionGroup, PerGameCommonOptions, Range, Toggle, DefaultOnToggle, DeathLink, FreeText,
-                     StartInventoryPool, OptionSet)
+                     StartInventoryPool, TextChoice, OptionSet, OptionError, OptionCounter)
 from .items import TRAPS
-
-
-# In this file, we define the options the player can pick.
-# The most common types of options are Toggle, Range and Choice.
-
-# Options will be in the game's template yaml.
-# They will be represented by checkboxes, sliders etc. on the game's options page on the website.
-# (Note: Options can also be made invisible from either of these places by overriding Option.visibility.
-#  APQuest doesn't have an example of this, but this can be used for secret / hidden / advanced options.)
-
-# For further reading on options, you can also read the Options API Document:
-# https://github.com/ArchipelagoMW/Archipelago/blob/main/docs/options%20api.md
-
 
 class Goal(Choice):
     """
@@ -34,12 +22,27 @@ class Goal(Choice):
 
 class GoalPortalGearPercentage(Range):
     """
-    Percentage of Gear items needed to access the goal portal.
+    Percentage of Gear items (based on accessible gear locations) needed to access the goal portal.
     """
     display_name = "Goal Portal Gear Percentage"
-    range_start = 40
+    range_start = 45
     range_end = 90
-    default = 60
+    default = 65
+
+class ExtraGearPercentage(Range):
+    """
+    The percentage of the number of gears past the Goal Portal Gear Percentage that will be added to the item pool.
+    Any gears not added will be replaced with random filler.
+
+    If 100 gear locations are available in your seed, and your Goal Portal Gear Percentage is set to 60%:
+    100% will add all 40 extra gears to the pool beyond the 60 required, for a total of 100.
+    50% will add 20 extra gears to the pool beyond the 60 required, for a total of 80.
+    0% will add 0 extra gears to the pool beyond the 60 required, for a total of 60.
+    """
+    display_name = "Extra Gear Percentage"
+    range_start = 0
+    range_end = 100
+    default = 25
 
 class RemoveGoalPortalLocations(Toggle):
     """
@@ -52,7 +55,7 @@ class RemovePostGoalPortals(Toggle):
     """
     If true, removes portals that are after your current goal portal.
 
-    Note that the game does not currently support any portals after Tosla's Offices, so these will always be removed.
+    Note that the game does not currently support any portals after Morio's Mind, so these will always be removed.
     """
 
     display_name = "Remove Post-Goal Portals"
@@ -98,10 +101,10 @@ class ExtraDemoCollectables(Toggle):
 
 class TimeTrialGears(Toggle):
     """
-    Adds each individual gear in Time Trials as a location, and adds the corresponding amount of gears to the pool.
+    Adds each individual gear in Time Attacks as a location, and adds the corresponding amount of gears to the pool.
     """
 
-    display_name = "Add Time Trial Gears"
+    display_name = "Add Time Attack Gears"
 
 class OpenGrannysIsland(Toggle):
     """
@@ -128,7 +131,7 @@ class LockedMoriosWardrobe(Toggle):
 
 class HatWorldMembership(Toggle):
     """
-    Adds a "Hat World Membership" item needed to purchase any hats from Hat World
+    Adds a "Hat World Membership" item needed to purchase any hats.
     """
     display_name = "Hat World Membership"
 
@@ -222,6 +225,27 @@ class PsychoTaxiUnlockCondition(Choice):
     alias_unlocked = option_open
     alias_off = option_exclude
 
+class DreamMachineUnlockCondition(Choice):
+    """
+    How Morio's Dream Machine is unlocked.
+    If Morio's Password is not shuffled and Remove Post-Goal Portals has removed the Morio's Mind Portal, the dream machine will always be disabled.
+
+    Open: The Dream Machine can be activated as soon as it is reached.
+    Full Game: The Dream Machine can be activated after receiving Full Game Unlock. Same as Open if Shuffle Full Game is off.
+    Shuffle Dream Machine: Adds the Dream Machine into the item pool and adds a location for talking to Morio in Morio's Mind if Morio's Mind is an included level.
+    """
+    display_name = "Dream Machine Unlock Condition"
+
+    option_open = 0
+    option_full_game = 1
+    option_shuffle_dream_machine = 2
+    #option_exclude = 3
+
+    default = option_full_game
+    alias_vanilla = option_full_game
+    alias_unlocked = option_open
+    alias_locked = option_shuffle_dream_machine
+
 class MoskRocketUnlockCondition(Choice):
     """
     How Mosk's Rocket is unlocked.
@@ -245,14 +269,15 @@ class MoskRocketUnlockCondition(Choice):
 
 class LockedTimeTrials(Choice):
     """
-    Whether Time Trials are locked behind an item. If set to anything but Open, will add locations for completing each Time Trial.
+    Whether Time Attack TVs are locked behind an item.
+    If set to anything but Open, will add locations for completing each Time Attack.
 
-    Open: Time Trials TVs can always be accessed
-    Single Item: Adds a "Time Trial Remote" item that is needed to access Time Trial TVs
-    Split Items: Adds three specific Time Trial Remote items, each corresponding to an individual Time Trial.
-    Progressive Items: Adds three "Progressive Time Trial Remote" items, each one allowing access to the next sequential Time Trial.
+    Open: Time Attack TVs can always be accessed
+    Single Item: Adds a "Time Attack Remote" item that is needed to access Time Attack TVs
+    Split Items: Adds three specific Time Attack Remote items, each corresponding to an individual Time Attack.
+    Progressive Items: Adds three "Progressive Time Attack Remote" items, each one allowing access to the next sequential Time Attack.
     """
-    display_name = "Locked Time Trials"
+    display_name = "Locked Time Attacks"
 
     option_open = 0
     option_single_item = 1
@@ -294,7 +319,7 @@ class ShuffleOrangeSwitch(DefaultOnToggle):
 
     display_name = "Shuffle Orange Switch"
 
-class ShuffleMoriosPassword(Toggle):
+class ShuffleMoriosPassword(DefaultOnToggle):
     """
     Adds Morio's Password into the item pool and adds a location for obtaining the key in Morio's Mind.
 
@@ -337,13 +362,58 @@ class DemoPortalMode(Choice):
     alias_extra = option_next_fest
     alias_extra_influencers = option_influencers
 
+class RandomizeHatPrices(Toggle):
+    """
+    Whether hat prices should be randomized.
+    """
+    display_name = "Randomize Hat Prices"
+
+class SortRandomizedPricesBySphere(Toggle):
+    """
+    When enabled, randomized hat prices will be sorted lowest -> highest on a sphere-by-sphere basis.
+    """
+    display_name = "Sort Randomized Prices by Sphere"
+
+class MinimumHatPrice(Range):
+    """
+    Minimum price for randomized hat prices.
+
+    If greater than Maximum, they will be swapped.
+    """
+    display_name = "Minimum Randomized Hat Price"
+
+    range_start = 0
+    range_end = 5000
+    default = 0
+
+class MaximumHatPrice(Range):
+    """
+    Maximum price for randomized hat prices.
+
+    If lower than Minimum, they will be swapped.
+    """
+    display_name = "Maximum Randomized Hat Price"
+
+    range_start = 0
+    range_end = 5000
+    default = 1000
 
 class Bunnysanity(Toggle):
     """
-    Adds Golden Bunnies as items and locations. These bunnies are filler items unless Mosk's Rocket is shuffled.
+    Adds Golden Bunnies as items and locations.
+    Items will only be added to the pool if Mosk's Rocket is an included level.
     """
 
     display_name = "Bunnysanity"
+
+class BunnysanityIncludesAllBunnies(DefaultOnToggle):
+    """
+    Adds Golden Bunny items for all levels, even levels not included in the current seed.
+    Has no effect unless Bunnysanity is enabled and Mosk's Rocket is an included level.
+    Will remove filler (and gears if needed) from the pool to compensate for the additional Bunny items.
+    """
+
+    display_name = "Bunnysanity Includes All Bunnies"
 
 class Hatsanity(Choice):
     """
@@ -395,7 +465,7 @@ class ChestsanityPercent(Range):
     display_name = "Chestsanity Percent"
     range_start = 1
     range_end = 100
-    default = 50
+    default = 20
 
 class Coinbagsanity(Toggle):
     """
@@ -411,7 +481,7 @@ class CoinbagsanityPercent(Range):
     display_name = "Coinbagsanity Percent"
     range_start = 1
     range_end = 100
-    default = 20
+    default = 5
 
 class Coinsanity(Toggle):
     """
@@ -454,6 +524,34 @@ class Cheesesanity(Toggle):
 
     display_name = "Cheesesanity"
 
+class Pizzasanity(Toggle):
+    """
+    Adds the 5 Corrupted Pizza Slices as locations and items. Has no effect if Pizza Time isn't an included level.
+    """
+
+    display_name = "Pizzasanity"
+
+class PizzasanityCount(Range):
+    """
+    How many Corrupted Pizza Slice items will be added to the multiworld if Pizzasanity is enabled.
+    All of these items will be required in order to complete the Pizza King's Quest.
+    """
+    display_name = "Pizzasanity Count"
+    range_start = 1
+    range_end = 5
+    default = 5
+
+class EarlyMove(Toggle):
+    """
+    If Flip O' Will Shuffle is enabled, forces either a Progressive Boost or Progressive Jump to local sphere 0.
+
+    Prevents an early BK depending on settings.
+
+    If per-level Flip O' Will randomization is performed, this will be a Hub move.
+    """
+
+    display_name = "Early Move"
+
 class ShuffleFlipOWill(Choice):
     """
     Shuffles the Flip O' Will into the item pool as 2 Progressive Boosts and 2 Progressive Jumps.
@@ -483,13 +581,25 @@ class AllowTopDownJumps(Toggle):
 
     display_name = "Allow Jumping in Top-Down Sections"
 
-class ShuffleSpinAttack(DefaultOnToggle):
+class ShuffleSpinAttack(Choice):
     """
     Shuffles the ability to attack using the Flip O' Will into the pool.
     This attack will knock back enemies and break blocks and oil pumps.
+
+    Progressive adds a second spin attack item. When you have both you can break explosive blocks and destroy cars.
     """
 
     display_name = "Shuffle Spin Attack"
+
+    option_off = 0
+    option_shuffle = 1
+    option_progressive = 2
+
+    default = option_shuffle
+    alias_none = option_off
+    alias_false = option_off
+    alias_true = option_shuffle
+    alias_on = option_shuffle
 
 class ShuffleGlide(Toggle):
     """
@@ -500,16 +610,12 @@ class ShuffleGlide(Toggle):
 
     display_name = "Shuffle Glide"
 
-class EarlyMove(Toggle):
+class ShuffleWorldMap(Toggle):
     """
-    If Flip O' Will Shuffle is enabled, forces either a Progressive Boost or Progressive Jump to local sphere 0.
-
-    Prevents an early BK depending on settings.
-
-    If per-level Flip O' Will randomization is performed, this will be a Hub move.
+    Shuffles the ability to use the World Map from the pause menu into the item pool and adds a new location for talking to a PICI in Morio's Lab.
     """
 
-    display_name = "Early Move"
+    display_name = "Shuffle World Map"
 
 class ShuffleGoldenSpring(DefaultOnToggle):
     """
@@ -589,7 +695,7 @@ class TrapLink(Toggle):
 
 class TrapLinkUsesWhitelist(Toggle):
     """
-    If true, Trap Link will only receive traps from the "Enabled Traps" list.
+    If true, Trap Link will only receive traps that are weighted higher than 0.
     If false, Trap Link can receive any valid trap, including some that are exclusive to Trap Links from other games.
     """
     display_name = "Trap Link Uses Whitelist"
@@ -616,6 +722,21 @@ class EasyAlienMosk(Toggle):
 
     display_name = "Easy Alien Mosk"
 
+class MoriosMindLaserBehavior(Choice):
+    """
+    How Morio's Mind Laser behaves.
+
+    The Hat options will disable the laser as long as you are wearing the relevant hat.
+    """
+    display_name = "Morio's Mind Laser Behavior"
+    option_enabled = 0
+    option_disabled = 1
+    option_morios_brain_hat = 2
+    option_inception_top_hat = 3
+    option_morios_brain_or_inception_top_hat = 4
+
+    default = option_enabled
+
 class QuickPickups(Toggle):
     """
     When enabled, all collectables will use the quick pickup animation, rather than freezing the player in place.
@@ -632,13 +753,19 @@ class TrapFillPercent(Range):
     range_end = 100
     default = 0
 
-class EnabledTraps(OptionSet):
+class TrapDistribution(OptionCounter):
     """
-    Which trap types are enabled.
+    Specify the weighted chance of rolling individual traps.
+    You can use a weight of "0" to disable a trap entirely.
     """
-    display_name = "Enabled Traps"
-    valid_keys = sorted(TRAPS)
-    default = sorted(TRAPS)
+    display_name = "Trap Distribution"
+    min = 0
+    max = 1000
+    valid_keys = frozenset(sorted(TRAPS))
+    default = {
+        trap: 100
+        for trap in sorted(TRAPS)
+    }
 
 class ShopHints(Choice):
     """
@@ -670,7 +797,7 @@ class AllowShufflingRemovedLevels(Choice):
     """
     When on, allows levels to be shuffled when they would normally not be included in the game.
     These levels will potentially replace shuffled levels that would normally be included by your settings.
-    Note that Time Trials, Psycho Taxi, and Mosk's Rocket are unaffected by this setting,
+    Note that Time Attacks, Psycho Taxi, and Mosk's Rocket are unaffected by this setting,
     and will be shuffled into the pool if their shuffle settings are enabled regardless of being excluded or not.
 
     None: Only shuffle levels that would be included by your non-ER options
@@ -711,11 +838,11 @@ class ShuffleGrannysLevels(Toggle):
 
 class ShuffleTimeTrialsEntrances(Toggle):
     """
-    Whether the three Time Trials should have their entrances be shuffled.
+    Whether the three Time Attacks should have their entrances be shuffled.
 
     If "Use Separate Entrance Pools" is true, these will be in the "Miscellaneous" pool.
     """
-    display_name = "Shuffle Time Trial Entrances"
+    display_name = "Shuffle Time Attack Entrances"
 
 class ShuffleRocketEntrance(Toggle):
     """
@@ -751,6 +878,7 @@ class TaxiSkin(Choice):
     option_default_purple = 3
     option_default_red = 4
     option_default_random_every_load = 9
+    option_default_random_every_flip = 1009
 
     option_skeleton = 10
     option_skeleton_green = 11
@@ -759,6 +887,7 @@ class TaxiSkin(Choice):
     option_skeleton_pink = 14
     option_skeleton_light = 15
     option_skeleton_random_every_load = 19
+    option_skeleton_random_every_flip = 1019
 
     option_golden = 20
     option_golden_bright_yellow = 21
@@ -766,6 +895,7 @@ class TaxiSkin(Choice):
     option_golden_light = 23
     option_golden_orange = 24
     option_golden_random_every_load = 29
+    option_golden_random_every_flip = 1029
 
     option_prototype = 30
     option_prototype_yellow = 31
@@ -774,20 +904,37 @@ class TaxiSkin(Choice):
     option_prototype_pink = 34
     option_prototype_red = 35
     option_prototype_random_every_load = 39
+    option_prototype_random_every_flip = 1039
+
+    option_car_blue = 40
+    option_car_green = 41
+    option_car_orange = 42
+    option_car_pink = 43
+    option_car_red = 44
+    option_car_white = 45
+    option_car_random_every_load = 49
+    option_car_random_every_flip = 1049
 
     option_corrupted_car = 50
 
     option_grannys_car = 60
     option_grannys_car_corrupted = 61
+    option_stars_and_stripes = 62
 
     option_pink_flames = 70
     option_pink_flames_corrupted = 71
+
+    option_police_car = 80
+    option_police_car_corrupted = 81
+
+    option_city_taxi = 90
 
     option_destroyed = 100
 
     option_custom = 1000
 
     option_random_every_load = 999
+    option_random_every_flip = 1999
 
     default = option_default_yellow
     alias_yellow = option_default_yellow
@@ -797,15 +944,275 @@ class TaxiSkin(Choice):
     alias_purple = option_default_purple
     alias_red = option_default_red
     alias_corrupted = option_corrupted_car
-    alias_grannys_car_alt = option_pink_flames
-    alias_grannys_car_corrupted_alt = option_pink_flames_corrupted
     alias_random_per_load = option_random_every_load
     alias_fully_random = option_random_every_load
+    alias_chaos = option_random_every_flip
+
+class GlitchedTaxiSkinColor(TextChoice):
+    """
+    Sets the color used for the Glitched Taxi Skin.
+    Can also be set to a hex color code (e.g. '#FF00DC') for a custom color.
+    """
+    display_name = "Glitched Taxi Skin Color"
+    option_vanilla_orange = "vanilla_orange"
+    option_time_attack_green = "time_attack_green"
+    #option_time_attack_gold = "time_attack_gold" # Too similar to vanilla to be listed. Can still be inputted though.
+    option_red = "red"
+    option_cyan = "cyan"
+    option_blue = "blue"
+    option_darkblue = "darkblue"
+    option_lightblue = "lightblue"
+    option_purple = "purple"
+    option_yellow = "yellow"
+    #option_lime = "lime" # Too similar to time attack green to be listed. Can still be inputted though.
+    option_fuchsia = "fuchsia"
+    option_white = "white"
+    option_silver = "silver"
+    option_grey = "grey"
+    option_black = "black"
+    #option_orange = "orange" # Too similar to vanilla to be listed. Can still be inputted though.
+    option_brown = "brown"
+    option_maroon = "maroon"
+    option_green = "green"
+    option_olive = "olive"
+    option_navy = "navy"
+    option_teal = "teal"
+    option_aqua = "aqua"
+    option_magenta = "magenta"
+
+    default = option_vanilla_orange
+
+    @classmethod
+    def from_text(cls, text: str) -> TextChoice:
+        # Special Values and HTML colors supported by Unity
+        # https://docs.unity3d.com/2020.3/Documentation/ScriptReference/ColorUtility.TryParseHtmlString.html
+        if text.lower() in ["red", "cyan", "blue", "darkblue", "lightblue", "purple", "yellow", "lime", "fuchsia",
+                            "white", "silver", "grey", "black", "orange", "brown", "maroon", "green", "olive", "navy",
+                            "teal", "aqua", "magenta", "vanilla_orange", "time_attack_green", "time_attack_gold"]:
+            return cls(text.lower())
+        # Interpret "random" as a completely random hex code
+        if text.lower() == "random":
+            return cls(f"#{random.randbytes(3).hex().upper()}")
+        # Check hex color for validity. Allow with or without leading #
+        cleaned = text.strip().lstrip("#")
+        if len(cleaned) == 6:
+            try:
+                int(cleaned, 16)
+                return cls("#" + cleaned.upper())
+            except ValueError:
+                pass
+        raise OptionError(text + " is not a valid color")
+
+class GearType(Choice):
+    """
+    Change the appearance of uncollected gears.
+    Default will use either Standard or Time Attack depending on if the level is a Time Attack level.
+    Inverse will use the opposite (either standard or time attack) as it would in vanilla
+    """
+    display_name = "Gear Type"
+    option_default = 0
+    option_inverse = 1
+    option_standard = 2
+    option_time_attack = 3
+
+class StandardGearColor(TextChoice):
+    """
+    Sets the color used for uncollected standard gears.
+    Default will use either the standard or colorblind material depending on in-game settings.
+    Can also be set to a hex color code (e.g. '#E91E63') for a custom color.
+    """
+    display_name = "Gear Color"
+    option_default = "default"
+    option_vanilla_green = "vanilla_green"
+    option_vanilla_colorblind_blue = "vanilla_colorblind_blue"
+    option_red = "red"
+    option_cyan = "cyan"
+    option_blue = "blue"
+    option_darkblue = "darkblue"
+    option_lightblue = "lightblue"
+    option_purple = "purple"
+    option_yellow = "yellow"
+    option_lime = "lime"
+    option_fuchsia = "fuchsia"
+    option_white = "white"
+    option_silver = "silver"
+    option_grey = "grey"
+    option_black = "black"
+    option_orange = "orange"
+    option_brown = "brown"
+    option_maroon = "maroon"
+    option_green = "green"
+    option_olive = "olive"
+    option_navy = "navy"
+    option_teal = "teal"
+    option_aqua = "aqua"
+    option_magenta = "magenta"
+
+    default = option_default
+
+    @classmethod
+    def from_text(cls, text: str) -> TextChoice:
+        # Special Values and HTML colors supported by Unity
+        # https://docs.unity3d.com/2020.3/Documentation/ScriptReference/ColorUtility.TryParseHtmlString.html
+        if text.lower() in ["red", "cyan", "blue", "darkblue", "lightblue", "purple", "yellow", "lime", "fuchsia",
+                            "white", "silver", "grey", "black", "orange", "brown", "maroon", "green", "olive", "navy",
+                            "teal", "aqua", "magenta", "default", "vanilla_green", "vanilla_colorblind_blue"]:
+            return cls(text.lower())
+        # Interpret "random" as a completely random hex code
+        if text.lower() == "random":
+            return cls(f"#{random.randbytes(3).hex().upper()}")
+        # Check hex color for validity. Allow with or without leading #
+        cleaned = text.strip().lstrip("#")
+        if len(cleaned) == 6:
+            try:
+                int(cleaned, 16)
+                return cls("#" + cleaned.upper())
+            except ValueError:
+                pass
+        raise OptionError(text + " is not a valid color")
+
+class TimeAttackGearColor(TextChoice):
+    """
+    Sets the color used for uncollected time attack gears.
+    Can also be set to a hex color code (e.g. '#E91E63') for a custom color.
+    """
+    display_name = "Time Attack Gear Color"
+    option_vanilla_green = "vanilla_green"
+    option_gold = "gold"
+    option_red = "red"
+    option_cyan = "cyan"
+    option_blue = "blue"
+    option_darkblue = "darkblue"
+    option_lightblue = "lightblue"
+    option_purple = "purple"
+    option_yellow = "yellow"
+    #option_lime = "lime" # Too similar to standard green to be listed. Can still be inputted though.
+    option_fuchsia = "fuchsia"
+    option_white = "white"
+    option_silver = "silver"
+    option_grey = "grey"
+    option_black = "black"
+    option_orange = "orange"
+    option_brown = "brown"
+    option_maroon = "maroon"
+    option_green = "green"
+    option_olive = "olive"
+    option_navy = "navy"
+    option_teal = "teal"
+    option_aqua = "aqua"
+    option_magenta = "magenta"
+
+    default = option_vanilla_green
+
+    @classmethod
+    def from_text(cls, text: str) -> TextChoice:
+        # Special Values and HTML colors supported by Unity
+        # https://docs.unity3d.com/2020.3/Documentation/ScriptReference/ColorUtility.TryParseHtmlString.html
+        if text.lower() in ["red", "cyan", "blue", "darkblue", "lightblue", "purple", "yellow", "lime", "fuchsia",
+                            "white", "silver", "grey", "black", "orange", "brown", "maroon", "green", "olive", "navy",
+                            "teal", "aqua", "magenta", "vanilla_green", "gold"]:
+            return cls(text.lower())
+        # Interpret "random" as a completely random hex code
+        if text.lower() == "random":
+            return cls(f"#{random.randbytes(3).hex().upper()}")
+        # Check hex color for validity. Allow with or without leading #
+        cleaned = text.strip().lstrip("#")
+        if len(cleaned) == 6:
+            try:
+                int(cleaned, 16)
+                return cls("#" + cleaned.upper())
+            except ValueError:
+                pass
+        raise OptionError(text + " is not a valid color")
+
+class MorioCostume(Choice):
+    """
+    What costume Morio will wear in the lab.
+    Default will wear the relevant seasonal costume he would wear in vanilla as applicable.
+    """
+    display_name = "Morio Costume"
+    option_default = -1
+    option_no_costume = 0
+    option_halloween = 1
+    option_christmas = 2
+    option_valentines_day = 3
+    option_random_costume_every_load = -2
+    option_random_costume_parts_every_load = -3
+
+    default = option_default
+    alias_none = option_no_costume
+    alias_pumpkin = option_halloween
+    alias_santa = option_christmas
+    alias_cupid = option_valentines_day
+    alias_valentines = option_valentines_day
+    alias_random_per_load = option_random_costume_every_load
+    alias_fully_random = option_random_costume_parts_every_load
+
+class RandomizeMusic(Choice):
+    """
+    Whether (and how) music will be randomized.
+
+    Consistent: Shuffles music, everywhere that plays the same song in vanilla will remain consistent with each other.
+    Random Every Load: Every time a load happens, the music will be determined at complete random.
+    Radio: Songs will play until their loop point, at which point the song will change to a valid random one.
+    """
+    display_name = "Randomize Music"
+
+    option_off = 0
+    option_consistent = 1
+    option_random_every_load = 2
+    #option_singularity = 3
+    option_radio = -1
+
+    alias_random_per_load = option_random_every_load
+    alias_fully_random = option_random_every_load
+
+class IncludeTitleAndCreditsMusic(Toggle):
+    """
+    Whether Randomize Music will include the Title and Credits themes as possible songs.
+
+    Has no effect if Randomize Music is off.
+    """
+    display_name = "Include Title and Credits Music"
+
+class SeparateBossMusic(Toggle):
+    """
+    If enabled, bosses will only play boss themes, and no boss themes will play elsewhere.
+
+    Has no effect if Randomize Music is off.
+    """
+    display_name = "Separate Boss Music"
+
+class RandomizeSkyboxes(Choice):
+    """
+    Whether (and how) skyboxes will be randomized.
+
+    Consistent: Shuffles skyboxes, everywhere with the same skybox in vanilla will remain consistent with each other.
+    Random Every Load: Every time a load happens, the skybox will be determined at complete random.
+    """
+    display_name = "Randomize Skyboxes"
+
+    option_off = 0
+    option_consistent = 1
+    option_random_every_load = 2
+    #option_singularity = 3
+
+    alias_random_per_load = option_random_every_load
+    alias_fully_random = option_random_every_load
+
+class ExcludeBoringSkyboxes(Toggle):
+    """
+    If enabled, Skyboxes consisting of a single color will not be included in the randomization.
+
+    Has no effect if Randomize Skyboxes is off.
+    """
+    display_name = "Exclude Boring Skyboxes"
 
 @dataclass
 class YellowTaxiOptions(PerGameCommonOptions):
     goal: Goal
     goal_portal_gear_percentage: GoalPortalGearPercentage
+    extra_gear_percentage: ExtraGearPercentage
     remove_goal_portal_locations : RemoveGoalPortalLocations
     remove_post_goal_portals : RemovePostGoalPortals
     expert_level: ExpertLevel
@@ -821,6 +1228,7 @@ class YellowTaxiOptions(PerGameCommonOptions):
     locked_morios_wardrobe: LockedMoriosWardrobe
     locked_time_trials: LockedTimeTrials
     psycho_taxi_unlock_condition: PsychoTaxiUnlockCondition
+    dream_machine_unlock_condition: DreamMachineUnlockCondition
     gym_gears_unlock_condition: GymGearsUnlockCondition
     fecal_matters_unlock_condition: FecalMattersUnlockCondition
     flushed_away_unlock_condition: FlushedAwayUnlockCondition
@@ -831,8 +1239,13 @@ class YellowTaxiOptions(PerGameCommonOptions):
     shuffle_morios_password: ShuffleMoriosPassword
     shuffle_full_game: ShuffleFullGame
     demo_portal_mode: DemoPortalMode
-    shuffle_rat: ShuffleRat
+    hat_world_membership: HatWorldMembership
+    randomize_hat_prices: RandomizeHatPrices
+    sort_randomized_prices_by_sphere: SortRandomizedPricesBySphere
+    minimum_hat_price: MinimumHatPrice
+    maximum_hat_price: MaximumHatPrice
     bunnysanity: Bunnysanity
+    bunnysanity_includes_all_bunnies: BunnysanityIncludesAllBunnies
     hatsanity: Hatsanity
     hatsanity_filler_hats: HatsanityFillerHats
     checkpointsanity: Checkpointsanity
@@ -845,22 +1258,27 @@ class YellowTaxiOptions(PerGameCommonOptions):
     coinsanity_percent: CoinsanityPercent
     coinsanity_non_filler_cap: CoinsanityNonFillerCap
     cheesesanity: Cheesesanity
+    pizzasanity: Pizzasanity
+    pizzasanity_count: PizzasanityCount
+    early_move: EarlyMove
     shuffle_flip_o_will: ShuffleFlipOWill
     allow_top_down_jumps: AllowTopDownJumps
     shuffle_spin_attack: ShuffleSpinAttack
     shuffle_glide: ShuffleGlide
-    early_move: EarlyMove
+    shuffle_world_map: ShuffleWorldMap
     shuffle_golden_spring: ShuffleGoldenSpring
     shuffle_golden_propeller: ShuffleGoldenPropeller
+    shuffle_rat: ShuffleRat
     pizza_wheels: PizzaWheels
     extra_demo_collectables: ExtraDemoCollectables
     time_trial_gears: TimeTrialGears
     funny_faces: FunnyFaces
     easy_alien_mosk: EasyAlienMosk
+    morios_mind_laser_behavior: MoriosMindLaserBehavior
     quick_pickups: QuickPickups
     start_inventory_from_pool: StartInventoryPool
     trap_fill_percent: TrapFillPercent
-    enabled_traps: EnabledTraps
+    trap_distribution: TrapDistribution
     shop_hints: ShopHints
     use_separate_entrance_pools: UseSeparateEntrancePools
     allow_shuffling_removed_levels: AllowShufflingRemovedLevels
@@ -870,6 +1288,16 @@ class YellowTaxiOptions(PerGameCommonOptions):
     shuffle_rocket_entrance: ShuffleRocketEntrance
     shuffle_psycho_taxi_entrance: ShufflePsychoTaxiEntrance
     taxi_skin: TaxiSkin
+    glitched_taxi_skin_color: GlitchedTaxiSkinColor
+    gear_type: GearType
+    standard_gear_color: StandardGearColor
+    time_attack_gear_color: TimeAttackGearColor
+    morio_costume: MorioCostume
+    randomize_music: RandomizeMusic
+    include_title_and_credits_music: IncludeTitleAndCreditsMusic
+    separate_boss_music: SeparateBossMusic
+    randomize_skyboxes: RandomizeSkyboxes
+    exclude_boring_skyboxes: ExcludeBoringSkyboxes
 
 # If we want to group our options by similar type, we can do so as well. This looks nice on the website.
 option_groups = [
@@ -879,6 +1307,7 @@ option_groups = [
             ExtraDemoCollectables,
             TimeTrialGears,
             Bunnysanity,
+            BunnysanityIncludesAllBunnies,
             Hatsanity,
             HatsanityFillerHats,
             Checkpointsanity,
@@ -890,6 +1319,8 @@ option_groups = [
             Coinsanity,
             CoinsanityPercent,
             Cheesesanity,
+            Pizzasanity,
+            PizzasanityCount,
         ],
     ),
     OptionGroup(
@@ -900,6 +1331,7 @@ option_groups = [
             LockedMoriosWardrobe,
             LockedTimeTrials,
             PsychoTaxiUnlockCondition,
+            DreamMachineUnlockCondition,
             GymGearsUnlockCondition,
             FecalMattersUnlockCondition,
             FlushedAwayUnlockCondition,
@@ -910,20 +1342,26 @@ option_groups = [
             ShuffleMoriosPassword,
             ShuffleFullGame,
             DemoPortalMode,
+            HatWorldMembership,
+            RandomizeHatPrices,
+            SortRandomizedPricesBySphere,
+            MinimumHatPrice,
+            MaximumHatPrice,
         ],
     ),
     OptionGroup(
         "Ability Randomizer Options",
         [
+            EarlyMove,
             ShuffleFlipOWill,
             AllowTopDownJumps,
             ShuffleSpinAttack,
             ShuffleGlide,
-            EarlyMove,
             ShuffleGoldenSpring,
             ShuffleGoldenPropeller,
             PizzaWheels,
             ShuffleRat,
+            ShuffleWorldMap,
         ],
     ),
     OptionGroup(
@@ -945,6 +1383,7 @@ option_groups = [
             ShopHints,
             PurchaseRebatePercent,
             EasyAlienMosk,
+            MoriosMindLaserBehavior,
         ],
     ),
     OptionGroup(
@@ -953,14 +1392,24 @@ option_groups = [
             TrapLink,
             TrapLinkUsesWhitelist,
             TrapFillPercent,
-            EnabledTraps,
+            TrapDistribution,
         ],
     ),
     OptionGroup(
         "Cosmetic Options",
         [
             TaxiSkin,
+            GlitchedTaxiSkinColor,
             FunnyFaces,
+            GearType,
+            StandardGearColor,
+            TimeAttackGearColor,
+            RandomizeMusic,
+            IncludeTitleAndCreditsMusic,
+            SeparateBossMusic,
+            RandomizeSkyboxes,
+            ExcludeBoringSkyboxes,
+            MorioCostume,
         ],
     ),
     OptionGroup(

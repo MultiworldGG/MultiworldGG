@@ -43,45 +43,49 @@
                             {% endif %}
                         {% else %}
                             {% if patch.game == "Jigsaw" %}
-                            <a href="https://jigsaw-ap.netlify.app/?hostport={{ config['HOST_ADDRESS'] }}:{{ room.last_port }}&name={{ patch.player_name | e}}">
+                            <a href="https://jigsaw-ap.netlify.app/?hostport={{ config['HOST_ADDRESS'] }}:{{ room.last_port }}&name={{ patch.player_name | e}}" target="_blank" rel="noopener noreferrer">
                                 Open game on jigsaw-ap.netlify.app</a>
                             {% elif patch.game == "Isles of Trials" %}
-                            <a href="https://www.chromanyan.page/islestrialsap/?Protocol=://{{ patch.player_name | urlencode }}:@{{ config['HOST_ADDRESS'] }}:{{ room.last_port }}&amp;auto=True">
+                            <a href="https://www.chromanyan.page/islestrialsap/?Protocol=://{{ patch.player_name | urlencode }}:@{{ config['HOST_ADDRESS'] }}:{{ room.last_port }}&amp;auto=True" target="_blank" rel="noopener noreferrer">
                                 Join room via chromanyan.page</a>
                             {% elif patch.game == "Build a Jetpack" %}
-                            <a href="https://www.chromanyan.page/buildajetpackap/?Protocol=://{{ patch.player_name | urlencode }}:@{{ config['HOST_ADDRESS'] }}:{{ room.last_port }}&amp;auto=True">
+                            <a href="https://www.chromanyan.page/buildajetpackap/?Protocol=://{{ patch.player_name | urlencode }}:@{{ config['HOST_ADDRESS'] }}:{{ room.last_port }}&amp;auto=True" target="_blank" rel="noopener noreferrer">
                                 Join room via chromanyan.page</a>
                             {% elif patch.game == "Candy Box 2" %}
-                            <a href="https://candybox2-ap.vicr123.com">
+                            <a href="https://candybox2-ap.vicr123.com" target="_blank" rel="noopener noreferrer">
                                 Join game on candybox2-ap.vicr123.com</a>
                             {% elif patch.game == "Clique" %}
-                            <a href="https://clique.pharware.com/">
+                            <a href="https://clique.pharware.com/" target="_blank" rel="noopener noreferrer">
                                 Join game on clique.pharware.com</a>    
                             {% elif patch.game == "Paint" %}
-                            <a href="https://mariomantaw.github.io/jspaint/">
+                            <a href="https://mariomantaw.github.io/jspaint/" target="_blank" rel="noopener noreferrer">
                                 Join game on mariomantaw.github.io/jspaint</a>
                             {% elif patch.game == "Wordipelago" %}
-                            <a href="https://apworlds.com/wordipelago">
+                            <a href="https://apworlds.com/wordipelago" target="_blank" rel="noopener noreferrer">
                                 Join game on apworlds.com/wordipelago</a> 
                             {% elif patch.game == "Yacht Dice" %}
-                            <a href="https://yacht-dice-ap.netlify.app/?hostport={{ config['HOST_ADDRESS'] }}:{{ room.last_port }}&name={{ patch.player_name | e}}&go=LS">
+                            <a href="https://yacht-dice-ap.netlify.app/?hostport={{ config['HOST_ADDRESS'] }}:{{ room.last_port }}&name={{ patch.player_name | e}}&go=LS" target="_blank" rel="noopener noreferrer">
                                 Join game on yacht-dice-ap.netlify.app</a>         
                             {% elif patch.game == "Archipelaballs" %}
-                            <a href="https://archipelaballs.shinten.moe/?host={{ config['HOST_ADDRESS'] }}:{{ room.last_port }}&slot={{ patch.player_name | e}}">
+                            <a href="https://archipelaballs.shinten.moe/?host={{ config['HOST_ADDRESS'] }}:{{ room.last_port }}&slot={{ patch.player_name | e}}" target="_blank" rel="noopener noreferrer">
                                 Join game on archipelaballs.shinten.moe</a>                             
                             {% else %}
                                 No file to download for this game.
                             {% endif %}
+                        {% endif %}
+                        {% if patch.game == "Donkey Kong 64" %}
+                        <br />
+                        <a href="https://dev.dk64randomizer.com/randomizer.html" target="_blank" rel="noopener noreferrer">Open DK64 Patcher</a>
                         {% endif %}
                     </td>
                     <td>
                         <a href="{{ url_for("get_player_tracker", tracker=room.tracker, tracked_team=0, tracked_player=patch.player_id) }}">Tracker</a>
                         {% if patch.game == "The Wind Waker" %}
                         <br />
-                        <a href="https://thesword1.github.io/WWRando-APTracker">Web Auto Tracker</a>
+                        <a href="https://thesword1.github.io/WWRando-APTracker" target="_blank" rel="noopener noreferrer">Web Auto Tracker</a>
                         {% elif patch.game == "Skyward Sword" %}
                         <br />
-                        <a href="https://youraveragelink.github.io/SS-Randomizer-Tracker">Web Auto Tracker</a>
+                        <a href="https://youraveragelink.github.io/SS-Randomizer-Tracker" target="_blank" rel="noopener noreferrer">Web Auto Tracker</a>
                         {% endif %}
                     </td>
                 </tr>

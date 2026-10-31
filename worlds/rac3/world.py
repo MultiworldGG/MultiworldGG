@@ -14,7 +14,8 @@ from worlds.rac3.constants.options import RAC3OPTION
 from worlds.rac3.constants.shortcuts import RAC3SHORTCUTS
 from worlds.rac3.items import (create_item, create_itempool, get_filler_selection, process_start_inventory,
                                starting_planets, starting_weapons)
-from worlds.rac3.locations import get_location_names, get_region_locations, get_total_locations, location_groups
+from worlds.rac3.locations import (get_end_locations, get_location_names, get_region_locations, get_total_locations,
+                                   location_groups)
 from worlds.rac3.rac3options import RaC3Options
 from worlds.rac3.regions import create_regions, get_nanotech_locations, get_regions
 from worlds.rac3.rules import set_rules
@@ -69,6 +70,7 @@ class RaC3World(World):
                                 "There may be bugs present and features that have not been tested fully.\n"
                                 "These builds are meant for testing and bug reporting purposes "
                                 "and should not be used for normal play!\n")
+        self.sanitize_options()
         # implement .yaml-less Universal Tracker support
         setup_options_from_slot_data(self)
         self.preplaced_items = [RAC3ITEM.VELDIN, RAC3ITEM.THIRD_PERSON, RAC3ITEM.FIRST_PERSON, RAC3ITEM.LOCK_STRAFE]
@@ -81,6 +83,34 @@ class RaC3World(World):
         starting_planets(self)
         self.handle_option_errors()
         self.dead_seed_check()
+
+    def sanitize_options(self):
+        """Reads the YAML options and adjusts them to sensible values"""
+        if self.options.goal_planets.value > 0:
+            planets = self.options.goal_planets.value
+            if self.options.rangers.value in [self.options.rangers.option_none,
+                                              self.options.rangers.option_optional_missions]:
+                planets -= 3  # Marcadia, Blackwater City, Aridia
+            if self.options.arena.value != self.options.arena.option_all:
+                planets -= 1  # AN
+            if planets != self.options.goal_planets.value:
+                self.options.goal_planets.value = planets if planets > 0 else 0
+                rac3_logger.info(
+                    f"Player: {self.player_name} had their required planets reduced to "
+                    f"{self.options.goal_planets.value} due to disabled settings")
+        if self.options.goal_skillpoints.value > 0 and self.options.lock_command_center.value:
+            self.options.goal_skillpoints.value -= 1  # Spread Your Germs Skillpoint
+            rac3_logger.info(f"Player: {self.player_name} had their required skillpoints reduced to "
+                             f"{self.options.goal_skillpoints.value} because of locked Command Center")
+        if self.options.goal_tbolts.value > 0 and self.options.lock_command_center.value:
+            self.options.goal_tbolts.value -= 1  # CC Tbolt
+            rac3_logger.info(f"Player: {self.player_name} had their required titanium bolts reduced to "
+                             f"{self.options.goal_tbolts.value} because of locked Command Center")
+        if self.options.goal_museum.value and self.options.lock_command_center.value:
+            self.options.goal_museum.value = False
+            rac3_logger.info(f"Player: {self.player_name} had their required Insomniac Museum removed as it is not "
+                             f"possible to reach before Command Center, which is locked by it")
+        return
 
     def create_item(self, name: str) -> Item:
         return create_item(self, name)
@@ -167,9 +197,10 @@ class RaC3World(World):
                         self.create_item(self.starting_planet_list[1]))
         self.preplaced_items.extend(self.starting_weapon_list)
         self.preplaced_items.extend(self.starting_planet_list)
-        self.get_location(RAC3LOCATION.COMMAND_CENTER_BIOBLITERATOR).place_locked_item(
-            self.create_item(RAC3ITEM.VICTORY))
-        self.preplaced_items.append(RAC3ITEM.VICTORY)
+        if self.options.lock_command_center.value and (self.options.goal_bio.value or self.options.goal_nef.value):
+            self.get_location(RAC3LOCATION.COMMAND_CENTER_INFOBOT).place_locked_item(
+                self.create_item(RAC3ITEM.COMMAND_CENTER))
+            self.preplaced_items.append(RAC3ITEM.COMMAND_CENTER)
 
     def create_items(self):
         """Create the items used in the world"""
@@ -333,8 +364,10 @@ class RaC3World(World):
             RAC3OPTION.BOLT_AND_XP_MULTIPLIER: self.options.bolt_and_xp_multiplier.value,
             RAC3OPTION.PROGRESSIVE_WEAPONS: self.options.progressive_weapons.value,
             RAC3OPTION.WEAPON_MODS: self.options.weapon_mods.value,
+            RAC3OPTION.PROGRESSIVE_WRENCH: self.options.progressive_wrench.value,
             RAC3OPTION.ARMOR_UPGRADE: self.options.armor_upgrade.value,
             RAC3OPTION.SKILL_POINTS: self.options.skill_points.value,
+            RAC3OPTION.SKILL_POINTS_PICK_AND_MIX: self.options.skill_points_pick_and_mix.value,
             RAC3OPTION.TROPHIES: self.options.trophies.value,
             RAC3OPTION.TITANIUM_BOLTS: self.options.titanium_bolts.value,
             RAC3OPTION.NANOTECH_MILESTONES: self.options.nanotech_milestones.value,
@@ -374,7 +407,27 @@ class RaC3World(World):
             RAC3OPTION.BONUS_VIDCOMIC_HEALTH: self.options.bonus_vidcomic_health.value,
             RAC3OPTION.VIDCOMIC_HEALTH_UPGRADES: self.options.vidcomic_health_upgrades.value,
             RAC3OPTION.DEATHLINK_BEHAVIOR: self.options.deathlink_behavior.value,
+            RAC3OPTION.LOCK_CC: self.options.lock_command_center.value,
+            RAC3OPTION.GOAL_BIO: self.options.goal_bio.value,
+            RAC3OPTION.GOAL_NEF: self.options.goal_nef.value,
+            RAC3OPTION.GOAL_NANO: self.options.goal_nano.value,
+            RAC3OPTION.GOAL_CRYSTAL: self.options.goal_crystal.value,
+            RAC3OPTION.GOAL_TBOLTS: self.options.goal_tbolts.value,
+            RAC3OPTION.GOAL_SKILLPOINTS: self.options.goal_skillpoints.value,
+            RAC3OPTION.GOAL_QWARK: self.options.goal_qwark.value,
+            RAC3OPTION.GOAL_MUSEUM: self.options.goal_museum.value,
+            RAC3OPTION.GOAL_PLANETS: self.options.goal_planets.value,
+            RAC3OPTION.GOAL_COMPLETION: self.options.goal_completion.value,
+            RAC3OPTION.GOAL_BOSS_QWARK: self.options.goal_boss_qwark.value,
+            RAC3OPTION.GOAL_BOSS_TWO: self.options.goal_boss_two.value,
+            RAC3OPTION.GOAL_BOSS_NOID: self.options.goal_boss_noid.value,
+            RAC3OPTION.GOAL_BOSS_WARSHIP: self.options.goal_boss_warship.value,
+            RAC3OPTION.GOAL_BOSS_SCORPIO: self.options.goal_boss_scorpio.value,
+            RAC3OPTION.GOAL_BOSS_TALOS: self.options.goal_boss_talos.value,
+            RAC3OPTION.GOAL_BOSS_GEARS: self.options.goal_boss_gears.value,
+            RAC3OPTION.GOAL_BOSS_KLUNK: self.options.goal_boss_klunk.value,
             RAC3OPTION.TOTAL_LOCATIONS: get_total_locations(self),
+            RAC3OPTION.PRE_END: get_total_locations(self) - len(get_end_locations(self)),
         }
 
         return slot_data

@@ -1,6 +1,6 @@
-from worlds.stardew_valley.strings.entrance_names import LogicEntrance
-from worlds.stardew_valley.strings.region_names import LogicRegion
-from worlds.stardew_valley.strings.season_names import Season
+from ..strings.entrance_names import LogicEntrance
+from ..strings.region_names import LogicRegion
+from ..strings.season_names import Season
 
 
 class FestivalData:

@@ -309,6 +309,8 @@ class OracleOfAgesClient(BizHawkClient):
                 ganon_flag_offset = 0xCAF1 - RAM_ADDRS["location_flags"][0]
                 ganon_was_beaten = (flag_bytes[ganon_flag_offset] & 0x80 == 0x80)
                 game_clear = (current_room == ROOM_ZELDA_ENDING) and ganon_was_beaten
+            elif ctx.slot_data['options']["goal"] == OracleOfAgesGoal.option_collect_maku_seed:
+                game_clear = self.flags_values["Obtained Maku Seed"]
         if game_clear:
             await ctx.send_msgs([{
                 "cmd": "StatusUpdate",

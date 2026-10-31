@@ -434,8 +434,9 @@ class SilksongWorld(CachedRuleBuilderWorld):
         return configured_crest
 
     def get_starting_location_key(self) -> str:
+        from .requirements import SUPPORTED_STARTING_LOCATIONS
         key = self.options.starting_location.current_key
-        if key not in {"vanilla", "bone_bottom"}:
+        if key not in SUPPORTED_STARTING_LOCATIONS:
             raise OptionError(
                 f"Unknown Silksong starting location: {key!r}"
             )
@@ -672,6 +673,8 @@ class SilksongWorld(CachedRuleBuilderWorld):
         if (self.is_ledgegrab_ability_rando_enabled()
                 and self.options.starting_location.current_key == 'vanilla'):
             self.options.starting_location.value = self.options.starting_location.option_bone_bottom
+        if self.get_starting_location_key() == 'songclave' and self.is_act_one_content_scope():
+            raise OptionError("Songclave start requires an Act 2 or later goal.")
         self._vog_hint_plan = None
         if self.is_alphabet_mode_enabled():
             self.options.alphabet_mode.value = 1
@@ -712,8 +715,9 @@ class SilksongWorld(CachedRuleBuilderWorld):
             steel_soul=self.is_steel_soul(),
             required_goal_items=enemy_soul_required_pool_items(self),
             silk_soar_begone=bool(self.options.silk_soar_begone),
+            soul_pool_entries=self._soul_pool_entries(),
         )
-        if self.is_early_dash_enabled():
+        if self.is_early_sprint_enabled():
             player_early_items = self.multiworld.local_early_items[
                 self.player
             ]
@@ -728,7 +732,7 @@ class SilksongWorld(CachedRuleBuilderWorld):
                 player_early_items[right] = player_early_items.get(right, 0) + 1
             player_early_items[early_item_name] = (
                 player_early_items.get(early_item_name, 0)
-                + (3 if 'Dash' in self.get_directional_abilities() else 1)
+                + 1
             )
 
         self.options.non_local_items.value.difference_update(
@@ -748,9 +752,9 @@ class SilksongWorld(CachedRuleBuilderWorld):
             and self.get_category_mode('Skill') == 'anywhere'
         )
 
-    def is_early_dash_enabled(self) -> bool:
+    def is_early_sprint_enabled(self) -> bool:
         return (
-            bool(self.options.early_dash.value)
+            bool(self.options.early_sprint.value)
             and self.get_category_mode('Skill') == 'anywhere'
         )
 
@@ -1009,11 +1013,18 @@ class SilksongWorld(CachedRuleBuilderWorld):
                 set(LOCATION_NAMES_BY_CATEGORY['MemoryLocket'])
                 - excluded - self.get_logic_unknown_locations()
             )
-        starting_count = sum(
-            item.name == MEMORY_LOCKET_ITEM
-            for item in self.multiworld.precollected_items[self.player]
+        starting_count = max(
+            self.options.start_inventory.value.get(MEMORY_LOCKET_ITEM, 0),
+            sum(item.name == MEMORY_LOCKET_ITEM
+                for item in self.multiworld.precollected_items[self.player])
+            - self.options.start_inventory_from_pool.value.get(MEMORY_LOCKET_ITEM, 0),
         )
         return max(0, active_count - native_count - starting_count)
+
+    def _soul_pool_entries(self):
+        from .boss_souls import pool_entries as boss_entries
+        from .npc_souls import pool_entries as npc_entries
+        return (*boss_entries(self), *npc_entries(self))
 
     def resolve_trap_counts(self) -> dict[str, int]:
         if self._resolved_trap_counts is not None:
@@ -1049,6 +1060,7 @@ class SilksongWorld(CachedRuleBuilderWorld):
             silk_soar_begone=bool(self.options.silk_soar_begone),
             minimum_memory_lockets=self._minimum_pool_lockets(),
             required_goal_items=enemy_soul_required_pool_items(self),
+            soul_pool_entries=self._soul_pool_entries(),
         )
         total_traps = (trap_capacity * percentage + 50) // 100
         weights = {
@@ -1218,10 +1230,8 @@ class SilksongWorld(CachedRuleBuilderWorld):
                 else reward_name
             )
             effective_reward = self.create_item(effective_reward_name)
-            self.multiworld.get_location(
-                location_name,
-                self.player,
-            ).place_locked_item(effective_reward)
+            location = self.multiworld.get_location(location_name, self.player)
+            location.place_locked_item(effective_reward)
 
         if (self.options.silk_soar_begone and self.get_content_scope() == "act_3"
                 and category_modes['Skill'] != 'vanilla'):
@@ -1241,7 +1251,7 @@ class SilksongWorld(CachedRuleBuilderWorld):
                     location_name,
                     category,
                 )
-                if mode == 'vanilla':
+                if mode == 'vanilla' and location_name not in self.get_logic_unknown_locations():
                     reward_name = get_vanilla_reward_name(
                         location_name,
                         category,
@@ -1317,12 +1327,9 @@ class SilksongWorld(CachedRuleBuilderWorld):
             ),
             minimum_memory_lockets=self._minimum_pool_lockets(),
             required_goal_items=enemy_soul_required_pool_items(self),
+            soul_pool_entries=self._soul_pool_entries(),
         ))
 
-        from .boss_souls import add_souls_to_pool
-        add_souls_to_pool(self, pool_entries)
-        from .npc_souls import add_souls_to_pool as add_npc_souls
-        add_npc_souls(self, pool_entries)
         from .enemy_souls import add_souls_to_pool as add_enemy_souls
         add_enemy_souls(self, pool_entries)
 
@@ -1460,12 +1467,52 @@ class SilksongWorld(CachedRuleBuilderWorld):
         prepare_start(self)
         from .entrance_randomization import connect_exits
         connect_exits(self)
-        if self.options.enemy_souls and self.options.entrance_randomization:
+        if getattr(self, '_silk_supply', None) is not None:
             self.explicit_indirect_conditions = False
 
     def explain_path(self, entrance, state):
-        from .native_regions import explain_path
-        return explain_path(entrance, state)
+        from rule_builder.rules import Or
+        label = getattr(entrance, "display_name", None)
+        if isinstance(entrance.access_rule, Or.Resolved):
+            j_return: list = [{"type":"color","color":"blue","text": (label if label is not None else entrance.name)}]
+            for child in entrance.access_rule.children:
+                j_return.append({"type":"text","text":"\n"})
+                if child(state):
+                    j_return.append({"type":"color","text":"TRUE","color":"green"})
+                else:
+                    j_return.append({"type":"color","text":"FALSE","color":"red"})
+                j_return.append({"type":"text","text":": "})
+                j_return.extend(child.explain_json(state))
+            return j_return
+        elif label is None:
+            return [] # Default behaviour
+        result = [{'type': 'color', 'color': 'blue', 'text': label}]
+        if hasattr(entrance.access_rule, 'explain_json'):
+            result.append({'type': 'text', 'text': ':\n    '})
+            result.extend(entrance.access_rule.explain_json(state))
+        return result
+    
+    def explain_spot(self, location, state):
+        from rule_builder.rules import Or
+        label = getattr(location, "display_name", None)
+        if isinstance(location.access_rule, Or.Resolved):
+            j_return: list = [{"type":"color","color":"green","text": (label if label is not None else location.name)}]
+            for child in location.access_rule.children:
+                j_return.append({"type":"text","text":"\n"})
+                if child(state):
+                    j_return.append({"type":"color","text":"TRUE","color":"green"})
+                else:
+                    j_return.append({"type":"color","text":"FALSE","color":"red"})
+                j_return.append({"type":"text","text":": "})
+                j_return.extend(child.explain_json(state))
+            return j_return
+        elif label is None:
+            return [] # Default behaviour
+        result = [{'type': 'color', 'color': 'green', 'text': label}]
+        if hasattr(location.access_rule, 'explain_json'):
+            result.append({'type': 'text', 'text': ':\n    '})
+            result.extend(location.access_rule.explain_json(state))
+        return result
 
     def create_regions(self) -> None:
         from .progression_shuffle import world_location_requirements
@@ -1572,6 +1619,8 @@ class SilksongWorld(CachedRuleBuilderWorld):
                 )
                 else data.code
             )
+            if address is None and name in self.get_logic_unknown_locations():
+                continue
             anchor = None
             if (
                 name != "Goal"
@@ -1862,12 +1911,8 @@ class SilksongWorld(CachedRuleBuilderWorld):
 
     def fill_hook(self, progitempool, usefulitempool, filleritempool, fill_locations):
         indices = [index for index, item in enumerate(progitempool) if item.player == self.player]
-        movement = {
-            "Ledge Grab", "Swift Step", "Progressive Swift Step", "Sprint", "Faydown Cloak",
-            "Cling Grip", "Clawline", "Needolin", "Silk Soar", "Drifter's Cloak", "Swim",
-        }
         ordered = sorted((progitempool[index] for index in indices),
-                         key=lambda item: (item.name in FLEA_ITEM_NAMES, item.name not in movement))
+                         key=lambda item: item.name in FLEA_ITEM_NAMES)
         for index, item in zip(indices, ordered):
             progitempool[index] = item
         if uses_crest_slot_locket_logic(self):
@@ -2083,11 +2128,23 @@ class SilksongWorld(CachedRuleBuilderWorld):
         for world in combined_worlds:
             excluded_slots.update(get_active_crest_slot_locations(world))
 
+        from .requirements import CRAFTMETAL_PURCHASE_LOCATIONS
+
+        silksong_players = {world.player for world in multiworld.get_game_worlds(cls.game)}
+        placements = tuple((location, location.item) for location in multiworld.get_filled_locations())
+        base_state = CollectionState(multiworld)
+        base_state.sweep_for_advancements(locations=(
+            location for location, _ in placements
+            if location not in excluded_slots
+            and not (location.player in silksong_players and location.name in CRAFTMETAL_PURCHASE_LOCATIONS)
+        ))
+
         # First move only as much progression out of Crest Slots as needed
         # for the available independent Lockets plus the two-Locket buffer.
         slotless_state = cls._build_crest_slot_budget_state(
             multiworld,
             excluded_slots,
+            base_state,
         )
         for world in combined_worlds:
             slotless_state = cls._repair_crest_slot_locket_budget(
@@ -2099,10 +2156,16 @@ class SilksongWorld(CachedRuleBuilderWorld):
 
         from .craftmetal import audit_craftmetal_spending
 
+        if any(location.item is not item for location, item in placements):
+            base_state = None
+
         audit_craftmetal_spending(multiworld, [
             multiworld.worlds[player] for player in multiworld.player_ids
             if multiworld.worlds[player].game == cls.game
-        ], finalized=False)
+        ], finalized=False, base_state=base_state)
+
+        if any(location.item is not item for location, item in placements):
+            base_state = None
 
         # Freeze the resulting count before core progression balancing. The
         # slot placements are locked so that balancing cannot change it.
@@ -2113,6 +2176,7 @@ class SilksongWorld(CachedRuleBuilderWorld):
         slotless_state = cls._build_crest_slot_budget_state(
             multiworld,
             excluded_slots,
+            base_state,
         )
         for world in combined_worlds:
             progression_count = get_crest_slot_progression_item_count(
@@ -2166,7 +2230,11 @@ class SilksongWorld(CachedRuleBuilderWorld):
             world.build_vog_hint_plan()
 
     def fill_slot_data(self) -> dict[str, object]:
-        from .entrance_randomization import node_overrides as entrance_node_overrides, slot_entrances
+        from .entrance_randomization import (
+            enabled as entrances_enabled,
+            node_overrides as entrance_node_overrides,
+            slot_entrances,
+        )
         goal_key = self.get_goal_key()
         flea_hunt_count = self.get_flea_hunt_goal_count()
         category_modes = self.get_category_modes()
@@ -2227,7 +2295,7 @@ class SilksongWorld(CachedRuleBuilderWorld):
             "starting_location": self.get_starting_location_key(),
             "starting_crest": self.resolve_starting_crest(),
             "force_naked": bool(self.options.force_naked.value),
-            "early_dash": self.is_early_dash_enabled(),
+            "early_sprint": self.is_early_sprint_enabled(),
             "split_dash_and_sprint": self.is_split_dash_and_sprint(),
             "directional_cling_grip": 'Cling Grip' in self.get_directional_abilities(),
             "directional_clawline": 'Clawline' in self.get_directional_abilities(),
@@ -2314,6 +2382,7 @@ class SilksongWorld(CachedRuleBuilderWorld):
                     if self.get_category_mode('PollipHeart') != 'vanilla'
                     else 0
                 ),
+                entrance_randomizer=entrances_enabled(self),
                 randomize_ledge_grab=(
                     self.is_ledgegrab_ability_rando_enabled()
                 ),
@@ -2387,6 +2456,12 @@ class SilksongWorld(CachedRuleBuilderWorld):
         export_enemy_souls(self, slot_data)
         from .silk_economy import export_world as export_silk_economy
         export_silk_economy(self, slot_data)
+        unknown = self.get_logic_unknown_locations()
+        for location in self.get_locations():
+            if location.address is not None and location.name in unknown:
+                slot_data["requirements"][location.name] = {
+                    "alternatives": [{"all_of": ["Victory"]}], "logic_unknown": True,
+                }
         return slot_data
 
     def modify_multidata(self, multidata: dict) -> None:

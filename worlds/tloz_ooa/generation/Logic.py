@@ -34,32 +34,22 @@ def create_connections(world: OracleOfAgesWorld):
 
     
     randomized_entrances_logic = []
-
-    # Shuffled warp
-    for reg1, reg2 in world.randomized_entrances.items():
-        randomized_entrances_logic.append([OUTSIDE_TAG + reg1, INSIDE_TAG + reg2, lambda state: 
-                                   any(
-                                       ooa_can_dive(state, player, True),
-                                       all(
-                                           not(warp_is_underwater(reg1)),
-                                           not(warp_is_underwater(reg2))
-                                       )
-                                    ), None])
         
-    # Not shuffled warp
-    for warp_name, warp_data in WARPS_DATA.items():
-        if warp_name not in world.randomized_entrances:
-            randomized_entrances_logic.append([OUTSIDE_TAG + warp_name, INSIDE_TAG + warp_name, True, None])
+    # Crutch so generation still happen for full ER
+    #for warp_name, warp_data in WARPS_DATA.items():
+    #    if world.options.entrance_randomizer == OracleOfAgesEntranceRandomizer.option_all_entrances:
+    #        randomized_entrances_logic.append([OUTSIDE_TAG + warp_name, INSIDE_TAG + warp_name, True, None])
 
     all_logic.append(randomized_entrances_logic)
 
     # Check unreachable regions
-    unused_region = REGIONS.copy()
-    unused_region.remove("Menu")
-    for logic_array in all_logic:
-        for entrance_desc in logic_array:
-            if entrance_desc[1] in unused_region:
-                unused_region.remove(entrance_desc[1])
+    # unused_region = REGIONS.copy()
+    # unused_region.remove("Menu")
+    # for logic_array in all_logic:
+    #     for entrance_desc in logic_array:
+    #         if entrance_desc[1] in unused_region:
+    #             unused_region.remove(entrance_desc[1])
+    # print(unused_region)
 
     # Create connections
     for logic_array in all_logic:

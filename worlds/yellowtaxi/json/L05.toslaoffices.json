@@ -297,7 +297,7 @@
       "Tosla Square - Cheese on Higher Building After Highest Homing Beacons": 52100002
     },
     "connections": {
-      "Tosla Square - Highest Ground": "X3/B2"
+      "Tosla Square - Highest Ground": "X2/B2"
     }
   },
   "Tosla Square - Highest Ground": {
@@ -325,7 +325,7 @@
       "Tosla Square - Checkpoint on Marble Pillar": 50901145
     },
     "specialrules": {
-      "Tosla Square - Bunny - On High Building": "B2 & X1/J1"
+      "Tosla Square - Bunny - On High Building": "B2 | X1+B1+J1"
     }
   },
   "Tosla Offices (Ground Floor)": {

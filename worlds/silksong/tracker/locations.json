@@ -573,40 +573,10 @@
     ]
    },
    {
-    "name": "Relic: Weaver Effigy (Camora, Moss Grotto)",
+    "name": "Bone Bottom Shop - Magnetite Brooch (Grindle in Act 3)",
     "sections": [
      {
-      "name": "Relic: Weaver Effigy (Camora, Moss Grotto)"
-     }
-    ],
-    "map_locations": [
-     {
-      "map": "Bone Bottom Town",
-      "x": 965,
-      "y": 134
-     }
-    ]
-   },
-   {
-    "name": "Bone Bottom - Rosary Dish",
-    "sections": [
-     {
-      "name": "Bone Bottom - Rosary Dish"
-     }
-    ],
-    "map_locations": [
-     {
-      "map": "Bone Bottom Town",
-      "x": 822,
-      "y": 175
-     }
-    ]
-   },
-   {
-    "name": "Magnetite Brooch",
-    "sections": [
-     {
-      "name": "Magnetite Brooch"
+      "name": "Bone Bottom Shop - Magnetite Brooch (Grindle in Act 3)"
      }
     ],
     "map_locations": [
@@ -618,10 +588,10 @@
     ]
    },
    {
-    "name": "Pebb (Bone Bottom) / Grindle (Act 3) - Mask Shard",
+    "name": "Bone Bottom Shop - Mask Shard (Grindle in Act 3)",
     "sections": [
      {
-      "name": "Pebb (Bone Bottom) / Grindle (Act 3) - Mask Shard"
+      "name": "Bone Bottom Shop - Mask Shard (Grindle in Act 3)"
      }
     ],
     "map_locations": [
@@ -633,10 +603,10 @@
     ]
    },
    {
-    "name": "Bone Bottom Shop - Craftmetal",
+    "name": "Bone Bottom Shop - Craftmetal (Grindle in Act 3)",
     "sections": [
      {
-      "name": "Bone Bottom Shop - Craftmetal"
+      "name": "Bone Bottom Shop - Craftmetal (Grindle in Act 3)"
      }
     ],
     "map_locations": [
@@ -648,10 +618,10 @@
     ]
    },
    {
-    "name": "Bone Bottom Shop - Simple Key",
+    "name": "Bone Bottom Shop - Simple Key (Grindle in Act 3)",
     "sections": [
      {
-      "name": "Bone Bottom Shop - Simple Key"
+      "name": "Bone Bottom Shop - Simple Key (Grindle in Act 3)"
      }
     ],
     "map_locations": [
@@ -696,6 +666,21 @@
     ]
    },
    {
+    "name": "Relic: Weaver Effigy (Camora, Moss Grotto)",
+    "sections": [
+     {
+      "name": "Relic: Weaver Effigy (Camora, Moss Grotto)"
+     }
+    ],
+    "map_locations": [
+     {
+      "map": "Bone Bottom Town",
+      "x": 842,
+      "y": 174
+     }
+    ]
+   },
+   {
     "name": "Wish: Bone Bottom Supplies",
     "sections": [
      {
@@ -722,6 +707,21 @@
       "map": "Bone Bottom Town",
       "x": 1370,
       "y": 513
+     }
+    ]
+   },
+   {
+    "name": "Bone Bottom - Rosary Dish",
+    "sections": [
+     {
+      "name": "Bone Bottom - Rosary Dish"
+     }
+    ],
+    "map_locations": [
+     {
+      "map": "Bone Bottom Town",
+      "x": 975,
+      "y": 127
      }
     ]
    },
@@ -4476,8 +4476,8 @@
     "map_locations": [
      {
       "map": "Wormways Flea Rescue",
-      "x": 389,
-      "y": 131
+      "x": 392,
+      "y": 132
      }
     ]
    },
@@ -4492,7 +4492,7 @@
      {
       "map": "Wormways Flea Rescue",
       "x": 0,
-      "y": 152
+      "y": 153
      }
     ]
    }
@@ -4511,8 +4511,8 @@
     "map_locations": [
      {
       "map": "Wormways Middle",
-      "x": 965,
-      "y": 107
+      "x": 761,
+      "y": 89
      }
     ]
    },
@@ -4526,8 +4526,8 @@
     "map_locations": [
      {
       "map": "Wormways Middle",
-      "x": 536,
-      "y": 161
+      "x": 380,
+      "y": 134
      }
     ]
    },
@@ -4541,7 +4541,7 @@
     "map_locations": [
      {
       "map": "Wormways Middle",
-      "x": 216,
+      "x": 96,
       "y": 0
      }
     ]
@@ -4972,8 +4972,8 @@
     "map_locations": [
      {
       "map": "Wormways Zango Arena",
-      "x": 96,
-      "y": 72
+      "x": 74,
+      "y": 139
      }
     ]
    },
@@ -4988,7 +4988,7 @@
      {
       "map": "Wormways Zango Arena",
       "x": 295,
-      "y": 69
+      "y": 133
      }
     ]
    }
@@ -5392,19 +5392,7 @@
     "sections": [
      {
       "name": "Boss: Lace (Deep Docks)"
-     }
-    ],
-    "map_locations": [
-     {
-      "map": "Deep Docks Lace Intro",
-      "x": 502,
-      "y": 125
-     }
-    ]
-   },
-   {
-    "name": "Journal: Lace",
-    "sections": [
+     },
      {
       "name": "Journal: Lace"
      }
@@ -7673,7 +7661,7 @@
     "map_locations": [
      {
       "map": "Far Fields Pilgrim's Rest",
-      "x": 446,
+      "x": 483,
       "y": 219
      }
     ]
@@ -7688,8 +7676,8 @@
     "map_locations": [
      {
       "map": "Far Fields Pilgrim's Rest",
-      "x": 770,
-      "y": 57
+      "x": 806,
+      "y": 67
      }
     ]
    },
@@ -7703,8 +7691,8 @@
     "map_locations": [
      {
       "map": "Far Fields Pilgrim's Rest",
-      "x": 755,
-      "y": 156
+      "x": 803,
+      "y": 147
      }
     ]
    }
@@ -7713,6 +7701,21 @@
  {
   "name": "Far Fields Pilgrim's Rest Church",
   "children": [
+   {
+    "name": "Flea: Pilgrim's Rest",
+    "sections": [
+     {
+      "name": "Flea: Pilgrim's Rest"
+     }
+    ],
+    "map_locations": [
+     {
+      "map": "Far Fields Pilgrim's Rest Church",
+      "x": 348,
+      "y": 42
+     }
+    ]
+   },
    {
     "name": "Pilgrim's Rest - Beast Shard",
     "sections": [
@@ -7725,21 +7728,6 @@
       "map": "Far Fields Pilgrim's Rest Church",
       "x": 78,
       "y": 121
-     }
-    ]
-   },
-   {
-    "name": "Flea: Pilgrim's Rest",
-    "sections": [
-     {
-      "name": "Flea: Pilgrim's Rest"
-     }
-    ],
-    "map_locations": [
-     {
-      "map": "Far Fields Pilgrim's Rest Church",
-      "x": 349,
-      "y": 49
      }
     ]
    },
@@ -9435,14 +9423,23 @@
   "name": "Sprintmaster Cave",
   "children": [
    {
-    "name": "Sprintmaster's Memento",
+    "name": "Sprintmaster - Beast Shard",
     "sections": [
      {
-      "name": "Sprintmaster's Memento"
-     },
-     {
       "name": "Sprintmaster - Beast Shard"
-     },
+     }
+    ],
+    "map_locations": [
+     {
+      "map": "Sprintmaster Cave",
+      "x": 367,
+      "y": 256
+     }
+    ]
+   },
+   {
+    "name": "Fastest in Pharloom - Mask Shard",
+    "sections": [
      {
       "name": "Fastest in Pharloom - Mask Shard"
      }
@@ -9450,8 +9447,23 @@
     "map_locations": [
      {
       "map": "Sprintmaster Cave",
-      "x": 564,
-      "y": 234
+      "x": 368,
+      "y": 255
+     }
+    ]
+   },
+   {
+    "name": "Sprintmaster's Memento",
+    "sections": [
+     {
+      "name": "Sprintmaster's Memento"
+     }
+    ],
+    "map_locations": [
+     {
+      "map": "Sprintmaster Cave",
+      "x": 372,
+      "y": 263
      }
     ]
    },
@@ -15971,6 +15983,39 @@
   "name": "Father of the Flame",
   "children": [
    {
+    "name": "Wispfire Lantern",
+    "sections": [
+     {
+      "name": "Wispfire Lantern"
+     }
+    ],
+    "map_locations": [
+     {
+      "map": "Father of the Flame",
+      "x": 3491,
+      "y": 2284
+     }
+    ]
+   },
+   {
+    "name": "Boss: Father of the Flame",
+    "sections": [
+     {
+      "name": "Boss: Father of the Flame"
+     },
+     {
+      "name": "Journal: Father of the Flame"
+     }
+    ],
+    "map_locations": [
+     {
+      "map": "Father of the Flame",
+      "x": 3587,
+      "y": 2269
+     }
+    ]
+   },
+   {
     "name": "Father of the Flame - right1 (R)",
     "sections": [
      {
@@ -15980,8 +16025,8 @@
     "map_locations": [
      {
       "map": "Father of the Flame",
-      "x": 286,
-      "y": 247
+      "x": 7360,
+      "y": 2496
      }
     ]
    }
@@ -16824,8 +16869,8 @@
     "map_locations": [
      {
       "map": "Blasted Steps Bellway",
-      "x": 203,
-      "y": 102
+      "x": 257,
+      "y": 90
      }
     ]
    },
@@ -16889,8 +16934,8 @@
     "map_locations": [
      {
       "map": "Blasted Steps Grindle",
-      "x": 58,
-      "y": 29
+      "x": 121,
+      "y": 47
      }
     ]
    },
@@ -16904,8 +16949,8 @@
     "map_locations": [
      {
       "map": "Blasted Steps Grindle",
-      "x": 57,
-      "y": 27
+      "x": 121,
+      "y": 49
      }
     ]
    },
@@ -16919,8 +16964,8 @@
     "map_locations": [
      {
       "map": "Blasted Steps Grindle",
-      "x": 61,
-      "y": 32
+      "x": 122,
+      "y": 52
      }
     ]
    },
@@ -16934,8 +16979,8 @@
     "map_locations": [
      {
       "map": "Blasted Steps Grindle",
-      "x": 57,
-      "y": 32
+      "x": 121,
+      "y": 50
      }
     ]
    },
@@ -16949,8 +16994,8 @@
     "map_locations": [
      {
       "map": "Blasted Steps Grindle",
-      "x": 59,
-      "y": 29
+      "x": 122,
+      "y": 51
      }
     ]
    },
@@ -17019,8 +17064,8 @@
     "map_locations": [
      {
       "map": "Blasted Steps Map Edge",
-      "x": 1807,
-      "y": 124
+      "x": 1806,
+      "y": 77
      }
     ]
    },
@@ -17279,8 +17324,8 @@
     "map_locations": [
      {
       "map": "Blasted Steps Mask Shard",
-      "x": 115,
-      "y": 136
+      "x": 242,
+      "y": 35
      }
     ]
    },
@@ -17314,8 +17359,8 @@
     "map_locations": [
      {
       "map": "Blasted Steps Shakra Room",
-      "x": 454,
-      "y": 437
+      "x": 396,
+      "y": 431
      }
     ]
    },
@@ -17330,7 +17375,7 @@
      {
       "map": "Blasted Steps Shakra Room",
       "x": 507,
-      "y": 276
+      "y": 278
      }
     ]
    },
@@ -17385,21 +17430,6 @@
   "name": "Blasted Steps Shell / Beast Shard",
   "children": [
    {
-    "name": "Blasted Steps - Beast Shard",
-    "sections": [
-     {
-      "name": "Blasted Steps - Beast Shard"
-     }
-    ],
-    "map_locations": [
-     {
-      "map": "Blasted Steps Shell / Beast Shard",
-      "x": 123,
-      "y": 22
-     }
-    ]
-   },
-   {
     "name": "Blasted Steps - Shell Shard Cache #4",
     "sections": [
      {
@@ -17409,8 +17439,8 @@
     "map_locations": [
      {
       "map": "Blasted Steps Shell / Beast Shard",
-      "x": 101,
-      "y": 20
+      "x": 83,
+      "y": 44
      }
     ]
    },
@@ -17424,8 +17454,8 @@
     "map_locations": [
      {
       "map": "Blasted Steps Shell / Beast Shard",
-      "x": 113,
-      "y": 10
+      "x": 125,
+      "y": 54
      }
     ]
    },
@@ -17439,8 +17469,23 @@
     "map_locations": [
      {
       "map": "Blasted Steps Shell / Beast Shard",
-      "x": 87,
-      "y": 103
+      "x": 58,
+      "y": 120
+     }
+    ]
+   },
+   {
+    "name": "Blasted Steps - Beast Shard",
+    "sections": [
+     {
+      "name": "Blasted Steps - Beast Shard"
+     }
+    ],
+    "map_locations": [
+     {
+      "map": "Blasted Steps Shell / Beast Shard",
+      "x": 84,
+      "y": 44
      }
     ]
    },
@@ -17587,8 +17632,8 @@
     "map_locations": [
      {
       "map": "Blasted Steps Thin Long Vertical",
-      "x": 45,
-      "y": 85
+      "x": 41,
+      "y": 64
      }
     ]
    },
@@ -17682,8 +17727,8 @@
     "map_locations": [
      {
       "map": "Blasted Steps Toll Bench Bottom",
-      "x": 1239,
-      "y": 275
+      "x": 1258,
+      "y": 263
      }
     ]
    },
@@ -17697,8 +17742,8 @@
     "map_locations": [
      {
       "map": "Blasted Steps Toll Bench Bottom",
-      "x": 236,
-      "y": 476
+      "x": 316,
+      "y": 486
      }
     ]
    },
@@ -17712,8 +17757,8 @@
     "map_locations": [
      {
       "map": "Blasted Steps Toll Bench Bottom",
-      "x": 252,
-      "y": 482
+      "x": 340,
+      "y": 487
      }
     ]
    },
@@ -17727,8 +17772,8 @@
     "map_locations": [
      {
       "map": "Blasted Steps Toll Bench Bottom",
-      "x": 270,
-      "y": 492
+      "x": 350,
+      "y": 497
      }
     ]
    },
@@ -18080,8 +18125,8 @@
     "map_locations": [
      {
       "map": "Last Judge Arena",
-      "x": 179,
-      "y": 43
+      "x": 331,
+      "y": 0
      }
     ]
    },
@@ -18145,8 +18190,8 @@
     "map_locations": [
      {
       "map": "Lumble the Lucky",
-      "x": 95,
-      "y": 39
+      "x": 64,
+      "y": 80
      }
     ]
    },
@@ -18163,8 +18208,8 @@
     "map_locations": [
      {
       "map": "Lumble the Lucky",
-      "x": 135,
-      "y": 23
+      "x": 87,
+      "y": 76
      }
     ]
    },
@@ -18178,8 +18223,8 @@
     "map_locations": [
      {
       "map": "Lumble the Lucky",
-      "x": 197,
-      "y": 26
+      "x": 157,
+      "y": 87
      }
     ]
    },
@@ -18193,8 +18238,8 @@
     "map_locations": [
      {
       "map": "Lumble the Lucky",
-      "x": 327,
-      "y": 15
+      "x": 301,
+      "y": 51
      }
     ]
    }
@@ -18248,8 +18293,8 @@
     "map_locations": [
      {
       "map": "Pre Last Judge Room",
-      "x": 539,
-      "y": 661
+      "x": 452,
+      "y": 662
      }
     ]
    },
@@ -18304,21 +18349,6 @@
   "name": "Windy Pinstress Entrance",
   "children": [
    {
-    "name": "Windy Pinstress Entrance - right1",
-    "sections": [
-     {
-      "name": "Windy Pinstress Entrance - right1"
-     }
-    ],
-    "map_locations": [
-     {
-      "map": "Windy Pinstress Entrance",
-      "x": 1124,
-      "y": 481
-     }
-    ]
-   },
-   {
     "name": "Windy Pinstress Entrance - Center",
     "sections": [
      {
@@ -18330,6 +18360,21 @@
       "map": "Windy Pinstress Entrance",
       "x": 632,
       "y": 366
+     }
+    ]
+   },
+   {
+    "name": "Windy Pinstress Entrance - right1",
+    "sections": [
+     {
+      "name": "Windy Pinstress Entrance - right1"
+     }
+    ],
+    "map_locations": [
+     {
+      "map": "Windy Pinstress Entrance",
+      "x": 1124,
+      "y": 481
      }
     ]
    },
@@ -18638,19 +18683,7 @@
     "sections": [
      {
       "name": "Boss: Shrine Guardian Seth"
-     }
-    ],
-    "map_locations": [
-     {
-      "map": "Shrine Guardian Seth",
-      "x": 728,
-      "y": 164
-     }
-    ]
-   },
-   {
-    "name": "Journal: Shrine Guardian Seth",
-    "sections": [
+     },
      {
       "name": "Journal: Shrine Guardian Seth"
      }
@@ -18658,8 +18691,8 @@
     "map_locations": [
      {
       "map": "Shrine Guardian Seth",
-      "x": 653,
-      "y": 150
+      "x": 665,
+      "y": 134
      }
     ]
    },
@@ -18673,8 +18706,8 @@
     "map_locations": [
      {
       "map": "Shrine Guardian Seth",
-      "x": 134,
-      "y": 163
+      "x": 137,
+      "y": 146
      }
     ]
    },
@@ -18688,8 +18721,8 @@
     "map_locations": [
      {
       "map": "Shrine Guardian Seth",
-      "x": 1135,
-      "y": 135
+      "x": 1156,
+      "y": 120
      }
     ]
    }
@@ -20528,51 +20561,6 @@
   "name": "Underworks Silk Spool",
   "children": [
    {
-    "name": "Underworks - Shell Shard Cache #3",
-    "sections": [
-     {
-      "name": "Underworks - Shell Shard Cache #3"
-     }
-    ],
-    "map_locations": [
-     {
-      "map": "Underworks Silk Spool",
-      "x": 236,
-      "y": 82
-     }
-    ]
-   },
-   {
-    "name": "Underworks - Shell Shard Cache #4",
-    "sections": [
-     {
-      "name": "Underworks - Shell Shard Cache #4"
-     }
-    ],
-    "map_locations": [
-     {
-      "map": "Underworks Silk Spool",
-      "x": 147,
-      "y": 435
-     }
-    ]
-   },
-   {
-    "name": "Underworks - Shell Shard Cache #5",
-    "sections": [
-     {
-      "name": "Underworks - Shell Shard Cache #5"
-     }
-    ],
-    "map_locations": [
-     {
-      "map": "Underworks Silk Spool",
-      "x": 166,
-      "y": 435
-     }
-    ]
-   },
-   {
     "name": "Underworks - Shell Shard Cache #6",
     "sections": [
      {
@@ -20588,10 +20576,10 @@
     ]
    },
    {
-    "name": "Underworks - Shell Shard Cache #1",
+    "name": "Underworks - Shell Shard Cache #3",
     "sections": [
      {
-      "name": "Underworks - Shell Shard Cache #1"
+      "name": "Underworks - Shell Shard Cache #3"
      }
     ],
     "map_locations": [
@@ -20599,6 +20587,36 @@
       "map": "Underworks Silk Spool",
       "x": 180,
       "y": 119
+     }
+    ]
+   },
+   {
+    "name": "Underworks - Shell Shard Cache #5",
+    "sections": [
+     {
+      "name": "Underworks - Shell Shard Cache #5"
+     }
+    ],
+    "map_locations": [
+     {
+      "map": "Underworks Silk Spool",
+      "x": 252,
+      "y": 91
+     }
+    ]
+   },
+   {
+    "name": "Underworks - Shell Shard Cache #4",
+    "sections": [
+     {
+      "name": "Underworks - Shell Shard Cache #4"
+     }
+    ],
+    "map_locations": [
+     {
+      "map": "Underworks Silk Spool",
+      "x": 236,
+      "y": 82
      }
     ]
    },
@@ -20612,8 +20630,23 @@
     "map_locations": [
      {
       "map": "Underworks Silk Spool",
-      "x": 252,
-      "y": 91
+      "x": 166,
+      "y": 435
+     }
+    ]
+   },
+   {
+    "name": "Underworks - Shell Shard Cache #1",
+    "sections": [
+     {
+      "name": "Underworks - Shell Shard Cache #1"
+     }
+    ],
+    "map_locations": [
+     {
+      "map": "Underworks Silk Spool",
+      "x": 147,
+      "y": 435
      }
     ]
    },
@@ -20628,7 +20661,7 @@
      {
       "map": "Underworks Silk Spool",
       "x": 139,
-      "y": 944
+      "y": 945
      }
     ]
    },
@@ -21861,10 +21894,10 @@
   "name": "Songclave",
   "children": [
    {
-    "name": "White Key",
+    "name": "Songclave Shop - White Key",
     "sections": [
      {
-      "name": "White Key"
+      "name": "Songclave Shop - White Key"
      }
     ],
     "map_locations": [
@@ -21885,22 +21918,22 @@
       "name": "Songclave Shop - Craftmetal"
      },
      {
-      "name": "Spider Strings"
+      "name": "Songclave Shop - Spider Strings"
      },
      {
-      "name": "Ascendant's Grip"
+      "name": "Songclave Shop - Ascendant's Grip"
      },
      {
-      "name": "Spool Extender"
+      "name": "Songclave Shop - Spool Extender"
      },
      {
-      "name": "Relic: Choral Commandment (Jubilana)"
+      "name": "Songclave Shop - Choral Commandment"
      },
      {
-      "name": "Jubilana (Songclave) - Mask Shard"
+      "name": "Songclave Shop - Mask Shard"
      },
      {
-      "name": "Jubilana (Songclave) - Spool Fragment"
+      "name": "Songclave Shop - Spool Fragment"
      }
     ],
     "map_locations": [
@@ -21908,6 +21941,21 @@
       "map": "Songclave",
       "x": 501,
       "y": 158
+     }
+    ]
+   },
+   {
+    "name": "Wish: The Wailing Mother",
+    "sections": [
+     {
+      "name": "Wish: The Wailing Mother"
+     }
+    ],
+    "map_locations": [
+     {
+      "map": "Songclave",
+      "x": 448,
+      "y": 180
      }
     ]
    },
@@ -23999,21 +24047,6 @@
     ]
    },
    {
-    "name": "Grand bellway hidden chest",
-    "sections": [
-     {
-      "name": "Grand bellway hidden chest"
-     }
-    ],
-    "map_locations": [
-     {
-      "map": "Grand Bellway Side Room",
-      "x": 47,
-      "y": 106
-     }
-    ]
-   },
-   {
     "name": "Grand Bellway Side Room - right1 (R)",
     "sections": [
      {
@@ -26098,8 +26131,8 @@
     "map_locations": [
      {
       "map": "Whiteward Entrance",
-      "x": 185,
-      "y": 691
+      "x": 182,
+      "y": 657
      }
     ]
    },
@@ -26113,8 +26146,8 @@
     "map_locations": [
      {
       "map": "Whiteward Entrance",
-      "x": 363,
-      "y": 578
+      "x": 357,
+      "y": 550
      }
     ]
    },
@@ -26129,7 +26162,7 @@
      {
       "map": "Whiteward Entrance",
       "x": 9,
-      "y": 66
+      "y": 63
      }
     ]
    },
@@ -26143,8 +26176,8 @@
     "map_locations": [
      {
       "map": "Whiteward Entrance",
-      "x": 484,
-      "y": 180
+      "x": 476,
+      "y": 171
      }
     ]
    },
@@ -26159,7 +26192,7 @@
      {
       "map": "Whiteward Entrance",
       "x": 0,
-      "y": 380
+      "y": 362
      }
     ]
    },
@@ -26173,8 +26206,8 @@
     "map_locations": [
      {
       "map": "Whiteward Entrance",
-      "x": 467,
-      "y": 380
+      "x": 460,
+      "y": 362
      }
     ]
    },
@@ -26189,7 +26222,7 @@
      {
       "map": "Whiteward Entrance",
       "x": 0,
-      "y": 594
+      "y": 565
      }
     ]
    },
@@ -26203,8 +26236,8 @@
     "map_locations": [
      {
       "map": "Whiteward Entrance",
-      "x": 484,
-      "y": 594
+      "x": 476,
+      "y": 565
      }
     ]
    }
@@ -26261,8 +26294,8 @@
     "map_locations": [
      {
       "map": "Whiteward Descent Connection",
-      "x": 601,
-      "y": 115
+      "x": 616,
+      "y": 120
      }
     ]
    },
@@ -26277,7 +26310,7 @@
      {
       "map": "Whiteward Descent Connection",
       "x": 0,
-      "y": 218
+      "y": 228
      }
     ]
    },
@@ -26291,8 +26324,8 @@
     "map_locations": [
      {
       "map": "Whiteward Descent Connection",
-      "x": 1319,
-      "y": 316
+      "x": 1352,
+      "y": 330
      }
     ]
    },
@@ -26306,7 +26339,7 @@
     "map_locations": [
      {
       "map": "Whiteward Descent Connection",
-      "x": 1155,
+      "x": 1184,
       "y": 6
      }
     ]
@@ -26321,8 +26354,8 @@
     "map_locations": [
      {
       "map": "Whiteward Descent Connection",
-      "x": 686,
-      "y": 106
+      "x": 703,
+      "y": 111
      }
     ]
    }
@@ -26341,8 +26374,8 @@
     "map_locations": [
      {
       "map": "Whiteward Descent",
-      "x": 80,
-      "y": 40
+      "x": 11,
+      "y": 43
      }
     ]
    },
@@ -26356,8 +26389,8 @@
     "map_locations": [
      {
       "map": "Whiteward Descent",
-      "x": 104,
-      "y": 84
+      "x": 150,
+      "y": 89
      }
     ]
    },
@@ -26371,7 +26404,7 @@
     "map_locations": [
      {
       "map": "Whiteward Descent",
-      "x": 115,
+      "x": 209,
       "y": 0
      }
     ]
@@ -26386,8 +26419,8 @@
     "map_locations": [
      {
       "map": "Whiteward Descent",
-      "x": 115,
-      "y": 358
+      "x": 209,
+      "y": 381
      }
     ]
    }
@@ -26406,8 +26439,8 @@
     "map_locations": [
      {
       "map": "Whiteward Junk Dump",
-      "x": 777,
-      "y": 63
+      "x": 775,
+      "y": 59
      }
     ]
    },
@@ -26421,8 +26454,8 @@
     "map_locations": [
      {
       "map": "Whiteward Junk Dump",
-      "x": 21,
-      "y": 92
+      "x": 39,
+      "y": 88
      }
     ]
    },
@@ -26436,8 +26469,8 @@
     "map_locations": [
      {
       "map": "Whiteward Junk Dump",
-      "x": 509,
-      "y": 118
+      "x": 508,
+      "y": 111
      }
     ]
    }
@@ -26532,8 +26565,8 @@
     "map_locations": [
      {
       "map": "Whiteward Unravelled Arena Room",
-      "x": 349,
-      "y": 497
+      "x": 358,
+      "y": 532
      }
     ]
    },
@@ -26547,7 +26580,7 @@
     "map_locations": [
      {
       "map": "Whiteward Unravelled Arena Room",
-      "x": 123,
+      "x": 126,
       "y": 0
      }
     ]
@@ -26562,8 +26595,8 @@
     "map_locations": [
      {
       "map": "Whiteward Unravelled Arena Room",
-      "x": 926,
-      "y": 166
+      "x": 952,
+      "y": 177
      }
     ]
    },
@@ -26577,8 +26610,8 @@
     "map_locations": [
      {
       "map": "Whiteward Unravelled Arena Room",
-      "x": 561,
-      "y": 531
+      "x": 577,
+      "y": 568
      }
     ]
    }
@@ -26597,8 +26630,8 @@
     "map_locations": [
      {
       "map": "Whiteward Tunnel Room",
-      "x": 342,
-      "y": 183
+      "x": 354,
+      "y": 165
      }
     ]
    },
@@ -26612,8 +26645,8 @@
     "map_locations": [
      {
       "map": "Whiteward Tunnel Room",
-      "x": 122,
-      "y": 219
+      "x": 127,
+      "y": 197
      }
     ]
    },
@@ -26627,8 +26660,8 @@
     "map_locations": [
      {
       "map": "Whiteward Tunnel Room",
-      "x": 926,
-      "y": 176
+      "x": 959,
+      "y": 158
      }
     ]
    }
@@ -27222,8 +27255,8 @@
     "map_locations": [
      {
       "map": "High Halls Ventrica",
-      "x": 324,
-      "y": 120
+      "x": 326,
+      "y": 116
      }
     ]
    },
@@ -29413,19 +29446,7 @@
     "sections": [
      {
       "name": "Boss: Phantom"
-     }
-    ],
-    "map_locations": [
-     {
-      "map": "Exhaust Organ Interior",
-      "x": 741,
-      "y": 626
-     }
-    ]
-   },
-   {
-    "name": "Journal: Phantom",
-    "sections": [
+     },
      {
       "name": "Journal: Phantom"
      },
@@ -29539,7 +29560,7 @@
   ]
  },
  {
-  "name": "Memorium bench",
+  "name": "Memorium Bench",
   "children": [
    {
     "name": "Memorium - Mossberry",
@@ -29550,7 +29571,7 @@
     ],
     "map_locations": [
      {
-      "map": "Memorium bench",
+      "map": "Memorium Bench",
       "x": 468,
       "y": 88
      }
@@ -29565,7 +29586,7 @@
     ],
     "map_locations": [
      {
-      "map": "Memorium bench",
+      "map": "Memorium Bench",
       "x": 0,
       "y": 126
      }
@@ -29580,7 +29601,7 @@
     ],
     "map_locations": [
      {
-      "map": "Memorium bench",
+      "map": "Memorium Bench",
       "x": 868,
       "y": 126
      }
@@ -29719,7 +29740,7 @@
   ]
  },
  {
-  "name": "Memorium puzzle",
+  "name": "Memorium Puzzle",
   "children": [
    {
     "name": "Memorium puzzle - left1",
@@ -29730,7 +29751,7 @@
     ],
     "map_locations": [
      {
-      "map": "Memorium puzzle",
+      "map": "Memorium Puzzle",
       "x": 3,
       "y": 106
      }
@@ -30044,7 +30065,7 @@
   ]
  },
  {
-  "name": "Memorium water room",
+  "name": "Memorium Water Room",
   "children": [
    {
     "name": "Memorium - Memory Locket",
@@ -30055,22 +30076,22 @@
     ],
     "map_locations": [
      {
-      "map": "Memorium water room",
+      "map": "Memorium Water Room",
       "x": 24,
       "y": 134
      }
     ]
    },
    {
-    "name": "Memorium water room - top1 (T)",
+    "name": "Memorium Water Room - top1 (T)",
     "sections": [
      {
-      "name": "Memorium water room - top1 (T)"
+      "name": "Memorium Water Room - top1 (T)"
      }
     ],
     "map_locations": [
      {
-      "map": "Memorium water room",
+      "map": "Memorium Water Room",
       "x": 415,
       "y": 0
      }
@@ -30085,7 +30106,7 @@
     ],
     "map_locations": [
      {
-      "map": "Memorium water room",
+      "map": "Memorium Water Room",
       "x": 830,
       "y": 117
      }
@@ -30338,10 +30359,10 @@
     ]
    },
    {
-    "name": "Sands of Karak - Lower Coral Tablet",
+    "name": "Sands of Karak - Upper Coral Tablet",
     "sections": [
      {
-      "name": "Sands of Karak - Lower Coral Tablet"
+      "name": "Sands of Karak - Upper Coral Tablet"
      }
     ],
     "map_locations": [
@@ -30588,17 +30609,17 @@
   "name": "Sands of Karak Entrance",
   "children": [
    {
-    "name": "Sands of Karak - Upper Coral Tablet",
+    "name": "Sands of Karak - Lower Coral Tablet",
     "sections": [
      {
-      "name": "Sands of Karak - Upper Coral Tablet"
+      "name": "Sands of Karak - Lower Coral Tablet"
      }
     ],
     "map_locations": [
      {
       "map": "Sands of Karak Entrance",
-      "x": 193,
-      "y": 89
+      "x": 44,
+      "y": 88
      }
     ]
    },
@@ -31221,24 +31242,6 @@
   "name": "Voltnest",
   "children": [
    {
-    "name": "Journal: Voltvyrm",
-    "sections": [
-     {
-      "name": "Journal: Voltvyrm"
-     },
-     {
-      "name": "Boss: Voltvyrm"
-     }
-    ],
-    "map_locations": [
-     {
-      "map": "Voltnest",
-      "x": 998,
-      "y": 335
-     }
-    ]
-   },
-   {
     "name": "Volt Filament",
     "sections": [
      {
@@ -31248,8 +31251,26 @@
     "map_locations": [
      {
       "map": "Voltnest",
-      "x": 1013,
-      "y": 392
+      "x": 1041,
+      "y": 430
+     }
+    ]
+   },
+   {
+    "name": "Boss: Voltvyrm",
+    "sections": [
+     {
+      "name": "Boss: Voltvyrm"
+     },
+     {
+      "name": "Journal: Voltvyrm"
+     }
+    ],
+    "map_locations": [
+     {
+      "map": "Voltnest",
+      "x": 1099,
+      "y": 373
      }
     ]
    },
@@ -31263,8 +31284,8 @@
     "map_locations": [
      {
       "map": "Voltnest",
-      "x": 187,
-      "y": 388
+      "x": 206,
+      "y": 431
      }
     ]
    }
@@ -32994,8 +33015,8 @@
     "map_locations": [
      {
       "map": "Mount Fay Entrance",
-      "x": 586,
-      "y": 1209
+      "x": 555,
+      "y": 1212
      }
     ]
    },
@@ -33009,8 +33030,8 @@
     "map_locations": [
      {
       "map": "Mount Fay Entrance",
-      "x": 585,
-      "y": 1189
+      "x": 564,
+      "y": 1200
      }
     ]
    },
@@ -33024,8 +33045,8 @@
     "map_locations": [
      {
       "map": "Mount Fay Entrance",
-      "x": 523,
-      "y": 694
+      "x": 522,
+      "y": 787
      }
     ]
    },
@@ -33039,8 +33060,8 @@
     "map_locations": [
      {
       "map": "Mount Fay Entrance",
-      "x": 636,
-      "y": 717
+      "x": 635,
+      "y": 812
      }
     ]
    },
@@ -33054,7 +33075,7 @@
     "map_locations": [
      {
       "map": "Mount Fay Entrance",
-      "x": 510,
+      "x": 509,
       "y": 0
      }
     ]
@@ -33100,7 +33121,7 @@
      {
       "map": "Mount Fay Entrance",
       "x": 0,
-      "y": 218
+      "y": 247
      }
     ]
    },
@@ -33115,7 +33136,7 @@
      {
       "map": "Mount Fay Entrance",
       "x": 0,
-      "y": 1283
+      "y": 1453
      }
     ]
    },
@@ -33130,7 +33151,7 @@
      {
       "map": "Mount Fay Entrance",
       "x": 0,
-      "y": 1176
+      "y": 1333
      }
     ]
    },
@@ -33145,7 +33166,7 @@
      {
       "map": "Mount Fay Entrance",
       "x": 0,
-      "y": 274
+      "y": 311
      }
     ]
    },
@@ -33159,8 +33180,8 @@
     "map_locations": [
      {
       "map": "Mount Fay Entrance",
-      "x": 636,
-      "y": 207
+      "x": 635,
+      "y": 234
      }
     ]
    },
@@ -33174,7 +33195,7 @@
     "map_locations": [
      {
       "map": "Mount Fay Entrance",
-      "x": 318,
+      "x": 317,
       "y": 0
      }
     ]
@@ -33189,8 +33210,8 @@
     "map_locations": [
      {
       "map": "Mount Fay Entrance",
-      "x": 636,
-      "y": 397
+      "x": 635,
+      "y": 450
      }
     ]
    },
@@ -33204,8 +33225,8 @@
     "map_locations": [
      {
       "map": "Mount Fay Entrance",
-      "x": 636,
-      "y": 1288
+      "x": 635,
+      "y": 1460
      }
     ]
    }
@@ -33489,8 +33510,8 @@
     "map_locations": [
      {
       "map": "Memory Crystal",
-      "x": 130,
-      "y": 76
+      "x": 123,
+      "y": 69
      }
     ]
    },
@@ -33504,8 +33525,8 @@
     "map_locations": [
      {
       "map": "Memory Crystal",
-      "x": 526,
-      "y": 205
+      "x": 608,
+      "y": 185
      }
     ]
    },
@@ -33520,7 +33541,7 @@
      {
       "map": "Memory Crystal",
       "x": 0,
-      "y": 77
+      "y": 69
      }
     ]
    }
@@ -33784,8 +33805,8 @@
     "map_locations": [
      {
       "map": "Mount Fay Lore Room",
-      "x": 101,
-      "y": 47
+      "x": 102,
+      "y": 104
      }
     ]
    },
@@ -35465,8 +35486,8 @@
     "map_locations": [
      {
       "map": "ACT3 Lace2 Arena",
-      "x": 118,
-      "y": 166
+      "x": 79,
+      "y": 365
      }
     ]
    },
@@ -35480,7 +35501,7 @@
     "map_locations": [
      {
       "map": "ACT3 Lace2 Arena",
-      "x": 114,
+      "x": 69,
       "y": 0
      }
     ]
@@ -35659,21 +35680,6 @@
   "name": "Lace 2 Fight",
   "children": [
    {
-    "name": "Boss: Lace (Cradle)",
-    "sections": [
-     {
-      "name": "Boss: Lace (Cradle)"
-     }
-    ],
-    "map_locations": [
-     {
-      "map": "Lace 2 Fight",
-      "x": 3788,
-      "y": 2525
-     }
-    ]
-   },
-   {
     "name": "Lace (Cradle) - Silk Heart",
     "sections": [
      {
@@ -35685,6 +35691,21 @@
       "map": "Lace 2 Fight",
       "x": 3495,
       "y": 2113
+     }
+    ]
+   },
+   {
+    "name": "Boss: Lace (Cradle)",
+    "sections": [
+     {
+      "name": "Boss: Lace (Cradle)"
+     }
+    ],
+    "map_locations": [
+     {
+      "map": "Lace 2 Fight",
+      "x": 3788,
+      "y": 2525
      }
     ]
    },
@@ -36036,6 +36057,21 @@
  {
   "name": "The Surface",
   "children": [
+   {
+    "name": "Surface Memento",
+    "sections": [
+     {
+      "name": "Surface Memento"
+     }
+    ],
+    "map_locations": [
+     {
+      "map": "The Surface",
+      "x": 1974,
+      "y": 160
+     }
+    ]
+   },
    {
     "name": "The Surface - door1 (D)",
     "sections": [

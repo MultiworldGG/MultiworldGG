@@ -1,6 +1,6 @@
 import os
 
-import yaml
+import json
 
 from typing import TYPE_CHECKING
 from BaseClasses import ItemClassification
@@ -30,6 +30,7 @@ def ooa_create_appp_patch(world: "OracleOfAgesWorld") -> OoAProcedurePatch:
         "locations": {},
         "shop_prices": world.shop_prices,
         "music_order": {},
+        "region_hints": world.region_hints,
     }
 
     for loc in world.multiworld.get_locations(world.player):
@@ -52,5 +53,20 @@ def ooa_create_appp_patch(world: "OracleOfAgesWorld") -> OoAProcedurePatch:
     if always_available_potion_option == OracleOfAgesEnforcePotionInShop.option_syrup_hut:
         patch_data["locations"]["Yoll Graveyard: Syrup Shop Item #3"] = "Potion"
 
-    patch.write_file("patch.dat", yaml.dump(patch_data).encode('utf-8'))
+    patch_data_item_hints = []
+    for item_hint in world.item_hints:
+        if item_hint is None:
+            # Joke hint
+            patch_data_item_hints.append(None)
+            continue
+        location = item_hint.location
+        player = location.player
+        if player == world.player:
+            player = None
+        else:
+            player = world.multiworld.get_player_name(player)
+        patch_data_item_hints.append((item_hint.name, location.name, player))
+    patch_data["item_hints"] = patch_data_item_hints
+
+    patch.write_file("patch.json", json.dumps(patch_data).encode('utf-8'))
     return patch

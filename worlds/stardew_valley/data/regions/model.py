@@ -1,13 +1,24 @@
 from __future__ import annotations
 
-from collections.abc import Container, Iterable, Iterator
+from collections.abc import Container
 from dataclasses import dataclass, field
 from enum import IntFlag
+
+from ...strings.entrance_names import Entrance
 
 connector_keyword = " to "
 
 
 def reverse_connection_name(name: str) -> str | None:
+
+    """ TODO: We really need to rename the Volcano Shortcut to something that doesn't have a transitional string
+    The shortcut is a one-way transition, but somehow, we named it with the two-way pattern, which messes with the reversing code in several places.
+    We need to change the name to the pattern `Volcano Shortcut` => `Volcano Shortcut Exit`
+    But I can't change it right now, because it would be a breaking change. This should be done in the next major version.
+    """
+    if Entrance.volcano_5_to_island_north in name:
+        return name
+
     try:
         origin, destination = name.split(connector_keyword)
     except ValueError:

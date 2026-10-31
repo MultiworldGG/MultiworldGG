@@ -1,5 +1,5 @@
 from dataclasses import dataclass
-from Options import Toggle, Range, NamedRange, Choice, FreeText, PerGameCommonOptions, TextChoice, DeathLink, OptionSet, OptionGroup, Visibility, StartInventoryPool
+from Options import Toggle, Range, NamedRange, Choice, FreeText, PerGameCommonOptions, DeathLink, OptionSet, OptionGroup, Visibility, StartInventoryPool, TextChoice
 
 import requests
 import json

@@ -1,12 +1,13 @@
 """This module contains the logic implementation for RAC3"""
-from collections.abc import Callable
-from logging import DEBUG, getLogger
 import math
+from logging import DEBUG, getLogger
 from typing import TYPE_CHECKING
 
-from BaseClasses import CollectionState
+from BaseClasses import CollectionRule, CollectionState
 from worlds.generic.Rules import add_rule
-from worlds.rac3.constants.data.item import infobot_data, non_prog_weapon_data, prog_weapon_data
+from worlds.rac3.constants.data.item import infobot_data, prog_weapon_data
+from worlds.rac3.constants.data.location import RAC3_LOCATION_DATA_TABLE
+from worlds.rac3.constants.event import BASE_PLANETS, RAC3EVENT
 from worlds.rac3.constants.items import RAC3ITEM
 from worlds.rac3.constants.locations.general import RAC3LOCATION
 from worlds.rac3.constants.locations.nanotech import RAC3NANOTECH
@@ -20,75 +21,180 @@ from worlds.rac3.constants.locations.weapon_levels import RAC3WEAPONLEVEL
 from worlds.rac3.constants.options import RAC3OPTION
 from worlds.rac3.constants.region import RAC3REGION
 from worlds.rac3.constants.shortcuts import RAC3SHORTCUTS
-from worlds.rac3.locations import location_groups
+from worlds.rac3.locations import get_end_locations, location_groups
 
 if TYPE_CHECKING:
     from worlds.rac3.world import RaC3World
 
 rac3_logger = getLogger(RAC3OPTION.GAME_TITLE_FULL)
 rac3_logger.setLevel(DEBUG)
-MULTIPLIERS = {0: 1, 1: 2, 2: 4, 3: 8, 4: 16}
-NGPLUS_SCALE = {1: 1.0, 2: 10 / 7, 4: 10 / 5, 8: 10 / 4, 16: 10 / 2}
-GOOD_EXP_PLANETS = [RAC3ITEM.KOROS, RAC3ITEM.CRASH_SITE, RAC3ITEM.METROPOLIS]
-
-
-def all_locations(state: CollectionState, world: "RaC3World", tag: str, skip: str):
-    """check if all locations with this tag can be reached"""
-    check: bool = True
-    for loc in world.get_locations():
-        if loc.name in location_groups[tag] and loc.name != skip:
-            check &= state.can_reach_location(loc.name, world.player)
-    return check
-
-
-def calc_nanotech_requirement(world: "RaC3World", default_infobot_count: int, ngplus_levels: bool = False) -> int:
-    """Calculate the amount of infobots required for a given nanotech level based on the world options"""
-    ngplus_enabled = world.options.ngplus_start.value
-    if ngplus_enabled and not ngplus_levels:
-        return 1
-
-    multiplier_option = world.options.bolt_and_xp_multiplier.value
-    multiplier_value = MULTIPLIERS.get(multiplier_option, 1)
-
-    intro_skip_enabled = world.options.shortcuts.value.get(RAC3SHORTCUTS.VELDIN_SKIP, False)
-    intro_skip_offset = 1 if intro_skip_enabled and multiplier_value >= 4 else 0
-
-    if ngplus_levels:
-        requirement = math.ceil(default_infobot_count / NGPLUS_SCALE[multiplier_value])
-    else:
-        requirement = (default_infobot_count + multiplier_value - 1) // multiplier_value
-
-    return max(1, requirement + intro_skip_offset)
-
-
-def can_earn_good_exp(state: CollectionState, world: "RaC3World") -> bool:
-    """Determine if the player can earn good experience based on the planets they can access"""
-    if state.has_any(GOOD_EXP_PLANETS, world.player):
-        return True
-    if (state.can_reach_region(RAC3REGION.COMMAND_CENTER, world.player)
-        and state.has_all([RAC3ITEM.HYPERSHOT, RAC3ITEM.GRAV_BOOTS, RAC3ITEM.TYHRRA_GUISE], world.player)
-        and state.has_any([RAC3ITEM.HELI_PACK, RAC3ITEM.THRUSTER_PACK, RAC3ITEM.CLANK, RAC3ITEM.PROGRESSIVE_PACK],
-                          world.player)):
-        return True
-    if (state.can_reach_region(RAC3REGION.QWARKS_HIDEOUT, world.player)
-        and state.has_all([RAC3ITEM.WARP_PAD, RAC3ITEM.HYPERSHOT], world.player)
-        and state.has_any([RAC3ITEM.HELI_PACK, RAC3ITEM.CLANK, RAC3ITEM.PROGRESSIVE_PACK, RAC3ITEM.CHARGE_BOOTS],
-                          world.player)):
-        return True
-    if world.options.ngplus_start.value:
-        return True
-    return False
 
 
 # Todo: Rule Builder
 def set_rules(world: "RaC3World"):
-    """Apply logic rules to each location"""
+    """Apply logic rules to each location
+
+    :param world: RaC3World of current generation"""
+
+    locations_by_name = {loc.name: loc for loc in world.get_locations()}
+    end_locations = get_end_locations(world)
+    completion_locations = tuple(
+        loc for loc in locations_by_name.values() if loc.address and loc.name not in end_locations
+    )
+    completion_percentage = world.options.goal_completion.value
+    # The bolt tag also includes the collector trophy, so it must not count itself.
+    # Locked Command Center checks cannot contribute to their own unlock condition.
+    tag_locations = {
+        tag: tuple(
+            loc for name, loc in locations_by_name.items()
+            if name in location_groups[tag]
+            and name != RAC3TROPHY.PHOENIX_TITANIUM_COLLECTOR
+            and not (tag == RAC3TAG.SKILLPOINT and loc.is_event)
+            and not (world.options.lock_command_center.value
+                     and RAC3_LOCATION_DATA_TABLE[name].REGION == RAC3REGION.COMMAND_CENTER)
+        )
+        for tag in (RAC3TAG.SKILLPOINT, RAC3TAG.T_BOLT)
+    }
+
+    def all_locations(tag: str, skip: str = "") -> CollectionRule:
+        """check if all locations with this tag can be reached
+
+        :param tag: Location Tag of the locations to be checked
+        :param skip: Name of the location to ignore checking
+        :return: Collection rule
+        """
+        check = tuple(loc for name, loc in locations_by_name.items()
+                      if name in location_groups[tag] and name != skip)
+        return lambda state: all(loc.can_reach(state) for loc in check)
+
+    def calc_nanotech_requirement(default_infobot_count: int, ngplus_levels: bool = False) -> int:
+        """Calculate the amount of infobots required for a given nanotech level based on the world options
+
+        :param default_infobot_count: amount of infobots
+        :param ngplus_levels: True if this location is only accessible in NG+
+
+        :return: Count of Infobots required
+        """
+        if ngplus_enabled and not ngplus_levels:
+            return 1
+
+        multiplier_value = 2 ** world.options.bolt_and_xp_multiplier.value
+
+        intro_skip_enabled = world.options.shortcuts.value.get(RAC3SHORTCUTS.VELDIN_SKIP, False)
+        intro_skip_offset = 1 if intro_skip_enabled and multiplier_value >= 4 else 0
+
+        if ngplus_levels:
+            requirement = math.ceil(default_infobot_count / (world.options.bolt_and_xp_multiplier.value + 1))
+        else:
+            requirement = (default_infobot_count + multiplier_value - 1) // multiplier_value
+
+        return max(1, requirement + intro_skip_offset)
+
+    def can_earn_good_exp(state: CollectionState) -> bool:
+        """Determine if the player can earn good experience based on the planets they can access
+
+        :param state: current collection state of the multiworld
+
+        :return: True if the player can reach a good exp farming planet
+        """
+        good_exp_planets = [RAC3ITEM.KOROS, RAC3ITEM.CRASH_SITE, RAC3ITEM.METROPOLIS]
+        if state.has_any(good_exp_planets, world.player):
+            return True
+        if (state.can_reach_region(RAC3REGION.COMMAND_CENTER, world.player)
+            and state.has_all([RAC3ITEM.HYPERSHOT, RAC3ITEM.GRAV_BOOTS, RAC3ITEM.TYHRRA_GUISE], world.player)
+            and state.has_any([RAC3ITEM.HELI_PACK, RAC3ITEM.THRUSTER_PACK, RAC3ITEM.CLANK, RAC3ITEM.PROGRESSIVE_PACK],
+                              world.player)):
+            return True
+        if (state.can_reach_region(RAC3REGION.QWARKS_HIDEOUT, world.player)
+            and state.has_all([RAC3ITEM.WARP_PAD, RAC3ITEM.HYPERSHOT], world.player)
+            and state.has_any([RAC3ITEM.HELI_PACK, RAC3ITEM.CLANK, RAC3ITEM.PROGRESSIVE_PACK, RAC3ITEM.CHARGE_BOOTS],
+                              world.player)):
+            return True
+        if world.options.ngplus_start.value:
+            return True
+        return False
+
+    def can_reach_tags(state: CollectionState, tag: str, count: int) -> bool:
+        """Check whether the requested number of eligible tagged locations is reachable.
+
+        :param state: current collection state of the multiworld
+        :param tag: name of location tag to check
+        :param count: location count required to be reachable
+
+        :return: True if the amount of reachable locations is greater than or equal to 'count'
+        """
+        check = tag_locations[tag]
+        remaining = min(count, len(check))
+        if remaining <= 0:
+            return True
+        for loc in check:
+            if loc.can_reach(state):
+                remaining -= 1
+                if remaining == 0:
+                    return True
+        return False
+
+    def all_goals(goal: bool = False) -> CollectionRule:
+        """Creates a logic rule for having completed all the goal requirements for Command Center"""
+        event_items: set[str] = {RAC3EVENT.NANOTECH[1], RAC3EVENT.SEWER[1], RAC3EVENT.T_BOLT[1], RAC3EVENT.SKILLS[1],
+                                 RAC3EVENT.PLANETS[1], RAC3EVENT.COMPLETION[1]}
+        if world.options.goal_qwark.value > 0:
+            event_items.add(RAC3EVENT.AN_QWARK[1])
+        if world.options.goal_boss_qwark.value > 0:
+            event_items.add(RAC3EVENT.FLORANA_QWARK[1])
+        if world.options.goal_boss_two.value > 0:
+            event_items.add(RAC3EVENT.AN_TWO[1])
+        if world.options.goal_boss_noid.value > 0:
+            event_items.add(RAC3EVENT.NOID_BOSS[1])
+        if world.options.goal_boss_warship.value > 0:
+            event_items.add(RAC3EVENT.DAXX_WARSHIP[1])
+        if world.options.goal_boss_scorpio.value > 0:
+            event_items.add(RAC3EVENT.AN_SCORPIO[1])
+        if world.options.goal_boss_talos.value > 0:
+            event_items.add(RAC3EVENT.HOLOSTAR_TALOS[1])
+        if world.options.goal_boss_gears.value > 0:
+            event_items.add(RAC3EVENT.DRACO_GEARS[1])
+        if world.options.goal_boss_klunk.value > 0:
+            event_items.add(RAC3EVENT.METROPOLIS_KLUNK[1])
+        if world.options.goal_museum.value > 0 and world.options.lock_command_center.value == 0:
+            event_items.add(RAC3EVENT.PHOENIX_MUSEUM[1])
+        if goal and world.options.goal_museum.value > 0:
+            event_items.add(RAC3EVENT.PHOENIX_MUSEUM[1])
+        if goal and world.options.goal_nef.value > 0:
+            event_items.add(RAC3EVENT.COMMAND_CENTER_NEFARIOUS[1])
+        if goal and world.options.goal_bio.value > 0:
+            event_items.add(RAC3EVENT.COMMAND_CENTER_BIOBLITERATOR[1])
+        return lambda state: state.has_all(event_items, world.player)
+
+    def collection(state: CollectionState) -> bool:
+        """Check the percentage of eligible locations reachable in the current state."""
+        if completion_percentage == 0:
+            return True
+        reachable = sum(loc.can_reach(state) for loc in completion_locations)
+        return reachable / len(completion_locations) >= completion_percentage / 100
+
     progressive_requirement = 1
     ngplus_enabled = world.options.ngplus_start.value
     if ngplus_enabled:
         progressive_requirement += 5 if world.options.ngplus_items.value else 4
 
-    region_rules_dict: dict[str, Callable] = {
+    planets: list = [loc for loc in BASE_PLANETS]
+    if world.options.arena.value:
+        planets.append(RAC3EVENT.AN_COMPLETE[1])
+    if world.options.rangers.value & 1:
+        planets.extend([RAC3EVENT.MARCADIA_COMPLETE[1], RAC3EVENT.BLACKWATER_CITY_COMPLETE[1],
+                        RAC3EVENT.ARIDIA_COMPLETE[1]])
+
+    progressive_wrench_requirement = 1
+    a_wrench = 1
+    if world.options.progressive_wrench.value > 0:
+        progressive_wrench_requirement += 5 if world.options.ngplus_items.value else 4
+    else:
+        progressive_wrench_requirement = 0
+        a_wrench = 0
+    vr_wrench_requirement = progressive_wrench_requirement if ngplus_enabled else a_wrench
+
+    region_rules_dict: dict[str, CollectionRule] = {
 
         # Intro Florana
         f"{RAC3REGION.VELDIN} -> {RAC3REGION.FLORANA}":
@@ -157,7 +263,7 @@ def set_rules(world: "RaC3World"):
             lambda state: state.has(RAC3ITEM.COMMAND_CENTER, world.player),
     }
 
-    rules_dict: dict[str, Callable] = {
+    rules_dict: dict[str, CollectionRule] = {
         # RAC3LOCATION.VELDIN_FIRST_RANGER
         # RAC3LOCATION.VELDIN_SECOND_RANGER
         # RAC3LOCATION.VELDIN_SAVE_VELDIN
@@ -225,12 +331,14 @@ def set_rules(world: "RaC3World"):
         RAC3VENDORLOCATION.PHOENIX_SKIN_32: lambda state: state.has_from_list(infobot_data.keys(), world.player, 19),
         RAC3SKILLPOINT.PHOENIX_ARMOR: lambda state: state.can_reach_region(RAC3REGION.KOROS, world.player),
         # RAC3LOCATION.PHOENIX_MEET_SASHA
-        RAC3SKILLPOINT.PHOENIX_MONKEY: lambda state: state.has(RAC3ITEM.TYHRRA_GUISE, world.player),
+        RAC3SKILLPOINT.PHOENIX_MONKEY:
+            lambda state: state.has(RAC3ITEM.TYHRRA_GUISE, world.player)
+                          and state.has(RAC3ITEM.PROGRESSIVE_WRENCH, world.player, a_wrench),
         RAC3LOCATION.PHOENIX_ASSAULT:
             lambda state: state.can_reach_location(RAC3LOCATION.HIDEOUT_FIND_QWARK, world.player)
                           and state.has(RAC3ITEM.REFRACTOR, world.player),
         RAC3LOCATION.PHOENIX_GRAND_PRIZE:
-            lambda state: state.can_reach_region(RAC3REGION.ANNIHILATION_NATION, world.player),
+            lambda state: state.has(RAC3EVENT.AN_PRIZE[1], world.player),
         RAC3LOCATION.PHOENIX_STAR_MAP: lambda state: state.has(RAC3ITEM.STAR_MAP, world.player),
         RAC3LOCATION.PHOENIX_MASTER_PLAN: lambda state: state.has(RAC3ITEM.MASTER_PLAN, world.player),
         # RAC3LOCATION.PHOENIX_VR_WARM_UP
@@ -247,7 +355,8 @@ def set_rules(world: "RaC3World"):
                            or state.has(RAC3ITEM.PROGRESSIVE_SHOCK_BLASTER, world.player, progressive_requirement))
                           and state.can_reach_location(RAC3LOCATION.PHOENIX_VR_D_L_D, world.player),
         RAC3LOCATION.PHOENIX_VR_WRENCH:
-            lambda state: state.can_reach_location(RAC3LOCATION.PHOENIX_VR_SHOCKER, world.player),
+            lambda state: state.can_reach_location(RAC3LOCATION.PHOENIX_VR_SHOCKER, world.player)
+                          and state.has(RAC3ITEM.PROGRESSIVE_WRENCH, world.player, vr_wrench_requirement),
         RAC3TBOLT.PHOENIX_VR_NERVES:
             lambda state: state.can_reach_location(RAC3LOCATION.PHOENIX_VR_WRENCH, world.player)
                           and state.can_reach_location(RAC3LOCATION.PHOENIX_VR_90_SECOND, world.player),
@@ -269,11 +378,11 @@ def set_rules(world: "RaC3World"):
         RAC3SKILLPOINT.PHOENIX_VR_TRAINING:
             lambda state: state.can_reach_location(RAC3LOCATION.TYHRRANOSIS_BOSS, world.player)
                           and state.has_all([RAC3ITEM.HACKER, RAC3ITEM.HYPERSHOT], world.player),
-        RAC3TBOLT.PHOENIX_VID_COMIC_1: lambda state: state.has(RAC3ITEM.PROGRESSIVE_VIDCOMIC, world.player, 1),
-        RAC3LOCATION.PHOENIX_VID_COMIC_1_CLEAR: lambda state: state.has(RAC3ITEM.PROGRESSIVE_VIDCOMIC, world.player, 1),
+        RAC3TBOLT.PHOENIX_VID_COMIC_1: lambda state: state.has(RAC3ITEM.PROGRESSIVE_VIDCOMIC, world.player),
+        RAC3LOCATION.PHOENIX_VID_COMIC_1_CLEAR: lambda state: state.has(RAC3ITEM.PROGRESSIVE_VIDCOMIC, world.player),
         RAC3LOCATION.PHOENIX_VID_COMIC_1_HEALTH_UPGRADE:
-            lambda state: state.has(RAC3ITEM.PROGRESSIVE_VIDCOMIC, world.player, 1),
-        RAC3SKILLPOINT.PHOENIX_COMIC_1: lambda state: state.has(RAC3ITEM.PROGRESSIVE_VIDCOMIC, world.player, 1),
+            lambda state: state.has(RAC3ITEM.PROGRESSIVE_VIDCOMIC, world.player),
+        RAC3SKILLPOINT.PHOENIX_COMIC_1: lambda state: state.has(RAC3ITEM.PROGRESSIVE_VIDCOMIC, world.player),
         RAC3TBOLT.PHOENIX_VID_COMIC_2: lambda state: state.has(RAC3ITEM.PROGRESSIVE_VIDCOMIC, world.player, 2),
         RAC3LOCATION.PHOENIX_VID_COMIC_2_CLEAR: lambda state: state.has(RAC3ITEM.PROGRESSIVE_VIDCOMIC, world.player, 2),
         RAC3LOCATION.PHOENIX_VID_COMIC_2_HEALTH_UPGRADE:
@@ -296,19 +405,24 @@ def set_rules(world: "RaC3World"):
         RAC3SKILLPOINT.PHOENIX_COMIC_5: lambda state: state.has(RAC3ITEM.PROGRESSIVE_VIDCOMIC, world.player, 5),
         RAC3SKILLPOINT.PHOENIX_ARCADE: lambda state: state.has(RAC3ITEM.PROGRESSIVE_VIDCOMIC, world.player, 5),
         RAC3TROPHY.PHOENIX_TITANIUM_COLLECTOR:
-            lambda state: all_locations(state, world, RAC3TAG.T_BOLT, RAC3TROPHY.PHOENIX_TITANIUM_COLLECTOR),
+            lambda state: state.has(RAC3ITEM.TITANIUM_BOLT, world.player, 40) or (
+                world.options.titanium_bolts.value == 0 and can_reach_tags(state, RAC3TAG.T_BOLT, 40)),
         RAC3TROPHY.PHOENIX_FRIEND_OF_THE_RANGERS:
-            lambda state: all_locations(state, world, RAC3TAG.RANGERS, RAC3TROPHY.PHOENIX_FRIEND_OF_THE_RANGERS),
+            all_locations(RAC3TAG.RANGERS, RAC3TROPHY.PHOENIX_FRIEND_OF_THE_RANGERS),
         RAC3TROPHY.PHOENIX_ANNIHILATION_NATION_CHAMPION:
-            lambda state: all_locations(state, world, RAC3TAG.ARENA, RAC3TROPHY.PHOENIX_ANNIHILATION_NATION_CHAMPION),
-        RAC3TROPHY.PHOENIX_SKILL_MASTER:
-            lambda state: all_locations(state, world, RAC3TAG.SKILLPOINT, RAC3TROPHY.PHOENIX_SKILL_MASTER),
+            all_locations(RAC3TAG.ARENA, RAC3TROPHY.PHOENIX_ANNIHILATION_NATION_CHAMPION),
+        RAC3TROPHY.PHOENIX_SKILL_MASTER: all_locations(RAC3TAG.SKILLPOINT, RAC3TROPHY.PHOENIX_SKILL_MASTER),
         RAC3TROPHY.PHOENIX_NANO_FINDER:
             lambda state: state.has_from_list(infobot_data.keys(), world.player,
-                                              calc_nanotech_requirement(world, 10, True)),
+                                              calc_nanotech_requirement(10, True)),
         RAC3TROPHY.PHOENIX_OMEGA_ARSENAL:
-            lambda state: state.has_all(non_prog_weapon_data.keys(), world.player)
-                          or state.has_all_counts(
+            lambda state:
+            world.options.progressive_weapons.value == 0 or
+            (state.has_all_counts(
+                {weapon: 0 if weapon == RAC3ITEM.PROGRESSIVE_RY3N0 else 5 for weapon in prog_weapon_data.keys()},
+                world.player) and
+             world.options.ngplus_items.value == 0) or
+            state.has_all_counts(
                 {weapon: 5 if weapon == RAC3ITEM.PROGRESSIVE_RY3N0 else 8 for weapon in prog_weapon_data.keys()},
                 world.player),
 
@@ -322,7 +436,8 @@ def set_rules(world: "RaC3World"):
         RAC3LOCATION.MARCADIA_RANGERS_4:
             lambda state: state.can_reach_location(RAC3LOCATION.MARCADIA_RANGERS_3, world.player),
         RAC3LOCATION.MARCADIA_RANGERS_5:
-            lambda state: state.can_reach_location(RAC3LOCATION.MARCADIA_RANGERS_4, world.player),
+            lambda state: state.can_reach_location(RAC3LOCATION.MARCADIA_RANGERS_4, world.player)
+                          and state.has(RAC3ITEM.PROGRESSIVE_WRENCH, world.player, a_wrench),
         RAC3LOCATION.MARCADIA_REFRACTOR:
             lambda state: state.can_reach_location(RAC3LOCATION.MARCADIA_RANGERS_5, world.player),
         RAC3SKILLPOINT.MARCADIA_REFLECT:
@@ -356,7 +471,8 @@ def set_rules(world: "RaC3World"):
         RAC3LOCATION.NATION_ONSLAUGHT:
             lambda state: state.can_reach_location(RAC3LOCATION.NATION_90_SECONDS, world.player),
         RAC3LOCATION.NATION_CHAMPIONSHIP_BOUT:
-            lambda state: state.can_reach_location(RAC3LOCATION.NATION_ONSLAUGHT, world.player),
+            lambda state: state.can_reach_location(RAC3LOCATION.NATION_ONSLAUGHT, world.player) and
+                          state.can_reach_location(RAC3LOCATION.NATION_TWO_MINUTE_WARNING, world.player),
         RAC3LOCATION.NATION_WHIP_IT_GOOD:
             lambda state: (state.has(RAC3ITEM.PLASMA_WHIP, world.player)
                            or state.has(RAC3ITEM.PROGRESSIVE_PLASMA_WHIP, world.player, progressive_requirement))
@@ -367,29 +483,32 @@ def set_rules(world: "RaC3World"):
                           and state.can_reach_location(RAC3LOCATION.NATION_WHIP_IT_GOOD, world.player),
 
         RAC3SKILLPOINT.NATION_BASH:
-            lambda state: state.can_reach_location(RAC3LOCATION.NATION_BBQ_BOULEVARD, world.player),
+            lambda state: state.can_reach_location(RAC3LOCATION.NATION_MEET_COURTNEY, world.player)
+                          and state.has(RAC3ITEM.PROGRESSIVE_WRENCH, world.player, progressive_wrench_requirement),
         RAC3LOCATION.NATION_MEET_COURTNEY:
             lambda state: state.can_reach_location(RAC3LOCATION.NATION_BBQ_BOULEVARD, world.player),
         RAC3LOCATION.NATION_INFOBOT_HOLOSTAR:
-            lambda state: state.can_reach_location(RAC3LOCATION.NATION_BBQ_BOULEVARD, world.player),
+            lambda state: state.can_reach_location(RAC3LOCATION.NATION_MEET_COURTNEY, world.player),
         RAC3LOCATION.NATION_NINJA_CHALLENGE:
-            lambda state: state.can_reach_location(RAC3LOCATION.NATION_BBQ_BOULEVARD, world.player),
+            lambda state: state.can_reach_location(RAC3LOCATION.NATION_MEET_COURTNEY, world.player),
         RAC3LOCATION.NATION_COUNTING_DUCKS:
-            lambda state: state.can_reach_location(RAC3LOCATION.NATION_BBQ_BOULEVARD, world.player),
+            lambda state: state.can_reach_location(RAC3LOCATION.NATION_MEET_COURTNEY, world.player),
         RAC3LOCATION.NATION_CYCLING_WEAPONS:
-            lambda state: state.can_reach_location(RAC3LOCATION.NATION_BBQ_BOULEVARD, world.player),
+            lambda state: state.can_reach_location(RAC3LOCATION.NATION_MEET_COURTNEY, world.player),
         RAC3LOCATION.NATION_ONE_HIT_WONDER:
-            lambda state: state.can_reach_location(RAC3LOCATION.NATION_BBQ_BOULEVARD, world.player),
+            lambda state: state.can_reach_location(RAC3LOCATION.NATION_MEET_COURTNEY, world.player),
         RAC3LOCATION.NATION_TIME_TO_SUCK:
-            lambda state: state.can_reach_location(RAC3LOCATION.NATION_BBQ_BOULEVARD, world.player)
+            lambda state: state.can_reach_location(RAC3LOCATION.NATION_MEET_COURTNEY, world.player)
                           and (state.has(RAC3ITEM.SUCK_CANNON, world.player)
                                or state.has(RAC3ITEM.PROGRESSIVE_SUCK_CANNON, world.player, progressive_requirement)),
         RAC3LOCATION.NATION_NAPTIME:
-            lambda state: state.can_reach_location(RAC3LOCATION.NATION_BBQ_BOULEVARD, world.player),
+            lambda state: (state.can_reach_location(RAC3LOCATION.NATION_COUNTING_DUCKS, world.player)
+                           and state.can_reach_location(RAC3LOCATION.NATION_NINJA_CHALLENGE, world.player)),
         RAC3LOCATION.NATION_MORE_CYCLING_WEAPONS:
-            lambda state: state.can_reach_location(RAC3LOCATION.NATION_BBQ_BOULEVARD, world.player),
+            lambda state: (state.can_reach_location(RAC3LOCATION.NATION_COUNTING_DUCKS, world.player)
+                           and state.can_reach_location(RAC3LOCATION.NATION_CYCLING_WEAPONS, world.player)),
         RAC3LOCATION.NATION_DODGE_THE_TWINS:
-            lambda state: state.can_reach_location(RAC3LOCATION.NATION_BBQ_BOULEVARD, world.player),
+            lambda state: state.can_reach_location(RAC3LOCATION.NATION_ONE_HIT_WONDER, world.player),
         RAC3LOCATION.NATION_CHOP_CHOP:
             lambda state: state.can_reach_location(RAC3LOCATION.NATION_TIME_TO_SUCK, world.player)
                           and (state.has(RAC3ITEM.DISC_BLADE, world.player)
@@ -403,8 +522,12 @@ def set_rules(world: "RaC3World"):
                           and (state.has(RAC3ITEM.QWACK_O_RAY, world.player)
                                or state.has(RAC3ITEM.PROGRESSIVE_QWACK_O_RAY, world.player, progressive_requirement)),
         RAC3LOCATION.NATION_CHAMPIONSHIP_BOUT_II:
-            lambda state: state.can_reach_location(RAC3LOCATION.NATION_BBQ_BOULEVARD, world.player),
-        RAC3LOCATION.NATION_QWARKTASTIC_BATTLE: lambda state: state.has(RAC3ITEM.VICTORY, world.player),
+            lambda state: (state.can_reach_location(RAC3LOCATION.NATION_NAPTIME, world.player)
+                           and state.can_reach_location(RAC3LOCATION.NATION_MORE_CYCLING_WEAPONS, world.player)
+                           and state.can_reach_location(RAC3LOCATION.NATION_DODGE_THE_TWINS, world.player)),
+        RAC3LOCATION.NATION_QWARKTASTIC_BATTLE: lambda state: (
+            state.can_reach_location(RAC3LOCATION.NATION_CHAMPIONSHIP_BOUT, world.player)
+            and state.can_reach_location(RAC3LOCATION.NATION_CHAMPIONSHIP_BOUT_II, world.player)),
         # RAC3LOCATION.NATION_HEAT_STREET
         RAC3LOCATION.NATION_CRISPY_CRITTER:
             lambda state: state.can_reach_location(RAC3LOCATION.NATION_HEAT_STREET, world.player),
@@ -413,7 +536,7 @@ def set_rules(world: "RaC3World"):
         RAC3LOCATION.NATION_SUICIDE_RUN:
             lambda state: state.can_reach_location(RAC3LOCATION.NATION_PYRO_PLAYGROUND, world.player),
         RAC3LOCATION.NATION_BBQ_BOULEVARD:
-            lambda state: state.can_reach_location(RAC3LOCATION.DAXX_GUNSHIP, world.player)
+            lambda state: state.has(RAC3EVENT.DAXX_WARSHIP[1], world.player)
                           and state.has_any([RAC3ITEM.HELI_PACK, RAC3ITEM.THRUSTER_PACK, RAC3ITEM.CLANK,
                                              RAC3ITEM.PROGRESSIVE_PACK, RAC3ITEM.CHARGE_BOOTS], world.player),
         RAC3LOCATION.NATION_MAZE_OF_BLAZE:
@@ -560,7 +683,8 @@ def set_rules(world: "RaC3World"):
         RAC3TBOLT.TYHRRANOSIS_CAVE: lambda state: state.has(RAC3ITEM.HYPERSHOT, world.player),
         # RAC3LOCATION.TYHRRANOSIS_BOSS
         RAC3LOCATION.TYHRRANOSIS_RANGERS_1:
-            lambda state: state.can_reach_location(RAC3LOCATION.TYHRRANOSIS_BOSS, world.player),
+            lambda state: state.can_reach_location(RAC3LOCATION.TYHRRANOSIS_BOSS, world.player)
+                          and state.has(RAC3ITEM.PROGRESSIVE_WRENCH, world.player, a_wrench),
         RAC3LOCATION.TYHRRANOSIS_RANGERS_2:
             lambda state: state.can_reach_location(RAC3LOCATION.TYHRRANOSIS_RANGERS_1, world.player),
         RAC3LOCATION.TYHRRANOSIS_RANGERS_3:
@@ -573,7 +697,7 @@ def set_rules(world: "RaC3World"):
 
         # RAC3LOCATION.DAXX_CHARGE_BOOTS
         # RAC3TROPHY.DAXX_PLUMBER
-        RAC3LOCATION.DAXX_GUNSHIP: lambda state: state.has(RAC3ITEM.HYPERSHOT, world.player),
+        RAC3LOCATION.DAXX_WARSHIP: lambda state: state.has(RAC3ITEM.HYPERSHOT, world.player),
         RAC3TBOLT.DAXX_TAXI:
             lambda state: state.has(RAC3ITEM.HYPERSHOT, world.player) and
                           state.has_any([RAC3ITEM.HELI_PACK, RAC3ITEM.CLANK, RAC3ITEM.PROGRESSIVE_PACK], world.player),
@@ -587,7 +711,8 @@ def set_rules(world: "RaC3World"):
         RAC3TBOLT.OBANI_GEMINI_2: lambda state: state.has(RAC3ITEM.REFRACTOR, world.player),
         RAC3LOCATION.OBANI_GEMINI_SKIDD: lambda state: state.has(RAC3ITEM.REFRACTOR, world.player),
 
-        # RAC3SKILLPOINT.BLACKWATER_BASH
+        RAC3SKILLPOINT.BLACKWATER_BASH:
+            lambda state: state.has(RAC3ITEM.PROGRESSIVE_WRENCH, world.player, progressive_wrench_requirement),
         # RAC3LOCATION.BLACKWATER_CITY_RANGERS_1
         RAC3LOCATION.BLACKWATER_CITY_RANGERS_2:
             lambda state: state.can_reach_location(RAC3LOCATION.BLACKWATER_CITY_RANGERS_1, world.player),
@@ -639,7 +764,8 @@ def set_rules(world: "RaC3World"):
         # RAC3LOCATION.METROPOLIS_METAL_NOIDS
         # RAC3TBOLT.METROPOLIS_BEHIND
         RAC3LOCATION.METROPOLIS_DEFEAT_KLUNK:
-            lambda state: state.has_all([RAC3ITEM.GRAV_BOOTS, RAC3ITEM.REFRACTOR], world.player),
+            lambda state: state.has_all([RAC3ITEM.GRAV_BOOTS, RAC3ITEM.REFRACTOR], world.player)
+                          and state.has(RAC3ITEM.PROGRESSIVE_WRENCH, world.player, a_wrench),
         RAC3TBOLT.METROPOLIS_RANGERS:
             lambda state: state.can_reach_location(RAC3LOCATION.METROPOLIS_DEFEAT_KLUNK, world.player),
         RAC3LOCATION.METROPOLIS_RANGERS_1:
@@ -696,7 +822,8 @@ def set_rules(world: "RaC3World"):
                            or state.has(RAC3ITEM.PROGRESSIVE_PLASMA_COIL, world.player, progressive_requirement))
                           and state.can_reach_location(RAC3LOCATION.ARIDIA_RANGERS_2, world.player),
         RAC3LOCATION.ARIDIA_RANGERS_4:
-            lambda state: state.can_reach_location(RAC3LOCATION.ARIDIA_RANGERS_3, world.player),
+            lambda state: state.can_reach_location(RAC3LOCATION.ARIDIA_RANGERS_3, world.player)
+                          and state.has(RAC3ITEM.PROGRESSIVE_WRENCH, world.player, a_wrench),
         RAC3TBOLT.ARIDIA_BASE:
             lambda state: state.has(RAC3ITEM.GRAV_BOOTS, world.player)
                           and state.can_reach_location(RAC3LOCATION.ARIDIA_RANGERS_4, world.player),
@@ -720,9 +847,12 @@ def set_rules(world: "RaC3World"):
         # RAC3TROPHY.KOROS_COURTNEY
         # RAC3TBOLT.KOROS_FENCE
         # RAC3TBOLT.KOROS_GLASS
-        RAC3SKILLPOINT.KOROS_BREAK: lambda state: state.has(RAC3ITEM.BOX_BREAKER, world.player),
+        RAC3SKILLPOINT.KOROS_BREAK:
+            lambda state: state.has(RAC3ITEM.BOX_BREAKER, world.player)
+                          and state.has(RAC3ITEM.PROGRESSIVE_WRENCH, world.player, a_wrench),
         # RAC3LOCATION.KOROS_BASE
 
+        RAC3LOCATION.COMMAND_CENTER_INFOBOT: lambda state: state.has(RAC3EVENT.CC_ACCESS[1], world.player),
         RAC3TBOLT.COMMAND_CENTER:
             lambda state: state.has_all([RAC3ITEM.HYPERSHOT, RAC3ITEM.GRAV_BOOTS, RAC3ITEM.TYHRRA_GUISE], world.player),
         RAC3TROPHY.COMMAND_LAWRENCE:
@@ -732,399 +862,401 @@ def set_rules(world: "RaC3World"):
         RAC3SKILLPOINT.COMMAND_CENTER_GERMS:
             lambda state: state.has_any([RAC3ITEM.INFECTOR, RAC3ITEM.PROGRESSIVE_INFECTOR], world.player) and
                           state.has_all([RAC3ITEM.HYPERSHOT, RAC3ITEM.GRAV_BOOTS, RAC3ITEM.TYHRRA_GUISE], world.player),
-        RAC3LOCATION.COMMAND_CENTER_NEFARIOUS:
-            lambda state: state.has_all([RAC3ITEM.HYPERSHOT, RAC3ITEM.GRAV_BOOTS, RAC3ITEM.TYHRRA_GUISE,
-                                         RAC3ITEM.HACKER, RAC3ITEM.REFRACTOR], world.player)
-                          and state.has_any([RAC3ITEM.HELI_PACK, RAC3ITEM.THRUSTER_PACK,
-                                             RAC3ITEM.CLANK, RAC3ITEM.PROGRESSIVE_PACK], world.player),
-        RAC3LOCATION.COMMAND_CENTER_BIOBLITERATOR:
-            lambda state: state.has_all([RAC3ITEM.HYPERSHOT, RAC3ITEM.GRAV_BOOTS, RAC3ITEM.TYHRRA_GUISE,
-                                         RAC3ITEM.HACKER, RAC3ITEM.REFRACTOR], world.player)
-                          and state.has_any([RAC3ITEM.HELI_PACK, RAC3ITEM.THRUSTER_PACK,
-                                             RAC3ITEM.CLANK, RAC3ITEM.PROGRESSIVE_PACK], world.player),
+        # RAC3LOCATION.COMMAND_CENTER_NEFARIOUS:
+        #     lambda state: state.has_all([RAC3ITEM.HYPERSHOT, RAC3ITEM.GRAV_BOOTS, RAC3ITEM.TYHRRA_GUISE,
+        #                                  RAC3ITEM.HACKER, RAC3ITEM.REFRACTOR], world.player)
+        #                   and state.has_any([RAC3ITEM.HELI_PACK, RAC3ITEM.THRUSTER_PACK,
+        #                                      RAC3ITEM.CLANK, RAC3ITEM.PROGRESSIVE_PACK], world.player)
+        #                   and state.has(RAC3ITEM.PROGRESSIVE_WRENCH, world.player, a_wrench),
+        # RAC3LOCATION.COMMAND_CENTER_BIOBLITERATOR:
+        #     lambda state: state.has_all([RAC3ITEM.HYPERSHOT, RAC3ITEM.GRAV_BOOTS, RAC3ITEM.TYHRRA_GUISE,
+        #                                  RAC3ITEM.HACKER, RAC3ITEM.REFRACTOR], world.player)
+        #                   and state.has_any([RAC3ITEM.HELI_PACK, RAC3ITEM.THRUSTER_PACK,
+        #                                      RAC3ITEM.CLANK, RAC3ITEM.PROGRESSIVE_PACK], world.player)
+        #                   and state.has(RAC3ITEM.PROGRESSIVE_WRENCH, world.player, a_wrench),
 
         RAC3VENDORLOCATION.NGPLUS_RY3N0: lambda state: state.has_from_list(infobot_data.keys(), world.player, 10),
 
         RAC3NANOTECH.LEVEL_11: lambda state: state.has_from_list(infobot_data.keys(), world.player,
-                                                                 calc_nanotech_requirement(world, 1)),
+                                                                 calc_nanotech_requirement(1)),
         RAC3NANOTECH.LEVEL_12: lambda state: state.has_from_list(infobot_data.keys(), world.player,
-                                                                 calc_nanotech_requirement(world, 1)),
+                                                                 calc_nanotech_requirement(1)),
         RAC3NANOTECH.LEVEL_13: lambda state: state.has_from_list(infobot_data.keys(), world.player,
-                                                                 calc_nanotech_requirement(world, 1)),
+                                                                 calc_nanotech_requirement(1)),
         RAC3NANOTECH.LEVEL_14: lambda state: state.has_from_list(infobot_data.keys(), world.player,
-                                                                 calc_nanotech_requirement(world, 1)),
+                                                                 calc_nanotech_requirement(1)),
         RAC3NANOTECH.LEVEL_15: lambda state: state.has_from_list(infobot_data.keys(), world.player,
-                                                                 calc_nanotech_requirement(world, 1)),
+                                                                 calc_nanotech_requirement(1)),
         RAC3NANOTECH.LEVEL_16: lambda state: state.has_from_list(infobot_data.keys(), world.player,
-                                                                 calc_nanotech_requirement(world, 2)),
+                                                                 calc_nanotech_requirement(2)),
         RAC3NANOTECH.LEVEL_17: lambda state: state.has_from_list(infobot_data.keys(), world.player,
-                                                                 calc_nanotech_requirement(world, 2)),
+                                                                 calc_nanotech_requirement(2)),
         RAC3NANOTECH.LEVEL_18: lambda state: state.has_from_list(infobot_data.keys(), world.player,
-                                                                 calc_nanotech_requirement(world, 2)),
+                                                                 calc_nanotech_requirement(2)),
         RAC3NANOTECH.LEVEL_19: lambda state: state.has_from_list(infobot_data.keys(), world.player,
-                                                                 calc_nanotech_requirement(world, 2)),
+                                                                 calc_nanotech_requirement(2)),
         RAC3NANOTECH.LEVEL_20: lambda state: state.has_from_list(infobot_data.keys(), world.player,
-                                                                 calc_nanotech_requirement(world, 2)),
+                                                                 calc_nanotech_requirement(2)),
         RAC3NANOTECH.LEVEL_21: lambda state: state.has_from_list(infobot_data.keys(), world.player,
-                                                                 calc_nanotech_requirement(world, 3)),
+                                                                 calc_nanotech_requirement(3)),
         RAC3NANOTECH.LEVEL_22: lambda state: state.has_from_list(infobot_data.keys(), world.player,
-                                                                 calc_nanotech_requirement(world, 3)),
+                                                                 calc_nanotech_requirement(3)),
         RAC3NANOTECH.LEVEL_23: lambda state: state.has_from_list(infobot_data.keys(), world.player,
-                                                                 calc_nanotech_requirement(world, 3)),
+                                                                 calc_nanotech_requirement(3)),
         RAC3NANOTECH.LEVEL_24: lambda state: state.has_from_list(infobot_data.keys(), world.player,
-                                                                 calc_nanotech_requirement(world, 3)),
+                                                                 calc_nanotech_requirement(3)),
         RAC3NANOTECH.LEVEL_25: lambda state: state.has_from_list(infobot_data.keys(), world.player,
-                                                                 calc_nanotech_requirement(world, 3)),
+                                                                 calc_nanotech_requirement(3)),
         RAC3NANOTECH.LEVEL_26: lambda state: state.has_from_list(infobot_data.keys(), world.player,
-                                                                 calc_nanotech_requirement(world, 4)),
+                                                                 calc_nanotech_requirement(4)),
         RAC3NANOTECH.LEVEL_27: lambda state: state.has_from_list(infobot_data.keys(), world.player,
-                                                                 calc_nanotech_requirement(world, 4)),
+                                                                 calc_nanotech_requirement(4)),
         RAC3NANOTECH.LEVEL_28: lambda state: state.has_from_list(infobot_data.keys(), world.player,
-                                                                 calc_nanotech_requirement(world, 4)),
+                                                                 calc_nanotech_requirement(4)),
         RAC3NANOTECH.LEVEL_29: lambda state: state.has_from_list(infobot_data.keys(), world.player,
-                                                                 calc_nanotech_requirement(world, 4)),
+                                                                 calc_nanotech_requirement(4)),
         RAC3NANOTECH.LEVEL_30: lambda state: state.has_from_list(infobot_data.keys(), world.player,
-                                                                 calc_nanotech_requirement(world, 4)),
+                                                                 calc_nanotech_requirement(4)),
         RAC3NANOTECH.LEVEL_31: lambda state: state.has_from_list(infobot_data.keys(), world.player,
-                                                                 calc_nanotech_requirement(world, 5)),
+                                                                 calc_nanotech_requirement(5)),
         RAC3NANOTECH.LEVEL_32: lambda state: state.has_from_list(infobot_data.keys(), world.player,
-                                                                 calc_nanotech_requirement(world, 5)),
+                                                                 calc_nanotech_requirement(5)),
         RAC3NANOTECH.LEVEL_33: lambda state: state.has_from_list(infobot_data.keys(), world.player,
-                                                                 calc_nanotech_requirement(world, 5)),
+                                                                 calc_nanotech_requirement(5)),
         RAC3NANOTECH.LEVEL_34: lambda state: state.has_from_list(infobot_data.keys(), world.player,
-                                                                 calc_nanotech_requirement(world, 5)),
+                                                                 calc_nanotech_requirement(5)),
         RAC3NANOTECH.LEVEL_35: lambda state: state.has_from_list(infobot_data.keys(), world.player,
-                                                                 calc_nanotech_requirement(world, 5)),
+                                                                 calc_nanotech_requirement(5)),
         RAC3NANOTECH.LEVEL_36: lambda state: state.has_from_list(infobot_data.keys(), world.player,
-                                                                 calc_nanotech_requirement(world, 6)),
+                                                                 calc_nanotech_requirement(6)),
         RAC3NANOTECH.LEVEL_37: lambda state: state.has_from_list(infobot_data.keys(), world.player,
-                                                                 calc_nanotech_requirement(world, 6)),
+                                                                 calc_nanotech_requirement(6)),
         RAC3NANOTECH.LEVEL_38: lambda state: state.has_from_list(infobot_data.keys(), world.player,
-                                                                 calc_nanotech_requirement(world, 6)),
+                                                                 calc_nanotech_requirement(6)),
         RAC3NANOTECH.LEVEL_39: lambda state: state.has_from_list(infobot_data.keys(), world.player,
-                                                                 calc_nanotech_requirement(world, 6)),
+                                                                 calc_nanotech_requirement(6)),
         RAC3NANOTECH.LEVEL_40: lambda state: state.has_from_list(infobot_data.keys(), world.player,
-                                                                 calc_nanotech_requirement(world, 6)),
+                                                                 calc_nanotech_requirement(6)),
         RAC3NANOTECH.LEVEL_41: lambda state: state.has_from_list(infobot_data.keys(), world.player,
-                                                                 calc_nanotech_requirement(world, 7)),
+                                                                 calc_nanotech_requirement(7)),
         RAC3NANOTECH.LEVEL_42: lambda state: state.has_from_list(infobot_data.keys(), world.player,
-                                                                 calc_nanotech_requirement(world, 7)),
+                                                                 calc_nanotech_requirement(7)),
         RAC3NANOTECH.LEVEL_43: lambda state: state.has_from_list(infobot_data.keys(), world.player,
-                                                                 calc_nanotech_requirement(world, 7)),
+                                                                 calc_nanotech_requirement(7)),
         RAC3NANOTECH.LEVEL_44: lambda state: state.has_from_list(infobot_data.keys(), world.player,
-                                                                 calc_nanotech_requirement(world, 7)),
+                                                                 calc_nanotech_requirement(7)),
         RAC3NANOTECH.LEVEL_45: lambda state: state.has_from_list(infobot_data.keys(), world.player,
-                                                                 calc_nanotech_requirement(world, 7)),
+                                                                 calc_nanotech_requirement(7)),
         RAC3NANOTECH.LEVEL_46: lambda state: state.has_from_list(infobot_data.keys(), world.player,
-                                                                 calc_nanotech_requirement(world, 8)),
+                                                                 calc_nanotech_requirement(8)),
         RAC3NANOTECH.LEVEL_47: lambda state: state.has_from_list(infobot_data.keys(), world.player,
-                                                                 calc_nanotech_requirement(world, 8)),
+                                                                 calc_nanotech_requirement(8)),
         RAC3NANOTECH.LEVEL_48: lambda state: state.has_from_list(infobot_data.keys(), world.player,
-                                                                 calc_nanotech_requirement(world, 8)),
+                                                                 calc_nanotech_requirement(8)),
         RAC3NANOTECH.LEVEL_49: lambda state: state.has_from_list(infobot_data.keys(), world.player,
-                                                                 calc_nanotech_requirement(world, 8)),
+                                                                 calc_nanotech_requirement(8)),
         RAC3NANOTECH.LEVEL_50: lambda state: state.has_from_list(infobot_data.keys(), world.player,
-                                                                 calc_nanotech_requirement(world, 8)),
+                                                                 calc_nanotech_requirement(8)),
         RAC3NANOTECH.LEVEL_51: lambda state: state.has_from_list(infobot_data.keys(), world.player,
-                                                                 calc_nanotech_requirement(world, 9)),
+                                                                 calc_nanotech_requirement(9)),
         RAC3NANOTECH.LEVEL_52: lambda state: state.has_from_list(infobot_data.keys(), world.player,
-                                                                 calc_nanotech_requirement(world, 9)),
+                                                                 calc_nanotech_requirement(9)),
         RAC3NANOTECH.LEVEL_53: lambda state: state.has_from_list(infobot_data.keys(), world.player,
-                                                                 calc_nanotech_requirement(world, 9)),
+                                                                 calc_nanotech_requirement(9)),
         RAC3NANOTECH.LEVEL_54: lambda state: state.has_from_list(infobot_data.keys(), world.player,
-                                                                 calc_nanotech_requirement(world, 9)),
+                                                                 calc_nanotech_requirement(9)),
         RAC3NANOTECH.LEVEL_55: lambda state: state.has_from_list(infobot_data.keys(), world.player,
-                                                                 calc_nanotech_requirement(world, 9)),
+                                                                 calc_nanotech_requirement(9)),
         RAC3NANOTECH.LEVEL_56: lambda state: state.has_from_list(infobot_data.keys(), world.player,
-                                                                 calc_nanotech_requirement(world, 10)),
+                                                                 calc_nanotech_requirement(10)),
         RAC3NANOTECH.LEVEL_57: lambda state: state.has_from_list(infobot_data.keys(), world.player,
-                                                                 calc_nanotech_requirement(world, 10)),
+                                                                 calc_nanotech_requirement(10)),
         RAC3NANOTECH.LEVEL_58: lambda state: state.has_from_list(infobot_data.keys(), world.player,
-                                                                 calc_nanotech_requirement(world, 10)),
+                                                                 calc_nanotech_requirement(10)),
         RAC3NANOTECH.LEVEL_59: lambda state: state.has_from_list(infobot_data.keys(), world.player,
-                                                                 calc_nanotech_requirement(world, 10)),
+                                                                 calc_nanotech_requirement(10)),
         RAC3NANOTECH.LEVEL_60: lambda state: state.has_from_list(infobot_data.keys(), world.player,
-                                                                 calc_nanotech_requirement(world, 10)),
+                                                                 calc_nanotech_requirement(10)),
         RAC3NANOTECH.LEVEL_61: lambda state: state.has_from_list(infobot_data.keys(), world.player,
-                                                                 calc_nanotech_requirement(world, 11)),
+                                                                 calc_nanotech_requirement(11)),
         RAC3NANOTECH.LEVEL_62: lambda state: state.has_from_list(infobot_data.keys(), world.player,
-                                                                 calc_nanotech_requirement(world, 11)),
+                                                                 calc_nanotech_requirement(11)),
         RAC3NANOTECH.LEVEL_63: lambda state: state.has_from_list(infobot_data.keys(), world.player,
-                                                                 calc_nanotech_requirement(world, 11)),
+                                                                 calc_nanotech_requirement(11)),
         RAC3NANOTECH.LEVEL_64: lambda state: state.has_from_list(infobot_data.keys(), world.player,
-                                                                 calc_nanotech_requirement(world, 11)),
+                                                                 calc_nanotech_requirement(11)),
         RAC3NANOTECH.LEVEL_65: lambda state: state.has_from_list(infobot_data.keys(), world.player,
-                                                                 calc_nanotech_requirement(world, 11)),
+                                                                 calc_nanotech_requirement(11)),
         RAC3NANOTECH.LEVEL_66: lambda state: state.has_from_list(infobot_data.keys(), world.player,
-                                                                 calc_nanotech_requirement(world, 12)),
+                                                                 calc_nanotech_requirement(12)),
         RAC3NANOTECH.LEVEL_67: lambda state: state.has_from_list(infobot_data.keys(), world.player,
-                                                                 calc_nanotech_requirement(world, 12)),
+                                                                 calc_nanotech_requirement(12)),
         RAC3NANOTECH.LEVEL_68: lambda state: state.has_from_list(infobot_data.keys(), world.player,
-                                                                 calc_nanotech_requirement(world, 12)),
+                                                                 calc_nanotech_requirement(12)),
         RAC3NANOTECH.LEVEL_69: lambda state: state.has_from_list(infobot_data.keys(), world.player,
-                                                                 calc_nanotech_requirement(world, 12)),
+                                                                 calc_nanotech_requirement(12)),
         RAC3NANOTECH.LEVEL_70: lambda state: state.has_from_list(infobot_data.keys(), world.player,
-                                                                 calc_nanotech_requirement(world, 12)),
+                                                                 calc_nanotech_requirement(12)),
         RAC3NANOTECH.LEVEL_71: lambda state: state.has_from_list(infobot_data.keys(), world.player,
-                                                                 calc_nanotech_requirement(world, 13)),
+                                                                 calc_nanotech_requirement(13)),
         RAC3NANOTECH.LEVEL_72: lambda state: state.has_from_list(infobot_data.keys(), world.player,
-                                                                 calc_nanotech_requirement(world, 13)),
+                                                                 calc_nanotech_requirement(13)),
         RAC3NANOTECH.LEVEL_73: lambda state: state.has_from_list(infobot_data.keys(), world.player,
-                                                                 calc_nanotech_requirement(world, 13)),
+                                                                 calc_nanotech_requirement(13)),
         RAC3NANOTECH.LEVEL_74: lambda state: state.has_from_list(infobot_data.keys(), world.player,
-                                                                 calc_nanotech_requirement(world, 13)),
+                                                                 calc_nanotech_requirement(13)),
         RAC3NANOTECH.LEVEL_75: lambda state: state.has_from_list(infobot_data.keys(), world.player,
-                                                                 calc_nanotech_requirement(world, 13)),
+                                                                 calc_nanotech_requirement(13)),
         RAC3NANOTECH.LEVEL_76: lambda state: state.has_from_list(infobot_data.keys(), world.player,
-                                                                 calc_nanotech_requirement(world, 14)),
+                                                                 calc_nanotech_requirement(14)),
         RAC3NANOTECH.LEVEL_77: lambda state: state.has_from_list(infobot_data.keys(), world.player,
-                                                                 calc_nanotech_requirement(world, 14)),
+                                                                 calc_nanotech_requirement(14)),
         RAC3NANOTECH.LEVEL_78: lambda state: state.has_from_list(infobot_data.keys(), world.player,
-                                                                 calc_nanotech_requirement(world, 14)),
+                                                                 calc_nanotech_requirement(14)),
         RAC3NANOTECH.LEVEL_79: lambda state: state.has_from_list(infobot_data.keys(), world.player,
-                                                                 calc_nanotech_requirement(world, 14)),
+                                                                 calc_nanotech_requirement(14)),
         RAC3NANOTECH.LEVEL_80: lambda state: state.has_from_list(infobot_data.keys(), world.player,
-                                                                 calc_nanotech_requirement(world, 14)),
+                                                                 calc_nanotech_requirement(14)),
         RAC3NANOTECH.LEVEL_81: lambda state: state.has_from_list(infobot_data.keys(), world.player,
-                                                                 calc_nanotech_requirement(world, 15)),
+                                                                 calc_nanotech_requirement(15)),
         RAC3NANOTECH.LEVEL_82: lambda state: state.has_from_list(infobot_data.keys(), world.player,
-                                                                 calc_nanotech_requirement(world, 15)),
+                                                                 calc_nanotech_requirement(15)),
         RAC3NANOTECH.LEVEL_83: lambda state: state.has_from_list(infobot_data.keys(), world.player,
-                                                                 calc_nanotech_requirement(world, 15)),
+                                                                 calc_nanotech_requirement(15)),
         RAC3NANOTECH.LEVEL_84: lambda state: state.has_from_list(infobot_data.keys(), world.player,
-                                                                 calc_nanotech_requirement(world, 15)),
+                                                                 calc_nanotech_requirement(15)),
         RAC3NANOTECH.LEVEL_85: lambda state: state.has_from_list(infobot_data.keys(), world.player,
-                                                                 calc_nanotech_requirement(world, 15)),
+                                                                 calc_nanotech_requirement(15)),
         RAC3NANOTECH.LEVEL_86: lambda state: state.has_from_list(infobot_data.keys(), world.player,
-                                                                 calc_nanotech_requirement(world, 16)),
+                                                                 calc_nanotech_requirement(16)),
         RAC3NANOTECH.LEVEL_87: lambda state: state.has_from_list(infobot_data.keys(), world.player,
-                                                                 calc_nanotech_requirement(world, 16)),
+                                                                 calc_nanotech_requirement(16)),
         RAC3NANOTECH.LEVEL_88: lambda state: state.has_from_list(infobot_data.keys(), world.player,
-                                                                 calc_nanotech_requirement(world, 16)),
+                                                                 calc_nanotech_requirement(16)),
         RAC3NANOTECH.LEVEL_89: lambda state: state.has_from_list(infobot_data.keys(), world.player,
-                                                                 calc_nanotech_requirement(world, 16)),
+                                                                 calc_nanotech_requirement(16)),
         RAC3NANOTECH.LEVEL_90: lambda state: state.has_from_list(infobot_data.keys(), world.player,
-                                                                 calc_nanotech_requirement(world, 16)),
+                                                                 calc_nanotech_requirement(16)),
         RAC3NANOTECH.LEVEL_91: lambda state: state.has_from_list(infobot_data.keys(), world.player,
-                                                                 calc_nanotech_requirement(world, 17)),
+                                                                 calc_nanotech_requirement(17)),
         RAC3NANOTECH.LEVEL_92: lambda state: state.has_from_list(infobot_data.keys(), world.player,
-                                                                 calc_nanotech_requirement(world, 17)),
+                                                                 calc_nanotech_requirement(17)),
         RAC3NANOTECH.LEVEL_93: lambda state: state.has_from_list(infobot_data.keys(), world.player,
-                                                                 calc_nanotech_requirement(world, 17)),
+                                                                 calc_nanotech_requirement(17)),
         RAC3NANOTECH.LEVEL_94: lambda state: state.has_from_list(infobot_data.keys(), world.player,
-                                                                 calc_nanotech_requirement(world, 17)),
+                                                                 calc_nanotech_requirement(17)),
         RAC3NANOTECH.LEVEL_95: lambda state: state.has_from_list(infobot_data.keys(), world.player,
-                                                                 calc_nanotech_requirement(world, 17)),
+                                                                 calc_nanotech_requirement(17)),
         RAC3NANOTECH.LEVEL_96: lambda state: state.has_from_list(infobot_data.keys(), world.player,
-                                                                 calc_nanotech_requirement(world, 18)),
+                                                                 calc_nanotech_requirement(18)),
         RAC3NANOTECH.LEVEL_97: lambda state: state.has_from_list(infobot_data.keys(), world.player,
-                                                                 calc_nanotech_requirement(world, 18)),
+                                                                 calc_nanotech_requirement(18)),
         RAC3NANOTECH.LEVEL_98: lambda state: state.has_from_list(infobot_data.keys(), world.player,
-                                                                 calc_nanotech_requirement(world, 18)),
+                                                                 calc_nanotech_requirement(18)),
         RAC3NANOTECH.LEVEL_99: lambda state: state.has_from_list(infobot_data.keys(), world.player,
-                                                                 calc_nanotech_requirement(world, 18)),
+                                                                 calc_nanotech_requirement(18)),
         RAC3NANOTECH.LEVEL_100: lambda state: state.has_from_list(infobot_data.keys(), world.player,
-                                                                  calc_nanotech_requirement(world, 18)),
+                                                                  calc_nanotech_requirement(18)),
         RAC3NANOTECH.LEVEL_101: lambda state: state.has_from_list(infobot_data.keys(), world.player,
-                                                                  calc_nanotech_requirement(world, 1, True)),
+                                                                  calc_nanotech_requirement(1, True)),
         RAC3NANOTECH.LEVEL_102: lambda state: state.has_from_list(infobot_data.keys(), world.player,
-                                                                  calc_nanotech_requirement(world, 1, True)),
+                                                                  calc_nanotech_requirement(1, True)),
         RAC3NANOTECH.LEVEL_103: lambda state: state.has_from_list(infobot_data.keys(), world.player,
-                                                                  calc_nanotech_requirement(world, 1, True)),
+                                                                  calc_nanotech_requirement(1, True)),
         RAC3NANOTECH.LEVEL_104: lambda state: state.has_from_list(infobot_data.keys(), world.player,
-                                                                  calc_nanotech_requirement(world, 1, True)),
+                                                                  calc_nanotech_requirement(1, True)),
         RAC3NANOTECH.LEVEL_105: lambda state: state.has_from_list(infobot_data.keys(), world.player,
-                                                                  calc_nanotech_requirement(world, 1, True)),
+                                                                  calc_nanotech_requirement(1, True)),
         RAC3NANOTECH.LEVEL_106: lambda state: state.has_from_list(infobot_data.keys(), world.player,
-                                                                  calc_nanotech_requirement(world, 1, True)),
+                                                                  calc_nanotech_requirement(1, True)),
         RAC3NANOTECH.LEVEL_107: lambda state: state.has_from_list(infobot_data.keys(), world.player,
-                                                                  calc_nanotech_requirement(world, 1, True)),
+                                                                  calc_nanotech_requirement(1, True)),
         RAC3NANOTECH.LEVEL_108: lambda state: state.has_from_list(infobot_data.keys(), world.player,
-                                                                  calc_nanotech_requirement(world, 1, True)),
+                                                                  calc_nanotech_requirement(1, True)),
         RAC3NANOTECH.LEVEL_109: lambda state: state.has_from_list(infobot_data.keys(), world.player,
-                                                                  calc_nanotech_requirement(world, 1, True)),
+                                                                  calc_nanotech_requirement(1, True)),
         RAC3NANOTECH.LEVEL_110: lambda state: state.has_from_list(infobot_data.keys(), world.player,
-                                                                  calc_nanotech_requirement(world, 1, True)),
+                                                                  calc_nanotech_requirement(1, True)),
         RAC3NANOTECH.LEVEL_111: lambda state: state.has_from_list(infobot_data.keys(), world.player,
-                                                                  calc_nanotech_requirement(world, 2, True)),
+                                                                  calc_nanotech_requirement(2, True)),
         RAC3NANOTECH.LEVEL_112: lambda state: state.has_from_list(infobot_data.keys(), world.player,
-                                                                  calc_nanotech_requirement(world, 2, True)),
+                                                                  calc_nanotech_requirement(2, True)),
         RAC3NANOTECH.LEVEL_113: lambda state: state.has_from_list(infobot_data.keys(), world.player,
-                                                                  calc_nanotech_requirement(world, 2, True)),
+                                                                  calc_nanotech_requirement(2, True)),
         RAC3NANOTECH.LEVEL_114: lambda state: state.has_from_list(infobot_data.keys(), world.player,
-                                                                  calc_nanotech_requirement(world, 2, True)),
+                                                                  calc_nanotech_requirement(2, True)),
         RAC3NANOTECH.LEVEL_115: lambda state: state.has_from_list(infobot_data.keys(), world.player,
-                                                                  calc_nanotech_requirement(world, 2, True)),
+                                                                  calc_nanotech_requirement(2, True)),
         RAC3NANOTECH.LEVEL_116: lambda state: state.has_from_list(infobot_data.keys(), world.player,
-                                                                  calc_nanotech_requirement(world, 2, True)),
+                                                                  calc_nanotech_requirement(2, True)),
         RAC3NANOTECH.LEVEL_117: lambda state: state.has_from_list(infobot_data.keys(), world.player,
-                                                                  calc_nanotech_requirement(world, 2, True)),
+                                                                  calc_nanotech_requirement(2, True)),
         RAC3NANOTECH.LEVEL_118: lambda state: state.has_from_list(infobot_data.keys(), world.player,
-                                                                  calc_nanotech_requirement(world, 2, True)),
+                                                                  calc_nanotech_requirement(2, True)),
         RAC3NANOTECH.LEVEL_119: lambda state: state.has_from_list(infobot_data.keys(), world.player,
-                                                                  calc_nanotech_requirement(world, 2, True)),
+                                                                  calc_nanotech_requirement(2, True)),
         RAC3NANOTECH.LEVEL_120: lambda state: state.has_from_list(infobot_data.keys(), world.player,
-                                                                  calc_nanotech_requirement(world, 2, True)),
+                                                                  calc_nanotech_requirement(2, True)),
         RAC3NANOTECH.LEVEL_121: lambda state: state.has_from_list(infobot_data.keys(), world.player,
-                                                                  calc_nanotech_requirement(world, 3, True)),
+                                                                  calc_nanotech_requirement(3, True)),
         RAC3NANOTECH.LEVEL_122: lambda state: state.has_from_list(infobot_data.keys(), world.player,
-                                                                  calc_nanotech_requirement(world, 3, True)),
+                                                                  calc_nanotech_requirement(3, True)),
         RAC3NANOTECH.LEVEL_123: lambda state: state.has_from_list(infobot_data.keys(), world.player,
-                                                                  calc_nanotech_requirement(world, 3, True)),
+                                                                  calc_nanotech_requirement(3, True)),
         RAC3NANOTECH.LEVEL_124: lambda state: state.has_from_list(infobot_data.keys(), world.player,
-                                                                  calc_nanotech_requirement(world, 3, True)),
+                                                                  calc_nanotech_requirement(3, True)),
         RAC3NANOTECH.LEVEL_125: lambda state: state.has_from_list(infobot_data.keys(), world.player,
-                                                                  calc_nanotech_requirement(world, 3, True)),
+                                                                  calc_nanotech_requirement(3, True)),
         RAC3NANOTECH.LEVEL_126: lambda state: state.has_from_list(infobot_data.keys(), world.player,
-                                                                  calc_nanotech_requirement(world, 3, True)),
+                                                                  calc_nanotech_requirement(3, True)),
         RAC3NANOTECH.LEVEL_127: lambda state: state.has_from_list(infobot_data.keys(), world.player,
-                                                                  calc_nanotech_requirement(world, 3, True)),
+                                                                  calc_nanotech_requirement(3, True)),
         RAC3NANOTECH.LEVEL_128: lambda state: state.has_from_list(infobot_data.keys(), world.player,
-                                                                  calc_nanotech_requirement(world, 3, True)),
+                                                                  calc_nanotech_requirement(3, True)),
         RAC3NANOTECH.LEVEL_129: lambda state: state.has_from_list(infobot_data.keys(), world.player,
-                                                                  calc_nanotech_requirement(world, 3, True)),
+                                                                  calc_nanotech_requirement(3, True)),
         RAC3NANOTECH.LEVEL_130: lambda state: state.has_from_list(infobot_data.keys(), world.player,
-                                                                  calc_nanotech_requirement(world, 3, True)),
+                                                                  calc_nanotech_requirement(3, True)),
         RAC3NANOTECH.LEVEL_131: lambda state: state.has_from_list(infobot_data.keys(), world.player,
-                                                                  calc_nanotech_requirement(world, 4, True)),
+                                                                  calc_nanotech_requirement(4, True)),
         RAC3NANOTECH.LEVEL_132: lambda state: state.has_from_list(infobot_data.keys(), world.player,
-                                                                  calc_nanotech_requirement(world, 4, True)),
+                                                                  calc_nanotech_requirement(4, True)),
         RAC3NANOTECH.LEVEL_133: lambda state: state.has_from_list(infobot_data.keys(), world.player,
-                                                                  calc_nanotech_requirement(world, 4, True)),
+                                                                  calc_nanotech_requirement(4, True)),
         RAC3NANOTECH.LEVEL_134: lambda state: state.has_from_list(infobot_data.keys(), world.player,
-                                                                  calc_nanotech_requirement(world, 4, True)),
+                                                                  calc_nanotech_requirement(4, True)),
         RAC3NANOTECH.LEVEL_135: lambda state: state.has_from_list(infobot_data.keys(), world.player,
-                                                                  calc_nanotech_requirement(world, 4, True)),
+                                                                  calc_nanotech_requirement(4, True)),
         RAC3NANOTECH.LEVEL_136: lambda state: state.has_from_list(infobot_data.keys(), world.player,
-                                                                  calc_nanotech_requirement(world, 4, True)),
+                                                                  calc_nanotech_requirement(4, True)),
         RAC3NANOTECH.LEVEL_137: lambda state: state.has_from_list(infobot_data.keys(), world.player,
-                                                                  calc_nanotech_requirement(world, 4, True)),
+                                                                  calc_nanotech_requirement(4, True)),
         RAC3NANOTECH.LEVEL_138: lambda state: state.has_from_list(infobot_data.keys(), world.player,
-                                                                  calc_nanotech_requirement(world, 4, True)),
+                                                                  calc_nanotech_requirement(4, True)),
         RAC3NANOTECH.LEVEL_139: lambda state: state.has_from_list(infobot_data.keys(), world.player,
-                                                                  calc_nanotech_requirement(world, 4, True)),
+                                                                  calc_nanotech_requirement(4, True)),
         RAC3NANOTECH.LEVEL_140: lambda state: state.has_from_list(infobot_data.keys(), world.player,
-                                                                  calc_nanotech_requirement(world, 4, True)),
+                                                                  calc_nanotech_requirement(4, True)),
         RAC3NANOTECH.LEVEL_141: lambda state: state.has_from_list(infobot_data.keys(), world.player,
-                                                                  calc_nanotech_requirement(world, 5, True)),
+                                                                  calc_nanotech_requirement(5, True)),
         RAC3NANOTECH.LEVEL_142: lambda state: state.has_from_list(infobot_data.keys(), world.player,
-                                                                  calc_nanotech_requirement(world, 5, True)),
+                                                                  calc_nanotech_requirement(5, True)),
         RAC3NANOTECH.LEVEL_143: lambda state: state.has_from_list(infobot_data.keys(), world.player,
-                                                                  calc_nanotech_requirement(world, 5, True)),
+                                                                  calc_nanotech_requirement(5, True)),
         RAC3NANOTECH.LEVEL_144: lambda state: state.has_from_list(infobot_data.keys(), world.player,
-                                                                  calc_nanotech_requirement(world, 5, True)),
+                                                                  calc_nanotech_requirement(5, True)),
         RAC3NANOTECH.LEVEL_145: lambda state: state.has_from_list(infobot_data.keys(), world.player,
-                                                                  calc_nanotech_requirement(world, 5, True)),
+                                                                  calc_nanotech_requirement(5, True)),
         RAC3NANOTECH.LEVEL_146: lambda state: state.has_from_list(infobot_data.keys(), world.player,
-                                                                  calc_nanotech_requirement(world, 5, True)),
+                                                                  calc_nanotech_requirement(5, True)),
         RAC3NANOTECH.LEVEL_147: lambda state: state.has_from_list(infobot_data.keys(), world.player,
-                                                                  calc_nanotech_requirement(world, 5, True)),
+                                                                  calc_nanotech_requirement(5, True)),
         RAC3NANOTECH.LEVEL_148: lambda state: state.has_from_list(infobot_data.keys(), world.player,
-                                                                  calc_nanotech_requirement(world, 5, True)),
+                                                                  calc_nanotech_requirement(5, True)),
         RAC3NANOTECH.LEVEL_149: lambda state: state.has_from_list(infobot_data.keys(), world.player,
-                                                                  calc_nanotech_requirement(world, 5, True)),
+                                                                  calc_nanotech_requirement(5, True)),
         RAC3NANOTECH.LEVEL_150: lambda state: state.has_from_list(infobot_data.keys(), world.player,
-                                                                  calc_nanotech_requirement(world, 5, True)),
+                                                                  calc_nanotech_requirement(5, True)),
         RAC3NANOTECH.LEVEL_151: lambda state: state.has_from_list(infobot_data.keys(), world.player,
-                                                                  calc_nanotech_requirement(world, 6, True)),
+                                                                  calc_nanotech_requirement(6, True)),
         RAC3NANOTECH.LEVEL_152: lambda state: state.has_from_list(infobot_data.keys(), world.player,
-                                                                  calc_nanotech_requirement(world, 6, True)),
+                                                                  calc_nanotech_requirement(6, True)),
         RAC3NANOTECH.LEVEL_153: lambda state: state.has_from_list(infobot_data.keys(), world.player,
-                                                                  calc_nanotech_requirement(world, 6, True)),
+                                                                  calc_nanotech_requirement(6, True)),
         RAC3NANOTECH.LEVEL_154: lambda state: state.has_from_list(infobot_data.keys(), world.player,
-                                                                  calc_nanotech_requirement(world, 6, True)),
+                                                                  calc_nanotech_requirement(6, True)),
         RAC3NANOTECH.LEVEL_155: lambda state: state.has_from_list(infobot_data.keys(), world.player,
-                                                                  calc_nanotech_requirement(world, 6, True)),
+                                                                  calc_nanotech_requirement(6, True)),
         RAC3NANOTECH.LEVEL_156: lambda state: state.has_from_list(infobot_data.keys(), world.player,
-                                                                  calc_nanotech_requirement(world, 6, True)),
+                                                                  calc_nanotech_requirement(6, True)),
         RAC3NANOTECH.LEVEL_157: lambda state: state.has_from_list(infobot_data.keys(), world.player,
-                                                                  calc_nanotech_requirement(world, 6, True)),
+                                                                  calc_nanotech_requirement(6, True)),
         RAC3NANOTECH.LEVEL_158: lambda state: state.has_from_list(infobot_data.keys(), world.player,
-                                                                  calc_nanotech_requirement(world, 6, True)),
+                                                                  calc_nanotech_requirement(6, True)),
         RAC3NANOTECH.LEVEL_159: lambda state: state.has_from_list(infobot_data.keys(), world.player,
-                                                                  calc_nanotech_requirement(world, 6, True)),
+                                                                  calc_nanotech_requirement(6, True)),
         RAC3NANOTECH.LEVEL_160: lambda state: state.has_from_list(infobot_data.keys(), world.player,
-                                                                  calc_nanotech_requirement(world, 6, True)),
+                                                                  calc_nanotech_requirement(6, True)),
         RAC3NANOTECH.LEVEL_161: lambda state: state.has_from_list(infobot_data.keys(), world.player,
-                                                                  calc_nanotech_requirement(world, 7, True)),
+                                                                  calc_nanotech_requirement(7, True)),
         RAC3NANOTECH.LEVEL_162: lambda state: state.has_from_list(infobot_data.keys(), world.player,
-                                                                  calc_nanotech_requirement(world, 7, True)),
+                                                                  calc_nanotech_requirement(7, True)),
         RAC3NANOTECH.LEVEL_163: lambda state: state.has_from_list(infobot_data.keys(), world.player,
-                                                                  calc_nanotech_requirement(world, 7, True)),
+                                                                  calc_nanotech_requirement(7, True)),
         RAC3NANOTECH.LEVEL_164: lambda state: state.has_from_list(infobot_data.keys(), world.player,
-                                                                  calc_nanotech_requirement(world, 7, True)),
+                                                                  calc_nanotech_requirement(7, True)),
         RAC3NANOTECH.LEVEL_165: lambda state: state.has_from_list(infobot_data.keys(), world.player,
-                                                                  calc_nanotech_requirement(world, 7, True)),
+                                                                  calc_nanotech_requirement(7, True)),
         RAC3NANOTECH.LEVEL_166: lambda state: state.has_from_list(infobot_data.keys(), world.player,
-                                                                  calc_nanotech_requirement(world, 7, True)),
+                                                                  calc_nanotech_requirement(7, True)),
         RAC3NANOTECH.LEVEL_167: lambda state: state.has_from_list(infobot_data.keys(), world.player,
-                                                                  calc_nanotech_requirement(world, 7, True)),
+                                                                  calc_nanotech_requirement(7, True)),
         RAC3NANOTECH.LEVEL_168: lambda state: state.has_from_list(infobot_data.keys(), world.player,
-                                                                  calc_nanotech_requirement(world, 7, True)),
+                                                                  calc_nanotech_requirement(7, True)),
         RAC3NANOTECH.LEVEL_169: lambda state: state.has_from_list(infobot_data.keys(), world.player,
-                                                                  calc_nanotech_requirement(world, 7, True)),
+                                                                  calc_nanotech_requirement(7, True)),
         RAC3NANOTECH.LEVEL_170: lambda state: state.has_from_list(infobot_data.keys(), world.player,
-                                                                  calc_nanotech_requirement(world, 7, True)),
+                                                                  calc_nanotech_requirement(7, True)),
         RAC3NANOTECH.LEVEL_171: lambda state: state.has_from_list(infobot_data.keys(), world.player,
-                                                                  calc_nanotech_requirement(world, 8, True)),
+                                                                  calc_nanotech_requirement(8, True)),
         RAC3NANOTECH.LEVEL_172: lambda state: state.has_from_list(infobot_data.keys(), world.player,
-                                                                  calc_nanotech_requirement(world, 8, True)),
+                                                                  calc_nanotech_requirement(8, True)),
         RAC3NANOTECH.LEVEL_173: lambda state: state.has_from_list(infobot_data.keys(), world.player,
-                                                                  calc_nanotech_requirement(world, 8, True)),
+                                                                  calc_nanotech_requirement(8, True)),
         RAC3NANOTECH.LEVEL_174: lambda state: state.has_from_list(infobot_data.keys(), world.player,
-                                                                  calc_nanotech_requirement(world, 8, True)),
+                                                                  calc_nanotech_requirement(8, True)),
         RAC3NANOTECH.LEVEL_175: lambda state: state.has_from_list(infobot_data.keys(), world.player,
-                                                                  calc_nanotech_requirement(world, 8, True)),
+                                                                  calc_nanotech_requirement(8, True)),
         RAC3NANOTECH.LEVEL_176: lambda state: state.has_from_list(infobot_data.keys(), world.player,
-                                                                  calc_nanotech_requirement(world, 8, True)),
+                                                                  calc_nanotech_requirement(8, True)),
         RAC3NANOTECH.LEVEL_177: lambda state: state.has_from_list(infobot_data.keys(), world.player,
-                                                                  calc_nanotech_requirement(world, 8, True)),
+                                                                  calc_nanotech_requirement(8, True)),
         RAC3NANOTECH.LEVEL_178: lambda state: state.has_from_list(infobot_data.keys(), world.player,
-                                                                  calc_nanotech_requirement(world, 8, True)),
+                                                                  calc_nanotech_requirement(8, True)),
         RAC3NANOTECH.LEVEL_179: lambda state: state.has_from_list(infobot_data.keys(), world.player,
-                                                                  calc_nanotech_requirement(world, 8, True)),
+                                                                  calc_nanotech_requirement(8, True)),
         RAC3NANOTECH.LEVEL_180: lambda state: state.has_from_list(infobot_data.keys(), world.player,
-                                                                  calc_nanotech_requirement(world, 8, True)),
+                                                                  calc_nanotech_requirement(8, True)),
         RAC3NANOTECH.LEVEL_181: lambda state: state.has_from_list(infobot_data.keys(), world.player,
-                                                                  calc_nanotech_requirement(world, 9, True)),
+                                                                  calc_nanotech_requirement(9, True)),
         RAC3NANOTECH.LEVEL_182: lambda state: state.has_from_list(infobot_data.keys(), world.player,
-                                                                  calc_nanotech_requirement(world, 9, True)),
+                                                                  calc_nanotech_requirement(9, True)),
         RAC3NANOTECH.LEVEL_183: lambda state: state.has_from_list(infobot_data.keys(), world.player,
-                                                                  calc_nanotech_requirement(world, 9, True)),
+                                                                  calc_nanotech_requirement(9, True)),
         RAC3NANOTECH.LEVEL_184: lambda state: state.has_from_list(infobot_data.keys(), world.player,
-                                                                  calc_nanotech_requirement(world, 9, True)),
+                                                                  calc_nanotech_requirement(9, True)),
         RAC3NANOTECH.LEVEL_185: lambda state: state.has_from_list(infobot_data.keys(), world.player,
-                                                                  calc_nanotech_requirement(world, 9, True)),
+                                                                  calc_nanotech_requirement(9, True)),
         RAC3NANOTECH.LEVEL_186: lambda state: state.has_from_list(infobot_data.keys(), world.player,
-                                                                  calc_nanotech_requirement(world, 9, True)),
+                                                                  calc_nanotech_requirement(9, True)),
         RAC3NANOTECH.LEVEL_187: lambda state: state.has_from_list(infobot_data.keys(), world.player,
-                                                                  calc_nanotech_requirement(world, 9, True)),
+                                                                  calc_nanotech_requirement(9, True)),
         RAC3NANOTECH.LEVEL_188: lambda state: state.has_from_list(infobot_data.keys(), world.player,
-                                                                  calc_nanotech_requirement(world, 9, True)),
+                                                                  calc_nanotech_requirement(9, True)),
         RAC3NANOTECH.LEVEL_189: lambda state: state.has_from_list(infobot_data.keys(), world.player,
-                                                                  calc_nanotech_requirement(world, 9, True)),
+                                                                  calc_nanotech_requirement(9, True)),
         RAC3NANOTECH.LEVEL_190: lambda state: state.has_from_list(infobot_data.keys(), world.player,
-                                                                  calc_nanotech_requirement(world, 9, True)),
+                                                                  calc_nanotech_requirement(9, True)),
         RAC3NANOTECH.LEVEL_191: lambda state: state.has_from_list(infobot_data.keys(), world.player,
-                                                                  calc_nanotech_requirement(world, 10, True)),
+                                                                  calc_nanotech_requirement(10, True)),
         RAC3NANOTECH.LEVEL_192: lambda state: state.has_from_list(infobot_data.keys(), world.player,
-                                                                  calc_nanotech_requirement(world, 10, True)),
+                                                                  calc_nanotech_requirement(10, True)),
         RAC3NANOTECH.LEVEL_193: lambda state: state.has_from_list(infobot_data.keys(), world.player,
-                                                                  calc_nanotech_requirement(world, 10, True)),
+                                                                  calc_nanotech_requirement(10, True)),
         RAC3NANOTECH.LEVEL_194: lambda state: state.has_from_list(infobot_data.keys(), world.player,
-                                                                  calc_nanotech_requirement(world, 10, True)),
+                                                                  calc_nanotech_requirement(10, True)),
         RAC3NANOTECH.LEVEL_195: lambda state: state.has_from_list(infobot_data.keys(), world.player,
-                                                                  calc_nanotech_requirement(world, 10, True)),
+                                                                  calc_nanotech_requirement(10, True)),
         RAC3NANOTECH.LEVEL_196: lambda state: state.has_from_list(infobot_data.keys(), world.player,
-                                                                  calc_nanotech_requirement(world, 10, True)),
+                                                                  calc_nanotech_requirement(10, True)),
         RAC3NANOTECH.LEVEL_197: lambda state: state.has_from_list(infobot_data.keys(), world.player,
-                                                                  calc_nanotech_requirement(world, 10, True)),
+                                                                  calc_nanotech_requirement(10, True)),
         RAC3NANOTECH.LEVEL_198: lambda state: state.has_from_list(infobot_data.keys(), world.player,
-                                                                  calc_nanotech_requirement(world, 10, True)),
+                                                                  calc_nanotech_requirement(10, True)),
         RAC3NANOTECH.LEVEL_199: lambda state: state.has_from_list(infobot_data.keys(), world.player,
-                                                                  calc_nanotech_requirement(world, 10, True)),
+                                                                  calc_nanotech_requirement(10, True)),
         RAC3NANOTECH.LEVEL_200: lambda state: state.has_from_list(infobot_data.keys(), world.player,
-                                                                  calc_nanotech_requirement(world, 10, True)),
+                                                                  calc_nanotech_requirement(10, True)),
 
         RAC3WEAPONLEVEL.SHOCK_BLASTER_V2: lambda state: state.has(RAC3ITEM.SHOCK_BLASTER, world.player) or state.has(
             RAC3ITEM.PROGRESSIVE_SHOCK_BLASTER, world.player, 2),
@@ -1135,11 +1267,11 @@ def set_rules(world: "RaC3World"):
         RAC3WEAPONLEVEL.SHOCK_BLASTER_V5: lambda state: state.has(RAC3ITEM.SHOCK_BLASTER, world.player) or state.has(
             RAC3ITEM.PROGRESSIVE_SHOCK_BLASTER, world.player, 5),
         RAC3WEAPONLEVEL.SHOCK_BLASTER_V6: lambda state: (state.has(RAC3ITEM.SHOCK_BLASTER, world.player) or state.has(
-            RAC3ITEM.PROGRESSIVE_SHOCK_BLASTER, world.player, 6)) and can_earn_good_exp(state, world),
+            RAC3ITEM.PROGRESSIVE_SHOCK_BLASTER, world.player, 6)) and can_earn_good_exp(state),
         RAC3WEAPONLEVEL.SHOCK_BLASTER_V7: lambda state: (state.has(RAC3ITEM.SHOCK_BLASTER, world.player) or state.has(
-            RAC3ITEM.PROGRESSIVE_SHOCK_BLASTER, world.player, 7)) and can_earn_good_exp(state, world),
+            RAC3ITEM.PROGRESSIVE_SHOCK_BLASTER, world.player, 7)) and can_earn_good_exp(state),
         RAC3WEAPONLEVEL.SHOCK_BLASTER_V8: lambda state: (state.has(RAC3ITEM.SHOCK_BLASTER, world.player) or state.has(
-            RAC3ITEM.PROGRESSIVE_SHOCK_BLASTER, world.player, 8)) and can_earn_good_exp(state, world),
+            RAC3ITEM.PROGRESSIVE_SHOCK_BLASTER, world.player, 8)) and can_earn_good_exp(state),
         RAC3WEAPONLEVEL.NITRO_LAUNCHER_V2: lambda state: state.has(RAC3ITEM.NITRO_LAUNCHER, world.player) or state.has(
             RAC3ITEM.PROGRESSIVE_NITRO_LAUNCHER, world.player, 2),
         RAC3WEAPONLEVEL.NITRO_LAUNCHER_V3: lambda state: state.has(RAC3ITEM.NITRO_LAUNCHER, world.player) or state.has(
@@ -1149,11 +1281,11 @@ def set_rules(world: "RaC3World"):
         RAC3WEAPONLEVEL.NITRO_LAUNCHER_V5: lambda state: state.has(RAC3ITEM.NITRO_LAUNCHER, world.player) or state.has(
             RAC3ITEM.PROGRESSIVE_NITRO_LAUNCHER, world.player, 5),
         RAC3WEAPONLEVEL.NITRO_LAUNCHER_V6: lambda state: (state.has(RAC3ITEM.NITRO_LAUNCHER, world.player) or state.has(
-            RAC3ITEM.PROGRESSIVE_NITRO_LAUNCHER, world.player, 6)) and can_earn_good_exp(state, world),
+            RAC3ITEM.PROGRESSIVE_NITRO_LAUNCHER, world.player, 6)) and can_earn_good_exp(state),
         RAC3WEAPONLEVEL.NITRO_LAUNCHER_V7: lambda state: (state.has(RAC3ITEM.NITRO_LAUNCHER, world.player) or state.has(
-            RAC3ITEM.PROGRESSIVE_NITRO_LAUNCHER, world.player, 7)) and can_earn_good_exp(state, world),
+            RAC3ITEM.PROGRESSIVE_NITRO_LAUNCHER, world.player, 7)) and can_earn_good_exp(state),
         RAC3WEAPONLEVEL.NITRO_LAUNCHER_V8: lambda state: (state.has(RAC3ITEM.NITRO_LAUNCHER, world.player) or state.has(
-            RAC3ITEM.PROGRESSIVE_NITRO_LAUNCHER, world.player, 8)) and can_earn_good_exp(state, world),
+            RAC3ITEM.PROGRESSIVE_NITRO_LAUNCHER, world.player, 8)) and can_earn_good_exp(state),
         RAC3WEAPONLEVEL.PLASMA_WHIP_V2: lambda state: state.has(RAC3ITEM.PLASMA_WHIP, world.player) or state.has(
             RAC3ITEM.PROGRESSIVE_PLASMA_WHIP, world.player, 2),
         RAC3WEAPONLEVEL.PLASMA_WHIP_V3: lambda state: state.has(RAC3ITEM.PLASMA_WHIP, world.player) or state.has(
@@ -1163,11 +1295,11 @@ def set_rules(world: "RaC3World"):
         RAC3WEAPONLEVEL.PLASMA_WHIP_V5: lambda state: state.has(RAC3ITEM.PLASMA_WHIP, world.player) or state.has(
             RAC3ITEM.PROGRESSIVE_PLASMA_WHIP, world.player, 5),
         RAC3WEAPONLEVEL.PLASMA_WHIP_V6: lambda state: (state.has(RAC3ITEM.PLASMA_WHIP, world.player) or state.has(
-            RAC3ITEM.PROGRESSIVE_PLASMA_WHIP, world.player, 6)) and can_earn_good_exp(state, world),
+            RAC3ITEM.PROGRESSIVE_PLASMA_WHIP, world.player, 6)) and can_earn_good_exp(state),
         RAC3WEAPONLEVEL.PLASMA_WHIP_V7: lambda state: (state.has(RAC3ITEM.PLASMA_WHIP, world.player) or state.has(
-            RAC3ITEM.PROGRESSIVE_PLASMA_WHIP, world.player, 7)) and can_earn_good_exp(state, world),
+            RAC3ITEM.PROGRESSIVE_PLASMA_WHIP, world.player, 7)) and can_earn_good_exp(state),
         RAC3WEAPONLEVEL.PLASMA_WHIP_V8: lambda state: (state.has(RAC3ITEM.PLASMA_WHIP, world.player) or state.has(
-            RAC3ITEM.PROGRESSIVE_PLASMA_WHIP, world.player, 8)) and can_earn_good_exp(state, world),
+            RAC3ITEM.PROGRESSIVE_PLASMA_WHIP, world.player, 8)) and can_earn_good_exp(state),
         RAC3WEAPONLEVEL.N60_STORM_V2: lambda state: state.has(RAC3ITEM.N60_STORM, world.player) or state.has(
             RAC3ITEM.PROGRESSIVE_N60_STORM, world.player, 2),
         RAC3WEAPONLEVEL.N60_STORM_V3: lambda state: state.has(RAC3ITEM.N60_STORM, world.player) or state.has(
@@ -1177,11 +1309,11 @@ def set_rules(world: "RaC3World"):
         RAC3WEAPONLEVEL.N60_STORM_V5: lambda state: state.has(RAC3ITEM.N60_STORM, world.player) or state.has(
             RAC3ITEM.PROGRESSIVE_N60_STORM, world.player, 5),
         RAC3WEAPONLEVEL.N60_STORM_V6: lambda state: (state.has(RAC3ITEM.N60_STORM, world.player) or state.has(
-            RAC3ITEM.PROGRESSIVE_N60_STORM, world.player, 6)) and can_earn_good_exp(state, world),
+            RAC3ITEM.PROGRESSIVE_N60_STORM, world.player, 6)) and can_earn_good_exp(state),
         RAC3WEAPONLEVEL.N60_STORM_V7: lambda state: (state.has(RAC3ITEM.N60_STORM, world.player) or state.has(
-            RAC3ITEM.PROGRESSIVE_N60_STORM, world.player, 7)) and can_earn_good_exp(state, world),
+            RAC3ITEM.PROGRESSIVE_N60_STORM, world.player, 7)) and can_earn_good_exp(state),
         RAC3WEAPONLEVEL.N60_STORM_V8: lambda state: (state.has(RAC3ITEM.N60_STORM, world.player) or state.has(
-            RAC3ITEM.PROGRESSIVE_N60_STORM, world.player, 8)) and can_earn_good_exp(state, world),
+            RAC3ITEM.PROGRESSIVE_N60_STORM, world.player, 8)) and can_earn_good_exp(state),
         RAC3WEAPONLEVEL.INFECTOR_V2: lambda state: state.has(RAC3ITEM.INFECTOR, world.player) or state.has(
             RAC3ITEM.PROGRESSIVE_INFECTOR, world.player, 2),
         RAC3WEAPONLEVEL.INFECTOR_V3: lambda state: state.has(RAC3ITEM.INFECTOR, world.player) or state.has(
@@ -1191,11 +1323,11 @@ def set_rules(world: "RaC3World"):
         RAC3WEAPONLEVEL.INFECTOR_V5: lambda state: state.has(RAC3ITEM.INFECTOR, world.player) or state.has(
             RAC3ITEM.PROGRESSIVE_INFECTOR, world.player, 5),
         RAC3WEAPONLEVEL.INFECTOR_V6: lambda state: (state.has(RAC3ITEM.INFECTOR, world.player) or state.has(
-            RAC3ITEM.PROGRESSIVE_INFECTOR, world.player, 6)) and can_earn_good_exp(state, world),
+            RAC3ITEM.PROGRESSIVE_INFECTOR, world.player, 6)) and can_earn_good_exp(state),
         RAC3WEAPONLEVEL.INFECTOR_V7: lambda state: (state.has(RAC3ITEM.INFECTOR, world.player) or state.has(
-            RAC3ITEM.PROGRESSIVE_INFECTOR, world.player, 7)) and can_earn_good_exp(state, world),
+            RAC3ITEM.PROGRESSIVE_INFECTOR, world.player, 7)) and can_earn_good_exp(state),
         RAC3WEAPONLEVEL.INFECTOR_V8: lambda state: (state.has(RAC3ITEM.INFECTOR, world.player) or state.has(
-            RAC3ITEM.PROGRESSIVE_INFECTOR, world.player, 8)) and can_earn_good_exp(state, world),
+            RAC3ITEM.PROGRESSIVE_INFECTOR, world.player, 8)) and can_earn_good_exp(state),
         RAC3WEAPONLEVEL.SUCK_CANNON_V2: lambda state: state.has(RAC3ITEM.SUCK_CANNON, world.player) or state.has(
             RAC3ITEM.PROGRESSIVE_SUCK_CANNON, world.player, 2),
         RAC3WEAPONLEVEL.SUCK_CANNON_V3: lambda state: state.has(RAC3ITEM.SUCK_CANNON, world.player) or state.has(
@@ -1205,11 +1337,11 @@ def set_rules(world: "RaC3World"):
         RAC3WEAPONLEVEL.SUCK_CANNON_V5: lambda state: state.has(RAC3ITEM.SUCK_CANNON, world.player) or state.has(
             RAC3ITEM.PROGRESSIVE_SUCK_CANNON, world.player, 5),
         RAC3WEAPONLEVEL.SUCK_CANNON_V6: lambda state: (state.has(RAC3ITEM.SUCK_CANNON, world.player) or state.has(
-            RAC3ITEM.PROGRESSIVE_SUCK_CANNON, world.player, 6)) and can_earn_good_exp(state, world),
+            RAC3ITEM.PROGRESSIVE_SUCK_CANNON, world.player, 6)) and can_earn_good_exp(state),
         RAC3WEAPONLEVEL.SUCK_CANNON_V7: lambda state: (state.has(RAC3ITEM.SUCK_CANNON, world.player) or state.has(
-            RAC3ITEM.PROGRESSIVE_SUCK_CANNON, world.player, 7)) and can_earn_good_exp(state, world),
+            RAC3ITEM.PROGRESSIVE_SUCK_CANNON, world.player, 7)) and can_earn_good_exp(state),
         RAC3WEAPONLEVEL.SUCK_CANNON_V8: lambda state: (state.has(RAC3ITEM.SUCK_CANNON, world.player) or state.has(
-            RAC3ITEM.PROGRESSIVE_SUCK_CANNON, world.player, 8)) and can_earn_good_exp(state, world),
+            RAC3ITEM.PROGRESSIVE_SUCK_CANNON, world.player, 8)) and can_earn_good_exp(state),
         RAC3WEAPONLEVEL.SPITTING_HYDRA_V2: lambda state: state.has(RAC3ITEM.SPITTING_HYDRA, world.player) or state.has(
             RAC3ITEM.PROGRESSIVE_SPITTING_HYDRA, world.player, 2),
         RAC3WEAPONLEVEL.SPITTING_HYDRA_V3: lambda state: state.has(RAC3ITEM.SPITTING_HYDRA, world.player) or state.has(
@@ -1219,11 +1351,11 @@ def set_rules(world: "RaC3World"):
         RAC3WEAPONLEVEL.SPITTING_HYDRA_V5: lambda state: state.has(RAC3ITEM.SPITTING_HYDRA, world.player) or state.has(
             RAC3ITEM.PROGRESSIVE_SPITTING_HYDRA, world.player, 5),
         RAC3WEAPONLEVEL.SPITTING_HYDRA_V6: lambda state: (state.has(RAC3ITEM.SPITTING_HYDRA, world.player) or state.has(
-            RAC3ITEM.PROGRESSIVE_SPITTING_HYDRA, world.player, 6)) and can_earn_good_exp(state, world),
+            RAC3ITEM.PROGRESSIVE_SPITTING_HYDRA, world.player, 6)) and can_earn_good_exp(state),
         RAC3WEAPONLEVEL.SPITTING_HYDRA_V7: lambda state: (state.has(RAC3ITEM.SPITTING_HYDRA, world.player) or state.has(
-            RAC3ITEM.PROGRESSIVE_SPITTING_HYDRA, world.player, 7)) and can_earn_good_exp(state, world),
+            RAC3ITEM.PROGRESSIVE_SPITTING_HYDRA, world.player, 7)) and can_earn_good_exp(state),
         RAC3WEAPONLEVEL.SPITTING_HYDRA_V8: lambda state: (state.has(RAC3ITEM.SPITTING_HYDRA, world.player) or state.has(
-            RAC3ITEM.PROGRESSIVE_SPITTING_HYDRA, world.player, 8)) and can_earn_good_exp(state, world),
+            RAC3ITEM.PROGRESSIVE_SPITTING_HYDRA, world.player, 8)) and can_earn_good_exp(state),
         RAC3WEAPONLEVEL.AGENTS_OF_DOOM_V2: lambda state: state.has(RAC3ITEM.AGENTS_OF_DOOM, world.player) or state.has(
             RAC3ITEM.PROGRESSIVE_AGENTS_OF_DOOM, world.player, 2),
         RAC3WEAPONLEVEL.AGENTS_OF_DOOM_V3: lambda state: state.has(RAC3ITEM.AGENTS_OF_DOOM, world.player) or state.has(
@@ -1233,11 +1365,11 @@ def set_rules(world: "RaC3World"):
         RAC3WEAPONLEVEL.AGENTS_OF_DOOM_V5: lambda state: state.has(RAC3ITEM.AGENTS_OF_DOOM, world.player) or state.has(
             RAC3ITEM.PROGRESSIVE_AGENTS_OF_DOOM, world.player, 5),
         RAC3WEAPONLEVEL.AGENTS_OF_DOOM_V6: lambda state: (state.has(RAC3ITEM.AGENTS_OF_DOOM, world.player) or state.has(
-            RAC3ITEM.PROGRESSIVE_AGENTS_OF_DOOM, world.player, 6)) and can_earn_good_exp(state, world),
+            RAC3ITEM.PROGRESSIVE_AGENTS_OF_DOOM, world.player, 6)) and can_earn_good_exp(state),
         RAC3WEAPONLEVEL.AGENTS_OF_DOOM_V7: lambda state: (state.has(RAC3ITEM.AGENTS_OF_DOOM, world.player) or state.has(
-            RAC3ITEM.PROGRESSIVE_AGENTS_OF_DOOM, world.player, 7)) and can_earn_good_exp(state, world),
+            RAC3ITEM.PROGRESSIVE_AGENTS_OF_DOOM, world.player, 7)) and can_earn_good_exp(state),
         RAC3WEAPONLEVEL.AGENTS_OF_DOOM_V8: lambda state: (state.has(RAC3ITEM.AGENTS_OF_DOOM, world.player) or state.has(
-            RAC3ITEM.PROGRESSIVE_AGENTS_OF_DOOM, world.player, 8)) and can_earn_good_exp(state, world),
+            RAC3ITEM.PROGRESSIVE_AGENTS_OF_DOOM, world.player, 8)) and can_earn_good_exp(state),
         RAC3WEAPONLEVEL.FLUX_RIFLE_V2: lambda state: state.has(RAC3ITEM.FLUX_RIFLE, world.player) or state.has(
             RAC3ITEM.PROGRESSIVE_FLUX_RIFLE, world.player, 2),
         RAC3WEAPONLEVEL.FLUX_RIFLE_V3: lambda state: state.has(RAC3ITEM.FLUX_RIFLE, world.player) or state.has(
@@ -1247,11 +1379,11 @@ def set_rules(world: "RaC3World"):
         RAC3WEAPONLEVEL.FLUX_RIFLE_V5: lambda state: state.has(RAC3ITEM.FLUX_RIFLE, world.player) or state.has(
             RAC3ITEM.PROGRESSIVE_FLUX_RIFLE, world.player, 5),
         RAC3WEAPONLEVEL.FLUX_RIFLE_V6: lambda state: (state.has(RAC3ITEM.FLUX_RIFLE, world.player) or state.has(
-            RAC3ITEM.PROGRESSIVE_FLUX_RIFLE, world.player, 6)) and can_earn_good_exp(state, world),
+            RAC3ITEM.PROGRESSIVE_FLUX_RIFLE, world.player, 6)) and can_earn_good_exp(state),
         RAC3WEAPONLEVEL.FLUX_RIFLE_V7: lambda state: (state.has(RAC3ITEM.FLUX_RIFLE, world.player) or state.has(
-            RAC3ITEM.PROGRESSIVE_FLUX_RIFLE, world.player, 7)) and can_earn_good_exp(state, world),
+            RAC3ITEM.PROGRESSIVE_FLUX_RIFLE, world.player, 7)) and can_earn_good_exp(state),
         RAC3WEAPONLEVEL.FLUX_RIFLE_V8: lambda state: (state.has(RAC3ITEM.FLUX_RIFLE, world.player) or state.has(
-            RAC3ITEM.PROGRESSIVE_FLUX_RIFLE, world.player, 8)) and can_earn_good_exp(state, world),
+            RAC3ITEM.PROGRESSIVE_FLUX_RIFLE, world.player, 8)) and can_earn_good_exp(state),
         RAC3WEAPONLEVEL.LAVA_GUN_V2: lambda state: state.has(RAC3ITEM.LAVA_GUN, world.player) or state.has(
             RAC3ITEM.PROGRESSIVE_LAVA_GUN, world.player, 2),
         RAC3WEAPONLEVEL.LAVA_GUN_V3: lambda state: state.has(RAC3ITEM.LAVA_GUN, world.player) or state.has(
@@ -1261,11 +1393,11 @@ def set_rules(world: "RaC3World"):
         RAC3WEAPONLEVEL.LAVA_GUN_V5: lambda state: state.has(RAC3ITEM.LAVA_GUN, world.player) or state.has(
             RAC3ITEM.PROGRESSIVE_LAVA_GUN, world.player, 5),
         RAC3WEAPONLEVEL.LAVA_GUN_V6: lambda state: (state.has(RAC3ITEM.LAVA_GUN, world.player) or state.has(
-            RAC3ITEM.PROGRESSIVE_LAVA_GUN, world.player, 6)) and can_earn_good_exp(state, world),
+            RAC3ITEM.PROGRESSIVE_LAVA_GUN, world.player, 6)) and can_earn_good_exp(state),
         RAC3WEAPONLEVEL.LAVA_GUN_V7: lambda state: (state.has(RAC3ITEM.LAVA_GUN, world.player) or state.has(
-            RAC3ITEM.PROGRESSIVE_LAVA_GUN, world.player, 7)) and can_earn_good_exp(state, world),
+            RAC3ITEM.PROGRESSIVE_LAVA_GUN, world.player, 7)) and can_earn_good_exp(state),
         RAC3WEAPONLEVEL.LAVA_GUN_V8: lambda state: (state.has(RAC3ITEM.LAVA_GUN, world.player) or state.has(
-            RAC3ITEM.PROGRESSIVE_LAVA_GUN, world.player, 8)) and can_earn_good_exp(state, world),
+            RAC3ITEM.PROGRESSIVE_LAVA_GUN, world.player, 8)) and can_earn_good_exp(state),
         RAC3WEAPONLEVEL.MINI_TURRET_V2: lambda state: state.has(RAC3ITEM.MINI_TURRET, world.player) or state.has(
             RAC3ITEM.PROGRESSIVE_MINI_TURRET, world.player, 2),
         RAC3WEAPONLEVEL.MINI_TURRET_V3: lambda state: state.has(RAC3ITEM.MINI_TURRET, world.player) or state.has(
@@ -1275,11 +1407,11 @@ def set_rules(world: "RaC3World"):
         RAC3WEAPONLEVEL.MINI_TURRET_V5: lambda state: state.has(RAC3ITEM.MINI_TURRET, world.player) or state.has(
             RAC3ITEM.PROGRESSIVE_MINI_TURRET, world.player, 5),
         RAC3WEAPONLEVEL.MINI_TURRET_V6: lambda state: (state.has(RAC3ITEM.MINI_TURRET, world.player) or state.has(
-            RAC3ITEM.PROGRESSIVE_MINI_TURRET, world.player, 6)) and can_earn_good_exp(state, world),
+            RAC3ITEM.PROGRESSIVE_MINI_TURRET, world.player, 6)) and can_earn_good_exp(state),
         RAC3WEAPONLEVEL.MINI_TURRET_V7: lambda state: (state.has(RAC3ITEM.MINI_TURRET, world.player) or state.has(
-            RAC3ITEM.PROGRESSIVE_MINI_TURRET, world.player, 7)) and can_earn_good_exp(state, world),
+            RAC3ITEM.PROGRESSIVE_MINI_TURRET, world.player, 7)) and can_earn_good_exp(state),
         RAC3WEAPONLEVEL.MINI_TURRET_V8: lambda state: (state.has(RAC3ITEM.MINI_TURRET, world.player) or state.has(
-            RAC3ITEM.PROGRESSIVE_MINI_TURRET, world.player, 8)) and can_earn_good_exp(state, world),
+            RAC3ITEM.PROGRESSIVE_MINI_TURRET, world.player, 8)) and can_earn_good_exp(state),
         RAC3WEAPONLEVEL.ANNIHILATOR_V2: lambda state: state.has(RAC3ITEM.ANNIHILATOR, world.player) or state.has(
             RAC3ITEM.PROGRESSIVE_ANNIHILATOR, world.player, 2),
         RAC3WEAPONLEVEL.ANNIHILATOR_V3: lambda state: state.has(RAC3ITEM.ANNIHILATOR, world.player) or state.has(
@@ -1289,11 +1421,11 @@ def set_rules(world: "RaC3World"):
         RAC3WEAPONLEVEL.ANNIHILATOR_V5: lambda state: state.has(RAC3ITEM.ANNIHILATOR, world.player) or state.has(
             RAC3ITEM.PROGRESSIVE_ANNIHILATOR, world.player, 5),
         RAC3WEAPONLEVEL.ANNIHILATOR_V6: lambda state: (state.has(RAC3ITEM.ANNIHILATOR, world.player) or state.has(
-            RAC3ITEM.PROGRESSIVE_ANNIHILATOR, world.player, 6)) and can_earn_good_exp(state, world),
+            RAC3ITEM.PROGRESSIVE_ANNIHILATOR, world.player, 6)) and can_earn_good_exp(state),
         RAC3WEAPONLEVEL.ANNIHILATOR_V7: lambda state: (state.has(RAC3ITEM.ANNIHILATOR, world.player) or state.has(
-            RAC3ITEM.PROGRESSIVE_ANNIHILATOR, world.player, 7)) and can_earn_good_exp(state, world),
+            RAC3ITEM.PROGRESSIVE_ANNIHILATOR, world.player, 7)) and can_earn_good_exp(state),
         RAC3WEAPONLEVEL.ANNIHILATOR_V8: lambda state: (state.has(RAC3ITEM.ANNIHILATOR, world.player) or state.has(
-            RAC3ITEM.PROGRESSIVE_ANNIHILATOR, world.player, 8)) and can_earn_good_exp(state, world),
+            RAC3ITEM.PROGRESSIVE_ANNIHILATOR, world.player, 8)) and can_earn_good_exp(state),
         RAC3WEAPONLEVEL.HOLO_SHIELD_V2: lambda state: state.has(RAC3ITEM.HOLO_SHIELD, world.player) or state.has(
             RAC3ITEM.PROGRESSIVE_HOLO_SHIELD, world.player, 2),
         RAC3WEAPONLEVEL.HOLO_SHIELD_V3: lambda state: state.has(RAC3ITEM.HOLO_SHIELD, world.player) or state.has(
@@ -1303,11 +1435,11 @@ def set_rules(world: "RaC3World"):
         RAC3WEAPONLEVEL.HOLO_SHIELD_V5: lambda state: state.has(RAC3ITEM.HOLO_SHIELD, world.player) or state.has(
             RAC3ITEM.PROGRESSIVE_HOLO_SHIELD, world.player, 5),
         RAC3WEAPONLEVEL.HOLO_SHIELD_V6: lambda state: (state.has(RAC3ITEM.HOLO_SHIELD, world.player) or state.has(
-            RAC3ITEM.PROGRESSIVE_HOLO_SHIELD, world.player, 6)) and can_earn_good_exp(state, world),
+            RAC3ITEM.PROGRESSIVE_HOLO_SHIELD, world.player, 6)) and can_earn_good_exp(state),
         RAC3WEAPONLEVEL.HOLO_SHIELD_V7: lambda state: (state.has(RAC3ITEM.HOLO_SHIELD, world.player) or state.has(
-            RAC3ITEM.PROGRESSIVE_HOLO_SHIELD, world.player, 7)) and can_earn_good_exp(state, world),
+            RAC3ITEM.PROGRESSIVE_HOLO_SHIELD, world.player, 7)) and can_earn_good_exp(state),
         RAC3WEAPONLEVEL.HOLO_SHIELD_V8: lambda state: (state.has(RAC3ITEM.HOLO_SHIELD, world.player) or state.has(
-            RAC3ITEM.PROGRESSIVE_HOLO_SHIELD, world.player, 8)) and can_earn_good_exp(state, world),
+            RAC3ITEM.PROGRESSIVE_HOLO_SHIELD, world.player, 8)) and can_earn_good_exp(state),
         RAC3WEAPONLEVEL.DISC_BLADE_V2: lambda state: state.has(RAC3ITEM.DISC_BLADE, world.player) or state.has(
             RAC3ITEM.PROGRESSIVE_DISC_BLADE, world.player, 2),
         RAC3WEAPONLEVEL.DISC_BLADE_V3: lambda state: state.has(RAC3ITEM.DISC_BLADE, world.player) or state.has(
@@ -1317,11 +1449,11 @@ def set_rules(world: "RaC3World"):
         RAC3WEAPONLEVEL.DISC_BLADE_V5: lambda state: state.has(RAC3ITEM.DISC_BLADE, world.player) or state.has(
             RAC3ITEM.PROGRESSIVE_DISC_BLADE, world.player, 5),
         RAC3WEAPONLEVEL.DISC_BLADE_V6: lambda state: (state.has(RAC3ITEM.DISC_BLADE, world.player) or state.has(
-            RAC3ITEM.PROGRESSIVE_DISC_BLADE, world.player, 6)) and can_earn_good_exp(state, world),
+            RAC3ITEM.PROGRESSIVE_DISC_BLADE, world.player, 6)) and can_earn_good_exp(state),
         RAC3WEAPONLEVEL.DISC_BLADE_V7: lambda state: (state.has(RAC3ITEM.DISC_BLADE, world.player) or state.has(
-            RAC3ITEM.PROGRESSIVE_DISC_BLADE, world.player, 7)) and can_earn_good_exp(state, world),
+            RAC3ITEM.PROGRESSIVE_DISC_BLADE, world.player, 7)) and can_earn_good_exp(state),
         RAC3WEAPONLEVEL.DISC_BLADE_V8: lambda state: (state.has(RAC3ITEM.DISC_BLADE, world.player) or state.has(
-            RAC3ITEM.PROGRESSIVE_DISC_BLADE, world.player, 8)) and can_earn_good_exp(state, world),
+            RAC3ITEM.PROGRESSIVE_DISC_BLADE, world.player, 8)) and can_earn_good_exp(state),
         RAC3WEAPONLEVEL.RIFT_INDUCER_V2: lambda state: state.has(RAC3ITEM.RIFT_INDUCER, world.player) or state.has(
             RAC3ITEM.PROGRESSIVE_RIFT_INDUCER, world.player, 2),
         RAC3WEAPONLEVEL.RIFT_INDUCER_V3: lambda state: state.has(RAC3ITEM.RIFT_INDUCER, world.player) or state.has(
@@ -1331,11 +1463,11 @@ def set_rules(world: "RaC3World"):
         RAC3WEAPONLEVEL.RIFT_INDUCER_V5: lambda state: state.has(RAC3ITEM.RIFT_INDUCER, world.player) or state.has(
             RAC3ITEM.PROGRESSIVE_RIFT_INDUCER, world.player, 5),
         RAC3WEAPONLEVEL.RIFT_INDUCER_V6: lambda state: (state.has(RAC3ITEM.RIFT_INDUCER, world.player) or state.has(
-            RAC3ITEM.PROGRESSIVE_RIFT_INDUCER, world.player, 6)) and can_earn_good_exp(state, world),
+            RAC3ITEM.PROGRESSIVE_RIFT_INDUCER, world.player, 6)) and can_earn_good_exp(state),
         RAC3WEAPONLEVEL.RIFT_INDUCER_V7: lambda state: (state.has(RAC3ITEM.RIFT_INDUCER, world.player) or state.has(
-            RAC3ITEM.PROGRESSIVE_RIFT_INDUCER, world.player, 7)) and can_earn_good_exp(state, world),
+            RAC3ITEM.PROGRESSIVE_RIFT_INDUCER, world.player, 7)) and can_earn_good_exp(state),
         RAC3WEAPONLEVEL.RIFT_INDUCER_V8: lambda state: (state.has(RAC3ITEM.RIFT_INDUCER, world.player) or state.has(
-            RAC3ITEM.PROGRESSIVE_RIFT_INDUCER, world.player, 8)) and can_earn_good_exp(state, world),
+            RAC3ITEM.PROGRESSIVE_RIFT_INDUCER, world.player, 8)) and can_earn_good_exp(state),
         RAC3WEAPONLEVEL.QWACK_O_RAY_V2: lambda state: state.has(RAC3ITEM.QWACK_O_RAY, world.player) or state.has(
             RAC3ITEM.PROGRESSIVE_QWACK_O_RAY, world.player, 2),
         RAC3WEAPONLEVEL.QWACK_O_RAY_V3: lambda state: state.has(RAC3ITEM.QWACK_O_RAY, world.player) or state.has(
@@ -1345,67 +1477,178 @@ def set_rules(world: "RaC3World"):
         RAC3WEAPONLEVEL.QWACK_O_RAY_V5: lambda state: state.has(RAC3ITEM.QWACK_O_RAY, world.player) or state.has(
             RAC3ITEM.PROGRESSIVE_QWACK_O_RAY, world.player, 5),
         RAC3WEAPONLEVEL.QWACK_O_RAY_V6: lambda state: (state.has(RAC3ITEM.QWACK_O_RAY, world.player) or state.has(
-            RAC3ITEM.PROGRESSIVE_QWACK_O_RAY, world.player, 6)) and can_earn_good_exp(state, world),
+            RAC3ITEM.PROGRESSIVE_QWACK_O_RAY, world.player, 6)) and can_earn_good_exp(state),
         RAC3WEAPONLEVEL.QWACK_O_RAY_V7: lambda state: (state.has(RAC3ITEM.QWACK_O_RAY, world.player) or state.has(
-            RAC3ITEM.PROGRESSIVE_QWACK_O_RAY, world.player, 7)) and can_earn_good_exp(state, world),
+            RAC3ITEM.PROGRESSIVE_QWACK_O_RAY, world.player, 7)) and can_earn_good_exp(state),
         RAC3WEAPONLEVEL.QWACK_O_RAY_V8: lambda state: (state.has(RAC3ITEM.QWACK_O_RAY, world.player) or state.has(
-            RAC3ITEM.PROGRESSIVE_QWACK_O_RAY, world.player, 8)) and can_earn_good_exp(state, world),
+            RAC3ITEM.PROGRESSIVE_QWACK_O_RAY, world.player, 8)) and can_earn_good_exp(state),
         RAC3WEAPONLEVEL.BOUNCER_V2: lambda state: (state.has(RAC3ITEM.BOUNCER, world.player) or state.has(
-            RAC3ITEM.PROGRESSIVE_BOUNCER, world.player, 2)) and can_earn_good_exp(state, world),
+            RAC3ITEM.PROGRESSIVE_BOUNCER, world.player, 2)) and can_earn_good_exp(state),
         RAC3WEAPONLEVEL.BOUNCER_V3: lambda state: (state.has(RAC3ITEM.BOUNCER, world.player) or state.has(
-            RAC3ITEM.PROGRESSIVE_BOUNCER, world.player, 3)) and can_earn_good_exp(state, world),
+            RAC3ITEM.PROGRESSIVE_BOUNCER, world.player, 3)) and can_earn_good_exp(state),
         RAC3WEAPONLEVEL.BOUNCER_V4: lambda state: (state.has(RAC3ITEM.BOUNCER, world.player) or state.has(
-            RAC3ITEM.PROGRESSIVE_BOUNCER, world.player, 4)) and can_earn_good_exp(state, world),
+            RAC3ITEM.PROGRESSIVE_BOUNCER, world.player, 4)) and can_earn_good_exp(state),
         RAC3WEAPONLEVEL.BOUNCER_V5: lambda state: (state.has(RAC3ITEM.BOUNCER, world.player) or state.has(
-            RAC3ITEM.PROGRESSIVE_BOUNCER, world.player, 5)) and can_earn_good_exp(state, world),
+            RAC3ITEM.PROGRESSIVE_BOUNCER, world.player, 5)) and can_earn_good_exp(state),
         RAC3WEAPONLEVEL.BOUNCER_V6: lambda state: (state.has(RAC3ITEM.BOUNCER, world.player) or state.has(
-            RAC3ITEM.PROGRESSIVE_BOUNCER, world.player, 6)) and can_earn_good_exp(state, world),
+            RAC3ITEM.PROGRESSIVE_BOUNCER, world.player, 6)) and can_earn_good_exp(state),
         RAC3WEAPONLEVEL.BOUNCER_V7: lambda state: (state.has(RAC3ITEM.BOUNCER, world.player) or state.has(
-            RAC3ITEM.PROGRESSIVE_BOUNCER, world.player, 7)) and can_earn_good_exp(state, world),
+            RAC3ITEM.PROGRESSIVE_BOUNCER, world.player, 7)) and can_earn_good_exp(state),
         RAC3WEAPONLEVEL.BOUNCER_V8: lambda state: (state.has(RAC3ITEM.BOUNCER, world.player) or state.has(
-            RAC3ITEM.PROGRESSIVE_BOUNCER, world.player, 8)) and can_earn_good_exp(state, world),
+            RAC3ITEM.PROGRESSIVE_BOUNCER, world.player, 8)) and can_earn_good_exp(state),
         RAC3WEAPONLEVEL.PLASMA_COIL_V2: lambda state: (state.has(RAC3ITEM.PLASMA_COIL, world.player) or state.has(
-            RAC3ITEM.PROGRESSIVE_PLASMA_COIL, world.player, 2)) and can_earn_good_exp(state, world),
+            RAC3ITEM.PROGRESSIVE_PLASMA_COIL, world.player, 2)) and can_earn_good_exp(state),
         RAC3WEAPONLEVEL.PLASMA_COIL_V3: lambda state: (state.has(RAC3ITEM.PLASMA_COIL, world.player) or state.has(
-            RAC3ITEM.PROGRESSIVE_PLASMA_COIL, world.player, 3)) and can_earn_good_exp(state, world),
+            RAC3ITEM.PROGRESSIVE_PLASMA_COIL, world.player, 3)) and can_earn_good_exp(state),
         RAC3WEAPONLEVEL.PLASMA_COIL_V4: lambda state: (state.has(RAC3ITEM.PLASMA_COIL, world.player) or state.has(
-            RAC3ITEM.PROGRESSIVE_PLASMA_COIL, world.player, 4)) and can_earn_good_exp(state, world),
+            RAC3ITEM.PROGRESSIVE_PLASMA_COIL, world.player, 4)) and can_earn_good_exp(state),
         RAC3WEAPONLEVEL.PLASMA_COIL_V5: lambda state: (state.has(RAC3ITEM.PLASMA_COIL, world.player) or state.has(
-            RAC3ITEM.PROGRESSIVE_PLASMA_COIL, world.player, 5)) and can_earn_good_exp(state, world),
+            RAC3ITEM.PROGRESSIVE_PLASMA_COIL, world.player, 5)) and can_earn_good_exp(state),
         RAC3WEAPONLEVEL.PLASMA_COIL_V6: lambda state: (state.has(RAC3ITEM.PLASMA_COIL, world.player) or state.has(
-            RAC3ITEM.PROGRESSIVE_PLASMA_COIL, world.player, 6)) and can_earn_good_exp(state, world),
+            RAC3ITEM.PROGRESSIVE_PLASMA_COIL, world.player, 6)) and can_earn_good_exp(state),
         RAC3WEAPONLEVEL.PLASMA_COIL_V7: lambda state: (state.has(RAC3ITEM.PLASMA_COIL, world.player) or state.has(
-            RAC3ITEM.PROGRESSIVE_PLASMA_COIL, world.player, 7)) and can_earn_good_exp(state, world),
+            RAC3ITEM.PROGRESSIVE_PLASMA_COIL, world.player, 7)) and can_earn_good_exp(state),
         RAC3WEAPONLEVEL.PLASMA_COIL_V8: lambda state: (state.has(RAC3ITEM.PLASMA_COIL, world.player) or state.has(
-            RAC3ITEM.PROGRESSIVE_PLASMA_COIL, world.player, 8)) and can_earn_good_exp(state, world),
+            RAC3ITEM.PROGRESSIVE_PLASMA_COIL, world.player, 8)) and can_earn_good_exp(state),
         RAC3WEAPONLEVEL.SHIELD_CHARGER_V2: lambda state: (state.has(RAC3ITEM.SHIELD_CHARGER, world.player) or state.has(
-            RAC3ITEM.PROGRESSIVE_SHIELD_CHARGER, world.player, 2)) and can_earn_good_exp(state, world),
+            RAC3ITEM.PROGRESSIVE_SHIELD_CHARGER, world.player, 2)) and can_earn_good_exp(state),
         RAC3WEAPONLEVEL.SHIELD_CHARGER_V3: lambda state: (state.has(RAC3ITEM.SHIELD_CHARGER, world.player) or state.has(
-            RAC3ITEM.PROGRESSIVE_SHIELD_CHARGER, world.player, 3)) and can_earn_good_exp(state, world),
+            RAC3ITEM.PROGRESSIVE_SHIELD_CHARGER, world.player, 3)) and can_earn_good_exp(state),
         RAC3WEAPONLEVEL.SHIELD_CHARGER_V4: lambda state: (state.has(RAC3ITEM.SHIELD_CHARGER, world.player) or state.has(
-            RAC3ITEM.PROGRESSIVE_SHIELD_CHARGER, world.player, 4)) and can_earn_good_exp(state, world),
+            RAC3ITEM.PROGRESSIVE_SHIELD_CHARGER, world.player, 4)) and can_earn_good_exp(state),
         RAC3WEAPONLEVEL.SHIELD_CHARGER_V5: lambda state: (state.has(RAC3ITEM.SHIELD_CHARGER, world.player) or state.has(
-            RAC3ITEM.PROGRESSIVE_SHIELD_CHARGER, world.player, 5)) and can_earn_good_exp(state, world),
+            RAC3ITEM.PROGRESSIVE_SHIELD_CHARGER, world.player, 5)) and can_earn_good_exp(state),
         RAC3WEAPONLEVEL.SHIELD_CHARGER_V6: lambda state: (state.has(RAC3ITEM.SHIELD_CHARGER, world.player) or state.has(
-            RAC3ITEM.PROGRESSIVE_SHIELD_CHARGER, world.player, 6)) and can_earn_good_exp(state, world),
+            RAC3ITEM.PROGRESSIVE_SHIELD_CHARGER, world.player, 6)) and can_earn_good_exp(state),
         RAC3WEAPONLEVEL.SHIELD_CHARGER_V7: lambda state: (state.has(RAC3ITEM.SHIELD_CHARGER, world.player) or state.has(
-            RAC3ITEM.PROGRESSIVE_SHIELD_CHARGER, world.player, 7)) and can_earn_good_exp(state, world),
+            RAC3ITEM.PROGRESSIVE_SHIELD_CHARGER, world.player, 7)) and can_earn_good_exp(state),
         RAC3WEAPONLEVEL.SHIELD_CHARGER_V8: lambda state: (state.has(RAC3ITEM.SHIELD_CHARGER, world.player) or state.has(
-            RAC3ITEM.PROGRESSIVE_SHIELD_CHARGER, world.player, 8)) and can_earn_good_exp(state, world),
+            RAC3ITEM.PROGRESSIVE_SHIELD_CHARGER, world.player, 8)) and can_earn_good_exp(state),
         RAC3WEAPONLEVEL.RY3N0_V2: lambda state: (state.has(RAC3ITEM.RY3N0, world.player) or state.has(
-            RAC3ITEM.PROGRESSIVE_RY3N0, world.player, 2)) and can_earn_good_exp(state, world),
+            RAC3ITEM.PROGRESSIVE_RY3N0, world.player, 2)) and can_earn_good_exp(state),
         RAC3WEAPONLEVEL.RY3N0_V3: lambda state: (state.has(RAC3ITEM.RY3N0, world.player) or state.has(
-            RAC3ITEM.PROGRESSIVE_RY3N0, world.player, 3)) and can_earn_good_exp(state, world),
+            RAC3ITEM.PROGRESSIVE_RY3N0, world.player, 3)) and can_earn_good_exp(state),
         RAC3WEAPONLEVEL.RY3N0_V4: lambda state: (state.has(RAC3ITEM.RY3N0, world.player) or state.has(
-            RAC3ITEM.PROGRESSIVE_RY3N0, world.player, 4)) and can_earn_good_exp(state, world),
+            RAC3ITEM.PROGRESSIVE_RY3N0, world.player, 4)) and can_earn_good_exp(state),
         RAC3WEAPONLEVEL.RY3N0_V5: lambda state: (state.has(RAC3ITEM.RY3N0, world.player) or state.has(
-            RAC3ITEM.PROGRESSIVE_RY3N0, world.player, 5)) and can_earn_good_exp(state, world),
+            RAC3ITEM.PROGRESSIVE_RY3N0, world.player, 5)) and can_earn_good_exp(state),
+    }
+    event_rules_dict: dict[str, CollectionRule] = {
+        RAC3EVENT.FLORANA_QWARK[0]: lambda state: state.has_any(
+            [RAC3ITEM.HELI_PACK, RAC3ITEM.CLANK, RAC3ITEM.PROGRESSIVE_PACK, RAC3ITEM.CHARGE_BOOTS], world.player),
+        RAC3EVENT.FLORANA_COMPLETE[0]: lambda state: state.has_any(
+            [RAC3ITEM.HELI_PACK, RAC3ITEM.CLANK, RAC3ITEM.PROGRESSIVE_PACK, RAC3ITEM.CHARGE_BOOTS], world.player),
+
+        RAC3EVENT.PHOENIX_MUSEUM[0]: all_locations(RAC3TAG.TROPHY),
+
+        RAC3EVENT.NANOTECH[0]: rules_dict.get(f"Nanotech Milestone: {world.options.goal_nano.value}", lambda _: True),
+
+        RAC3EVENT.T_BOLT[0]:
+            lambda state: state.has(RAC3ITEM.TITANIUM_BOLT, world.player, world.options.goal_tbolts.value) or
+                          (world.options.titanium_bolts.value == 0 and can_reach_tags(state, RAC3TAG.T_BOLT,
+                                                                                      world.options.goal_tbolts.value)),
+
+        RAC3EVENT.SKILLS[0]: lambda state: can_reach_tags(state, RAC3TAG.SKILLPOINT,
+                                                          world.options.goal_skillpoints.value),
+
+        RAC3EVENT.PLANETS[0]: lambda state: state.has_from_list(planets, world.player,
+                                                                world.options.goal_planets.value),
+
+        RAC3EVENT.COMPLETION[0]: lambda state: collection(state),
+
+        RAC3EVENT.MARCADIA_COMPLETE[0]: lambda state: state.has(RAC3ITEM.REFRACTOR, world.player),
+
+        # RAC3EVENT.AN_PRIZE[0]
+        # RAC3EVENT.AN_TWO[0]
+        RAC3EVENT.AN_SCORPIO[0]: lambda state: state.has(RAC3EVENT.DAXX_WARSHIP[1], world.player),
+        RAC3EVENT.AN_QWARK[0]: lambda state: state.has(RAC3EVENT.DAXX_WARSHIP[1], world.player) and state.has_any(
+            [RAC3ITEM.HELI_PACK, RAC3ITEM.THRUSTER_PACK, RAC3ITEM.CLANK, RAC3ITEM.PROGRESSIVE_PACK,
+             RAC3ITEM.CHARGE_BOOTS], world.player),
+        RAC3EVENT.AN_COMPLETE[0]:
+            lambda state: state.has(RAC3EVENT.DAXX_WARSHIP[1], world.player) and state.has_any(
+                [RAC3ITEM.HELI_PACK, RAC3ITEM.THRUSTER_PACK, RAC3ITEM.CLANK,
+                 RAC3ITEM.PROGRESSIVE_PACK, RAC3ITEM.CHARGE_BOOTS],
+                world.player),
+
+        RAC3EVENT.SEWER[0]: rules_dict.get(f"Aquatos: {world.options.goal_crystal.value} Sewer Crystal Traded",
+                                           lambda _: True),
+        # RAC3EVENT.AQUATOS_COMPLETE[0]
+
+        # RAC3EVENT.NOID_BOSS[0]
+        # RAC3EVENT.TYHRRANOSIS_COMPLETE[0]
+
+        RAC3EVENT.DAXX_WARSHIP[0]: lambda state: state.has(RAC3ITEM.HYPERSHOT, world.player),
+        RAC3EVENT.DAXX_COMPLETE[0]:
+            lambda state: state.has_all([RAC3ITEM.HYPERSHOT, RAC3ITEM.HACKER], world.player),
+
+        RAC3EVENT.OBANI_GEMINI_COMPLETE[0]: lambda state: state.has(RAC3ITEM.REFRACTOR, world.player),
+
+        # RAC3EVENT.BLACKWATER_CITY_COMPLETE[0]
+
+        # RAC3EVENT.HOLOSTAR_TALOS[0]
+        RAC3EVENT.HOLOSTAR_COMPLETE[0]: lambda state: state.has_all([RAC3ITEM.HYPERSHOT, RAC3ITEM.HACKER],
+                                                                    world.player),
+
+        RAC3EVENT.DRACO_GEARS[0]: lambda state: state.has(RAC3ITEM.GRAV_BOOTS, world.player),
+        RAC3EVENT.OBANI_DRACO_COMPLETE[0]:
+            lambda state: state.has(RAC3ITEM.GRAV_BOOTS, world.player),
+
+        RAC3EVENT.ZELDRIN_STARPORT_COMPLETE[0]: lambda state: state.has_any(
+            [RAC3ITEM.HELI_PACK, RAC3ITEM.THRUSTER_PACK, RAC3ITEM.CLANK, RAC3ITEM.PROGRESSIVE_PACK,
+             RAC3ITEM.CHARGE_BOOTS],
+            world.player),
+
+        RAC3EVENT.METROPOLIS_KLUNK[0]:
+            lambda state: state.has_all([RAC3ITEM.GRAV_BOOTS, RAC3ITEM.REFRACTOR], world.player),
+        RAC3EVENT.METROPOLIS_COMPLETE[0]:
+            lambda state: state.has_all([RAC3ITEM.GRAV_BOOTS, RAC3ITEM.REFRACTOR], world.player),
+
+        # RAC3EVENT.CRASH_SITE_COMPLETE[0]
+        RAC3EVENT.ARIDIA_COMPLETE[0]:
+            lambda state: (state.has_any([RAC3ITEM.GRAV_BOOTS, RAC3ITEM.RIFT_INDUCER,
+                                          RAC3ITEM.FLUX_RIFLE, RAC3ITEM.ANNIHILATOR,
+                                          RAC3ITEM.RY3N0, RAC3ITEM.SUCK_CANNON,
+                                          RAC3ITEM.DISC_BLADE, RAC3ITEM.PLASMA_COIL], world.player)
+                           or state.has(RAC3ITEM.PROGRESSIVE_RIFT_INDUCER, world.player, 2
+                if progressive_requirement == 1 else progressive_requirement)
+                           or state.has(RAC3ITEM.PROGRESSIVE_FLUX_RIFLE, world.player, progressive_requirement)
+                           or state.has(RAC3ITEM.PROGRESSIVE_ANNIHILATOR, world.player, progressive_requirement)
+                           or state.has(RAC3ITEM.PROGRESSIVE_RY3N0, world.player, progressive_requirement)
+                           or state.has(RAC3ITEM.PROGRESSIVE_SUCK_CANNON, world.player, progressive_requirement)
+                           or state.has(RAC3ITEM.PROGRESSIVE_DISC_BLADE, world.player, progressive_requirement)
+                           or state.has(RAC3ITEM.PROGRESSIVE_PLASMA_COIL, world.player, progressive_requirement)),
+
+        RAC3EVENT.HIDEOUT_QWARK[0]:
+            lambda state: state.has_all([RAC3ITEM.WARP_PAD, RAC3ITEM.HYPERSHOT], world.player)
+                          and state.has_any([RAC3ITEM.HELI_PACK, RAC3ITEM.CLANK, RAC3ITEM.PROGRESSIVE_PACK,
+                                             RAC3ITEM.CHARGE_BOOTS], world.player),
+        RAC3EVENT.HIDEOUT_COMPLETE[0]:
+            lambda state: state.has_all([RAC3ITEM.WARP_PAD, RAC3ITEM.HYPERSHOT], world.player)
+                          and state.has_any([RAC3ITEM.HELI_PACK, RAC3ITEM.CLANK, RAC3ITEM.PROGRESSIVE_PACK,
+                                             RAC3ITEM.CHARGE_BOOTS], world.player),
+
+        # RAC3EVENT.KOROS_COMPLETE[0]
+
+        RAC3EVENT.CC_ACCESS[0]: all_goals(),
+
+        RAC3EVENT.COMMAND_CENTER_NEFARIOUS[0]:
+            lambda state: state.has_all(
+                [RAC3ITEM.HYPERSHOT, RAC3ITEM.GRAV_BOOTS, RAC3ITEM.TYHRRA_GUISE, RAC3ITEM.HACKER, RAC3ITEM.REFRACTOR],
+                world.player) and state.has_any(
+                [RAC3ITEM.HELI_PACK, RAC3ITEM.THRUSTER_PACK, RAC3ITEM.CLANK, RAC3ITEM.PROGRESSIVE_PACK], world.player),
+        RAC3EVENT.COMMAND_CENTER_BIOBLITERATOR[0]:
+            lambda state: state.has(RAC3EVENT.COMMAND_CENTER_NEFARIOUS[1], world.player),
+
+        RAC3EVENT.VICTORY[0]: all_goals(True),
     }
     for region in world.multiworld.get_regions(world.player):
         for entrance in region.entrances:
             add_rule(entrance, region_rules_dict.get(entrance.name, lambda _: True))
+
     for location in world.get_locations():
         add_rule(location, rules_dict.get(location.name, lambda _: True))
+        add_rule(location, event_rules_dict.get(location.name, lambda _: True))
+        if location.name == RAC3EVENT.SEWER[0] and world.options.goal_crystal.value > 0:
+            add_rule(location, lambda state: state.has(RAC3ITEM.AQUATOS, world.player))
 
-    # world.multiworld.completion_condition[world.player] = lambda state: state.has(RAC3ITEM.VICTORY, world.player)
-    world.multiworld.completion_condition[world.player] = lambda state: state.has(RAC3ITEM.VICTORY, world.player)
+    world.multiworld.completion_condition[world.player] = lambda state: state.has(RAC3EVENT.VICTORY[1], world.player)

@@ -4,9 +4,9 @@ from logging import DEBUG, getLogger
 from typing import TYPE_CHECKING
 
 from BaseClasses import Item, ItemClassification
-from worlds.rac3.constants.data.item import (goal_data, infobot_data, item_counts, item_table, NAME_TO_PROG_DICT,
+from worlds.rac3.constants.data.item import (infobot_data, item_counts, item_table, NAME_TO_PROG_DICT,
                                              ngplus_item_counts, PROG_TO_NAME_DICT, progressive_data, RAC3ITEMDATA,
-                                             vidcomic_health_data)
+                                             titanium_bolt_data, vidcomic_health_data)
 from worlds.rac3.constants.item_tags import RAC3ITEMTAG
 from worlds.rac3.constants.items import RAC3ITEM
 from worlds.rac3.constants.options import RAC3OPTION
@@ -28,6 +28,7 @@ rac3_logger.setLevel(DEBUG)
 
 # Generation Begins
 
+
 # generate_early()
 
 def create_item(world: "RaC3World", name: str) -> Item:
@@ -35,7 +36,7 @@ def create_item(world: "RaC3World", name: str) -> Item:
     :param world: Current world object
     :param name: Item Name
     """
-    data = item_table.get(name, goal_data.get(name))
+    data = item_table.get(name)
     if data is None:
         raise KeyError(f"{name} not found in item_table")
     return GameItem(name, data.AP_CLASSIFICATION, data.AP_CODE, world.player)
@@ -298,26 +299,37 @@ def create_itempool(world: "RaC3World") -> list[Item]:
             continue
         if RAC3ITEMTAG.UNUSED in item_tags:
             continue
+        # Item counts
         if options.ngplus_items.value:
             if name == RAC3ITEM.PROGRESSIVE_RY3N0:
                 item_amount: int = 5
+            elif name == RAC3ITEM.PROGRESSIVE_WRENCH:
+                item_amount: int = 8
             else:
                 item_amount: int = ngplus_item_counts.get(name, 1)
         elif name != RAC3ITEM.PROGRESSIVE_RY3N0:
             item_amount: int = item_counts.get(name, 1)
         else:
             continue
+        if not options.ngplus_items.value and name == RAC3ITEM.PROGRESSIVE_WRENCH:
+            item_amount: int = 5
         # Already placed items (Starting items and vanilla)
         if name in world.preplaced_items:
             count = world.preplaced_items.count(name)
             if item_amount <= count:
                 continue
-            item_amount -= count  # remove one from the pool as it has already been placed
+            item_amount -= count  # remove items from the pool that have already been placed
 
         # Progressive Weapons option
         if RAC3ITEMTAG.PROG_WEAPON in item_tags and not options.progressive_weapons.value:
             continue
         if RAC3ITEMTAG.NON_PROG_WEAPON in item_tags and options.progressive_weapons.value:
+            continue
+
+        # Progressive Wrench option
+        if RAC3ITEMTAG.PROG_WRENCH in item_tags and not options.progressive_wrench.value:
+            continue
+        if RAC3ITEMTAG.NON_PROG_WRENCH in item_tags: # and options.progressive_wrench.value:
             continue
 
         # NG+ Item option
@@ -344,8 +356,10 @@ def create_itempool(world: "RaC3World") -> list[Item]:
                 continue
 
         # Vidcomics option
-        if RAC3ITEMTAG.VIDCOMIC in item_tags and not options.vidcomics.value:
-            continue
+        # Todo: uncomment the below code block once rulebuilder is implemented and unittests do not fail on
+        #  inaccessible event locations
+        # if RAC3ITEMTAG.VIDCOMIC in item_tags and not options.vidcomics.value:
+        #     continue
         if RAC3ITEMTAG.VIDCOMIC_HEALTH_UPGRADE in item_tags:
             if not options.vidcomics.value:
                 continue
@@ -359,14 +373,20 @@ def create_itempool(world: "RaC3World") -> list[Item]:
             if options.weapon_mods.value != options.weapon_mods.option_modpack:
                 continue
 
+        # Titanium Bolts option
+        if RAC3ITEMTAG.TITANIUM_BOLT in item_tags and not options.titanium_bolts.value:
+            continue
+
         # Catch accidental duplicates
         if item_amount < 0:
             rac3_logger.warning(f"{name} has an incorrect amount count")
         else:
-            if item_amount > 1 and name not in progressive_data and name not in vidcomic_health_data:
+            if (item_amount > 1
+                and name not in progressive_data
+                and name not in vidcomic_health_data
+                and name not in titanium_bolt_data.keys()):
                 rac3_logger.warning(f"multiple copies of {name} added to the item pool")
             itempool += create_multiple_items(world, name, item_amount, item_type)
-
     return itempool
 
 

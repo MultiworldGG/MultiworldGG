@@ -132,7 +132,6 @@ def build_trie(dictionary: dict[str, str]) -> TrieNode:
 def recursive_encode(text: str, index: int) -> tuple[int]:
     if index >= len(text):
         return (0,)
-
     token, length = next_character(text, index)
     if isinstance(token, tuple):
         encoded = list(encode_current_encoding[token[0]])
@@ -190,9 +189,18 @@ def encode_dict(text_data: dict[str, str], dictionary: Optional[dict[str, str]] 
         dictionary = {}
     encoding_dict = build_encoding_dict()
     encoded_dict = {}
+    failed_to_encode = []
     for key in text_data:
-        encoded_text = encode_text(text_data[key], encoding_dict, dictionary)
-        encoded_dict[key] = encoded_text
+        try:
+            encoded_text = encode_text(text_data[key], encoding_dict, dictionary)
+            encoded_dict[key] = encoded_text
+        except Exception as e:
+            print(e)
+            failed_to_encode.append(key)
+
+    if len(failed_to_encode):
+        raise Exception(f"Error while encoding the following texts : {failed_to_encode}") 
+    
     recursive_encode.cache_clear()
     return encoded_dict
 

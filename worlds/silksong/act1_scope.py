@@ -5,11 +5,13 @@ from __future__ import annotations
 from typing import Mapping
 
 from .eva import EVA_CREST_SLOTS, EVA_REWARDS
-from .locations import INDIVIDUAL_RELIC_ITEM_BY_TURN_IN_LOCATION
+from .locations import INDIVIDUAL_RELIC_ITEM_BY_TURN_IN_LOCATION, LOCATION_NAMES_BY_CATEGORY
 from .requirements import (
     COMPILED_ROOM_GRAPH,
     _ESTABLISHED_REQUIREMENTS_BY_LOCATION,
 )
+
+from .items import get_vanilla_reward_name
 
 
 ACT_ONE_GOAL_KEY = "act_1"
@@ -25,6 +27,7 @@ _UNTAGGED_POST_ACT_ONE_LOCATION_NAMES = frozenset(
         "Curvesickle",
         "Egg of Flealia",
         "Wish: Fine Pins",
+        "Wish: The Wailing Mother",
         "Wish: The Wandering Merchant",
         "Wish: My Missing Brother",
         "Wish: Balm for the Wounded",
@@ -59,11 +62,17 @@ _POST_ACT_ONE_SOURCE_LOCATION_NAMES = frozenset(
     )
 ) | _UNTAGGED_POST_ACT_ONE_LOCATION_NAMES
 
+_POST_ACT_ONE_RELIC_ITEMS = frozenset(
+    get_vanilla_reward_name(name, "Relic")
+    for name in LOCATION_NAMES_BY_CATEGORY["Relic"]
+    if name in _POST_ACT_ONE_SOURCE_LOCATION_NAMES
+)
+
 _POST_ACT_ONE_RELIC_TURN_IN_LOCATION_NAMES = frozenset(
     turn_in_location
     for turn_in_location, relic_item in
     INDIVIDUAL_RELIC_ITEM_BY_TURN_IN_LOCATION.items()
-    if relic_item in _POST_ACT_ONE_SOURCE_LOCATION_NAMES
+    if relic_item in _POST_ACT_ONE_RELIC_ITEMS
 )
 
 _POST_ACT_ONE_ROOM_GRAPH_LOCATION_NAMES = frozenset(
@@ -176,6 +185,10 @@ _ACT_ONE_DEPENDENCY_EXCLUDED_LOCATION_NAMES = frozenset(
         "Sands of Karak - Shell Shard Cache #2",
         "Sands of Karak - Shell Shard Cache #3",
         "Sands of Karak - Shell Shard Cache #4",
+        "Sands of Karak - Shell Shard Cache #5",
+        "Sands of Karak - Shell Shard Cache #6",
+        "Sands of Karak - Shell Shard Cache #7",
+        "Sands of Karak - Shell Shard Cache #8",
         "Sands of Karak - Shell Shard Cache #11",
         "Sands of Karak - Shell Shard Cache #9",
         "Sands of Karak - Shell Shard Cache #10",
@@ -197,6 +210,7 @@ _ACT_ONE_DEPENDENCY_EXCLUDED_LOCATION_NAMES = frozenset(
         "Bilewater - Shell Shard Cache #4",
         "Sands of Karak East Bench - Simple Key",
         "Sands of Karak - Upper Coral Tablet",
+        "Sands of Karak - Lower Coral Tablet",
     )
 )
 

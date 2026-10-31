@@ -132,6 +132,9 @@ def compile_events(
             add(accepted, (req(offer_event(source), crest=False), *wish_index[target].native_acceptance))
         for alias in wish_index[target].acceptance_aliases:
             add(alias, (req(accepted, crest=False),))
+        if target == "Crow Feathers Pre":
+            add("Room Event: event:mapper/reviewed:crawbug-clearing-accepted", (
+                req(accepted, "Room Node: greymoor/greymoor-halfway-home#room", crest=False),))
         add(completion_event(target), tuple(
             replace(rule, all_of=(accepted, *rule.all_of)) if wish_index[target].requires_acceptance else rule
             for rule in wish_index[target].task
@@ -260,7 +263,8 @@ def board_contracts(graph: Mapping[str, Rules], eligible_locations: frozenset[st
         tasks = tuple(replace(rule, all_of=tuple(name for name in rule.all_of if name not in {board, accepted}))
                       for rule in tasks)
         wishes.append(WishContract("Shiny Bell Goomba", graph[accepted], tasks,
-            completion_aliases=("Event: Silver Bells Completed",), locations=(location,),
+            completion_aliases=("Event: Silver Bells Completed",
+                "Room Event: event:mapper/12f14d4a-247c-42f0-89da-3c138cc7a987"), locations=(location,),
             acceptance_aliases=(accepted,)))
     location = "Wish: The Terrible Tyrant"
     if location in eligible_locations:

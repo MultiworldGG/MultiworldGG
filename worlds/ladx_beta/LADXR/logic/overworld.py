@@ -690,8 +690,12 @@ class DungeonDiveOverworld:
         self.entrances = {}
 
         start_house = Location("Start House").add(StartItem())
-        Location().add(ShopItem(0)).connect(start_house, OR(COUNT("RUPEES", 200), SWORD))
-        Location().add(ShopItem(1)).connect(start_house, OR(COUNT("RUPEES", 980), SWORD))
+        if options.steal == "inlogic":
+            Location().add(ShopItem(0)).connect(start_house, OR(SWORD, AND(r.can_farm, COUNT("RUPEES", 200))))
+            Location().add(ShopItem(1)).connect(start_house, OR(SWORD, AND(r.can_farm, COUNT("RUPEES", 1180))))
+        else:
+            Location().add(ShopItem(0)).connect(start_house, AND(r.can_farm, COUNT("RUPEES", 200)))
+            Location().add(ShopItem(1)).connect(start_house, AND(r.can_farm, COUNT("RUPEES", 1180)))
         Location().add(Song(0x0B1)).connect(start_house, OCARINA)  # Marins song
         start_house.add(DroppedKey(0xB2))  # Sword on the beach
         egg = Location().connect(start_house, AND(r.bush, BOMB))

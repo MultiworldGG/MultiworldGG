@@ -35,6 +35,10 @@
 #  - UZDoom
 # UZDoom also matches names such as "UZDoom - Doom II". The limit applies to each full world name.
 
+# Worlds that cannot be included in MultiworldGG due to licensing issues.
+#REMOVED_WORLD_LOBBY_INFO:
+#  - Example Game
+
 # Maximum upload size.  Default is 64 megabyte (64 * 1024 * 1024)
 #MAX_CONTENT_LENGTH: 67108864
 

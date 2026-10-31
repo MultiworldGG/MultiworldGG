@@ -1276,10 +1276,13 @@ def lobby_upload_yaml(lobby: UUID):
         if game and game not in AutoWorldRegister.world_types:
             # Completely unknown game - always requires custom APWorld
             if not lobby.allow_custom_apworlds:
-                return jsonify({
+                result = {
                     "error": f"Game '{game}' is not supported on this server. "
                              f"The lobby owner must enable custom APWorlds to upload this file."
-                }), 400
+                }
+                if game in app.config["REMOVED_WORLD_LOBBY_INFO"]:
+                    result["removed_world_lobby_info"] = [game]
+                return jsonify(result), 400
             if not player_name:
                 return jsonify({"error": f"Could not find player name in '{filename}'"}), 400
             custom_info[filename] = (player_name, game)
@@ -1465,6 +1468,10 @@ def lobby_upload_yaml(lobby: UUID):
     commit()
 
     result: dict = {"uploaded": uploaded}
+    removed_worlds = sorted({entry["game"] for entry in uploaded
+                             if entry["game"] in app.config["REMOVED_WORLD_LOBBY_INFO"]})
+    if removed_worlds:
+        result["removed_world_lobby_info"] = removed_worlds
     if version_warnings:
         result["version_warnings"] = version_warnings
     if upgrades_needed:

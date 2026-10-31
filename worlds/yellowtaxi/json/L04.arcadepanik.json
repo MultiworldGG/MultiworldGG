@@ -131,12 +131,12 @@
       "Arcade Panik - Gear - Crazy Ballz Middle Prize": 40100019,
       "Arcade Panik - Gear - Crazy Ballz Right Prize": 40100004,
       "Arcade Panik - Gear - Go-Karts Strike": 40100020,
-      "Arcade Panik - Gear - Left Switch Path": 40100018,
       "Arcade Panik - Gear - Right Switch Path": 40100013,
       "Arcade Panik - Gear - Arcade Zone Left Bomb Block Cage": 40100016,
       "Arcade Panik - Gear - Arcade Zone Right Bomb Block Cage": 40100007,
       "Arcade Panik - Gear - Button Pillar in Arcade Zone": 40100006,
       "Arcade Panik - Gear - Button Pillar Past Arcade Zone": 40100005,
+      "Arcade Panik - Gear - Left Switch Path": 40100018,
       "Arcade Panik - Gear - Green Pipe Above Big Bowling Back Door": 40100017,
       "Arcade Panik - Gear - Go-Karts Obstacle Course": 40100008,
       "Arcade Panik - Gear - Alcove Under Pinball Entrance": 40100023
@@ -356,12 +356,13 @@
       "Arcade Panik - Ledge Above Big Bowling Door": "J2 | X1 & J1/B1",
       "Arcade Panik - Expert 1 or Jump": "X1/J1",
       "Arcade Panik - Outside Pinball Door": "B2 & X1/J1 | X2+B1 & X3/J1 | X3+J1",
-      "Arcade Panik - Cliff Above Crazy Ballz": "B2 | X1/J1 & B1 | X2+J1"
+      "Arcade Panik - Cliff Above Crazy Ballz": "B2 | X1 & B1/J2 | X2+J1"
     },
     "subwarps": {
       "Arcade Panik - Exit": ["Arcade Plaza - Starting Area", ""]
     },
     "specialrules": {
+      "Arcade Panik - Gear - Left Switch Path": "X1/B1/J1",
       "Arcade Panik - Chest Inside Go-Karts Bowling Ball Pipe": "X2/J1 | X1+B1",
       "Arcade Panik - Bunny - Above Go-Karts Bowling Ball Pipe": "B2+J1 | B1+J2 | X1+B1 & X3/J1",
       "Arcade Panik - Gear - Green Pipe Above Big Bowling Back Door": "B1/J1 | X1 & {Arcade Panik - Outside Pinball Door}",

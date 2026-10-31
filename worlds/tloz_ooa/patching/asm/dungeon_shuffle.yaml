@@ -1,14 +1,42 @@
 
-
-17//dungeonShuffleOpenFlagTable: |
-    dwbe $0003, setD4EntranceFlag # D4 entrance
-    dwbe $0004, setD5EntranceFlag # D5 entrance
-    dwbe $0303, setD6PastEntranceFlag # D6 Past entrance
-    dwbe $0106, setD6PresentEntranceFlag # D6 Present entrance
-    dwbe $0200, setD7EntranceFlag # D7 entrance
-    db $ff
+17//closedWarpTable: /include closedWarpTable
 
 17//underwaterRoomWarpTable: /include underwaterWarpTable
+
+17//symmetryRoomWarpTable: |
+    dwbe $0009
+    dwbe $0003
+    dwbe $000A
+    dwbe $000C
+    dwbe $000D
+    
+    db $ff
+
+17//weirdBehaviorWarpTable: |
+    dw $2203, resetPatchOnEnteringHouse
+    dw $1000, checkMoblinFort
+    db $ff
+
+17//resetPatchOnEnteringHouse: |
+  ld hl,$cfd2
+  xor a
+  ldi (hl),a # patchDownstairs
+  ld (hl),a # wonMinigame
+  ret
+
+17//checkMoblinFort: |
+  ld hl,$c709
+  ld a,(hl)
+  bit 0,a
+  ret nz
+  ld a, $1 
+  ld (wWarpCheck),a #warp failed
+  ld a, $5a
+  ld (wWarpTextLow),a #No text
+  ld a, $27
+  ld (wWarpTextHigh),a
+  ret 
+
 
 # Attempting to enter underwater warp without mermaid suit will cancel the warp and instead
 # cause Link to drown. (Could happen with dungeon entrance randomization.)
@@ -24,9 +52,11 @@
   ld (hl),$fc # TILEINDEX_DEEP_WATER
   ld a, $1 
   ld (wWarpCheck),a #warp failed
+  ld a, $FF
+  ld (wWarpTextLow),a #No text
   ret 
 
-17//setD4EntranceFlag: |
+17//checkSymmetryFlag: |
   ld a,GLOBALFLAG_TUNI_NUT_PLACED
   call checkGlobalFlag
   ret nz
@@ -37,29 +67,64 @@
   ld (hl),$61 # TILEINDEX_DUNGEON_LAVA_1
   ld a, $1
   ld (wWarpCheck),a
+  ld a, $FF
+  ld (wWarpTextLow),a  #No text
   ret
 
-17//setD5EntranceFlag: |
-  ld hl, $c70a
-  set 7,(hl)
-  ret
+17//checkTreasureObtained_shuffle: |
+  cp TREASURE_BOMBS
+  jp nz, checkTreasureObtained
+  call checkTreasureObtained # check bombs
+  ret c
+  ld a, TREASURE_BOMBCHUS # and bombchus
+  jp checkTreasureObtained
 
-17//setD6PastEntranceFlag: |
-  ld hl, $c80f
-  set 7,(hl)
-  ret
-
-
-17//setD6PresentEntranceFlag: |
-  ld hl, $c80e
-  set 7,(hl)
-  ret
-
-17//setD7EntranceFlag: |
-  call drownLinkOnUnderwaterWarp # Check the drowning first
-  ret nz
-  ld hl, $c790
-  set 1,(hl)
+17//checkEntranceFlag: |
+  ;---------------
+  ; Setup
+  ldi a,(hl)
+  ld d,a #Flag Address upper
+  ldi a,(hl)
+  ld e,a #Flag Address lower
+  ldi a,(hl)
+  ld b,a #Flag mask
+  ldi a,(hl)
+  ld c,a #Unlock item
+  ;---------------
+  ; Checks if flag set
+  ld a,(de)
+  and b
+  jr nz,@end ; already open
+  ;---------------
+  ; Depending of the option, check item, force open, or don't warp
+  dwbe option.closedEntranceForceOperation
+  ;---------------
+  ; Check item received
+  ld a,c
+  cp $00
+  jr z,@dontWarp
+  call checkTreasureObtained_shuffle
+  jr nc,@dontWarp
+  ;---------------
+  ; Results force open
+  @forceOpen:
+  ld a,(de)
+  or b
+  ld (de),a
+  jr @end
+  ;---------------
+  ; Results don't warp
+  @dontWarp:
+  ld a,(wWarpCheck)
+  cp $0
+  jr nz,@end
+  ld a, $1
+  ld (wWarpCheck),a
+  ldi a,(hl)
+  ld (wWarpTextLow),a
+  ldi a,(hl)
+  ld (wWarpTextHigh),a
+  @end:
   ret
 
 17//checkDungeonWarp_body: |
@@ -70,7 +135,7 @@
   ld c,a
 
   # ---- Check the flag table ----
-  ld hl, dungeonShuffleOpenFlagTable
+  ld hl, closedWarpTable
   @loopStart:
   ldi a,(hl)
   cp $ff 
@@ -80,28 +145,60 @@
   jr nz,@loopEnd
   cp c ; Actually checking the "warp dest index" not the room index
   jr nz,@loopEnd
-  ldi a,(hl)
-  ld l,(hl)
-  ld h,a
-  jp (hl)
+  jp checkEntranceFlag
   @loopEnd:
-  inc hl
-  inc hl
+  ld a,$6
+  rst 10 ; addAToHL
   jr @loopStart
 
-  # ---- Check the underwater table ----
+  # ---- Check the symmetry table ----
   @loop2Init:
-  ld hl, underwaterRoomWarpTable
+  ld hl, symmetryRoomWarpTable
   @loop2Start:
   ldi a,(hl)
   cp $ff 
-  ret z ; Not a warp that we are interested in, go back and call initiateWarp
+  jr z, @loop3Init ; Not a warp that we are interested in, check 3rd part
   cp b ; Only checking the group number here
   ldi a,(hl)
   jr nz,@loop2Start
   cp c ; Actually checking the "warp dest index" not the room index
   jr nz,@loop2Start
+  jp checkSymmetryFlag
+
+  # ---- Check the underwater table ----
+  @loop3Init:
+  ld hl, underwaterRoomWarpTable
+  @loop3Start:
+  ldi a,(hl)
+  cp $ff 
+  jr z, @loop4Init ; Not a warp that we are interested in, check 4st part
+  cp b ; Only checking the group number here
+  ldi a,(hl)
+  jr nz,@loop3Start
+  cp c ; Actually checking the "warp dest index" not the room index
+  jr nz,@loop3Start
   jp drownLinkOnUnderwaterWarp
+  
+  # ---- Check weird behavior table table ----
+  @loop4Init:
+  ld hl, weirdBehaviorWarpTable
+  @loop4Start:
+  ldi a,(hl)
+  cp $ff 
+  ret z ; Not a warp that we are interested in, go back and call initiateWarp
+  cp b ; Only checking the group number here
+  ldi a,(hl)
+  jr nz,@loop4Next
+  cp c ; Actually checking the "warp dest index" not the room index
+  jr nz,@loop4Next
+  ldi a,(hl)
+  ld h,(hl)
+  ld l,a
+  jp (hl)
+  @loop4Next:
+  ld a,$2
+  rst 10
+  jr @loop4Start
 
 01//checkDungeonWarp_neck: |
   ld e,$17
@@ -118,6 +215,7 @@
   xor a
   ld (wScreenTransitionState2),a
   ld (wScreenTransitionState3),a
+  ld (wDisableLinkCollisionsAndMenu),a
   # ---- abort transition ----
   jp $619f   # Warp aborted (noWarpInitiated)
 
@@ -129,10 +227,32 @@
 01/61cf/ : jp checkDungeonWarp_neck
 
 01//resetWarpCheck : |
+  ld a,(wWarpCheck)
+  cp $0
   ld a,$0
   ld (wWarpCheck),a
+  jr nz,@failedToWarp
+  ld a,(wFailedToWarpLastFrame)
+  cp $0
+  jr z,@end
+  sub $1
+  ld (wFailedToWarpLastFrame),a
+  jr nz,@end
+  ld a,(wWarpTextLow)
+  cp $ff
+  jr z,@end
+  ld b,a
+  ld a,(wWarpTextHigh)
+  ld c,a
+  call showText
+  @end:
   ld a,($cc5c) # removed line
   ret
+  @failedToWarp:
+  ld a,$3
+  ld (wFailedToWarpLastFrame),a
+  jr @end
+
 
 01/4105/: call resetWarpCheck
 

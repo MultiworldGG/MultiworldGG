@@ -679,5 +679,5 @@ class SM64HackWorld(World):
             "moves": self.options.move_randomization.value == True,
             "NoTicketCourses": self.no_ticket_courses,
             "StartingWallkickFrames": self.options.starting_wallkick_frames.value,
-            "options": self.options.as_dict("json_file", "troll_stars", "sign_randomization", "level_tickets", "move_randomization", "force_move_randomization", "logic_difficulty", "major_skips", "hack_specific_options") #yamlless UT
+            "options": self.options.as_dict("json_file", "troll_stars", "sign_randomization", "level_tickets", "move_randomization", "force_move_randomization", "glitches_in_logic", "logic_difficulty", "major_skips", "hack_specific_options") #yamlless UT
         }

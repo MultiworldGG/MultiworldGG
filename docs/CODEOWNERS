@@ -98,12 +98,6 @@
 # Celeste
 /worlds/celeste/ @doshyw
 
-# Celeste (Open World)
-/worlds/celeste_open_world/ @PoryGone
-
-# Celeste 64
-/worlds/celeste64/ @PoryGone
-
 # Chained Echoes
 /worlds/chainedechoes/ @SergioAlonso
 
@@ -565,9 +559,6 @@
 # Sonic Adventure DX
 /worlds/sadx/ @ClassicSpeed
 
-# Sonic Adventure 2 Battle
-/worlds/sa2b/ @PoryGone @RaspberrySpace
-
 # Sonic Heroes
 /worlds/sonic_heroes/ @xMcacutt
 
@@ -608,9 +599,6 @@
 
 # Super Mario Sunshine
 /worlds/sms/ @Joshark
-
-# Super Mario World
-/worlds/smw/ @PoryGone
 
 # Spicy Mycena Waffles (SMW Fork)
 /worlds/waffles/ @TheLX5

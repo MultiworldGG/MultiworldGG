@@ -141,7 +141,6 @@ ost_name = [
     "kris_piano_waitingroom.ogg",
     "lancer.ogg",
     "lancer_annoying.ogg",
-    "lancer_susie.ogg",
     "lancerfight.ogg",
     "legend.ogg",
     "legend_altered.ogg",

@@ -246,6 +246,12 @@
         }
     }
 
+    function hasUploadedApworld(yaml, lobbyData) {
+        // Auxiliary files are bundled for the full game name they were uploaded for.
+        return !!yaml.apworld || !!yaml.game && (lobbyData.auxiliary_apworlds || [])
+            .some(file => file.game_name === yaml.game);
+    }
+
     function updatePlayers(players, lobbyData) {
         const playerList = document.getElementById("lobby-players");
         if (!playerList) return;
@@ -290,7 +296,7 @@
                 const auxiliaryTooltip = "This world supports auxiliary APWorld files, which may be needed depending on the APWorld.";
                 const puzzleContents = `<span class="yaml-custom-tag-icon">&#x1F9E9;</span>${supportsAuxiliary
                     ? '<span class="yaml-auxiliary-star" aria-hidden="true">&#9733;</span>' : ''}`;
-                const apwMissing = isCustom && !y.apworld;
+                const apwMissing = isCustom && !hasUploadedApworld(y, lobbyData);
                 const customTag = isCustom
                     ? `<span class="yaml-custom-tag${apwMissing ? ' yaml-custom-tag-missing' : ''}${supportsAuxiliary ? ' yaml-custom-tag-auxiliary' : ''}"
                              title="${supportsAuxiliary ? auxiliaryTooltip : (apwMissing ? 'APWorld missing' : 'Custom APWorld')}">${puzzleContents}</span>`
@@ -350,6 +356,8 @@
                             apwTip += ` - v${escapeHtml(apw.world_version)}, compatibility unverified (YAML has no version requirement)`;
                         }
                         html += `<span class="apworld-status-ok" title="${apwTip}">&#10003; ${verLabel}</span>`;
+                    } else if (!apwMissing) {
+                        html += '<span class="apworld-status-ok" title="Auxiliary APWorld files uploaded; compatibility is checked during local generation">&#10003; Auxiliary APWorlds</span>';
                     } else if (!canEditApworld && !hasPendingRequest) {
                         html += `<span class="apworld-missing" title="APWorld not yet uploaded">&#9888;</span>`;
                     }
@@ -358,8 +366,8 @@
                     } else if (canEditApworld) {
                         const reqVer = y.required_version ? ` (requires v${escapeHtml(y.required_version)})` : "";
                         const uploadTitle = apw ? `Upload APWorld replacement${reqVer}` : `Upload APWorld for this game${reqVer}`;
-                        if (apw) {
-                            yamlMenuItems.push(`<button class="yaml-menu-item apworld-menu-upload-btn" data-yaml-id="${y.id}" title="${uploadTitle}">Replace APWorld</button>`);
+                        if (!apwMissing) {
+                            yamlMenuItems.push(`<button class="yaml-menu-item apworld-menu-upload-btn" data-yaml-id="${y.id}" title="${uploadTitle}">${apw ? 'Replace APWorld' : 'Upload APWorld'}</button>`);
                         } else {
                             html += `<button class="apworld-upload-btn" data-yaml-id="${y.id}" title="${uploadTitle}">&#x2B06; Upload APWorld</button>`;
                         }
@@ -621,7 +629,7 @@
             const upgradeGames = new Map(); // game name → version_warning string
             (data.players || []).forEach(p => {
                 (p.yamls || []).forEach(y => {
-                    if (y.is_custom && !y.apworld) {
+                    if (y.is_custom && !hasUploadedApworld(y, data)) {
                         missingGames.add(y.game || y.filename);
                     }
                     if (y.version_upgrade_available && !y.apworld) {
@@ -876,6 +884,19 @@
         });
     }
 
+    function showRemovedWorldDisclaimer(data) {
+        const games = data.removed_world_lobby_info || [];
+        if (games.length === 0) return;
+        alert(
+            "The following worlds were removed from our site due to licensing issues or demands by the world maintainer:\n\n" +
+            games.map(game => "  - " + game).join("\n") + "\n\n" +
+            "Unfortunately, you must provide the corresponding APWorld file(s) yourself. " +
+            "If no matching APWorld is already available in this lobby, use the \"Upload APWorld\" " +
+            "button next to your YAML after uploading it. " +
+            "The lobby owner must enable custom APWorlds to allow this."
+        );
+    }
+
     function uploadFiles(files) {
         if (!files || files.length === 0) return;
 
@@ -891,6 +912,7 @@
         })
             .then(res => res.json())
             .then(data => {
+                showRemovedWorldDisclaimer(data);
                 if (data.error) {
                     showToast("Upload error: " + data.error);
                 } else {
@@ -1006,6 +1028,7 @@
                             })
                                 .then(res => res.json())
                                 .then(retryData => {
+                                    showRemovedWorldDisclaimer(retryData);
                                     if (retryData.error) {
                                         showToast("Upload error: " + retryData.error);
                                     } else {

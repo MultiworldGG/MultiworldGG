@@ -12,7 +12,6 @@ from typing import Callable, Dict, FrozenSet, Mapping
 from BaseClasses import Item, ItemClassification
 from Options import OptionError
 
-from .act1_scope import get_act_one_excluded_location_names
 from .act2_scope import (
     trim_act_two_pool_entries,
     get_act_two_excluded_location_names,
@@ -916,7 +915,9 @@ def _is_replaceable_filler(item_name: str) -> bool:
     return data.classification == ItemClassification.filler and data.category not in {'Memento', 'Journal'}
 
 
-def add_pool_only_useful_items(entries: list[ItemPoolEntry]) -> None:
+def add_pool_only_useful_items(
+    entries: list[ItemPoolEntry], reserved_filler: int = 0, reserved_anywhere_filler: int = 0,
+) -> None:
     present_names = {
         entry.name
         for entry in entries
@@ -925,6 +926,12 @@ def add_pool_only_useful_items(entries: list[ItemPoolEntry]) -> None:
     for item_name in POOL_ONLY_USEFUL_ITEM_NAMES:
         if item_name in present_names:
             continue
+        if reserved_filler and sum(_is_replaceable_filler(entry.name) for entry in entries) <= reserved_filler:
+            break
+        if reserved_anywhere_filler and sum(
+            entry.placement_category is None and _is_replaceable_filler(entry.name) for entry in entries
+        ) <= reserved_anywhere_filler:
+            break
         replacement_index = None
         for classification in (
             ItemClassification.filler,
@@ -1137,9 +1144,18 @@ def get_vanilla_reward_name(
     location_name: str,
     category: str,
 ) -> str:
-    """Map an AP source to the native reward represented by that source."""
+    """Get this check's vanilla reward."""
 
     location_name = canonicalize_location_name(location_name)
+    shop_reward = {
+        'Songclave Shop - Spider Strings': 'Spider Strings',
+        'Bone Bottom Shop - Magnetite Brooch (Grindle in Act 3)': 'Magnetite Brooch',
+        "Songclave Shop - Ascendant's Grip": "Ascendant's Grip",
+        'Songclave Shop - Spool Extender': 'Spool Extender',
+        'Songclave Shop - Choral Commandment': 'Relic: Choral Commandment (Jubilana)',
+    }.get(location_name)
+    if shop_reward is not None:
+        return shop_reward
     if location_name in EVA_REWARDS:
         return EVA_REWARDS[location_name][0]
     source_location_name = get_item_first_location_name(location_name)
@@ -1147,7 +1163,7 @@ def get_vanilla_reward_name(
     if category == 'Key':
         try:
             return {
-                'Simple Key: Bone Bottom Shop':
+                'Bone Bottom Shop - Simple Key (Grindle in Act 3)':
                     'Simple Key (Wormways)',
                 'Simple Key: Roachkeeper':
                     'Simple Key (Green Prince)',
@@ -1170,7 +1186,7 @@ def get_vanilla_reward_name(
                 'Key of Indolent': 'Key of Indolent',
                 'Key of Heretic': 'Key of Heretic',
                 'Key of Apostate': 'Key of Apostate',
-                'White Key': 'White Key',
+                'Songclave Shop - White Key': 'White Key',
                 "Surgeon's Key": "Surgeon's Key",
                 "Architect's Key": "Architect's Key",
                 'Craw Summons': 'Craw Summons',
@@ -1271,6 +1287,8 @@ def _trim_act_one_pool_entries(
     individual_relic_turn_ins: bool,
     donation_tool_pouch_requirements: Mapping[str, int] | None,
 ) -> list[ItemPoolEntry]:
+    from .act1_scope import get_act_one_excluded_location_names
+
     major_key_mode = category_modes.get("MajorKey", "vanilla")
     boss_mode = category_modes.get("Boss", "anywhere")
     excluded_location_names = get_act_one_excluded_location_names(
@@ -1413,12 +1431,11 @@ def get_dynamic_trap_capacity(
     required_goal_items: tuple[str, ...] = (),
     silk_soar_begone: bool = False,
     directional_abilities: tuple[str, ...] = (),
+    soul_pool_entries: tuple[ItemPoolEntry, ...] = (),
 ) -> int:
     """Count filler entries that can be replaced by traps."""
 
-    return sum(
-        _is_replaceable_filler(entry.name)
-        for entry in build_item_pool_entries(
+    return len(_trap_eligible_indices(build_item_pool_entries(
             starting_crest_item,
             None,
             split_dash_and_sprint,
@@ -1445,8 +1462,12 @@ def get_dynamic_trap_capacity(
             required_goal_items=required_goal_items,
             silk_soar_begone=silk_soar_begone,
             directional_abilities=directional_abilities,
-        )
-    )
+            soul_pool_entries=soul_pool_entries,
+        )))
+
+
+def _trap_eligible_indices(entries):
+    return [index for index, entry in enumerate(entries) if _is_replaceable_filler(entry.name)]
 
 
 def _replace_verdania_only_key_pool_entry(
@@ -1512,8 +1533,10 @@ def build_item_pool_entries(
     required_goal_items: tuple[str, ...] = (),
     silk_soar_begone: bool = False,
     directional_abilities: tuple[str, ...] = (),
+    soul_pool_entries: tuple[ItemPoolEntry, ...] = (),
 ) -> tuple[ItemPoolEntry, ...]:
     """Build the unfilled-location pool for the selected category modes."""
+    from .act1_scope import get_act_one_excluded_location_names
 
     for category, mode in category_modes.items():
         if mode == 'shuffle' and category != 'Key':
@@ -1749,7 +1772,8 @@ def build_item_pool_entries(
         and starting_crest_item in goal_excluded_location_names
     ):
         required_goal_items = (*required_goal_items, 'Crest: Hunter')
-    missing_goal_items = [name for name in required_goal_items if not any(entry.name == name for entry in entries)]
+    missing_goal_items = [name for name in required_goal_items
+                          if name != starting_crest_item and not any(entry.name == name for entry in entries)]
     needed_items = ['Memory Locket'] * missing_lockets + missing_goal_items
     if needed_items:
         is_advancement = alphabet_item_is_advancement or (
@@ -1777,18 +1801,35 @@ def build_item_pool_entries(
             entry = entries[index]
             entries[index] = ItemPoolEntry(name, entry.source_category, None)
 
-    if not steel_soul:
-        add_pool_only_useful_items(entries)
-
-    replace_filler_with_innate_ability_items(
-        entries,
-        (
-            *((LEDGE_GRAB_ITEM,) if randomize_ledge_grab else ()),
-            *((SWIM_ITEM,) if randomize_swim else ()),
-            *(("Diving Bell Key",) if randomize_diving_bell_key else ()),
-        ),
-        trap_randomizer,
+    innate_ability_items = (
+        *((LEDGE_GRAB_ITEM,) if randomize_ledge_grab else ()),
+        *((SWIM_ITEM,) if randomize_swim else ()),
+        *(("Diving Bell Key",) if randomize_diving_bell_key else ()),
     )
+    if not steel_soul:
+        split_sources = {clean_item_display_name(entry.name) for entry in entries} | set(innate_ability_items)
+        split_slots = sum(ability == 'Dash' or ability in split_sources for ability in directional_abilities)
+        reserved_filler = len(innate_ability_items) + len(soul_pool_entries) + split_slots
+        if alphabet_mode:
+            reserved_filler += len(ALPHABET_ITEM_NAMES)
+        reserved_anywhere_filler = len(innate_ability_items) + len(soul_pool_entries) if soul_pool_entries else 0
+        add_pool_only_useful_items(entries, reserved_filler, reserved_anywhere_filler)
+
+    replace_filler_with_innate_ability_items(entries, innate_ability_items, trap_randomizer)
+
+    if soul_pool_entries:
+        indices = [index for index, entry in enumerate(entries)
+                   if entry.placement_category is None
+                   and item_data_table[entry.name].classification == ItemClassification.filler
+                   and entry.source_category not in {'Memento', 'MemoryLocket', 'Journal'}]
+        if len(indices) < len(soul_pool_entries):
+            raise OptionError(
+                f"Boss and NPC Souls need {len(soul_pool_entries)} anywhere filler slots; "
+                f"only {len(indices)} are available. Enable more anywhere cache or resource checks."
+            )
+        rng = trap_randomizer or Random(0)
+        for soul, index in zip(soul_pool_entries, rng.sample(indices, len(soul_pool_entries))):
+            entries[index] = soul
 
     if alphabet_mode:
         max_alphabet_replacements_by_category = None
@@ -1865,11 +1906,7 @@ def build_item_pool_entries(
         for trap_name in TRAP_ITEM_NAMES
         for _copy_index in range(configured_traps[trap_name])
     )
-    eligible_indices = [
-        index
-        for index, entry in enumerate(entries)
-        if _is_replaceable_filler(entry.name)
-    ]
+    eligible_indices = _trap_eligible_indices(entries)
     if trap_randomizer is not None:
         # Shuffle the complete filler pool so each entry has the configured
         # trap chance.
@@ -1932,15 +1969,22 @@ def build_item_pool_entries(
         advancement_capacity = max(0, nonadvancement_count - reserved)
         minimum_filler = (len(filler_indices) + 3) // 4
         later_act_capacity = len(filler_indices) - minimum_filler
+        split_sources = {clean_item_display_name(entry.name) for entry in entries}
+        split_capacity = sum(_is_replaceable_filler(entry.name) for entry in entries)
         selected = []
         for entry in retained:
             if len(selected) >= later_act_capacity:
                 break
+            sources = split_sources | {clean_item_display_name(entry.name)}
+            split_slots = sum(ability == 'Dash' or ability in sources for ability in directional_abilities)
+            if len(selected) + 1 + split_slots > split_capacity:
+                continue
             if is_advancement(entry.name):
                 if advancement_capacity == 0:
                     continue
                 advancement_capacity -= 1
             selected.append(entry)
+            split_sources = sources
         for index, entry in zip(filler_indices, selected):
             entries[index] = entry
 

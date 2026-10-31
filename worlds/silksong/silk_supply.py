@@ -226,7 +226,7 @@ class SilkSupply:
     def _compile_dependencies(self):
         if self.exit_patterns:
             items = frozenset(self.capacity_items | {'Progressive Silkheart'} | set(self.item_conditions))
-            regions = frozenset(self.region_conditions)
+            regions = frozenset(self.region_conditions.keys() | self.nodes.keys())
             self._dependencies = {index: (items, regions) for index in range(len(self.node_names))}
             return
         dependencies = [(frozenset(rule.item_dependencies()), frozenset(rule.region_dependencies()))
@@ -432,6 +432,7 @@ class SilkSupplyRule(Rule, game='Hollow Knight: Silksong'):
 def compile_regions(world, original):
     from .native_graph import compact_requirements
     from .silk_economy import enabled
+    from .entrance_randomization import enabled as entrances_enabled
 
     if getattr(world.multiworld, "generation_is_fake", False):
         return original
@@ -453,5 +454,6 @@ def compile_regions(world, original):
     result.update((name, ()) for name in roots)
     supply.boundaries = frozenset(roots)
     world._enable_silk_supply(supply)
-    world.explicit_indirect_conditions = False
+    if not entrances_enabled(world):
+        world.explicit_indirect_conditions = False
     return result

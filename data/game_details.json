@@ -916,28 +916,6 @@
         ],
         "release_date": 2018
     },
-    "Celeste 64": {
-        "igdb_id": "284430",
-        "world_name": "Celeste 64",
-        "igdb_name": "Celeste 64: Fragments of the Mountain",
-        "us_rating": [],
-        "player_perspectives": [
-            "Third person"
-        ],
-        "genres": [
-            "Platform",
-            "Adventure",
-            "Indie"
-        ],
-        "themes": [
-            "Action"
-        ],
-        "keywords": [
-            "female protagonist",
-            "lgbtq+"
-        ],
-        "release_date": 2024
-    },
     "Chained Echoes": {
         "igdb_id": "117271",
         "world_name": "Chained Echoes",
@@ -5564,26 +5542,6 @@
         "keywords": [],
         "release_date": 2018
     },
-    "Sonic Adventure 2 Battle": {
-        "igdb_id": "192194",
-        "world_name": "Sonic Adventure 2 Battle",
-        "igdb_name": "Sonic Adventure 2: Battle",
-        "us_rating": [
-            "E"
-        ],
-        "player_perspectives": [
-            "Third person"
-        ],
-        "genres": [
-            "Platform",
-            "Adventure"
-        ],
-        "themes": [
-            "Action"
-        ],
-        "keywords": [],
-        "release_date": 2012
-    },
     "Sonic Adventure DX": {
         "igdb_id": "192114",
         "world_name": "Sonic Adventure DX",
@@ -6041,7 +5999,7 @@
     },
     "Super Mario World": {
         "igdb_id": "270346",
-        "world_name": "Super Mario World",
+        "world_name": "SMW: Spicy Mycena Waffles",
         "igdb_name": "Super Mario World",
         "us_rating": [
             "0",

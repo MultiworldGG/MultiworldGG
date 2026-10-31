@@ -1,6 +1,1 @@
-{
-  "game": "Muse Dash",
-  "authors": ["DeamonHunter"],
-  "world_version": "1.5.37",
-  "minimum_ap_version": "0.6.3"
-}
+{"game": "Muse Dash", "authors": ["DeamonHunter"], "world_version": "1.5.38", "minimum_ap_version": "0.6.3", "compatible_version": 7, "version": 7}

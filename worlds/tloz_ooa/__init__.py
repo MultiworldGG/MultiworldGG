@@ -2,7 +2,7 @@ import logging
 import os
 import yaml
 
-from typing import ClassVar, Any, Optional, Type, TextIO
+from typing import ClassVar, Any, Optional, Type, TextIO, cast
 from Options import Option
 from BaseClasses import Item, Location, LocationProgressType, MultiWorld
 from Options import Accessibility, OptionError
@@ -44,6 +44,12 @@ class OracleOfAgesWorld(World):
     dungeon_items: List[Item]
     randomized_entrances: Dict[str, str] = {}
     shop_prices: Dict[str, int]
+    total_shop_prices: int = 0
+    
+    region_hints: list[tuple[str, str | int]] = []
+    item_hints: list[Item | None] = []
+
+    entrance_group_lookup: Dict[int, List[int]] = {0:[0]}
 
     settings: ClassVar[OOASettings]
     settings_key = "tloz_ooa_options"
@@ -71,14 +77,14 @@ class OracleOfAgesWorld(World):
         return cls.world_version.as_simple_string()
 
     def __init__(self, multiworld, player):
+
+        super().__init__(multiworld, player)
         self.tracker_world["poptracker_name_mapping"] = {}
         for location_name, location_data in LOCATIONS_DATA.items():
             split = location_name.split(": ")
             poptrackerName = split[-1] + "/"
             self.tracker_world["poptracker_name_mapping"][poptrackerName] = self.location_name_to_id[location_name]
             #print(f"{poptrackerName} ({location_name}) => {self.location_name_to_id[location_name]}")
-
-        super().__init__(multiworld, player)
 
         self.pre_fill_items = []
         self.dungeon_items = []
@@ -156,6 +162,18 @@ class OracleOfAgesWorld(World):
         #print(unreachable)
         #print(allstate.prog_items)
 
+    # ===================================================================================
+    #
+    # ===================================================================================
+    def connect_entrances(self):
+        from .generation.ConnectEntrances import ooa_create_entrances, ooa_setup_group_pairing, ooa_randomize_and_update_world_for_patch, ooa_connect_entrance_according_to_slot_data
+        ooa_create_entrances(self)
+        if self.options.entrance_randomizer != OracleOfAgesEntranceRandomizer.option_disabled:
+            ooa_setup_group_pairing(self)
+            if self.interpret_slot_data(None):
+                ooa_connect_entrance_according_to_slot_data(self)
+            else:
+                ooa_randomize_and_update_world_for_patch(self)
         
 
     # ===================================================================================
@@ -194,6 +212,18 @@ class OracleOfAgesWorld(World):
     # ===================================================================================
     #
     # ===================================================================================
+    def pre_output(self) -> None:
+        from .generation.GenerateHints import create_item_hints, create_region_hints
+
+        if self.options.bird_hint.know_it_all():
+            self.region_hints = create_region_hints(self)
+
+        if self.options.bird_hint.owl():
+            self.item_hints = create_item_hints(self)
+    
+    # ===================================================================================
+    #
+    # ===================================================================================
     def generate_output(self, output_directory: str):
         patch = ooa_create_appp_patch(self)
         rom_path = os.path.join(output_directory, f"{self.multiworld.get_out_file_name_base(self.player)}"
@@ -206,10 +236,16 @@ class OracleOfAgesWorld(World):
     # -----------------------------------------------------------------------------------
     def write_spoiler(self, spoiler_handle):
         spoiler_handle.write(f"Apworld version : {self.version()}\n")
-        if self.options.shuffle_dungeons != "vanilla":
+        if self.options.entrance_randomizer != OracleOfAgesEntranceRandomizer.option_disabled:
             spoiler_handle.write(f"Shuffled Entrances ({self.multiworld.player_name[self.player]}):\n")
-            for entrance, dungeon in self.randomized_entrances.items():
-                spoiler_handle.write(f"\t- outside {entrance} --> inside {dungeon}\n")
+            for entrance, target in self.randomized_entrances.items():
+                spoiler_handle.write(f"\t- outside {entrance} --> inside {target}\n")
+
+        #spoiler_handle.write(f"Shop prices ({self.multiworld.player_name[self.player]}):\n")
+        #for shop, price in self.shop_prices.items():
+        #    spoiler_handle.write(f"{shop} => {price}\n")
+        #spoiler_handle.write(f"Total: {self.total_shop_prices}\n")
+        
 
 
     # ===================================================================================
@@ -217,7 +253,6 @@ class OracleOfAgesWorld(World):
     # ===================================================================================
     def fill_slot_data(self) -> dict:
         # Put options that are useful to the tracker inside slot data
-        #print(self.randomized_entrances)
         slot_data = {
             "version": f"{self.version()}",
             "options": self.options.as_dict(
@@ -226,6 +261,17 @@ class OracleOfAgesWorld(World):
             "randomized_entrances": self.randomized_entrances,
             "shop_costs": self.shop_prices,
         }
+
+        # The structure is made to make it easy to call CreateHints
+        slot_data_item_hints = []
+        for item_hint in self.item_hints:
+            if item_hint is None:
+                # Joke hint
+                slot_data_item_hints.append(None)
+                continue
+            location = cast(Location, item_hint.location)
+            slot_data_item_hints.append((location.address, location.player))
+        slot_data["item_hints"] = slot_data_item_hints
 
         return slot_data
     

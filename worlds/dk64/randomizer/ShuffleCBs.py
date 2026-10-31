@@ -8,6 +8,14 @@ import randomizer.CollectibleLogicFiles.FranticFactory
 import randomizer.CollectibleLogicFiles.FungiForest
 import randomizer.CollectibleLogicFiles.GloomyGalleon
 import randomizer.CollectibleLogicFiles.JungleJapes
+import randomizer.LogicFiles.DKIsles
+import randomizer.LogicFiles.AngryAztec
+import randomizer.LogicFiles.CreepyCastle
+import randomizer.LogicFiles.CrystalCaves
+import randomizer.LogicFiles.FranticFactory
+import randomizer.LogicFiles.FungiForest
+import randomizer.LogicFiles.GloomyGalleon
+import randomizer.LogicFiles.JungleJapes
 import randomizer.Fill as Fill
 import randomizer.Lists.CBLocations.AngryAztecCBLocations
 import randomizer.Lists.CBLocations.CreepyCastleCBLocations
@@ -20,10 +28,80 @@ import randomizer.Lists.CBLocations.DKIslesCBLocations
 import randomizer.Lists.Exceptions as Ex
 from randomizer.Enums.Kongs import Kongs
 from randomizer.Enums.Levels import Levels
+from randomizer.Enums.Locations import Locations
+from randomizer.Enums.Types import Types
 from randomizer.Enums.Collectibles import Collectibles
-from randomizer.LogicClasses import Collectible
+from randomizer.Enums.Maps import Maps
+from randomizer.LogicClasses import Collectible, LocationLogic, Balloon
 from randomizer.Patching.Library.Generic import IsItemSelected
 from randomizer.Lists.MapsAndExits import RegionMapList, LevelMapTable
+
+
+def addBalloon(spoiler, balloon: Balloon, enum_val: int, name: str, level: Levels, kong: Kongs):
+    """Add balloon to relevant Logic Region."""
+    level_to_name = {
+        Levels.DKIsles: "Isles",
+        Levels.JungleJapes: "Japes",
+        Levels.AngryAztec: "Aztec",
+        Levels.FranticFactory: "Factory",
+        Levels.GloomyGalleon: "Galleon",
+        Levels.FungiForest: "Forest",
+        Levels.CrystalCaves: "Caves",
+        Levels.CreepyCastle: "Castle",
+    }
+    kong_to_name = {
+        Kongs.donkey: "Donkey",
+        Kongs.diddy: "Diddy",
+        Kongs.lanky: "Lanky",
+        Kongs.tiny: "Tiny",
+        Kongs.chunky: "Chunky",
+    }
+    # Map kongs to their required logic attributes (kong + gun)
+    kong_to_requirements = {
+        Kongs.donkey: lambda l: l.donkey and l.coconut,
+        Kongs.diddy: lambda l: l.diddy and l.peanut,
+        Kongs.lanky: lambda l: l.lanky and l.grape,
+        Kongs.tiny: lambda l: l.tiny and l.feather,
+        Kongs.chunky: lambda l: l.chunky and l.pineapple,
+    }
+    # Combine kong+gun requirements with base logic (to pop balloon) and item_logic (to reach the item after popping)
+    combined_logic = lambda l: kong_to_requirements[kong](l) and balloon.logic(l) and balloon.item_logic(l)
+    spoiler.RegionList[balloon.region].locations.append(LocationLogic(enum_val, combined_logic))
+    spoiler.LocationList[enum_val].name = f"{level_to_name[level]} {kong_to_name[kong]} Balloon ({name})"
+    spoiler.LocationList[enum_val].default_mapid_data[0].map = balloon.map
+    spoiler.LocationList[enum_val].level = level
+    spoiler.LocationList[enum_val].kong = kong
+
+
+def removeBalloons(spoiler):
+    """Remove all vanilla balloons from Logic regions where CBs are shuffled."""
+    level_logic_regions = []
+    if Levels.DKIsles in spoiler.settings.cb_rando_list_selected:
+        level_logic_regions.append(randomizer.LogicFiles.DKIsles.LogicRegions)
+    if Levels.JungleJapes in spoiler.settings.cb_rando_list_selected:
+        level_logic_regions.append(randomizer.LogicFiles.JungleJapes.LogicRegions)
+    if Levels.AngryAztec in spoiler.settings.cb_rando_list_selected:
+        level_logic_regions.append(randomizer.LogicFiles.AngryAztec.LogicRegions)
+    if Levels.FranticFactory in spoiler.settings.cb_rando_list_selected:
+        level_logic_regions.append(randomizer.LogicFiles.FranticFactory.LogicRegions)
+    if Levels.GloomyGalleon in spoiler.settings.cb_rando_list_selected:
+        level_logic_regions.append(randomizer.LogicFiles.GloomyGalleon.LogicRegions)
+    if Levels.FungiForest in spoiler.settings.cb_rando_list_selected:
+        level_logic_regions.append(randomizer.LogicFiles.FungiForest.LogicRegions)
+    if Levels.CrystalCaves in spoiler.settings.cb_rando_list_selected:
+        level_logic_regions.append(randomizer.LogicFiles.CrystalCaves.LogicRegions)
+    if Levels.CreepyCastle in spoiler.settings.cb_rando_list_selected:
+        level_logic_regions.append(randomizer.LogicFiles.CreepyCastle.LogicRegions)
+
+    for level in level_logic_regions:
+        for region in level:
+            region_data = spoiler.RegionList[region]
+            removed_locations = [loc for loc in region_data.locations if loc.id >= Locations.Balloon000 and loc.id <= Locations.Balloon103]
+            for loc in removed_locations:
+                # Use the inaccessible flag to mark the location as needing new logic (if it gets one)
+                spoiler.LocationList[loc.id].inaccessible = True
+            region_data.locations = [x for x in region_data.locations if x.id < Locations.Balloon000 or x.id > Locations.Balloon103]
+
 
 level_data = {
     Levels.JungleJapes: {
@@ -73,7 +151,7 @@ def ShuffleCBs(spoiler):
     """Shuffle CBs selected from location files."""
     retries = 0
     levels_to_populate = 7
-    MAX_BALLOONS = 105
+    MAX_BALLOONS = 104
     MAX_SINGLES = 780  # 793 Singles in Vanilla, under-representing this to help with the calculation formula
     MAX_BUNCHES = 790 - MAX_BALLOONS * 2 - round(MAX_SINGLES / 5)  # 334 bunches in vanilla, biasing this for now to help with calculation formula
     PLACEMENT_LIMIT = 1127
@@ -84,16 +162,16 @@ def ShuffleCBs(spoiler):
         MAX_SINGLES = int(MAX_SINGLES * INCREASE_FACTOR)
         MAX_BUNCHES = int(MAX_BUNCHES * INCREASE_FACTOR)
         PLACEMENT_LIMIT = 1400
-    # Calculate how many CBs to remove from the total based off what levels aren't placed
+    # Calculate how many CBs to remove from the total placeable CB count based off what levels aren't placed
     levels_to_place = []
     for level in level_data:
-        is_level_placed = IsItemSelected(spoiler.settings.cb_rando_enabled, spoiler.settings.cb_rando_list_selected, level)
-        if is_level_placed:
-            # Level is placed, no need to remove CBs
+        is_level_to_be_placed = IsItemSelected(spoiler.settings.cb_rando_enabled, spoiler.settings.cb_rando_list_selected, level)
+        if is_level_to_be_placed:
+            # Level is to be placed, no need to use it to remove CBs from the cap of CBs to be placed
             levels_to_place.append(level)
             continue
         if level == Levels.DKIsles:
-            # Isles has no CBs in vanilla, don't place
+            # Isles has no CBs in vanilla, nothing to do here
             continue
         vanilla_regions = level_data[level]["vanilla"]
         singles_in_vanilla = 0
@@ -102,11 +180,11 @@ def ShuffleCBs(spoiler):
         for region, region_items in vanilla_regions.items():
             for item in region_items:
                 if item.type == Collectibles.balloon:
-                    balloon_in_vanilla += 1
+                    balloon_in_vanilla += item.amount
                 elif item.type == Collectibles.bunch:
-                    bunches_in_vanilla += 1
+                    bunches_in_vanilla += item.amount
                 elif item.type == Collectibles.banana:
-                    singles_in_vanilla += 1
+                    singles_in_vanilla += item.amount
         MAX_BALLOONS -= balloon_in_vanilla
         MAX_SINGLES -= singles_in_vanilla
         MAX_BUNCHES -= bunches_in_vanilla
@@ -119,6 +197,7 @@ def ShuffleCBs(spoiler):
             total_singles = 0
             total_bunches = 0
             cb_data = []
+            spoiler.balloon_placement = []
             # First, remove all placed colored bananas
             for region_id in spoiler.CollectibleRegions.keys():
                 map_id = RegionMapList[region_id]
@@ -160,6 +239,9 @@ def ShuffleCBs(spoiler):
                     balloon_upper = int(balloon_upper * 1.5)
                     balloon_lower = int(balloon_lower * 1.5)
                 balloon_lst = level_data[level]["balloons"].copy()
+                # Filter out balloons banned when balloon items are shuffled
+                if Types.Balloon in spoiler.settings.shuffled_location_types:
+                    balloon_lst = [b for b in balloon_lst if not b.banned_when_item_rando]
                 selected_balloon_count = min(
                     spoiler.settings.random.randint(min(balloon_lower, balloon_upper), max(balloon_lower, balloon_upper)),
                     len(balloon_lst),
@@ -170,7 +252,11 @@ def ShuffleCBs(spoiler):
                 placed_balloons = 0
                 for balloon in balloon_lst:
                     if placed_balloons < selected_balloon_count:
-                        balloon_kongs = balloon.kongs.copy()
+                        # Use item_rando_kongs if balloon items are shuffled, otherwise use normal kongs
+                        if Types.Balloon in spoiler.settings.shuffled_location_types:
+                            balloon_kongs = balloon.item_rando_kongs.copy()
+                        else:
+                            balloon_kongs = balloon.kongs.copy()
                         for kong in kong_specific_left:
                             if kong_specific_left[kong] < 10 and kong in balloon_kongs:  # Not enough Colored Bananas to place a balloon:
                                 balloon_kongs.remove(kong)  # Remove kong from permitted list
@@ -188,6 +274,20 @@ def ShuffleCBs(spoiler):
                                 }
                             )
                             placed_balloons += 1
+                            # Track balloon for location assignment if balloon items are shuffled
+                            if Types.Balloon in spoiler.settings.shuffled_location_types:
+                                local_map_index = len([x for x in spoiler.balloon_placement if x["map"] == balloon.map])
+                                spoiler.balloon_placement.append(
+                                    {
+                                        "id": balloon.id,
+                                        "name": balloon.name,
+                                        "kong": selected_kong,
+                                        "level": level,
+                                        "map": balloon.map,
+                                        "balloon": balloon,
+                                        "score": (balloon.map * 100) + local_map_index,
+                                    }
+                                )
                             if balloon.region not in spoiler.CollectibleRegions:
                                 spoiler.CollectibleRegions[balloon.region] = []
                             spoiler.CollectibleRegions[balloon.region].append(Collectible(Collectibles.balloon, selected_kong, balloon.logic, None, 1, name=balloon.name))
@@ -301,8 +401,27 @@ def ShuffleCBs(spoiler):
             if not Fill.VerifyWorld(spoiler):
                 raise Ex.CBFillFailureException
             spoiler.cb_placements = cb_data
+
+            # Assign balloon locations if balloon items are shuffled
+            if Types.Balloon in spoiler.settings.shuffled_location_types:
+                # Remove vanilla balloon logic before adding custom balloons
+                removeBalloons(spoiler)
+                sorted_balloons = spoiler.balloon_placement.copy()
+                sorted_balloons = sorted(sorted_balloons, key=lambda d: d["score"])
+                for balloon_index, balloon_data in enumerate(sorted_balloons):
+                    next_free_location = Locations.Balloon000
+                    while not spoiler.LocationList[next_free_location].inaccessible:  # Per the removeBalloons function, inaccessible locations can have a new location logic assigned to it
+                        next_free_location += 1
+                        if next_free_location > Locations.Balloon103:
+                            raise Ex.CBFillFailureException("No more free balloon locations available to place balloon location logic.")
+                    spoiler.LocationList[next_free_location].inaccessible = False
+                    if balloon_index < 104:  # Hard limit on balloon locations
+                        balloon_data["enum"] = next_free_location
+                        addBalloon(spoiler, balloon_data["balloon"], balloon_data["enum"], balloon_data["name"], balloon_data["level"], balloon_data["kong"])
+                        balloon_data["balloon"] = None  # Clear reference
+
             return
-        except Ex.CBFillFailureException:
+        except Ex.CBFillFailureException as ex:
             if retries >= 10:
                 js.postMessage("CB Randomizer failed to fill. REPORT THIS TO THE DEVS!!")
                 raise Ex.CBFillFailureException

@@ -2,7 +2,7 @@ import logging
 import math
 import typing
 from collections.abc import Mapping
-from typing import Any, ClassVar, Dict, List, Set, Optional
+from typing import Any, ClassVar, Dict, List, Set, Optional, Tuple
 
 from BaseClasses import MultiWorld, Region, Entrance
 from Options import Option, OptionError
@@ -36,7 +36,11 @@ class YellowTaxiWorld(World):
     item_name_groups = {
         "Move": { "Progressive Jump", "Progressive Boost" },
         "Move (Hub)": { "Progressive Jump (Hub)", "Progressive Boost (Hub)" },
+        "Progressive Jump (Morio's Lab)": { "Progressive Jump (Hub)" },
+        "Progressive Boost (Morio's Lab)": { "Progressive Boost (Hub)" },
         "Move (Morio's Lab)": { "Progressive Jump (Hub)", "Progressive Boost (Hub)" },
+        "Progressive Jump (Granny's Island)": { "Progressive Jump (Hub)" },
+        "Progressive Boost (Granny's Island)": { "Progressive Boost (Hub)" },
         "Move (Granny's Island)": { "Progressive Jump (Hub)", "Progressive Boost (Hub)" },
         "Move (Morio's Home)": { "Progressive Jump (Morio's Home)", "Progressive Boost (Morio's Home)" },
         "Move (Bombeach)": { "Progressive Jump (Bombeach)", "Progressive Boost (Bombeach)" },
@@ -45,7 +49,7 @@ class YellowTaxiWorld(World):
         "Move (Tosla's Offices)": { "Progressive Jump (Tosla's Offices)", "Progressive Boost (Tosla's Offices)" },
         "Move (Maurizio's City)": { "Progressive Jump (Maurizio's City)", "Progressive Boost (Maurizio's City)" },
         "Move (Crash Test Industries)": { "Jump (Crash Test Industries)", "Boost (Crash Test Industries)" },
-        #"Move (Morio's Mind)": { "Progressive Jump (Morio's Mind)", "Progressive Boost (Morio's Mind)" },
+        "Move (Morio's Mind)": { "Progressive Jump (Morio's Mind)", "Progressive Boost (Morio's Mind)" },
         #"Move (Ruined Observatory)": { "Progressive Jump (Ruined Observatory)", "Progressive Boost (Ruined Observatory)" },
         #"Move (Tosla HQ)": { "Progressive Jump (Tosla HQ)", "Progressive Boost (Tosla HQ)" },
         #"Move (Moon)": { "Progressive Jump (The Moon)", "Progressive Boost (The Moon)" },
@@ -55,12 +59,30 @@ class YellowTaxiWorld(World):
         "Move (Flushed Away)": { "Progressive Jump (Flushed Away)", "Progressive Boost (Flushed Away)" },
         "Move (Mosk's Rocket)": { "Progressive Jump (Mosk's Rocket)", "Progressive Boost (Mosk's Rocket)" },
         "Move (Rocket)": { "Progressive Jump (Mosk's Rocket)", "Progressive Boost (Mosk's Rocket)" },
-        "Move (Time Trials)": { "Progressive Jump (Time Trials)", "Progressive Boost (Time Trials)" },
-        "Move (Baby Steps!)": { "Progressive Jump (Time Trials)", "Progressive Boost (Time Trials)" },
-        "Move (Getting Gud!)": { "Progressive Jump (Time Trials)", "Progressive Boost (Time Trials)" },
-        "Move (Pro Tricks!)": { "Progressive Jump (Time Trials)", "Progressive Boost (Time Trials)" },
+        "Move (Time Attacks)": { "Progressive Jump (Time Attacks)", "Progressive Boost (Time Attacks)" },
+        "Move (Time Trials)": { "Progressive Jump (Time Attacks)", "Progressive Boost (Time Attacks)" },
+        "Move (Baby Steps!)": { "Progressive Jump (Time Attacks)", "Progressive Boost (Time Attacks)" },
+        "Move (Getting Gud!)": { "Progressive Jump (Time Attacks)", "Progressive Boost (Time Attacks)" },
+        "Move (Pro Tricks!)": { "Progressive Jump (Time Attacks)", "Progressive Boost (Time Attacks)" },
         "Golden Spring": { "Golden Spring Blueprints" },
         "Golden Propeller": { "Golden Propeller Blueprints" },
+        "Bunny (Lab Memories)": { "Bunny (Morio's Lab)" },
+        "Bunny (Hub)": { "Bunny (Morio's Lab)" },
+        "Bunny (Bomb-it)": {"Bunny (Bombeach)"},
+        "Bunny (Pepperoni)": {"Bunny (Pizza Time)"},
+        "Bunny (Welcoming Climbs)": {"Bunny (Morio's Home)"},
+        "Bunny (Buttons Smashing)": {"Bunny (Arcade Panik)"},
+        "Bunny (Stealthy)": {"Bunny (Tosla's Offices)"},
+        "Bunny (Podium)": {"Bunny (Gym Gears)"},
+        "Bunny (Costipation)": {"Bunny (Fecal Matters)"},
+        "Bunny (Constipation)": {"Bunny (Fecal Matters)"},
+        "Bunny (Smelly Slimes)": {"Bunny (Flushed Away)"},
+        "Bunny (Heroic Moves)": {"Bunny (Maurizio's City)"},
+        "Bunny (Conveyor Belts)": {"Bunny (Crash Test Industries)"},
+        "Bunny (Eye Surgery)": {"Bunny (Morio's Mind)"},
+        "Bunny (Mid Air)": {"Bunny (Ruined Observatory)"},
+        "Bunny (Infiltration)": {"Bunny (Tosla HQ)"},
+        "Bunny (Far Far Away)": {"Bunny (The Moon)"},
         "FGU": { "Full Game Unlock" },
         "Trap": TRAPS,
         "Traps": TRAPS,
@@ -130,7 +152,9 @@ class YellowTaxiWorld(World):
         self.early_rocket : bool = False
         self.exclude_spike_bunny : bool = False
         self.exclude_top_bunny : bool = False
+        self.hub_bunnies : int = 3
         self.final_portal_cost : int = 0
+        self.highest_portal_cost : int = 0
         self.goal_levels : List[str] = ["Bombeach"]
         # These are used to simplify logic and region inclusion rules
         # Sometimes not shuffling these results in them not existing, if the related level isn't in the game
@@ -141,6 +165,11 @@ class YellowTaxiWorld(World):
         self.has_rocket_access : bool = False
         # Pizza Wheels or Golden Spring can give spike traversal
         self.has_spike_traversal : bool = False
+        # Hat prices
+        self.reach_hat_events : Dict[str, int] = {}
+        self.hat_locations : List[str] = []
+        self.unique_hats : Set[int] = set()
+        self.hat_prices : Dict[int, int] = {}
 
         self.using_ut : bool = False
         # UT only
@@ -229,8 +258,10 @@ class YellowTaxiWorld(World):
                 continue
             self.included_levels += [level]
 
-        if self.options.hatsanity == 1: # Special "level" for shared hats
-            self.special_levels += ["Hatsanity"]
+        if self.options.hatsanity == 1: # Special "levels" for shared hats
+            self.special_levels += ["Hatsanity", "HatWorld"]
+        elif self.options.hat_world_membership:
+            self.special_levels += ["HatWorld"]
 
         self.has_golden_spring_access = ((self.options.shuffle_golden_spring ==
                                          self.options.shuffle_golden_spring.option_true) or
@@ -331,6 +362,10 @@ class YellowTaxiWorld(World):
                         "Morio's Lab - Middle Floors 2 Golden Propellers",
                         "Morio's Lab - Ground Floor Golden Propeller",
                     ]
+        elif self.options.expert_level <= 0:
+            self.excluded_regions += [
+                "Morio's Lab - Second Floor Access to Shortcut Pipe",
+            ]
         if not "Tosla's Offices" in self.included_levels and "Tosla's Offices" in self.goal_levels:
             # Remove employees-only completely since the hat will not be progression in this case
             # Makes generator less mad
@@ -361,9 +396,10 @@ class YellowTaxiWorld(World):
                 self.early_golden_propeller = True
             if self.options.shuffle_morios_password and not "Morio's Mind" in self.included_levels:
                 self.early_morios_password = True
+            elif self.level_order[7] == "Excluded":
+                self.excluded_regions += ["Morio's Lab - Dream Machine"]
             if self.options.rocket_unlock_condition.value == self.options.rocket_unlock_condition.option_shuffle_rocket:
                 self.early_rocket = True
-
             if "Morio's Lab - Fourth Floor Spiky Bunny Alcove" in self.excluded_regions:
                 self.exclude_spike_bunny = True
             if "Morio's Lab - Final Floor Bunny Shortcut Upper" in self.excluded_regions:
@@ -411,6 +447,21 @@ class YellowTaxiWorld(World):
                     "TrapLink has no effect on a single-player game "
                     "and has been disabled to reduce unnecessary network pings.")
 
+            if self.options.minimum_hat_price.value > self.options.maximum_hat_price.value:
+                self.options.minimum_hat_price.value, self.options.maximum_hat_price.value =(
+                    self.options.maximum_hat_price.value, self.options.minimum_hat_price.value)
+                logging.warning(
+                    f"{self.player_name}: Your options have been modified.\n"
+                    "Minimum and Maximum Hat Price have been swapped.")
+
+        # Get hub bunny count
+        if self.options.extra_demo_collectables:
+            self.hub_bunnies += 2
+        if self.exclude_spike_bunny:
+            self.hub_bunnies -= 1
+        if self.exclude_top_bunny:
+            self.hub_bunnies -= 1
+
         if not self.options.open_grannys_island and self.options.locked_morios_lab:
             self.lab_start = True
 
@@ -424,15 +475,25 @@ class YellowTaxiWorld(World):
             if move != "":
                 self.multiworld.local_early_items[self.player][move] = 1
 
+        # Calculate highest portal cost
+        for index in range(len(data_loader.original_portal_costs)):
+            portal : str = self.level_order[index]
+            if portal == "Excluded":
+                break
+            if portal in self.goal_levels:
+                continue
+            if self.highest_portal_cost < data_loader.original_portal_costs[index]:
+                self.highest_portal_cost = data_loader.original_portal_costs[index]
+
     def create_regions(self) -> None:
         regions.create_and_connect_regions(self)
         locations.create_locations(self)
-        locations.fix_location_deficit(self)
         if self.using_ut:
             self.final_portal_cost = self.ut_true_goal_cost
         else:
             self.final_portal_cost = math.floor((self.num_gears *
                                                  self.options.goal_portal_gear_percentage) / 100)
+            locations.fix_location_deficit(self)
 
     def set_rules(self) -> None:
         rules.set_all_rules(self)
@@ -461,6 +522,43 @@ class YellowTaxiWorld(World):
         for i in range(0, len(self.level_order)):
             logger.info(f"  {data_loader.original_level_order[i]} -> {self.level_order[i]}")
 
+    def post_fill(self) -> None:
+        if not self.options.randomize_hat_prices:
+            return
+        self.hat_prices = {}
+        hat_price_list : List[int] = [self.random.randint(self.options.minimum_hat_price.value,
+                                                          self.options.maximum_hat_price.value)
+                                      for _ in range(0, len(self.unique_hats))]
+
+        if not self.options.sort_randomized_prices_by_sphere:
+            for hat in sorted(self.unique_hats):
+                self.hat_prices[hat] = hat_price_list.pop()
+            return
+
+        hat_price_list.sort(reverse=True)
+        for sphere in self.multiworld.get_spheres():
+            sphere_hats : List[int] = []
+            for loc in sphere:
+                if loc.player != self.player:
+                    continue
+
+                if loc.name in self.reach_hat_events.keys():
+                    hat_id = self.reach_hat_events[loc.name]
+                    if hat_id in self.unique_hats:
+                        sphere_hats += [hat_id]
+                        self.unique_hats.remove(hat_id)
+                if len(self.unique_hats) == 0:
+                    break
+            if len(sphere_hats) == 0:
+                continue
+
+            self.random.shuffle(sphere_hats)
+            for hat_id in sphere_hats:
+                self.hat_prices[hat_id] = hat_price_list.pop()
+
+            if len(hat_price_list) == 0:
+                break
+
     def fill_slot_data(self) -> Mapping[str, Any]:
         # Get relevant options needed for client
         slot_data : Dict[str, Any] = self.options.as_dict(
@@ -479,7 +577,9 @@ class YellowTaxiWorld(World):
             "shuffle_morios_password",
             "shuffle_full_game",
             "demo_portal_mode",
+            "hat_world_membership",
             "shuffle_rat",
+            "dream_machine_unlock_condition",
             "gym_gears_unlock_condition",
             "fecal_matters_unlock_condition",
             "flushed_away_unlock_condition",
@@ -488,10 +588,13 @@ class YellowTaxiWorld(World):
             "bunnysanity",
             "hatsanity",
             "cheesesanity",
+            "pizzasanity",
+            "pizzasanity_count",
             "shuffle_flip_o_will",
             "allow_top_down_jumps",
             "shuffle_spin_attack",
             "shuffle_glide",
+            "shuffle_world_map",
             "shuffle_golden_spring",
             "shuffle_golden_propeller",
             "pizza_wheels",
@@ -500,9 +603,17 @@ class YellowTaxiWorld(World):
             "remove_goal_portal_locations",
             "funny_faces",
             "easy_alien_mosk",
+            "morios_mind_laser_behavior",
             "quick_pickups",
             "shop_hints",
             "taxi_skin",
+            "glitched_taxi_skin_color",
+            "gear_type",
+            "standard_gear_color",
+            "time_attack_gear_color",
+            "morio_costume",
+            "randomize_music",
+            "randomize_skyboxes",
             # Only used by UT
             "expert_level",
             "include_out_of_bounds",
@@ -540,8 +651,55 @@ class YellowTaxiWorld(World):
         # Start location
         slot_data["lab_start"] = self.lab_start
 
-        if self.options.trap_link_uses_whitelist:
-            slot_data["trap_link_whitelist"] = sorted(self.options.enabled_traps.value)
+        # Hat prices (only needed if randomized)
+        if self.options.randomize_hat_prices:
+            slot_data["hat_prices"] = self.hat_prices
+
+        # Music rando
+        if self.options.randomize_music.value == self.options.randomize_music.option_consistent:
+            music_order : List[int] = list(range(24))
+            boss_songs : List[int] = [24, 25, 26]
+            # include title/credits songs
+            if self.options.include_title_and_credits_music:
+                music_order += [27, 28]
+            # combine or split boss/regular pools
+            if self.options.separate_boss_music:
+                self.random.shuffle(music_order)
+                self.random.shuffle(boss_songs)
+                music_order = music_order[:24]
+                music_order.extend(boss_songs)
+            else:
+                music_order += boss_songs
+                self.random.shuffle(music_order)
+                music_order = music_order[:27]
+
+            slot_data["music_order"] = music_order
+        elif (self.options.randomize_music.value == self.options.randomize_music.option_random_every_load or
+              self.options.randomize_music.value == self.options.randomize_music.option_radio):
+            # Need this info to determine what to randomize
+            slot_data["include_title_and_credits_music"] = self.options.include_title_and_credits_music.value == 1
+            slot_data["separate_boss_music"] = self.options.separate_boss_music.value == 1
+
+        if self.options.randomize_skyboxes == self.options.randomize_skyboxes.option_consistent:
+            skybox_order : List[int] = list(range(18))
+            if not self.options.exclude_boring_skyboxes:
+                skybox_order += [18, 19, 20]
+            self.random.shuffle(skybox_order)
+            if self.options.exclude_boring_skyboxes:
+                # 17 is billiards, which is unused
+                for i in range(3):
+                    skybox_order += [skybox_order[17]]
+            slot_data["skybox_order"] = skybox_order
+        elif self.options.randomize_skyboxes == self.options.randomize_skyboxes.option_random_every_load:
+            slot_data["exclude_boring_skyboxes"] = self.options.exclude_boring_skyboxes.value == 1
+
+        if self.options.trap_link and self.options.trap_link_uses_whitelist:
+            enabled_traps : List[str] = []
+            for trap in self.options.trap_distribution.value:
+                if self.options.trap_distribution.value[trap] > 0:
+                    enabled_traps += [trap]
+
+            slot_data["trap_link_whitelist"] = sorted(enabled_traps)
 
         numerical_level_order : List[int] = []
 
@@ -591,7 +749,26 @@ class YellowTaxiWorld(World):
         hint_data[self.player] = er_hint_data
 
     def write_spoiler(self, spoiler_handle: typing.TextIO) -> None:
+        #self.write_map_area_locations(spoiler_handle)
         spoiler_handle.write("\nEntrances:\n")
         for i in range(0, len(self.level_order)):
             if self.level_order[i] != "Excluded":
                 spoiler_handle.write(f"\n{data_loader.original_level_order[i]} -> {self.level_order[i]}")
+
+    # This is purely to help generate in-game tracking
+    def write_map_area_locations(self, handle: typing.TextIO) -> None:
+        map_area_locs : Dict[str, List[int | None]] = {}
+        for loc_name, loc_id in self.location_name_to_id.items():
+            map_name : str = "Unknown Map"
+            if " - " in loc_name:
+                map_name = loc_name.split(" - ")[0]
+            if map_name in map_area_locs.keys():
+                map_area_locs[map_name] += [loc_id]
+            else:
+                map_area_locs[map_name] = [loc_id]
+
+        for map_name, loc_list in map_area_locs.items():
+            handle.write(f"\n            {{\n                \"{map_name}\",\n                [\n")
+            for loc_id in loc_list:
+                handle.write(f"                    {loc_id},\n")
+            handle.write("                ]\n            },")

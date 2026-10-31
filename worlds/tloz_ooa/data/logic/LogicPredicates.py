@@ -3,6 +3,17 @@ from ...Options import *
 from ..Constants import DUNGEON_NAMES, ESSENCES, GASHA_SPOT_REGIONS
 
 
+from ..Entrances import INSIDE_TAG, OUTSIDE_TAG
+
+# Entrances predicates ############################################################
+# Quick function to make the entrance logic easier to read and write
+def Inside(entrance:str):
+    return INSIDE_TAG + entrance
+
+def Outside(entrance:str):
+    return OUTSIDE_TAG + entrance
+
+
 # Items predicates ############################################################
 
 def ooa_has_sword(state: CollectionState, player: int, accept_biggoron: bool = True):
@@ -142,6 +153,9 @@ def ooa_has_essences(state: CollectionState, player: int, target_count: int):
 
 def ooa_has_essences_for_maku_seed(state: CollectionState, player: int):
     return ooa_has_essences(state, player, state.multiworld.worlds[player].options.required_essences.value)
+
+def ooa_goal_is(state: CollectionState, player: int, goal: OracleOfAgesGoal):
+    return state.multiworld.worlds[player].options.goal == goal
     
 def ooa_has_slates(state: CollectionState, player: int, target_count):
     return state.has("Slate", player, target_count)
@@ -154,9 +168,21 @@ def ooa_option_lynna_gardener(state: CollectionState, player: int):
         state.multiworld.worlds[player].options.lynna_gardener == True,
         state.multiworld.worlds[player].options.warp_to_start_location == OracleOfAgesWarpToStartLocation.option_near_timeportal
     ])
+def ooa_option_suitless_underwater(state: CollectionState, player: int):
+    # Until the option is enabled
+    return False #state.multiworld.worlds[player].options.suitless_underwater == True
 
+def ooa_ER_inside_lock_fully_blocked(state: CollectionState, player: int):
+    return state.multiworld.worlds[player].options.entrance_randomizer_inside_lock == OracleOfAgesEntranceRandomizer_InsideLock.option_fully_blocked
+
+def ooa_ER_inside_lock_fully_open(state: CollectionState, player: int):
+    return state.multiworld.worlds[player].options.entrance_randomizer_inside_lock == OracleOfAgesEntranceRandomizer_InsideLock.option_fully_open
 
 # Various item predicates ###########################################
+
+def ooa_can_buy_from_shop(state: CollectionState, player: int):
+    rupee_requirement = min(state.multiworld.worlds[player].total_shop_prices * 0.5, 1000)
+    return ooa_has_rupees(state, player, rupee_requirement)
 
 def ooa_has_rupees(state: CollectionState, player: int, amount: int):
     # Rupee checks being quite approximative, being able to farm is a
@@ -722,9 +748,14 @@ def ooa_can_trigger_lever(state: CollectionState, player: int):
     return any([
         ooa_can_trigger_lever_from_minecart(state, player),
         all([
-            ooa_option_medium_logic(state, player),
-            ooa_has_shovel(state, player)
-        ])
+            ooa_has_satchel(state, player),
+                any([
+                    ooa_can_use_scent_seeds_for_smell(state, player),
+                    ooa_can_use_mystery_seeds(state, player),
+                    ooa_can_use_ember_seeds(state, player, False),
+                ])
+        ]),
+        ooa_has_switch_hook(state, player),
     ])
 
 
@@ -732,10 +763,6 @@ def ooa_can_trigger_lever_from_minecart(state: CollectionState, player: int):
     return any([
         ooa_has_sword(state, player),
         ooa_has_boomerang(state, player),
-
-        # TODO: Test that to ensure our understanding is right
-        ooa_can_use_scent_seeds_offensively(state, player),
-        ooa_can_use_mystery_seeds(state, player),
         ooa_has_seedshooter(state, player),  # any seed works using slingshot
     ])
 
@@ -772,6 +799,9 @@ def ooa_can_swim(state: CollectionState, player: int, can_summon_companion: bool
 
 def ooa_can_swim_deepwater(state: CollectionState, player: int, can_summon_companion: bool):
     return ooa_has_siren_suit(state, player) or (can_summon_companion and ooa_can_summon_dimitri(state, player))
+
+def ooa_can_travel_underwater(state: CollectionState, player: int):
+    return ooa_has_siren_suit(state, player) or (ooa_option_suitless_underwater(state, player))
 
 def ooa_can_dive(state: CollectionState, player: int):
     return ooa_has_siren_suit(state, player)

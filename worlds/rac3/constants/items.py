@@ -231,6 +231,7 @@ class RAC3ITEM:
     PROGRESSIVE_VIDCOMIC = "Progressive VidComic"
     PROGRESSIVE_ARMOR = "Progressive Armor"
     PROGRESSIVE_PACK = "Progressive Pack"
+    PROGRESSIVE_WRENCH = "Progressive Omniwrench"
 
     MOD_SHOCK_SHOCK_BLASTER = "Shock Blaster Shock Mod"
     MOD_ACID_SHOCK_BLASTER = "Shock Blaster Acid Mod"
@@ -374,8 +375,6 @@ class RAC3ITEM:
     QUICK_SELECT_D = "Quick Select D"
     QUICK_SELECT_E = "Quick Select E"
     QUICK_SELECT_F = "Quick Select F"
-
-    VICTORY = "Biobliterator Defeated!"
 
 
 UPGRADE_DICT: dict[str, list[int]] = {

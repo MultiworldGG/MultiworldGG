@@ -9,7 +9,7 @@
 - Mewlif
 - [Deadzi](https://github.com/Deadzi06)
 - [Vintagix](https://github.com/VintagixDev)
-- [TerraFail451](https://github.com/TerraFail451)
+- [TerraFrost](https://github.com/TerraFail451)
 
 ### Sprite Artist
 - [Charaster](https://github.com/Charaster-Official)
@@ -34,6 +34,9 @@
 
 ### Certain QOL features \& Kris's Room
 - [FLB Practice Mod](https://github.com/nhaar/flb-mod)
+
+### Proxy
+- [PizzaTower ApWorld](https://github.com/unsafetyskizzers/Archipelago)
 
 ## Notable Play Testers
 

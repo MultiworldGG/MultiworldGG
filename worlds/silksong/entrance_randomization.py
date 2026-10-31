@@ -21,6 +21,7 @@ WARP_DESTINATIONS = {
     'bone_bottom': ('Bone Bottom', 'bone-bottom/bone-bottom-bellway#room'),
     'bellhart': ('Bellhart', 'bellhart/belltown#lower-area'),
     'songclave': ('Songclave', 'choral-chambers/bellshrine-enclave#room'),
+    'slab': ('The Slab', 'the-slab/slab-cell#upper'),
 }
 
 
@@ -217,10 +218,11 @@ def _node_overrides(pairs, scope_name='full', content_scope='act_3', enemy_speci
             target = POOL[destinations.get(source, data['vanilla'])]
             requirements = exit_clauses(data, ports, silk_costs=silk)
             _append_requirements(clauses, endpoint_name(target, ports), requirements)
-    return {
+    result = {
         name: tuple(dict.fromkeys(_compiled_room_clause_requirement(clause) for clause in alternatives))
         for name, alternatives in clauses.items()
     }
+    return result
 
 
 def node_overrides(world, connected=False):
@@ -402,6 +404,16 @@ def _has_possible_category_order(world, category):
     return False
 
 
+def _refresh_silk_connections(placement, exits, entrances):
+    state = placement.collection_state
+    player = placement.world.player
+    added = {edge for entrance in exits for edge in getattr(entrance, '_silk_edges', ())
+             if edge.parent_region in state.reachable_regions[player]
+             and edge.connected_region not in state.reachable_regions[player]}
+    state.blocked_connections[player].update(added)
+    return bool(added)
+
+
 def _randomize_group(world, exits):
     destinations = {entrance: entrance.connected_region for entrance in exits.values()}
     incoming = {entrance.parent_region: list(entrance.parent_region.entrances) for entrance in exits.values()}
@@ -419,7 +431,7 @@ def _randomize_group(world, exits):
             world._entrance_construction_items = native_items
             try:
                 result = randomize_entrances(world, coupled=True, target_group_lookup=groups,
-                                             exits=list(exits.values()))
+                                             exits=list(exits.values()), on_connect=_refresh_silk_connections)
             finally:
                 world._entrance_construction_items = ()
             if native_items and not _has_reachable_exits(world, exits):
@@ -532,6 +544,16 @@ def _validate_fixed_start(world, exits):
         )
 
 
+def _sufficient_shuffle(world, pairs):
+    groups = {}
+    for source in pairs:
+        groups.setdefault(pairing_group(source, scope(world)), []).append(source)
+    movable = [source for group in groups.values() if len(group) > 1 for source in group]
+    changed = sum(pairs[source] != POOL[source]['vanilla'] for source in movable)
+    minimum = 50 if scope(world) == 'within_areas' else 80
+    return 100 * changed >= minimum * len(movable)
+
+
 def _repair_entrance_layout(world, exits):
     pairs = {source: POOL[source]['vanilla'] for source in exits}
     original_destinations = {entrance: entrance.connected_region for entrance in exits.values()}
@@ -544,11 +566,8 @@ def _repair_entrance_layout(world, exits):
             exits[source].connect(exits[target].parent_region)
 
     def valid():
-        if not _has_early_item_space(world) or not _has_possible_category_progression(world):
-            return False
-        state = world.multiworld.get_all_state(perform_sweep=False)
-        state.sweep_for_advancements(world.get_locations())
-        return all(entrance.can_reach(state) for entrance in exits.values())
+        return (_has_early_item_space(world) and _has_possible_category_progression(world)
+                and _has_reachable_exits(world, exits))
 
     def swap(first, second):
         changes = {first: pairs[second], second: pairs[first], pairs[first]: second, pairs[second]: first}
@@ -561,8 +580,7 @@ def _repair_entrance_layout(world, exits):
 
     groups = {}
     for source in exits:
-        key = pairing_group(source, scope(world))
-        groups.setdefault(key, []).append(source)
+        groups.setdefault(pairing_group(source, scope(world)), []).append(source)
     try:
         connect(pairs)
         if not valid():
@@ -572,22 +590,30 @@ def _repair_entrance_layout(world, exits):
             world.random.shuffle(starts)
             found = False
             for first in starts:
-                key = pairing_group(first, scope(world))
-                candidates = [source for source in groups[key] if source != first]
+                candidates = [source for source in groups[pairing_group(first, scope(world))] if source != first]
                 world.random.shuffle(candidates)
                 if any(swap(first, second) for second in candidates):
                     found = True
                     break
             if not found:
                 return None
-        candidates = [group for group in groups.values() if len(group) > 1]
-        if candidates:
-            for _ in range(min(32, 2 * len(exits))):
-                first, second = world.random.sample(world.random.choice(candidates), 2)
-                swap(first, second)
-        validate_pairs(pairs, scope(world), world.get_content_scope())
-        completed = True
-        return [(exits[source].name, exits[target].name) for source, target in pairs.items()]
+        sources = [source for key, group in groups.items() if key[-1] in {'left', 'top', 'door_in'}
+                   and len(group) > 1 for source in group]
+        for _ in range(4):
+            world.random.shuffle(sources)
+            for first in sources:
+                if pairs[first] != POOL[first]['vanilla']:
+                    continue
+                candidates = [source for source in groups[pairing_group(first, scope(world))] if source != first]
+                world.random.shuffle(candidates)
+                for second in candidates[:8]:
+                    if swap(first, second):
+                        break
+            if _sufficient_shuffle(world, pairs):
+                validate_pairs(pairs, scope(world), world.get_content_scope())
+                completed = True
+                return [(exits[source].name, exits[target].name) for source, target in pairs.items()]
+        return None
     finally:
         if not completed:
             for region, entrances in original_incoming.items():
@@ -660,7 +686,8 @@ def connect_exits(world):
         except OptionError:
             result = _repair_entrance_layout(world, exits)
             if result is None:
-                raise
+                raise OptionError('Entrance beta could not find a valid, sufficiently shuffled layout. '
+                                  'Generate with a different seed.') from None
         by_name = {entrance.name: source for source, entrance in exits.items()}
         pairs = validate_pairs({by_name[source]: by_name[target] for source, target in result}, scope(world), world.get_content_scope())
         if deferred:

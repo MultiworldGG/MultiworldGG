@@ -8,8 +8,7 @@ class RatchetSkin(Choice):
     """
     Cosmetic:
     What Skin should Ratchet have?
-    Remember to reload your save file after starting a new game to apply the skin!
-    Alternatively, go to the Armor Vendor to reload the skin.
+    If the chosen skin is missing, reload your save file without saving or go to the armor vendor.
     """
     display_name = RAC3OPTION.PLAYER_SKIN
     option_default = 0
@@ -18,7 +17,7 @@ class RatchetSkin(Choice):
     option_tuxedo = 7
     option_buginoid = 8
     option_brainius = 9
-    option_unused_robot = 10
+    option_constructo_bot = 10
     option_robo_rooster = 11
     option_trooper = 12
     option_robo = 13

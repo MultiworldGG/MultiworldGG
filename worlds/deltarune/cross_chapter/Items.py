@@ -58,6 +58,7 @@ cross_chapter_items = [
         groups=[ItemGroups.traps],
     ),
     # The rest
+    ItemData(ItemIDs.smile, ItemClassification.filler),
     ItemData(
         ItemIDs.lancer_cookie,
         ItemClassification.filler,

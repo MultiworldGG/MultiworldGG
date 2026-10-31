@@ -19,7 +19,6 @@ chapter4_locations = {
             LocationIDs.ch4_castle_town_top_chef_gift,
             group=LocationGroups.chapter4,
         ),
-        LocationData(LocationIDs.ch4_castle_town_mike_chest, group=LocationGroups.chapter4),
     ],
     Regions.ch4_dojo: [
         LocationData(
@@ -28,6 +27,11 @@ chapter4_locations = {
         ),
     ],
     Regions.ch4_mike_room: [
+        LocationData(
+            LocationIDs.ch4_castle_town_mike_chest,
+            should_be_included=include_mike_battle,
+            group=LocationGroups.chapter4,
+        ),
         LocationData(
             LocationIDs.ch4_castle_town_mike_defeat,
             should_be_included=include_mike_battle,
@@ -120,6 +124,10 @@ chapter4_locations = {
             group=LocationGroups.chapter4,
         ),
         LocationData(
+            LocationIDs.ch4_dark_sanctuary_jackenstein_gift,
+            group=LocationGroups.chapter4,
+        ),
+        LocationData(
             LocationIDs.ch4_recruit_guei,
             should_be_included=include_recruits,
             group=LocationGroups.chapter4,
@@ -167,10 +175,6 @@ chapter4_locations = {
         LocationData(LocationIDs.ch4_old_man_shop_4, group=LocationGroups.chapter4),
     ],
     Regions.ch4_dark_sanctuary_claimbclaws: [
-        LocationData(
-            LocationIDs.ch4_dark_sanctuary_jackenstein_gift,
-            group=LocationGroups.chapter4,
-        ),
         LocationData(
             LocationIDs.ch4_dark_sanctuary_climbing_tutorial_chest,
             group=LocationGroups.chapter4,

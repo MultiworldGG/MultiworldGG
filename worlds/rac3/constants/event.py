@@ -1,0 +1,195 @@
+"""This module contains constant strings for events in RaC3"""
+from worlds.rac3.constants.locations.skillpoints import RAC3SKILLPOINT
+from worlds.rac3.constants.locations.tbolts import RAC3TBOLT
+
+
+class RAC3EVENT:
+    """Event name strings"""
+    FLORANA_QWARK: tuple[str, str] = ("Florana: Qwark Fight", "Defeat Qwark")
+    FLORANA_COMPLETE: tuple[str, str] = ("Florana: Completed", "Florana Completed")
+    PHOENIX_MUSEUM: tuple[str, str] = ("Phoenix: Collect All Trophies", "Insomniac Museum Teleporter")
+    NANOTECH: tuple[str, str] = ("Nanotech: Collect Goal Requirement", "Nanotech Requirement")
+    T_BOLT: tuple[str, str] = ("Titanium Bolts: Collect Goal Requirement", "Titanium Bolt Requirement")
+    SKILLS: tuple[str, str] = ("Skillpoints: Collect Goal Requirement", "Skillpoint Requirement")
+    PLANETS: tuple[str, str] = ("Planets: Complete Goal Requirement", "Planet Requirement")
+    COMPLETION: tuple[str, str] = ("Location Count: Complete Goal Requirement", "Location Count Requirement")
+    MARCADIA_COMPLETE: tuple[str, str] = ("Marcadia: Completed", "Marcadia Completed")
+    AN_PRIZE: tuple[str, str] = ("Annihilation Nation: Win Grand Prize Bout", "Win Grand Prize Bout")
+    AN_TWO: tuple[str, str] = ("Annihilation Nation: The Terrible Two Fight", "Defeat the Terrible Two")
+    AN_SCORPIO: tuple[str, str] = ("Annihilation Nation: Scorpio Fight", "Defeat Scorpio")
+    AN_QWARK: tuple[str, str] = ("Annihilation Nation: Qwarktastic Battle", "Win Qwarktastic Battle")
+    AN_COMPLETE: tuple[str, str] = ("Annihilation Nation: Completed", "Annihilation Nation Completed")
+    SEWER: tuple[str, str] = ("Aquatos: Sewer Crystal Goal Requirement", "Sewer Crystal Requirement")
+    AQUATOS_COMPLETE: tuple[str, str] = ("Aquatos: Completed", "Aquatos Completed")
+    NOID_BOSS: tuple[str, str] = ("Tyhrranosis: Momma Tyhrranoid Fight", "Defeat Momma Tyhrranoid")
+    TYHRRANOSIS_COMPLETE: tuple[str, str] = ("Tyhrranosis: Completed", "Tyhrranosis Completed")
+    DAXX_WARSHIP: tuple[str, str] = ("Daxx: Warship Fight", "Defeat Warship")
+    DAXX_COMPLETE: tuple[str, str] = ("Daxx: Completed", "Daxx Completed")
+    OBANI_GEMINI_COMPLETE: tuple[str, str] = ("Obani Gemini: Completed", "Obani Gemini Completed")
+    BLACKWATER_CITY_COMPLETE: tuple[str, str] = ("Blackwater City: Completed", "Blackwater City Completed")
+    HOLOSTAR_TALOS: tuple[str, str] = ("Holostar: Terror of Talos Fight", "Defeat Terror of Talos")
+    HOLOSTAR_COMPLETE: tuple[str, str] = ("Holostar: Completed", "Holostar Completed")
+    DRACO_GEARS: tuple[str, str] = ("Obani Draco: Courtney Gears Fight", "Defeat Courtney Gears")
+    OBANI_DRACO_COMPLETE: tuple[str, str] = ("Obani Draco: Completed", "Obani Draco Completed")
+    ZELDRIN_STARPORT_COMPLETE: tuple[str, str] = ("Zeldrin Starport: Completed", "Zeldrin Starport Completed")
+    METROPOLIS_KLUNK: tuple[str, str] = ("Metropolis: Klunk Fight", "Defeat Klunk")
+    METROPOLIS_COMPLETE: tuple[str, str] = ("Metropolis: Completed", "Metropolis Completed")
+    CRASH_SITE_COMPLETE: tuple[str, str] = ("Crash Site: Completed", "Crash Site Completed")
+    ARIDIA_COMPLETE: tuple[str, str] = ("Aridia: Completed", "Aridia Completed")
+    HIDEOUT_QWARK: tuple[str, str] = ("Qwarks Hideout: Phoenix is under attack", "Phoenix Assault Access")
+    HIDEOUT_COMPLETE: tuple[str, str] = ("Qwarks Hideout: Completed", "Qwarks Hideout Completed")
+    KOROS_COMPLETE: tuple[str, str] = ("Koros: Completed", "Koros Completed")
+    CC_ACCESS: tuple[str, str] = ("Phoenix: All Goal Conditions", "All Goal Conditions Met")
+    COMMAND_CENTER_NEFARIOUS: tuple[str, str] = ("Command Center: Nefarious Defeated", "Nefarious Defeated")
+    COMMAND_CENTER_BIOBLITERATOR: tuple[str, str] = ("Command Center: Biobliterator Defeated", "Biobliterator Defeated")
+    VICTORY: tuple[str, str] = ("Game Goal", "Game Goaled")
+
+
+TRACKING_EVENTS: dict[str, str] = {
+    RAC3SKILLPOINT.ARIDIA_HANG_TIME: RAC3SKILLPOINT.ARIDIA_HANG_TIME.split(":")[-1],
+    RAC3SKILLPOINT.FLORANA_PATH: RAC3SKILLPOINT.FLORANA_PATH.split(":")[-1],
+    RAC3SKILLPOINT.PHOENIX_ARCADE: RAC3SKILLPOINT.PHOENIX_ARCADE.split(":")[-1],
+    RAC3SKILLPOINT.PHOENIX_VR_TRAINING: RAC3SKILLPOINT.PHOENIX_VR_TRAINING.split(":")[-1],
+    RAC3SKILLPOINT.PHOENIX_ARMOR: RAC3SKILLPOINT.PHOENIX_ARMOR.split(":")[-1],
+    RAC3SKILLPOINT.PHOENIX_MONKEY: RAC3SKILLPOINT.PHOENIX_MONKEY.split(":")[-1],
+    RAC3SKILLPOINT.MARCADIA_REFLECT: RAC3SKILLPOINT.MARCADIA_REFLECT.split(":")[-1],
+    RAC3SKILLPOINT.DAXX_BUGS: RAC3SKILLPOINT.DAXX_BUGS.split(":")[-1],
+    RAC3SKILLPOINT.NATION_BASH: RAC3SKILLPOINT.NATION_BASH.split(":")[-1],
+    RAC3SKILLPOINT.NATION_EIGHT: RAC3SKILLPOINT.NATION_EIGHT.split(":")[-1],
+    RAC3SKILLPOINT.NATION_FLEE: RAC3SKILLPOINT.NATION_FLEE.split(":")[-1],
+    RAC3SKILLPOINT.NATION_CAMERA: RAC3SKILLPOINT.NATION_CAMERA.split(":")[-1],
+    RAC3SKILLPOINT.AQUATOS_SUNKEN: RAC3SKILLPOINT.AQUATOS_SUNKEN.split(":")[-1],
+    RAC3SKILLPOINT.TYHRRANOSIS_SHARPSHOOTER: RAC3SKILLPOINT.TYHRRANOSIS_SHARPSHOOTER.split(":")[-1],
+    RAC3SKILLPOINT.GEMINI_BELT: RAC3SKILLPOINT.GEMINI_BELT.split(":")[-1],
+    RAC3SKILLPOINT.BLACKWATER_BASH: RAC3SKILLPOINT.BLACKWATER_BASH.split(":")[-1],
+    RAC3SKILLPOINT.HOLOSTAR_LUCKY: RAC3SKILLPOINT.HOLOSTAR_LUCKY.split(":")[-1],
+    RAC3SKILLPOINT.KOROS_BREAK: RAC3SKILLPOINT.KOROS_BREAK.split(":")[-1],
+    RAC3SKILLPOINT.METROPOLIS_GOOD_YEAR: RAC3SKILLPOINT.METROPOLIS_GOOD_YEAR.split(":")[-1],
+    RAC3SKILLPOINT.CRASH_SITE_SUCK: RAC3SKILLPOINT.CRASH_SITE_SUCK.split(":")[-1],
+    RAC3SKILLPOINT.CRASH_SITE_AIM_HIGH: RAC3SKILLPOINT.CRASH_SITE_AIM_HIGH.split(":")[-1],
+    RAC3SKILLPOINT.ARIDIA_ZAP: RAC3SKILLPOINT.ARIDIA_ZAP.split(":")[-1],
+    RAC3SKILLPOINT.HIDEOUT_DAN: RAC3SKILLPOINT.HIDEOUT_DAN.split(":")[-1],
+    RAC3SKILLPOINT.COMMAND_CENTER_GERMS: RAC3SKILLPOINT.COMMAND_CENTER_GERMS.split(":")[-1],
+    RAC3SKILLPOINT.SEWER_MOTHERLOAD: RAC3SKILLPOINT.SEWER_MOTHERLOAD.split(":")[-1],
+    RAC3SKILLPOINT.PHOENIX_COMIC_1: RAC3SKILLPOINT.PHOENIX_COMIC_1.split(":")[-1],
+    RAC3SKILLPOINT.PHOENIX_COMIC_4: RAC3SKILLPOINT.PHOENIX_COMIC_4.split(":")[-1],
+    RAC3SKILLPOINT.PHOENIX_COMIC_2: RAC3SKILLPOINT.PHOENIX_COMIC_2.split(":")[-1],
+    RAC3SKILLPOINT.PHOENIX_COMIC_3: RAC3SKILLPOINT.PHOENIX_COMIC_3.split(":")[-1],
+    RAC3SKILLPOINT.PHOENIX_COMIC_5: RAC3SKILLPOINT.PHOENIX_COMIC_5.split(":")[-1],
+
+    RAC3TBOLT.FLORANA_BELOW_VENDOR: RAC3TBOLT.FLORANA_BELOW_VENDOR.split(":")[-1],
+    RAC3TBOLT.FLORANA_PATH_OF_DEATH: RAC3TBOLT.FLORANA_PATH_OF_DEATH.split(":")[-1],
+    RAC3TBOLT.PHOENIX_VR_TRAINING: RAC3TBOLT.PHOENIX_VR_TRAINING.split(":")[-1],
+    RAC3TBOLT.PHOENIX_VR_NERVES: RAC3TBOLT.PHOENIX_VR_NERVES.split(":")[-1],
+    RAC3TBOLT.PHOENIX_VID_COMIC_1: RAC3TBOLT.PHOENIX_VID_COMIC_1.split(":")[-1],
+    RAC3TBOLT.PHOENIX_VID_COMIC_2: RAC3TBOLT.PHOENIX_VID_COMIC_2.split(":")[-1],
+    RAC3TBOLT.PHOENIX_VID_COMIC_3: RAC3TBOLT.PHOENIX_VID_COMIC_3.split(":")[-1],
+    RAC3TBOLT.PHOENIX_VID_COMIC_4: RAC3TBOLT.PHOENIX_VID_COMIC_4.split(":")[-1],
+    RAC3TBOLT.PHOENIX_VID_COMIC_5: RAC3TBOLT.PHOENIX_VID_COMIC_5.split(":")[-1],
+    RAC3TBOLT.MARCADIA_POOL: RAC3TBOLT.MARCADIA_POOL.split(":")[-1],
+    RAC3TBOLT.MARCADIA_LAST_REFRACTOR: RAC3TBOLT.MARCADIA_LAST_REFRACTOR.split(":")[-1],
+    RAC3TBOLT.MARCADIA_BEFORE_AL: RAC3TBOLT.MARCADIA_BEFORE_AL.split(":")[-1],
+    RAC3TBOLT.NATION_CLIFF: RAC3TBOLT.NATION_CLIFF.split(":")[-1],
+    RAC3TBOLT.NATION_PLATFORM: RAC3TBOLT.NATION_PLATFORM.split(":")[-1],
+    RAC3TBOLT.AQUATOS_BRIDGE: RAC3TBOLT.AQUATOS_BRIDGE.split(":")[-1],
+    RAC3TBOLT.AQUATOS_UNDERWATER: RAC3TBOLT.AQUATOS_UNDERWATER.split(":")[-1],
+    RAC3TBOLT.AQUATOS_GATE: RAC3TBOLT.AQUATOS_GATE.split(":")[-1],
+    RAC3TBOLT.SEWER_PIPE: RAC3TBOLT.SEWER_PIPE.split(":")[-1],
+    RAC3TBOLT.SEWER_SWING: RAC3TBOLT.SEWER_SWING.split(":")[-1],
+    RAC3TBOLT.TYHRRANOSIS_CANNON: RAC3TBOLT.TYHRRANOSIS_CANNON.split(":")[-1],
+    RAC3TBOLT.TYHRRANOSIS_CAVE: RAC3TBOLT.TYHRRANOSIS_CAVE.split(":")[-1],
+    RAC3TBOLT.DAXX_TAXI: RAC3TBOLT.DAXX_TAXI.split(":")[-1],
+    RAC3TBOLT.DAXX_DOOR: RAC3TBOLT.DAXX_DOOR.split(":")[-1],
+    RAC3TBOLT.OBANI_GEMINI_1: RAC3TBOLT.OBANI_GEMINI_1.split(":")[-1],
+    RAC3TBOLT.OBANI_GEMINI_2: RAC3TBOLT.OBANI_GEMINI_2.split(":")[-1],
+    RAC3TBOLT.HOLOSTAR_CHAIRS: RAC3TBOLT.HOLOSTAR_CHAIRS.split(":")[-1],
+    RAC3TBOLT.HOLOSTAR_GRAV_RAMP: RAC3TBOLT.HOLOSTAR_GRAV_RAMP.split(":")[-1],
+    RAC3TBOLT.HOLOSTAR_KAMIKAZE_NOIDS: RAC3TBOLT.HOLOSTAR_KAMIKAZE_NOIDS.split(":")[-1],
+    RAC3TBOLT.ZELDRIN_STARPORT_1: RAC3TBOLT.ZELDRIN_STARPORT_1.split(":")[-1],
+    RAC3TBOLT.ZELDRIN_STARPORT_2: RAC3TBOLT.ZELDRIN_STARPORT_2.split(":")[-1],
+    RAC3TBOLT.METROPOLIS_SWING: RAC3TBOLT.METROPOLIS_SWING.split(":")[-1],
+    RAC3TBOLT.METROPOLIS_BEHIND: RAC3TBOLT.METROPOLIS_BEHIND.split(":")[-1],
+    RAC3TBOLT.METROPOLIS_RANGERS: RAC3TBOLT.METROPOLIS_RANGERS.split(":")[-1],
+    RAC3TBOLT.CRASH_SITE: RAC3TBOLT.CRASH_SITE.split(":")[-1],
+    RAC3TBOLT.ARIDIA_BRIDGE: RAC3TBOLT.ARIDIA_BRIDGE.split(":")[-1],
+    RAC3TBOLT.ARIDIA_BASE: RAC3TBOLT.ARIDIA_BASE.split(":")[-1],
+    RAC3TBOLT.HIDEOUT: RAC3TBOLT.HIDEOUT.split(":")[-1],
+    RAC3TBOLT.KOROS_FENCE: RAC3TBOLT.KOROS_FENCE.split(":")[-1],
+    RAC3TBOLT.KOROS_GLASS: RAC3TBOLT.KOROS_GLASS.split(":")[-1],
+    RAC3TBOLT.COMMAND_CENTER: RAC3TBOLT.COMMAND_CENTER.split(":")[-1],
+}
+
+BASE_PLANETS: list[str] = [
+    RAC3EVENT.FLORANA_COMPLETE[1],
+    RAC3EVENT.AQUATOS_COMPLETE[1],
+    RAC3EVENT.TYHRRANOSIS_COMPLETE[1],
+    RAC3EVENT.DAXX_COMPLETE[1],
+    RAC3EVENT.OBANI_GEMINI_COMPLETE[1],
+    RAC3EVENT.HOLOSTAR_COMPLETE[1],
+    RAC3EVENT.OBANI_DRACO_COMPLETE[1],
+    RAC3EVENT.ZELDRIN_STARPORT_COMPLETE[1],
+    RAC3EVENT.METROPOLIS_COMPLETE[1],
+    RAC3EVENT.CRASH_SITE_COMPLETE[1],
+    RAC3EVENT.HIDEOUT_COMPLETE[1],
+    RAC3EVENT.KOROS_COMPLETE[1],
+]
+
+ALL_PLANETS: list[str] = [
+    RAC3EVENT.FLORANA_COMPLETE[1],
+    RAC3EVENT.MARCADIA_COMPLETE[1],
+    RAC3EVENT.AN_COMPLETE[1],
+    RAC3EVENT.AQUATOS_COMPLETE[1],
+    RAC3EVENT.TYHRRANOSIS_COMPLETE[1],
+    RAC3EVENT.DAXX_COMPLETE[1],
+    RAC3EVENT.OBANI_GEMINI_COMPLETE[1],
+    RAC3EVENT.BLACKWATER_CITY_COMPLETE[1],
+    RAC3EVENT.HOLOSTAR_COMPLETE[1],
+    RAC3EVENT.OBANI_DRACO_COMPLETE[1],
+    RAC3EVENT.ZELDRIN_STARPORT_COMPLETE[1],
+    RAC3EVENT.METROPOLIS_COMPLETE[1],
+    RAC3EVENT.CRASH_SITE_COMPLETE[1],
+    RAC3EVENT.ARIDIA_COMPLETE[1],
+    RAC3EVENT.HIDEOUT_COMPLETE[1],
+    RAC3EVENT.KOROS_COMPLETE[1],
+]
+
+ALL_GOALS: list[str] = [
+    RAC3EVENT.FLORANA_QWARK[0],
+    RAC3EVENT.FLORANA_COMPLETE[0],
+    RAC3EVENT.PHOENIX_MUSEUM[0],
+    RAC3EVENT.NANOTECH[0],
+    RAC3EVENT.T_BOLT[0],
+    RAC3EVENT.SKILLS[0],
+    RAC3EVENT.PLANETS[0],
+    RAC3EVENT.COMPLETION[0],
+    RAC3EVENT.MARCADIA_COMPLETE[0],
+    RAC3EVENT.AN_PRIZE[0],
+    RAC3EVENT.AN_TWO[0],
+    RAC3EVENT.AN_SCORPIO[0],
+    RAC3EVENT.AN_QWARK[0],
+    RAC3EVENT.AN_COMPLETE[0],
+    RAC3EVENT.SEWER[0],
+    RAC3EVENT.AQUATOS_COMPLETE[0],
+    RAC3EVENT.NOID_BOSS[0],
+    RAC3EVENT.TYHRRANOSIS_COMPLETE[0],
+    RAC3EVENT.DAXX_WARSHIP[0],
+    RAC3EVENT.DAXX_COMPLETE[0],
+    RAC3EVENT.OBANI_GEMINI_COMPLETE[0],
+    RAC3EVENT.BLACKWATER_CITY_COMPLETE[0],
+    RAC3EVENT.HOLOSTAR_TALOS[0],
+    RAC3EVENT.HOLOSTAR_COMPLETE[0],
+    RAC3EVENT.DRACO_GEARS[0],
+    RAC3EVENT.OBANI_DRACO_COMPLETE[0],
+    RAC3EVENT.ZELDRIN_STARPORT_COMPLETE[0],
+    RAC3EVENT.METROPOLIS_KLUNK[0],
+    RAC3EVENT.METROPOLIS_COMPLETE[0],
+    RAC3EVENT.CRASH_SITE_COMPLETE[0],
+    RAC3EVENT.ARIDIA_COMPLETE[0],
+    RAC3EVENT.HIDEOUT_QWARK[0],
+    RAC3EVENT.HIDEOUT_COMPLETE[0],
+    RAC3EVENT.KOROS_COMPLETE[0],
+    RAC3EVENT.CC_ACCESS[0],
+    RAC3EVENT.COMMAND_CENTER_NEFARIOUS[0],
+    RAC3EVENT.COMMAND_CENTER_BIOBLITERATOR[0],
+    RAC3EVENT.VICTORY[0],
+]

@@ -3,6 +3,8 @@
 ## Required Software
 - A [Steam](https://store.steampowered.com/app/2011780/Yellow_Taxi_Goes_Vroom/) or [GOG](https://www.gog.com/en/game/yellow_taxi_goes_vroom) PC copy of Yellow Taxi Goes Vroom
 - The [latest mod](https://github.com/soopercool101/YellowTaxiAP/releases/latest)
+
+## Optional/Recommended Software
 - [MultiworldGG](https://github.com/MultiworldGG/MultiworldGG/releases/latest)
 - [Universal Tracker](https://github.com/FarisTheAncient/Archipelago/releases?q=Tracker) (ships with AP)
 

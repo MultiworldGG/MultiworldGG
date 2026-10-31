@@ -130,12 +130,14 @@
     "connections": {
       "Mosk's Rocket - Flushed Away Area": "",
       "Mosk's Rocket - Coins Leading to Final Floor": "J1 | X1+B2",
-      "Mosk's Rocket - Tosla HQ Area": "J2",
+      "Mosk's Rocket - Tosla HQ Area": "J2 | X2+J1",
       "Mosk's Rocket - Golden Propeller": "GP"
     },
     "subwarps": {
       "Mosk's Rocket - Heroic Moves Portal": ["Heroic Moves - Starting Area", "J1/B1/GP & Bunny-MC"],
-      "Mosk's Rocket - Conveyor Belts Portal": ["Conveyor Belts - Starting Area", "Bunny-CTI"]
+      "Mosk's Rocket - Conveyor Belts Portal": ["Conveyor Belts - Starting Area", "Bunny-CTI"],
+      "Mosk's Rocket - Eye Surgery Portal": ["Eye Surgery - Starting Area", "Bunny-MM"],
+      "Mosk's Rocket - Mid Air Portal": ["Mid Air - Starting Area", "J1/B1/GP & Bunny-RO"]
     }
   },
   "Mosk's Rocket - Golden Propeller": {
@@ -149,12 +151,15 @@
       "Buttons Smashing - Hat Platform": "X2+NSAR & {Buttons Smashing - Starting Area}",
       "Stealthy - Halfway Up": "X1+NSAR & {Stealthy - Starting Area}",
       "Podium - First Gear Pillar": "X1+NSAR & {Podium - Starting Area}",
-      "Costipation - Hat Area": "X1+NSAR & {Costipation - Starting Area}",
-      "Costipation - Roadway Gear Area": "X1+NSAR & {Costipation - Starting Area}",
-      "Costipation - Island Gear Area": "X1+NSAR & {Costipation - Starting Area}",
+      "Costipation - Hat Area": "X2+NSAR & {Costipation - Starting Area}",
+      "Costipation - Roadway Gear Area": "X2+NSAR & {Costipation - Starting Area}",
+      "Costipation - Island Gear Area": "X2+NSAR & {Costipation - Starting Area}",
       "Heroic Moves - Building": "X1+NSAR & {Heroic Moves - Starting Area}",
+      "Heroic Moves - Banana Hat Beam": "X1+NSAR & {Heroic Moves - Starting Area}",
       "Conveyor Belts - Platform Above Starting Area": "NSAR & {Conveyor Belts - Starting Area}",
-      "Conveyor Belts - Ducts Above Starting Area": "NSAR & {Conveyor Belts - Starting Area}"
+      "Conveyor Belts - Ducts Above Starting Area": "NSAR & {Conveyor Belts - Starting Area}",
+      "Eye Surgery - Second Gear Area": "X1+NSAR & {Eye Surgery - Starting Area}",
+      "Mid Air - First Tower": "X1+NSAR & {Mid Air - Starting Area}"
     }
   },
   "Mosk's Rocket - Coins Leading to Final Floor": {
@@ -183,6 +188,9 @@
       "Mosk's Rocket - Coins Leading to Final Floor": "",
       "Mosk's Rocket - Final Floor Cheese": "B1/J2 | X1+J1"
     },
+    "subwarps": {
+      "Mosk's Rocket - Infiltration Portal": ["Infiltration - Starting Area", "Bunny-HQ"]
+    },
     "specialrules": {
       "Mosk's Rocket - Coin Bag on Steps to Final Floor": "J1/GP"
     }
@@ -205,6 +213,9 @@
     "kaizolevel": "Mosk's Rocket",
     "connections": {
       "Mosk's Rocket - Final Floor Cheese": ""
+    },
+    "subwarps": {
+      "Mosk's Rocket - Far Far Away Portal": ["Far Far Away - Starting Area", "Bunny-TM"]
     }
   },
   "Lab Memories - Starting Area": {
@@ -590,7 +601,7 @@
       "Alien Mosk (Good) Hat": 160700037
     },
     "specialrules": {
-      "Stealthy - Gear - Shortcut Back Down": "GS/X1"
+      "Stealthy - Gear - Shortcut Back Down": "NGS/X1/GS"
     }
   },
   "Podium - Starting Area": {
@@ -737,7 +748,7 @@
     },
     "connections": {
       "Smelly Slimes - Sidebars by Entrance": "X2/J1/B1",
-      "Smelly Slimes - Hat Area": "J1 | X2+B2",
+      "Smelly Slimes - Hat Area": "J1 | X2+B2 | X3+B1",
       "Smelly Slimes - Exit Area": "B1+J1 | X3 & B1/J1"
     },
     "subwarps": {
@@ -828,7 +839,8 @@
       "Heroic Moves - Checkpoint": 160901130
     },
     "connections": {
-      "Heroic Moves - Building": "X3/J1/B1"
+      "Heroic Moves - Building": "X3/J1/B1",
+      "Heroic Moves - Banana Hat Beam": "J1/B1"
     },
     "subwarps": {
       "Heroic Moves - Mosk's Rocket Portal": ["Mosk's Rocket - Maurizio's City/Crash Test Industries/Morio's Mind Area", ""]
@@ -880,6 +892,14 @@
     },
     "moriotrons": {
       "Heroic Moves - Mori-O-Tron": "Heroic Moves - Starting Area"
+    }
+  },
+  "Heroic Moves - Banana Hat Beam": {
+    "level": "Mosk's Rocket",
+    "sublevel": "Heroic Moves",
+    "kaizolevel": "Maurizio's City",
+    "hats": {
+      "Banana Hat": 160700042
     }
   },
   "Conveyor Belts - Starting Area": {
@@ -988,6 +1008,292 @@
       "Conveyor Belts - Coin at End of Upper Path #10": 160300194,
       "Conveyor Belts - Coin at End of Upper Path #11": 160300189,
       "Conveyor Belts - Coin at End of Upper Path #12": 160300184
+    }
+  },
+  "Eye Surgery - Starting Area": {
+    "level": "Mosk's Rocket",
+    "sublevel": "Eye Surgery",
+    "kaizolevel": "Morio's Mind",
+    "chests": {
+      "Eye Surgery - Chest Near Entrance Portal #1": 160300092,
+      "Eye Surgery - Chest Near Entrance Portal #2": 160300091
+    },
+    "coinbags": {
+      "Eye Surgery - Coin Bag Near Entrance Portal #1": 160300090,
+      "Eye Surgery - Coin Bag Near Entrance Portal #2": 160300089
+    },
+    "coins": {
+      "Eye Surgery - Coin Near Entrance Portal #1": 160300086,
+      "Eye Surgery - Coin Near Entrance Portal #2": 160300085,
+      "Eye Surgery - Coin Near Entrance Portal #3": 160300088,
+      "Eye Surgery - Coin Near Entrance Portal #4": 160300087
+    },
+    "checkpoints": {
+      "Eye Surgery - Checkpoint": 160900477
+    },
+    "connections": {
+      "Eye Surgery - First Gear Area": "X1/J1",
+      "Eye Surgery - Second Gear Area": "X2/J1"
+    },
+    "subwarps": {
+      "Eye Surgery - Mosk's Rocket Portal Near Start": ["Mosk's Rocket - Maurizio's City/Crash Test Industries/Morio's Mind Area", ""]
+    }
+  },
+  "Eye Surgery - First Gear Area": {
+    "level": "Mosk's Rocket",
+    "sublevel": "Eye Surgery",
+    "kaizolevel": "Morio's Mind",
+    "gears": {
+      "Eye Surgery - Gear - Back Corner": 160100022
+    },
+    "coinbags": {
+      "Eye Surgery - Coin Bag Surrounding Gear in Back Corner #1": 160300075,
+      "Eye Surgery - Coin Bag Surrounding Gear in Back Corner #2": 160300081,
+      "Eye Surgery - Coin Bag Surrounding Gear in Back Corner #3": 160300077,
+      "Eye Surgery - Coin Bag Surrounding Gear in Back Corner #4": 160300083
+    },
+    "coins": {
+      "Eye Surgery - Coin Surrounding Gear in Back Corner #1": 160300078,
+      "Eye Surgery - Coin Surrounding Gear in Back Corner #2": 160300076,
+      "Eye Surgery - Coin Surrounding Gear in Back Corner #3": 160300082,
+      "Eye Surgery - Coin Surrounding Gear in Back Corner #4": 160300080
+    }
+  },
+  "Eye Surgery - Second Gear Area": {
+    "level": "Mosk's Rocket",
+    "sublevel": "Eye Surgery",
+    "kaizolevel": "Morio's Mind",
+    "gears": {
+      "Eye Surgery - Gear - On Clouds": 160100023
+    },
+    "hats": {
+      "Inception Top Hat": 160700044
+    },
+    "subwarps": {
+      "Eye Surgery - Mosk's Rocket Portal Near End": ["Mosk's Rocket - Maurizio's City/Crash Test Industries/Morio's Mind Area", ""]
+    }
+  },
+  "Mid Air - Starting Area": {
+    "level": "Mosk's Rocket",
+    "sublevel": "Mid Air",
+    "kaizolevel": "Ruined Observatory",
+    "checkpoints": {
+      "Mid Air - Checkpoint": 160900030
+    },
+    "connections": {
+      "Mid Air - First Tower": "B1"
+    },
+    "subwarps": {
+      "Mid Air - Mosk's Rocket Portal Near Start": ["Mosk's Rocket - Maurizio's City/Crash Test Industries/Morio's Mind Area", ""]
+    }
+  },
+  "Mid Air - First Tower": {
+    "level": "Mosk's Rocket",
+    "sublevel": "Mid Air",
+    "kaizolevel": "Ruined Observatory",
+    "gears": {
+      "Mid Air - Gear - On Tallest Tower": 160100024
+    },
+    "coinbags": {
+      "Mid Air - Coin Bag on First Tower #1": 160300229,
+      "Mid Air - Coin Bag on First Tower #2": 160300240,
+      "Mid Air - Coin Bag on First Tower #3": 160300244,
+      "Mid Air - Coin Bag on First Tower #4": 160300233
+    },
+    "coins": {
+      "Mid Air - Coin on First Tower #1": 160300234,
+      "Mid Air - Coin on First Tower #2": 160300236,
+      "Mid Air - Coin on First Tower #3": 160300238,
+      "Mid Air - Coin on First Tower #4": 160300241,
+      "Mid Air - Coin on First Tower #5": 160300242,
+      "Mid Air - Coin on First Tower #6": 160300243,
+      "Mid Air - Coin on First Tower #7": 160300239,
+      "Mid Air - Coin on First Tower #8": 160300237,
+      "Mid Air - Coin on First Tower #9": 160300235,
+      "Mid Air - Coin on First Tower #10": 160300232,
+      "Mid Air - Coin on First Tower #11": 160300231,
+      "Mid Air - Coin on First Tower #12": 160300230
+    },
+    "connections": {
+      "Mid Air - Upper Area": "B2 & X1/J1/GP | X2+B1"
+    },
+    "specialrules": {
+      "Mid Air - Gear - On Tallest Tower": "B1 & X1/J1"
+    }
+  },
+  "Mid Air - Upper Area": {
+    "level": "Mosk's Rocket",
+    "sublevel": "Mid Air",
+    "kaizolevel": "Ruined Observatory",
+    "gears": {
+      "Mid Air - Gear - On Falling Platforms": 160100025
+    },
+    "hats": {
+      "Satellite Dish Hat": 160700036
+    }
+  },
+  "Infiltration - Starting Area": {
+    "level": "Mosk's Rocket",
+    "sublevel": "Infiltration",
+    "kaizolevel": "Tosla HQ",
+    "checkpoints": {
+      "Infiltration - Checkpoint": 160900300
+    },
+    "connections": {
+      "Infiltration - Middle Layer": "X1/B1/J1",
+      "Infiltration - Upper Layer": "X1+J1"
+    },
+    "subwarps": {
+      "Infiltration - Mosk's Rocket Portal Near Start": ["Mosk's Rocket - Tosla HQ Area", ""]
+    }
+  },
+  "Infiltration - Middle Layer": {
+    "level": "Mosk's Rocket",
+    "sublevel": "Infiltration",
+    "kaizolevel": "Tosla HQ",
+    "coinbags": {
+      "Infiltration - Coin Bag in Middle Section #1": 160300387,
+      "Infiltration - Coin Bag in Middle Section #2": 160300398,
+      "Infiltration - Coin Bag in Middle Section #3": 160300394
+    },
+    "coins": {
+      "Infiltration - Coin in Middle Section #1": 160300389,
+      "Infiltration - Coin in Middle Section #2": 160300392,
+      "Infiltration - Coin in Middle Section #3": 160300395,
+      "Infiltration - Coin in Middle Section #4": 160300390,
+      "Infiltration - Coin in Middle Section #5": 160300393,
+      "Infiltration - Coin in Middle Section #6": 160300396,
+      "Infiltration - Coin in Middle Section #7": 160300388,
+      "Infiltration - Coin in Middle Section #8": 160300391,
+      "Infiltration - Coin in Middle Section #9": 160300397,
+      "Infiltration - Coin in Middle Section #10": 160300399
+    },
+    "connections": {
+      "Infiltration - Lower Layer": "X1/B1",
+      "Infiltration - Upper Layer": "B1+J2"
+    }
+  },
+  "Infiltration - Upper Layer": {
+    "level": "Mosk's Rocket",
+    "sublevel": "Infiltration",
+    "kaizolevel": "Tosla HQ",
+    "gears": {
+      "Infiltration - Gear - Upper Section": 160100026
+    },
+    "coinbags": {
+      "Infiltration - Coin Bag Surrounding Upper Gear #1": 160300422,
+      "Infiltration - Coin Bag Surrounding Upper Gear #2": 160300417,
+      "Infiltration - Coin Bag Surrounding Upper Gear #3": 160300419,
+      "Infiltration - Coin Bag Surrounding Upper Gear #4": 160300414
+    },
+    "coins": {
+      "Infiltration - Coin Surrounding Upper Gear #1": 160300424,
+      "Infiltration - Coin Surrounding Upper Gear #2": 160300425,
+      "Infiltration - Coin Surrounding Upper Gear #3": 160300420,
+      "Infiltration - Coin Surrounding Upper Gear #4": 160300421,
+      "Infiltration - Coin Surrounding Upper Gear #5": 160300423,
+      "Infiltration - Coin Surrounding Upper Gear #6": 160300413,
+      "Infiltration - Coin Surrounding Upper Gear #7": 160300415,
+      "Infiltration - Coin Surrounding Upper Gear #8": 160300416,
+      "Infiltration - Coin Surrounding Upper Gear #9": 160300411,
+      "Infiltration - Coin Surrounding Upper Gear #10": 160300412
+    }
+  },
+  "Infiltration - Lower Layer": {
+    "level": "Mosk's Rocket",
+    "sublevel": "Infiltration",
+    "kaizolevel": "Tosla HQ",
+    "gears": {
+      "Infiltration - Gear - Lower Section": 160100027
+    },
+    "hats": {
+      "Pod Hat": 160700047
+    },
+    "subwarps": {
+      "Infiltration - Mosk's Rocket Portal on Lowest Level": ["Mosk's Rocket - Tosla HQ Area", "J1"]
+    }
+  },
+  "Far Far Away - Starting Area": {
+    "level": "Mosk's Rocket",
+    "sublevel": "Far Far Away",
+    "kaizolevel": "The Moon",
+    "checkpoints": {
+      "Far Far Away - Checkpoint": 160900775
+    },
+    "connections": {
+      "Far Far Away - Gear Areas": "X2/B1 & J1 | X1+J2"
+    },
+    "subwarps": {
+      "Far Far Away - Mosk's Rocket Portal Near Start": ["Mosk's Rocket - Moon Area", ""]
+    }
+  },
+  "Far Far Away - Gear Areas": {
+    "level": "Mosk's Rocket",
+    "sublevel": "Far Far Away",
+    "kaizolevel": "The Moon",
+    "gears": {
+      "Far Far Away - Gear - First Gear": 160100029,
+      "Far Far Away - Gear - Second Gear": 160100028
+    },
+    "chests": {
+      "Far Far Away - Chest Surrounding First Gear #1": 160300139,
+      "Far Far Away - Chest Surrounding First Gear #2": 160300132,
+      "Far Far Away - Chest Surrounding First Gear #3": 160300150,
+      "Far Far Away - Chest Surrounding First Gear #4": 160300143
+    },
+    "coinbags": {
+      "Far Far Away - Coin Bag Surrounding First Gear #1": 160300135,
+      "Far Far Away - Coin Bag Surrounding First Gear #2": 160300145,
+      "Far Far Away - Coin Bag Surrounding First Gear #3": 160300137,
+      "Far Far Away - Coin Bag Surrounding First Gear #4": 160300147,
+      "Far Far Away - Coin Bag Surrounding Second Gear #1": 160300040,
+      "Far Far Away - Coin Bag Surrounding Second Gear #2": 160300036,
+      "Far Far Away - Coin Bag Surrounding Second Gear #3": 160300046,
+      "Far Far Away - Coin Bag Surrounding Second Gear #4": 160300042
+    },
+    "coins": {
+      "Far Far Away - Coin Surrounding First Gear #1": 160300134,
+      "Far Far Away - Coin Surrounding First Gear #2": 160300144,
+      "Far Far Away - Coin Surrounding First Gear #3": 160300131,
+      "Far Far Away - Coin Surrounding First Gear #4": 160300140,
+      "Far Far Away - Coin Surrounding First Gear #5": 160300149,
+      "Far Far Away - Coin Surrounding First Gear #6": 160300136,
+      "Far Far Away - Coin Surrounding First Gear #7": 160300146,
+      "Far Far Away - Coin Surrounding First Gear #8": 160300133,
+      "Far Far Away - Coin Surrounding First Gear #9": 160300142,
+      "Far Far Away - Coin Surrounding First Gear #10": 160300151,
+      "Far Far Away - Coin Surrounding First Gear #11": 160300138,
+      "Far Far Away - Coin Surrounding First Gear #12": 160300148,
+      "Far Far Away - Coin Surrounding Second Gear #1": 160300034,
+      "Far Far Away - Coin Surrounding Second Gear #2": 160300039,
+      "Far Far Away - Coin Surrounding Second Gear #3": 160300044,
+      "Far Far Away - Coin Surrounding Second Gear #4": 160300031,
+      "Far Far Away - Coin Surrounding Second Gear #5": 160300035,
+      "Far Far Away - Coin Surrounding Second Gear #6": 160300045,
+      "Far Far Away - Coin Surrounding Second Gear #7": 160300049,
+      "Far Far Away - Coin Surrounding Second Gear #8": 160300032,
+      "Far Far Away - Coin Surrounding Second Gear #9": 160300050,
+      "Far Far Away - Coin Surrounding Second Gear #10": 160300033,
+      "Far Far Away - Coin Surrounding Second Gear #11": 160300037,
+      "Far Far Away - Coin Surrounding Second Gear #12": 160300047,
+      "Far Far Away - Coin Surrounding Second Gear #13": 160300051,
+      "Far Far Away - Coin Surrounding Second Gear #14": 160300038,
+      "Far Far Away - Coin Surrounding Second Gear #15": 160300043,
+      "Far Far Away - Coin Surrounding Second Gear #16": 160300048
+    },
+    "connections": {
+      "Far Far Away - Hat Pillar": "J2 | X2+J1"
+    },
+    "subwarps": {
+      "Far Far Away - Mosk's Rocket Portal Between Gears": ["Mosk's Rocket - Moon Area", ""]
+    }
+  },
+  "Far Far Away - Hat Pillar": {
+    "level": "Mosk's Rocket",
+    "sublevel": "Far Far Away",
+    "kaizolevel": "The Moon",
+    "hats": {
+      "Bunny Hat": 160700043
     }
   }
 }

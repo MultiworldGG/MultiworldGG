@@ -19,9 +19,9 @@ Other notable locations include:
 
 ## When the player receives an item, what happens?
 
-When the player receives an item in DELTARUNE, it will go into their inventory if they have space.
+When the player receives an item in DELTARUNE, it will go into their inventory if they have space. All items have been backported to previous chapters.
 
-If you're in the wrong chapter for a specific item, it'll be sent to you as soon as you go to that chapter. Returning to the chapter select and going in-between chapters is something that'll  a lot.
+If you're in the wrong chapter for a key item, it'll be sent to you as soon as you go to that chapter. Returning to the chapter select and going in-between chapters is something that'll  a lot.
 
 Currently if you have no space left, the item is discarded, which is a bug that will be fixed soon. Luckily, this is very unlikely to happen, as you now have 192 storage, 48 weapon, and 60 armor slots in every chapter, which is more than you'll reasonably need.
 
@@ -136,6 +136,6 @@ The following commands are only available when using the DELTARUNE Client to pla
 - `/resync` Manually trigger a resync.
 - `/auto_patch` Patch the game automatically.
 - `/patch` Patch the game. Only use this command if `/auto_patch` fails.
-- `/linux_proxy` Use this if you're a linux user to create a proxy between the MultiworldGG Server and your game.
+- `/linux_proxy` Use this to create a proxy between the MultiworldGG Server and your game.
 - `/delete_saves` Delete all archipelago saves and caches.
 - `/inspect_datastore` Inspect the contents of your datastore.

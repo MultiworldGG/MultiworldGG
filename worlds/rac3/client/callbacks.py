@@ -196,7 +196,6 @@ async def _handle_game_ready(ctx: "Context") -> None:
             ctx.game_interface.setup_settings()
             logger.info("Checking cosmetics...")
             ctx.game_interface.add_cosmetics()
-            logger.info("Load the latest autosave or enter the Armor Vendor to apply cosmetics")
             logger.info("Setting up codecave...")
             ctx.code_cave_setup = False
             await handle_codecave(ctx)
@@ -396,11 +395,9 @@ async def handle_deathlink(ctx: "Context") -> None:
 async def handle_check_goal(ctx: "Context") -> None:
     """Checks if the goal is completed
     :param ctx: RAC3 context class"""
-    if ctx.slot_data is None or ctx.slot is None:
+    if ctx.slot_data is None or ctx.slot is None or ctx.finished_game:
         return
-
-    victory_code = ctx.game_interface.get_victory_code()
-    if victory_code in ctx.checked_locations and not ctx.finished_game:
+    if ctx.game_interface.check_victory(ctx.server_locations):
         ctx.finished_game = True
         await ctx.send_msgs([ClientMessage.status_update(ClientStatus.CLIENT_GOAL)])
 
@@ -484,9 +481,7 @@ async def handle_vendors(ctx: "Context") -> None:
     if vendor_location_apcodes:
         current_hints = set(vendor_location_apcodes)
         if current_hints and not current_hints.issubset(ctx.already_hinted):
-            await ctx.send_msgs([
-                {"cmd": "CreateHints", "locations": vendor_location_apcodes, "player": ctx.slot}
-            ])
+            await ctx.send_msgs([{"cmd": "CreateHints", "locations": vendor_location_apcodes, "player": ctx.slot}])
             ctx.already_hinted.update(current_hints)
 
 

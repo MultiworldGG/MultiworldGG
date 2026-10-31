@@ -5,6 +5,7 @@ from ..data.Locations import *
 from ..data.Constants import *
 from typing import TYPE_CHECKING
 from .. import OraclesMasterKeys
+from ..Options import *
 from Options import OptionError
 from .CreationRegions import location_is_active
 
@@ -87,28 +88,31 @@ def build_item_pool_dict(world: OracleOfAgesWorld):
         else:
             # Take from filler after
             filler_item_count -= 1
-
-    # Add as many filler items as required
-    for _ in range(filler_item_count):
-        random_filler_item = ooa_get_filler_item_name(world)
-        item_pool_dict[random_filler_item] = item_pool_dict.get(random_filler_item, 0) + 1
     
     # Perform adjustments on the item pool
     item_pool_adjustements = [
         ["Flute", world.options.animal_companion.current_key.title() + "'s Flute"],  # Put a specific flute
-        ["Gasha Seed", "Seed Satchel"],             # Add a 3rd satchel that is usually obtained in linked games (99 seeds)
-        ["Gasha Seed", "Bombs (10)"],               # Add one more bomb compared to vanilla to reach 99 max bombs
-        ["Gasha Seed", "Potion"],                   # Replace some Gasha Seed by 2 potions.
-        ["Gasha Seed", "Potion"],                   # ^
-        ["Gasha Seed", "Rupees (200)"],              # and one by rupees
-        ["Gasha Seed", "Progressive Sword"],        # Need an additionnal sword to go to L3
+        ["Filler Item", "Seed Satchel"],             # Add a 3rd satchel that is usually obtained in linked games (99 seeds)
+        ["Filler Item", "Bombs (10)"],               # Add one more bomb compared to vanilla to reach 99 max bombs
+        ["Filler Item", "Potion"],                   # Replace some Gasha Seed by 2 potions.
+        ["Filler Item", "Potion"],                   # ^
+        ["Filler Item", "Rupees (200)"],              # and one by rupees
+        ["Filler Item", "Progressive Sword"],        # Need an additionnal sword to go to L3
     ]
 
     for i, pair in enumerate(item_pool_adjustements):
         original_name = pair[0]
         replacement_name = pair[1]
-        item_pool_dict[original_name] -= 1
+        if original_name == "Filler Item":
+            filler_item_count -= 1
+        else:
+            item_pool_dict[original_name] -= 1
         item_pool_dict[replacement_name] = item_pool_dict.get(replacement_name, 0) + 1
+
+    # Add as many filler items as required
+    for _ in range(filler_item_count):
+        random_filler_item = ooa_get_filler_item_name(world)
+        item_pool_dict[random_filler_item] = item_pool_dict.get(random_filler_item, 0) + 1
 
     return item_pool_dict
 
@@ -201,9 +205,15 @@ def ooa_create_seeds_items(world: OracleOfAgesWorld):
         del duplicate_seeds_to_place[world.options.default_seed.value]
         duplicate_trees_to_process.remove("Lynna City: Seed Tree")
 
+    if world.options.entrance_randomizer == OracleOfAgesEntranceRandomizer.option_all_entrances:
+        for i in range(0, len(seeds_to_place)):
+            while seeds_to_place[i] == "Gale Seeds" and trees_to_process[len(trees_to_process) - 1 - i] == "Deku Forest: Seed Tree":
+                world.random.shuffle(trees_to_process) # Deku forest
+    
     # Place remaining seeds on remaining trees
     for seed in seeds_to_place:
-        place_seed(world, seed, trees_to_process.pop())
+        tree = trees_to_process.pop()
+        place_seed(world, seed, tree)
 
     # Fill out the duplicates
     world.random.shuffle(duplicate_seeds_to_place)

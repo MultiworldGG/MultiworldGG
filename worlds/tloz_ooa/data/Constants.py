@@ -1,4 +1,6 @@
 from .ascii_table import ascii_printable_chars_table
+from enum import IntEnum
+
 
 COMPANIONS = [
     "Ricky",
@@ -47,6 +49,22 @@ DUNGEON_NAMES = [
     "",
     "Linked Hero's Cave"
 ]
+
+DUNGEON_NAMES_FOR_TXT = [
+    "Maku Path ",
+    "Spirit's Grave\n",
+    "Wing Dungeon\n",
+    "Moonlit Grotto\n",
+    "Skull Dungeon\n",
+    "Crown Dungeon\n",
+    "Mermaid's Cave\n",
+    "Jabu-Jabu's\nBelly ",
+    "Ancient Tomb\n",
+    "Mermaid's Cave\n",
+    "",
+    "Linked Hero's\nCave "
+]
+
 
 REGIONS_CONVERSION_TABLE = {
     # TODO OTHERS
@@ -365,3 +383,19 @@ COLLECT_TARGET_CART = 0x81
 COLLECT_BIGBANG = 0x82
 COLLECT_GORON_BUSH_ROOM = 0x83
 COLLECT_TOKAY_CRYSTAL_ROOM = 0x84
+
+
+class OracleOfAgesConnectionType(IntEnum):
+    CONNECT_UNDERWATER = 1
+    CONNECT_PAST = 2
+    CONNECT_DUNGEON = 4
+    CONNECT_INSIDE = 8
+
+    CONNECT_OVERWORLD_SURFACE_PRESENT = 0
+    CONNECT_OVERWORLD_SURFACE_PAST = CONNECT_PAST
+    CONNECT_OVERWORLD_UNDERWATER_PRESENT = CONNECT_UNDERWATER
+    CONNECT_OVERWORLD_UNDERWATER_PAST = CONNECT_UNDERWATER | CONNECT_PAST
+
+    CONNECT_OVERWORLD_DUNGEON_PRESENT = CONNECT_DUNGEON
+    CONNECT_OVERWORLD_DUNGEON_PAST = CONNECT_DUNGEON | CONNECT_PAST
+    CONNECT_OVERWORLD_JABUJABU = CONNECT_UNDERWATER | CONNECT_DUNGEON

@@ -3,7 +3,7 @@ from __future__ import annotations
 from dataclasses import dataclass
 
 from Options import (
-    Accessibility,
+    ItemsAccessibility as SilksongAccessibility,
     Choice,
     FreeText,
     OptionGroup,
@@ -803,19 +803,6 @@ def get_aggregate_minor_mode_key(options) -> str:
     return "anywhere" if "anywhere" in modes else "vanilla"
 
 
-class SilksongAccessibility(Accessibility):
-    """
-    Set rules for reachability of your items/locations.
-
-    **Full:** ensure everything can be reached and acquired.
-
-    **Minimal:** ensure what is needed to reach your goal can be acquired.
-    """
-
-    display_name = "Accessibility"
-    default = Accessibility.option_full
-
-
 class Goal(Choice):
     """
     Act 1-3 require beating the chosen act, Cursed Ending is self
@@ -859,14 +846,23 @@ class FleaHuntCount(Range):
 
 class StartingLocation(Choice):
     """
-    Use the vanilla opening or experimental Bone Bottom start.
+    Choose your starting location and F4 destination. Alternate starts have a checkpoint immediately.
+    Bone Bottom's F4 warp unlocks after visiting.
 
-    With Ledge Grab randomization, Vanilla uses Bone Bottom instead.
+    Songclave requires an Act 2 or later goal.
+    Randomized Ledge Grab replaces Vanilla with Bone Bottom.
     """
 
     display_name = "Starting Location"
     option_vanilla = 0
     option_bone_bottom = 1
+    option_bellhart = 2
+    option_songclave = 4
+    option_wormways = 6
+    option_pilgrims_rest = 7
+    option_deep_docks = 8
+    option_shellwood = 9
+    option_blasted_steps = 10
     default = option_vanilla
 
 
@@ -899,12 +895,14 @@ class ForceNaked(Toggle):
     default = 0
 
 
-class EarlyDash(Toggle):
+class EarlySprint(Toggle):
     """
-    Place Dash early when Skills are randomized.
+    Place sprint early when Skills are randomized.
+    With Split Dash And Sprint enabled, only the first Progressive Swift Step is placed early.
+    Otherwise, the early Swift Step also grants dash.
     """
 
-    display_name = "Early Dash"
+    display_name = "Early Sprint"
     default = 1
 
 
@@ -1058,7 +1056,7 @@ class PlatformingCapability(Choice):
 
 class FleaBrewJumpLogic(Toggle):
     """
-    Use Flea Brew's extra jump height to reach ledges and cross gaps.
+    Use Flea Brew's movement speed boost to make longer jumps.
 
     Its speed boost for the Weavenest Cindril secret room remains in logic
     with this option disabled.
@@ -1229,7 +1227,7 @@ class CheckMapMarkers(Choice):
 
 class RandomizedBellMarkers(Toggle):
     """
-    Move the five Grand Gate Bell markers to their randomized local checks.
+    Show map markers for your Grand Gate Bells where the randomizer placed them in your world.
     """
 
     display_name = "Randomized Bell Markers"
@@ -1238,7 +1236,7 @@ class RandomizedBellMarkers(Toggle):
 
 class RandomizedMelodyMarkers(Toggle):
     """
-    Move Threefold Melody markers to their randomized local checks.
+    Show map markers for your Threefold Melody pieces where the randomizer placed them in your world.
     """
 
     display_name = "Randomized Melody Markers"
@@ -1656,7 +1654,7 @@ class SilksongOptions(PerGameCommonOptions):
     starting_crest: StartingCrest
     force_naked: ForceNaked
     start_inventory_from_pool: StartInventoryPool
-    early_dash: EarlyDash
+    early_sprint: EarlySprint
     silk_and_soul_points: SilkAndSoulPoints
     ledgegrab_ability_rando: LedgegrabAbilityRando
     directional_ledge_grab: DirectionalLedgeGrab
@@ -1908,7 +1906,7 @@ silksong_option_groups = [
         KnockbackLink,
     ], start_collapsed=True),
     OptionGroup("Miscellaneous", [
-        EarlyDash,
+        EarlySprint,
         VogAreaHints,
         EnemyRosaryMultiplier,
         EnemyShardMultiplier,

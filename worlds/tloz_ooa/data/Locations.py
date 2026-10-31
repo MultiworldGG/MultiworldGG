@@ -9,15 +9,17 @@ LOCATIONS_DATA = {
         "room": 0x0039,
         "collect": COLLECT_TOUCH,
         "symbolic_name": "impaGift",
+        "hint_region": "Forest of Time",
     },
-    "Forest of Time: Nayru's House": {
-        "region_id": "nayru's house",
+    "Forest of Time: Nayru's House Harp Spot": {
+        "region_id": "nayru's house harp spot",
         "vanilla_item": "Progressive Harp",
         "flag_byte": 0xc8ae, 
         "room": 0x03ae,
         "map_tile": 0x3a,
         "collect": COLLECT_TOUCH,
         "symbolic_name": "nayruHouse",
+        "hint_region": "Forest of Time",
     },
     "Forest of Time: Tingle Present": {
         "region_id": "balloon guy's gift",
@@ -27,6 +29,7 @@ LOCATIONS_DATA = {
         "room": 0x0079,
         "collect": COLLECT_TOUCH,
         "symbolic_name": "tingleGift",
+        "hint_region": "Forest of Time",
     },
     "Forest of Time: Tingle Upgrade": {
         "region_id": "balloon guy's upgrade",
@@ -36,6 +39,7 @@ LOCATIONS_DATA = {
         "room": 0x0079,
         "collect": COLLECT_TOUCH,
         "symbolic_name": "tingleUpgrade",
+        "hint_region": "Forest of Time",
     },
     "Forest of Time: Tingle Secret": {
         "region_id": "balloon guy's secret",
@@ -47,6 +51,7 @@ LOCATIONS_DATA = {
         "room": 0x0079,
         "collect": COLLECT_TOUCH,
         "symbolic_name": "tingleSecret",
+        "hint_region": "Forest of Time",
     },
     ##########################################
     "Lynna City: Chest Past Burnt Tree": {
@@ -55,6 +60,7 @@ LOCATIONS_DATA = {
         "flag_byte": 0xc749,
         "room": 0x0049,
         "collect": COLLECT_CHEST,
+        "hint_region": "Lynna City",
     },
     "Lynna City: Shop Item #1": {
         "region_id": "lynna shop",
@@ -67,6 +73,7 @@ LOCATIONS_DATA = {
         "scouting_mask": 0x10,
         "collect": COLLECT_TOUCH,
         "symbolic_name": "lynnaShop1",
+        "hint_region": "Lynna City",
     },
     "Lynna City: Shop Item #2": {
         "region_id": "lynna shop",
@@ -79,6 +86,7 @@ LOCATIONS_DATA = {
         "scouting_mask": 0x10,
         "collect": COLLECT_TOUCH,
         "symbolic_name": "lynnaShop2",
+        "hint_region": "Lynna City",
     },
     "Lynna City: Shop Item #3": {
         "region_id": "lynna shop",
@@ -92,6 +100,7 @@ LOCATIONS_DATA = {
         "collect": COLLECT_TOUCH,
         "symbolic_name": "lynnaShop3",
         "conditional": True,
+        "hint_region": "Lynna City",
     },
     # -----
     "Lynna City: Hidden Shop Item #1": {
@@ -104,6 +113,7 @@ LOCATIONS_DATA = {
         "scouting_mask": 0x10,
         "collect": COLLECT_TOUCH,
         "symbolic_name": "hiddenShop1",
+        "hint_region": "Lynna City",
     },
     "Lynna City: Hidden Shop Item #2": {
         "region_id": "hidden shop",
@@ -115,6 +125,7 @@ LOCATIONS_DATA = {
         "scouting_mask": 0x10,
         "collect": COLLECT_TOUCH,
         "symbolic_name": "hiddenShop2",
+        "hint_region": "Lynna City",
     },
     "Lynna City: Hidden Shop Item #3": {
         "region_id": "hidden shop",
@@ -126,6 +137,7 @@ LOCATIONS_DATA = {
         "scouting_mask": 0x10,
         "collect": COLLECT_TOUCH,
         "symbolic_name": "hiddenShop3",
+        "hint_region": "Lynna City",
     },
     "Lynna City: Mayor Plen's House": {
         "region_id": "mayor plen's house",
@@ -134,6 +146,7 @@ LOCATIONS_DATA = {
         "room": 0x03f9,
         "map_tile": 0x57,
         "collect": COLLECT_CHEST,
+        "hint_region": "Lynna City",
     },
     "Lynna City: Mayor Plen's Secret": {
         "region_id": "mayor plen's secret",
@@ -145,6 +158,7 @@ LOCATIONS_DATA = {
         "map_tile": 0x57,
         "collect": COLLECT_TOUCH,
         "symbolic_name": "plenSecret",
+        "hint_region": "Lynna City",
     },
     "Lynna City: Vasu's Gift": {
         "region_id":"vasu's gift",
@@ -154,6 +168,7 @@ LOCATIONS_DATA = {
         "room": 0x02ee,
         "collect": COLLECT_TOUCH,
         "symbolic_name": "vasuGift",
+        "hint_region": "Lynna City",
     },
     "Lynna City: Vasu's Slayers Ring Gift": {
         "region_id":"vasu's slayers ring gift",
@@ -164,6 +179,7 @@ LOCATIONS_DATA = {
         "room": 0x02ee,
         "collect": COLLECT_TOUCH,
         "symbolic_name": "vasuSlayersRingGift",
+        "hint_region": "Lynna City",
     },
     "Lynna City: Vasu's Rupee Ring Gift": {
         "region_id":"vasu's rupee ring gift",
@@ -174,6 +190,7 @@ LOCATIONS_DATA = {
         "room": 0x02ee,
         "collect": COLLECT_TOUCH,
         "symbolic_name": "vasuRupeeRingGift",
+        "hint_region": "Lynna City",
     },
     "Lynna City: Vasu's Victory Ring Gift": {
         "region_id":"vasu's victory ring gift",
@@ -183,6 +200,7 @@ LOCATIONS_DATA = {
         "room": 0x02ee,
         "collect": COLLECT_TOUCH,
         "symbolic_name": "vasuVictoryRingGift",
+        "hint_region": "Lynna City",
     },
     "Lynna City: Maku Tree gift": {
         "region_id": "maku tree",
@@ -192,6 +210,7 @@ LOCATIONS_DATA = {
         "map_tile": 0x38,
         "collect": COLLECT_MAKU_TREE,
         "symbolic_name": "makuTreeGift",
+        "hint_region": "Lynna City",
     },
     "Lynna City: Mamamu Yan Trade": {
         "region_id": "mamamu yan trade",
@@ -200,6 +219,7 @@ LOCATIONS_DATA = {
         "room": 0x02e7,
         "collect": COLLECT_TOUCH,
         "symbolic_name": "mamamuYan",
+        "hint_region": "Lynna City",
     },
     "Lynna City: Mamamu Yan Secret": {
         "region_id": "mamamu yan secret",
@@ -211,6 +231,7 @@ LOCATIONS_DATA = {
         "bit_mask": 0x40,
         "collect": COLLECT_TOUCH,
         "symbolic_name": "mamamuSecret",
+        "hint_region": "Lynna City",
     },
     "Lynna City: Comedian Trade": {
         "region_id": "lynna city comedian trade",
@@ -219,6 +240,7 @@ LOCATIONS_DATA = {
         "room": 0x0056,
         "collect": COLLECT_TOUCH,
         "symbolic_name": "comedian",
+        "hint_region": "Lynna City",
     },
     ##########################################
     "Lynna Village: Gasha Farmer": {
@@ -228,6 +250,7 @@ LOCATIONS_DATA = {
         "room": 0x03fc,
         "collect": COLLECT_TOUCH,
         "symbolic_name": "gashaFarmer",
+        "hint_region": "Lynna Village",
     },
     "Lynna Village: Advance Shop Item #1": {
         "region_id": "advance shop",
@@ -240,6 +263,7 @@ LOCATIONS_DATA = {
         "conditional": True,
         "collect": COLLECT_TOUCH,
         "symbolic_name": "advanceShop1",
+        "hint_region": "Lynna Village",
     },
     "Lynna Village: Advance Shop Item #2": {
         "region_id": "advance shop",
@@ -252,6 +276,7 @@ LOCATIONS_DATA = {
         "conditional": True,
         "collect": COLLECT_TOUCH,
         "symbolic_name": "advanceShop2",
+        "hint_region": "Lynna Village",
     },
     "Lynna Village: Advance Shop Item #3": {
         "region_id": "advance shop",
@@ -264,6 +289,7 @@ LOCATIONS_DATA = {
         "conditional": True,
         "collect": COLLECT_TOUCH,
         "symbolic_name": "advanceShop3",
+        "hint_region": "Lynna Village",
     },
     "Lynna Village: Baseball": {
         "region_id": "lynna shooting gallery",
@@ -273,6 +299,7 @@ LOCATIONS_DATA = {
         "room": 0x02e9,
         "collect": COLLECT_TOUCH,
         "symbolic_name": "lynnaShootingGallery",
+        "hint_region": "Lynna Village",
     },
     "Lynna Village: Postman Trade": {
         "region_id": "postman trade",
@@ -281,6 +308,7 @@ LOCATIONS_DATA = {
         "room": 0x022f, 
         "collect": COLLECT_TOUCH,
         "symbolic_name": "postman",
+        "hint_region": "Lynna Village",
     },
     "Lynna Village: Toilet Hand Trade": {
         "region_id": "toilet hand trade",
@@ -289,6 +317,7 @@ LOCATIONS_DATA = {
         "room": 0x023e,
         "collect": COLLECT_TOUCH,
         "symbolic_name": "toiletHand",
+        "hint_region": "Lynna Village",
     },
     "Lynna Village: Depressed Child Trade": {
         "region_id": "sad boi trade",
@@ -297,6 +326,7 @@ LOCATIONS_DATA = {
         "room": 0x02f3,
         "collect": COLLECT_TOUCH,
         "symbolic_name": "sadBoi",
+        "hint_region": "Lynna Village",
     },
     ##########################################
     "Black Tower (Past): Supervisor": {
@@ -307,6 +337,7 @@ LOCATIONS_DATA = {
         "map_tile": 0x176,
         "collect": COLLECT_TOUCH,
         "symbolic_name": "towerWorker",
+        "hint_region": "Lynna Village",
     },
     "Black Tower (Present): Rescue Zelda": {
         "region_id": "princess zelda rescue",
@@ -317,6 +348,7 @@ LOCATIONS_DATA = {
         "secret_location": True,
         "collect": COLLECT_TOUCH,
         "symbolic_name": "zeldaRescue",
+        "hint_region": "Lynna City",
     },
     "Black Tower (Past): Heart Piece": {
         "region_id": "black tower heartpiece",
@@ -325,6 +357,7 @@ LOCATIONS_DATA = {
         "room": 0x0186,
         "collect": COLLECT_TOUCH,
         "symbolic_name": "blackTowerHP",
+        "hint_region": "Lynna Village",
     },
     ##########################################
     "Ambi's Palace: East Wing Chest": {
@@ -334,6 +367,7 @@ LOCATIONS_DATA = {
         "room": 0x05cb,
         "map_tile": 0x107,
         "collect": COLLECT_CHEST,
+        "hint_region": "Lynna Village",
     },
     "Ambi's Palace: Rescue Nayru": {
         "region_id": "rescue nayru",
@@ -343,6 +377,7 @@ LOCATIONS_DATA = {
         "room": 0x0038,
         "collect": COLLECT_MAKU_TREE,
         "symbolic_name": "rescueNayru",
+        "hint_region": "Lynna Village",
     },
     ##########################################
     # Maku seed is 0xC85D
@@ -354,6 +389,7 @@ LOCATIONS_DATA = {
         "room": 0x03af,
         "collect": COLLECT_TOUCH,
         "symbolic_name": "restorationWallHP",
+        "hint_region": "Deku Forest",
     },
     ##########################################
     "South Shore (Present): Dirt Pile": {
@@ -363,6 +399,7 @@ LOCATIONS_DATA = {
         "room": 0x0098,
         "collect": COLLECT_DIG,
         "symbolic_name": "southShoreDirt",
+        "hint_region": "Lynna City",
     },
     ##########################################
     "South Shore (Past): Rafton Trade": {
@@ -372,6 +409,7 @@ LOCATIONS_DATA = {
         "room": 0x021f,
         "collect": COLLECT_TOUCH,
         "symbolic_name": "rafton",
+        "hint_region": "Lynna Village",
     },
     ##########################################
     "Yoll Graveyard: Cheval's Test": {
@@ -382,6 +420,7 @@ LOCATIONS_DATA = {
         "map_tile": 0x5b,
         "collect": COLLECT_TOUCH,
         "symbolic_name": "chevalTest",
+        "hint_region": "Yoll Graveyard",
     },
     "Yoll Graveyard: Cheval's Invention": {
         "region_id": "cheval's invention",
@@ -391,15 +430,17 @@ LOCATIONS_DATA = {
         "map_tile": 0x5b,
         "collect": COLLECT_TOUCH,
         "symbolic_name": "chevalInvention",
+        "hint_region": "Yoll Graveyard",
     },
     "Yoll Graveyard: Grave Under The Tree": {
-        "region_id": "grave under tree",
+        "region_id": "drop under tree",
         "vanilla_item": "Graveyard Key",
         "flag_byte": 0xcaed,
         "room": 0x05ed,
         "map_tile": 0x8d,
         "collect": COLLECT_DROP,
         "symbolic_name": "graveUnderTree",
+        "hint_region": "Yoll Graveyard",
     },
     "Yoll Graveyard: Syrup Shop Item #1": {
         "region_id": "syrup shop",
@@ -411,6 +452,7 @@ LOCATIONS_DATA = {
         "scouting_mask": 0x10,
         "collect": COLLECT_TOUCH,
         "symbolic_name": "syrupShop1",
+        "hint_region": "Yoll Graveyard",
     },
     "Yoll Graveyard: Syrup Shop Item #2": {
         "region_id": "syrup shop",
@@ -422,6 +464,7 @@ LOCATIONS_DATA = {
         "scouting_mask": 0x10,
         "collect": COLLECT_TOUCH,
         "symbolic_name": "syrupShop2",
+        "hint_region": "Yoll Graveyard",
     },
     "Yoll Graveyard: Syrup Shop Item #3": {
         "region_id": "syrup shop",
@@ -434,6 +477,7 @@ LOCATIONS_DATA = {
         "collect": COLLECT_TOUCH,
         "symbolic_name": "syrupShop3",
         "conditional": True,
+        "hint_region": "Yoll Graveyard",
     },
     "Yoll Graveyard: Poe's Gift": {
         "region_id": "graveyard poe trade",
@@ -442,6 +486,7 @@ LOCATIONS_DATA = {
         "room": 0x007c,
         "collect": COLLECT_TOUCH,
         "symbolic_name": "graveyardPoe",
+        "hint_region": "Yoll Graveyard",
     },
     "Yoll Graveyard: Heart Piece": {
         "region_id": "yoll graveyard heartpiece",
@@ -450,6 +495,7 @@ LOCATIONS_DATA = {
         "room": 0x008b,
         "collect": COLLECT_TOUCH,
         "symbolic_name": "yollGraveyardHP",
+        "hint_region": "Yoll Graveyard",
     },
     ##########################################
     "Fairies' Woods: Single Chest": {
@@ -458,6 +504,7 @@ LOCATIONS_DATA = {
         "flag_byte": 0xc784,
         "room": 0x0084,
         "collect": COLLECT_CHEST,
+        "hint_region": "Fairies' Woods",
     },
     "Fairies' Woods: Fairy Secret": {
         "region_id": "fairies' woods secret",
@@ -468,6 +515,7 @@ LOCATIONS_DATA = {
         "room": 0x0070,
         "collect": COLLECT_TOUCH,
         "symbolic_name": "fairySecret",
+        "hint_region": "Fairies' Woods",
     },
     ##########################################
     "Deku Forest: Chest in Central Cave": {
@@ -477,6 +525,7 @@ LOCATIONS_DATA = {
         "room": 0x05b3,
         "map_tile": 0x172,
         "collect": COLLECT_CHEST,
+        "hint_region": "Deku Forest",
     },
     "Deku Forest: Chest in Path to Seed Tree": {
         "region_id": "deku forest cave west",
@@ -485,6 +534,7 @@ LOCATIONS_DATA = {
         "room": 0x05b5,
         "map_tile": 0x171,
         "collect": COLLECT_CHEST,
+        "hint_region": "Deku Forest",
     },
     "Deku Forest: Soldier's Reward": {
         "region_id": "deku forest soldier",
@@ -494,6 +544,7 @@ LOCATIONS_DATA = {
         "room": 0x0172,
         "collect": COLLECT_TOUCH,
         "symbolic_name": "dekuForestSoldier",
+        "hint_region": "Deku Forest",
     },
     "Deku Forest: Terrace in Cave Under Tree": {
         "region_id": "deku forest heartpiece",
@@ -502,6 +553,7 @@ LOCATIONS_DATA = {
         "room": 0x05b1,
         "collect": COLLECT_TOUCH,
         "symbolic_name": "dekuForestHP",
+        "hint_region": "Deku Forest",
     },
     ##########################################
     "Crescent Island (Present): Underwater Maze Cave": {
@@ -511,6 +563,7 @@ LOCATIONS_DATA = {
         "room": 0x03fd,
         "map_tile": 0xba,
         "collect": COLLECT_CHEST,
+        "hint_region": "Crescent Island",
     },
     "Crescent Island (Present): Tokay Chef Trade": {
         "region_id": "tokay chef trade",
@@ -519,6 +572,7 @@ LOCATIONS_DATA = {
         "room": 0x023f,
         "collect": COLLECT_TOUCH,
         "symbolic_name": "tokayChef",
+        "hint_region": "Crescent Island",
     },
     ##########################################
     "Crescent Island (Past): Water Cave Tokay": {
@@ -529,6 +583,7 @@ LOCATIONS_DATA = {
         "map_tile": 0x1d9,
         "collect": COLLECT_TOUCH,
         "symbolic_name": "hiddenTokayCave",
+        "hint_region": "Crescent Island",
     },
     "Crescent Island (Past): Crystal Cave Chest": {
         "region_id": "tokay crystal cave chest",
@@ -545,15 +600,17 @@ LOCATIONS_DATA = {
         "room": 0x01cb,
         "collect": COLLECT_TOUCH,
         "symbolic_name": "tokayShovel",
+        "hint_region": "Crescent Island",
     },
     "Crescent Island (Past): Tokay's Stolen Sword": {
         "region_id": "tokay stolen sword",
-        "vanilla_item": "Filler Item", # Originally the sword
+        "vanilla_item": "Biggoron's Sword", # Originally the sword, putting the biggoron Sword so it's in the pool
         "flag_byte": 0xcaca,
         "bit_mask": 0x40,
         "room": 0x05ca,
         "collect": COLLECT_TOKAY_CRYSTAL_ROOM,
         "symbolic_name": "tokaySword",
+        "hint_region": "Crescent Island",
     },
     "Crescent Island (Past): Tokay's Stolen Satchel": {
         "region_id": "tokay stolen satchel",
@@ -562,6 +619,7 @@ LOCATIONS_DATA = {
         "room": 0x01bb,
         "collect": COLLECT_TOUCH,
         "symbolic_name": "tokaySatchel",
+        "hint_region": "Crescent Island",
     },
     "Crescent Island (Past): Tokay's Stolen Flippers": {
         "region_id": "tokay stolen flippers",
@@ -570,6 +628,7 @@ LOCATIONS_DATA = {
         "room": 0x05cc,
         "collect": COLLECT_TOUCH,
         "symbolic_name": "tokayFlippers",
+        "hint_region": "Crescent Island",
     },
     "Crescent Island (Past): Tokay's Stolen Harp": {
         "region_id": "tokay stolen harp",
@@ -578,6 +637,7 @@ LOCATIONS_DATA = {
         "room": 0x01da,
         "collect": COLLECT_TOUCH,
         "symbolic_name": "tokayHarp",
+        "hint_region": "Crescent Island",
     },
     "Crescent Island (Past): Bomb Cave Chest": {
         "region_id": "tokay bomb cave",
@@ -585,6 +645,7 @@ LOCATIONS_DATA = {
         "flag_byte": 0xc7ce,
         "room": 0x02ce,
         "collect": COLLECT_CHEST,
+        "hint_region": "Crescent Island",
     },
     "Crescent Island (Past): Tokay Chicken Hut": {
         "region_id": "tokay chicken hut",
@@ -593,6 +654,7 @@ LOCATIONS_DATA = {
         "room": 0x02e3,
         "collect": COLLECT_TOUCH,
         "symbolic_name": "tokayChickenHut",
+        "hint_region": "Crescent Island",
     },
     "Crescent Island (Past): Wild Tokay Prize": {
         "region_id": "wild tokay game",
@@ -602,6 +664,7 @@ LOCATIONS_DATA = {
         "map_tile": 0x1bd,
         "collect": COLLECT_TOUCH,
         "symbolic_name": "wildTokayGame",
+        "hint_region": "Crescent Island",
     },
     "Crescent Island (Present): Wild Tokay Secret": {
         "region_id": "wild tokay secret",
@@ -613,6 +676,7 @@ LOCATIONS_DATA = {
         "map_tile": 0xbd,
         "collect": COLLECT_TOUCH,
         "symbolic_name": "wildTokaySecret",
+        "hint_region": "Crescent Island",
     },
     "Crescent Island (Past): Market Item #1": {
         "region_id": "tokay market 1",
@@ -624,6 +688,7 @@ LOCATIONS_DATA = {
         "scouting_mask": 0x10,
         "collect": COLLECT_TOUCH,
         "symbolic_name": "tokayMarket1",
+        "hint_region": "Crescent Island",
     },
     "Crescent Island (Past): Market Item #2": {
         "region_id": "tokay market 2",
@@ -635,6 +700,7 @@ LOCATIONS_DATA = {
         "scouting_mask": 0x10,
         "collect": COLLECT_TOUCH,
         "symbolic_name": "tokayMarket2",
+        "hint_region": "Crescent Island",
     },
     "Crescent Island (Past): Pot Cave": {
         "region_id": "tokay pot cave",
@@ -643,6 +709,7 @@ LOCATIONS_DATA = {
         "room": 0x05f7,
         "map_tile": 0x1dd,
         "collect": COLLECT_CHEST,
+        "hint_region": "Crescent Island",
     },
     ##########################################
     "Nuun Highlands: Southern Cave": {
@@ -653,6 +720,7 @@ LOCATIONS_DATA = {
         "room": [0x02ec, 0x05b8, 0x02f4], # Rick, Dim & Moosh respectively
         "map_tile": 0x37, 
         "collect": COLLECT_CHEST,
+        "hint_region": "Symmetry Village",
     },
     "Nuun Highlands: Happy Mask Salesman Trade": {
         "region_id": "happy mask salesman trade",
@@ -661,6 +729,7 @@ LOCATIONS_DATA = {
         "room": 0x02e6,
         "collect": COLLECT_TOUCH,
         "symbolic_name": "maskSaleman",
+        "hint_region": "Fairies' Woods",
     },
     ##########################################
     "Symmetry Village: Sisters Secret": {
@@ -673,6 +742,7 @@ LOCATIONS_DATA = {
         "map_tile": 0x113,
         "collect": COLLECT_TOUCH,
         "symbolic_name": "symmetrySecret",
+        "hint_region": "Symmetry Village",
     },
     "Symmetry Village: Brothers": {
         "region_id": "symmetry city brother",
@@ -683,6 +753,7 @@ LOCATIONS_DATA = {
         "map_tile": 0x104,
         "collect": COLLECT_TOUCH,
         "symbolic_name": "symmetryCityBrother",
+        "hint_region": "Symmetry Village",
     },
     "Symmetry Village: Skinny Guy Trade": {
         "region_id": "symmetry middle man trade",
@@ -691,6 +762,7 @@ LOCATIONS_DATA = {
         "room": 0x02e8,
         "collect": COLLECT_TOUCH,
         "symbolic_name": "middleMan",
+        "hint_region": "Symmetry Village",
     },
     ##########################################
     "Talus Peaks (Present): Bomb Fairy": {
@@ -701,6 +773,7 @@ LOCATIONS_DATA = {
         "room": 0x0050,
         "collect": COLLECT_TOUCH,
         "symbolic_name": "bombFairy",
+        "hint_region": "Talus Peak",
     },
     "Talus Peaks (Present): Southeastern Chest": {
         "region_id": "talus peaks chest",
@@ -708,6 +781,7 @@ LOCATIONS_DATA = {
         "flag_byte": 0xc763,
         "room": 0x0063,
         "collect": COLLECT_CHEST,
+        "hint_region": "Talus Peak",
     },
     "Talus Peaks (Present): Heart Piece": {
         "region_id": "symmetry city heartpiece",
@@ -716,6 +790,7 @@ LOCATIONS_DATA = {
         "room": 0x0011,
         "collect": COLLECT_TOUCH,
         "symbolic_name": "symmetryCityHP",
+        "hint_region": "Talus Peak",
     },
     ##########################################
     "Talus Peaks (Past): Tokkey's Composition": {
@@ -726,6 +801,7 @@ LOCATIONS_DATA = {
         "map_tile": 0x101,
         "collect": COLLECT_TOUCH,
         "symbolic_name": "tokkeyComposition",
+        "hint_region": "Talus Peak",
     },
     "Talus Peaks (Past): Tuni Nut Restoration": {
         "region_id": "patch tuni nut ceremony",
@@ -735,6 +811,7 @@ LOCATIONS_DATA = {
         "bit_mask": 0x40,
         "collect": COLLECT_TOUCH,
         "symbolic_name": "patchTuni",
+        "hint_region": "Talus Peak",
     },
     "Talus Peaks (Past): Broken Sword Restoration": {
         "region_id": "patch broken sword ceremony",
@@ -744,15 +821,17 @@ LOCATIONS_DATA = {
         "bit_mask": 0x20,
         "collect": COLLECT_TOUCH,
         "symbolic_name": "patchSword",
+        "hint_region": "Talus Peak",
     },
     ##########################################
     "Rolling Ridge Base (Present): Terrace Chest": {
         "region_id": "ridge base chest",
-        "vanilla_item": "Rupees (50)",
+        "vanilla_item": "Rupees (200)",
         "flag_byte": 0xcab9,
         "room": 0x05b9,
         "map_tile": 0x28,
         "collect": COLLECT_CHEST,
+        "hint_region": "Western Rolling Ridge",
     },
     "Rolling Ridge Base (Present): First Goron Dance": {
         "region_id": "first goron dance",
@@ -763,6 +842,7 @@ LOCATIONS_DATA = {
         "map_tile": 0x13d,
         "collect": COLLECT_TOUCH,
         "symbolic_name": "goronDance1",
+        "hint_region": "Base Eastern Rolling Ridge",
     },
     "Rolling Ridge Base (Present): Pool in Mermaid Cave Entrance": {
         "region_id": "pool in d6 entrance",
@@ -771,6 +851,7 @@ LOCATIONS_DATA = {
         "room": 0x030e,
         "map_tile": 0x3c,
         "collect": COLLECT_CHEST,
+        "hint_region": "Base Eastern Rolling Ridge",
     },
     "Rolling Ridge Base (Present): Trade With Doorkeeper Goron": {
         "region_id": "trade rock brisket",
@@ -780,6 +861,7 @@ LOCATIONS_DATA = {
         "map_tile": 0x3d,
         "collect": COLLECT_TOUCH,
         "symbolic_name": "tradeRockBrisket",
+        "hint_region": "Base Eastern Rolling Ridge",
     },
     ##########################################
     "Rolling Ridge Base (Past): Goron Elder": {
@@ -790,6 +872,7 @@ LOCATIONS_DATA = {
         "map_tile": 0x128,
         "collect": COLLECT_TOUCH,
         "symbolic_name": "goronElder",
+        "hint_region": "Western Rolling Ridge",
     },
     "Rolling Ridge Base (Past): Goron Dance With Letter": {
         "region_id": "goron dance, with letter",
@@ -800,6 +883,7 @@ LOCATIONS_DATA = {
         "map_tile": 0x13d,
         "collect": COLLECT_TOUCH,
         "symbolic_name": "goronDance2",
+        "hint_region": "Base Eastern Rolling Ridge",
     },
     "Rolling Ridge Base (Past): Trade With Doorkeeper Goron": {
         "region_id": "trade goron vase",
@@ -809,14 +893,16 @@ LOCATIONS_DATA = {
         "map_tile": 0x13d,
         "collect": COLLECT_TOUCH,
         "symbolic_name": "tradeGoronVase",
+        "hint_region": "Base Eastern Rolling Ridge",
     },
     "Rolling Ridge Base (Past): Chest Behind Cracked Rocks": {
         "region_id": "ridge base bomb past",
-        "vanilla_item": "Rupees (50)",
+        "vanilla_item": "Rupees (100)",
         "flag_byte": 0xcae0,
         "room": 0x05e0,
         "map_tile": 0x12b,
         "collect": COLLECT_CHEST,
+        "hint_region": "Base Eastern Rolling Ridge",
     },
     "Rolling Ridge Base (Past): Chest Beyond Diamonds": {
         "region_id": "ridge diamonds past",
@@ -825,15 +911,17 @@ LOCATIONS_DATA = {
         "room": 0x05e1,
         "map_tile": 0x12b,
         "collect": COLLECT_CHEST,
+        "hint_region": "Base Eastern Rolling Ridge",
     },
     ##########################################
     "Rolling Ridge (Present): West Stairs Cave Chest": {
-        "region_id": "ridge west cave",
+        "region_id": "ridge west cave chest",
         "vanilla_item": "Rupees (30)",
         "flag_byte": 0xcac0,
         "room": 0x05c0,
         "map_tile": 0x18,
         "collect": COLLECT_CHEST,
+        "hint_region": "Western Rolling Ridge",
     },
     "Rolling Ridge (Present): Cave Under Moblin Keep": {
         "region_id": "under moblin keep",
@@ -842,6 +930,7 @@ LOCATIONS_DATA = {
         "room": 0x02be,
         "map_tile": 0x09,
         "collect": COLLECT_CHEST,
+        "hint_region": "Western Rolling Ridge",
     },
     "Rolling Ridge (Present): Defeat Great Moblin": {
         "region_id": "defeat great moblin",
@@ -850,6 +939,7 @@ LOCATIONS_DATA = {
         "room": 0x0009,
         "collect": COLLECT_TOUCH,
         "symbolic_name": "defeatGreatMoblin",
+        "hint_region": "Western Rolling Ridge",
     },
     "Rolling Ridge (Present): Goron's Hiding Place": {
         "region_id": "goron's hiding place",
@@ -858,6 +948,7 @@ LOCATIONS_DATA = {
         "room": 0x05bd,
         "map_tile": 0x28,
         "collect": COLLECT_CHEST,
+        "hint_region": "Western Rolling Ridge",
     },
     "Rolling Ridge (Past): Bush Cave Chest": {
         "region_id": "ridge bush cave",
@@ -866,6 +957,7 @@ LOCATIONS_DATA = {
         "room": 0x031f,
         "map_tile": 0x11c,
         "collect": COLLECT_GORON_BUSH_ROOM,
+        "hint_region": "Middle Eastern Rolling Ridge",
     },
     "Rolling Ridge (Present): Target Carts 1st Prize": {
         "region_id": "target carts 1",
@@ -876,6 +968,7 @@ LOCATIONS_DATA = {
         "map_tile": 0x1d,
         "collect": COLLECT_TARGET_CART,
         "symbolic_name": "targetCart1",
+        "hint_region": "Middle Eastern Rolling Ridge",
     },
     "Rolling Ridge (Present): Target Carts 2nd Prize": {
         "region_id": "target carts 2",
@@ -886,6 +979,7 @@ LOCATIONS_DATA = {
         "map_tile": 0x1d,
         "collect": COLLECT_TARGET_CART,
         "symbolic_name": "targetCart2",
+        "hint_region": "Middle Eastern Rolling Ridge",
     },
     "Rolling Ridge (Present): Troy's Secret": {
         "region_id": "troy secret",
@@ -898,6 +992,7 @@ LOCATIONS_DATA = {
         "map_tile": 0x1d,
         "collect": COLLECT_TOUCH,
         "symbolic_name": "troySecret",
+        "hint_region": "Middle Eastern Rolling Ridge",
     },
     "Rolling Ridge (Present): Big Bang Prize": {
         "region_id": "big bang game",
@@ -907,6 +1002,7 @@ LOCATIONS_DATA = {
         "map_tile": 0x1c,
         "collect": COLLECT_BIGBANG,
         "symbolic_name": "bigBangGame",
+        "hint_region": "Middle Eastern Rolling Ridge",
     },
     "Rolling Ridge (Present): Northeast Cave Chest": {
         "region_id": "ridge NE cave present",
@@ -915,14 +1011,16 @@ LOCATIONS_DATA = {
         "room": 0x05ee,
         "map_tile": 0x0d,
         "collect": COLLECT_CHEST,
+        "hint_region": "Upper Eastern Rolling Ridge",
     },
-    "Rolling Ridge (Present): Chest in Diamonds Room": { # TODO
+    "Rolling Ridge (Present): Chest in Diamonds Room": { 
         "region_id": "goron diamond cave",
         "vanilla_item": "Bombs (10)",
         "flag_byte": 0xcadd,
         "room": 0x05dd,
         "map_tile": 0x1c,
         "collect": COLLECT_CHEST,
+        "hint_region": "Base Eastern Rolling Ridge",
     },
     "Rolling Ridge (Present): Heart Piece in Westmost Cave": {
         "region_id": "ridge west heartpiece",
@@ -931,6 +1029,7 @@ LOCATIONS_DATA = {
         "room": 0x05c1,
         "collect": COLLECT_TOUCH,
         "symbolic_name": "ridgeWestHP",
+        "hint_region": "Western Rolling Ridge",
     },
     "Rolling Ridge (Present): Far Northeast Heart Piece": {
         "region_id": "ridge upper heartpiece",
@@ -939,6 +1038,7 @@ LOCATIONS_DATA = {
         "room": 0x000d,
         "collect": COLLECT_TOUCH,
         "symbolic_name": "ridgeUpperHP",
+        "hint_region": "Upper Eastern Rolling Ridge",
     },
     ##########################################
     "Rolling Ridge (Past): Cave in Goron Face": {
@@ -948,6 +1048,7 @@ LOCATIONS_DATA = {
         "room": 0x02fc,
         "map_tile": 0x10d,
         "collect": COLLECT_CHEST,
+        "hint_region": "Upper Eastern Rolling Ridge",
     },
     "Rolling Ridge (Past): Treasure Hunting Goron": {
         "region_id": "treasure hunting goron",
@@ -955,6 +1056,7 @@ LOCATIONS_DATA = {
         "flag_byte": 0xc7f7,
         "room": 0x02f7,
         "collect": COLLECT_CHEST,
+        "hint_region": "Upper Eastern Rolling Ridge",
     },
     "Rolling Ridge (Past): Baseball": {
         "region_id": "goron shooting gallery price",
@@ -964,6 +1066,7 @@ LOCATIONS_DATA = {
         "bit_mask": 0x02,
         "collect": COLLECT_TOUCH,
         "symbolic_name": "goronShootingGallery",
+        "hint_region": "Middle Eastern Rolling Ridge",
     },
     "Rolling Ridge (Past): Elder's Secret": {
         "region_id": "elder secret",
@@ -975,6 +1078,7 @@ LOCATIONS_DATA = {
         "bit_mask": 0x04,
         "collect": COLLECT_TOUCH,
         "symbolic_name": "elderSecret",
+        "hint_region": "Middle Eastern Rolling Ridge",
     },
     "Rolling Ridge (Past): Trade With Graceful Goron's Friend": {
         "region_id": "trade lava juice",
@@ -985,14 +1089,16 @@ LOCATIONS_DATA = {
         "map_tile": 0x11c,
         "collect": COLLECT_GORON_BUSH_ROOM,
         "symbolic_name": "tradeLavaJuice",
+        "hint_region": "Middle Eastern Rolling Ridge",
     },
     ##########################################
     "Zora Village (Present): Western Pool Chest": {
-        "region_id": "zora village present",
+        "region_id": "zora village chest",
         "vanilla_item": "Gasha Seed",
         "flag_byte": 0xc7c0,
         "room": 0x02c0,
         "collect": COLLECT_CHEST,
+        "hint_region": "Zora Village",
     },
     "Zora Village (Present): Zora Palace Chest": {
         "region_id": "zora palace chest",
@@ -1001,6 +1107,7 @@ LOCATIONS_DATA = {
         "room": 0x05ac,
         "map_tile": 0xa1,
         "collect": COLLECT_CHEST,
+        "hint_region": "Zora Village",
     },
     "Zora Village (Present): Statues Cave": {
         "region_id": "zora NW cave",
@@ -1009,6 +1116,7 @@ LOCATIONS_DATA = {
         "room": 0x05c7,
         "map_tile": 0xa0,
         "collect": COLLECT_CHEST,
+        "hint_region": "Zora Village",
     },
     "Zora Village (Present): Fairies' Coast Chest": {
         "region_id": "fairies' coast chest",
@@ -1016,6 +1124,7 @@ LOCATIONS_DATA = {
         "flag_byte": 0xc791,
         "room": 0x0091,
         "collect": COLLECT_CHEST,
+        "hint_region": "Zora Village",
     },
     "Zora Village (Present): Zora King Gift": {
         "region_id": "zora king gift",
@@ -1025,6 +1134,7 @@ LOCATIONS_DATA = {
         "map_tile": 0xa1,
         "collect": COLLECT_TOUCH,
         "symbolic_name": "kingZora",
+        "hint_region": "Zora Village",
     },
     "Zora Village (Present): King Zora's Secret": {
         "region_id": "king zora's secret",
@@ -1037,6 +1147,7 @@ LOCATIONS_DATA = {
         "map_tile": 0xa1,
         "collect": COLLECT_TOUCH,
         "symbolic_name": "kingZoraSecret",
+        "hint_region": "Zora Village",
     },
     "Zora Village (Present): Zora's Reward": {
         "region_id": "zora's reward",
@@ -1045,19 +1156,21 @@ LOCATIONS_DATA = {
         "room": 0x02a0,
         "collect": COLLECT_TOUCH,
         "symbolic_name": "zoraReward",
+        "hint_region": "Zora Village",
     },
     ##########################################
     "Eyeglass Island Library (Present): Old Man": {
-        "region_id": "library present",
+        "region_id": "library present old man",
         "vanilla_item": "Book of Seals",
         "flag_byte": 0xcac8,
         "room": 0x05c8,
         "map_tile": 0xa5,
         "collect": COLLECT_TOUCH,
         "symbolic_name": "libraryPresent",
+        "hint_region": "The Seas",
     },
     "Eyeglass Island Library (Past): Old Man": {
-        "region_id": "library past",
+        "region_id": "library past old man",
         "vanilla_item": "Fairy Powder",
         "flag_byte": 0xcae4,
         "room": 0x05e4,
@@ -1065,6 +1178,7 @@ LOCATIONS_DATA = {
         "map_tile": 0x1a5,
         "collect": COLLECT_TOUCH,
         "symbolic_name": "libraryPast",
+        "hint_region": "The Seas",
     },
     "Eyeglass Island Library (Past): Old Man's Secret": {
         "region_id": "library secret",
@@ -1077,6 +1191,7 @@ LOCATIONS_DATA = {
         "map_tile": 0x1a5,
         "collect": COLLECT_TOUCH,
         "symbolic_name": "librarySecret",
+        "hint_region": "The Seas",
     },
     ##########################################
     "Zora Seas (Present): Southeast Island Chest": {
@@ -1085,6 +1200,7 @@ LOCATIONS_DATA = {
         "flag_byte": 0xc7d5,
         "room": 0x00d5,
         "collect": COLLECT_CHEST,
+        "hint_region": "The Seas",
     },
     "Zora Seas (Past): Fisherman's Island Cave": {
         "region_id": "fisher's island cave",
@@ -1093,6 +1209,7 @@ LOCATIONS_DATA = {
         "room": 0x024f,
         "map_tile": 0x1c5,
         "collect": COLLECT_CHEST,
+        "hint_region": "The Seas",
     },
     ##########################################
     "Sea of Storms (Past): Piratian Captain": {
@@ -1103,6 +1220,7 @@ LOCATIONS_DATA = {
         "map_tile": 0x1d7,
         "collect": COLLECT_TOUCH,
         "symbolic_name": "piratianCaptain",
+        "hint_region": "The Seas",
     },
     "Sea of Storms (Past): Underwater Cave": {
         "region_id": "sea of storms past",
@@ -1112,6 +1230,7 @@ LOCATIONS_DATA = {
         "map_tile": 0x1c7,
         "collect": COLLECT_CHEST,
         "symbolic_name": "seaofstormpast",
+        "hint_region": "The Seas",
     },
     "Sea of Storms (Present): Underwater Cave": {
         "region_id": "sea of storms present",
@@ -1123,6 +1242,7 @@ LOCATIONS_DATA = {
         "secret_location": True,
         "collect": COLLECT_CHEST,
         "symbolic_name": "seaofstormpresent",
+        "hint_region": "The Seas",
     },
     ##########################################
     "Sea of No Return: Chest Under Statue": {
@@ -1131,6 +1251,7 @@ LOCATIONS_DATA = {
         "flag_byte": 0xc86d,
         "room": 0x016d,
         "collect": COLLECT_CHEST,
+        "hint_region": "The Seas",
     },
     ##########################################
     "Coast of No Return: Old Zora Trade": {
@@ -1140,6 +1261,7 @@ LOCATIONS_DATA = {
         "room": 0x02f5, 
         "collect": COLLECT_TOUCH,
         "symbolic_name": "oldZora",
+        "hint_region": "Western Rolling Ridge",
     },
     ##########################################
     "Maple Trade": {
@@ -1394,7 +1516,7 @@ LOCATIONS_DATA = {
         "symbolic_name": "d2Boss",
     },
     ##########################################
-    "Moonlit Grotto (1F): Bridge Chest": {
+    "Moonlit Grotto (B1F): Bridge Chest": {
     	"region_id": "d3 bridge chest",
     	"vanilla_item": "Rupees (20)",
     	"dungeon" : 3,
@@ -1759,7 +1881,7 @@ LOCATIONS_DATA = {
     },
     "Mermaid's Cave (Present): Beamos Chest": {
     	"region_id": "d6 present beamos chest",
-    	"vanilla_item": "Rupees (10)",
+    	"vanilla_item": "Rupees (10)", # Adding more rupees to the pool
     	"dungeon" : 6,
         "flag_byte": 0xca1f,
         "room": 0x051f,

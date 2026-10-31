@@ -33,7 +33,6 @@ chapter3_items = [
     ItemData(ItemIDs.points_500, ItemClassification.filler, groups=[ItemGroups.currencies]),
     ItemData(ItemIDs.tensiongem, ItemClassification.filler, groups=[ItemGroups.tension_items]),
     ItemData(ItemIDs.tensionmax, ItemClassification.filler, groups=[ItemGroups.tension_items]),
-    ItemData(ItemIDs.smile, ItemClassification.filler),
     ItemData(ItemIDs.lodestone, ItemClassification.filler, groups=[ItemGroups.armors]),
     ItemData(ItemIDs.gingerguard, ItemClassification.filler, groups=[ItemGroups.armors]),
     ItemData(

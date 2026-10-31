@@ -1,0 +1,5246 @@
+{
+ "moss-grotto/moss-grotto-center@ll": {
+  "scene": "Tut_01",
+  "gate": "left3",
+  "x": 0.0,
+  "y": 0.116667
+ },
+ "moss-grotto/moss-grotto-center@ml": {
+  "scene": "Tut_01",
+  "gate": "left2",
+  "x": 0.0,
+  "y": 0.275
+ },
+ "moss-grotto/moss-grotto-center@lr": {
+  "scene": "Tut_01",
+  "gate": "right2",
+  "x": 0.670833,
+  "y": 0.316667
+ },
+ "moss-grotto/moss-grotto-center@ur": {
+  "scene": "Tut_01",
+  "gate": "right1",
+  "x": 0.670833,
+  "y": 0.758333
+ },
+ "moss-grotto/moss-grotto-west@ur": {
+  "scene": "Tut_02",
+  "gate": "right1",
+  "x": 1.0,
+  "y": 0.559322
+ },
+ "moss-grotto/moss-grotto-west@lr": {
+  "scene": "Tut_02",
+  "gate": "right2",
+  "x": 1.0,
+  "y": 0.20339
+ },
+ "moss-grotto/moss-grotto-east@ul": {
+  "scene": "Tut_01b",
+  "gate": "left1",
+  "x": 0.0,
+  "y": 0.882353
+ },
+ "moss-grotto/moss-grotto-east@ll": {
+  "scene": "Tut_01b",
+  "gate": "left2",
+  "x": 0.0,
+  "y": 0.102941
+ },
+ "moss-grotto/moss-grotto-east@wd": {
+  "scene": "Tut_01b",
+  "gate": "right1",
+  "x": 0.906863,
+  "y": 0.470588
+ },
+ "bone-bottom/bone-bottom-town@ul": {
+  "scene": "Bonetown",
+  "gate": "left1",
+  "x": 0.0,
+  "y": 0.666667
+ },
+ "bone-bottom/bone-bottom-town@lr": {
+  "scene": "Bonetown",
+  "gate": "right2",
+  "x": 1.0,
+  "y": 0.1
+ },
+ "bone-bottom/bone-bottom-town@ur": {
+  "scene": "Bonetown",
+  "gate": "right1",
+  "x": 1.0,
+  "y": 0.633333
+ },
+ "bone-bottom/bonegrave@ur": {
+  "scene": "Bonegrave",
+  "gate": "right1",
+  "x": 1.0,
+  "y": 0.890244
+ },
+ "bone-bottom/bonegrave@c": {
+  "scene": "Bonegrave",
+  "gate": "top1",
+  "x": 0.668571,
+  "y": 1.0
+ },
+ "bone-bottom/the-big-fall@ur": {
+  "scene": "Aspid_01",
+  "gate": "right2",
+  "x": 0.9,
+  "y": 0.802198
+ },
+ "bone-bottom/the-big-fall@mr": {
+  "scene": "Aspid_01",
+  "gate": "right3",
+  "x": 1.0,
+  "y": 0.252747
+ },
+ "bone-bottom/the-big-fall@lr": {
+  "scene": "Aspid_01",
+  "gate": "right4",
+  "x": 1.0,
+  "y": 0.065934
+ },
+ "bone-bottom/the-big-fall@ul": {
+  "scene": "Aspid_01",
+  "gate": "left1",
+  "x": 0.0,
+  "y": 0.626374
+ },
+ "bone-bottom/the-big-fall@ll": {
+  "scene": "Aspid_01",
+  "gate": "left2",
+  "x": 0.0,
+  "y": 0.113553
+ },
+ "bone-bottom/mosshome-side-room@l": {
+  "scene": "Bone_05b",
+  "gate": "left1",
+  "x": 0.0,
+  "y": 0.235294
+ },
+ "bone-bottom/mosshome-side-room@c": {
+  "scene": "Bone_05b",
+  "gate": "top1",
+  "x": 0.4375,
+  "y": 1.0
+ },
+ "bone-bottom/mosshome-druid@l": {
+  "scene": "Mosstown_02c",
+  "gate": "left2",
+  "x": 0.0,
+  "y": 0.25
+ },
+ "bone-bottom/mosshome-upper@lf": {
+  "scene": "Mosstown_02",
+  "gate": "bot1",
+  "x": 0.09375,
+  "y": 0.040541
+ },
+ "bone-bottom/mosshome-upper@l": {
+  "scene": "Mosstown_02",
+  "gate": "left1",
+  "x": 0.0,
+  "y": 0.162162
+ },
+ "bone-bottom/mosshome-upper@rf": {
+  "scene": "Mosstown_02",
+  "gate": "bot2",
+  "x": 0.93125,
+  "y": 0.040541
+ },
+ "bone-bottom/mosshome-upper@r": {
+  "scene": "Mosstown_02",
+  "gate": "right1",
+  "x": 1.0,
+  "y": 0.162162
+ },
+ "bone-bottom/mosshome-middle@lr": {
+  "scene": "Mosstown_01",
+  "gate": "right1",
+  "x": 1.0,
+  "y": 0.2
+ },
+ "bone-bottom/mosshome-middle@ur": {
+  "scene": "Mosstown_01",
+  "gate": "right2",
+  "x": 1.0,
+  "y": 0.633333
+ },
+ "bone-bottom/mosshome-middle@c": {
+  "scene": "Mosstown_01",
+  "gate": "top1",
+  "x": 0.107793,
+  "y": 1.0
+ },
+ "bone-bottom/mosshome-lower@lr": {
+  "scene": "Bone_11",
+  "gate": "right2",
+  "x": 1.0,
+  "y": 0.354839
+ },
+ "bone-bottom/mosshome-lower@ur": {
+  "scene": "Bone_11",
+  "gate": "right1",
+  "x": 1.0,
+  "y": 0.741935
+ },
+ "bone-bottom/mosshome-lower@l": {
+  "scene": "Bone_11",
+  "gate": "left1",
+  "x": 0.0,
+  "y": 0.709677
+ },
+ "bone-bottom/mosshome-basement-passage@ll": {
+  "scene": "Bone_01b",
+  "gate": "left2",
+  "x": 0.0,
+  "y": 0.1
+ },
+ "the-marrow/the-marrow-entrance@ll": {
+  "scene": "Bone_01",
+  "gate": "left2",
+  "x": 0.0,
+  "y": 0.098901
+ },
+ "the-marrow/the-marrow-entrance@lr": {
+  "scene": "Bone_01",
+  "gate": "right2",
+  "x": 1.0,
+  "y": 0.098901
+ },
+ "the-marrow/the-marrow-entrance@c": {
+  "scene": "Bone_01",
+  "gate": "top2",
+  "x": 0.815385,
+  "y": 1.0
+ },
+ "the-marrow/the-marrow-bell-bench@ll": {
+  "scene": "Bone_01c",
+  "gate": "left2",
+  "x": 0.128205,
+  "y": 0.12
+ },
+ "the-marrow/the-marrow-bell-bench@r": {
+  "scene": "Bone_01c",
+  "gate": "right1",
+  "x": 1.0,
+  "y": 0.106667
+ },
+ "the-marrow/the-marrow-lava-intro@l": {
+  "scene": "Bone_02",
+  "gate": "left1",
+  "x": 0.0,
+  "y": 0.217391
+ },
+ "the-marrow/the-marrow-lava-intro@r": {
+  "scene": "Bone_02",
+  "gate": "right1",
+  "x": 1.0,
+  "y": 0.26087
+ },
+ "the-marrow/the-marrow-lava-intro@lc": {
+  "scene": "Bone_02",
+  "gate": "top1",
+  "x": 0.303226,
+  "y": 1.0
+ },
+ "the-marrow/the-marrow-lava-intro@rc": {
+  "scene": "Bone_02",
+  "gate": "top2",
+  "x": 0.916129,
+  "y": 1.0
+ },
+ "the-marrow/the-marrow-lava-track@l": {
+  "scene": "Bone_16",
+  "gate": "left1",
+  "x": 0.0,
+  "y": 0.22
+ },
+ "the-marrow/the-marrow-lava-track@r": {
+  "scene": "Bone_16",
+  "gate": "right1",
+  "x": 1.0,
+  "y": 0.213333
+ },
+ "the-marrow/the-marrow-flea-caravan@l": {
+  "scene": "Bone_10",
+  "gate": "left1",
+  "x": 0.217391,
+  "y": 0.898551
+ },
+ "the-marrow/the-marrow-flea-caravan@r": {
+  "scene": "Bone_10",
+  "gate": "right1",
+  "x": 1.0,
+  "y": 0.376812
+ },
+ "the-marrow/the-marrow-flea-caravan@f": {
+  "scene": "Bone_10",
+  "gate": "bot1",
+  "x": 0.93913,
+  "y": 0.0
+ },
+ "the-marrow/the-marrow-shaft@f": {
+  "scene": "Bone_03",
+  "gate": "bot1",
+  "x": 0.7,
+  "y": 0.0
+ },
+ "the-marrow/the-marrow-shaft@ll": {
+  "scene": "Bone_03",
+  "gate": "left4",
+  "x": 0.025,
+  "y": 0.282609
+ },
+ "the-marrow/the-marrow-shaft@ml": {
+  "scene": "Bone_03",
+  "gate": "left2",
+  "x": 0.0,
+  "y": 0.557971
+ },
+ "the-marrow/the-marrow-shaft@lr": {
+  "scene": "Bone_03",
+  "gate": "right3",
+  "x": 1.0,
+  "y": 0.442029
+ },
+ "the-marrow/the-marrow-shaft@ur": {
+  "scene": "Bone_03",
+  "gate": "right1",
+  "x": 1.0,
+  "y": 0.673913
+ },
+ "the-marrow/the-marrow-shaft@c": {
+  "scene": "Bone_03",
+  "gate": "top1",
+  "x": 0.116667,
+  "y": 1.0
+ },
+ "the-marrow/the-marrow-shaft-side-room@r": {
+  "scene": "Bone_17",
+  "gate": "right1",
+  "x": 0.871429,
+  "y": 0.28
+ },
+ "the-marrow/the-marrow-map-shop@r": {
+  "scene": "Bone_04",
+  "gate": "right1",
+  "x": 1.0,
+  "y": 0.612903
+ },
+ "the-marrow/the-marrow-map-shop@f": {
+  "scene": "Bone_04",
+  "gate": "bot2",
+  "x": 0.491416,
+  "y": 0.0
+ },
+ "the-marrow/the-marrow-map-shop@ul": {
+  "scene": "Bone_04",
+  "gate": "left1",
+  "x": 0.0,
+  "y": 0.741935
+ },
+ "the-marrow/the-marrow-map-shop@ll": {
+  "scene": "Bone_04",
+  "gate": "left2",
+  "x": 0.0,
+  "y": 0.354839
+ },
+ "the-marrow/the-marrow-map-shop@c": {
+  "scene": "Bone_04",
+  "gate": "top1",
+  "x": 0.128755,
+  "y": 1.0
+ },
+ "the-marrow/the-marrow-bellway@l": {
+  "scene": "Bone_05",
+  "gate": "left1",
+  "x": 0.0,
+  "y": 0.272727
+ },
+ "the-marrow/the-marrow-bellway@f": {
+  "scene": "Bone_05",
+  "gate": "bot1",
+  "x": 0.144279,
+  "y": 0.0
+ },
+ "the-marrow/the-marrow-bellway@r": {
+  "scene": "Bone_05",
+  "gate": "right1",
+  "x": 0.992537,
+  "y": 0.409091
+ },
+ "the-marrow/the-marrow-bellshrine@l": {
+  "scene": "Bellshrine",
+  "gate": "left1",
+  "x": 0.174419,
+  "y": 0.2
+ },
+ "the-marrow/the-marrow-skull-wall@f": {
+  "scene": "Bone_06",
+  "gate": "bot1",
+  "x": 0.741071,
+  "y": 0.0
+ },
+ "the-marrow/the-marrow-skull-wall@r": {
+  "scene": "Bone_06",
+  "gate": "right1",
+  "x": 0.99375,
+  "y": 0.18
+ },
+ "the-marrow/the-marrow-skull-wall-side-room@l": {
+  "scene": "Bone_18",
+  "gate": "left1",
+  "x": 0.04449,
+  "y": 0.212121
+ },
+ "the-marrow/the-marrow-mr-burns-house@l": {
+  "scene": "Bone_14",
+  "gate": "left1",
+  "x": 0.0,
+  "y": 0.578947
+ },
+ "the-marrow/the-marrow-mr-burns-house@r": {
+  "scene": "Bone_14",
+  "gate": "right1",
+  "x": 1.0,
+  "y": 0.578947
+ },
+ "the-marrow/the-marrow-lower-pogo@c": {
+  "scene": "Bone_07",
+  "gate": "top1",
+  "x": 0.73913,
+  "y": 1.0
+ },
+ "the-marrow/the-marrow-lower-pogo@l": {
+  "scene": "Bone_07",
+  "gate": "left1",
+  "x": 0.0,
+  "y": 0.391892
+ },
+ "the-marrow/the-marrow-lower-pogo@ur": {
+  "scene": "Bone_07",
+  "gate": "right1",
+  "x": 1.0,
+  "y": 0.337838
+ },
+ "the-marrow/the-marrow-lower-pogo@lr": {
+  "scene": "Bone_07",
+  "gate": "right2",
+  "x": 1.0,
+  "y": 0.067568
+ },
+ "the-marrow/the-marrow-upper-pogo@f": {
+  "scene": "Bone_19",
+  "gate": "bot1",
+  "x": 0.938462,
+  "y": 0.0
+ },
+ "the-marrow/the-marrow-jail-pathway@ul": {
+  "scene": "Bone_08",
+  "gate": "left2",
+  "x": 0.0,
+  "y": 0.905263
+ },
+ "the-marrow/the-marrow-jail-pathway@ll": {
+  "scene": "Bone_08",
+  "gate": "left3",
+  "x": 0.0,
+  "y": 0.694737
+ },
+ "the-marrow/the-marrow-jail-pathway@ur": {
+  "scene": "Bone_08",
+  "gate": "right2",
+  "x": 0.675,
+  "y": 0.905263
+ },
+ "the-marrow/the-marrow-jail-pathway@mr": {
+  "scene": "Bone_08",
+  "gate": "right3",
+  "x": 0.775,
+  "y": 0.605263
+ },
+ "the-marrow/the-marrow-jail-pathway@jd": {
+  "scene": "Bone_08",
+  "gate": "door1",
+  "x": 0.80225,
+  "y": 0.239895
+ },
+ "the-marrow/the-marrow-jail-pathway@f": {
+  "scene": "Bone_08",
+  "gate": "bot1",
+  "x": 0.8,
+  "y": 0.0
+ },
+ "the-marrow/the-marrow-jail@l": {
+  "scene": "Bone_12",
+  "gate": "left1",
+  "x": 0.017241,
+  "y": 0.116279
+ },
+ "the-marrow/the-marrow-lava-docks@c": {
+  "scene": "Bone_09",
+  "gate": "top1",
+  "x": 0.170732,
+  "y": 1.0
+ },
+ "the-marrow/the-marrow-lava-docks@l": {
+  "scene": "Bone_09",
+  "gate": "left1",
+  "x": 0.0,
+  "y": 0.333333
+ },
+ "the-marrow/the-marrow-lava-docks@ur": {
+  "scene": "Bone_09",
+  "gate": "right2",
+  "x": 1.0,
+  "y": 0.533333
+ },
+ "the-marrow/the-marrow-lava-docks@lr": {
+  "scene": "Bone_09",
+  "gate": "right1",
+  "x": 0.981707,
+  "y": 0.177778
+ },
+ "the-marrow/the-marrow-skull-tyrant-arena@l": {
+  "scene": "Bone_15",
+  "gate": "left1",
+  "x": 0.0,
+  "y": 0.137931
+ },
+ "weavenest-atla/weavenest-atla-entrance@wd": {
+  "scene": "Weave_04",
+  "gate": "left1",
+  "x": 0.005556,
+  "y": 0.162162
+ },
+ "weavenest-atla/weavenest-atla-entrance@r": {
+  "scene": "Weave_04",
+  "gate": "right2",
+  "x": 1.0,
+  "y": 0.108108
+ },
+ "weavenest-atla/weavenest-atla-teleporter@ul": {
+  "scene": "Weave_02",
+  "gate": "left2",
+  "x": 0.0,
+  "y": 0.675214
+ },
+ "weavenest-atla/weavenest-atla-teleporter@ur": {
+  "scene": "Weave_02",
+  "gate": "right1",
+  "x": 1.0,
+  "y": 0.675214
+ },
+ "weavenest-atla/weavenest-atla-teleporter@mr": {
+  "scene": "Weave_02",
+  "gate": "right2",
+  "x": 1.0,
+  "y": 0.538462
+ },
+ "weavenest-atla/weavenest-atla-teleporter@ml": {
+  "scene": "Weave_02",
+  "gate": "left3",
+  "x": 0.0,
+  "y": 0.239316
+ },
+ "weavenest-atla/weavenest-atla-teleporter@ll": {
+  "scene": "Weave_02",
+  "gate": "left4",
+  "x": 0.0,
+  "y": 0.059829
+ },
+ "weavenest-atla/weavenest-atla-power-room@l": {
+  "scene": "Weave_12",
+  "gate": "left1",
+  "x": 0.0,
+  "y": 0.3
+ },
+ "weavenest-atla/weavenest-atla-bench@r": {
+  "scene": "Weave_07",
+  "gate": "right1",
+  "x": 1.0,
+  "y": 0.35
+ },
+ "weavenest-atla/weavenest-atla-bench@l": {
+  "scene": "Weave_07",
+  "gate": "left1",
+  "x": 0.0,
+  "y": 0.35
+ },
+ "weavenest-atla/weavenest-atla-grotto@r": {
+  "scene": "Weave_03",
+  "gate": "right1",
+  "x": 1.0,
+  "y": 0.771429
+ },
+ "weavenest-atla/weavenest-atla-hallway@l": {
+  "scene": "Weave_13",
+  "gate": "left1",
+  "x": 0.0,
+  "y": 0.55
+ },
+ "weavenest-atla/weavenest-atla-hallway@r": {
+  "scene": "Weave_13",
+  "gate": "right1",
+  "x": 1.0,
+  "y": 0.55
+ },
+ "weavenest-atla/weavenest-atla-lore@l": {
+  "scene": "Weave_08",
+  "gate": "left1",
+  "x": 0.071429,
+  "y": 0.527273
+ },
+ "weavenest-atla/weavenest-atla-lore@r": {
+  "scene": "Weave_08",
+  "gate": "right1",
+  "x": 1.0,
+  "y": 0.109091
+ },
+ "weavenest-atla/weavenest-atla-mask-shard@l": {
+  "scene": "Weave_05b",
+  "gate": "left1",
+  "x": 0.020161,
+  "y": 0.232558
+ },
+ "weavenest-atla/weavenest-atla-snare@f": {
+  "scene": "Weave_14",
+  "gate": "bot1",
+  "x": 0.291667,
+  "y": 0.0
+ },
+ "weavenest-atla/weavenest-atla-spool@r": {
+  "scene": "Weave_11",
+  "gate": "right1",
+  "x": 1.0,
+  "y": 0.21875
+ },
+ "weavenest-atla/weavenest-atla-spool@c": {
+  "scene": "Weave_11",
+  "gate": "top1",
+  "x": 0.738462,
+  "y": 1.0
+ },
+ "wormways/wormways-craggler-hallway@l": {
+  "scene": "Crawl_04",
+  "gate": "left1",
+  "x": 0.010067,
+  "y": 0.5
+ },
+ "wormways/wormways-craggler-hallway@r": {
+  "scene": "Crawl_04",
+  "gate": "right1",
+  "x": 1.0,
+  "y": 0.2
+ },
+ "wormways/wormways-shaft@lr": {
+  "scene": "Crawl_02",
+  "gate": "right2",
+  "x": 0.966667,
+  "y": 0.186667
+ },
+ "wormways/wormways-shaft@ur": {
+  "scene": "Crawl_02",
+  "gate": "right1",
+  "x": 1.0,
+  "y": 0.513333
+ },
+ "wormways/wormways-middle@f": {
+  "scene": "Crawl_03b",
+  "gate": "bot1",
+  "x": 0.440741,
+  "y": 0.0
+ },
+ "wormways/wormways-middle@c": {
+  "scene": "Crawl_03b",
+  "gate": "top1",
+  "x": 0.111111,
+  "y": 1.0
+ },
+ "wormways/wormways-upper-west@f": {
+  "scene": "Crawl_03",
+  "gate": "bot1",
+  "x": 0.427778,
+  "y": 0.0
+ },
+ "wormways/wormways-upper-west@c": {
+  "scene": "Crawl_03",
+  "gate": "top1",
+  "x": 0.827778,
+  "y": 1.0
+ },
+ "wormways/wormways-upper-west@wd": {
+  "scene": "Crawl_03",
+  "gate": "left1",
+  "x": 0.060833,
+  "y": 0.191558
+ },
+ "wormways/wormways-upper-east@l": {
+  "scene": "Crawl_01",
+  "gate": "left1",
+  "x": 0.0,
+  "y": 0.169231
+ },
+ "wormways/wormways-upper-east@r": {
+  "scene": "Crawl_01",
+  "gate": "right1",
+  "x": 1.0,
+  "y": 0.846154
+ },
+ "wormways/wormways-laboratory@f": {
+  "scene": "Crawl_08",
+  "gate": "bot1",
+  "x": 0.9,
+  "y": 0.159091
+ },
+ "wormways/wormways-lower-east@c": {
+  "scene": "Crawl_07",
+  "gate": "top1",
+  "x": 0.261628,
+  "y": 1.0
+ },
+ "wormways/wormways-lower-east@l": {
+  "scene": "Crawl_07",
+  "gate": "left1",
+  "x": 0.0,
+  "y": 0.827586
+ },
+ "wormways/wormways-lower-east@f": {
+  "scene": "Crawl_07",
+  "gate": "bot1",
+  "x": 0.639535,
+  "y": 0.0
+ },
+ "wormways/wormways-lower-west@r": {
+  "scene": "Crawl_09",
+  "gate": "right1",
+  "x": 1.0,
+  "y": 0.827586
+ },
+ "wormways/wormways-weavenest@wd": {
+  "scene": "Crawl_05",
+  "gate": "right1",
+  "x": 0.98,
+  "y": 0.471429
+ },
+ "deep-docks/deep-docks-entrance@ul": {
+  "scene": "Dock_08",
+  "gate": "left2",
+  "x": 0.0,
+  "y": 0.657143
+ },
+ "deep-docks/deep-docks-entrance@ll": {
+  "scene": "Dock_08",
+  "gate": "left1",
+  "x": 0.013636,
+  "y": 0.285714
+ },
+ "deep-docks/deep-docks-entrance@r": {
+  "scene": "Dock_08",
+  "gate": "right1",
+  "x": 1.0,
+  "y": 0.228571
+ },
+ "deep-docks/deep-docks-bench-shaft@lr": {
+  "scene": "Dock_01",
+  "gate": "right2",
+  "x": 0.987143,
+  "y": 0.095238
+ },
+ "deep-docks/deep-docks-bench-shaft@l": {
+  "scene": "Dock_01",
+  "gate": "left1",
+  "x": 0.0,
+  "y": 0.095238
+ },
+ "deep-docks/deep-docks-map-shop@ul": {
+  "scene": "Bone_East_01",
+  "gate": "left1",
+  "x": 0.021277,
+  "y": 0.337349
+ },
+ "deep-docks/deep-docks-map-shop@ll": {
+  "scene": "Bone_East_01",
+  "gate": "left2",
+  "x": 0.0,
+  "y": 0.192771
+ },
+ "deep-docks/deep-docks-map-shop@ur": {
+  "scene": "Bone_East_01",
+  "gate": "right1",
+  "x": 1.0,
+  "y": 0.891566
+ },
+ "deep-docks/deep-docks-map-shop@mr": {
+  "scene": "Bone_East_01",
+  "gate": "right2",
+  "x": 0.968085,
+  "y": 0.445783
+ },
+ "deep-docks/deep-docks-map-shop@lr": {
+  "scene": "Bone_East_01",
+  "gate": "right3",
+  "x": 0.968085,
+  "y": 0.096386
+ },
+ "deep-docks/deep-docks-map-shop-side-room@l": {
+  "scene": "Dock_05",
+  "gate": "left1",
+  "x": 0.022333,
+  "y": 0.266667
+ },
+ "deep-docks/deep-docks-bellway@r": {
+  "scene": "Bellway_02",
+  "gate": "right1",
+  "x": 1.0,
+  "y": 0.86
+ },
+ "deep-docks/deep-docks-lace-intro@l": {
+  "scene": "Bone_East_12",
+  "gate": "left1",
+  "x": 0.008333,
+  "y": 0.3125
+ },
+ "deep-docks/deep-docks-spire-lower@l": {
+  "scene": "Bone_East_03",
+  "gate": "left1",
+  "x": 0.0,
+  "y": 0.714286
+ },
+ "deep-docks/is-this-still-deep-docks-east@c": {
+  "scene": "Bone_East_04",
+  "gate": "top2",
+  "x": 0.807229,
+  "y": 1.0
+ },
+ "deep-docks/is-this-still-deep-docks-east@ur": {
+  "scene": "Bone_East_04",
+  "gate": "right2",
+  "x": 1.0,
+  "y": 0.84
+ },
+ "deep-docks/is-this-still-deep-docks-east@lr": {
+  "scene": "Bone_East_04",
+  "gate": "right1",
+  "x": 1.0,
+  "y": 0.48
+ },
+ "deep-docks/is-this-still-deep-docks-west@c": {
+  "scene": "Bone_East_04b",
+  "gate": "top1",
+  "x": 0.204545,
+  "y": 1.0
+ },
+ "deep-docks/is-this-still-deep-docks-west@l": {
+  "scene": "Bone_East_04b",
+  "gate": "left1",
+  "x": 0.0,
+  "y": 0.46
+ },
+ "deep-docks/deep-docks-march-side-room@l": {
+  "scene": "Bone_East_04c",
+  "gate": "left1",
+  "x": 0.0,
+  "y": 0.529412
+ },
+ "deep-docks/deep-docks-upper-spire@r": {
+  "scene": "Bone_East_05",
+  "gate": "right1",
+  "x": 1.0,
+  "y": 0.170213
+ },
+ "deep-docks/deep-docks-forge@l": {
+  "scene": "Room_Forge",
+  "gate": "left1",
+  "x": 0.0,
+  "y": 0.115942
+ },
+ "deep-docks/deep-docks-lower-west-shaft@mr": {
+  "scene": "Dock_04",
+  "gate": "right2",
+  "x": 0.95,
+  "y": 0.514286
+ },
+ "deep-docks/deep-docks-lower-west-shaft@ur": {
+  "scene": "Dock_04",
+  "gate": "right1",
+  "x": 1.0,
+  "y": 0.92381
+ },
+ "deep-docks/deep-docks-lower-west-shaft@lr": {
+  "scene": "Dock_04",
+  "gate": "right3",
+  "x": 0.939333,
+  "y": 0.104762
+ },
+ "deep-docks/deep-docks-spool-east@l": {
+  "scene": "Bone_East_13",
+  "gate": "left1",
+  "x": 0.003906,
+  "y": 0.285714
+ },
+ "deep-docks/deep-docks-chains-west@ll": {
+  "scene": "Dock_02",
+  "gate": "left2",
+  "x": 0.0,
+  "y": 0.148515
+ },
+ "deep-docks/deep-docks-chains-west@ur": {
+  "scene": "Dock_02",
+  "gate": "right1",
+  "x": 1.0,
+  "y": 0.861386
+ },
+ "deep-docks/deep-docks-chains-west@mr": {
+  "scene": "Dock_02",
+  "gate": "right2",
+  "x": 1.0,
+  "y": 0.326733
+ },
+ "deep-docks/deep-docks-chains-west@lr": {
+  "scene": "Dock_02",
+  "gate": "right3",
+  "x": 1.0,
+  "y": 0.059406
+ },
+ "deep-docks/deep-docks-chains-flea-rescue@f": {
+  "scene": "Dock_03d",
+  "gate": "bot1",
+  "x": 0.181818,
+  "y": 0.602564
+ },
+ "deep-docks/deep-docks-chains-center@ul": {
+  "scene": "Dock_02b",
+  "gate": "left1",
+  "x": 0.0,
+  "y": 0.725
+ },
+ "deep-docks/deep-docks-chains-center@ml": {
+  "scene": "Dock_02b",
+  "gate": "left2",
+  "x": 0.0,
+  "y": 0.275
+ },
+ "deep-docks/deep-docks-chains-center@ll": {
+  "scene": "Dock_02b",
+  "gate": "left3",
+  "x": 0.0,
+  "y": 0.05
+ },
+ "deep-docks/deep-docks-chains-center@ur": {
+  "scene": "Dock_02b",
+  "gate": "right1",
+  "x": 1.0,
+  "y": 0.891667
+ },
+ "deep-docks/deep-docks-chains-east@l": {
+  "scene": "Dock_03",
+  "gate": "left1",
+  "x": 0.0,
+  "y": 0.891667
+ },
+ "deep-docks/deep-docks-chains-east@f": {
+  "scene": "Dock_03",
+  "gate": "bot1",
+  "x": 0.738095,
+  "y": 0.633333
+ },
+ "deep-docks/deep-docks-chains-lower-east@rc": {
+  "scene": "Dock_03c",
+  "gate": "top2",
+  "x": 0.760736,
+  "y": 1.0
+ },
+ "deep-docks/deep-docks-chains-lower-east@lc": {
+  "scene": "Dock_03c",
+  "gate": "top1",
+  "x": 0.122699,
+  "y": 0.63125
+ },
+ "deep-docks/deep-docks-forebrothers@r": {
+  "scene": "Dock_09",
+  "gate": "right1",
+  "x": 1.0,
+  "y": 0.714286
+ },
+ "deep-docks/deep-docks-forebrothers@l": {
+  "scene": "Dock_09",
+  "gate": "left1",
+  "x": 0.0,
+  "y": 0.228571
+ },
+ "deep-docks/deep-docks-lower-east-shaft@ul": {
+  "scene": "Dock_15",
+  "gate": "left1",
+  "x": 0.0,
+  "y": 0.662338
+ },
+ "deep-docks/deep-docks-lower-east-shaft@ll": {
+  "scene": "Dock_15",
+  "gate": "left2",
+  "x": 0.0,
+  "y": 0.402597
+ },
+ "deep-docks/deep-docks-lower-east-shaft@ur": {
+  "scene": "Dock_15",
+  "gate": "right1",
+  "x": 1.0,
+  "y": 0.792208
+ },
+ "deep-docks/deep-docks-lower-east-shaft@mr": {
+  "scene": "Dock_15",
+  "gate": "right2",
+  "x": 1.0,
+  "y": 0.532468
+ },
+ "deep-docks/deep-docks-lower-east-shaft@lr": {
+  "scene": "Dock_15",
+  "gate": "right3",
+  "x": 1.0,
+  "y": 0.116883
+ },
+ "deep-docks/deep-docks-sauna@l": {
+  "scene": "Dock_10",
+  "gate": "left1",
+  "x": 0.001714,
+  "y": 0.516667
+ },
+ "deep-docks/deep-docks-sauna@r": {
+  "scene": "Dock_10",
+  "gate": "right1",
+  "x": 0.985714,
+  "y": 0.516667
+ },
+ "deep-docks/deep-docks-memory-hole@r": {
+  "scene": "Dock_13",
+  "gate": "right1",
+  "x": 1.0,
+  "y": 0.855263
+ },
+ "deep-docks/deep-docks-silkeater-room@l": {
+  "scene": "Dock_14",
+  "gate": "left1",
+  "x": 0.0,
+  "y": 0.352941
+ },
+ "deep-docks/deep-docks-magma-slug-tunnels@l": {
+  "scene": "Dock_11",
+  "gate": "left1",
+  "x": 0.0,
+  "y": 0.831169
+ },
+ "deep-docks/deep-docks-magma-slug-tunnels@r": {
+  "scene": "Dock_11",
+  "gate": "right1",
+  "x": 0.996622,
+  "y": 0.857143
+ },
+ "deep-docks/deep-docks-diving-bell-room@l": {
+  "scene": "Dock_12",
+  "gate": "left1",
+  "x": 0.0,
+  "y": 0.447761
+ },
+ "far-fields/far-fields-entrance@r": {
+  "scene": "Bone_East_02",
+  "gate": "right1",
+  "x": 1.0,
+  "y": 0.285714
+ },
+ "far-fields/far-fields-entrance-west@ur": {
+  "scene": "Bone_East_02b",
+  "gate": "right1",
+  "x": 1.0,
+  "y": 0.771429
+ },
+ "far-fields/far-fields-entrance-west@lr": {
+  "scene": "Bone_East_02b",
+  "gate": "right2",
+  "x": 1.0,
+  "y": 0.2
+ },
+ "far-fields/far-fields-entrance-west@l": {
+  "scene": "Bone_East_02b",
+  "gate": "left1",
+  "x": 0.011173,
+  "y": 0.285714
+ },
+ "far-fields/far-fields-entrance-west@c": {
+  "scene": "Bone_East_02b",
+  "gate": "top3",
+  "x": 0.128492,
+  "y": 1.0
+ },
+ "far-fields/far-fields-fort-lower-passage@f": {
+  "scene": "Bone_East_16",
+  "gate": "bot1",
+  "x": 0.192982,
+  "y": 0.0
+ },
+ "far-fields/far-fields-fort-upper-passage@l": {
+  "scene": "Bone_East_17",
+  "gate": "left1",
+  "x": 0.0,
+  "y": 0.708333
+ },
+ "far-fields/far-fields-fort-upper-passage@r": {
+  "scene": "Bone_East_17",
+  "gate": "right1",
+  "x": 1.0,
+  "y": 0.583333
+ },
+ "far-fields/far-fields-wind-shaft@r1": {
+  "scene": "Bone_East_07",
+  "gate": "right1",
+  "x": 1.0,
+  "y": 0.968421
+ },
+ "far-fields/far-fields-wind-shaft@r4": {
+  "scene": "Bone_East_07",
+  "gate": "right4",
+  "x": 1.0,
+  "y": 0.7
+ },
+ "far-fields/far-fields-wind-shaft@r2": {
+  "scene": "Bone_East_07",
+  "gate": "right2",
+  "x": 1.0,
+  "y": 0.473684
+ },
+ "far-fields/far-fields-wind-shaft@r5": {
+  "scene": "Bone_East_07",
+  "gate": "right5",
+  "x": 1.0,
+  "y": 0.278947
+ },
+ "far-fields/far-fields-wind-shaft@r3": {
+  "scene": "Bone_East_07",
+  "gate": "right3",
+  "x": 1.0,
+  "y": 0.205263
+ },
+ "far-fields/far-fields-wind-shaft@l4": {
+  "scene": "Bone_East_07",
+  "gate": "left4",
+  "x": 0.0,
+  "y": 0.931579
+ },
+ "far-fields/far-fields-wind-shaft@l1": {
+  "scene": "Bone_East_07",
+  "gate": "left1",
+  "x": 0.0,
+  "y": 0.436842
+ },
+ "far-fields/far-fields-wind-shaft@l2": {
+  "scene": "Bone_East_07",
+  "gate": "left2",
+  "x": 0.0,
+  "y": 0.326316
+ },
+ "far-fields/far-fields-wind-shaft@l3": {
+  "scene": "Bone_East_07",
+  "gate": "left3",
+  "x": 0.0,
+  "y": 0.105263
+ },
+ "far-fields/far-fields-upper-shaft@lr": {
+  "scene": "Bone_East_11",
+  "gate": "right2",
+  "x": 1.0,
+  "y": 0.014388
+ },
+ "far-fields/far-fields-pilgrims-rest@ul": {
+  "scene": "Bone_East_10",
+  "gate": "left1",
+  "x": 0.0,
+  "y": 0.421053
+ },
+ "far-fields/far-fields-pilgrims-rest@ll": {
+  "scene": "Bone_East_10",
+  "gate": "left2",
+  "x": 0.0,
+  "y": 0.131579
+ },
+ "far-fields/far-fields-pilgrims-rest-church@f": {
+  "scene": "Bone_East_10_Church",
+  "gate": "bot1",
+  "x": 0.630137,
+  "y": 0.02
+ },
+ "far-fields/far-fields-chorus@l": {
+  "scene": "Bone_East_08",
+  "gate": "left1",
+  "x": 0.0,
+  "y": 0.86
+ },
+ "far-fields/far-fields-chorus@r": {
+  "scene": "Bone_East_08",
+  "gate": "right1",
+  "x": 1.0,
+  "y": 0.4
+ },
+ "far-fields/far-fields-pinstress-attic@l": {
+  "scene": "Bone_East_09b",
+  "gate": "left1",
+  "x": 0.0,
+  "y": 0.178571
+ },
+ "far-fields/far-fields-pinstress-attic@c": {
+  "scene": "Bone_East_09b",
+  "gate": "top1",
+  "x": 0.213415,
+  "y": 0.977679
+ },
+ "far-fields/far-fields-pinstress-room@ul": {
+  "scene": "Bone_East_09",
+  "gate": "left3",
+  "x": 0.0,
+  "y": 0.824742
+ },
+ "far-fields/far-fields-pinstress-room@lr": {
+  "scene": "Bone_East_09",
+  "gate": "right2",
+  "x": 1.0,
+  "y": 0.092784
+ },
+ "far-fields/far-fields-pinstress-room@ll": {
+  "scene": "Bone_East_09",
+  "gate": "left2",
+  "x": 0.0,
+  "y": 0.329897
+ },
+ "far-fields/far-fields-pinstress-room@ur": {
+  "scene": "Bone_East_09",
+  "gate": "right1",
+  "x": 1.0,
+  "y": 0.28866
+ },
+ "far-fields/far-fields-pinstress-room@d": {
+  "scene": "Bone_East_09",
+  "gate": "door1",
+  "x": 0.44307,
+  "y": 0.44259
+ },
+ "far-fields/far-fields-pinstress-hut-interior@l": {
+  "scene": "Bone_East_Umbrella",
+  "gate": "left1",
+  "x": 0.190909,
+  "y": 0.307692
+ },
+ "far-fields/far-fields-pinstress-mask-shard@r": {
+  "scene": "Bone_East_20",
+  "gate": "right1",
+  "x": 1.0,
+  "y": 0.606061
+ },
+ "far-fields/far-fields-target-practice@l": {
+  "scene": "Bone_East_22",
+  "gate": "left1",
+  "x": 0.0,
+  "y": 0.171429
+ },
+ "far-fields/far-fields-map-shop@l": {
+  "scene": "Bone_East_21",
+  "gate": "left1",
+  "x": 0.0,
+  "y": 0.3
+ },
+ "far-fields/far-fields-bellway@r": {
+  "scene": "Bellway_03",
+  "gate": "right1",
+  "x": 1.0,
+  "y": 0.316667
+ },
+ "far-fields/far-fields-bellway@l": {
+  "scene": "Bellway_03",
+  "gate": "left1",
+  "x": 0.0,
+  "y": 0.166667
+ },
+ "far-fields/far-fields-dock-loopback@l": {
+  "scene": "Bone_East_15",
+  "gate": "left1",
+  "x": 0.0,
+  "y": 0.490909
+ },
+ "far-fields/far-fields-dock-loopback@r": {
+  "scene": "Bone_East_15",
+  "gate": "right1",
+  "x": 1.0,
+  "y": 0.854545
+ },
+ "far-fields/far-fields-deep-docks-backdoor@r": {
+  "scene": "Dock_03b",
+  "gate": "right1",
+  "x": 1.0,
+  "y": 0.09088
+ },
+ "far-fields/far-fields-skull-room-west@ul": {
+  "scene": "Bone_East_14",
+  "gate": "left1",
+  "x": 0.0,
+  "y": 0.35
+ },
+ "far-fields/far-fields-skull-room-west@ll": {
+  "scene": "Bone_East_14",
+  "gate": "left2",
+  "x": 0.0,
+  "y": 0.1125
+ },
+ "far-fields/far-fields-skull-room-west@ur": {
+  "scene": "Bone_East_14",
+  "gate": "right1",
+  "x": 1.0,
+  "y": 0.775
+ },
+ "far-fields/far-fields-skull-room-east@ul": {
+  "scene": "Bone_East_14b",
+  "gate": "left1",
+  "x": 0.438511,
+  "y": 0.826667
+ },
+ "far-fields/far-fields-skull-room-east@d": {
+  "scene": "Bone_East_14b",
+  "gate": "door1",
+  "x": 0.606893,
+  "y": 0.314667
+ },
+ "far-fields/far-fields-skull-room-east@r": {
+  "scene": "Bone_East_14b",
+  "gate": "right1",
+  "x": 0.991909,
+  "y": 0.16
+ },
+ "far-fields/far-fields-skull-arena@l": {
+  "scene": "Bone_East_LavaChallenge",
+  "gate": "left1",
+  "x": 0.017241,
+  "y": 0.847751
+ },
+ "far-fields/weavenest-cindril@l": {
+  "scene": "Bone_East_Weavehome",
+  "gate": "left1",
+  "x": 0.05122,
+  "y": 0.8
+ },
+ "far-fields/far-fields-deep-entrance@f": {
+  "scene": "Bone_East_24",
+  "gate": "bot1",
+  "x": 0.897338,
+  "y": 0.0
+ },
+ "far-fields/far-fields-deep-entrance@r": {
+  "scene": "Bone_East_24",
+  "gate": "right1",
+  "x": 1.0,
+  "y": 0.5
+ },
+ "far-fields/far-fields-deep-lower-east@d": {
+  "scene": "Bone_East_18b",
+  "gate": "door1",
+  "x": 0.954553,
+  "y": 0.843163
+ },
+ "far-fields/far-fields-deep-lower-east@c": {
+  "scene": "Bone_East_18b",
+  "gate": "top1",
+  "x": 0.503058,
+  "y": 1.0
+ },
+ "far-fields/far-fields-deep-lower-east@l": {
+  "scene": "Bone_East_18b",
+  "gate": "left1",
+  "x": 0.0,
+  "y": 0.703704
+ },
+ "far-fields/hunters-march-pilgrims-rest-deep-passage@r": {
+  "scene": "Bone_East_18c",
+  "gate": "right1",
+  "x": 1.0,
+  "y": 0.48
+ },
+ "far-fields/far-fields-deep-lower-west@c": {
+  "scene": "Bone_East_18",
+  "gate": "top1",
+  "x": 0.617978,
+  "y": 1.0
+ },
+ "far-fields/far-fields-deep-lower-west@l": {
+  "scene": "Bone_East_18",
+  "gate": "left1",
+  "x": 0.367978,
+  "y": 0.193548
+ },
+ "far-fields/far-fields-deep-lower-west@r": {
+  "scene": "Bone_East_18",
+  "gate": "right1",
+  "x": 1.0,
+  "y": 0.177419
+ },
+ "far-fields/far-fields-deep-fort-passage@c": {
+  "scene": "Bone_East_26",
+  "gate": "top1",
+  "x": 0.073171,
+  "y": 1.0
+ },
+ "far-fields/far-fields-deep-fort-passage@f": {
+  "scene": "Bone_East_26",
+  "gate": "bot1",
+  "x": 0.970732,
+  "y": 0.020833
+ },
+ "far-fields/far-fields-deep-bench@f": {
+  "scene": "Bone_East_27",
+  "gate": "bot1",
+  "x": 0.44,
+  "y": 0.047619
+ },
+ "far-fields/far-fields-deep-bench@r": {
+  "scene": "Bone_East_27",
+  "gate": "right1",
+  "x": 1.0,
+  "y": 0.126984
+ },
+ "far-fields/far-fields-deep-bench@l": {
+  "scene": "Bone_East_27",
+  "gate": "left1",
+  "x": 0.0,
+  "y": 0.126984
+ },
+ "far-fields/far-fields-deep-fort@l": {
+  "scene": "Bone_East_25",
+  "gate": "left1",
+  "x": 0.0,
+  "y": 0.296296
+ },
+ "far-fields/far-fields-deep-fort@d": {
+  "scene": "Bone_East_25",
+  "gate": "door1",
+  "x": 0.380191,
+  "y": 0.251481
+ },
+ "far-fields/current-karmelita@l": {
+  "scene": "Ant_Queen",
+  "gate": "left1",
+  "x": 0.045455,
+  "y": 0.444444
+ },
+ "far-fields/sprintmaster-cave@l": {
+  "scene": "Sprintmaster_Cave",
+  "gate": "left1",
+  "x": 0.0,
+  "y": 0.470588
+ },
+ "hunter-s-march/hunters-march-chapel-passage@l": {
+  "scene": "Ant_20",
+  "gate": "left1",
+  "x": 0.0,
+  "y": 0.229167
+ },
+ "hunter-s-march/hunters-march-entrance@l": {
+  "scene": "Ant_02",
+  "gate": "left1",
+  "x": 0.003846,
+  "y": 0.28
+ },
+ "hunter-s-march/hunters-march-entrance@r": {
+  "scene": "Ant_02",
+  "gate": "right1",
+  "x": 1.0,
+  "y": 0.32
+ },
+ "hunter-s-march/hunters-march-pogo-intro@l": {
+  "scene": "Ant_03",
+  "gate": "left2",
+  "x": 0.0,
+  "y": 0.089744
+ },
+ "hunter-s-march/hunters-march-pogo-intro@r": {
+  "scene": "Ant_03",
+  "gate": "right3",
+  "x": 1.0,
+  "y": 0.692308
+ },
+ "hunter-s-march/hunters-march-early-pathway-west@l": {
+  "scene": "Ant_04_left",
+  "gate": "left1",
+  "x": 0.0,
+  "y": 0.351351
+ },
+ "hunter-s-march/hunters-march-early-pathway-west@r": {
+  "scene": "Ant_04_left",
+  "gate": "right1",
+  "x": 1.0,
+  "y": 0.243243
+ },
+ "hunter-s-march/hunters-march-map-shop@l": {
+  "scene": "Ant_04_mid",
+  "gate": "left1",
+  "x": 0.0,
+  "y": 0.243243
+ },
+ "hunter-s-march/hunters-march-map-shop@r": {
+  "scene": "Ant_04_mid",
+  "gate": "right1",
+  "x": 1.0,
+  "y": 0.351351
+ },
+ "hunter-s-march/hunters-march-early-pathway-east@r": {
+  "scene": "Ant_04",
+  "gate": "right1",
+  "x": 1.0,
+  "y": 0.352941
+ },
+ "hunter-s-march/hunters-march-early-pathway-east@l": {
+  "scene": "Ant_04",
+  "gate": "left1",
+  "x": 0.597656,
+  "y": 0.382353
+ },
+ "hunter-s-march/hunters-march-shaft@l5": {
+  "scene": "Ant_14",
+  "gate": "left5",
+  "x": 0.034483,
+  "y": 0.923077
+ },
+ "hunter-s-march/hunters-march-shaft@l1": {
+  "scene": "Ant_14",
+  "gate": "left1",
+  "x": 0.0,
+  "y": 0.715385
+ },
+ "hunter-s-march/hunters-march-shaft@l2": {
+  "scene": "Ant_14",
+  "gate": "left2",
+  "x": 0.0,
+  "y": 0.538462
+ },
+ "hunter-s-march/hunters-march-shaft@l3": {
+  "scene": "Ant_14",
+  "gate": "left3",
+  "x": 0.0,
+  "y": 0.223077
+ },
+ "hunter-s-march/hunters-march-shaft@l4": {
+  "scene": "Ant_14",
+  "gate": "left4",
+  "x": 0.0,
+  "y": 0.053846
+ },
+ "hunter-s-march/hunters-march-shaft@ur": {
+  "scene": "Ant_14",
+  "gate": "right2",
+  "x": 1.0,
+  "y": 0.492308
+ },
+ "hunter-s-march/hunters-march-shaft@lr": {
+  "scene": "Ant_14",
+  "gate": "right3",
+  "x": 1.0,
+  "y": 0.1
+ },
+ "hunter-s-march/hunters-march-trapped-bench@r": {
+  "scene": "Ant_17",
+  "gate": "right1",
+  "x": 1.0,
+  "y": 0.291667
+ },
+ "hunter-s-march/ant-merchant@r": {
+  "scene": "Ant_Merchant",
+  "gate": "right1",
+  "x": 1.0,
+  "y": 0.4
+ },
+ "hunter-s-march/hunters-march-treasure-vault@r": {
+  "scene": "Ant_21",
+  "gate": "right1",
+  "x": 0.797101,
+  "y": 0.865169
+ },
+ "hunter-s-march/hunters-march-statue@l": {
+  "scene": "Ant_05c",
+  "gate": "left1",
+  "x": 0.0,
+  "y": 0.146341
+ },
+ "hunter-s-march/hunters-march-statue@r": {
+  "scene": "Ant_05c",
+  "gate": "right1",
+  "x": 1.0,
+  "y": 0.780488
+ },
+ "hunter-s-march/hunters-march-deep-docks-passage@r": {
+  "scene": "Ant_05b",
+  "gate": "right1",
+  "x": 1.0,
+  "y": 0.3
+ },
+ "hunter-s-march/hunters-march-deep-docks-passage@lf": {
+  "scene": "Ant_05b",
+  "gate": "bot1",
+  "x": 0.183333,
+  "y": 0.0
+ },
+ "hunter-s-march/hunters-march-deep-docks-passage@rf": {
+  "scene": "Ant_05b",
+  "gate": "bot2",
+  "x": 0.733333,
+  "y": 0.0
+ },
+ "hunter-s-march/hunters-march-deep-entrance@l": {
+  "scene": "Ant_09",
+  "gate": "left1",
+  "x": 0.0,
+  "y": 0.354167
+ },
+ "shellwood/cling-grip-room@ur": {
+  "scene": "Shellwood_10",
+  "gate": "right1",
+  "x": 1.0,
+  "y": 0.921569
+ },
+ "shellwood/cling-grip-room@lr": {
+  "scene": "Shellwood_10",
+  "gate": "right2",
+  "x": 1.0,
+  "y": 0.264706
+ },
+ "shellwood/cling-grip-room@ml": {
+  "scene": "Shellwood_10",
+  "gate": "left2",
+  "x": 0.0,
+  "y": 0.637255
+ },
+ "shellwood/cling-grip-room@ul": {
+  "scene": "Shellwood_10",
+  "gate": "left1",
+  "x": 0.0,
+  "y": 0.784314
+ },
+ "shellwood/cling-grip-room@mr": {
+  "scene": "Shellwood_10",
+  "gate": "right3",
+  "x": 1.0,
+  "y": 0.637255
+ },
+ "shellwood/cling-grip-room@ll": {
+  "scene": "Shellwood_10",
+  "gate": "left3",
+  "x": 0.0,
+  "y": 0.117647
+ },
+ "shellwood/cling-grip-side-room@lr": {
+  "scene": "Shellwood_11",
+  "gate": "right2",
+  "x": 1.0,
+  "y": 0.230769
+ },
+ "shellwood/cling-grip-side-room@ur": {
+  "scene": "Shellwood_11",
+  "gate": "right1",
+  "x": 1.0,
+  "y": 0.423077
+ },
+ "shellwood/greyroot@l": {
+  "scene": "Room_Witch",
+  "gate": "left1",
+  "x": 0.136364,
+  "y": 0.368421
+ },
+ "shellwood/shellgrave@f": {
+  "scene": "Shellgrave",
+  "gate": "bot1",
+  "x": 0.884058,
+  "y": 0.022727
+ },
+ "shellwood/shellwood-bellshrine@l": {
+  "scene": "Bellshrine_03",
+  "gate": "left1",
+  "x": 0.174419,
+  "y": 0.2
+ },
+ "shellwood/shellwood-bellway@r": {
+  "scene": "Shellwood_19",
+  "gate": "right1",
+  "x": 1.0,
+  "y": 0.368421
+ },
+ "shellwood/shellwood-big-room-left@ur": {
+  "scene": "Shellwood_02",
+  "gate": "right1",
+  "x": 0.99375,
+  "y": 0.892157
+ },
+ "shellwood/shellwood-big-room-left@ll": {
+  "scene": "Shellwood_02",
+  "gate": "left2",
+  "x": 0.0375,
+  "y": 0.137255
+ },
+ "shellwood/shellwood-big-room-left@ul": {
+  "scene": "Shellwood_02",
+  "gate": "left3",
+  "x": 0.0,
+  "y": 0.598039
+ },
+ "shellwood/shellwood-connection-to-blasted-steps@r": {
+  "scene": "Shellwood_08",
+  "gate": "right1",
+  "x": 0.954082,
+  "y": 0.263158
+ },
+ "shellwood/shellwood-connection-to-blasted-steps@l": {
+  "scene": "Shellwood_08",
+  "gate": "left1",
+  "x": 0.0,
+  "y": 0.315789
+ },
+ "shellwood/shellwood-connection-to-blasted-steps@f": {
+  "scene": "Shellwood_08",
+  "gate": "bot1",
+  "x": 0.346939,
+  "y": 0.0
+ },
+ "shellwood/shellwood-far-left-tall-room@c": {
+  "scene": "Shellwood_04c",
+  "gate": "top1",
+  "x": 0.517241,
+  "y": 1.0
+ },
+ "shellwood/shellwood-far-left-tall-room@f": {
+  "scene": "Shellwood_04c",
+  "gate": "bot1",
+  "x": 0.517241,
+  "y": 0.0
+ },
+ "shellwood/shellwood-flower-pogo-upper-hall@r": {
+  "scene": "Shellwood_20",
+  "gate": "right1",
+  "x": 1.0,
+  "y": 0.209302
+ },
+ "shellwood/shellwood-flower-pogo-upper-hall@l": {
+  "scene": "Shellwood_20",
+  "gate": "left1",
+  "x": 0.0,
+  "y": 0.209302
+ },
+ "shellwood/shellwood-greyroot-entrance@d": {
+  "scene": "Shellwood_Witch",
+  "gate": "door1",
+  "x": 0.352552,
+  "y": 0.226957
+ },
+ "shellwood/shellwood-greyroot-entrance@r": {
+  "scene": "Shellwood_Witch",
+  "gate": "right1",
+  "x": 1.0,
+  "y": 0.266667
+ },
+ "shellwood/shellwood-left-side-long-pond-room@r": {
+  "scene": "Shellwood_04b",
+  "gate": "right1",
+  "x": 1.0,
+  "y": 0.384615
+ },
+ "shellwood/shellwood-left-side-long-pond-room@rc": {
+  "scene": "Shellwood_04b",
+  "gate": "top2",
+  "x": 0.878261,
+  "y": 1.0
+ },
+ "shellwood/shellwood-left-side-long-pond-room@lc": {
+  "scene": "Shellwood_04b",
+  "gate": "top1",
+  "x": 0.178261,
+  "y": 1.0
+ },
+ "shellwood/shellwood-lower-left-tall-room@ul": {
+  "scene": "Shellwood_03",
+  "gate": "left1",
+  "x": 0.0,
+  "y": 0.918519
+ },
+ "shellwood/shellwood-lower-left-tall-room@mr": {
+  "scene": "Shellwood_03",
+  "gate": "right2",
+  "x": 1.0,
+  "y": 0.77037
+ },
+ "shellwood/shellwood-lower-left-tall-room@ll": {
+  "scene": "Shellwood_03",
+  "gate": "left3",
+  "x": 0.0,
+  "y": 0.155556
+ },
+ "shellwood/shellwood-lower-left-tall-room@ur": {
+  "scene": "Shellwood_03",
+  "gate": "right1",
+  "x": 1.0,
+  "y": 0.918519
+ },
+ "shellwood/shellwood-lower-left-tall-room@lr": {
+  "scene": "Shellwood_03",
+  "gate": "right3",
+  "x": 1.0,
+  "y": 0.096296
+ },
+ "shellwood/shellwood-lower-toll-bench@l": {
+  "scene": "Shellwood_08c",
+  "gate": "left1",
+  "x": 0.011905,
+  "y": 0.25
+ },
+ "shellwood/shellwood-mask-shard-room@l": {
+  "scene": "Shellwood_14",
+  "gate": "left1",
+  "x": 0.0,
+  "y": 0.368421
+ },
+ "shellwood/shellwood-right-side-big-room@ul": {
+  "scene": "Shellwood_01",
+  "gate": "left1",
+  "x": 0.352273,
+  "y": 0.826531
+ },
+ "shellwood/shellwood-right-side-big-room@lr": {
+  "scene": "Shellwood_01",
+  "gate": "right2",
+  "x": 0.984848,
+  "y": 0.081633
+ },
+ "shellwood/shellwood-shakra@l": {
+  "scene": "Shellwood_16",
+  "gate": "left1",
+  "x": 0.0,
+  "y": 0.44
+ },
+ "shellwood/shellwood-shakra@r": {
+  "scene": "Shellwood_16",
+  "gate": "right1",
+  "x": 0.982353,
+  "y": 0.52
+ },
+ "shellwood/shellwood-sister-splinter-bench@ur": {
+  "scene": "Shellwood_01b",
+  "gate": "right1",
+  "x": 1.0,
+  "y": 0.844037
+ },
+ "shellwood/shellwood-sister-splinter-bench@ll": {
+  "scene": "Shellwood_01b",
+  "gate": "left2",
+  "x": 0.0,
+  "y": 0.266055
+ },
+ "shellwood/shellwood-sister-splinter-bench@ul": {
+  "scene": "Shellwood_01b",
+  "gate": "left1",
+  "x": 0.0,
+  "y": 0.724771
+ },
+ "shellwood/shellwood-sister-splinter-bench@lr": {
+  "scene": "Shellwood_01b",
+  "gate": "right2",
+  "x": 1.0,
+  "y": 0.211009
+ },
+ "shellwood/shellwood-top-room@l": {
+  "scene": "Shellwood_26",
+  "gate": "left1",
+  "x": 0.0,
+  "y": 0.461538
+ },
+ "shellwood/shellwood-top-room@f": {
+  "scene": "Shellwood_26",
+  "gate": "bot1",
+  "x": 0.792593,
+  "y": 0.419231
+ },
+ "shellwood/shellwood-upper-bellhart-entrance@ul": {
+  "scene": "Shellwood_13",
+  "gate": "left1",
+  "x": 0.0,
+  "y": 0.3875
+ },
+ "shellwood/shellwood-upper-bellhart-entrance@ll": {
+  "scene": "Shellwood_13",
+  "gate": "left2",
+  "x": 0.0,
+  "y": 0.075
+ },
+ "shellwood/sister-splinter@l": {
+  "scene": "Shellwood_18",
+  "gate": "left1",
+  "x": 0.0,
+  "y": 0.257143
+ },
+ "shellwood/sister-splinter@r": {
+  "scene": "Shellwood_18",
+  "gate": "right1",
+  "x": 1.0,
+  "y": 0.257143
+ },
+ "shellwood/sister-splinter@c": {
+  "scene": "Shellwood_18",
+  "gate": "top1",
+  "x": 0.864286,
+  "y": 1.0
+ },
+ "bellhart/bellhart-bellway@f": {
+  "scene": "Belltown_basement",
+  "gate": "bot1",
+  "x": 0.837209,
+  "y": 0.055556
+ },
+ "bellhart/bellhart-bellway@l": {
+  "scene": "Belltown_basement",
+  "gate": "left1",
+  "x": 0.41314,
+  "y": 0.722222
+ },
+ "bellhart/bellhart-hallway-to-shellwood@l": {
+  "scene": "Belltown_07",
+  "gate": "left1",
+  "x": 0.014286,
+  "y": 0.294118
+ },
+ "bellhart/bellhart-hallway-to-shellwood@r": {
+  "scene": "Belltown_07",
+  "gate": "right1",
+  "x": 1.0,
+  "y": 0.294118
+ },
+ "bellhart/bellhart-lower@c": {
+  "scene": "Belltown_basement_03",
+  "gate": "top1",
+  "x": 0.906667,
+  "y": 1.0
+ },
+ "bellhart/bellhart-lower@l": {
+  "scene": "Belltown_basement_03",
+  "gate": "left1",
+  "x": 0.386667,
+  "y": 0.04
+ },
+ "bellhart/bellhart-right-entrance@ul": {
+  "scene": "Belltown_06",
+  "gate": "left3",
+  "x": 0.0,
+  "y": 0.86747
+ },
+ "bellhart/bellhart-right-entrance@ll": {
+  "scene": "Belltown_06",
+  "gate": "left1",
+  "x": 0.0,
+  "y": 0.120482
+ },
+ "bellhart/belltown@l": {
+  "scene": "Belltown",
+  "gate": "left3",
+  "x": 0.188073,
+  "y": 0.133333
+ },
+ "bellhart/belltown@r": {
+  "scene": "Belltown",
+  "gate": "right2",
+  "x": 1.0,
+  "y": 0.133333
+ },
+ "bellhart/belltown@bd": {
+  "scene": "Belltown",
+  "gate": "door1",
+  "x": 0.776419,
+  "y": 0.088715
+ },
+ "bellhart/upper-bellhart@f": {
+  "scene": "Belltown_04",
+  "gate": "bot1",
+  "x": 0.223529,
+  "y": 0.0
+ },
+ "bellhart/widow-boss-fight@r": {
+  "scene": "Belltown_Shrine",
+  "gate": "right1",
+  "x": 1.0,
+  "y": 0.236842
+ },
+ "bellhart/widow-boss-fight@c": {
+  "scene": "Belltown_Shrine",
+  "gate": "top1",
+  "x": 0.073684,
+  "y": 1.0
+ },
+ "greymoor/greymoor-bellshrine@r": {
+  "scene": "Bellshrine_02",
+  "gate": "right1",
+  "x": 0.77907,
+  "y": 0.2
+ },
+ "greymoor/greymoor-craw-lake@t": {
+  "scene": "Greymoor_15b",
+  "gate": "top1",
+  "x": 0.534247,
+  "y": 1.0
+ },
+ "greymoor/greymoor-craw-lake@ml": {
+  "scene": "Greymoor_15b",
+  "gate": "left2",
+  "x": 0.0,
+  "y": 0.439716
+ },
+ "greymoor/greymoor-craw-lake@cn": {
+  "scene": "Greymoor_15b",
+  "gate": "door1",
+  "x": 0.571233,
+  "y": 0.075954
+ },
+ "greymoor/greymoor-craw-lake@ll": {
+  "scene": "Greymoor_15b",
+  "gate": "left3",
+  "x": 0.0,
+  "y": 0.085106
+ },
+ "greymoor/greymoor-craw-nest@l": {
+  "scene": "Room_CrowCourt",
+  "gate": "left1",
+  "x": 0.007143,
+  "y": 0.3875
+ },
+ "greymoor/greymoor-east-bellshrine-room@lsl": {
+  "scene": "Greymoor_02",
+  "gate": "left3",
+  "x": 0.0,
+  "y": 0.186667
+ },
+ "greymoor/greymoor-east-bellshrine-room@lr": {
+  "scene": "Greymoor_02",
+  "gate": "right3",
+  "x": 1.0,
+  "y": 0.04
+ },
+ "greymoor/greymoor-east-bellshrine-room@ml": {
+  "scene": "Greymoor_02",
+  "gate": "left2",
+  "x": 0.327778,
+  "y": 0.266667
+ },
+ "greymoor/greymoor-east-bellshrine-room@mr": {
+  "scene": "Greymoor_02",
+  "gate": "right1",
+  "x": 1.0,
+  "y": 0.26
+ },
+ "greymoor/greymoor-east-bellshrine-room@bl": {
+  "scene": "Greymoor_02",
+  "gate": "left1",
+  "x": 0.0,
+  "y": 0.42
+ },
+ "greymoor/greymoor-east-bellshrine-room@hr": {
+  "scene": "Greymoor_02",
+  "gate": "right2",
+  "x": 1.0,
+  "y": 0.96
+ },
+ "greymoor/greymoor-eastern-tower@lr": {
+  "scene": "Greymoor_04",
+  "gate": "right2",
+  "x": 1.0,
+  "y": 0.070588
+ },
+ "greymoor/greymoor-eastern-tower@ll": {
+  "scene": "Greymoor_04",
+  "gate": "left3",
+  "x": 0.0,
+  "y": 0.070588
+ },
+ "greymoor/greymoor-eastern-tower@mr": {
+  "scene": "Greymoor_04",
+  "gate": "right1",
+  "x": 1.0,
+  "y": 0.311765
+ },
+ "greymoor/greymoor-eastern-tower@ml": {
+  "scene": "Greymoor_04",
+  "gate": "left2",
+  "x": 0.0,
+  "y": 0.311765
+ },
+ "greymoor/greymoor-eastern-tower@ul": {
+  "scene": "Greymoor_04",
+  "gate": "left1",
+  "x": 0.0,
+  "y": 0.682353
+ },
+ "greymoor/greymoor-lower-halfway-home-path@l": {
+  "scene": "Greymoor_13",
+  "gate": "left1",
+  "x": 0.0,
+  "y": 0.26087
+ },
+ "greymoor/greymoor-lower-halfway-home-path@r": {
+  "scene": "Greymoor_13",
+  "gate": "right1",
+  "x": 1.0,
+  "y": 0.26087
+ },
+ "greymoor/greymoor-lower-halfway-home-path@d": {
+  "scene": "Greymoor_13",
+  "gate": "bot1",
+  "x": 0.55,
+  "y": 0.0
+ },
+ "greymoor/greymoor-weaver-shrine@b": {
+  "scene": "Greymoor_22",
+  "gate": "bot1",
+  "x": 0.481818,
+  "y": 0.0
+ },
+ "greymoor/greymoor-western-tower@lr": {
+  "scene": "Greymoor_06",
+  "gate": "right4",
+  "x": 1.0,
+  "y": 0.064865
+ },
+ "greymoor/greymoor-western-tower@ll": {
+  "scene": "Greymoor_06",
+  "gate": "left3",
+  "x": 0.0,
+  "y": 0.064865
+ },
+ "greymoor/greymoor-western-tower@ml": {
+  "scene": "Greymoor_06",
+  "gate": "left2",
+  "x": 0.0,
+  "y": 0.432432
+ },
+ "greymoor/greymoor-western-tower@mr": {
+  "scene": "Greymoor_06",
+  "gate": "right2",
+  "x": 1.0,
+  "y": 0.481081
+ },
+ "greymoor/greymoor-western-tower@yp": {
+  "scene": "Greymoor_06",
+  "gate": "left1",
+  "x": 0.0,
+  "y": 0.481081
+ },
+ "greymoor/greymoor-western-tower@gr": {
+  "scene": "Greymoor_06",
+  "gate": "right3",
+  "x": 1.0,
+  "y": 0.308108
+ },
+ "greymoor/greymoor-western-tower@ur": {
+  "scene": "Greymoor_06",
+  "gate": "right1",
+  "x": 0.8875,
+  "y": 0.913514
+ },
+ "greymoor/yarnaby-place@r": {
+  "scene": "Wisp_03",
+  "gate": "right1",
+  "x": 1.0,
+  "y": 0.191489
+ },
+ "greymoor/greymoor-bellway@l": {
+  "scene": "Bellway_04",
+  "gate": "left1",
+  "x": 0.0,
+  "y": 0.7
+ },
+ "greymoor/greymoor-bellway@d": {
+  "scene": "Bellway_04",
+  "gate": "bot1",
+  "x": 0.252632,
+  "y": 0.0
+ },
+ "greymoor/greymoor-bone-scroll-room@t": {
+  "scene": "Greymoor_21",
+  "gate": "top1",
+  "x": 0.4625,
+  "y": 1.0
+ },
+ "greymoor/greymoor-chapel-entrance@r": {
+  "scene": "Greymoor_20b",
+  "gate": "right1",
+  "x": 1.0,
+  "y": 0.25
+ },
+ "greymoor/greymoor-craw-lake-entrance@ll": {
+  "scene": "Greymoor_15",
+  "gate": "left3",
+  "x": 0.0,
+  "y": 0.142857
+ },
+ "greymoor/greymoor-craw-lake-entrance@lr": {
+  "scene": "Greymoor_15",
+  "gate": "right3",
+  "x": 1.0,
+  "y": 0.142857
+ },
+ "greymoor/greymoor-craw-lake-entrance@ur": {
+  "scene": "Greymoor_15",
+  "gate": "right2",
+  "x": 1.0,
+  "y": 0.738095
+ },
+ "greymoor/greymoor-craw-lake-entrance@ul": {
+  "scene": "Greymoor_15",
+  "gate": "left1",
+  "x": 0.0,
+  "y": 0.535714
+ },
+ "greymoor/greymoor-entry-to-bellhart@t": {
+  "scene": "Greymoor_08",
+  "gate": "top1",
+  "x": 0.63354,
+  "y": 1.0
+ },
+ "greymoor/greymoor-entry-to-bellhart@r": {
+  "scene": "Greymoor_08",
+  "gate": "right1",
+  "x": 1.0,
+  "y": 0.631579
+ },
+ "greymoor/greymoor-halfway-home@l": {
+  "scene": "Halfway_01",
+  "gate": "left1",
+  "x": 0.1875,
+  "y": 0.15625
+ },
+ "greymoor/greymoor-halfway-home-exterior@ll": {
+  "scene": "Greymoor_03",
+  "gate": "left2",
+  "x": 0.0,
+  "y": 0.085714
+ },
+ "greymoor/greymoor-halfway-home-exterior@lr": {
+  "scene": "Greymoor_03",
+  "gate": "right3",
+  "x": 1.0,
+  "y": 0.107143
+ },
+ "greymoor/greymoor-halfway-home-exterior@mr": {
+  "scene": "Greymoor_03",
+  "gate": "right2",
+  "x": 1.0,
+  "y": 0.307143
+ },
+ "greymoor/greymoor-halfway-home-exterior@ur": {
+  "scene": "Greymoor_03",
+  "gate": "right1",
+  "x": 0.820833,
+  "y": 0.814286
+ },
+ "greymoor/greymoor-halfway-home-exterior@hhl": {
+  "scene": "Greymoor_03",
+  "gate": "right4",
+  "x": 0.358333,
+  "y": 0.107143
+ },
+ "greymoor/greymoor-halfway-home-exterior@ml": {
+  "scene": "Greymoor_03",
+  "gate": "left1",
+  "x": 0.0,
+  "y": 0.378571
+ },
+ "greymoor/greymoor-middle-passage@l": {
+  "scene": "Greymoor_10",
+  "gate": "left1",
+  "x": 0.0,
+  "y": 0.4
+ },
+ "greymoor/greymoor-middle-passage@r": {
+  "scene": "Greymoor_10",
+  "gate": "right1",
+  "x": 1.0,
+  "y": 0.4
+ },
+ "greymoor/greymoor-rat-tunnel@l": {
+  "scene": "Greymoor_16",
+  "gate": "left1",
+  "x": 0.0,
+  "y": 0.716667
+ },
+ "greymoor/greymoor-rat-tunnel@t": {
+  "scene": "Greymoor_16",
+  "gate": "top1",
+  "x": 0.918129,
+  "y": 1.0
+ },
+ "greymoor/greymoor-silver-shells-room@l": {
+  "scene": "Greymoor_17",
+  "gate": "left1",
+  "x": 0.026316,
+  "y": 0.8
+ },
+ "greymoor/greymoor-silver-shells-room@u": {
+  "scene": "Greymoor_17",
+  "gate": "top1",
+  "x": 0.561404,
+  "y": 1.0
+ },
+ "greymoor/greymoor-towers-patio@lr": {
+  "scene": "Greymoor_05",
+  "gate": "right2",
+  "x": 0.886364,
+  "y": 0.08
+ },
+ "greymoor/greymoor-towers-patio@ll": {
+  "scene": "Greymoor_05",
+  "gate": "left2",
+  "x": 0.0,
+  "y": 0.093333
+ },
+ "greymoor/greymoor-towers-patio@ml": {
+  "scene": "Greymoor_05",
+  "gate": "left1",
+  "x": 0.0,
+  "y": 0.693333
+ },
+ "greymoor/greymoor-towers-patio@mr": {
+  "scene": "Greymoor_05",
+  "gate": "right1",
+  "x": 1.0,
+  "y": 0.573333
+ },
+ "greymoor/greymoor-upper-halfway-home-path@l": {
+  "scene": "Greymoor_12",
+  "gate": "left1",
+  "x": 0.0,
+  "y": 0.2
+ },
+ "greymoor/greymoor-upper-halfway-home-path@r": {
+  "scene": "Greymoor_12",
+  "gate": "right1",
+  "x": 1.0,
+  "y": 0.2
+ },
+ "greymoor/greymoor-upper-towers-path@u": {
+  "scene": "Greymoor_11",
+  "gate": "left1",
+  "x": 0.0,
+  "y": 0.914286
+ },
+ "greymoor/greymoor-upper-towers-path@r": {
+  "scene": "Greymoor_11",
+  "gate": "right1",
+  "x": 1.0,
+  "y": 0.671429
+ },
+ "greymoor/greymoor-west-bellshrine-room@tl": {
+  "scene": "Greymoor_01",
+  "gate": "left1",
+  "x": 0.0,
+  "y": 0.653846
+ },
+ "greymoor/greymoor-west-bellshrine-room@tr": {
+  "scene": "Greymoor_01",
+  "gate": "right1",
+  "x": 1.0,
+  "y": 0.826923
+ },
+ "greymoor/greymoor-west-bellshrine-room@lr": {
+  "scene": "Greymoor_01",
+  "gate": "right3",
+  "x": 1.0,
+  "y": 0.115385
+ },
+ "greymoor/greymoor-west-bellshrine-room@ll": {
+  "scene": "Greymoor_01",
+  "gate": "left2",
+  "x": 0.0,
+  "y": 0.115385
+ },
+ "greymoor/greymoor-western-room@lt": {
+  "scene": "Greymoor_07",
+  "gate": "right2",
+  "x": 1.0,
+  "y": 0.23
+ },
+ "greymoor/greymoor-western-room@ut": {
+  "scene": "Greymoor_07",
+  "gate": "right1",
+  "x": 1.0,
+  "y": 0.93
+ },
+ "greymoor/greymoor-western-room@d": {
+  "scene": "Greymoor_07",
+  "gate": "bot1",
+  "x": 0.346667,
+  "y": 0.0
+ },
+ "greymoor/greymoor-western-room@ch": {
+  "scene": "Greymoor_07",
+  "gate": "left1",
+  "x": 0.0,
+  "y": 0.43
+ },
+ "verdania/palestag@l": {
+  "scene": "Clover_19",
+  "gate": "left1",
+  "x": 0.0,
+  "y": 0.433333
+ },
+ "verdania/verdania-big-button-room@l": {
+  "scene": "Clover_18",
+  "gate": "left1",
+  "x": 0.0,
+  "y": 0.1125
+ },
+ "verdania/verdania-big-room@r": {
+  "scene": "Clover_02c",
+  "gate": "right1",
+  "x": 1.0,
+  "y": 0.893333
+ },
+ "verdania/verdania-big-room@ul": {
+  "scene": "Clover_02c",
+  "gate": "left2",
+  "x": 0.0,
+  "y": 0.44
+ },
+ "verdania/verdania-capital@r": {
+  "scene": "Clover_04b",
+  "gate": "right1",
+  "x": 1.0,
+  "y": 0.2
+ },
+ "verdania/verdania-capital@ul": {
+  "scene": "Clover_04b",
+  "gate": "left1",
+  "x": 0.5125,
+  "y": 0.326316
+ },
+ "verdania/verdania-cloverstag-steps@r": {
+  "scene": "Clover_16",
+  "gate": "right1",
+  "x": 1.0,
+  "y": 0.24
+ },
+ "verdania/verdania-kindanir-egg-room@r": {
+  "scene": "Clover_11",
+  "gate": "right1",
+  "x": 0.9,
+  "y": 0.4
+ },
+ "verdania/verdania-left-side-essence-shrine@r": {
+  "scene": "Clover_21",
+  "gate": "right1",
+  "x": 1.0,
+  "y": 0.269231
+ },
+ "verdania/verdania-left-side-tall-room@ur": {
+  "scene": "Clover_05c",
+  "gate": "right2",
+  "x": 0.991613,
+  "y": 0.940299
+ },
+ "verdania/verdania-left-side-tall-room@ll": {
+  "scene": "Clover_05c",
+  "gate": "left2",
+  "x": 0.0,
+  "y": 0.276119
+ },
+ "verdania/verdania-left-side-tall-room@ul": {
+  "scene": "Clover_05c",
+  "gate": "left1",
+  "x": 0.016129,
+  "y": 0.470149
+ },
+ "verdania/verdania-left-side-tall-room@lr": {
+  "scene": "Clover_05c",
+  "gate": "right3",
+  "x": 1.0,
+  "y": 0.059701
+ },
+ "verdania/verdania-right-side-tall-room@ul": {
+  "scene": "Clover_03",
+  "gate": "left1",
+  "x": 0.0,
+  "y": 0.659091
+ },
+ "verdania/verdania-right-side-tall-room@ll": {
+  "scene": "Clover_03",
+  "gate": "left2",
+  "x": 0.0,
+  "y": 0.494318
+ },
+ "verdania/verdania-right-side-tall-room@r": {
+  "scene": "Clover_03",
+  "gate": "right1",
+  "x": 1.0,
+  "y": 0.454545
+ },
+ "blasted-steps/blasted-steps-bellway@r": {
+  "scene": "Bellway_08",
+  "gate": "right1",
+  "x": 1.0,
+  "y": 0.424242
+ },
+ "blasted-steps/blasted-steps-bellway@l": {
+  "scene": "Bellway_08",
+  "gate": "left1",
+  "x": 0.426667,
+  "y": 0.484848
+ },
+ "blasted-steps/blasted-steps-grindle@r": {
+  "scene": "Coral_42",
+  "gate": "right1",
+  "x": 1.0,
+  "y": 0.15625
+ },
+ "blasted-steps/blasted-steps-horizontal-room-with-two-sand-pits@r": {
+  "scene": "Coral_43",
+  "gate": "right1",
+  "x": 0.990909,
+  "y": 0.409091
+ },
+ "blasted-steps/blasted-steps-horizontal-room-with-two-sand-pits@l": {
+  "scene": "Coral_43",
+  "gate": "left1",
+  "x": 0.013636,
+  "y": 0.409091
+ },
+ "blasted-steps/blasted-steps-map-edge@r": {
+  "scene": "Coral_19",
+  "gate": "right1",
+  "x": 1.0,
+  "y": 0.309091
+ },
+ "blasted-steps/blasted-steps-map-edge@tm": {
+  "scene": "Coral_19",
+  "gate": "top2",
+  "x": 0.76815,
+  "y": 1.0
+ },
+ "blasted-steps/blasted-steps-map-edge@tl": {
+  "scene": "Coral_19",
+  "gate": "top1",
+  "x": 0.145199,
+  "y": 1.0
+ },
+ "blasted-steps/blasted-steps-mask-shard@b": {
+  "scene": "Coral_19b",
+  "gate": "bot1",
+  "x": 0.525424,
+  "y": 0.311966
+ },
+ "blasted-steps/blasted-steps-shakra-map-room@bl": {
+  "scene": "Coral_12",
+  "gate": "left3",
+  "x": 0.0,
+  "y": 0.102564
+ },
+ "blasted-steps/blasted-steps-shakra-map-room@tl": {
+  "scene": "Coral_12",
+  "gate": "left2",
+  "x": 0.0,
+  "y": 0.782051
+ },
+ "blasted-steps/blasted-steps-thin-long-vertical@bl": {
+  "scene": "Coral_35",
+  "gate": "left1",
+  "x": 0.068966,
+  "y": 0.078431
+ },
+ "blasted-steps/blasted-steps-thin-long-vertical@r": {
+  "scene": "Coral_35",
+  "gate": "right1",
+  "x": 0.965517,
+  "y": 0.176471
+ },
+ "blasted-steps/blasted-steps-thin-long-vertical@ml": {
+  "scene": "Coral_35",
+  "gate": "left2",
+  "x": 0.0,
+  "y": 0.398693
+ },
+ "blasted-steps/blasted-steps-toll-bench-bottom@br": {
+  "scene": "Coral_02",
+  "gate": "bot2",
+  "x": 0.930612,
+  "y": 0.0
+ },
+ "blasted-steps/blasted-steps-toll-bench-bottom@tr": {
+  "scene": "Coral_02",
+  "gate": "right1",
+  "x": 1.0,
+  "y": 0.725
+ },
+ "blasted-steps/blasted-steps-wide-long-vertical@bl": {
+  "scene": "Coral_03",
+  "gate": "left3",
+  "x": 0.0,
+  "y": 0.27907
+ },
+ "blasted-steps/blasted-steps-wide-long-vertical@br": {
+  "scene": "Coral_03",
+  "gate": "right3",
+  "x": 1.0,
+  "y": 0.27907
+ },
+ "blasted-steps/blasted-steps-wide-long-vertical@ml": {
+  "scene": "Coral_03",
+  "gate": "left2",
+  "x": 0.0,
+  "y": 0.488372
+ },
+ "blasted-steps/blasted-steps-wide-long-vertical@mr": {
+  "scene": "Coral_03",
+  "gate": "right2",
+  "x": 1.0,
+  "y": 0.516279
+ },
+ "blasted-steps/blasted-steps-wide-long-vertical@tr": {
+  "scene": "Coral_03",
+  "gate": "right1",
+  "x": 1.0,
+  "y": 0.944186
+ },
+ "blasted-steps/blasted-steps-wide-long-vertical@tl": {
+  "scene": "Coral_03",
+  "gate": "left1",
+  "x": 0.0,
+  "y": 0.944186
+ },
+ "blasted-steps/great-conchflies@r": {
+  "scene": "Coral_11",
+  "gate": "right1",
+  "x": 1.0,
+  "y": 0.225806
+ },
+ "blasted-steps/blasted-steps-horizontal-room-with-sand-pit@l": {
+  "scene": "Coral_11b",
+  "gate": "left1",
+  "x": 0.0,
+  "y": 0.555556
+ },
+ "blasted-steps/last-judge-arena@l": {
+  "scene": "Coral_Judge_Arena",
+  "gate": "left1",
+  "x": 0.0,
+  "y": 0.642857
+ },
+ "blasted-steps/lumble-the-lucky@r": {
+  "scene": "Coral_33",
+  "gate": "right1",
+  "x": 0.989583,
+  "y": 0.5
+ },
+ "blasted-steps/windy-pinstress-room@l": {
+  "scene": "Room_Pinstress",
+  "gate": "left1",
+  "x": 0.21,
+  "y": 0.307692
+ },
+ "blasted-steps/pre-last-judge-room@l": {
+  "scene": "Coral_32",
+  "gate": "left1",
+  "x": 0.0,
+  "y": 0.113043
+ },
+ "blasted-steps/pre-last-judge-room@r": {
+  "scene": "Coral_32",
+  "gate": "right1",
+  "x": 1.0,
+  "y": 0.782609
+ },
+ "blasted-steps/windy-pinstress-entrance@c": {
+  "scene": "Coral_34",
+  "gate": "door1",
+  "x": 0.563063,
+  "y": 0.313253
+ },
+ "blasted-steps/windy-pinstress-entrance@r": {
+  "scene": "Coral_34",
+  "gate": "right1",
+  "x": 1.0,
+  "y": 0.096386
+ },
+ "blasted-steps/windy-pinstress-entrance@t": {
+  "scene": "Coral_34",
+  "gate": "top1",
+  "x": 0.337838,
+  "y": 1.0
+ },
+ "grand-gate/grand-gate-courtroom@r": {
+  "scene": "Song_19_entrance",
+  "gate": "right2",
+  "x": 1.0,
+  "y": 0.049296
+ },
+ "grand-gate/grand-elevator@tl": {
+  "scene": "Under_01",
+  "gate": "left1",
+  "x": 0.0,
+  "y": 0.775
+ },
+ "grand-gate/grand-elevator@r": {
+  "scene": "Under_01",
+  "gate": "right1",
+  "x": 1.0,
+  "y": 0.06875
+ },
+ "grand-gate/entrance-to-nyleth@l": {
+  "scene": "Under_27",
+  "gate": "left1",
+  "x": 0.0,
+  "y": 0.5
+ },
+ "grand-gate/shrine-guardian-seth@d": {
+  "scene": "Shellwood_22",
+  "gate": "door1",
+  "x": 0.118517,
+  "y": 0.176071
+ },
+ "grand-gate/shrine-guardian-seth@r": {
+  "scene": "Shellwood_22",
+  "gate": "right1",
+  "x": 1.0,
+  "y": 0.321429
+ },
+ "grand-gate/nyleth-shrine@r": {
+  "scene": "Shellwood_11b",
+  "gate": "right1",
+  "x": 0.983333,
+  "y": 0.888235
+ },
+ "sinner-s-road/sinner-s-road-bench@r": {
+  "scene": "Dust_10",
+  "gate": "right1",
+  "x": 1.0,
+  "y": 0.5
+ },
+ "sinner-s-road/sinner-s-road-chef-s-kitchen@h": {
+  "scene": "Dust_Chef",
+  "gate": "bot1",
+  "x": 0.325,
+  "y": 0.0
+ },
+ "sinner-s-road/sinner-s-road-entrance@l": {
+  "scene": "Dust_01",
+  "gate": "left1",
+  "x": 0.0,
+  "y": 0.444444
+ },
+ "sinner-s-road/sinner-s-road-entrance@r": {
+  "scene": "Dust_01",
+  "gate": "right1",
+  "x": 1.0,
+  "y": 0.555556
+ },
+ "sinner-s-road/sinner-s-road-flea-rescue@l": {
+  "scene": "Dust_12",
+  "gate": "left1",
+  "x": 0.0,
+  "y": 0.3125
+ },
+ "sinner-s-road/sinner-s-road-hanging-cages@ll": {
+  "scene": "Dust_04",
+  "gate": "left2",
+  "x": 0.0,
+  "y": 0.266667
+ },
+ "sinner-s-road/sinner-s-road-muckroach-cages@c": {
+  "scene": "Dust_03",
+  "gate": "top1",
+  "x": 0.872414,
+  "y": 1.0
+ },
+ "sinner-s-road/sinner-s-road-muckroach-cages@lr": {
+  "scene": "Dust_03",
+  "gate": "bot1",
+  "x": 0.910345,
+  "y": 0.0
+ },
+ "sinner-s-road/sinner-s-road-muckroach-cages@l": {
+  "scene": "Dust_03",
+  "gate": "left1",
+  "x": 0.0,
+  "y": 0.3
+ },
+ "sinner-s-road/sinner-s-road-north-hall@c": {
+  "scene": "Dust_05",
+  "gate": "bot1",
+  "x": 0.448864,
+  "y": 0.0
+ },
+ "sinner-s-road/sinner-s-road-spike-basement@c": {
+  "scene": "Dust_Barb",
+  "gate": "top1",
+  "x": 0.733333,
+  "y": 1.0
+ },
+ "sinner-s-road/sinner-s-road-styx-room@l": {
+  "scene": "Dust_11",
+  "gate": "left1",
+  "x": 0.0,
+  "y": 0.4
+ },
+ "sinner-s-road/sinner-s-road-styx-room@b": {
+  "scene": "Dust_11",
+  "gate": "bot1",
+  "x": 0.392857,
+  "y": 0.0
+ },
+ "sinner-s-road/sinner-s-road-vertical-hall-east@lr": {
+  "scene": "Dust_06",
+  "gate": "right2",
+  "x": 1.0,
+  "y": 0.084211
+ },
+ "sinner-s-road/sinner-s-road-vertical-hall-east@mr": {
+  "scene": "Dust_06",
+  "gate": "right3",
+  "x": 1.0,
+  "y": 0.302632
+ },
+ "sinner-s-road/sinner-s-road-vertical-hall-west@ll": {
+  "scene": "Dust_02",
+  "gate": "left2",
+  "x": 0.0,
+  "y": 0.115385
+ },
+ "sinner-s-road/sinner-s-road-vertical-hall-west@ml": {
+  "scene": "Dust_02",
+  "gate": "left1",
+  "x": 0.0,
+  "y": 0.561538
+ },
+ "sinner-s-road/sinner-s-road-vertical-hall-west@c": {
+  "scene": "Dust_02",
+  "gate": "top1",
+  "x": 0.525,
+  "y": 1.0
+ },
+ "sinner-s-road/sinner-s-road-vertical-hall-west@lr": {
+  "scene": "Dust_02",
+  "gate": "right3",
+  "x": 1.0,
+  "y": 0.115385
+ },
+ "sinner-s-road/sinner-s-road-vertical-hall-west@mr": {
+  "scene": "Dust_02",
+  "gate": "right2",
+  "x": 1.0,
+  "y": 0.446154
+ },
+ "underworks/vaults-bellay-cauldron-entrance@tl": {
+  "scene": "Library_11",
+  "gate": "left1",
+  "x": 0.0,
+  "y": 0.952555
+ },
+ "underworks/vaults-bellay-cauldron-entrance@lr": {
+  "scene": "Library_11",
+  "gate": "right2",
+  "x": 1.0,
+  "y": 0.255474
+ },
+ "underworks/vaults-bellay-cauldron-entrance@ur": {
+  "scene": "Library_11",
+  "gate": "right1",
+  "x": 1.0,
+  "y": 0.576642
+ },
+ "underworks/underworks-below-vaultkeeper@t": {
+  "scene": "Library_12b",
+  "gate": "top1",
+  "x": 0.782178,
+  "y": 1.0
+ },
+ "underworks/underworks-clawline-entrance@bl": {
+  "scene": "Under_19c",
+  "gate": "left2",
+  "x": 0.0,
+  "y": 0.234375
+ },
+ "underworks/underworks-clawline-entrance@b": {
+  "scene": "Under_19c",
+  "gate": "bot1",
+  "x": 0.5,
+  "y": 0.0
+ },
+ "underworks/underworks-clawline-room@l": {
+  "scene": "Under_18",
+  "gate": "left1",
+  "x": 0.0,
+  "y": 0.36
+ },
+ "underworks/underworks-clawline-room@tl": {
+  "scene": "Under_18",
+  "gate": "top1",
+  "x": 0.16875,
+  "y": 1.0
+ },
+ "underworks/underworks-craftmetal-corridor@r": {
+  "scene": "Under_19b",
+  "gate": "right1",
+  "x": 1.0,
+  "y": 0.454545
+ },
+ "underworks/underworks-east-shaft@bl": {
+  "scene": "Under_13",
+  "gate": "left3",
+  "x": 0.0,
+  "y": 0.084615
+ },
+ "underworks/underworks-east-shaft@br": {
+  "scene": "Under_13",
+  "gate": "right3",
+  "x": 1.0,
+  "y": 0.130769
+ },
+ "underworks/underworks-east-shaft@tl": {
+  "scene": "Under_13",
+  "gate": "left1",
+  "x": 0.0,
+  "y": 0.769231
+ },
+ "underworks/underworks-east-shaft@tr": {
+  "scene": "Under_13",
+  "gate": "right1",
+  "x": 1.0,
+  "y": 0.930769
+ },
+ "underworks/underworks-east-shaft@hl": {
+  "scene": "Under_13",
+  "gate": "left4",
+  "x": 0.0,
+  "y": 0.607692
+ },
+ "underworks/underworks-east-shaft@mr": {
+  "scene": "Under_13",
+  "gate": "right2",
+  "x": 1.0,
+  "y": 0.507692
+ },
+ "underworks/underworks-east-shaft@ll": {
+  "scene": "Under_13",
+  "gate": "left2",
+  "x": 0.0,
+  "y": 0.269231
+ },
+ "underworks/underworks-eastern-gauntlet@l": {
+  "scene": "Under_10",
+  "gate": "left1",
+  "x": 0.0,
+  "y": 0.3
+ },
+ "underworks/underworks-eastern-gauntlet@r": {
+  "scene": "Under_10",
+  "gate": "right1",
+  "x": 1.0,
+  "y": 0.3
+ },
+ "underworks/underworks-exhaust-organ-transit@ul": {
+  "scene": "Library_12",
+  "gate": "left1",
+  "x": 0.0,
+  "y": 0.853448
+ },
+ "underworks/underworks-exhaust-organ-transit@ll": {
+  "scene": "Library_12",
+  "gate": "left2",
+  "x": 0.0,
+  "y": 0.103448
+ },
+ "underworks/underworks-exhaust-organ-transit@ev": {
+  "scene": "Library_12",
+  "gate": "door1",
+  "x": 0.873235,
+  "y": 0.868362
+ },
+ "underworks/underworks-flea-room@r": {
+  "scene": "Under_21",
+  "gate": "right1",
+  "x": 1.0,
+  "y": 0.423077
+ },
+ "underworks/underworks-lava-flow-corridor@t": {
+  "scene": "Under_19",
+  "gate": "top1",
+  "x": 0.882353,
+  "y": 0.979167
+ },
+ "underworks/underworks-lava-flow-corridor@l": {
+  "scene": "Under_19",
+  "gate": "left1",
+  "x": 0.0,
+  "y": 0.666667
+ },
+ "underworks/underworks-lever-spike-corridor@l": {
+  "scene": "Under_11",
+  "gate": "left1",
+  "x": 0.0,
+  "y": 0.315789
+ },
+ "underworks/underworks-lever-spike-corridor@r": {
+  "scene": "Under_11",
+  "gate": "right1",
+  "x": 1.0,
+  "y": 0.315789
+ },
+ "underworks/underworks-rosary-room@l": {
+  "scene": "Under_12",
+  "gate": "left1",
+  "x": 0.0,
+  "y": 0.25
+ },
+ "underworks/underworks-silk-spool@l": {
+  "scene": "Library_11b",
+  "gate": "left3",
+  "x": 0.0,
+  "y": 0.64557
+ },
+ "underworks/underworks-twelfth-architect@fl": {
+  "scene": "Under_17",
+  "gate": "left1",
+  "x": 0.0,
+  "y": 0.416667
+ },
+ "underworks/underworks-twelfth-architect@fr": {
+  "scene": "Under_17",
+  "gate": "right1",
+  "x": 1.0,
+  "y": 0.3125
+ },
+ "underworks/underworks-twelfth-architect@bl": {
+  "scene": "Under_17",
+  "gate": "bot1",
+  "x": 0.146341,
+  "y": 0.0
+ },
+ "underworks/underworks-ventrica@r": {
+  "scene": "Under_22",
+  "gate": "right1",
+  "x": 1.0,
+  "y": 0.25
+ },
+ "underworks/broken-elevator@l": {
+  "scene": "Under_01b",
+  "gate": "left1",
+  "x": 0.0,
+  "y": 0.25
+ },
+ "underworks/confession-toll@b": {
+  "scene": "Under_08",
+  "gate": "bot1",
+  "x": 0.711111,
+  "y": 0.232759
+ },
+ "underworks/underworks-below-confession@l": {
+  "scene": "Under_06",
+  "gate": "left1",
+  "x": 0.0,
+  "y": 0.5
+ },
+ "underworks/underworks-below-confession@t": {
+  "scene": "Under_06",
+  "gate": "top1",
+  "x": 0.619355,
+  "y": 1.0
+ },
+ "underworks/underworks-below-confession@r": {
+  "scene": "Under_06",
+  "gate": "right1",
+  "x": 1.0,
+  "y": 0.333333
+ },
+ "underworks/underworks-map-room@r": {
+  "scene": "Under_16",
+  "gate": "right1",
+  "x": 1.0,
+  "y": 0.616667
+ },
+ "underworks/underworks-outside-choral-chambers@l": {
+  "scene": "Under_07c",
+  "gate": "left2",
+  "x": 0.0,
+  "y": 0.053333
+ },
+ "underworks/underworks-shaft@r4": {
+  "scene": "Under_02",
+  "gate": "right1",
+  "x": 1.0,
+  "y": 0.943478
+ },
+ "underworks/underworks-shaft@r3": {
+  "scene": "Under_02",
+  "gate": "right2",
+  "x": 1.0,
+  "y": 0.869565
+ },
+ "underworks/underworks-shaft@r2": {
+  "scene": "Under_02",
+  "gate": "right3",
+  "x": 1.0,
+  "y": 0.678261
+ },
+ "underworks/underworks-shaft@l2": {
+  "scene": "Under_02",
+  "gate": "left3",
+  "x": 0.0,
+  "y": 0.634783
+ },
+ "underworks/underworks-shaft@r1": {
+  "scene": "Under_02",
+  "gate": "right4",
+  "x": 1.0,
+  "y": 0.030435
+ },
+ "underworks/underworks-western-gauntlet@r": {
+  "scene": "Under_07",
+  "gate": "right2",
+  "x": 1.0,
+  "y": 0.333333
+ },
+ "underworks/underworks-western-gauntlet@l": {
+  "scene": "Under_07",
+  "gate": "left3",
+  "x": 0.0,
+  "y": 0.62963
+ },
+ "underworks/underworks-central-shaft@tl": {
+  "scene": "Under_05",
+  "gate": "left1",
+  "x": 0.0,
+  "y": 0.87234
+ },
+ "underworks/underworks-central-shaft@r": {
+  "scene": "Under_05",
+  "gate": "right2",
+  "x": 1.0,
+  "y": 0.659574
+ },
+ "underworks/underworks-central-shaft@br": {
+  "scene": "Under_05",
+  "gate": "right3",
+  "x": 1.0,
+  "y": 0.411348
+ },
+ "underworks/underworks-central-shaft@wt": {
+  "scene": "Under_05",
+  "gate": "left3",
+  "x": 0.0,
+  "y": 0.22695
+ },
+ "underworks/underworks-central-shaft@tr": {
+  "scene": "Under_05",
+  "gate": "right1",
+  "x": 1.0,
+  "y": 0.87234
+ },
+ "underworks/underworks-crushing-path@l": {
+  "scene": "Under_04",
+  "gate": "left1",
+  "x": 0.0,
+  "y": 0.28125
+ },
+ "underworks/underworks-delvers-drill@l": {
+  "scene": "Under_14",
+  "gate": "left1",
+  "x": 0.0,
+  "y": 0.28
+ },
+ "underworks/underworks-saw-intro@l": {
+  "scene": "Under_03b",
+  "gate": "left1",
+  "x": 0.0,
+  "y": 0.71875
+ },
+ "underworks/underworks-saw-intro@r": {
+  "scene": "Under_03b",
+  "gate": "right1",
+  "x": 1.0,
+  "y": 0.71875
+ },
+ "underworks/underworks-saw-shaft@l2": {
+  "scene": "Under_03c",
+  "gate": "left1",
+  "x": 0.0,
+  "y": 0.727273
+ },
+ "underworks/underworks-saw-shaft@l1": {
+  "scene": "Under_03c",
+  "gate": "left2",
+  "x": 0.0,
+  "y": 0.075758
+ },
+ "underworks/underworks-saw-shaft@r": {
+  "scene": "Under_03c",
+  "gate": "right1",
+  "x": 1.0,
+  "y": 0.136364
+ },
+ "underworks/underworks-shard-room@r": {
+  "scene": "Under_03",
+  "gate": "right1",
+  "x": 0.75,
+  "y": 0.166667
+ },
+ "underworks/underworks-wisp-thicket-passage@r": {
+  "scene": "Under_23",
+  "gate": "right1",
+  "x": 1.0,
+  "y": 0.685714
+ },
+ "choral-chambers/high-halls-entrance@tp": {
+  "scene": "Hang_01",
+  "gate": "right1",
+  "x": 1.0,
+  "y": 0.795699
+ },
+ "choral-chambers/songclave@bl": {
+  "scene": "Song_Enclave",
+  "gate": "left2",
+  "x": 0.0875,
+  "y": 0.242424
+ },
+ "choral-chambers/songclave@tl": {
+  "scene": "Song_Enclave",
+  "gate": "left1",
+  "x": 0.0875,
+  "y": 0.727273
+ },
+ "choral-chambers/songclave@t": {
+  "scene": "Song_Enclave",
+  "gate": "top1",
+  "x": 0.258333,
+  "y": 1.0
+ },
+ "choral-chambers/choral-chambers-spa@l": {
+  "scene": "Song_10",
+  "gate": "left1",
+  "x": 0.007874,
+  "y": 0.428571
+ },
+ "choral-chambers/choral-chambers-outside-spa@l": {
+  "scene": "Song_04",
+  "gate": "left1",
+  "x": 0.611888,
+  "y": 0.838235
+ },
+ "choral-chambers/choral-chambers-outside-spa@r2": {
+  "scene": "Song_04",
+  "gate": "right2",
+  "x": 0.996503,
+  "y": 0.161765
+ },
+ "choral-chambers/high-halls-corridor@r": {
+  "scene": "Hang_07",
+  "gate": "right1",
+  "x": 0.993243,
+  "y": 0.321429
+ },
+ "choral-chambers/choral-chambers-eastern-shaft@r1": {
+  "scene": "Song_05",
+  "gate": "right3",
+  "x": 0.99,
+  "y": 0.059322
+ },
+ "choral-chambers/songclave-tube@b": {
+  "scene": "Song_Enclave_Tube",
+  "gate": "bot1",
+  "x": 0.576923,
+  "y": 0.068182
+ },
+ "choral-chambers/memorium-entrance-tunnel@l": {
+  "scene": "Song_25",
+  "gate": "left1",
+  "x": 0.001984,
+  "y": 0.321429
+ },
+ "choral-chambers/memorium-entrance-tunnel@r": {
+  "scene": "Song_25",
+  "gate": "right1",
+  "x": 1.0,
+  "y": 0.25
+ },
+ "choral-chambers/memorium-entrance-tunnel@b": {
+  "scene": "Song_25",
+  "gate": "bot1",
+  "x": 0.365079,
+  "y": 0.053571
+ },
+ "choral-chambers/rotating-tunnel@t": {
+  "scene": "Song_20b",
+  "gate": "top1",
+  "x": 0.12,
+  "y": 1.0
+ },
+ "choral-chambers/rotating-tunnel@r1": {
+  "scene": "Song_20b",
+  "gate": "right2",
+  "x": 1.0,
+  "y": 0.825
+ },
+ "choral-chambers/rotating-tunnel@rh": {
+  "scene": "Song_20b",
+  "gate": "right3",
+  "x": 1.0,
+  "y": 0.3375
+ },
+ "cogwork-core/cog-dancers@r": {
+  "scene": "Cog_Dancers",
+  "gate": "right1",
+  "x": 0.98125,
+  "y": 0.244444
+ },
+ "cogwork-core/cog-dancers@l": {
+  "scene": "Cog_Dancers",
+  "gate": "left1",
+  "x": 0.03125,
+  "y": 0.244444
+ },
+ "cogwork-core/cog-dancers@b1": {
+  "scene": "Cog_Dancers",
+  "gate": "bot1",
+  "x": 0.4,
+  "y": 0.011111
+ },
+ "cogwork-core/cog-dancers@b2": {
+  "scene": "Cog_Dancers",
+  "gate": "bot2",
+  "x": 0.6,
+  "y": 0.011111
+ },
+ "cogwork-core/cogwork-core-architect-s-melody@b": {
+  "scene": "Cog_09",
+  "gate": "bot1",
+  "x": 0.125,
+  "y": 0.235043
+ },
+ "cogwork-core/cogwork-core-architect-s-melody-act-3@r": {
+  "scene": "Cog_09_Destroyed",
+  "gate": "right1",
+  "x": 1.0,
+  "y": 0.264957
+ },
+ "cogwork-core/cogwork-core-bench-map@l": {
+  "scene": "Cog_Bench",
+  "gate": "left1",
+  "x": 0.011111,
+  "y": 0.225
+ },
+ "cogwork-core/cogwork-core-breakable-walls@l": {
+  "scene": "Cog_10_Destroyed",
+  "gate": "left1",
+  "x": 0.0,
+  "y": 0.941176
+ },
+ "cogwork-core/cogwork-core-east-choral-entrance@l": {
+  "scene": "Cog_06",
+  "gate": "left2",
+  "x": 0.0,
+  "y": 0.714286
+ },
+ "cogwork-core/cogwork-core-east-silk-spool-gauntlet@l": {
+  "scene": "Cog_07",
+  "gate": "left1",
+  "x": 0.0,
+  "y": 0.344828
+ },
+ "cogwork-core/cogwork-core-main-connection@bl": {
+  "scene": "Cog_Pass",
+  "gate": "left2",
+  "x": 0.0125,
+  "y": 0.132353
+ },
+ "cogwork-core/cogwork-core-north-main@t": {
+  "scene": "Cog_08",
+  "gate": "top1",
+  "x": 0.138889,
+  "y": 1.0
+ },
+ "cogwork-core/cogwork-core-second-sentinel@b": {
+  "scene": "Cog_10",
+  "gate": "bot1",
+  "x": 0.43662,
+  "y": 0.516667
+ },
+ "cogwork-core/cogwork-core-south-main@br": {
+  "scene": "Cog_04",
+  "gate": "right3",
+  "x": 1.0,
+  "y": 0.046667
+ },
+ "cogwork-core/cogwork-core-south-main@ml": {
+  "scene": "Cog_04",
+  "gate": "left2",
+  "x": 0.0,
+  "y": 0.54
+ },
+ "cogwork-core/cogwork-core-south-main@dl": {
+  "scene": "Cog_04",
+  "gate": "door1",
+  "x": 0.077778,
+  "y": 0.9182
+ },
+ "cogwork-core/cogwork-core-south-main@dr": {
+  "scene": "Cog_04",
+  "gate": "door2",
+  "x": 0.922222,
+  "y": 0.9182
+ },
+ "cogwork-core/cogwork-core-south-main@mr": {
+  "scene": "Cog_04",
+  "gate": "right2",
+  "x": 1.0,
+  "y": 0.66
+ },
+ "cogwork-core/cogwork-core-south-main@tl": {
+  "scene": "Cog_04",
+  "gate": "top1",
+  "x": 0.409722,
+  "y": 1.0
+ },
+ "cogwork-core/cogwork-core-south-main@tr": {
+  "scene": "Cog_04",
+  "gate": "top2",
+  "x": 0.590278,
+  "y": 1.0
+ },
+ "cogwork-core/cogwork-core-west-gauntlet@r": {
+  "scene": "Cog_05",
+  "gate": "right2",
+  "x": 1.0,
+  "y": 0.22
+ },
+ "cogwork-core/cogwork-core-west-gauntlet@t": {
+  "scene": "Cog_05",
+  "gate": "top1",
+  "x": 0.748,
+  "y": 0.8
+ },
+ "whispering-vaults/vaultkeeper-cauldron-entrance@b": {
+  "scene": "Library_10",
+  "gate": "bot1",
+  "x": 0.513333,
+  "y": 0.0
+ },
+ "whispering-vaults/vaultkeeper-cauldron-entrance@l": {
+  "scene": "Library_10",
+  "gate": "left1",
+  "x": 0.0,
+  "y": 0.133333
+ },
+ "whispering-vaults/whispering-vaults-below-bench@bl": {
+  "scene": "Library_06",
+  "gate": "left2",
+  "x": 0.0,
+  "y": 0.089744
+ },
+ "whispering-vaults/whispering-vaults-below-bench@r": {
+  "scene": "Library_06",
+  "gate": "right1",
+  "x": 1.0,
+  "y": 0.910256
+ },
+ "whispering-vaults/whispering-vaults-below-bench@tl": {
+  "scene": "Library_06",
+  "gate": "left1",
+  "x": 0.0,
+  "y": 0.666667
+ },
+ "whispering-vaults/whispering-vaults-bench@r": {
+  "scene": "Library_08",
+  "gate": "right1",
+  "x": 1.0,
+  "y": 0.425
+ },
+ "whispering-vaults/whispering-vaults-bench@l": {
+  "scene": "Library_08",
+  "gate": "left1",
+  "x": 0.0,
+  "y": 0.175
+ },
+ "whispering-vaults/whispering-vaults-east-to-west@bl": {
+  "scene": "Library_05",
+  "gate": "left2",
+  "x": 0.0,
+  "y": 0.063291
+ },
+ "whispering-vaults/whispering-vaults-east-to-west@br": {
+  "scene": "Library_05",
+  "gate": "right2",
+  "x": 1.0,
+  "y": 0.063291
+ },
+ "whispering-vaults/whispering-vaults-east-to-west@tr": {
+  "scene": "Library_05",
+  "gate": "right1",
+  "x": 1.0,
+  "y": 0.64557
+ },
+ "whispering-vaults/whispering-vaults-east-to-west@tl": {
+  "scene": "Library_05",
+  "gate": "left1",
+  "x": 0.0,
+  "y": 0.64557
+ },
+ "whispering-vaults/whispering-vaults-flea-shaft@br": {
+  "scene": "Library_01",
+  "gate": "right2",
+  "x": 1.0,
+  "y": 0.0625
+ },
+ "whispering-vaults/whispering-vaults-flea-shaft@cl": {
+  "scene": "Library_01",
+  "gate": "left2",
+  "x": 0.0,
+  "y": 0.232143
+ },
+ "whispering-vaults/whispering-vaults-flea-shaft@tr": {
+  "scene": "Library_01",
+  "gate": "right1",
+  "x": 1.0,
+  "y": 0.892857
+ },
+ "whispering-vaults/whispering-vaults-flea-shaft@tl": {
+  "scene": "Library_01",
+  "gate": "left1",
+  "x": 0.0,
+  "y": 0.892857
+ },
+ "whispering-vaults/whispering-vaults-hub-area@hr": {
+  "scene": "Library_04",
+  "gate": "right6",
+  "x": 1.0,
+  "y": 0.763636
+ },
+ "whispering-vaults/whispering-vaults-hub-area@cr": {
+  "scene": "Library_04",
+  "gate": "right3",
+  "x": 1.0,
+  "y": 0.440909
+ },
+ "whispering-vaults/whispering-vaults-hub-area@bl": {
+  "scene": "Library_04",
+  "gate": "left4",
+  "x": 0.0,
+  "y": 0.190909
+ },
+ "whispering-vaults/whispering-vaults-hub-area@cl": {
+  "scene": "Library_04",
+  "gate": "left3",
+  "x": 0.0,
+  "y": 0.359091
+ },
+ "whispering-vaults/whispering-vaults-hub-area@ll": {
+  "scene": "Library_04",
+  "gate": "left2",
+  "x": 0.0,
+  "y": 0.440909
+ },
+ "whispering-vaults/whispering-vaults-hub-area@lr": {
+  "scene": "Library_04",
+  "gate": "right4",
+  "x": 1.0,
+  "y": 0.236364
+ },
+ "whispering-vaults/whispering-vaults-hub-area@tl": {
+  "scene": "Library_04",
+  "gate": "left1",
+  "x": 0.0,
+  "y": 0.859091
+ },
+ "whispering-vaults/whispering-vaults-hub-area@br": {
+  "scene": "Library_04",
+  "gate": "right5",
+  "x": 1.0,
+  "y": 0.054545
+ },
+ "whispering-vaults/whispering-vaults-hub-area@mhr": {
+  "scene": "Library_04",
+  "gate": "right2",
+  "x": 1.0,
+  "y": 0.609091
+ },
+ "whispering-vaults/whispering-vaults-jumps@b": {
+  "scene": "Library_09",
+  "gate": "bot1",
+  "x": 0.86875,
+  "y": 0.0
+ },
+ "whispering-vaults/whispering-vaults-palace@tl": {
+  "scene": "Library_07",
+  "gate": "left1",
+  "x": 0.0,
+  "y": 0.813953
+ },
+ "whispering-vaults/whispering-vaults-palace@bl": {
+  "scene": "Library_07",
+  "gate": "left2",
+  "x": 0.0,
+  "y": 0.645349
+ },
+ "whispering-vaults/whispering-vaults-palace@t": {
+  "scene": "Library_07",
+  "gate": "top1",
+  "x": 0.303797,
+  "y": 0.997093
+ },
+ "whispering-vaults/whispering-vaults-silkeater@l": {
+  "scene": "Library_14",
+  "gate": "left1",
+  "x": 0.0,
+  "y": 0.133333
+ },
+ "whispering-vaults/grand-bellway-library@r": {
+  "scene": "Library_03",
+  "gate": "right1",
+  "x": 1.0,
+  "y": 0.09375
+ },
+ "whispering-vaults/songclave-steam-tunnel@tl": {
+  "scene": "Library_02",
+  "gate": "left2",
+  "x": 0.004167,
+  "y": 0.765625
+ },
+ "whispering-vaults/songclave-steam-tunnel@tr": {
+  "scene": "Library_02",
+  "gate": "right2",
+  "x": 1.0,
+  "y": 0.8125
+ },
+ "whispering-vaults/songclave-steam-tunnel@bl": {
+  "scene": "Library_02",
+  "gate": "left1",
+  "x": 0.0,
+  "y": 0.15625
+ },
+ "whispering-vaults/songclave-steam-tunnel@br": {
+  "scene": "Library_02",
+  "gate": "right1",
+  "x": 1.0,
+  "y": 0.117188
+ },
+ "whispering-vaults/trobbio@tr": {
+  "scene": "Library_13",
+  "gate": "right1",
+  "x": 1.0,
+  "y": 0.785714
+ },
+ "whispering-vaults/trobbio@br": {
+  "scene": "Library_13",
+  "gate": "right2",
+  "x": 1.0,
+  "y": 0.267857
+ },
+ "whispering-vaults/trobbio-entrance@l": {
+  "scene": "Library_13b",
+  "gate": "left1",
+  "x": 0.0,
+  "y": 0.28
+ },
+ "whispering-vaults/trobbio-entrance@r": {
+  "scene": "Library_13b",
+  "gate": "right1",
+  "x": 1.0,
+  "y": 0.28
+ },
+ "whispering-vaults/whispering-vaults-music-box@r": {
+  "scene": "Library_16",
+  "gate": "right1",
+  "x": 1.0,
+  "y": 0.3
+ },
+ "whiteward/whiteward-entrance@tl": {
+  "scene": "Ward_01",
+  "gate": "left1",
+  "x": 0.02,
+  "y": 0.90991
+ },
+ "whiteward/whiteward-entrance@tr": {
+  "scene": "Ward_01",
+  "gate": "right3",
+  "x": 1.0,
+  "y": 0.756757
+ },
+ "whiteward/whiteward-entrance@bl": {
+  "scene": "Ward_01",
+  "gate": "left3",
+  "x": 0.0,
+  "y": 0.198198
+ },
+ "whiteward/whiteward-entrance@br": {
+  "scene": "Ward_01",
+  "gate": "right1",
+  "x": 1.0,
+  "y": 0.198198
+ },
+ "whiteward/whiteward-descent-connection@l": {
+  "scene": "Ward_03",
+  "gate": "left1",
+  "x": 0.0,
+  "y": 0.307692
+ },
+ "whiteward/whiteward-descent-connection@b": {
+  "scene": "Ward_03",
+  "gate": "bot1",
+  "x": 0.8875,
+  "y": 0.0
+ },
+ "whiteward/whiteward-descent-connection@t": {
+  "scene": "Ward_03",
+  "gate": "top1",
+  "x": 0.777083,
+  "y": 0.980769
+ },
+ "whiteward/whiteward-descent@t": {
+  "scene": "Ward_06",
+  "gate": "top1",
+  "x": 0.673469,
+  "y": 1.0
+ },
+ "whiteward/whiteward-junk-dump@b": {
+  "scene": "Ward_07",
+  "gate": "bot1",
+  "x": 0.615385,
+  "y": 0.125
+ },
+ "whiteward/whiteward-long-horizontal@l": {
+  "scene": "Ward_05",
+  "gate": "left1",
+  "x": 0.0,
+  "y": 0.478261
+ },
+ "whiteward/whiteward-unravelled-arena-room@t": {
+  "scene": "Ward_02",
+  "gate": "top1",
+  "x": 0.133333,
+  "y": 1.0
+ },
+ "whiteward/whiteward-unravelled-arena-room@r": {
+  "scene": "Ward_02",
+  "gate": "right1",
+  "x": 1.0,
+  "y": 0.688889
+ },
+ "whiteward/whiteward-tunnel-room@b": {
+  "scene": "Ward_02b",
+  "gate": "bot1",
+  "x": 0.13245,
+  "y": 0.0
+ },
+ "high-halls/high-halls-small-slide@r": {
+  "scene": "Hang_02",
+  "gate": "right1",
+  "x": 1.0,
+  "y": 0.770833
+ },
+ "high-halls/high-halls-small-slide@l": {
+  "scene": "Hang_02",
+  "gate": "left1",
+  "x": 0.0,
+  "y": 0.1875
+ },
+ "high-halls/high-halls-shaft-top@b": {
+  "scene": "Hang_03_top",
+  "gate": "bot1",
+  "x": 0.287,
+  "y": 0.011154
+ },
+ "high-halls/high-halls-shaft-bottom@t": {
+  "scene": "Hang_03",
+  "gate": "top1",
+  "x": 0.287,
+  "y": 1.0
+ },
+ "high-halls/high-halls-shaft-bottom@tr": {
+  "scene": "Hang_03",
+  "gate": "right1",
+  "x": 1.0,
+  "y": 0.836735
+ },
+ "high-halls/high-halls-shaft-bottom@bl": {
+  "scene": "Hang_03",
+  "gate": "left2",
+  "x": 0.05,
+  "y": 0.081633
+ },
+ "high-halls/high-halls-shaft-bottom@ml": {
+  "scene": "Hang_03",
+  "gate": "left1",
+  "x": 0.0,
+  "y": 0.326531
+ },
+ "high-halls/high-halls-small-room@r": {
+  "scene": "Hang_15",
+  "gate": "right1",
+  "x": 0.980769,
+  "y": 0.5
+ },
+ "high-halls/high-halls-big-slide@r": {
+  "scene": "Hang_13",
+  "gate": "right1",
+  "x": 1.0,
+  "y": 0.833333
+ },
+ "high-halls/high-halls-big-slide@l": {
+  "scene": "Hang_13",
+  "gate": "left1",
+  "x": 0.0,
+  "y": 0.133333
+ },
+ "high-halls/high-halls-big-shaft@sl": {
+  "scene": "Hang_08",
+  "gate": "left3",
+  "x": 0.0,
+  "y": 0.169565
+ },
+ "high-halls/high-halls-big-shaft@l": {
+  "scene": "Hang_08",
+  "gate": "left4",
+  "x": 0.0,
+  "y": 0.017391
+ },
+ "high-halls/high-halls-big-shaft@ml": {
+  "scene": "Hang_08",
+  "gate": "left2",
+  "x": 0.0,
+  "y": 0.391304
+ },
+ "high-halls/high-halls-big-shaft@tl": {
+  "scene": "Hang_08",
+  "gate": "left1",
+  "x": 0.0,
+  "y": 0.669565
+ },
+ "high-halls/high-halls-flooded-room@r": {
+  "scene": "Hang_10",
+  "gate": "right1",
+  "x": 1.0,
+  "y": 0.435897
+ },
+ "high-halls/high-halls-cogfly-room@r": {
+  "scene": "Hang_09",
+  "gate": "right1",
+  "x": 1.0,
+  "y": 0.648649
+ },
+ "high-halls/high-halls-baby-room@r": {
+  "scene": "Hang_16",
+  "gate": "right1",
+  "x": 1.0,
+  "y": 0.133333
+ },
+ "high-halls/high-halls-vault@l": {
+  "scene": "Hang_06",
+  "gate": "left1",
+  "x": 0.0,
+  "y": 0.233333
+ },
+ "high-halls/high-halls-vault@r": {
+  "scene": "Hang_06",
+  "gate": "right1",
+  "x": 1.0,
+  "y": 0.166667
+ },
+ "high-halls/high-halls-ventrica@l": {
+  "scene": "Hang_06b",
+  "gate": "left1",
+  "x": 0.0,
+  "y": 0.227273
+ },
+ "high-halls/high-halls-conductor@r": {
+  "scene": "Hang_12",
+  "gate": "right1",
+  "x": 1.0,
+  "y": 0.368421
+ },
+ "high-halls/high-halls-arena@l": {
+  "scene": "Hang_04",
+  "gate": "left1",
+  "x": 0.0,
+  "y": 0.346154
+ },
+ "high-halls/high-halls-arena@r": {
+  "scene": "Hang_04",
+  "gate": "right1",
+  "x": 1.0,
+  "y": 0.269231
+ },
+ "bilewater/bilewater-arena-shack@l": {
+  "scene": "Shadow_Bilehaven_Room",
+  "gate": "left1",
+  "x": 0.175,
+  "y": 0.4
+ },
+ "bilewater/bilewater-bellway@l": {
+  "scene": "Bellway_Shadow",
+  "gate": "left1",
+  "x": 0.253333,
+  "y": 0.560976
+ },
+ "bilewater/bilewater-bullshit-bench@ur": {
+  "scene": "Shadow_15",
+  "gate": "right1",
+  "x": 1.0,
+  "y": 0.712121
+ },
+ "bilewater/bilewater-east-column@r": {
+  "scene": "Shadow_09",
+  "gate": "right1",
+  "x": 0.96875,
+  "y": 0.142857
+ },
+ "bilewater/bilewater-east-column@ul": {
+  "scene": "Shadow_09",
+  "gate": "left1",
+  "x": 0.0,
+  "y": 0.892159
+ },
+ "bilewater/bilewater-east-column@ll": {
+  "scene": "Shadow_09",
+  "gate": "left2",
+  "x": 0.0,
+  "y": 0.087388
+ },
+ "bilewater/bilewater-groal-arena@r": {
+  "scene": "Shadow_18",
+  "gate": "right1",
+  "x": 1.0,
+  "y": 0.288889
+ },
+ "bilewater/bilewater-groal-arena@d": {
+  "scene": "Shadow_18",
+  "gate": "door1",
+  "x": 0.284701,
+  "y": 0.327111
+ },
+ "bilewater/bilewater-groal-arena@l": {
+  "scene": "Shadow_18",
+  "gate": "left1",
+  "x": 0.0,
+  "y": 0.355556
+ },
+ "bilewater/bilewater-hanging-corpse-room@r": {
+  "scene": "Shadow_16",
+  "gate": "right1",
+  "x": 1.0,
+  "y": 0.75
+ },
+ "bilewater/bilewater-hanging-corpse-room@l": {
+  "scene": "Shadow_16",
+  "gate": "left1",
+  "x": 0.0,
+  "y": 0.145833
+ },
+ "bilewater/bilewater-lower-bloatroach-tower@lr": {
+  "scene": "Shadow_02",
+  "gate": "right2",
+  "x": 1.0,
+  "y": 0.120773
+ },
+ "bilewater/bilewater-lower-bloatroach-tower@ur": {
+  "scene": "Shadow_02",
+  "gate": "right1",
+  "x": 1.0,
+  "y": 0.676329
+ },
+ "bilewater/bilewater-lower-bloatroach-tower@ll": {
+  "scene": "Shadow_02",
+  "gate": "left2",
+  "x": 0.0,
+  "y": 0.120773
+ },
+ "bilewater/bilewater-lower-bloatroach-tower@mr": {
+  "scene": "Shadow_02",
+  "gate": "right3",
+  "x": 1.0,
+  "y": 0.352657
+ },
+ "bilewater/bilewater-lower-bloatroach-tower@ul": {
+  "scene": "Shadow_02",
+  "gate": "left1",
+  "x": 0.0,
+  "y": 0.94686
+ },
+ "bilewater/bilewater-lower-east-hall@r": {
+  "scene": "Shadow_03",
+  "gate": "right1",
+  "x": 1.0,
+  "y": 0.255814
+ },
+ "bilewater/bilewater-lower-east-hall@c": {
+  "scene": "Shadow_03",
+  "gate": "top1",
+  "x": 0.275862,
+  "y": 1.0
+ },
+ "bilewater/bilewater-lower-east-hall@l": {
+  "scene": "Shadow_03",
+  "gate": "left1",
+  "x": 0.0,
+  "y": 0.627907
+ },
+ "bilewater/bilewater-lower-east-hall-secret@l": {
+  "scene": "Shadow_21",
+  "gate": "bot1",
+  "x": 0.445455,
+  "y": 0.020833
+ },
+ "bilewater/bilewater-lower-trap-gauntlet-hall@l": {
+  "scene": "Shadow_10",
+  "gate": "left1",
+  "x": 0.0,
+  "y": 0.328571
+ },
+ "bilewater/bilewater-lower-trap-gauntlet-hall@r": {
+  "scene": "Shadow_10",
+  "gate": "right1",
+  "x": 1.0,
+  "y": 0.657143
+ },
+ "bilewater/bilewater-mothleaf-hall@l": {
+  "scene": "Shadow_27",
+  "gate": "left1",
+  "x": 0.0,
+  "y": 0.44
+ },
+ "bilewater/bilewater-northeast-tiny-room@l": {
+  "scene": "Shadow_25",
+  "gate": "left1",
+  "x": 0.0,
+  "y": 0.277778
+ },
+ "bilewater/bilewater-organ-entrance@lr": {
+  "scene": "Shadow_04",
+  "gate": "right2",
+  "x": 1.0,
+  "y": 0.089888
+ },
+ "bilewater/bilewater-organ-entrance@c": {
+  "scene": "Shadow_04",
+  "gate": "top1",
+  "x": 0.769231,
+  "y": 1.0
+ },
+ "bilewater/bilewater-organ-entrance@ur": {
+  "scene": "Shadow_04",
+  "gate": "right1",
+  "x": 0.826923,
+  "y": 0.764045
+ },
+ "bilewater/bilewater-shakra-room@l": {
+  "scene": "Shadow_23",
+  "gate": "left1",
+  "x": 0.0,
+  "y": 0.421053
+ },
+ "bilewater/bilewater-sinner-s-entrance@r": {
+  "scene": "Shadow_05",
+  "gate": "right1",
+  "x": 1.0,
+  "y": 0.654545
+ },
+ "bilewater/bilewater-slubberlug-river@l": {
+  "scene": "Shadow_13",
+  "gate": "left1",
+  "x": 0.0,
+  "y": 0.256757
+ },
+ "bilewater/bilewater-spike-ball-ceiling-trap-room@r": {
+  "scene": "Shadow_11",
+  "gate": "right1",
+  "x": 1.0,
+  "y": 0.410714
+ },
+ "bilewater/bilewater-spike-ball-ceiling-trap-room@l": {
+  "scene": "Shadow_11",
+  "gate": "left1",
+  "x": 0.0,
+  "y": 0.232143
+ },
+ "bilewater/bilewater-upper-bloatroach-tower@mr": {
+  "scene": "Shadow_01",
+  "gate": "right1",
+  "x": 1.0,
+  "y": 0.299435
+ },
+ "bilewater/bilewater-upper-bloatroach-tower@ur": {
+  "scene": "Shadow_01",
+  "gate": "right3",
+  "x": 1.0,
+  "y": 0.779661
+ },
+ "bilewater/bilewater-upper-bloatroach-tower@lr": {
+  "scene": "Shadow_01",
+  "gate": "right2",
+  "x": 1.0,
+  "y": 0.045198
+ },
+ "bilewater/bilewater-upper-bloatroach-tower@ul": {
+  "scene": "Shadow_01",
+  "gate": "left1",
+  "x": 0.201149,
+  "y": 0.559322
+ },
+ "bilewater/bilewater-upper-bloatroach-tower@ll": {
+  "scene": "Shadow_01",
+  "gate": "left2",
+  "x": 0.201149,
+  "y": 0.073446
+ },
+ "bilewater/bilewater-upper-bloatroach-tower@c": {
+  "scene": "Shadow_01",
+  "gate": "top1",
+  "x": 0.54023,
+  "y": 1.0
+ },
+ "bilewater/bilewater-upper-east-column@ul": {
+  "scene": "Shadow_26",
+  "gate": "left1",
+  "x": 0.0,
+  "y": 0.831858
+ },
+ "bilewater/bilewater-upper-east-column@ll": {
+  "scene": "Shadow_26",
+  "gate": "left2",
+  "x": 0.0,
+  "y": 0.061947
+ },
+ "bilewater/bilewater-upper-east-column@lr": {
+  "scene": "Shadow_26",
+  "gate": "right1",
+  "x": 1.0,
+  "y": 0.061947
+ },
+ "bilewater/bilewater-upper-east-column@ur": {
+  "scene": "Shadow_26",
+  "gate": "right2",
+  "x": 1.0,
+  "y": 0.929204
+ },
+ "bilewater/bilewater-upper-trap-gauntlet-hall@r": {
+  "scene": "Shadow_12",
+  "gate": "right1",
+  "x": 1.0,
+  "y": 0.208333
+ },
+ "bilewater/bilewater-upper-trap-gauntlet-hall@l": {
+  "scene": "Shadow_12",
+  "gate": "left1",
+  "x": 0.0,
+  "y": 0.354167
+ },
+ "bilewater/bilewater-upper-west-column@ur": {
+  "scene": "Shadow_14",
+  "gate": "right1",
+  "x": 1.0,
+  "y": 0.591549
+ },
+ "bilewater/bilewater-upper-west-column@lr": {
+  "scene": "Shadow_14",
+  "gate": "right2",
+  "x": 1.0,
+  "y": 0.112676
+ },
+ "bilewater/bilewater-vertical-sac-pogo-room@ul": {
+  "scene": "Shadow_19",
+  "gate": "left1",
+  "x": 0.0,
+  "y": 0.635417
+ },
+ "bilewater/bilewater-vertical-sac-pogo-room@lr": {
+  "scene": "Shadow_19",
+  "gate": "right1",
+  "x": 1.0,
+  "y": 0.104167
+ },
+ "bilewater/bilewater-vertical-sac-pogo-room@ll": {
+  "scene": "Shadow_19",
+  "gate": "left2",
+  "x": 0.0,
+  "y": 0.333333
+ },
+ "bilewater/bilewater-weavenest-murglin@l": {
+  "scene": "Shadow_Weavehome",
+  "gate": "left1",
+  "x": 0.0,
+  "y": 0.838235
+ },
+ "bilewater/bilewater-west-hall@l": {
+  "scene": "Shadow_04b",
+  "gate": "left1",
+  "x": 0.332432,
+  "y": 0.918919
+ },
+ "bilewater/bilewater-west-hall@r": {
+  "scene": "Shadow_04b",
+  "gate": "right1",
+  "x": 1.0,
+  "y": 0.783784
+ },
+ "bilewater/bilewater-west-secret-rooms@l": {
+  "scene": "Shadow_20",
+  "gate": "bot1",
+  "x": 0.547826,
+  "y": 0.0
+ },
+ "bilewater/exhaust-organ-exterior@ud": {
+  "scene": "Dust_09",
+  "gate": "door1",
+  "x": 0.578333,
+  "y": 0.725192
+ },
+ "bilewater/exhaust-organ-exterior@ld": {
+  "scene": "Dust_09",
+  "gate": "door2",
+  "x": 0.583889,
+  "y": 0.137692
+ },
+ "bilewater/exhaust-organ-interior@ue": {
+  "scene": "Organ_01",
+  "gate": "left3",
+  "x": 0.175,
+  "y": 0.938865
+ },
+ "bilewater/exhaust-organ-interior@ml": {
+  "scene": "Organ_01",
+  "gate": "left1",
+  "x": 0.25625,
+  "y": 0.310044
+ },
+ "bilewater/exhaust-organ-interior@ll": {
+  "scene": "Organ_01",
+  "gate": "left2",
+  "x": 0.025,
+  "y": 0.034934
+ },
+ "memorium/beeg-flea@b": {
+  "scene": "Arborium_08",
+  "gate": "bot1",
+  "x": 0.568182,
+  "y": 0.033333
+ },
+ "memorium/memorium-bench@l": {
+  "scene": "Arborium_04",
+  "gate": "left1",
+  "x": 0.0,
+  "y": 0.235294
+ },
+ "memorium/memorium-bench@r": {
+  "scene": "Arborium_04",
+  "gate": "right1",
+  "x": 1.0,
+  "y": 0.235294
+ },
+ "memorium/memorium-karak@l": {
+  "scene": "Arborium_06",
+  "gate": "left1",
+  "x": 0.0,
+  "y": 0.344828
+ },
+ "memorium/memorium-mossy@r": {
+  "scene": "Arborium_09",
+  "gate": "right1",
+  "x": 1.0,
+  "y": 0.875
+ },
+ "memorium/memorium-puzzle@l": {
+  "scene": "Arborium_10",
+  "gate": "left1",
+  "x": 0.012821,
+  "y": 0.214286
+ },
+ "memorium/memorium-rhino-room@r": {
+  "scene": "Arborium_02",
+  "gate": "right1",
+  "x": 1.0,
+  "y": 0.344828
+ },
+ "memorium/memorium-rhino-room@l": {
+  "scene": "Arborium_02",
+  "gate": "left1",
+  "x": 0.0,
+  "y": 0.344828
+ },
+ "memorium/memorium-start-shaft@r": {
+  "scene": "Arborium_01",
+  "gate": "right3",
+  "x": 1.0,
+  "y": 0.649007
+ },
+ "memorium/memorium-start-shaft@ve": {
+  "scene": "Arborium_01",
+  "gate": "left3",
+  "x": 0.0,
+  "y": 0.788079
+ },
+ "memorium/memorium-start-shaft@ml": {
+  "scene": "Arborium_01",
+  "gate": "left1",
+  "x": 0.0,
+  "y": 0.662252
+ },
+ "memorium/memorium-start-shaft@llr": {
+  "scene": "Arborium_01",
+  "gate": "right5",
+  "x": 1.0,
+  "y": 0.086093
+ },
+ "memorium/memorium-start-shaft@vn": {
+  "scene": "Arborium_01",
+  "gate": "right2",
+  "x": 1.0,
+  "y": 0.834437
+ },
+ "memorium/memorium-start-shaft@lr": {
+  "scene": "Arborium_01",
+  "gate": "right4",
+  "x": 1.0,
+  "y": 0.278146
+ },
+ "memorium/memorium-ventrica@r": {
+  "scene": "Arborium_Tube",
+  "gate": "right1",
+  "x": 1.0,
+  "y": 0.318182
+ },
+ "memorium/memorium-voltnest@l": {
+  "scene": "Arborium_07",
+  "gate": "left1",
+  "x": 0.005556,
+  "y": 0.363636
+ },
+ "memorium/memorium-voltnest@t": {
+  "scene": "Arborium_07",
+  "gate": "top1",
+  "x": 0.416667,
+  "y": 0.977273
+ },
+ "memorium/memorium-water-room@r": {
+  "scene": "Arborium_05",
+  "gate": "right1",
+  "x": 1.0,
+  "y": 0.344828
+ },
+ "memorium/seed-shooty-memorium@ll": {
+  "scene": "Arborium_03",
+  "gate": "left3",
+  "x": 0.0,
+  "y": 0.381818
+ },
+ "memorium/seed-shooty-memorium@bl": {
+  "scene": "Arborium_03",
+  "gate": "left4",
+  "x": 0.0,
+  "y": 0.118182
+ },
+ "memorium/seed-shooty-memorium@t": {
+  "scene": "Arborium_03",
+  "gate": "left2",
+  "x": 0.0,
+  "y": 0.627273
+ },
+ "memorium/seed-shooty-memorium@r": {
+  "scene": "Arborium_03",
+  "gate": "right1",
+  "x": 1.0,
+  "y": 0.381818
+ },
+ "memorium/seed-shooty-memorium@lr": {
+  "scene": "Arborium_03",
+  "gate": "right2",
+  "x": 1.0,
+  "y": 0.118182
+ },
+ "memorium/shopkeeper-hides@l": {
+  "scene": "Arborium_11",
+  "gate": "left1",
+  "x": 0.0,
+  "y": 0.213115
+ },
+ "sands-of-karak/coral-tower@l": {
+  "scene": "Coral_Tower_01",
+  "gate": "left1",
+  "x": 0.01087,
+  "y": 0.409091
+ },
+ "sands-of-karak/coral-tower-entrance@r": {
+  "scene": "Coral_28",
+  "gate": "right1",
+  "x": 1.0,
+  "y": 0.160714
+ },
+ "sands-of-karak/coral-tower-entrance@d": {
+  "scene": "Coral_28",
+  "gate": "door1",
+  "x": 0.472692,
+  "y": 0.138214
+ },
+ "sands-of-karak/sands-of-karak-entrance@f": {
+  "scene": "Coral_25",
+  "gate": "bot1",
+  "x": 0.946309,
+  "y": 0.0
+ },
+ "sands-of-karak/sands-of-karak-entrance@r": {
+  "scene": "Coral_25",
+  "gate": "right1",
+  "x": 1.0,
+  "y": 0.734694
+ },
+ "sands-of-karak/sands-of-karak-lower-left-long-room@ul": {
+  "scene": "Coral_23",
+  "gate": "left2",
+  "x": 0.256329,
+  "y": 0.872549
+ },
+ "sands-of-karak/sands-of-karak-lower-left-long-room@r": {
+  "scene": "Coral_23",
+  "gate": "right1",
+  "x": 1.0,
+  "y": 0.892157
+ },
+ "sands-of-karak/sands-of-karak-lower-left-long-room@ll": {
+  "scene": "Coral_23",
+  "gate": "left1",
+  "x": 0.112342,
+  "y": 0.147059
+ },
+ "sands-of-karak/sands-of-karak-lower-right-long-room@l": {
+  "scene": "Coral_24",
+  "gate": "left1",
+  "x": 0.0,
+  "y": 0.127273
+ },
+ "sands-of-karak/sands-of-karak-right-side-tall-room@ul": {
+  "scene": "Coral_26",
+  "gate": "left2",
+  "x": 0.0,
+  "y": 0.957447
+ },
+ "sands-of-karak/sands-of-karak-tall-centre-room@d": {
+  "scene": "Coral_35b",
+  "gate": "door1",
+  "x": 0.538621,
+  "y": 0.93375
+ },
+ "sands-of-karak/sands-of-karak-tall-centre-room@ll": {
+  "scene": "Coral_35b",
+  "gate": "left3",
+  "x": 0.0,
+  "y": 0.029762
+ },
+ "sands-of-karak/sands-of-karak-tall-centre-room@lr": {
+  "scene": "Coral_35b",
+  "gate": "right2",
+  "x": 1.0,
+  "y": 0.047619
+ },
+ "sands-of-karak/sands-of-karak-tall-centre-room@ul": {
+  "scene": "Coral_35b",
+  "gate": "left2",
+  "x": 0.0,
+  "y": 0.64881
+ },
+ "sands-of-karak/sands-of-karak-tall-centre-room@ur": {
+  "scene": "Coral_35b",
+  "gate": "right1",
+  "x": 1.0,
+  "y": 0.64881
+ },
+ "sands-of-karak/sands-of-karak-tall-centre-room@ull": {
+  "scene": "Coral_35b",
+  "gate": "left4",
+  "x": 0.0,
+  "y": 0.119048
+ },
+ "sands-of-karak/sands-of-karak-upper-left-long-room@l": {
+  "scene": "Coral_27",
+  "gate": "left1",
+  "x": 0.0,
+  "y": 0.73913
+ },
+ "sands-of-karak/sands-of-karak-upper-left-long-room@r": {
+  "scene": "Coral_27",
+  "gate": "right1",
+  "x": 1.0,
+  "y": 0.173913
+ },
+ "sands-of-karak/sands-of-karak-upper-right-long-room@l": {
+  "scene": "Coral_44",
+  "gate": "left1",
+  "x": 0.0,
+  "y": 0.727273
+ },
+ "sands-of-karak/sands-of-karak-upper-right-long-room@r": {
+  "scene": "Coral_44",
+  "gate": "right1",
+  "x": 1.0,
+  "y": 0.6
+ },
+ "sands-of-karak/sands-of-shakra@r": {
+  "scene": "Coral_40",
+  "gate": "right1",
+  "x": 1.0,
+  "y": 0.291667
+ },
+ "sands-of-karak/watcher-at-the-edge@r": {
+  "scene": "Coral_39",
+  "gate": "right1",
+  "x": 1.0,
+  "y": 0.255814
+ },
+ "sands-of-karak/voltnest@l": {
+  "scene": "Coral_29",
+  "gate": "left1",
+  "x": 0.107616,
+  "y": 0.26087
+ },
+ "the-slab/slab-bridge@l": {
+  "scene": "Slab_01",
+  "gate": "left1",
+  "x": 0.1275,
+  "y": 0.447368
+ },
+ "the-slab/slab-bridge@r": {
+  "scene": "Slab_01",
+  "gate": "right1",
+  "x": 1.0,
+  "y": 0.447368
+ },
+ "the-slab/slab-arena@l": {
+  "scene": "Slab_16",
+  "gate": "left1",
+  "x": 0.085,
+  "y": 0.1625
+ },
+ "the-slab/slab-arena@r": {
+  "scene": "Slab_16",
+  "gate": "right1",
+  "x": 1.0,
+  "y": 0.25
+ },
+ "the-slab/slab-cell@arn": {
+  "scene": "Slab_03",
+  "gate": "left1",
+  "x": 0.0,
+  "y": 0.859649
+ },
+ "the-slab/slab-cell@chl": {
+  "scene": "Slab_03",
+  "gate": "left2",
+  "x": 0.0,
+  "y": 0.715789
+ },
+ "the-slab/slab-cell@f2t": {
+  "scene": "Slab_03",
+  "gate": "left5",
+  "x": 0.0,
+  "y": 0.4
+ },
+ "the-slab/slab-cell@cav": {
+  "scene": "Slab_03",
+  "gate": "right8",
+  "x": 1.0,
+  "y": 0.284211
+ },
+ "the-slab/slab-cell@pdb": {
+  "scene": "Slab_03",
+  "gate": "left8",
+  "x": 0.0,
+  "y": 0.024561
+ },
+ "the-slab/slab-chilly-prison@l": {
+  "scene": "Slab_15",
+  "gate": "left1",
+  "x": 0.0,
+  "y": 0.16
+ },
+ "the-slab/slab-chilly-prison@r": {
+  "scene": "Slab_15",
+  "gate": "right1",
+  "x": 1.0,
+  "y": 0.16
+ },
+ "the-slab/slab-bellway@l": {
+  "scene": "Slab_06",
+  "gate": "left1",
+  "x": 0.0,
+  "y": 0.285714
+ },
+ "the-slab/slab-cave-entrance@d": {
+  "scene": "Slab_08",
+  "gate": "door1",
+  "x": 0.356857,
+  "y": 0.772946
+ },
+ "the-slab/slab-cave-entrance@l": {
+  "scene": "Slab_08",
+  "gate": "left1",
+  "x": 0.0,
+  "y": 0.25
+ },
+ "the-slab/slab-entrance@r": {
+  "scene": "Slab_02",
+  "gate": "right1",
+  "x": 1.0,
+  "y": 0.322581
+ },
+ "the-slab/slab-infleatween-top@r": {
+  "scene": "Slab_04",
+  "gate": "right1",
+  "x": 1.0,
+  "y": 0.216216
+ },
+ "the-slab/slab-poodle@r2": {
+  "scene": "Slab_07",
+  "gate": "right2",
+  "x": 1.0,
+  "y": 0.225
+ },
+ "the-slab/slab-quiet-cell@b": {
+  "scene": "Slab_Cell_Quiet",
+  "gate": "left2",
+  "x": 0.04717,
+  "y": 0.15
+ },
+ "mount-fay/mount-fay-entrance@c3": {
+  "scene": "Peak_01",
+  "gate": "top3",
+  "x": 0.7311,
+  "y": 1.0
+ },
+ "mount-fay/mount-fay-entrance@ul": {
+  "scene": "Peak_01",
+  "gate": "left1",
+  "x": 0.0,
+  "y": 0.847059
+ },
+ "mount-fay/mount-fay-entrance@ll": {
+  "scene": "Peak_01",
+  "gate": "left4",
+  "x": 0.0,
+  "y": 0.101961
+ },
+ "mount-fay/mount-fay-entrance@lml": {
+  "scene": "Peak_01",
+  "gate": "left3",
+  "x": 0.0,
+  "y": 0.176471
+ },
+ "mount-fay/mount-fay-entrance@uml": {
+  "scene": "Peak_01",
+  "gate": "left2",
+  "x": 0.0,
+  "y": 0.807843
+ },
+ "mount-fay/mount-fay-entrance@usr": {
+  "scene": "Peak_01",
+  "gate": "right1",
+  "x": 1.0,
+  "y": 0.854902
+ },
+ "mount-fay/mount-fay-entrance@c1": {
+  "scene": "Peak_01",
+  "gate": "top1",
+  "x": 0.5,
+  "y": 1.0
+ },
+ "mount-fay/mount-fay-entrance@msr": {
+  "scene": "Peak_01",
+  "gate": "right2",
+  "x": 1.0,
+  "y": 0.721569
+ },
+ "mount-fay/mount-fay-entrance@lr": {
+  "scene": "Peak_01",
+  "gate": "right4",
+  "x": 1.0,
+  "y": 0.098039
+ },
+ "mount-fay/brightvein@l": {
+  "scene": "Peak_06",
+  "gate": "left1",
+  "x": 0.009804,
+  "y": 0.030043
+ },
+ "mount-fay/brightvein-entrance@l": {
+  "scene": "Peak_06b",
+  "gate": "left1",
+  "x": 0.0,
+  "y": 0.672727
+ },
+ "mount-fay/brightvein-entrance@d": {
+  "scene": "Peak_06b",
+  "gate": "door1",
+  "x": 0.65087,
+  "y": 0.648909
+ },
+ "mount-fay/fayforn@l2": {
+  "scene": "Peak_08b",
+  "gate": "left2",
+  "x": 0.824405,
+  "y": 0.485507
+ },
+ "mount-fay/fayforn@l1": {
+  "scene": "Peak_08b",
+  "gate": "left1",
+  "x": 0.622024,
+  "y": 0.57971
+ },
+ "mount-fay/fayforn@f1": {
+  "scene": "Peak_08b",
+  "gate": "bot4",
+  "x": 0.809524,
+  "y": 0.0
+ },
+ "mount-fay/fayforn@f2": {
+  "scene": "Peak_08b",
+  "gate": "bot5",
+  "x": 0.922619,
+  "y": 0.0
+ },
+ "mount-fay/mask-maker@r": {
+  "scene": "Peak_Mask_Maker",
+  "gate": "right1",
+  "x": 0.848485,
+  "y": 0.233333
+ },
+ "mount-fay/mask-maker-passage@f": {
+  "scene": "Peak_05d",
+  "gate": "bot1",
+  "x": 0.590164,
+  "y": 0.708015
+ },
+ "mount-fay/mask-maker-passage@d": {
+  "scene": "Peak_05d",
+  "gate": "door1",
+  "x": 0.450656,
+  "y": 0.949504
+ },
+ "mount-fay/mount-fay-bench-toll@ur": {
+  "scene": "Bellway_Peak",
+  "gate": "right1",
+  "x": 0.982759,
+  "y": 0.527273
+ },
+ "mount-fay/mount-fay-bench-toll@c": {
+  "scene": "Bellway_Peak",
+  "gate": "top1",
+  "x": 0.5,
+  "y": 1.0
+ },
+ "mount-fay/mount-fay-bench-toll@ul": {
+  "scene": "Bellway_Peak",
+  "gate": "left1",
+  "x": 0.017241,
+  "y": 0.527273
+ },
+ "mount-fay/mount-fay-frozen-flea@r": {
+  "scene": "Peak_05c",
+  "gate": "right1",
+  "x": 1.0,
+  "y": 0.568
+ },
+ "mount-fay/mount-fay-frozen-flea@l": {
+  "scene": "Peak_05c",
+  "gate": "left2",
+  "x": 0.664179,
+  "y": 0.912
+ },
+ "mount-fay/mount-fay-ice-lake-platforming-room@l": {
+  "scene": "Peak_04",
+  "gate": "left1",
+  "x": 0.362216,
+  "y": 0.487805
+ },
+ "mount-fay/mount-fay-ice-lake-platforming-room@r": {
+  "scene": "Peak_04",
+  "gate": "right1",
+  "x": 1.0,
+  "y": 0.463415
+ },
+ "mount-fay/mount-fay-large-servitor-hallway@r": {
+  "scene": "Peak_04d",
+  "gate": "right1",
+  "x": 1.0,
+  "y": 0.318182
+ },
+ "mount-fay/mount-fay-large-servitor-hallway@l": {
+  "scene": "Peak_04d",
+  "gate": "left1",
+  "x": 0.0,
+  "y": 0.318182
+ },
+ "mount-fay/mount-fay-lore-room@r": {
+  "scene": "Peak_10",
+  "gate": "right1",
+  "x": 1.0,
+  "y": 0.76
+ },
+ "mount-fay/mount-fay-lower-slope@c": {
+  "scene": "Peak_05",
+  "gate": "top2",
+  "x": 0.943966,
+  "y": 1.0
+ },
+ "mount-fay/mount-fay-lower-slope@f": {
+  "scene": "Peak_05",
+  "gate": "bot1",
+  "x": 0.258621,
+  "y": 0.0
+ },
+ "mount-fay/mount-fay-lower-slope@r": {
+  "scene": "Peak_05",
+  "gate": "right3",
+  "x": 0.920259,
+  "y": 0.620112
+ },
+ "mount-fay/mount-fay-magnetite-outcropping@ur": {
+  "scene": "Peak_05e",
+  "gate": "right2",
+  "x": 1.0,
+  "y": 0.90625
+ },
+ "mount-fay/mount-fay-magnetite-outcropping@lr": {
+  "scene": "Peak_05e",
+  "gate": "right1",
+  "x": 1.0,
+  "y": 0.125
+ },
+ "mount-fay/mount-fay-magnetite-outcropping@l": {
+  "scene": "Peak_05e",
+  "gate": "left1",
+  "x": 0.0,
+  "y": 0.125
+ },
+ "mount-fay/mount-fay-mask-shard@ur": {
+  "scene": "Peak_04c",
+  "gate": "right1",
+  "x": 0.985714,
+  "y": 0.479167
+ },
+ "mount-fay/mount-fay-peak-bench@r": {
+  "scene": "Peak_12",
+  "gate": "right1",
+  "x": 0.67,
+  "y": 0.363636
+ },
+ "mount-fay/mount-fay-right-side-middle-room@c2": {
+  "scene": "Peak_07",
+  "gate": "top2",
+  "x": 0.6,
+  "y": 1.0
+ },
+ "mount-fay/mount-fay-right-side-middle-room@f1": {
+  "scene": "Peak_07",
+  "gate": "bot1",
+  "x": 0.417391,
+  "y": 0.0
+ },
+ "mount-fay/mount-fay-right-side-middle-room@c1": {
+  "scene": "Peak_07",
+  "gate": "top1",
+  "x": 0.330435,
+  "y": 1.0
+ },
+ "mount-fay/mount-fay-right-side-middle-room@f3": {
+  "scene": "Peak_07",
+  "gate": "bot3",
+  "x": 0.632609,
+  "y": 0.0
+ },
+ "mount-fay/mount-fay-shakra@lr": {
+  "scene": "Peak_02",
+  "gate": "right3",
+  "x": 1.0,
+  "y": 0.051887
+ },
+ "mount-fay/mount-fay-shakra@ur": {
+  "scene": "Peak_02",
+  "gate": "right4",
+  "x": 1.0,
+  "y": 0.938679
+ },
+ "mount-fay/mount-fay-shakra@ml": {
+  "scene": "Peak_02",
+  "gate": "left1",
+  "x": 0.0,
+  "y": 0.514151
+ },
+ "mount-fay/mount-fay-shakra@ll": {
+  "scene": "Peak_02",
+  "gate": "left2",
+  "x": 0.0,
+  "y": 0.080189
+ },
+ "mount-fay/mount-fay-shakra@umr": {
+  "scene": "Peak_02",
+  "gate": "right1",
+  "x": 1.0,
+  "y": 0.896226
+ },
+ "mount-fay/mount-fay-shakra@lmr": {
+  "scene": "Peak_02",
+  "gate": "right2",
+  "x": 1.0,
+  "y": 0.141509
+ },
+ "mount-fay/mount-fay-shakra@ul": {
+  "scene": "Peak_02",
+  "gate": "left3",
+  "x": 0.0,
+  "y": 0.938679
+ },
+ "mount-fay/mount-fay-upper-slope@f": {
+  "scene": "Peak_08",
+  "gate": "bot1",
+  "x": 0.221574,
+  "y": 0.0
+ },
+ "mount-fay/mount-fay-upper-slope@c": {
+  "scene": "Peak_08",
+  "gate": "top1",
+  "x": 0.113703,
+  "y": 0.30914
+ },
+ "mount-fay/mount-fay-upper-slope@r": {
+  "scene": "Peak_08",
+  "gate": "right1",
+  "x": 1.0,
+  "y": 0.924731
+ },
+ "putrified-ducts/fleatopia@l": {
+  "scene": "Aqueduct_05",
+  "gate": "left1",
+  "x": 0.031627,
+  "y": 0.19
+ },
+ "putrified-ducts/huntress@l": {
+  "scene": "Room_Huntress",
+  "gate": "left1",
+  "x": 0.085714,
+  "y": 0.28
+ },
+ "putrified-ducts/putrified-ducts-bellway@l": {
+  "scene": "Bellway_Aqueduct",
+  "gate": "left1",
+  "x": 0.375,
+  "y": 0.294872
+ },
+ "putrified-ducts/putrified-ducts-bellway@r": {
+  "scene": "Bellway_Aqueduct",
+  "gate": "right1",
+  "x": 0.989583,
+  "y": 0.910256
+ },
+ "putrified-ducts/putrified-ducts-connection-to-bilewater@d": {
+  "scene": "Aqueduct_04",
+  "gate": "door1",
+  "x": 0.504,
+  "y": 0.194167
+ },
+ "putrified-ducts/putrified-ducts-connection-to-bilewater@f": {
+  "scene": "Aqueduct_04",
+  "gate": "bot1",
+  "x": 0.789189,
+  "y": 0.0
+ },
+ "putrified-ducts/putrified-ducts-entrance@r": {
+  "scene": "Aqueduct_01",
+  "gate": "right1",
+  "x": 1.0,
+  "y": 0.714286
+ },
+ "putrified-ducts/putrified-ducts-lower-bridge-room@r": {
+  "scene": "Aqueduct_03",
+  "gate": "right1",
+  "x": 0.992031,
+  "y": 0.37
+ },
+ "putrified-ducts/putrified-ducts-lower-bridge-room@l": {
+  "scene": "Aqueduct_03",
+  "gate": "left1",
+  "x": 0.003831,
+  "y": 0.272727
+ },
+ "putrified-ducts/putrified-ducts-lower-bridge-room@c": {
+  "scene": "Aqueduct_03",
+  "gate": "top1",
+  "x": 0.32567,
+  "y": 1.0
+ },
+ "putrified-ducts/putrified-ducts-map-room@r": {
+  "scene": "Aqueduct_07",
+  "gate": "right1",
+  "x": 0.97561,
+  "y": 0.1625
+ },
+ "putrified-ducts/putrified-ducts-path-to-vog@f": {
+  "scene": "Aqueduct_06",
+  "gate": "bot1",
+  "x": 0.16,
+  "y": 0.0
+ },
+ "putrified-ducts/putrified-ducts-path-to-vog@ul": {
+  "scene": "Aqueduct_06",
+  "gate": "left1",
+  "x": 0.006667,
+  "y": 0.925
+ },
+ "putrified-ducts/putrified-ducts-path-to-vog@ll": {
+  "scene": "Aqueduct_06",
+  "gate": "left2",
+  "x": 0.0,
+  "y": 0.075
+ },
+ "putrified-ducts/putrified-ducts-rosary-room@r": {
+  "scene": "Aqueduct_08",
+  "gate": "right1",
+  "x": 1.0,
+  "y": 0.4
+ },
+ "putrified-ducts/putrified-ducts-tall-room@ul": {
+  "scene": "Aqueduct_02",
+  "gate": "left1",
+  "x": 0.0,
+  "y": 0.900826
+ },
+ "putrified-ducts/putrified-ducts-tall-room@ur": {
+  "scene": "Aqueduct_02",
+  "gate": "right2",
+  "x": 1.0,
+  "y": 0.834711
+ },
+ "putrified-ducts/putrified-ducts-tall-room@ml": {
+  "scene": "Aqueduct_02",
+  "gate": "left3",
+  "x": 0.051724,
+  "y": 0.380165
+ },
+ "putrified-ducts/putrified-ducts-tall-room@lr": {
+  "scene": "Aqueduct_02",
+  "gate": "right1",
+  "x": 0.982759,
+  "y": 0.07438
+ },
+ "the-cradle/act3-connection-to-gms@f": {
+  "scene": "Cradle_01_Destroyed",
+  "gate": "bot1",
+  "x": 0.4875,
+  "y": 0.550562
+ },
+ "the-cradle/act3-connection-to-gms@c": {
+  "scene": "Cradle_01_Destroyed",
+  "gate": "top1",
+  "x": 0.56875,
+  "y": 1.0
+ },
+ "the-cradle/act3-gms-arena@f": {
+  "scene": "Cradle_03_Destroyed",
+  "gate": "bot1",
+  "x": 0.5875,
+  "y": 0.260526
+ },
+ "the-cradle/act3-gms-arena@d": {
+  "scene": "Cradle_03_Destroyed",
+  "gate": "door1",
+  "x": 0.573,
+  "y": 0.914829
+ },
+ "the-cradle/act3-lace2-arena@c": {
+  "scene": "Song_Tower_Destroyed",
+  "gate": "top1",
+  "x": 0.189655,
+  "y": 1.0
+ },
+ "the-cradle/act2-gms-arena@l": {
+  "scene": "Cradle_03",
+  "gate": "left2",
+  "x": 0.0,
+  "y": 0.3375
+ },
+ "the-cradle/act2-cradle-connector-hallway@l": {
+  "scene": "Cradle_01",
+  "gate": "left1",
+  "x": 0.0,
+  "y": 0.794118
+ },
+ "the-cradle/act2-cradle-left-shaft@ur": {
+  "scene": "Cradle_02",
+  "gate": "right1",
+  "x": 1.0,
+  "y": 0.790909
+ },
+ "the-cradle/act2-cradle-left-shaft@lr": {
+  "scene": "Cradle_02",
+  "gate": "right2",
+  "x": 1.0,
+  "y": 0.390909
+ },
+ "the-cradle/cradle-path-of-pain-first-room@c": {
+  "scene": "Cradle_Destroyed_Challenge_02",
+  "gate": "top1",
+  "x": 0.7125,
+  "y": 1.0
+ },
+ "the-cradle/cradle-path-of-pain-first-room@l": {
+  "scene": "Cradle_Destroyed_Challenge_02",
+  "gate": "left1",
+  "x": 0.01875,
+  "y": 0.058333
+ },
+ "the-cradle/path-of-pain-bench@r": {
+  "scene": "Cradle_Destroyed_Challenge_Bench",
+  "gate": "right1",
+  "x": 0.925,
+  "y": 0.24
+ },
+ "the-cradle/path-of-pain-bench@f": {
+  "scene": "Cradle_Destroyed_Challenge_Bench",
+  "gate": "bot1",
+  "x": 0.170667,
+  "y": 0.0
+ },
+ "the-cradle/path-of-pain-silksong@c": {
+  "scene": "Cradle_Destroyed_Challenge_01",
+  "gate": "top1",
+  "x": 0.622222,
+  "y": 1.0
+ },
+ "the-cradle/path-of-pain-silksong@l": {
+  "scene": "Cradle_Destroyed_Challenge_01",
+  "gate": "left1",
+  "x": 0.266667,
+  "y": 0.010714
+ },
+ "the-cradle/the-surface@f": {
+  "scene": "Abandoned_town",
+  "gate": "bot1",
+  "x": 0.470602,
+  "y": 0.0
+ },
+ "the-abyss/abyss-bottom-left-lore-room@r": {
+  "scene": "Abyss_06",
+  "gate": "right1",
+  "x": 1.0,
+  "y": 0.215686
+ },
+ "the-abyss/abyss-collapsing-hallway@l": {
+  "scene": "Abyss_07",
+  "gate": "left1",
+  "x": 0.0,
+  "y": 0.45
+ },
+ "the-abyss/abyss-collapsing-hallway@r": {
+  "scene": "Abyss_07",
+  "gate": "right1",
+  "x": 1.0,
+  "y": 0.45
+ },
+ "the-abyss/abyss-escape@f": {
+  "scene": "Abyss_09",
+  "gate": "bot1",
+  "x": 0.816667,
+  "y": 0.0
+ },
+ "the-abyss/abyss-escape-hallway@c": {
+  "scene": "Abyss_13",
+  "gate": "top1",
+  "x": 0.0875,
+  "y": 1.0
+ },
+ "the-abyss/abyss-final-bench@r": {
+  "scene": "Abyss_12",
+  "gate": "right2",
+  "x": 1.0,
+  "y": 0.225
+ },
+ "the-abyss/abyss-final-bench@l": {
+  "scene": "Abyss_12",
+  "gate": "left1",
+  "x": 0.0,
+  "y": 0.225
+ },
+ "the-abyss/abyss-hallway-to-upper-big-room@l": {
+  "scene": "Abyss_02",
+  "gate": "left1",
+  "x": 0.0,
+  "y": 0.282051
+ },
+ "the-abyss/abyss-hallway-to-upper-big-room@r": {
+  "scene": "Abyss_02",
+  "gate": "right1",
+  "x": 1.0,
+  "y": 0.589744
+ },
+ "the-abyss/abyss-landing-zone@ll": {
+  "scene": "Abyss_03",
+  "gate": "left1",
+  "x": 0.0,
+  "y": 0.070588
+ },
+ "the-abyss/abyss-lower-big-room@r": {
+  "scene": "Abyss_05",
+  "gate": "right1",
+  "x": 0.936842,
+  "y": 0.895238
+ },
+ "the-abyss/abyss-lower-big-room@l": {
+  "scene": "Abyss_05",
+  "gate": "left2",
+  "x": 0.052632,
+  "y": 0.085714
+ },
+ "the-abyss/abyss-tall-room@ur": {
+  "scene": "Abyss_01",
+  "gate": "right2",
+  "x": 1.0,
+  "y": 0.931677
+ },
+ "the-abyss/abyss-tall-room@l": {
+  "scene": "Abyss_01",
+  "gate": "left1",
+  "x": 0.0,
+  "y": 0.180124
+ },
+ "the-abyss/abyss-tall-room@lr": {
+  "scene": "Abyss_01",
+  "gate": "right4",
+  "x": 1.0,
+  "y": 0.192547
+ },
+ "the-abyss/abyss-tall-room@mr": {
+  "scene": "Abyss_01",
+  "gate": "right3",
+  "x": 1.0,
+  "y": 0.732919
+ },
+ "the-abyss/abyss-upper-big-room@l": {
+  "scene": "Abyss_02b",
+  "gate": "left2",
+  "x": 0.0,
+  "y": 0.272727
+ },
+ "the-abyss/abyss-upper-big-room@r": {
+  "scene": "Abyss_02b",
+  "gate": "right1",
+  "x": 1.0,
+  "y": 0.309091
+ },
+ "the-abyss/arcane-egg-room@l": {
+  "scene": "Abyss_04",
+  "gate": "left1",
+  "x": 0.0,
+  "y": 0.753086
+ },
+ "the-abyss/weavenest-absolom@l": {
+  "scene": "Abyss_08",
+  "gate": "left1",
+  "x": 0.02439,
+  "y": 0.886792
+ }
+}

@@ -1,9 +1,9 @@
 {
   "Any Hat World": {
-    "level": "Hatsanity",
-    "sublevel": "Hatsanity",
+    "level": "HatWorld",
+    "sublevel": "HatWorld",
     "connections": {
-      "Propeller Cap Access": "HatMembership"
+      "Propeller Cap Access": ""
     }
   },
   "Propeller Cap Access": {

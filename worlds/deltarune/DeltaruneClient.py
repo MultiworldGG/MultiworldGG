@@ -19,7 +19,7 @@ from MultiServer import mark_raw, Context, Client, Endpoint
 from Utils import async_start, logging
 from worlds.deltarune.LinuxProxy import encode, proxy, proxy_loop
 
-ap_world_version = "v2.2.1"
+ap_world_version = "v2.3.0+hotfix1"
 deltarune_mod_github = "https://github.com/Tenebrosful/DeltaruneAP-mod/releases"
 
 DEBUG = True
@@ -105,7 +105,7 @@ class DeltaruneCommandProcessor(ClientCommandProcessor):
             self.output("Patched.")
 
     async def _cmd_linux_proxy(self):
-        """Use this if you're a linux user to create a proxy between Archipelago Server and your game"""
+        """Use this to create a proxy between Archipelago Server and your game"""
         self.ctx.proxy = websockets.serve(
             functools.partial(proxy, ctx=self.ctx),
             host="localhost",

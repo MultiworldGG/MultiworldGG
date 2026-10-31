@@ -76,7 +76,8 @@
       "Morio's Island - Cheese Behind First Hurdle Ramp": 32100001
     },
     "connections": {
-      "Morio's Island - High Ground": "J1/B1"
+      "Morio's Island - High Ground": "J1/B1",
+      "Morio's Island - Island Near Mori-O-Tron": "B1 | J1+X1"
     }
   },
   "Morio's Island - Cliffs Above Starting Area": {
@@ -136,9 +137,7 @@
       "Morio's Island - Coin Bag on First Stone Arch #2": 30300422,
       "Morio's Island - Coin Bag Near Fence on Island Leading to Morio's Home": 30300331,
       "Morio's Island - Coin Bag on Umbrella": 30300143,
-      "Morio's Island - Coin Bag on Home Island Stone Pillar #2": 30300290,
-      "Morio's Island - Coin Bag on Low Stone Island Near Mori-O-Tron #1": 30300015,
-      "Morio's Island - Coin Bag on Low Stone Island Near Mori-O-Tron #2": 30300021
+      "Morio's Island - Coin Bag on Home Island Stone Pillar #2": 30300290
     },
     "coins": {
       "Morio's Island - Coin on First Stone Arch #1": 30300425,
@@ -253,12 +252,7 @@
       "Morio's Island - Coin on Low Grass Island on Rubber Duck Path #2": 30300169,
       "Morio's Island - Coin on Low Grass Island on Rubber Duck Path #3": 30300168,
       "Morio's Island - Coin on Low Grass Island on Rubber Duck Path #4": 30300167,
-      "Morio's Island - Coin on Low Grass Island on Rubber Duck Path #5": 30300166,
-      "Morio's Island - Coin on Low Stone Island Near Mori-O-Tron #1": 30300016,
-      "Morio's Island - Coin on Low Stone Island Near Mori-O-Tron #2": 30300017,
-      "Morio's Island - Coin on Low Stone Island Near Mori-O-Tron #3": 30300018,
-      "Morio's Island - Coin on Low Stone Island Near Mori-O-Tron #4": 30300019,
-      "Morio's Island - Coin on Low Stone Island Near Mori-O-Tron #5": 30300020
+      "Morio's Island - Coin on Low Grass Island on Rubber Duck Path #5": 30300166
     },
     "checkpoints": {
       "Morio's Island - Checkpoint Before Stone Section": 30901125
@@ -277,6 +271,21 @@
       "Morio's Island - Center Stone Island": "X1+B1 & J1/X2 | J2+X2 | B2 & J1/X1",
       "Morio's Island - Highest Ground": "B2 | J2+X1 | X2+J1 & X3/B1",
       "Propeller Cap Access": ""
+    }
+  },
+  "Morio's Island - Island Near Mori-O-Tron": {
+    "level": "Morio's Home",
+    "sublevel": "Morio's Island",
+    "coinbags": {
+      "Morio's Island - Coin Bag on Low Stone Island Near Mori-O-Tron #1": 30300015,
+      "Morio's Island - Coin Bag on Low Stone Island Near Mori-O-Tron #2": 30300021
+    },
+    "coins": {
+      "Morio's Island - Coin on Low Stone Island Near Mori-O-Tron #1": 30300016,
+      "Morio's Island - Coin on Low Stone Island Near Mori-O-Tron #2": 30300017,
+      "Morio's Island - Coin on Low Stone Island Near Mori-O-Tron #3": 30300018,
+      "Morio's Island - Coin on Low Stone Island Near Mori-O-Tron #4": 30300019,
+      "Morio's Island - Coin on Low Stone Island Near Mori-O-Tron #5": 30300020
     }
   },
   "Morio's Island - Morio's Home Island": {

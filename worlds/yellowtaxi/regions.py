@@ -40,8 +40,9 @@ def create_all_regions(world: YellowTaxiWorld) -> None:
         reg = regions_json_data[reg_name]
         if reg["level"] not in world.included_levels and reg["level"] not in world.special_levels and reg["level"] not in world.goal_levels:
             continue
-        if reg["level"] == "Mosk's Rocket" and reg["kaizolevel"] not in world.included_levels:
-            continue
+        if not (world.options.bunnysanity and world.options.bunnysanity_includes_all_bunnies):
+            if reg["level"] == "Mosk's Rocket" and reg["kaizolevel"] not in world.included_levels:
+                continue
         regions += [Region(reg_name, world.player, world.multiworld)]
         # UT sorting. Basically it adds level # * 100 and sublevel # based on order defined in the json
         # TODO: Make this more accurate based on level order, especially when level rando is in

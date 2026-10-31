@@ -9,6 +9,12 @@ from location_positions import LOCATION_POSITIONS
 from wishes import CHECKS, TURN_INS
 
 
+NATIVE_CHECK_POSITIONS = frozenset({
+    'Relic: Weaver Effigy (Camora, Moss Grotto)',
+    'Bone Bottom - Rosary Dish',
+})
+
+
 def map_frame(room, image_path):
     # Song_20b's image covers the top 80 units of its 243-unit native scene.
     if room['in_game_id'] == 'Song_20b' and tuple(room[k] for k in
@@ -114,7 +120,7 @@ def build(geometry_path, image_root, output, world, catalogue_path=None, pack_pa
 
     for room_id, label, name in (
             ('the-slab/slab-first-sinner', 'Boss: First Sinner', 'Journal: First Sinner'),
-            ('the-abyss/abyss-cocoon', 'Lost Lace Boss 1', 'Journal: Lost Lace')):
+            ('the-abyss/abyss-cocoon', 'Boss: Lost Lace', 'Journal: Lost Lace')):
         if name in expected:
             checks[room_id, label].append(name)
 
@@ -127,6 +133,7 @@ def build(geometry_path, image_root, output, world, catalogue_path=None, pack_pa
     physical_entrances, positioned_entrances, positioned_checks = set(), set(), set()
     missing_links, turn_ins, entrance_details = [], {}, {}
     ignored = Counter()
+    entrance_anchors = {}
 
     ## Assemble maps
 
@@ -159,7 +166,8 @@ def build(geometry_path, image_root, output, world, catalogue_path=None, pack_pa
                 else:
                     ignored[entry.get("location_type") or "untyped"] += 1
                 continue
-            location_names = [name for name in location_names if name not in CHECKS]
+            location_names = [name for name in location_names
+                              if name not in CHECKS and name not in NATIVE_CHECK_POSITIONS]
             if not location_names:
                 continue
             point = image_point(entry, room, width, height)
@@ -230,6 +238,15 @@ def build(geometry_path, image_root, output, world, catalogue_path=None, pack_pa
             # Keep existing markers for scripted links, without adding new ones.
             if nonphysical and (entrance.get("image_pixel_x") is None or entrance.get("image_pixel_y") is None):
                 continue
+            if name in pool_names and entrance.get("id") and scene:
+                normalizedX = point[0] / width;
+                normalizedY = point[1] / height;
+                entrance_anchors[entrance["id"]] = {
+                    "scene": scene, 
+                    "gate": gate,
+                    "x": round(normalizedX, 6),
+                    "y": round(1.0 - normalizedY, 6),
+                }
             children.append(marker(room, [name], point))
             positioned_entrances.add(name)
 
@@ -329,7 +346,7 @@ def build(geometry_path, image_root, output, world, catalogue_path=None, pack_pa
         if lost:
             raise ValueError('Rebuild would remove existing room maps: ' + ', '.join(sorted(lost)))
     output.mkdir(parents=True, exist_ok=True)
-    for filename, data in [("maps.json", maps), ("locations.json", locations), ("errors.json", errors)]:
+    for filename, data in [("maps.json", maps), ("locations.json", locations), ("errors.json", errors), ("entrance_anchors.json", entrance_anchors)]:
         (output / filename).write_text(json.dumps(data, indent=1), encoding="utf-8")
     source = "# Generated File\n\nfrom typing import Any\n\nmapping = {\n"
     source += "".join(f"\t{json.dumps(scene)}:{index},\n" for scene, index in mapping.items())
@@ -344,7 +361,7 @@ def build(geometry_path, image_root, output, world, catalogue_path=None, pack_pa
     if manifest_path:
         manifest = dict(images=image_manifest,
                         files={name: hashlib.sha256((output / name).read_bytes()).hexdigest()
-                               for name in ('maps.json', 'locations.json', 'mapping.py')},
+                               for name in ('maps.json', 'locations.json', 'mapping.py', 'entrance_anchors.json')},
                         inputs={name: hashlib.sha256(path.read_bytes()).hexdigest() for name, path in (
                             ('geometry', geometry_path), ('catalogue', catalogue_path),
                             ('graph', world / 'room_graph_data.json'), ('pool', world / 'entrance_pool.json'),

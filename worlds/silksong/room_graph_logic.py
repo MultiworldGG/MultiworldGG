@@ -304,6 +304,8 @@ _ATOM_ALTERNATIVES: Mapping[str, tuple[CompiledRoomClause, ...]] = {
     "macro:damage-skewering": (_part("Damage: Skewering"),),
     "macro:steel-soul-resting-sites": (_part("Event: Selected Steel Soul Resting Sites Visited"),),
     "macro:any-map": (_part("Capability: Has Any Map"),),
+    "state:entrance-randomizer-on": (_part("Option: Entrance Randomizer On"),),
+    "state:entrance-randomizer-off": (_part("Option: Entrance Randomizer Off"),),
     "state:steel-soul-on": (_part("Option: Steel Soul On"),),
     "state:steel-soul-off": (_part("Option: Steel Soul Off"),),
     "state:bellshrinesanity-on": (_part("Option: Bellshrinesanity On"),),
@@ -318,6 +320,12 @@ _ATOM_ALTERNATIVES: Mapping[str, tuple[CompiledRoomClause, ...]] = {
         _part(silk_spear=True),
         _part("Usable Rune Rage"),
         _part("Usable Sharpdart"),
+        _part("Usable Silkshot (Original)"),
+        _part("Usable Pimpillo"),
+        _part("Crest: Hunter"),
+        _part("Crest: Reaper"),
+        _part("Crest: Beast"),
+        _part("Crest: Shaman"),
     ),
     # These describe ordinary environmental interactions, not inventory.
     "capability:break-vines": (_part(),),
@@ -1427,6 +1435,8 @@ def _event_requirement_name(atom: str) -> str:
 
 
 def _atom_alternatives(atom: str) -> tuple[CompiledRoomClause, ...]:
+    if atom.startswith('mapper:enemy-presence:'):
+        return (_part(),)
     if atom == 'mapper:elite-ball-knowledge:none':
         return (_part('Option: Elite Ball Knowledge'),)
     if atom.startswith(('mapper:damage-boost:', 'mapper:enemy-damage-boost:')):
@@ -1876,13 +1886,6 @@ def compile_room_graph(graph=None, *, node_seeds=None, legacy_rules=None, transi
     node_requirements: dict[str, list[CompiledRoomClause]] = {
         room_node_name(node_id): [] for node_id in authoritative_node_ids
     }
-    for node_id, requirements in seeds.items():
-        _append_requirements(
-            node_requirements,
-            room_node_name(node_id),
-            requirements,
-        )
-
     transition_by_id = graph.transition_by_id
     structural_edges: list[tuple[str, str]] = []
     for room in authoritative_rooms:
@@ -2002,6 +2005,11 @@ def compile_room_graph(graph=None, *, node_seeds=None, legacy_rules=None, transi
             _append_requirements(event_requirements, owner, clauses)
         for owner, clauses in node_requirements.items():
             clauses[:] = [clause for clause in clauses if owner not in clause.all_of]
+
+    # The way back in still works when the start moves.
+    for node_id, requirements in seeds.items():
+        rows = node_requirements[room_node_name(node_id)]
+        rows[:0] = [rule for rule in requirements if rule not in rows]
 
     semantically_reachable_owners = _semantic_reachable_owners(
         node_requirements, event_requirements, strict_owners=mapper,

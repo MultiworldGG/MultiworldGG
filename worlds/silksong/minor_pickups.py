@@ -74,6 +74,7 @@ MINOR_PICKUP_REWARD_BY_ASSET: dict[str, str] = {
 
 WISH_CURRENCY_REWARDS: dict[str, str] = {
     'Wish: Fine Pins': 'Heavy Rosary Necklace',
+    'Wish: The Wailing Mother': 'Heavy Rosary Necklace',
     'Wish: Garb of the Pilgrims': 'Rosary Necklace',
     'Wish: Silver Bells': 'Rosary Necklace',
     'Wish: The Terrible Tyrant': 'Heavy Rosary Necklace',

@@ -210,15 +210,14 @@ def define_option_constants(assembler: Z80Assembler, patch_data):
     assembler.define_byte("option.startingXPos", 0x58)
     assembler.define_byte("option.startingYPos", 0x58)
 
-    if options["vasu_ring_checks_requirement"]["disable_entirely"] == False:
-        assembler.define_word("option.vasuSlayerRingCheckRequirement", options["vasu_ring_checks_requirement"]["amount_of_enemies_defeated_for_slayer_ring_check"])
+    if options["vasu_additional_rings"]:
+        assembler.define_word("option.vasuSlayerRingCheckRequirement", options["vasu_slayer_ring_requirement"])
         ## Game use hexadecimal as decimal for rupee count, so we translate from decimal to hexadecimal to have the correct value
         ## + we remove one to the count because with current implementation it only work once you go beyond the rupee count given in the option.
-        assembler.define_word("option.vasuRupeeRingCheckRequirement", int(str(options["vasu_ring_checks_requirement"]["rupee_requirement_for_rupee_ring_check"]-1),16))
+        assembler.define_word("option.vasuRupeeRingCheckRequirement", int(str(options["vasu_rupee_ring_requirement"]-1),16))
     else:
         assembler.define_word("option.vasuSlayerRingCheckRequirement", 1000)
         assembler.define_word("option.vasuRupeeRingCheckRequirement", int(str(9999),16))
-
 
     assembler.define_byte("option.warpingGroup", patch_data["warp_to_start_variables"]["group"] if "group" in patch_data["warp_to_start_variables"] else 0x00)
     assembler.define_byte("option.warpingRoom", patch_data["warp_to_start_variables"]["room"] if "room" in patch_data["warp_to_start_variables"] else 0x59)
@@ -250,6 +249,15 @@ def define_option_constants(assembler: Z80Assembler, patch_data):
         assembler.add_floating_chunk("unsetglobalflag_librarySecret", [
             0xb6, (0x4f | 0x80)
         ])
+
+    
+    #assembler.define_word("option.closedEntranceForceOperation", 0x180f)
+    if options["entrance_randomizer_inside_lock"] == OracleOfAgesEntranceRandomizer_InsideLock.option_fully_open:
+        assembler.define_word("option.closedEntranceForceOperation", 0x180a)
+    elif options["entrance_randomizer_inside_lock"] == OracleOfAgesEntranceRandomizer_InsideLock.option_fully_blocked:
+        assembler.define_word("option.closedEntranceForceOperation", 0x180f)
+    else:
+        assembler.define_word("option.closedEntranceForceOperation", 0x0000)
 
 def parse_int(s):
     try:
@@ -285,41 +293,6 @@ def text_to_binary(text: str) -> List[int]:
                 info = next(stuff for stuff in ascii_printable_chars_table if stuff["Character"] == char)
                 result.append(info["Hexadecimal"])
     return result
-
-def define_text_constants(assembler: Z80Assembler, patch_data):
-    overworld_shops = [
-        "Lynna City: Shop",
-        "Lynna City: Hidden Shop",
-        "Yoll Graveyard: Syrup Shop",
-        "Lynna Village: Advance Shop",
-    ]
-
-    for shop_name in overworld_shops:
-        for i in range(1, 4):
-            location_name = f"{shop_name} Item #{i}"
-            symbolic_name = LOCATIONS_DATA[location_name]["symbolic_name"]
-            text_bytes = []
-            if location_name in patch_data["locations"]:
-                item_name_bytes = text_to_binary(patch_data["locations"][location_name])
-                text_bytes = [0x09, 0x01] + item_name_bytes + [0x09, 0x00, 0x0c, 0x18, 0x01]  # Item name
-                if shop_name != "Crescent Island (Past): Market":
-                    text_bytes.extend([0x20, 0x0c, 0x08, 0x20, 0x03, 0x7b, 0x01])  # Price
-                    text_bytes.extend([0x02, 0x00, 0x00])  # OK / No thanks
-            assembler.add_floating_chunk(f"text.{symbolic_name}", text_bytes)
-
-    #Tokay Market
-    shop_name = "Crescent Island (Past): Market"
-    for i in range(1, 3):
-        location_name = f"{shop_name} Item #{i}"
-        symbolic_name = LOCATIONS_DATA[location_name]["symbolic_name"]
-        text_bytes = []
-        if location_name in patch_data["locations"]:
-            item_name_bytes = text_to_binary(patch_data["locations"][location_name])
-            text_bytes = [0x09, 0x01] + item_name_bytes + [0x09, 0x00, 0x0c, 0x18, 0x00]  # Item name
-            assembler.add_floating_chunk(f"text.{symbolic_name}", text_bytes)
-    text_bytes = [0x31, 0x30, 0x20, 0x02, 0x12, 0x01, 0x02, 0x00, 0x00]
-    assembler.add_floating_chunk(f"text.tokayMarket1Validation", text_bytes)
-
 
 def write_chest_contents(rom: RomData, patch_data):
     """
@@ -414,8 +387,20 @@ def write_seed_tree_content(rom: RomData, patch_data):
 def define_underwater_warp_arraywarps(assembler: Z80Assembler, rom: RomData, patch_data):
     warp_matchings = patch_data["randomized_entrances"]
     # +2 because we only use the 2 last byte of the 4 warp bytes
-    outside_values = {name: rom.read_word(GameboyAddress(0x04, warp["outside_warp"]).address_in_rom()) for name, warp in WARPS_DATA.items()}
-    inside_values = {name: rom.read_word(GameboyAddress(0x04, warp["inside_warp"]).address_in_rom()) for name, warp in WARPS_DATA.items()}
+    outside_values = {}
+    inside_values = {}
+    for name, warp in WARPS_DATA.items():
+        if "outside_warp" in warp and "inside_warp" in warp:
+            
+            if type(warp["outside_warp"]) is int:
+                outside_values[name] = rom.read_word(GameboyAddress(0x04, warp["outside_warp"]).address_in_rom())
+            else:
+                outside_values[name] = rom.read_word(GameboyAddress(0x04, warp["outside_warp"][0]).address_in_rom())
+
+            if type(warp["inside_warp"]) is int:
+                inside_values[name] = rom.read_word(GameboyAddress(0x04, warp["inside_warp"]).address_in_rom())
+            else:
+                inside_values[name] = rom.read_word(GameboyAddress(0x04, warp["inside_warp"][0]).address_in_rom())
     
     underwater_warp_table = []
 
@@ -434,11 +419,71 @@ def define_underwater_warp_arraywarps(assembler: Z80Assembler, rom: RomData, pat
 
     assembler.add_floating_chunk("underwaterWarpTable", underwater_warp_table)
 
+def define_closed_way_warp_arraywarps(assembler: Z80Assembler, rom: RomData, patch_data):
+    
+    warp_matchings = patch_data["randomized_entrances"]
+    # +2 because we only use the 2 last byte of the 4 warp bytes
+    outside_values = {}
+    inside_values = {}
+    for name, warp in WARPS_DATA.items():
+        if "outside_warp" in warp and "inside_warp" in warp:
+            
+            if type(warp["outside_warp"]) is int:
+                outside_values[name] = rom.read_word(GameboyAddress(0x04, warp["outside_warp"]).address_in_rom())
+            else:
+                outside_values[name] = rom.read_word(GameboyAddress(0x04, warp["outside_warp"][0]).address_in_rom())
+
+            if type(warp["inside_warp"]) is int:
+                inside_values[name] = rom.read_word(GameboyAddress(0x04, warp["inside_warp"]).address_in_rom())
+            else:
+                inside_values[name] = rom.read_word(GameboyAddress(0x04, warp["inside_warp"][0]).address_in_rom())
+    
+    closed_warp_table = []
+    
+    for outside_name, inside_name in warp_matchings.items():
+        # table is
+        # warp group
+        # warp index
+        # warp lock flag address (upper)
+        # warp lock flag address (lower)
+        # warp lock flag mask
+        # item id unlocking the warp
+        # item subid unlocking the warp
+        if "lock_flag" in WARPS_DATA[outside_name]:
+            intoout_warp_group = (inside_values[outside_name] & 0xf000) >> 12
+            intoout_warp_index = inside_values[outside_name] & 0x00ff
+            closed_warp_table.append(intoout_warp_group)
+            closed_warp_table.append(intoout_warp_index)
+            closed_warp_table.append(WARPS_DATA[outside_name]["lock_flag"] >> 8)
+            closed_warp_table.append(WARPS_DATA[outside_name]["lock_flag"] & 0x00FF)
+            closed_warp_table.append(WARPS_DATA[outside_name]["lock_mask"])
+            if "item_lock" in WARPS_DATA[outside_name]:
+                item = ITEMS_DATA[WARPS_DATA[outside_name]["item_lock"]]
+                closed_warp_table.append(item["id"])
+            else:
+                closed_warp_table.append(0x00)
+            closed_warp_table.append(WARPS_DATA[outside_name]["lock_text"] >> 8)
+            closed_warp_table.append(WARPS_DATA[outside_name]["lock_text"] & 0x00FF)
+
+    closed_warp_table.append(0xff)
+    assembler.add_floating_chunk("closedWarpTable", closed_warp_table)
+
 def set_dungeon_warps(rom: RomData, patch_data):
     warp_matchings = patch_data["randomized_entrances"]
     # +2 because we only use the 2 last byte of the 4 warp bytes
-    outside_values = {name: rom.read_word(GameboyAddress(0x04, warp["outside_warp"]).address_in_rom()) for name, warp in WARPS_DATA.items()}
-    inside_values = {name: rom.read_word(GameboyAddress(0x04, warp["inside_warp"]).address_in_rom()) for name, warp in WARPS_DATA.items()}
+    outside_values = {}
+    inside_values = {}
+    for name, warp in WARPS_DATA.items():
+        if "outside_warp" in warp and "inside_warp" in warp:
+            if type(warp["outside_warp"]) is int:
+                outside_values[name] = rom.read_word(GameboyAddress(0x04, warp["outside_warp"]).address_in_rom())
+            else:
+                outside_values[name] = rom.read_word(GameboyAddress(0x04, warp["outside_warp"][0]).address_in_rom())
+
+            if type(warp["inside_warp"]) is int:
+                inside_values[name] = rom.read_word(GameboyAddress(0x04, warp["inside_warp"]).address_in_rom())
+            else:
+                inside_values[name] = rom.read_word(GameboyAddress(0x04, warp["inside_warp"][0]).address_in_rom())
 
     # Reading the warp desting table group addresses. Useful for essence warp back.
     warp_dest_table = []
@@ -447,10 +492,18 @@ def set_dungeon_warps(rom: RomData, patch_data):
     
     # Apply warp matchings expressed in the patch 
     for outside_name, inside_name in warp_matchings.items():
-        outside_warp_addr: int = WARPS_DATA[outside_name]["outside_warp"]
-        inside_warp_addr: int = WARPS_DATA[inside_name]["inside_warp"]
-        rom.write_word(GameboyAddress(0x04, outside_warp_addr).address_in_rom(), outside_values[inside_name])
-        rom.write_word(GameboyAddress(0x04, inside_warp_addr).address_in_rom(), inside_values[outside_name])
+        
+        outside_warp_addresses = [WARPS_DATA[outside_name]["outside_warp"]] if isinstance(WARPS_DATA[outside_name]["outside_warp"], int) else (WARPS_DATA[outside_name]["outside_warp"])
+        inside_warp_addresses = [WARPS_DATA[inside_name]["inside_warp"]] if isinstance(WARPS_DATA[inside_name]["inside_warp"], int) else WARPS_DATA[inside_name]["inside_warp"]
+        
+        # 2nd half byte of the high byte is source transition type, it should not be swapped
+        for outside_warp_addr in outside_warp_addresses:
+            newOutsideValue = (outside_values[inside_name] & 0xF0FF) | (outside_values[outside_name] & 0x0F00)
+            rom.write_word(GameboyAddress(0x04, outside_warp_addr).address_in_rom(), newOutsideValue)
+
+        for inside_warp_addr in inside_warp_addresses:
+            newInsideValue = (inside_values[outside_name] & 0xF0FF) | (inside_values[inside_name] & 0x0F00)
+            rom.write_word(GameboyAddress(0x04, inside_warp_addr).address_in_rom(), newInsideValue)
         
         if ("dungeon" in WARPS_DATA[inside_name]):
             dungeon_number = WARPS_DATA[inside_name]["dungeon"]
@@ -518,9 +571,6 @@ def define_tile_replacements_table(assembler: Z80Assembler, patch_data):
         0x01, 0x13, 0x00, 0x61, 0xd7, # portal in symmetry city past
         0x01, 0x13, 0x00, 0x68, 0xd7, # portal in symmetry city past
         0x00, 0x25, 0x00, 0x37, 0xd7, # portal in nuun highlands
-        0x05, 0xda, 0x11, 0xa4, 0xb2, # tunnel to moblin keep
-        0x05, 0xda, 0x11, 0xa5, 0xb2, # cont.
-        0x05, 0xda, 0x11, 0xa6, 0xb2, # cont.
         0x00, 0x24, 0x12, 0x49, 0x63, # other side of symmetry city bridge
         0x00, 0x24, 0x12, 0x59, 0x63, # cont.
         0x00, 0x24, 0x12, 0x69, 0x63, # cont.
@@ -536,6 +586,14 @@ def define_tile_replacements_table(assembler: Z80Assembler, patch_data):
         # 0x00, 0x5d, 0x00, 0x66, 0x0b, # ledge by the linked ghini ghost (traps link in ghini's interaction space until warp to start is initialized (used for faq room space))
         # 0x00, 0x5d, 0x00, 0x57, 0xf4, # waterblock for preventing the trapped player from escaping into the graveyard
     ]
+
+    if patch_data["options"]["entrance_randomizer"] != OracleOfAgesEntranceRandomizer.option_all_entrances:
+        new_tiles_table.extend([
+            0x05, 0xda, 0x11, 0xa4, 0xb2, # tunnel to moblin keep
+            0x05, 0xda, 0x11, 0xa5, 0xb2, # cont.
+            0x05, 0xda, 0x11, 0xa6, 0xb2, # cont.
+        ])
+
 
     if patch_data["options"]["secret_locations"]: # Format is group, room, room flag, position in YX format, and replacement tile byte.
         new_tiles_table.extend([
@@ -742,14 +800,9 @@ def apply_misc_option(rom: RomData, patch_data):
     if patch_data["options"]["master_keys"] != OraclesMasterKeys.option_disabled:
         # Remove small key consumption on keydoor opened
         rom.write_byte(0x18366, 0x00)
-        # Change obtention text
-        rom.write_bytes(0x78247, [0x4d, 0x61, 0x73, 0x74, 0x65, 0x72, 0x20, 0x4b, 0x65, 0x79, 0x09, 0x01, 0x21, 0x00]) # I really wish that the dictionnay of ages would be more useful...
     if patch_data["options"]["master_keys"] == OraclesMasterKeys.option_all_dungeon_keys:
         # Remove boss key consumption on boss keydoor opened (boss door behave like normal locked door)
         rom.write_word(0x1835e, 0x0000)
-    
-    # "Come back when you beat that minigame, kid!"   
-    rom.write_bytes(0x7A871, [0x43, 0x02, 0x40, 0x01, 0x02, 0xa7, 0x20, 0x62, 0x65, 0x61, 0x74, 0x01, 0x03, 0x4c, 0x6d, 0x69, 0x6e, 0x69, 0x05, 0xb1, 0x2c, 0x01, 0x05, 0x8a, 0x00]) 
     
     rom.write_byte(GameboyAddress(0x0B, 0x4445).address_in_rom(), patch_data["options"]["gasha_nut_kill_requirement"])
     rom.write_byte(GameboyAddress(0x02, 0x7d03).address_in_rom(), patch_data["options"]["gasha_nut_kill_requirement"] // 2)

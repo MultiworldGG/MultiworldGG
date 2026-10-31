@@ -22,7 +22,8 @@ def launch_client(*args):
 
 from Utils import tuplize_version
 
-UT_VERSION = "v0.3.5"
+# NO UNDERSCORES YOU IDIOT
+UT_VERSION = "v0.3.8"
 
 UT_VERSION_TUPLE = tuplize_version(UT_VERSION[1:].split("-",1)[0])
 
@@ -61,6 +62,8 @@ class TrackerException(Exception):
         self.message = message
         super().__init__(*args)
 
+class HostImportException(Exception):
+    pass
 class TrackerSettings(Group):
     class TrackerPlayersPath(UserFolderPath):
         """Players folder for UT look for YAMLs"""
@@ -220,20 +223,24 @@ class UTMapTabData:
     location_icon_coords: Callable[[int, Any], tuple[int,int,str]|list[tuple[int,int,str]]|None]
     """Function used to convert between the map and the value in data storage into coords (or none to hide it) the return is [x, y, override path string]"""
 
+    nested_pack: bool
+    """Used if the external pack is nested with an extra folder matching the file name (for github source release etc)"""
+
     def __init__(
             self, player_id, team_id, map_page_folder: str = "", map_page_maps: list[str] | str | None = None,
             map_page_locations: list[str] | str | None = None, map_page_layouts: list[str] | str | None = None,
             map_page_groups: list[tuple[str, list]] | None  = None, item_page_items: list[str] | str = "", 
-            map_page_item_layouts_left: list[ItemLayoutSection] | None = None,
-            map_page_item_layouts_right: list[ItemLayoutSection] | None = None,
-            map_page_item_layouts_bottom: list[ItemLayoutSection] | None = None,
-            item_page_item_layouts: list[ItemLayoutSection] | None = None,
+            map_page_item_layouts_left: list[dict] | dict | None = None,
+            map_page_item_layouts_right: list[dict] | dict | None = None,
+            map_page_item_layouts_bottom: list[dict] | dict | None = None,
+            item_page_item_layouts: list[dict] | dict | None = None,
             map_page_setting_key: str | None = None, map_page_index: Callable[[Any], int] | None = None,
             external_pack_key: str = "", poptracker_name_mapping: dict[str, int] | None = None,
             poptracker_item_mapping: dict[str, int] | None = None,
             location_setting_key: str|None = None,
             location_icon_coords: Callable[[int, Any], tuple[int,int]]|None= None,
-            poptracker_entrance_mapping: dict[str, str]|None = None, **kwargs):
+            poptracker_entrance_mapping: dict[str, str]|None = None,
+            nested_pack: bool=False, **kwargs):
 
         self.map_page_folder = map_page_folder
         if isinstance(map_page_maps, str):
@@ -259,20 +266,28 @@ class UTMapTabData:
             self.item_page_items = [item_page_items]
         else:
             self.item_page_items = item_page_items
-        if map_page_item_layouts_left:
-            self.map_page_item_layouts_left = map_page_item_layouts_left
+        if isinstance(map_page_item_layouts_left, dict):
+            self.map_page_item_layouts_left = [ ItemLayoutSection(**map_page_item_layouts_left) ]
+        elif isinstance(map_page_item_layouts_left, list):
+            self.map_page_item_layouts_left = [ ItemLayoutSection(**layout) for layout in map_page_item_layouts_left ]
         else:
             self.map_page_item_layouts_left = []
-        if map_page_item_layouts_right:
-            self.map_page_item_layouts_right = map_page_item_layouts_right
+        if isinstance(map_page_item_layouts_right, dict):
+            self.map_page_item_layouts_right = [ ItemLayoutSection(**map_page_item_layouts_right) ]
+        elif isinstance(map_page_item_layouts_right, list):
+            self.map_page_item_layouts_right = [ ItemLayoutSection(**layout) for layout in map_page_item_layouts_right ]
         else:
             self.map_page_item_layouts_right = []
-        if map_page_item_layouts_bottom:
-            self.map_page_item_layouts_bottom = map_page_item_layouts_bottom
+        if isinstance(map_page_item_layouts_bottom, dict):
+            self.map_page_item_layouts_bottom = [ ItemLayoutSection(**map_page_item_layouts_bottom) ]
+        elif isinstance(map_page_item_layouts_bottom, list):
+            self.map_page_item_layouts_bottom = [ ItemLayoutSection(**layout) for layout in map_page_item_layouts_bottom ]
         else:
             self.map_page_item_layouts_bottom = []
-        if item_page_item_layouts:
-            self.item_page_item_layouts = item_page_item_layouts
+        if isinstance(item_page_item_layouts, dict):
+            self.item_page_item_layouts = [ ItemLayoutSection(**item_page_item_layouts) ]
+        elif isinstance(item_page_item_layouts, list):
+            self.item_page_item_layouts = [ ItemLayoutSection(**layout) for layout in item_page_item_layouts ]
         else:
             self.item_page_item_layouts = []
         self.map_page_setting_key = map_page_setting_key
@@ -303,6 +318,7 @@ class UTMapTabData:
             self.location_icon_coords = location_icon_coords
         else:
             self.location_icon_coords = lambda _,__: None
+        self.nested_pack = nested_pack
 
 
 icon_paths["ut_ico"] = f"ap:{__name__}/icon.png"

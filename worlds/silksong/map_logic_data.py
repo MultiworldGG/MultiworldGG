@@ -71,6 +71,7 @@ def load_base():
     raw = pkgutil.get_data(__package__, "map_logic.json")
     if raw is None:
         raise ValueError("Bundled map logic is missing.")
+    raw = raw.replace(b"\r\n", b"\n").replace(b"\r", b"\n")
     return hashlib.sha256(raw).hexdigest(), json.loads(raw)
 
 

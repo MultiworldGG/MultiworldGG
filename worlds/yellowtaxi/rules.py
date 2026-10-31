@@ -6,21 +6,17 @@ from typing import TYPE_CHECKING, Callable, Mapping, Union, override, ClassVar
 from NetUtils import JSONMessagePart
 from rule_builder.options import OptionFilter
 from .data_loader import regions_json_data
-from BaseClasses import CollectionState, MultiWorld
-from worlds.generic.Rules import add_rule, set_rule
+from BaseClasses import CollectionState, Location
+from .names import ItemNames
 from rule_builder.rules import Rule, True_, False_, Has, CanReachRegion, CanReachLocation
 from .options import ShuffleFullGame, PizzaWheels, ShuffleGlide, IncludeOutOfBounds, LockedMoriosLab, \
-    LockedMoriosWardrobe, OpenGrannysIsland
+    LockedMoriosWardrobe, OpenGrannysIsland, ShuffleSpinAttack
 
 if TYPE_CHECKING:
     from .world import YellowTaxiWorld
 
-
 def set_all_rules(world: YellowTaxiWorld) -> None:
-    # In order for AP to generate an item layout that is actually possible for the player to complete,
-    # we need to define rules for our Entrances and Locations.
-    # Note: Regions do not have rules, the Entrances connecting them do!
-    # We'll do entrances first, then locations, and then finally we set our victory condition.
+    # Uses a factory to load rules from the json
     rf = RuleFactory(world)
     set_all_entrance_location_rules(world, rf)
     set_completion_condition(world)
@@ -40,7 +36,7 @@ def set_all_entrance_location_rules(world: YellowTaxiWorld, rf: RuleFactory) -> 
                 rf.move_prefix = "Progressive "
 
             if reg["level"].endswith("!"):
-                rf.move_suffix = " (Time Trials)"
+                rf.move_suffix = " (Time Attacks)"
             else:
                 rf.move_suffix = f" ({reg["level"]})"
 
@@ -82,6 +78,18 @@ def set_all_entrance_location_rules(world: YellowTaxiWorld, rf: RuleFactory) -> 
         if "specialrules" in reg.keys():
             for location, rule in reg["specialrules"].items():
                 rf.assign_location_rule(location, rule)
+
+    # Hats
+    for hat in world.hat_locations:
+        hat_loc: Location = world.get_location(hat)
+        hat_rule: Rule = True_()
+
+        if world.options.hat_world_membership:
+            hat_rule = Has("Hat World Membership")
+
+        if not hat_rule.Resolved.always_true:
+            world.set_rule(hat_loc, hat_rule)
+
 
 def set_completion_condition(world: YellowTaxiWorld) -> None:
     world.multiworld.completion_condition[world.player] = lambda state: state.has("Victory", world.player)
@@ -227,9 +235,14 @@ class RuleFactory:
                        options=[OptionFilter(ShuffleGlide, ShuffleGlide.option_true)],
                        filtered_resolution=True)
         if token == "SP":
-            if not self.world.options.shuffle_spin_attack:
+            if self.world.options.shuffle_spin_attack.value == self.world.options.shuffle_spin_attack.option_off:
                 return True_()
-            return Has("Spin Attack")
+            return (Has("Spin Attack",
+                        options=[OptionFilter(ShuffleSpinAttack, ShuffleSpinAttack.option_shuffle)]) |
+                    Has("Progressive Spin Attack",
+                        options=[OptionFilter(ShuffleSpinAttack, ShuffleSpinAttack.option_progressive)]))
+        if token == "SP2":
+            return Has("Progressive Spin Attack", 2)
         if token == "GS":
             if self.skip_unnecessary_rule_calculations and not self.world.has_golden_spring_access:
                 return False_()
@@ -238,6 +251,10 @@ class RuleFactory:
             if self.world.options.shuffle_golden_spring == 0:
                 return True_()
             return Has("Golden Spring Blueprints")
+        if token == "NGS":
+            if not self.world.has_golden_spring_access:
+                return True_()
+            return False_()
         if token == "Spike":
             if self.skip_unnecessary_rule_calculations and not self.world.has_spike_traversal:
                 return False_()
@@ -317,11 +334,11 @@ class RuleFactory:
                 return False_()
             return Has("Psycho Taxi Cartridge")
         if token == "MorioHat":
-            return Has("Morio Hat") | Has("Morio's Brain Hat")
+            return Has(ItemNames.morio_hat) | Has(ItemNames.morios_brain_hat)
         if token == "EmployeeHat":
-            return Has("Tosla Employee Hat")
+            return Has(ItemNames.tosla_employee_hat)
         if token == "MoskHat":
-            return Has("Alien Mosk (Good) Hat") | Has("Bunny Hat")
+            return Has(ItemNames.alien_mosk_good_hat) | Has(ItemNames.bunny_hat)
         # Portals. TODO: Allow variable portal costs beyond just final portal
         if token == "PortalMorioHome":
             if (self.world.options.goal == self.world.options.goal.option_bombeach_boss
@@ -380,11 +397,8 @@ class RuleFactory:
                         options=[OptionFilter(ShuffleFullGame, ShuffleFullGame.option_true)],
                         filtered_resolution=True))
         if token == "PortalMoriosMind":
-            if self.world.options.demo_portal_mode == self.world.options.demo_portal_mode.option_open:
-                return True_()
-            return Has("Full Game Unlock",
-                        options=[OptionFilter(ShuffleFullGame, ShuffleFullGame.option_true)],
-                        filtered_resolution=True)
+            # Morio's Mind Portal is locked only behind Dream Machine
+            return True_()
         if token == "PortalRuinedObservatory":
             if self.world.options.demo_portal_mode == self.world.options.demo_portal_mode.option_open:
                 return True_()
@@ -496,6 +510,16 @@ class RuleFactory:
                     return Has("Gym Membership")
                 case self.world.options.gym_gears_unlock_condition.option_exclude:
                     return False_()
+        if token == "Dream":
+            match self.world.options.dream_machine_unlock_condition:
+                case self.world.options.dream_machine_unlock_condition.option_open:
+                    return True_()
+                case self.world.options.dream_machine_unlock_condition.option_full_game:
+                    return Has("Full Game Unlock",
+                               options=[OptionFilter(ShuffleFullGame, ShuffleFullGame.option_true)],
+                               filtered_resolution=True)
+                case self.world.options.dream_machine_unlock_condition.option_shuffle_dream_machine:
+                    return Has("Dream Machine")
         if token == "HatMembership":
             return True_()
         if token == "SewerKey":
@@ -519,31 +543,39 @@ class RuleFactory:
                 case self.world.options.locked_time_trials.option_open:
                     return True_()
                 case self.world.options.locked_time_trials.option_single_item:
-                    return Has("Time Trial Remote")
+                    return Has("Time Attack Remote")
                 case self.world.options.locked_time_trials.option_split_items:
-                    return Has("Time Trial Remote (Baby Steps!)")
+                    return Has("Time Attack Remote (Baby Steps!)")
                 case self.world.options.locked_time_trials.option_progressive_items:
-                    return Has("Progressive Time Trial Remote")
+                    return Has("Progressive Time Attack Remote")
         if token == "TT2":
             match self.world.options.locked_time_trials:
                 case self.world.options.locked_time_trials.option_open:
                     return True_()
                 case self.world.options.locked_time_trials.option_single_item:
-                    return Has("Time Trial Remote")
+                    return Has("Time Attack Remote")
                 case self.world.options.locked_time_trials.option_split_items:
-                    return Has("Time Trial Remote (Getting Gud!)")
+                    return Has("Time Attack Remote (Getting Gud!)")
                 case self.world.options.locked_time_trials.option_progressive_items:
-                    return Has("Progressive Time Trial Remote", 2)
+                    return Has("Progressive Time Attack Remote", 2)
         if token == "TT3":
             match self.world.options.locked_time_trials:
                 case self.world.options.locked_time_trials.option_open:
                     return True_()
                 case self.world.options.locked_time_trials.option_single_item:
-                    return Has("Time Trial Remote")
+                    return Has("Time Attack Remote")
                 case self.world.options.locked_time_trials.option_split_items:
-                    return Has("Time Trial Remote (Pro Tricks!)")
+                    return Has("Time Attack Remote (Pro Tricks!)")
                 case self.world.options.locked_time_trials.option_progressive_items:
-                    return Has("Progressive Time Trial Remote", 3)
+                    return Has("Progressive Time Attack Remote", 3)
+        if token == "Pizza":
+            if not self.world.options.pizzasanity:
+                return False_()
+            return Has("Corrupted Pizza Slice", self.world.options.pizzasanity_count.value)
+        if token == "NoPizza":
+            if self.world.options.pizzasanity:
+                return False_()
+            return True_()
         if token == "NHS":
             if self.world.options.hatsanity == 0:
                 return True_()
@@ -552,17 +584,55 @@ class RuleFactory:
             if self.world.options.hatsanity != 0:
                 return True_()
             return False_()
+        # Can you pass lasers? TODO: Add actual gating ability here
+        if token == "PassLaser":
+            return True_()
+        # Can Gigamorio shoot lasers?
+        if token == "Lasers":
+            if (self.world.options.morios_mind_laser_behavior.value ==
+                    self.world.options.morios_mind_laser_behavior.option_enabled):
+                return True_()
+            if (self.world.options.morios_mind_laser_behavior.value ==
+                    self.world.options.morios_mind_laser_behavior.option_disabled):
+                return False_()
+            # If hats disable the lasers, need to assume you need access to wardrobe if hatsanity is on
+            # Otherwise, you could potentially get stuck with one of the relevant hats with no way to enable the lasers
+            if self.world.options.hatsanity.value == self.world.options.hatsanity.option_disabled:
+                return True_()
+            return CanReachRegion("Morio's Wardrobe")
+        # Can lasers be avoided?
+        if token == "NoLasers":
+            if (self.world.options.morios_mind_laser_behavior.value ==
+                    self.world.options.morios_mind_laser_behavior.option_enabled):
+                return False_()
+            if (self.world.options.morios_mind_laser_behavior.value ==
+                    self.world.options.morios_mind_laser_behavior.option_disabled):
+                return True_()
+
+            if token in self.cached_complex_rules:
+                return self.cached_complex_rules[token]
+
+            no_laser_rule : Rule = True_()
+            # If hats disable the lasers, need to assume you need access to wardrobe if hatsanity is on
+            if self.world.options.hatsanity.value != self.world.options.hatsanity.option_disabled:
+                no_laser_rule = CanReachRegion("Morio's Wardrobe")
+
+            if (self.world.options.morios_mind_laser_behavior.value ==
+                    self.world.options.morios_mind_laser_behavior.option_morios_brain_hat):
+                no_laser_rule &= Has(ItemNames.morios_brain_hat)
+            elif (self.world.options.morios_mind_laser_behavior.value ==
+                    self.world.options.morios_mind_laser_behavior.option_inception_top_hat):
+                no_laser_rule &= Has(ItemNames.inception_top_hat)
+            elif (self.world.options.morios_mind_laser_behavior.value ==
+                    self.world.options.morios_mind_laser_behavior.option_morios_brain_or_inception_top_hat):
+                no_laser_rule &= (Has(ItemNames.morios_brain_hat) | Has(ItemNames.inception_top_hat))
+
+            self.cached_complex_rules[token] = no_laser_rule
+            return no_laser_rule
         if token.startswith("Bunny-"):
             bunny_level : str = token[len("Bunny-"):]
             if bunny_level == "Hub":
-                hub_bunnies = 3
-                if self.world.options.extra_demo_collectables:
-                    hub_bunnies += 2
-                if self.world.exclude_spike_bunny:
-                    hub_bunnies -= 1
-                if self.world.exclude_top_bunny:
-                    hub_bunnies -= 1
-                return Has("Bunny (Morio's Lab)", hub_bunnies)
+                return Has("Bunny (Morio's Lab)", self.world.hub_bunnies)
             else:
                 adjusted_bunny_level : str = bunny_level
                 match bunny_level:
@@ -586,6 +656,14 @@ class RuleFactory:
                         adjusted_bunny_level = "Maurizio's City"
                     case "CTI":
                         adjusted_bunny_level = "Crash Test Industries"
+                    case "MM":
+                        adjusted_bunny_level = "Morio's Mind"
+                    case "RO":
+                        adjusted_bunny_level = "Ruined Observatory"
+                    case "HQ":
+                        adjusted_bunny_level = "Tosla HQ"
+                    case "TM":
+                        adjusted_bunny_level = "The Moon"
                 return Has(f"Bunny ({adjusted_bunny_level})", 3)
         if token.startswith("X"):
             expert_level = int(token[1:])

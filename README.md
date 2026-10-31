@@ -42,8 +42,7 @@ Currently, the following games are supported:
 * Castlevania: Dawn of Sorrow
 * Castlevania: Sympfony of the Night
 * Cat Quest
-* Celeste (+ Open World)
-* Celeste 64
+* Celeste
 * Chained Echoes
 * Chatipelago
 * Checks Finder
@@ -186,7 +185,6 @@ Currently, the following games are supported:
 * Slay the Spire
 * Slime Rancher
 * Sly Cooper and the Thievius Raccoonus
-* Sonic Adventure 2: Battle
 * Sonic Adventure DX
 * Sonic Heroes
 * Sonic Robo Blast 2
@@ -204,7 +202,7 @@ Currently, the following games are supported:
 * Super Mario Land 2: 6 Golden Coins
 * Super Mario Odyssey
 * Super Mario Sunshine
-* Super Mario World (+ Spicy Mycena Waffles Fork)
+* Super Mario World (Spicy Mycena Waffles Fork)
 * Super Metroid
 * Super Metroid/A Link to the Past Combo
 * Super Smash Bros. Melee

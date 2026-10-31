@@ -293,3 +293,10 @@
 # prevent the sea of storm to swap past and present
 10/7999/: db $18 ;jr
 10/79c4/: db $18 ;jr
+
+# ----------------------------------------------------------------------
+
+# Making the zola reward happen when you finish d7, when not you have the essence 7
+0b/61b9/: |
+  ld a,($ca61)
+  bit 5,a

@@ -87,7 +87,6 @@
             pos_hint:{"center_x": 0.85, "center_y": 0.8}
             theme_text_color: "Custom"
             text_color: app.theme_cls.primaryColor
-            detect_visible: False
             on_release: app.set_favorite(self)
 
         MDIconButton:
@@ -97,7 +96,6 @@
             pos_hint:{"center_x": 0.95, "center_y": 0.8}
             theme_text_color: "Custom"
             text_color: app.theme_cls.primaryColor
-            detect_visible: False
 
         MDButton:
             id: open_button
@@ -107,7 +105,6 @@
             width: "80dp"
             component: main.component
             on_release: app.component_action(self)
-            detect_visible: False
             MDButtonText:
                 id: open_button_text
                 text: "Open"

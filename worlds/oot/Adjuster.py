@@ -16,7 +16,7 @@ from .Options import (cosmetic_options, sfx_options, voice_options,
 from .Rom import Rom, compress_rom_file
 from .appp import patch_to_rom
 from .Utils import __version__ as oot_version
-from Utils import local_path, user_path, persistent_store, get_adjuster_settings_no_defaults
+from Utils import local_path, user_path, open_file, persistent_load, persistent_store, get_adjuster_settings_no_defaults
 
 logger = logging.getLogger('OoTAdjuster')
 
@@ -57,9 +57,9 @@ def get_argparser():
     parser.add_argument('--music_dir', default=None,
         help='Path to a folder of custom music files (.ootrs, .mmrs) to include in randomization.')
     parser.add_argument('--model_adult', default='Default',
-        help='Adult Link model name from data/Models/Adult/ folder, or Default.')
+        help='Path to an adult Link .zobj file, a model name from data/sprites/oot/adult/, Default, or Random.')
     parser.add_argument('--model_child', default='Default',
-        help='Child Link model name from data/Models/Child/ folder, or Default.')
+        help='Path to a child Link .zobj file, a model name from data/sprites/oot/child/, Default, or Random.')
     parser.add_argument('--deathlink',
         help='Enable DeathLink system', action='store_true')
 
@@ -93,7 +93,26 @@ def get_adjuster_settings():
     return settings
 
 
+def cache_model_files(age, *files):
+    """Remember existing model files for one age and discard missing cached files."""
+    cached = persistent_load().get('oot_model_files', {}).get(age, [])
+    paths = []
+    seen = set()
+    for path in chain(cached, files):
+        if not isinstance(path, str) or not path.lower().endswith('.zobj'):
+            continue
+        path = os.path.abspath(os.path.expanduser(path))
+        key = os.path.normcase(path)
+        if key not in seen and os.path.isfile(path):
+            paths.append(path)
+            seen.add(key)
+    persistent_store('oot_model_files', age, paths)
+    return paths
+
+
 def save_adjuster_settings(args):
+    for age in ('adult', 'child'):
+        cache_model_files(age, getattr(args, f'model_{age}', 'Default'))
     stored_args = argparse.Namespace(**vars(args))
     if hasattr(stored_args, "rom"):
         delattr(stored_args, "rom")
@@ -202,8 +221,59 @@ def adjustGUI():
     from .Models import get_model_choices
 
     models = section(general_tab, "Link Models")
-    choice_control(models, 'model_adult', 'Adult Link Model', get_model_choices(0), 0)
-    choice_control(models, 'model_child', 'Child Link Model', get_model_choices(1), 1)
+    models.columnconfigure(1, weight=1)
+
+    def model_control(age, label, row):
+        model = getattr(adjuster_settings, f'model_{age}') or 'Default'
+        model_files = cache_model_files(age, model)
+        choices = get_model_choices(0 if age == 'adult' else 1) + model_files
+        if model.lower().endswith('.zobj'):
+            key = os.path.normcase(os.path.abspath(os.path.expanduser(model)))
+            model = next((path for path in model_files if os.path.normcase(path) == key), 'Default')
+        variable = StringVar(value=model if model in choices else 'Default')
+        setattr(opts, f'model_{age}', variable)
+        ttk.Label(models, text=label).grid(row=row, column=0, sticky=W, padx=(0, 8), pady=4)
+        entry = ttk.Combobox(models, textvariable=variable, values=choices, width=40)
+        entry.grid(row=row, column=1, sticky="ew", pady=4)
+
+        def select_model():
+            current = variable.get()
+            initialdir = os.path.dirname(os.path.abspath(current)) if current.lower().endswith('.zobj') else user_path(
+                'data', 'sprites', 'oot', age)
+            if not os.path.isdir(initialdir):
+                initialdir = user_path()
+            model = filedialog.askopenfilename(
+                parent=window, title=f'Select {label}', initialdir=initialdir,
+                filetypes=[('Link Models', '*.zobj')])
+            if model:
+                variable.set(os.path.abspath(model))
+                entry.configure(values=get_model_choices(0 if age == 'adult' else 1) + cache_model_files(age, model))
+                entry.xview_moveto(1)
+
+        ttk.Button(models, text='Select File', command=select_model).grid(
+            row=row, column=2, padx=(10, 0), pady=4)
+
+    model_control('adult', 'Adult Link Model', 0)
+    model_control('child', 'Child Link Model', 1)
+
+    def open_models_folder():
+        try:
+            path = user_path('data', 'sprites', 'oot')
+            for age in ('adult', 'child'):
+                os.makedirs(os.path.join(path, age), exist_ok=True)
+            open_file(path)
+        except Exception as e:
+            logger.exception('Could not open models folder')
+            messagebox.showerror(parent=window, title='Error opening models folder', message=str(e))
+
+    folder_icon = tk.PhotoImage(master=window, width=16, height=16)
+    folder_icon.put('#707070', to=(1, 2, 7, 5))
+    folder_icon.put('#707070', to=(1, 4, 15, 14))
+    folder_icon.put('#b0b0b0', to=(2, 3, 6, 5))
+    folder_icon.put('#b0b0b0', to=(2, 5, 14, 13))
+    folder_icon.put('#d0d0d0', to=(2, 5, 14, 7))
+    ttk.Button(models, text='Open Models Folder', image=folder_icon, compound=LEFT,
+               command=open_models_folder).grid(row=2, column=1, columnspan=2, sticky='e', pady=(4, 0))
     controls = section(general_tab, "Controls and Display")
     dropdowns(controls, ('default_targeting', 'display_dpad'))
     checkbox(controls, 'dpad_dungeon_menu', "D-Pad Dungeon Info", 1)
@@ -523,10 +593,16 @@ def adjust(args, status_callback=None):
     ootworld.logic_rules = 'glitchless'
     ootworld.death_link = args.deathlink
     ootworld.music_dir = getattr(args, 'music_dir', None) or None
-    ootworld.model_adult = getattr(args, 'model_adult', 'Default')
-    ootworld.model_adult_filepicker = ''
-    ootworld.model_child = getattr(args, 'model_child', 'Default')
-    ootworld.model_child_filepicker = ''
+    for age in ('adult', 'child'):
+        model = getattr(args, f'model_{age}', 'Default') or 'Default'
+        model_file = ''
+        if model.lower().endswith('.zobj'):
+            model_file = os.path.abspath(os.path.expanduser(model))
+            if not os.path.isfile(model_file):
+                raise FileNotFoundError(f'{age.capitalize()} Link model file not found: {model_file}')
+            model = 'Default'
+        setattr(ootworld, f'model_{age}', model)
+        setattr(ootworld, f'model_{age}_filepicker', model_file)
 
     delete_zootdec = False
     if os.path.splitext(args.rom)[-1] in ['.z64', '.n64']:

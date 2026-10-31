@@ -66,7 +66,7 @@
     },
     "connections": {
       "Flushed Away - Path Surrounding Starting Area": "X1/B1/J1",
-      "Flushed Away - Pipe to Upper Starting Area": "X2+B2 | J1 | X3+B1",
+      "Flushed Away - Pipe to Upper Starting Area": "X2+B2 | J1 | X3",
       "Flushed Away - Pipe Above Starting Area": "X2+B1",
       "Flushed Away - Ledge Above Starting Area": "X2+B1",
       "Flushed Away - Checkpoint Area": ""
@@ -261,7 +261,7 @@
       "Flushed Away - Below Sewage Jumps": "",
       "Flushed Away - Central Drain Archway": "",
       "Flushed Away - Central Drain Waterfall Accessible": "X1",
-      "Flushed Away - Gear Pillar": "J1/B1",
+      "Flushed Away - Gear Pillar": "X2/J1/B1",
       "Flushed Away - Hidden Coins": "",
       "Flushed Away - Out-of-Bounds (EXPERTS ONLY)": "X1+OOB+B1 & J1/X2"
     },

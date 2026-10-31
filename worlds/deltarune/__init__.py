@@ -171,7 +171,7 @@ class DeltaruneWeb(WebWorld):
     tutorials = [
         Tutorial(
             "Multiworld Setup Guide",
-            "A guide to setting up the MultiworldGG DELTARUNE software on your computer. This guide covers "
+            "A guide to setting up the Archipelago DELTARUNE software on your computer. This guide covers "
             "single-player, multiworld, and related software.",
             "English",
             "setup_en.md",
@@ -263,6 +263,7 @@ class DeltaruneWorld(World):
         return {
             "options": self.options.as_dict(
                 # No Group
+                "options_creator_reminder",
                 "progression_balancing",
                 "accessibility",
                 "have_starwalker",

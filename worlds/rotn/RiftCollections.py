@@ -63,9 +63,9 @@ class RotNCollections:
         "Confronting Myself": SongData(88, "Confronting Myself", "Celeste", 6, 9, 17, 26),
         "Resurrections": SongData(89, "Resurrections", "Celeste", 6, 10, 17, 23),
         #Anniversary
-        "Crypteque": SongData(90, "Crypteque", "Anniversary", 5, 8, 13, 22),
-        "Power Cords": SongData(91, "Power Cords", "Anniversary", 2, 6, 11, 21),
-        "Fungal Funk": SongData(92, "Fungal Funk", "Anniversary", 4, 12, 16, 22),
+        "Crypteque": SongData(90, "Crypteque", "Crypt of the Necrodancer", 5, 8, 13, 22),
+        "Power Cords": SongData(91, "Power Cords", "Crypt of the Necrodancer", 2, 6, 11, 21),
+        "Fungal Funk": SongData(92, "Fungal Funk", "Crypt of the Necrodancer", 4, 12, 16, 22),
         #Pizza Tower
         "It's Pizza Time!": SongData(93, "It's Pizza Time!", "Pizza Tower", 6, 12, 18, 22),
         "The Death That I Deservioli": SongData(94, "The Death That I Deservioli", "Pizza Tower", 6, 10, 17, 24),
@@ -113,8 +113,8 @@ class RotNCollections:
         #Unbeatable
         "WORN OUT TAPES [tally-ho version]": SongData(130, "WORN OUT TAPES [tally-ho version]", "Free DLC", 5, 12, 16, 25),
         #Rift Anniversary
-        "Portabellohead": SongData(131, "Portabellohead", "Anniversary", 3, 8, 13, 18),
-        "March of the Profane": SongData(132, "March of the Profane", "Anniversary", 5, 12, 17, 24),
+        "Portabellohead": SongData(131, "Portabellohead", "Crypt of the Necrodancer", 3, 8, 13, 18),
+        "March of the Profane": SongData(132, "March of the Profane", "Crypt of the Necrodancer", 5, 12, 17, 24),
         #Spin Rhythm
         "The Magician": SongData(133, "The Magician", "Free DLC", 4, 12, 17, 25),
         #VA-11 HALL-A
@@ -157,6 +157,14 @@ class RotNCollections:
         "Hello Builder": SongData(164, "Hello Builder", "Hatsune Miku 2", 7, 14, 20, 27),
         "Wonder Style": SongData(165, "Wonder Style", "Hatsune Miku 2", 5, 11, 16, 25),
         "My One and Oni": SongData(166, "My One and Oni", "Hatsune Miku 2", 6, 11, 17, 23),
+        #Conga
+        "Konga Conga Kappa": SongData(167, "Konga Conga Kappa", "Crypt of the Necrodancer", 3, 11, 16, 24, False),
+        #Mystery Skulls
+        "Freaking Out": SongData(168, "Freaking Out", "Mystery Skulls", 4, 10, 18, 24, False),
+        "Hellbent (feat. Snowblood)": SongData(169, "Hellbent (feat. Snowblood)", "Mystery Skulls", 4, 10, 16, 23, False),
+        "Ghost": SongData(170, "Ghost", "Mystery Skulls", 3, 9, 16, 25, False),
+        "The Future": SongData(171, "The Future", "Mystery Skulls", 4, 9, 17, 24, False),
+        "When I'm with You": SongData(172, "When I'm with You", "Mystery Skulls", 4, 9, 15, 22, False),
     }
 
     EXTRA_DATA: Dict[str, ExtraSongData] = {
@@ -196,7 +204,7 @@ class RotNCollections:
         "Necrodancer",
         "Boss Tracks",
         "MeatBoy",
-        "Anniversary",
+        "Crypt of the Necrodancer",
         "Free DLC",
         "Minigame",
         "Boss",
@@ -220,6 +228,7 @@ class RotNCollections:
         "K/DA",
         "Omega Strikers",
         "Hatsune Miku 2",
+        "Mystery Skulls",
     ]
 
     DLC_SONGS: List[str] = []
@@ -409,6 +418,7 @@ class RotNCollections:
         "Remix Rift": [],
         "Minigame": [],
         "Boss Battle": [],
+        "Custom": [],
         "Vanilla": [],
         "Workshop": [],
         "Local": [],
@@ -441,10 +451,12 @@ class RotNCollections:
             elif data.type == "Boss":
                 newGroup["Boss Battle"].append(name)
                 continue
+            elif data.type == "Custom":
+                newGroup["Custom"].append(name)
 
-            if data.type == "Local":
+            if data.DLC == "Local":
                 newGroup["Local"].append(name)
-            elif data.type == "Workshop":
+            elif data.DLC == "Workshop":
                 newGroup["Workshop"].append(name)
             else:
                 newGroup["Vanilla"].append(name)
@@ -475,10 +487,12 @@ class RotNCollections:
             elif data.type == "Boss":
                 newGroup["Boss Battle"].append(name)
                 continue
+            elif data.type == "Custom":
+                newGroup["Custom"].append(name)
 
-            if data.type == "Local":
+            if data.DLC == "Local":
                 newGroup["Local"].append(name)
-            elif data.type == "Workshop":
+            elif data.DLC == "Workshop":
                 newGroup["Workshop"].append(name)
             else:
                 newGroup["Vanilla"].append(name)

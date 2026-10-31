@@ -34,6 +34,8 @@ app.config["UPLOAD_FOLDER"] = UPLOAD_FOLDER
 app.config["LOBBY_APWORLD_PATH"] = os.path.abspath(LOBBY_APWORLD_FOLDER)
 # YAML game-name prefixes allowed up to five auxiliary APWorlds per world per lobby.
 app.config["LOBBY_AUXILIARY_APWORLD_GAMES"] = []
+# Exact YAML game names whose lobby uploads show a licensing disclaimer.
+app.config["REMOVED_WORLD_LOBBY_INFO"] = []
 app.config["MAX_CONTENT_LENGTH"] = 64 * 1024 * 1024  # 64 megabyte limit
 # if you want to deploy, make sure you have a non-guessable secret key
 app.config["SECRET_KEY"] = bytes(socket.gethostname(), encoding="utf-8")

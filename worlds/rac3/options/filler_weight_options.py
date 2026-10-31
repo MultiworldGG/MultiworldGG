@@ -17,7 +17,6 @@ class FillerWeight(ItemDict):
     max = 100
     valid_keys = filler_data.keys()
     default = {
-        # RAC3ITEM.TITANIUM_BOLT: 0,
         RAC3ITEM.WEAPON_XP: 5,
         RAC3ITEM.NANOTECH_XP: 5,
         RAC3ITEM.BOLTS: 10,

@@ -88,12 +88,16 @@ def scene_exits(world):
         from .enemy_souls import enabled_enemies
         from .entrance_randomization import enabled, scope
         from .silk_economy import enabled as silk_enabled
+        from .requirements import BONE_BOTTOM_BELLWAY_NODE, bone_bottom_bellway_requirements
 
         exits = _scene_exits(enabled_enemies(world), silk_enabled(world), scope(world) if enabled(world) else None,
                              world.get_content_scope(), tuple(boss.identity for boss in world._progression_bosses))
         graph = world._silksong_native_abstract_requirements
         result = tuple(exit if exit.shuffled or graph[exit.destination] else replace(exit, requirements=())
                        for exit in exits)
+        result = tuple(replace(exit, requirements=bone_bottom_bellway_requirements(
+            exit.requirements, world.get_starting_location_key()))
+            if exit.destination == BONE_BOTTOM_BELLWAY_NODE else exit for exit in result)
         world._scene_exit_definitions = result
     return result
 

@@ -4,11 +4,29 @@ import json
 import pkgutil
 from dataclasses import replace
 
-from BaseClasses import ItemClassification
 from Options import OptionError
 
 CATALOGUE = tuple(json.loads(pkgutil.get_data(__package__, 'npc_souls.json')))
 BY_NAME = {row['name']: row for row in CATALOGUE}
+
+SHUFFLED_TURN_INS = {
+    'Wish: Bone Bottom Repairs': 'Flick',
+    'Wish: A Lifesaving Bridge': 'Flick',
+    'Wish: An Icon of Hope': 'Flick',
+    'Wish: Building Up Songclave': 'Caretaker',
+    'Wish: Strengthening Songclave': 'Caretaker',
+    'Wish: Fine Pins': 'Caretaker',
+    'Wish: Cloaks of the Choir': 'Sherma',
+}
+SHUFFLED_FOLLOWUPS = {
+    'Room Event: event:mapper/reviewed:bone-bottom-bridge-constructed': 'Flick',
+    'Room Event: event:mapper/reviewed:bone-bottom-statue-constructed': 'Flick',
+}
+
+
+def needs_soul(world, npc, name, field):
+    moved = SHUFFLED_TURN_INS if field == 'checks' else SHUFFLED_FOLLOWUPS
+    return not (world.options.shuffle_wish_offers and moved.get(name) == npc)
 
 
 def item_name(npc):
@@ -50,7 +68,7 @@ def location_gate(world, name):
     from .room_graph_logic import native_region_name
     result = None
     for npc in enabled_npcs(world):
-        if name not in BY_NAME[npc]['checks']:
+        if name not in BY_NAME[npc]['checks'] or not needs_soul(world, npc, name, 'checks'):
             continue
         soul, count = soul_requirement(world, npc)
         rule = Has(soul, count)
@@ -61,7 +79,8 @@ def location_gate(world, name):
 
 
 def gate(world, name, rules, field):
-    npcs = tuple(npc for npc in enabled_npcs(world) if name in BY_NAME[npc][field])
+    npcs = tuple(npc for npc in enabled_npcs(world)
+                 if name in BY_NAME[npc][field] and needs_soul(world, npc, name, field))
     if not npcs:
         return rules
     result = []
@@ -92,19 +111,10 @@ def gate_graph(world, graph):
     return {name: gate(world, name, rules, 'events') for name, rules in graph.items()}
 
 
-def add_souls_to_pool(world, entries):
-    from .items import ItemPoolEntry, item_data_table
-    npcs = enabled_npcs(world)
-    if not npcs:
-        return
-    indices = [i for i, e in enumerate(entries) if e.placement_category is None
-               and item_data_table[e.name].classification == ItemClassification.filler
-               and e.source_category not in {'Memento', 'MemoryLocket', 'Journal'}]
-    if len(indices) < len(npcs):
-        raise OptionError(f'NPC Souls needs {len(npcs)} anywhere filler slots; only {len(indices)} remain. '
-                          'Enable more anywhere cache or resource checks.')
-    for npc, i in zip(npcs, world.random.sample(indices, len(npcs))):
-        entries[i] = ItemPoolEntry(soul_requirement(world, npc)[0], 'NpcSoul')
+def pool_entries(world):
+    from .items import ItemPoolEntry
+    return tuple(ItemPoolEntry(soul_requirement(world, npc)[0], 'NpcSoul')
+                 for npc in enabled_npcs(world))
 
 
 def export_world(world, slot_data):

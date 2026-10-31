@@ -1,6 +1,6 @@
 """This module provides an interface for connecting to a pcsx2 game"""
 from enum import Enum
-from struct import unpack, pack
+from struct import pack, unpack
 from typing import Any
 
 from CommonClient import logger
@@ -99,6 +99,18 @@ class GameInterface:
     def _read_string(self, address: int, n: int) -> str:
         self.cycle_batch_reads_count += 1
         return self.pypine.read_string(address, n)
+
+    def _write8(self, address: int, value: int):
+        self.cycle_writes_count += 1
+        return self.pypine.write_int8(address, value)
+
+    def _write16(self, address: int, value: int):
+        self.cycle_writes_count += 1
+        return self.pypine.write_int16(address, value)
+
+    def _write32(self, address: int, value: int):
+        self.cycle_writes_count += 1
+        return self.pypine.write_int32(address, value)
 
     def batch_write(self):
         """Send all the stashed writes to pypine"""
@@ -224,9 +236,10 @@ class GameInterface:
                                        "game to play.")
                     else:
                         logger.info("Unknown game version detected")
-        if self.current_game == "None" and self.game_id_error != game_id and game_id != b"\x00\x00\x00\x00\x00\x00":
-            logger.warning(f"Connected to the wrong game ({game_id})")
-            self.game_id_error = game_id
+        if self.current_game == "None":
+            if self.game_id_error != game_id and game_id != b"\x00\x00\x00\x00\x00\x00":
+                logger.warning(f"Connected to the wrong game ({game_id})")
+                self.game_id_error = game_id
             return False
         # logger.debug("Valid Game detected")
         return True

@@ -88,7 +88,18 @@
 
 # changin impa script def
 09/64e5/: dw impaScriptRewrite
-# Make Impa always stand at a specific spot in the house
-09/6484/: jp $64c1 # val00
 
-# TODO TEXT
+#adding impa to the crossroad, removing the stone
+12/5bcd/: | 
+    db $f1,$4f,$00     ; impa in house
+    db $ff             ; array end
+
+# Make Impa always stand at a specific spot in the crossroad
+09/6484/: |
+    ld a,(wActiveGroup)
+    cp $0
+    jp z,$64c1 # val0b
+    jp $64b4 # val0a
+
+09/64b5/: dw $9898 # val 0a pos
+09/64c2/: dw $2828 # val 0b pos

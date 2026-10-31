@@ -17,6 +17,7 @@ from ..data.harvest import (
 )
 from ..data.monster_data import MonsterSource
 from ..data.recipe_source import (
+    CutsceneSource,
     FriendshipSource,
     MasterySource,
     QueenOfSauceSource,
@@ -96,7 +97,7 @@ class SourceLogic(BaseLogic):
             access_rule = self.logic.source.has_access_to(source)
             valid_requirements = []
             for requirement in source.other_requirements:
-                if any(isinstance(requirement, bypass_type) for bypass_type in bypassed_requirement_types):
+                if not any(isinstance(requirement, bypass_type) for bypass_type in bypassed_requirement_types):
                     valid_requirements.append(requirement)
             requirements_rule = self.logic.requirement.meet_all_requirements(valid_requirements)
             rules.append(access_rule & requirements_rule)
@@ -190,6 +191,10 @@ class SourceLogic(BaseLogic):
     def _(self, source: FishingSource):
         return self.logic.fishing.can_fish_at(source.region) & self.logic.skill.has_level(Skill.fishing, source.fishing_level) & self.logic.tool.has_fishing_rod(source.minimum_rod)
 
+    @has_access_to.register
+    def _(self, source: CutsceneSource):
+        return self.logic.region.can_reach(source.region) & self.logic.relationship.has_hearts(source.friend, source.hearts) & self.logic.requirement.meet_all_requirements(source.other_requirements)
+    
     @has_access_to.register
     def _(self, source: FriendshipSource):
         return self.logic.relationship.has_hearts(source.friend, source.hearts)

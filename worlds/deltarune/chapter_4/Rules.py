@@ -27,6 +27,7 @@ from worlds.deltarune.Rules import (
     can_recruit_organikk,
     can_lost_chapter4,
     speedrun_glitch_logic,
+    annoying_farming_logic,
 )
 
 if TYPE_CHECKING:
@@ -43,7 +44,10 @@ def set_rules(world: "DeltaruneWorld"):
 
     world.set_rule(
         world.get_location(locations[LocationIDs.ch4_castle_town_lanino_elnina_challenge]),
-        have_kris | (have_actions & (have_susie | have_ralsei)),
+        (
+            (have_kris | (have_actions & (have_susie | have_ralsei)))
+                | annoying_farming_logic # You can fight them but it's really long and annoying
+        ),
     )
 
     world.set_rule(
@@ -52,10 +56,16 @@ def set_rules(world: "DeltaruneWorld"):
 
     world.set_rule(  # You can get this by doing dark sanctuary skip, so it's glitched
         world.get_location(locations[LocationIDs.ch4_dark_sanctuary_jackenstein_gift]),
-        have_kris | speedrun_glitch_logic,
+        have_kris | (speedrun_glitch_logic & Has(items[ItemIDs.claimbclaws]))
     )
 
     world.set_rule(world.get_location(locations[LocationIDs.ch4_dark_sanctuary_climbing_tutorial_chest]), have_kris)
+
+
+    world.set_rule(  # You need to beat jackenstein first with Kris, or you can get it glitched with dark sanctuary skip
+        world.get_location(locations[LocationIDs.ch4_dark_sanctuary_sheetmusic]),
+        have_kris | speedrun_glitch_logic,
+    )
 
     if include_mike_games(world) and world.options.exclude_mike_platinum.value == 1:
         world.get_location(locations[LocationIDs.ch4_mike_pluey_platinum]).progress_type = LocationProgressType.EXCLUDED

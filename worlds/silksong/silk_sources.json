@@ -34,7 +34,7 @@
     "room": "blasted-steps/blasted-steps-shell-beast-shard",
     "act": 1,
     "nodes": [
-      "blasted-steps/blasted-steps-shell-beast-shard#room"
+      "blasted-steps/blasted-steps-shell-beast-shard#squirms"
     ],
     "exits": [
       "blasted-steps/blasted-steps-shell-beast-shard@l"
@@ -45,13 +45,8 @@
     "room": "blasted-steps/blasted-steps-toll-bench-bottom",
     "act": 1,
     "nodes": [
-      "blasted-steps/blasted-steps-toll-bench-bottom#bottom-right",
-      "blasted-steps/blasted-steps-toll-bench-bottom#middle",
-      "blasted-steps/blasted-steps-toll-bench-bottom#bottom-left",
-      "blasted-steps/blasted-steps-toll-bench-bottom#top-left",
-      "blasted-steps/blasted-steps-toll-bench-bottom#top-right",
-      "blasted-steps/blasted-steps-toll-bench-bottom#top-right-pit-right",
-      "blasted-steps/blasted-steps-toll-bench-bottom#top-right-pit-left"
+      "blasted-steps/blasted-steps-toll-bench-bottom#above-shell-shards",
+      "blasted-steps/blasted-steps-toll-bench-bottom#shell-shards"
     ],
     "exits": [
       "blasted-steps/blasted-steps-toll-bench-bottom@br",
@@ -379,8 +374,7 @@
     "act": 2,
     "nodes": [
       "high-halls/high-halls-flooded-room#left-exit-area",
-      "high-halls/high-halls-flooded-room#right-exit-area",
-      "high-halls/high-halls-flooded-room#relic-spot"
+      "high-halls/high-halls-flooded-room#right-exit-area"
     ],
     "exits": [
       "high-halls/high-halls-flooded-room@l",

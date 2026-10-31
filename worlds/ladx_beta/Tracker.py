@@ -87,6 +87,7 @@ class LocationTracker:
 
         alternateAddresses = {
             '0x0F2': 0xD8B2,
+            '0x092': 0xD8B1,
         }
 
         blacklist = {'None', '0x2A1-2'}

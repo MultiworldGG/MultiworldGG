@@ -314,7 +314,7 @@
  {
   "name": "Wormways Middle",
   "img": "01-geometry/f76a1fba-b148-44d8-aef9-3a6875404410.webp",
-  "location_size": 23,
+  "location_size": 19,
   "location_border_thickness": 3
  },
  {
@@ -356,8 +356,8 @@
  {
   "name": "Wormways Zango Arena",
   "img": "01-geometry/0445b3fb-78f4-421c-8927-6c17026483d2.webp",
-  "location_size": 9,
-  "location_border_thickness": 1
+  "location_size": 19,
+  "location_border_thickness": 3
  },
  {
   "name": "Deep Docks Entrance",
@@ -1250,8 +1250,8 @@
  {
   "name": "Father of the Flame",
   "img": "01-geometry/cec31268-d1fe-47e1-879d-f314bfada843.webp",
-  "location_size": 19,
-  "location_border_thickness": 3
+  "location_size": 192,
+  "location_border_thickness": 32
  },
  {
   "name": "Wisp Thicket Secret Path",
@@ -1436,8 +1436,8 @@
  {
   "name": "Lumble the Lucky",
   "img": "01-geometry/523cd404-f410-42f7-9346-130e1e7d9eeb.webp",
-  "location_size": 5,
-  "location_border_thickness": 1
+  "location_size": 19,
+  "location_border_thickness": 3
  },
  {
   "name": "Windy Pinstress Room",
@@ -1490,7 +1490,7 @@
  {
   "name": "Shrine Guardian Seth",
   "img": "01-geometry/15dd7027-4faa-4c7f-80db-9e33da3bef3a.webp",
-  "location_size": 21,
+  "location_size": 19,
   "location_border_thickness": 3
  },
  {
@@ -2138,7 +2138,7 @@
  {
   "name": "Whiteward Entrance",
   "img": "01-geometry/0eb82c90-2aca-449c-8d2f-3bfe5ffbc633.webp",
-  "location_size": 20,
+  "location_size": 19,
   "location_border_thickness": 3
  },
  {
@@ -2150,19 +2150,19 @@
  {
   "name": "Whiteward Descent Connection",
   "img": "01-geometry/4e888a21-a803-4e64-bfa5-1f4e495e2196.webp",
-  "location_size": 18,
+  "location_size": 19,
   "location_border_thickness": 3
  },
  {
   "name": "Whiteward Descent",
   "img": "01-geometry/52233db0-f712-461f-bb8b-dca305331714.webp",
-  "location_size": 17,
-  "location_border_thickness": 2
+  "location_size": 19,
+  "location_border_thickness": 3
  },
  {
   "name": "Whiteward Junk Dump",
   "img": "01-geometry/6c667509-1f59-418e-8888-a97904e8a873.webp",
-  "location_size": 20,
+  "location_size": 19,
   "location_border_thickness": 3
  },
  {
@@ -2180,13 +2180,13 @@
  {
   "name": "Whiteward Unravelled Arena Room",
   "img": "01-geometry/c4122b5c-ccd0-4a86-88b4-7de0cf4dde45.webp",
-  "location_size": 17,
-  "location_border_thickness": 2
+  "location_size": 19,
+  "location_border_thickness": 3
  },
  {
   "name": "Whiteward Tunnel Room",
   "img": "01-geometry/254b728b-3fd1-4cbe-a586-bd9f6c29023f.webp",
-  "location_size": 21,
+  "location_size": 19,
   "location_border_thickness": 3
  },
  {
@@ -2478,7 +2478,7 @@
   "location_border_thickness": 2
  },
  {
-  "name": "Memorium bench",
+  "name": "Memorium Bench",
   "img": "01-geometry/c837412d-1e99-49f8-8833-c3677803abcd.webp",
   "location_size": 14,
   "location_border_thickness": 2
@@ -2496,7 +2496,7 @@
   "location_border_thickness": 3
  },
  {
-  "name": "Memorium puzzle",
+  "name": "Memorium Puzzle",
   "img": "01-geometry/e6a36e12-4434-450d-a154-b295dc80ad1d.webp",
   "location_size": 14,
   "location_border_thickness": 2
@@ -2526,7 +2526,7 @@
   "location_border_thickness": 3
  },
  {
-  "name": "Memorium water room",
+  "name": "Memorium Water Room",
   "img": "01-geometry/d7eb652c-1764-41c0-9dda-98574eeb8896.webp",
   "location_size": 18,
   "location_border_thickness": 3
@@ -2630,8 +2630,8 @@
  {
   "name": "Voltnest",
   "img": "01-geometry/15f51dc2-e60f-4fb3-bb64-cae69fae43a6.webp",
-  "location_size": 17,
-  "location_border_thickness": 2
+  "location_size": 19,
+  "location_border_thickness": 3
  },
  {
   "name": "Slab Bridge",
@@ -2792,8 +2792,8 @@
  {
   "name": "Mount Fay Entrance",
   "img": "01-geometry/eb6aaa0c-e6fb-442d-93b4-1240a8a48a9b.webp",
-  "location_size": 16,
-  "location_border_thickness": 2
+  "location_size": 19,
+  "location_border_thickness": 3
  },
  {
   "name": "Brightvein",
@@ -2828,7 +2828,7 @@
  {
   "name": "Memory Crystal",
   "img": "01-geometry/317ec0a5-26d0-4b2d-99fd-763a5a47138d.webp",
-  "location_size": 21,
+  "location_size": 19,
   "location_border_thickness": 3
  },
  {
@@ -2978,8 +2978,8 @@
  {
   "name": "ACT3 Lace2 Arena",
   "img": "01-geometry/2a69b6e3-d53a-4824-b990-76b434052004.webp",
-  "location_size": 8,
-  "location_border_thickness": 1
+  "location_size": 19,
+  "location_border_thickness": 3
  },
  {
   "name": "ACT2 GMS Arena",

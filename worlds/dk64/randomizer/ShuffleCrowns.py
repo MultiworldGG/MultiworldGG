@@ -2,7 +2,8 @@
 
 from randomizer.Enums.Levels import Levels
 from randomizer.Enums.Locations import Locations
-from randomizer.Lists.CustomLocations import CustomLocations, LocationTypes
+from randomizer.Lists import Exceptions
+from randomizer.Lists.CustomLocations import CustomLocations, LocationTags, LocationTypes
 from randomizer.LogicClasses import LocationLogic
 
 
@@ -31,6 +32,9 @@ def ShuffleCrowns(spoiler, crown_selection, human_crowns):
         Levels.CreepyCastle: "Castle",
         Levels.HideoutHelm: "Helm",
     }
+    excluded_tags = []
+    if spoiler.settings.season5_crate_rando:
+        excluded_tags.append(LocationTags.Season5CrateRando)
     # Remove crowns from their original logic region
     for id, region in spoiler.RegionList.items():
         region.locations = [loclogic for loclogic in region.locations if loclogic.id not in crown_locations]
@@ -39,6 +43,8 @@ def ShuffleCrowns(spoiler, crown_selection, human_crowns):
         level_lst = CustomLocations[level]
         index_lst = list(range(len(level_lst)))
         index_lst = [x for x in index_lst if level_lst[x].isValidLocation(LocationTypes.CrownPad) or level_lst[x].is_rotating_room]
+        if any(excluded_tags):
+            index_lst = [x for x in index_lst if not any(tag in level_lst[x].tags for tag in excluded_tags)]
         if spoiler.settings.enable_plandomizer:
             index_lst = [x for x in index_lst if level_lst[x].name not in spoiler.settings.plandomizer_dict["reserved_custom_locations"][level]]
         pick_count = 1
@@ -51,7 +57,10 @@ def ShuffleCrowns(spoiler, crown_selection, human_crowns):
                 location_to_string = str(crown_locations[global_crown_idx + i].value)
                 if spoiler.settings.plandomizer_dict["plando_battle_arenas"][location_to_string] != -1:
                     plando_crown_name = spoiler.settings.plandomizer_dict["plando_battle_arenas"][location_to_string]
-                    plando_crown_obj = [x for x in CustomLocations[level] if x.name == plando_crown_name][0]
+                    matching_crowns = [x for x in CustomLocations[level] if x.name == plando_crown_name]
+                    if not matching_crowns:
+                        raise Exceptions.PlandoIncompatibleException(f"Unknown battle arena location: {plando_crown_name}.")
+                    plando_crown_obj = matching_crowns[0]
                     crowns[i] = CustomLocations[level].index(plando_crown_obj)
         crown_data = {}
         for crown_index in crowns:

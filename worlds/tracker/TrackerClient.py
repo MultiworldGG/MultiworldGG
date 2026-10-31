@@ -8,7 +8,7 @@ import sys
 from typing import Union, TYPE_CHECKING
 
 
-from BaseClasses import CollectionState, Location, LocationProgressType
+from BaseClasses import CollectionState, Location, LocationProgressType, Entrance
 from Utils import __version__, async_start, open_filename, persistent_load, persistent_store
 import Utils
 from worlds import AutoWorld
@@ -77,12 +77,9 @@ class TrackerCommandProcessor(ClientCommandProcessor):
     def __init__(self, ctx: CommonContext):
         super().__init__(ctx)
         try:
-            from worlds import tracker_addons
+            from worlds.tracker_addons import UT_FUNCTIONS
             from functools import update_wrapper
-            # Older addon packages expose only the command registry.
-            functions = (tracker_addons.get_functions() if hasattr(tracker_addons, "get_functions")
-                         else tracker_addons.UT_FUNCTIONS)
-            for name, function in functions.items():
+            for name, function in UT_FUNCTIONS.items():
                 if name not in self.commands:
                     function.__doc__ = f"Provided by : {function.__module__}\n{function.__doc__}"
                     def temp_lambda(function:Callable=function):
@@ -333,6 +330,25 @@ def cmd_list_maps(self: TrackerCommandProcessor):
     else:
         logger.info("No world with internal map loaded")
 
+def cmd_reload_pack(self: TrackerCommandProcessor):
+    """Force a reload of the map pack"""
+    if self.ctx.game is not None:
+        old_map_id = self.ctx.map_id
+        self.ctx.disconnect_map()
+        connected_cls = AutoWorld.AutoWorldRegister.world_types.get(self.ctx.game)
+        if self.ctx.ui is not None and hasattr(connected_cls, "tracker_world"):
+            self.ctx.tracker_world = UTMapTabData(self.ctx.slot, self.ctx.team, **getattr(connected_cls,"tracker_world",{}))
+        elif self.ctx.ui is not None and hasattr(self.ctx.tracker_core.get_current_world(),"tracker_world"):
+            self.ctx.tracker_world = UTMapTabData(self.ctx.slot, self.ctx.team, **getattr(self.ctx.tracker_core.get_current_world(),"tracker_world",{}))
+        else:
+            self.ctx.tracker_world = None
+        if self.ctx.tracker_world is not None:
+            self.ctx.load_pack(force_reload=True)
+            self.ctx.enable_maps()
+            self.ctx.load_map(old_map_id)
+            self.ctx.updateTracker()
+    else:
+        logger.info("Somehow no game is loaded")
 
 class TrackerGameContext(CommonContext):
     game = ""
@@ -612,7 +628,7 @@ class TrackerGameContext(CommonContext):
                 all_layouts.extend(maps)
         self.map_groups = all_layouts
 
-    def load_pack(self):
+    def load_pack(self, force_reload=False):
         assert self.tracker_core.player_id is not None
         assert self.tracker_world is not None
         current_world = self.tracker_core.get_current_world()
@@ -626,13 +642,16 @@ class TrackerGameContext(CommonContext):
             try:
                 from zipfile import is_zipfile
                 packRef = current_world.settings[self.tracker_world.external_pack_key]
-                if packRef == "":
+                if packRef == "" or (packRef is None and force_reload):
                     prompt_desc = getattr(current_world.settings[self.tracker_world.external_pack_key],"ut_dialog_name","Select Poptracker pack")
                     packRef = open_filename(prompt_desc, filetypes=[("Poptracker Pack", [".zip"])])
                     current_world.settings[self.tracker_world.external_pack_key] = packRef
                     current_world.settings._changed = True
                 if packRef:
                     if is_zipfile(packRef):
+                        prefix = ""
+                        if self.tracker_world.nested_pack:
+                            prefix = f"{os.path.splitext(os.path.basename(packRef))[0]}/" # get basename without extension from <https://stackoverflow.com/a/678242>
                         current_world.settings.update({self.tracker_world.external_pack_key: packRef})
                         current_world.settings._changed = True
                         if self.tracker_world.map_page_folder:
@@ -648,14 +667,14 @@ class TrackerGameContext(CommonContext):
                                     items += load_json(PACK_NAME, f"/{self.tracker_world.map_page_folder}/{item_page}")
                         else:
                             for map_page in self.tracker_world.map_page_maps:
-                                self.maps += load_json_zip(packRef, f"{map_page}")
+                                self.maps += load_json_zip(packRef, f"{prefix}{map_page}")
                             for loc_page in self.tracker_world.map_page_locations:
-                                self.locs += load_json_zip(packRef, f"{loc_page}")
+                                self.locs += load_json_zip(packRef, f"{prefix}{loc_page}")
                             for layout_page in self.tracker_world.map_page_layouts:
-                                self.layouts.append(load_json_zip(packRef, f"{layout_page}"))
+                                self.layouts.append(load_json_zip(packRef, f"{prefix}{layout_page}"))
                             for item_page in self.tracker_world.item_page_items:
                                 if item_page:
-                                    items += load_json_zip(packRef, f"{item_page}")
+                                    items += load_json_zip(packRef, f"{prefix}{item_page}")
                     else:
                         current_world.settings.update({self.tracker_world.external_pack_key: ""}) #failed to find a pack, prompt next launch
                         current_world.settings._changed = True
@@ -667,6 +686,8 @@ class TrackerGameContext(CommonContext):
                     return
             except Exception as e:
                 logger.error("Selected poptracker pack was invalid")
+                tb = traceback.format_exc()
+                logger.error(tb)
                 current_world.settings[self.tracker_world.external_pack_key] = ""
                 current_world.settings._changed = True
                 self.tracker_world = None
@@ -693,6 +714,9 @@ class TrackerGameContext(CommonContext):
             packRef = self.tracker_core.get_current_world().settings[self.tracker_world.external_pack_key]
             if packRef and is_zipfile(packRef):
                 self.root_pack_path = f"ap:zip:{packRef}"
+                if self.tracker_world.nested_pack:
+                    prefix = f"{os.path.splitext(os.path.basename(packRef))[0]}" # get basename without extension from <https://stackoverflow.com/a/678242>
+                    self.root_pack_path += f"/{prefix}"
             else:
                 logger.error("Player poptracker doesn't seem to exist :< (must be a zip file)")
                 return
@@ -1350,53 +1374,53 @@ class TrackerGameContext(CommonContext):
                         if item_group in item_groups_lookup:
                             items_to_add = item_groups_lookup[item_group]
 
-                    for item in items_to_add:
-                        if item in added_items:
-                            continue
-                        pop_name = next((pop_name for pop_name, item_name in ctx.tracker_world.poptracker_item_mapping.items() if item_name == item), item)
-                        if pop_name not in items.keys():
-                            continue
-                        pool_item = next((pool_item for pool_item in itempool if pool_item.name == item), None)
-                        if pool_item == None:
-                            continue
+                        for item in items_to_add:
+                            if item in added_items:
+                                continue
+                            pop_name = next((pop_name for pop_name, item_name in ctx.tracker_world.poptracker_item_mapping.items() if item_name == item), item)
+                            if pop_name not in items.keys():
+                                continue
+                            pool_item = next((pool_item for pool_item in itempool if pool_item.name == item), None)
+                            if pool_item == None:
+                                continue
 
-                        icon: ApItemToggleIcon | ApItemCounterIcon | None = None
-                        if items[pop_name]["type"] == "toggle":
-                            if "img" in items[pop_name].keys():
-                                icon = ApItemToggleIcon(size=layout_config.item_size,
-                                                        grid=grid, id=pool_item.code, name=item,
-                                                        source=f"{ctx.root_pack_path}/{items[pop_name]['img']}")
-                        elif items[pop_name]["type"] == "consumable":
-                            if "img" in items[pop_name].keys():
-                                occurences_in_pool = sum(pool_item.name == item for pool_item in itempool)
-                                icon = ApItemCounterIcon(size=layout_config.item_size,
-                                                        grid=grid, id=pool_item.code, name=item,
-                                                        source=f"{ctx.root_pack_path}/{items[pop_name]['img']}", max=occurences_in_pool)
-                        elif items[pop_name]["type"] == "progressive":
-                            if "stages" in items[pop_name].keys():
-                                occurences_in_pool = sum(pool_item.name == item for pool_item in itempool)
-                                sources: list[str] = []
-                                for stage in items[pop_name]["stages"]:
-                                    if "img" in stage.keys():
-                                        sources.append(f"{ctx.root_pack_path}/{stage['img']}")
-                                icon = ApItemProgressiveIcon(size=layout_config.item_size,
+                            icon: ApItemToggleIcon | ApItemCounterIcon | None = None
+                            if items[pop_name]["type"] == "toggle":
+                                if "img" in items[pop_name].keys():
+                                    icon = ApItemToggleIcon(size=layout_config.item_size,
                                                             grid=grid, id=pool_item.code, name=item,
-                                                            sources=sources, max=occurences_in_pool)
-                        if icon:
-                            icon.manual_collect_callback = ctx.manually_collect_item
-                            icon.manual_uncollect_callback = ctx.manually_uncollect_item
-                            icon.manual_reset_callback = ctx.manually_reset_item
-                            self.item_icons.append(icon)
-                            grid.add_widget(icon)
-                            added_items.add(item)
+                                                            source=f"{ctx.root_pack_path}/{items[pop_name]['img']}")
+                            elif items[pop_name]["type"] == "consumable":
+                                if "img" in items[pop_name].keys():
+                                    occurences_in_pool = sum(pool_item.name == item for pool_item in itempool)
+                                    icon = ApItemCounterIcon(size=layout_config.item_size,
+                                                            grid=grid, id=pool_item.code, name=item,
+                                                            source=f"{ctx.root_pack_path}/{items[pop_name]['img']}", max=occurences_in_pool)
+                            elif items[pop_name]["type"] == "progressive":
+                                if "stages" in items[pop_name].keys():
+                                    occurences_in_pool = sum(pool_item.name == item for pool_item in itempool)
+                                    sources: list[str] = []
+                                    for stage in items[pop_name]["stages"]:
+                                        if "img" in stage.keys():
+                                            sources.append(f"{ctx.root_pack_path}/{stage['img']}")
+                                    icon = ApItemProgressiveIcon(size=layout_config.item_size,
+                                                                grid=grid, id=pool_item.code, name=item,
+                                                                sources=sources, max=occurences_in_pool)
+                            if icon:
+                                icon.manual_collect_callback = ctx.manually_collect_item
+                                icon.manual_uncollect_callback = ctx.manually_uncollect_item
+                                icon.manual_reset_callback = ctx.manually_reset_item
+                                self.item_icons.append(icon)
+                                grid.add_widget(icon)
+                                added_items.add(item)
 
                 for layout_config, grid in grids.items():
                     if layout_config.orientation == "lr":
                         grid.orientation = "lr-tb"
-                        grid.width = layout_config.item_width * layout_config.cols
+                        grid.width = (layout_config.item_width + 4) * layout_config.cols + 12
                     else:
                         grid.orientation = "tb-lr"
-                        grid.height = layout_config.item_height * layout_config.rows
+                        grid.height = (layout_config.item_height + 4) * layout_config.rows + 12
 
                     if len(grid.children) > 0:
                         grid_container = BoxLayout(orientation='vertical', size_hint=(None, None))
@@ -1455,9 +1479,15 @@ class TrackerGameContext(CommonContext):
         class VisualTracker(BoxLayout, ItemGrid):
             location_icons: list[ApLocationIcon]
 
+            def __init__(self):
+                super().__init__()
+                self.location_icons = []
+
             def load_coords(self, coords: dict[tuple, tuple[list[int], int | None]], defered_coords: dict[tuple, tuple[list[str], int | None]],
                             ldefered_coords: dict[tuple, tuple[list[str], int | None]], use_split, default_loc_size: int = 65) \
                     -> tuple[dict[int, list], dict[str, list], dict[str, list]]:
+                for widget in self.ids.location_canvas.children:
+                    widget.clear_widgets() #Hopefully get rid of tooltips... hope
                 self.ids.location_canvas.clear_widgets()
                 returnDict: dict[int, list] = defaultdict(list)
                 deferredDict: dict[str, list] = defaultdict(list)
@@ -1515,6 +1545,12 @@ class TrackerGameContext(CommonContext):
         try:
             tracker = TrackerLayout(orientation="vertical")
             tracker_view = TrackerView()
+
+            if self.tracker_core.something_has_gone_wrong:
+                tracker_view.data.append({"text":"Something has gone VERY wrong, run /faris_asked for more info"})
+                async def dont_connect(address=None): return #nothing but crimes here
+                self.connect = dont_connect
+                self.print_json([{"type":"color","color":"red","text":"Something has gone VERY wrong, run /faris_asked for more info"}])
 
             # Creates a header
             tracker_header = BoxLayout(orientation="horizontal", size_hint_y=None, height=dp(36))
@@ -1632,7 +1668,7 @@ class TrackerGameContext(CommonContext):
             enable_map = BooleanProperty(False)
             current_map = StringProperty("")
             auto_tab = BooleanProperty(True)
-            base_title = f"Tracker {UT_VERSION}{' Addons ' if UT_ADDONS_VERSION else ' '}{UT_ADDONS_VERSION if UT_ADDONS_VERSION else '' } for {apname} version"  # core appends ap version so this works
+            base_title = f"Tracker {UT_VERSION}{' Addons ' if UT_ADDONS_VERSION else ' '}{UT_ADDONS_VERSION if UT_ADDONS_VERSION else '' } for AP version"  # core appends ap version so this works
 
             def build(self):
                 class TrackerHintLabel(HintLabel):
@@ -1803,6 +1839,7 @@ class TrackerGameContext(CommonContext):
                 self.tracker_core.initalize_tracker_core(connected_cls,args["slot_data"])
                 if self.tracker_core.tracker_disabled:
                     logger.error("World Author has requested UT be disabled on this world, please respect their decision")
+                    logger.error("For more information, if available, see /faris_asked")
                     return
                 if not self.tracker_core.multiworld:
                     logger.error("Internal generation failed, something has gone wrong")
@@ -1818,20 +1855,11 @@ class TrackerGameContext(CommonContext):
                 if self.tracker_world:
                     self.load_pack()
                     if self.tracker_world:  # don't show the map if loading failed
-                        if self.tracker_world.map_page_maps and self.tracker_world.map_page_locations:
-                            self.ui.show_map = True
-                        if self.tracker_world.item_page_items and self.tracker_world.item_page_item_layouts:
-                            self.ui.show_items = True
-                        if self.tracker_world.map_page_index:
-                            key = self.tracker_world.map_page_setting_key or f"{self.slot}_{self.team}_{UT_MAP_TAB_KEY}"
-                            self.set_notify(key)
-                        icon_key = self.tracker_world.location_setting_key
-                        if icon_key:
-                            self.set_notify(icon_key)
-                    if "load_map" not in self.command_processor.commands or not self.command_processor.commands["load_map"]:
-                        self.command_processor.commands["load_map"] = cmd_load_map
-                    if "list_maps" not in self.command_processor.commands or not self.command_processor.commands["list_maps"]:
-                        self.command_processor.commands["list_maps"] = cmd_list_maps
+                        self.enable_maps()
+                    from Utils import is_frozen
+                    
+                    if "reload_pack" not in self.command_processor.commands or not self.command_processor.commands["reload_pack"] and (not self.tracker_world or not is_frozen()):
+                        self.command_processor.commands["reload_pack"] = cmd_reload_pack
                 self.defered_entrance_datastorage_keys = getattr(self.tracker_core.get_current_world(),"found_entrances_datastorage_key",None)
                 from . import DeferredEntranceMode
                 if self.defered_entrance_datastorage_keys and self.tracker_core.enforce_deferred_connections != DeferredEntranceMode.disabled:
@@ -1912,6 +1940,30 @@ class TrackerGameContext(CommonContext):
                 self.defered_entrance_callback(key,self.stored_data.get(key,None))
             self.updateTracker()
 
+    def disconnect_map(self):
+            self.map_id = None
+            self.root_pack_path = None
+            self.coord_dict.clear()
+            self.deferred_dict.clear()
+            self.ldeferred_dict.clear()
+
+    def enable_maps(self):
+        if self.tracker_world:
+            if self.tracker_world.map_page_maps and self.tracker_world.map_page_locations:
+                self.ui.show_map = True
+            if self.tracker_world.item_page_items and self.tracker_world.item_page_item_layouts:
+                self.ui.show_items = True
+            if self.tracker_world.map_page_index:
+                key = self.tracker_world.map_page_setting_key or f"{self.slot}_{self.team}_{UT_MAP_TAB_KEY}"
+                self.set_notify(key)
+            icon_key = self.tracker_world.location_setting_key
+            if icon_key:
+                self.set_notify(icon_key)
+            if "load_map" not in self.command_processor.commands or not self.command_processor.commands["load_map"]:
+                self.command_processor.commands["load_map"] = cmd_load_map
+            if "list_maps" not in self.command_processor.commands or not self.command_processor.commands["list_maps"]:
+                self.command_processor.commands["list_maps"] = cmd_list_maps
+
     async def disconnect(self, allow_autoreconnect: bool = False):
         if "Tracker" in self.tags:
             self.game = ""
@@ -1924,11 +1976,9 @@ class TrackerGameContext(CommonContext):
                     del self.command_processor.commands["load_map"]
                 if "list_maps" in self.command_processor.commands:
                     del self.command_processor.commands["list_maps"]
-                self.map_id = None
-                self.root_pack_path = None
-                self.coord_dict.clear()
-                self.deferred_dict.clear()
-                self.ldeferred_dict.clear()
+                if "reload_pack" in self.command_processor.commands:
+                    del self.command_processor.commands["reload_pack"]
+                self.disconnect_map()
             self.tracker_world = None
             self.defered_entrance_callback = None
             self.defered_entrance_datastorage_keys = []
@@ -2021,7 +2071,7 @@ def load_json_zip(pack, path):
 def explain_more(ctx: TrackerGameContext, argument: str):
     if ctx.tracker_core.player_id is None or ctx.tracker_core.multiworld is None:
         logger.error("Player YAML not installed of Generator failed")
-        ctx.set_page(f"Check Player YAMLs for error; Tracker {UT_VERSION} for {apname} version {__version__}")
+        ctx.set_page(f"Check Player YAMLs for error; Tracker {UT_VERSION} for AP version {__version__}")
         return
     current_world = ctx.tracker_core.get_current_world()
     assert current_world
@@ -2074,7 +2124,8 @@ def explain(ctx: TrackerGameContext, dest_name: str):
     from Utils import get_intended_text
     location_names = set(ctx.tracker_core.multiworld.regions.location_cache[ctx.tracker_core.player_id])
     region_names = set(ctx.tracker_core.multiworld.regions.region_cache[ctx.tracker_core.player_id])
-    result, usable, response = get_intended_text(dest_name, location_names.union(region_names))
+    entrance_names = set(ctx.tracker_core.multiworld.regions.entrance_cache[ctx.tracker_core.player_id])
+    result, usable, response = get_intended_text(dest_name, location_names.union(region_names).union(entrance_names))
     if not usable:
         logger.error(response)
         return
@@ -2095,6 +2146,15 @@ def explain(ctx: TrackerGameContext, dest_name: str):
         parent_region = location.parent_region
     elif dest_name in region_names:
         parent_region = ctx.tracker_core.multiworld.get_region(dest_name,ctx.tracker_core.player_id)
+    elif dest_name in entrance_names:
+        location = ctx.tracker_core.multiworld.get_entrance(dest_name, ctx.tracker_core.player_id)
+        if hasattr(location.access_rule,"explain_json"):
+            ctx.print_json(location.access_rule.explain_json(state))
+        elif location.access_rule is Entrance.access_rule:
+            logger.info("Entrance has a default access rule")
+        else:
+            logger.info("Entrance doesn't have a rule that supports explanation")
+        parent_region = location.parent_region
     else:
         logger.error(response)
         return

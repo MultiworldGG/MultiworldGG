@@ -1,15 +1,15 @@
 """This module defines options for armor vendors"""
 
-from Options import Choice
+from Options import DefaultOnToggle
 from worlds.rac3.constants.options import RAC3OPTION
 
 
-class ArmorVendors(Choice):
+class ArmorVendors(DefaultOnToggle):
     """
     Determines whether armor vendor items are locations in the world.
     ------------------------------------------------------------------------------
-    Disabled: No armor vendor items are locations.
-    Enabled:  Armor vendor items are added as locations.
+    No:   No armor vendor items are locations.
+    Yes:  Armor vendor items are added as locations.
     ------------------------------------------------------------------------------
     Visiting the planet associated with the armor will put it in the armor vendor.
     Magnaplate:   Starship Phoenix
@@ -21,6 +21,3 @@ class ArmorVendors(Choice):
     Armor is determined by the number of progressive armor items you have.
     """
     display_name = RAC3OPTION.ARMOR_VENDOR
-    option_disabled = 0
-    option_enabled = 1
-    default = 1

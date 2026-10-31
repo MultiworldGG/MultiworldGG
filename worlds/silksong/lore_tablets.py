@@ -183,7 +183,7 @@ LORE_TABLET_SOURCES: tuple[LoreTabletSource, ...] = (
         ),),
     ),
     LoreTabletSource(
-        "Sands of Karak - Upper Coral Tablet",
+        "Sands of Karak - Lower Coral Tablet",
         "Coral_25", 129.485153, 85.096017, 149.0, 98.0,
         1, "Sands of Karak - Sands of Karak",
         (_identity(
@@ -202,7 +202,7 @@ LORE_TABLET_SOURCES: tuple[LoreTabletSource, ...] = (
         ),),
     ),
     LoreTabletSource(
-        "Sands of Karak - Lower Coral Tablet",
+        "Sands of Karak - Upper Coral Tablet",
         "Coral_Tower_01", 24.66, 5.85, 138.0, 22.0,
         1, "Sands of Karak - Coral Tower",
         (_identity(
@@ -497,7 +497,7 @@ LORE_TABLET_COMMUNITY_BACKED_LOCATION_NAMES: frozenset[str] = frozenset((
     "Mosshome - Moss Plaque",
     "Shellwood - Shellgrave Inscription",
     "Shellwood - Weaver Harp Inscription",
-    "Sands of Karak - Upper Coral Tablet",
+    "Sands of Karak - Lower Coral Tablet",
     "The Slab - Left Orders",
     "The Slab - Right Orders",
 ))

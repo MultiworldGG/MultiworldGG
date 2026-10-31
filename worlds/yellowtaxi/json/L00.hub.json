@@ -1204,7 +1204,7 @@
     },
     "connections": {
       "Morio's Lab - Ground Floor Lowest Bolt": "",
-      "Morio's Lab - Bunny Ledge": "J1 | X2+B1",
+      "Morio's Lab - Bunny Ledge": "J2 | X1+J1 | X2+B1",
       "Morio's Lab - Path to Morio's Room": "X1+J2",
       "Morio's Lab - Fifth Floor Crash Test Area": "X1+B1+FGU & X2/J1",
       "Morio's Lab - Alcove Above Arcade Panik": "J1/B1",
@@ -1253,7 +1253,7 @@
       "Morio's Lab - Coin on Second Floor #5": 300438
     },
     "connections": {
-      "Morio's Lab - Path to Morio's Room": "B1 | X2+J1",
+      "Morio's Lab - Path to Morio's Room": "B1 | X1+J1",
       "Morio's Lab - Ground Floor": "",
       "Morio's Lab - Second Floor Access to Shortcut Pipe": "X2+B1+J1 | X1+B2+J1 | X1+B1+J2",
       "Morio's Lab - Second Floor After Demo Wall": "FGU",
@@ -1600,7 +1600,7 @@
     "sublevel": "Morio's Lab",
     "connections": {
       "Morio's Lab - Fifth Floor Ruined Observatory Area": "Password | X3+OOB+B1",
-      "Morio's Lab - Dream Machine": "FGU",
+      "Morio's Lab - Dream Machine": "Dream",
       "Morio's Lab - Fifth Floor Crash Test Area": ""
     },
     "warps": {
@@ -1609,7 +1609,10 @@
   },
   "Morio's Lab - Dream Machine": {
     "level": "Hub",
-    "sublevel": "Morio's Lab"
+    "sublevel": "Morio's Lab",
+    "warps": {
+      "Morio's Lab - Morio's Mind Portal": ["{PORTAL}Morio's Mind", "PortalMoriosMind"]
+    }
   },
   "Morio's Lab - Fifth Floor Ruined Observatory Area": {
     "level": "Hub",

@@ -3,7 +3,10 @@
 from typing import TYPE_CHECKING
 
 from worlds.rac3.constants.data.location import RAC3_LOCATION_DATA_TABLE
+from worlds.rac3.constants.locations.general import RAC3LOCATION
 from worlds.rac3.constants.locations.tags import RAC3TAG
+from worlds.rac3.constants.locations.trophies import RAC3TROPHY
+from worlds.rac3.constants.locations.vendors import RAC3VENDORLOCATION
 from worlds.rac3.constants.region import RAC3REGION
 
 if TYPE_CHECKING:
@@ -26,6 +29,19 @@ def get_from_tag(tag) -> set[str]:
     return {loc for loc in RAC3_LOCATION_DATA_TABLE.keys() if tag in RAC3_LOCATION_DATA_TABLE[loc].TAGS}
 
 
+def get_end_locations(world: "RaC3World") -> set[str]:
+    """Returns a set of location names that must be after the goal is reachable"""
+    locations: set[str] = {RAC3LOCATION.COMMAND_CENTER_INFOBOT}
+    if world.options.lock_command_center.value > 0:
+        locations.update({RAC3VENDORLOCATION.PHOENIX_SKIN_31, RAC3VENDORLOCATION.PHOENIX_SKIN_32,
+                          RAC3TROPHY.PHOENIX_TITANIUM_COLLECTOR, RAC3TROPHY.PHOENIX_SKILL_MASTER,
+                          RAC3VENDORLOCATION.AQUATOS_SHIELD_CHARGER})
+        for location, data in RAC3_LOCATION_DATA_TABLE.items():
+            if data.REGION == RAC3REGION.COMMAND_CENTER:
+                locations.add(location)
+    return locations
+
+
 # class EventData(NamedTuple):
 #     ap_code: None
 #     region: Optional[str]
@@ -42,28 +58,6 @@ def get_from_tag(tag) -> set[str]:
 #     "Cleared Daxx": EventData(None, RAC3REGION.DAXX),
 # }
 
-
-all_tags: list[str] = [
-    RAC3TAG.SKILLPOINT,
-    RAC3TAG.T_BOLT,
-    RAC3TAG.SEWER,
-    RAC3TAG.VIDCOMIC,
-    RAC3TAG.TROPHY,
-    RAC3TAG.LONG_TROPHY,
-    RAC3TAG.RANGERS,
-    RAC3TAG.ARENA,
-    RAC3TAG.NANOTECH,
-    RAC3TAG.UNSTABLE,
-    RAC3TAG.WEAPONS,
-    RAC3TAG.ARMOR,
-    RAC3TAG.SHIP,
-    RAC3TAG.GADGETS,
-    RAC3TAG.INFOBOT,
-    RAC3TAG.VR,
-    RAC3TAG.ONE_HP_UNSTABLE,
-    RAC3TAG.NGPLUS,
-    RAC3TAG.WEAPON_LEVEL,
-]
 
 location_groups: dict[str, set[str]] = {
     RAC3REGION.VELDIN: get_from_tag(RAC3REGION.VELDIN),
@@ -104,6 +98,7 @@ location_groups: dict[str, set[str]] = {
     RAC3TAG.NGPLUS: get_from_tag(RAC3TAG.NGPLUS),
     RAC3TAG.VR: get_from_tag(RAC3TAG.VR),
     RAC3TAG.WEAPON_LEVEL: get_from_tag(RAC3TAG.WEAPON_LEVEL),
+    RAC3TAG.GOAL: get_from_tag(RAC3TAG.GOAL),
 }
 
 

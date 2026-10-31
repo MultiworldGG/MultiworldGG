@@ -45,7 +45,7 @@ Si vous avez généré ou hébergé votre multiworld sur le site web, tout simpl
 
 ## Rejoindre un Multiworld
 
-Même si la partie est solo, vous devez quand même connecter votre jeu au serveur. Héberger sur MultiworldGG.gg est gratuit et facile, mais Héberger localement offre plus de flexibilité.
+Même si la partie est solo, vous devez quand même connecter votre jeu au serveur. Héberger sur multiworld.gg est gratuit et facile, mais Héberger localement offre plus de flexibilité.
 
 ### Installation du mod
 

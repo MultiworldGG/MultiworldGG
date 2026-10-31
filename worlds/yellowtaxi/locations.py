@@ -5,7 +5,8 @@ from typing import Dict, List, TYPE_CHECKING, Union
 
 from BaseClasses import Location, Region, LocationProgressType
 
-from . import items
+from . import items, data_loader
+from .names import ItemNames
 
 if TYPE_CHECKING:
     from .world import YellowTaxiWorld
@@ -18,8 +19,6 @@ class YellowTaxiLocation(Location):
 def create_locations(world: YellowTaxiWorld) -> None:
     from .data_loader import regions_json_data
 
-    # Finally, we need to put the Locations ("checks") into their regions.
-    # Once again, before we do anything, we can grab our regions we created by using world.get_region()
     world.num_gears = 0
     world.num_bunnies = 0
     chests : List[tuple[Region, Dict[str, int | None]]] = []
@@ -42,7 +41,7 @@ def create_locations(world: YellowTaxiWorld) -> None:
             continue
 
         locations : Dict[str, int | None] = {}
-        # Time Trial Levels all end with "!", skip them when time trial gears aren't shuffled
+        # Time Attack Levels all end with "!", skip them when time attack gears aren't shuffled
         if "gears" in reg.keys() and (world.using_ut or world.options.time_trial_gears or not level.endswith("!")):
             locations = reg["gears"]
             world.num_gears += len(locations)
@@ -92,7 +91,7 @@ def create_locations(world: YellowTaxiWorld) -> None:
 
         if "hats" in reg.keys():
             if world.options.hatsanity != 0:
-                locations = locations | get_hat_locations(world, reg["sublevel"], reg["hats"])
+                locations = locations | get_hat_locations(world, region, reg["sublevel"], reg["hats"])
             else:
                 create_hat_events(world, region, reg["sublevel"], reg["hats"])
 
@@ -164,23 +163,39 @@ def create_hat_events(world: YellowTaxiWorld, region: Region, subarea_name: str,
     if len(hat_dict) == 0:
         return
 
-    for hat in hat_dict.keys():
+    for (hat, loc_id) in hat_dict.items():
+        hat_id: int = loc_id % 100000
         if hat_is_important(world, hat):
-            region.add_event(
-                f"Event: {subarea_name} - Purchase {hat}", hat,
-                location_type=YellowTaxiLocation, item_type=items.YellowTaxiItem
-            )
+            event_name = f"Event: {subarea_name} - Purchase {hat}"
+            region.add_event(event_name, hat, location_type=YellowTaxiLocation, item_type=items.YellowTaxiItem)
+            world.hat_locations += [event_name]
+        if world.options.randomize_hat_prices:
+            world.unique_hats.add(hat_id)
+            if world.options.sort_randomized_prices_by_sphere:
+                create_reach_hat_event(world, region, subarea_name, hat, hat_id)
+
+def create_reach_hat_event(world: YellowTaxiWorld, region: Region, subarea_name: str, hat_name: str, hat_id: int):
+    event_name = f"Event: {subarea_name} - Reach {hat_name}"
+    region.add_event(event_name, location_type=YellowTaxiLocation)
+    world.reach_hat_events[event_name] = hat_id
 
 def hat_is_important(world: YellowTaxiWorld, hat: str) -> bool:
-    if hat == "Morio Hat" or hat == "Morio's Brain Hat":
+    if hat == ItemNames.morio_hat or hat == ItemNames.morios_brain_hat:
         return True
-    if hat == "Tosla Employee Hat": #and "Tosla's Offices" in world.included_levels: # Only found there. Redundant.
+    if (hat == ItemNames.inception_top_hat and "Morio's Mind" in world.included_levels and
+            (world.options.morios_mind_laser_behavior.value ==
+             world.options.morios_mind_laser_behavior.option_inception_top_hat or
+             world.options.morios_mind_laser_behavior.value ==
+             world.options.morios_mind_laser_behavior.option_morios_brain_or_inception_top_hat)):
         return True
-    if (hat == "Alien Mosk (Good) Hat" or hat == "Bunny Hat") and "Ruined Observatory" in world.included_levels:
+    if hat == ItemNames.tosla_employee_hat: #and "Tosla's Offices" in world.included_levels: # Only found there. Redundant.
+        return True
+    if ((hat == ItemNames.alien_mosk_good_hat or hat == ItemNames.bunny_hat)
+            and "Ruined Observatory" in world.included_levels):
         return True
     return False
 
-def get_hat_locations(world: Union[YellowTaxiWorld | None], subarea: str, hats: dict[str, int]) -> Dict[str, int | None]:
+def get_hat_locations(world: Union[YellowTaxiWorld | None], region: Union[Region | None], subarea: str, hats: dict[str, int]) -> Dict[str, int | None]:
     # No hats, return early
     if len(hats) == 0:
         return {}
@@ -195,22 +210,38 @@ def get_hat_locations(world: Union[YellowTaxiWorld | None], subarea: str, hats: 
             # Add hat to the "included hats" list for item generation
             if world is not None:
                 world.included_hats.add(hat)
+
+            true_id = (hat_id % 1_00_00000) + 99_00_00000
+            loc_name = f"Purchase {hat}"
+            if world is not None and region is not None and world.options.randomize_hat_prices:
+                world.unique_hats.add(true_id)
+                if world.options.sort_randomized_prices_by_sphere:
+                    create_reach_hat_event(world, region, subarea, hat, true_id)
+
             # Hats purchasable in multiple locations (Handled in special locations)
             if hat == "Propeller Cap" or hat == "Top Hat":
                 continue
-
-            true_id = (hat_id % 1_00_00000) + 99_00_00000
-            locations[f"Purchase {hat}"] = true_id
+            locations[loc_name] = true_id
+            if world is not None:
+                world.hat_locations += [loc_name]
 
     if world is None or world.options.hatsanity == world.options.hatsanity.option_shopsanity:
         for (hat, hat_id) in hats.items():
+            loc_name = f"{subarea} - Purchase {hat}"
+
             # Add hat to the "included hats" list for item generation, count hat-based locations
             if world is not None:
                 if hat != "No Hat":
                     world.included_hats.add(hat)
                 world.hat_location_count += 1
 
-            locations[f"{subarea} - Purchase {hat}"] = hat_id
+            locations[loc_name] = hat_id
+            if world is not None:
+                world.hat_locations += [loc_name]
+                if region is not None and world.options.randomize_hat_prices:
+                    world.unique_hats.add(hat_id)
+                    if world.options.sort_randomized_prices_by_sphere:
+                        create_reach_hat_event(world, region, subarea, hat, hat_id)
 
     return locations
 
@@ -298,7 +329,7 @@ def get_special_locations(world: Union[YellowTaxiWorld | None], region_name: str
                 locations = {
                     "Morio's Lab - Talk to Morio in Morio's Room": 10_00000,
                 }
-        case "Morio's Lab - Psycho Taxi Arcade Machine":
+        case "Morio's Lab - Psycho Taxi Arcade Machine Area":
             if world is None or world.early_psycho_taxi:
                 locations = {
                     "Morio's Lab - Interact with Psycho Taxi Arcade Machine": 20_99999,
@@ -319,6 +350,11 @@ def get_special_locations(world: Union[YellowTaxiWorld | None], region_name: str
                     region.add_event(f"Event: Morio's Lab - Bunny - Above Pizza Time Portal", f"Bunny (Morio's Lab)",
                                          location_type=YellowTaxiLocation, item_type=items.YellowTaxiItem)
                     world.num_bunnies += 1
+        case "Morio's Lab - Second Floor":
+            if world is None or world.options.shuffle_world_map:
+                locations = {
+                    "Morio's Lab - PICI World Map Tutorial": 8_00008,
+                }
         case "Morio's Lab - Second Floor After Demo Wall":
             if world is None or world.early_pizza_wheels:
                 locations = {
@@ -335,7 +371,7 @@ def get_special_locations(world: Union[YellowTaxiWorld | None], region_name: str
                     "Morio's Lab - PICI Flip Tutorial": 8_00003,
                 }
         case "Morio's Lab - Third Floor":
-            if world is None or world.options.shuffle_flip_o_will:
+            if world is None or world.options.shuffle_spin_attack.value != world.options.shuffle_spin_attack.option_off:
                 locations = {
                     "Morio's Lab - PICI Spin Attack Tutorial": 8_00005,
                 }
@@ -412,8 +448,24 @@ def get_special_locations(world: Union[YellowTaxiWorld | None], region_name: str
                 )
         case "Pizza Time - Starting Area":
             if world is None or world.options.pizza_wheels != world.options.pizza_wheels.option_off:
+                locations["Pizza Time - Talk to MacPizza"] = 2_07_99999
+            if world is None or world.options.pizzasanity:
+                locations["Pizza Time - Corrupted Pizza Behind Pizza King"] = 2_12_00675
+        case "Pizza Time - Accessible Ledges":
+            if world is None or world.options.pizzasanity:
                 locations = {
-                    "Pizza Time - Talk to MacPizza": 2_07_99999,
+                    "Pizza Time - Corrupted Pizza After Mario's Pizza": 2_12_00765
+                }
+        case "Pizza Time - High Ground":
+            if world is None or world.options.pizzasanity:
+                locations = {
+                    "Pizza Time - Corrupted Pizza on Mario's Pizza": 2_12_00840
+                }
+        case "Pizza Time - Pizza King's Path Upper Area":
+            if world is None or world.options.pizzasanity:
+                locations = {
+                    "Pizza Time - Corrupted Pizza on Lower Mountain": 2_12_00740,
+                    "Pizza Time - Corrupted Pizza on Higher Mountain": 2_12_00645
                 }
         case "Pizza Time - Pizza King's Quest":
             if world is None or world.options.shuffle_pizza_king:
@@ -449,17 +501,17 @@ def get_special_locations(world: Union[YellowTaxiWorld | None], region_name: str
         case "Baby Steps! - Pillar":
             if world is None or world.options.locked_time_trials:
                 locations = {
-                    "Baby Steps! - Complete Time Trial": 17_00_00000,
+                    "Baby Steps! - Complete Time Attack": 17_00_00000,
                 }
         case "Getting Gud! - In the Air":
             if world is None or world.options.locked_time_trials:
                 locations = {
-                    "Getting Gud! - Complete Time Trial": 18_00_00000,
+                    "Getting Gud! - Complete Time Attack": 18_00_00000,
                 }
         case "Pro Tricks! - Final Section":
             if world is None or world.options.locked_time_trials:
                 locations = {
-                    "Pro Tricks! - Complete Time Trial": 19_00_00000,
+                    "Pro Tricks! - Complete Time Attack": 19_00_00000,
                 }
         case "Flushed Away - Starting Area":
             if (world is None or
@@ -479,6 +531,24 @@ def get_special_locations(world: Union[YellowTaxiWorld | None], region_name: str
                     "Orange Switch",
                     location_type=YellowTaxiLocation, item_type=items.YellowTaxiItem
                 )
+        case "Morio's Mind - Starting Area":
+            if (world is None or
+                    world.options.dream_machine_unlock_condition ==
+                    world.options.dream_machine_unlock_condition.option_shuffle_dream_machine):
+                locations = {
+                    "Morio's Mind - Talk to Morio": 12_10_00012,
+                }
+        case "Morio's Mind - Starting Area (Laser Range)":
+            if world is None or world.options.shuffle_morios_password:
+                locations = {
+                    "Morio's Mind - Morio's Password": 12_11_00012,
+                }
+            else:
+                world.get_region(region_name).add_event(
+                    "Event: Morio's Mind - Morio's Password",
+                    "Morio's Password",
+                    location_type=YellowTaxiLocation, item_type=items.YellowTaxiItem
+                )
         case "Any Hat World":
             if world is None or world.options.hatsanity == world.options.hatsanity.option_hatsanity:
                 locations = {
@@ -486,6 +556,9 @@ def get_special_locations(world: Union[YellowTaxiWorld | None], region_name: str
                 }
                 if world is not None:
                     world.included_hats.add("Top Hat")
+                    world.hat_locations += ["Purchase Top Hat"]
+            if world is None or world.options.hat_world_membership:
+                locations["Hat World - Purchase From Hat Master 9000"] = 99_10_00000
         case "Propeller Cap Access":
             if world is None or world.options.hatsanity == world.options.hatsanity.option_hatsanity:
                 locations = {
@@ -493,6 +566,7 @@ def get_special_locations(world: Union[YellowTaxiWorld | None], region_name: str
                 }
                 if world is not None:
                     world.included_hats.add("Propeller Cap")
+                    world.hat_locations += ["Purchase Propeller Cap"]
 
     return locations
 
@@ -501,12 +575,29 @@ def fix_location_deficit(world: YellowTaxiWorld):
     if world.using_ut:
         return
 
+    if world.options.extra_gear_percentage.value < 100:
+        extra_gears : int = world.num_gears - max(world.final_portal_cost, world.highest_portal_cost)
+        remaining_extra_gears : int = int((extra_gears * world.options.extra_gear_percentage.value) / 100)
+        removed_gears : int = extra_gears - remaining_extra_gears
+        world.num_gears -= removed_gears
+        world.num_filler += removed_gears
+
     # Get how many filler items would be needed to make up for locations that wouldn't be in the world
     # Morio's Home traditionally has one of the Move Rando locations
     location_deficit : int = 0
     if (world.options.shuffle_flip_o_will.value != world.options.shuffle_flip_o_will.option_off and
             "Morio's Home" not in world.included_levels):
         location_deficit += 1
+
+    if (world.options.dream_machine_unlock_condition ==
+            world.options.dream_machine_unlock_condition.option_shuffle_dream_machine):
+        # This option creates a location in mind. If Mind is included but no reason to include dream machine, -1
+        if "Morio's Mind" in world.included_levels and "Morio's Lab - Dream Machine" in world.excluded_regions:
+            location_deficit -= 1
+        # If mind is not included, but Dream Machine is, +1
+        elif ("Morio's Mind" not in world.included_levels and
+              "Morio's Lab - Dream Machine" not in world.excluded_regions):
+            location_deficit += 1
 
     if world.options.shuffle_flip_o_will.value == world.options.shuffle_flip_o_will.option_per_level:
         created_time_trial_moves : bool = False
@@ -524,6 +615,9 @@ def fix_location_deficit(world: YellowTaxiWorld):
                     created_time_trial_moves = True
             elif level != "Psycho Taxi":
                 location_deficit += 4
+
+    if world.options.shuffle_spin_attack.value == world.options.shuffle_spin_attack.option_progressive:
+        location_deficit += 1
 
     # Gym Membership location is in Gym Gears
     if (world.options.gym_gears_unlock_condition.value ==
@@ -555,8 +649,22 @@ def fix_location_deficit(world: YellowTaxiWorld):
         if "Pro Tricks!" not in world.included_levels:
             location_deficit += 1
 
+    # Bunnysanity can give or take away from deficit, depending on settings
+    if world.options.bunnysanity:
+        # Include all bunnies setting will add to deficit for every not-included level, assuming bunnies are made
+        if "Mosk's Rocket" in world.included_levels and world.options.bunnysanity_includes_all_bunnies:
+            for level in data_loader.original_portal_level_order + data_loader.grannys_island_level_order:
+                if level not in world.included_levels:
+                    location_deficit += 3
+
+    # Pizzasanity can remove from the deficit if less than 5 pizza slices are shuffled
+    if world.options.pizzasanity and "Pizza Time" in world.included_levels:
+        location_deficit -= (5 - world.options.pizzasanity_count.value)
+
     # If there are not enough filler items to cover the deficit, we have to eat into gears
     if location_deficit > world.num_filler:
         location_deficit -= world.num_filler
         world.num_filler = 0
         world.num_gears -= location_deficit
+        if world.final_portal_cost > world.num_gears:
+            world.final_portal_cost = world.num_gears

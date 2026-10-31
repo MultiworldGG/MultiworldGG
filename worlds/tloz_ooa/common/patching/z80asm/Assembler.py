@@ -201,11 +201,12 @@ class Z80Assembler:
 
                 self.bank_caves[block.addr.bank] = injection_offset + block.precompiled_size
 
-            if injection_offset + block.precompiled_size > 0x4000:
+            banksize = 0x4000 if block.addr.bank != 0x3f else 0x3fc0
+            if injection_offset + block.precompiled_size > banksize:
                 raise Exception(f"Not enough space for block {block.label} in bank {hex_str(block.addr.bank)} "
                                 f"({hex(injection_offset + block.precompiled_size)})."
                                 f"Block size: {hex(block.precompiled_size)}; "
-                                f"Space left: {hex((sum([(0x4000 - cave_range if isinstance(cave_range, int) else cave_range[1] - cave_range[0] + 1) for cave_range in self.bank_caves[block.addr.bank]]) if isinstance(self.bank_caves[block.addr.bank], list) else 0) + 0x4001 - injection_offset)}")
+                                f"Space left: {hex((sum([(banksize - cave_range if isinstance(cave_range, int) else cave_range[1] - cave_range[0] + 1) for cave_range in self.bank_caves[block.addr.bank]]) if isinstance(self.bank_caves[block.addr.bank], list) else 0) + banksize + 1 - injection_offset)}")
             block.set_base_offset(injection_offset)
 
         if block.label:

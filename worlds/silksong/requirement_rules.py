@@ -966,11 +966,11 @@ def _compile_requirement(
         )
 
     def compile_required_location(location_name: str) -> Rule:
-        if not native_abstract_regions:
-            return CanReachLocation(location_name)
         canonical_name = canonicalize_location_name(location_name)
         if is_logic_unknown_location(canonical_name):
-            return True_()
+            return False_()
+        if not native_abstract_regions:
+            return CanReachLocation(location_name)
         if canonical_name in required_location_stack:
             return False_()
         if not REQUIREMENTS.get(canonical_name):
@@ -1212,7 +1212,7 @@ def build_location_rule(
     silk_heart_logic: bool = False,
 ) -> Rule:
     if is_logic_unknown_location(location_name):
-        return True_()
+        return False_()
     return build_requirements_rule(
         get_location_requirements(
             location_name,
@@ -1366,7 +1366,7 @@ def build_native_source_rule(
     silk_heart_logic: bool = False,
 ) -> Rule:
     if is_logic_unknown_location(location_name):
-        return True_()
+        return False_()
     return NativeSourceRule(
         location_name,
         get_vanilla_reward_name(location_name, category),

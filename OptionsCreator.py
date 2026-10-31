@@ -677,23 +677,20 @@ class OptionsCreator(ThemedApp):
                                                                                            item=group_item:
                                                                                            self.tap_expansion_chevron(
                                                                                                item, x)),
-                                                                 md_bg_color=self.theme_cls.surfaceContainerLowestColor,
+                                                                 md_bg_color=self.theme_cls.surfaceVariantColor,
                                                                  theme_bg_color="Custom",
                                                                  on_release=lambda x, item=group_item:
                                                                  self.tap_expansion_chevron(item, x)))
                 group_content = MDExpansionPanelContent(orientation="vertical", theme_bg_color="Custom",
-                                                        md_bg_color=self.theme_cls.surfaceContainerLowestColor,
+                                                        md_bg_color=self.theme_cls.surfaceContainerColor,
                                                         # KivyMD removes 88dp from the measured content height to
                                                         # reserve its header. Preserve that space plus our 12dp gap.
                                                         padding=[dp(12), dp(88), dp(12), dp(12)],
                                                         spacing=dp(8))
                 group_item.add_widget(group_header)
-                group_item.add_widget(group_content)
-                group_box = ScrollBox()
-                group_box.layout.orientation = "vertical"
-                group_box.layout.spacing = dp(3)
                 for name, option in options:
                     group_content.add_widget(self.create_option(option, name, cls))
+                group_item.add_widget(group_content)  # must be added *after* the contents have been added
                 expansion_box.layout.add_widget(group_item)
             self.option_layout.add_widget(expansion_box)
         self.game_label.text = f"Game: {self.current_game or 'None'}"
