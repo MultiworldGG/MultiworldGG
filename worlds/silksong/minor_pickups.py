@@ -99,7 +99,7 @@ MINOR_PICKUP_REWARD_BY_LOCATION: dict[str, str] = {
     location_first_name(location_name):
         MINOR_PICKUP_REWARD_BY_ASSET[asset_name]
     for location_name, _scene, asset_name, _x, _y in MINOR_PICKUP_SOURCE
-    if location_name in ACTIVE_MINOR_PICKUP_LOCATION_NAMES
+    if location_first_name(location_name) in ACTIVE_MINOR_PICKUP_LOCATION_NAMES
 }
 MINOR_PICKUP_REWARD_COUNTS: dict[str, int] = dict(
     Counter(MINOR_PICKUP_REWARD_BY_LOCATION.values())

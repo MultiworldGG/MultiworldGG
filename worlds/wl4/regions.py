@@ -3,7 +3,8 @@ from __future__ import annotations
 import itertools
 from typing import Iterable, TYPE_CHECKING
 
-from rule_builder.rules import CanReachLocation, Has, HasAll, HasAllCounts, OptionFilter, Rule, True_
+from rule_builder.rules import CanReachLocation, Has, HasFromList, HasAllCounts, OptionFilter, Rule, True_
+from rule_builder.field_resolvers import FromOption
 from worlds.generic.Rules import CollectionRule, add_item_rule
 from BaseClasses import Item, Region
 
@@ -12,7 +13,7 @@ from .items import JewelPieceItemData, WL4EventItem, WL4Item, get_jewel_pieces_b
 from .locations import WL4EventLocation, WL4Location
 from .region_data import LocationData, LocationType, RegionData, passage_levels, level_table, passage_boss_table, golden_diva
 from .rules import has_treasures
-from .options import OpenDoors, Portal
+from .options import OpenDoors, Portal, RequiredBosses
 
 if TYPE_CHECKING:
     from . import WL4World
@@ -76,6 +77,12 @@ def create_event(region: Region, location_name: str, item_name: str | None = Non
     location.place_locked_item(WL4EventItem(item_name, region.player))
     return location
 
+def should_create_boss(world: WL4World, passage: Passage):
+    if passage == Passage.GOLDEN:
+        return world.options.goal.needs_diva()
+    if passage == Passage.ENTRY:
+        return world.options.required_bosses.value > 0 and world.options.include_entry_passage.value
+    return world.options.required_bosses.value > 0 or world.options.goal.needs_treasure_hunt()
 
 def connect_entrance(world: WL4World, name: str, source: str, target: str, rule: Rule[WL4World] = True_()):
     world.create_entrance(world.get_region(source), world.get_region(target), rule, name)
@@ -113,17 +120,18 @@ def create_regions(world: WL4World):
             regions.append(region)
 
     for passage, boss_data in passage_boss_table.items():
-        boss_region = WL4Region(f"{passage.long_name()} Boss", world)
-        location = create_event(boss_region, boss_data.name, f"{passage.long_name()} Clear")
-        boss_region.locations.append(location)
-        regions.append(boss_region)
+        if should_create_boss(world, passage):
+            boss_region = WL4Region(f"{passage.long_name()} Boss", world)
+            location = create_event(boss_region, boss_data.name, f"{passage.long_name()} Clear")
+            boss_region.locations.append(location)
+            regions.append(boss_region)
 
-        if world.options.goal.needs_treasure_hunt():
-            prize_region = WL4Region(f"{boss_data.name} - Prizes", world)
-            for time in ("15", "35", "55"):
-                location = WL4Location(world.player, f"{boss_data.name} - 0:{time}", prize_region)
-                prize_region.locations.append(location)
-            regions.append(prize_region)
+            if world.options.goal.needs_treasure_hunt() and not passage.is_small():
+                prize_region = WL4Region(f"{boss_data.name} - Prizes", world)
+                for time in ("15", "35", "55"):
+                    location = WL4Location(world.player, f"{boss_data.name} - 0:{time}", prize_region)
+                    prize_region.locations.append(location)
+                regions.append(prize_region)
 
     golden_diva_region = WL4Region("Golden Pyramid Boss", world)
     if world.options.goal.needs_diva():
@@ -166,13 +174,14 @@ def set_rules(world: WL4World):
                     add_item_rule(location, restrict_jewel_piece_in_golden_passage)
 
     for passage, boss_data in passage_boss_table.items():
-        world.set_rule(world.get_location(boss_data.name), boss_data.kill_rule)
+        if should_create_boss(world, passage):
+            world.set_rule(world.get_location(boss_data.name), boss_data.kill_rule)
 
-        if world.options.goal.needs_treasure_hunt():
-            for time in ("15", "35", "55"):
-                location = world.get_location(f"{boss_data.name} - 0:{time}")
-                if world.options.restrict_self_locking_jewel_pieces.value:
-                    add_item_rule(location, restrict_jewel_piece_on_boss(passage))
+            if world.options.goal.needs_treasure_hunt() and not passage.is_small():
+                for time in ("15", "35", "55"):
+                    location = world.get_location(f"{boss_data.name} - 0:{time}")
+                    if world.options.restrict_self_locking_jewel_pieces.value:
+                        add_item_rule(location, restrict_jewel_piece_on_boss(passage))
 
     if world.options.goal.needs_diva():
         diva_location = world.get_location(golden_diva.name)
@@ -205,14 +214,14 @@ def connect_regions(world: WL4World):
     required_jewels_entry = min(1, required_jewels)
 
     for passage, levels in passage_levels.items():
-        connect_entrance(
-            world,
-            f"{passage.long_name()} Entrance",
-            "Pyramid",
-            passage.long_name(),
-            HasAll("Emerald Passage Clear", "Ruby Passage Clear", "Topaz Passage Clear", "Sapphire Passage Clear")
-                if passage == Passage.GOLDEN else True_()
-        )
+        if passage == Passage.GOLDEN:
+            clears = ["Emerald Passage Clear", "Ruby Passage Clear", "Topaz Passage Clear", "Sapphire Passage Clear"]
+            if world.options.include_entry_passage.value:
+                clears.append("Entry Passage Clear")
+            rule = HasFromList(*clears, count=FromOption(RequiredBosses))
+        else:
+            rule = True_()
+        connect_entrance(world, f"{passage.long_name()} Entrance", "Pyramid", passage.long_name(), rule)
 
         connect_entrance(world, f"{levels[0]} Entrance", passage.long_name(), get_level_entrance_name(levels[0]))
         for i, (source, destination) in enumerate(itertools.pairwise(levels), 1):
@@ -230,8 +239,8 @@ def connect_regions(world: WL4World):
         keyzer_name = f"Keyzer ({passage.long_name()} Boss)"
         if not world.options.keyzer_shuffle:
             place_keyzer(world, levels[-1], keyzer_name)
-        if passage != Passage.ENTRY:
-            boss_access = make_boss_access_rule(passage, required_jewels_entry if passage == Passage.GOLDEN else required_jewels)
+        if should_create_boss(world, passage):
+            boss_access = make_boss_access_rule(passage, required_jewels_entry if passage.is_small() else required_jewels)
             if passage == Passage.GOLDEN:
                 boss_access &= Has(keyzer_name) | OptionFilter(OpenDoors, OpenDoors.option_open)
             else:
@@ -258,8 +267,10 @@ def connect_regions(world: WL4World):
                     exit_data.access_rule
                 )
 
-    if (world.options.goal.needs_treasure_hunt()):
+    if world.options.goal.needs_treasure_hunt():
         for passage, boss_data in passage_boss_table.items():
+            if passage.is_small():
+                continue
             connect_entrance(
                 world,
                 f"{passage.long_name()} Quick Kill",

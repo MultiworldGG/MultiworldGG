@@ -12,6 +12,10 @@ from Options import (
 )
 
 
+def required_garlic_cloves(number: int, percentage: int) -> int:
+    return (number * percentage + 99) // 100
+
+
 class Goal(Choice):
     """
     Determines the goal of the seed
@@ -88,6 +92,18 @@ class WorldUnlocks(Toggle):
     """
 
     display_name = "Locked Worlds"
+    default = False
+
+
+class LevelUnlocks(Toggle):
+    """
+    Create Unlock Items for ordinary courses.
+    Locked courses keep their dotted paths and are skipped over when walking.
+    Unlocked courses get their white dots on the map.
+    Boss courses use the Locked Bosses option.
+    """
+
+    display_name = "Locked Courses"
     default = False
 
 
@@ -206,6 +222,13 @@ class MusicShuffle(Toggle):
     default = False
 
 
+class UseDX(Toggle):
+    """Use korxo's DX 1.2 colorization. Needs IPS file \"Wario Land - Super Mario Land 3 DX (World).ips\" """
+
+    display_name = "DX Colorization"
+    default = False
+
+
 class StartingLifeCount(Range):
     """
     How many extra lives to start the game with
@@ -228,6 +251,7 @@ class WLOptions(PerGameCommonOptions):
     remove_autoscrollers: RemoveAutoscrollers
     boss_unlocks: BossUnlocks
     world_unlocks: WorldUnlocks
+    level_unlocks: LevelUnlocks
     number_of_garlic_cloves: NumberOfGarlicCloves
     percentage_of_garlic_cloves: PercentageOfGarlicCloves
     treasure_checks: TreasureChecks
@@ -239,5 +263,6 @@ class WLOptions(PerGameCommonOptions):
     death_trap_weight: DeathTrapWeight
     grease_trap_weight: GreaseTrapWeight
     music_shuffle: MusicShuffle
+    use_dx: UseDX
     starting_life_count: StartingLifeCount
     death_link: DeathLink

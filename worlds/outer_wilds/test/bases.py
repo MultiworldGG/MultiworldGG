@@ -11,8 +11,8 @@ class OuterWildsTestBase(WorldTestBase):
             state.collect(i)
         return state
 
-    def getLocationCount(self) -> int:
-        return sum(1 for _ in self.multiworld.get_locations(1))
+    def getLocationCount(self, include_events = False) -> int:
+        return sum(1 for e in self.multiworld.get_locations(1) if (include_events or not e.is_event))
 
     def isReachableWith(self, location_name: str, item_names: list[str]) -> bool:
         state = self.makeStateWith(item_names)
@@ -23,6 +23,16 @@ class OuterWildsTestBase(WorldTestBase):
 
     def assertNotReachableWith(self, location_name: str, item_names: list[str]) -> None:
         self.assertFalse(self.isReachableWith(location_name, item_names))
+
+    def isRegionReachableWith(self, region_name: str, item_names: list[str]) -> bool:
+        state = self.makeStateWith(item_names)
+        return state.can_reach_region(region_name, 1)
+
+    def assertRegionReachableWith(self, region_name: str, item_names: list[str]) -> None:
+        self.assertTrue(self.isRegionReachableWith(region_name, item_names))
+
+    def assertRegionNotReachableWith(self, region_name: str, item_names: list[str]) -> None:
+        self.assertFalse(self.isRegionReachableWith(region_name, item_names))
 
     # we can't realistically prove there is no other combination of items that works,
     # so what this actually tests is having all item_names is enough to reach the location,

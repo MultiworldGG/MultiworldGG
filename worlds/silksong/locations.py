@@ -23,6 +23,7 @@ from .lore_tablets import (
 )
 from .minor_caches import (
     MINOR_CACHE_LOCATION_NAMES,
+    ADDITIONAL_MINOR_CACHE_LOCATION_NAMES,
     RETIRED_MINOR_CACHE_LOCATION_NAMES,
 )
 
@@ -62,6 +63,8 @@ _LOCATION_FIRST_ITEM_LABELS: tuple[str, ...] = (
 
 
 def _location_first_display_name(location_name: str) -> str:
+    if location_name in MAPPER_LOCATION_NAMES or location_name in MAPPER_LOCATION_NAMES.values():
+        return location_first_name(location_name)
     for item_label in _LOCATION_FIRST_ITEM_LABELS:
         prefix = f'{item_label}: '
         if location_name.startswith(prefix):
@@ -718,7 +721,6 @@ _DIRECT_LOCATION_RENAMES: dict[str, str] = {
 _DIRECT_LOCATION_RENAMES.update({
     'Simple Key: Bone Bottom Shop': 'Bone Bottom Shop - Simple Key (Grindle in Act 3)',
     'Craftmetal: Bone Bottom Shop': 'Bone Bottom Shop - Craftmetal (Grindle in Act 3)',
-    'White Key': 'Songclave Shop - White Key',
     'Pin Purchase: Bench': 'Pin Purchase: Bench Pins',
     'Pin Purchase: Ventrica': 'Pin Purchase: Ventrica Pins',
     'Pin Purchase: Bellway': 'Pin Purchase: Bellway Pins',
@@ -925,6 +927,7 @@ _LOCATION_TABLE_SOURCE_UNNORMALIZED: tuple[tuple[str, str], ...] = tuple(
 ) + tuple(
     (location_name, 'Resource')
     for location_name in MINOR_CACHE_LOCATION_NAMES
+    if location_name not in ADDITIONAL_MINOR_CACHE_LOCATION_NAMES
 ) + (
     # This is the physical Broken SilkShot pickup in Weavenest Murglin.
     ('Ruined Tool', 'Tool'),
@@ -1098,6 +1101,18 @@ _LOCATION_TABLE_SOURCE_UNNORMALIZED += (('Loddie - Heavy Rosary Necklace', 'Reso
 _LOCATION_TABLE_SOURCE_UNNORMALIZED += (('Key of Indolent', 'MajorKey'), ('Key of Heretic', 'MajorKey'))
 _LOCATION_TABLE_SOURCE_UNNORMALIZED += (('Conjoined Heart', 'OldHeart'),)
 _LOCATION_TABLE_SOURCE_UNNORMALIZED += (('Quest Completion: Broodmother Hunt', 'Resource'),)
+_LOCATION_TABLE_SOURCE_UNNORMALIZED += (('Materium', 'Materium'), ('Flintstone', 'Materium'), ('Magnetite Outcrop', 'Materium'), ('Farsight', 'Farsight'))
+_LOCATION_TABLE_SOURCE_UNNORMALIZED += (('Crow bell', 'Miscellaneous'),) + tuple(
+    (name, 'Resource') for name in MINOR_CACHE_LOCATION_NAMES
+    if name in ADDITIONAL_MINOR_CACHE_LOCATION_NAMES
+)
+
+_LOCATION_TABLE_SOURCE_UNNORMALIZED += tuple((name, 'Bellhome') for name in ('Desk', 'Gleamlights', 'Bell Lacquer', 'Personal Spa', 'Gramophone'))
+
+_LOCATION_TABLE_SOURCE_UNNORMALIZED += (("Voltstone", "Materium"),)
+_LOCATION_TABLE_SOURCE_UNNORMALIZED += tuple((name, "Cogheart") for name in ('Choral Chambers Cogheart Piece', 'Whispering Vaults: Cogheart Piece', 'Memorimum Cogheart Piece'))
+
+_LOCATION_TABLE_SOURCE_UNNORMALIZED += tuple((name, "QuestCollectible") for name in ('Grass Doll', 'Horn Fragment', 'crown fragment', "Broodmother's Eye"))
 
 WISH_REWARD_LOCATION_BY_COMPLETION: Mapping[str, str] = {
     "Wish: Pinmaster's Oil": canonicalize_location_name('Pinmaster Plinney: Shining Needle'),
@@ -1153,6 +1168,12 @@ PAIRED_LOCATION_CATEGORIES: tuple[str, ...] = (
     'OldHeart',
     'Everbloom',
     'Memento',
+    'Materium',
+    'Farsight',
+    'Miscellaneous',
+    'Bellhome',
+    'Cogheart',
+    'QuestCollectible',
     'TwistedBud',
     'Eva',
     'Skill',

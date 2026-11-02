@@ -275,7 +275,9 @@ def build(geometry_path, image_root, output, world, catalogue_path=None, pack_pa
             if scene != host_scene:
                 continue
             point = scene_point(x, y, room, width, height)
-            if (host_width, host_height) != (room["scene_max_x"], room["scene_max_y"]) or point is None:
+            native_size = (room.get("native_scene_max_x", room["scene_max_x"]),
+                           room.get("native_scene_max_y", room["scene_max_y"]))
+            if (host_width, host_height) != native_size or point is None:
                 turn_ins[host] = {"host": host, "room": room["name"], "scene": scene,
                                  "reason": "coordinate frames differ" if width and height else "missing image dimensions",
                                  "source_dimensions": [host_width, host_height],

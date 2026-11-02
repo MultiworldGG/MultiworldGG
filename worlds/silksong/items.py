@@ -27,6 +27,7 @@ from .minor_families import (
 )
 from .locations import (
     BOSS_CREDIT_BY_LOCATION,
+    CARDINIUS_CYLINDER_ITEM_BY_TURN_IN_LOCATION,
     INDIVIDUAL_RELIC_TURN_IN_ITEM_NAMES,
     LOCATION_NAMES_BY_CATEGORY,
     WISH_REWARD_LOCATION_BY_COMPLETION,
@@ -442,6 +443,14 @@ ITEM_TABLE_SOURCE += tuple((source.item_name, LORE_TABLET_CATEGORY) for source i
 ITEM_TABLE_SOURCE += (("Boss Credit: Palestag", "Boss"),)
 ITEM_TABLE_SOURCE += tuple((name, "InnateAbility" if name.startswith("Ledge Grab") else "Skill") for name in DIRECTIONAL_ITEMS)
 ITEM_TABLE_SOURCE += (("Sprint", "Skill"), ("Conjoined Heart", "OldHeart"))
+ITEM_TABLE_SOURCE += (("Materium", "Materium"), ("Flintstone", "Materium"), ("Magnetite", "Materium"), ("Farsight", "Farsight"))
+ITEM_TABLE_SOURCE += (("Crawbell", "Miscellaneous"),)
+ITEM_TABLE_SOURCE += (("Bind", "InnateAbility"),)
+CREST_BIND_ITEMS = tuple(f'{crest} Bind' for crest in ('Hunter', 'Wanderer', 'Reaper', 'Beast', 'Architect', 'Witch', 'Shaman'))
+ITEM_TABLE_SOURCE += tuple((name, 'InnateAbility') for name in CREST_BIND_ITEMS)
+ITEM_TABLE_SOURCE += tuple((name, 'Bellhome') for name in ('Desk', 'Gleamlights', 'Bell Lacquer', 'Personal Spa', 'Gramophone'))
+ITEM_TABLE_SOURCE += (("Voltstone", "Materium"), ("Cogheart Piece", "Cogheart"))
+ITEM_TABLE_SOURCE += tuple((name, "QuestCollectible") for name in ('Grass Doll', 'Horn Fragment', 'Crown Fragment', "Broodmother's Eye"))
 
 # Rename in place so every established numeric item ID remains unchanged.
 NATIVE_ITEM_NAME_TO_TABLE_NAME: Mapping[str, str] = {
@@ -626,6 +635,8 @@ PROGRESSION_ITEMS: FrozenSet[str] = frozenset(
         "Craftmetal",
         "Mossberry",
         "PollipHeart",
+        "Cogheart",
+        "QuestCollectible",
         "MajorKey",
         "ToolPouch",
         ALPHABET_ITEM_CATEGORY,
@@ -641,7 +652,7 @@ PROGRESSION_ITEMS: FrozenSet[str] = frozenset(
 ) | frozenset({
     'Relic: Sacred Cylinder',
     'Progressive Crafting Kit',
-}) | frozenset(BOSS_CREDIT_BY_LOCATION['Boss: ' + name] for name in (
+}) | frozenset(CARDINIUS_CYLINDER_ITEM_BY_TURN_IN_LOCATION.values()) | frozenset(BOSS_CREDIT_BY_LOCATION['Boss: ' + name] for name in (
     'Bell Beast', 'Cogwork Dancers', 'Fourth Chorus', 'Great Conchflies', 'Groal the Great',
     'Skull Tyrant (The Marrow)', 'Widow', 'Lace (Cradle)', 'Summoned Saviour',
 ))
@@ -667,6 +678,9 @@ USEFUL_ITEMS: FrozenSet[str] = frozenset(
         "Silkeater",
         "BellShrine",
         "Boss",
+        "Farsight",
+        "Miscellaneous",
+        "Bellhome",
     }
 ) | frozenset(POOL_ONLY_USEFUL_ITEM_NAMES)
 
@@ -821,6 +835,7 @@ ITEM_POOL_COUNTS: Dict[str, int] = {
     'Craftmetal': 8,
     'Mossberry': 7,
     'Pollip Heart': 6,
+    'Cogheart Piece': 3,
     'Silkeater': 9,
     'Progressive Tool Pouch': 4,
     'Shell Satchel': 1,
@@ -834,7 +849,7 @@ PROGRESSIVE_NEEDLE_UPGRADE_ITEM = 'Progressive Needle Upgrade'
 PALE_OIL_ITEM = 'Pale Oil'
 LEDGE_GRAB_ITEM = 'Ledge Grab'
 SWIM_ITEM = 'Swim'
-INNATE_ABILITY_ITEM_NAMES = (LEDGE_GRAB_ITEM, SWIM_ITEM)
+INNATE_ABILITY_ITEM_NAMES = (LEDGE_GRAB_ITEM, SWIM_ITEM, "Bind", *CREST_BIND_ITEMS)
 SILK_SOAR_ITEM = 'Silk Soar'
 QUILL_ITEM = 'Item: Quill'
 NEEDLE_UPGRADE_POOL_COUNTS: Mapping[str, int] = {
@@ -912,7 +927,7 @@ class ItemPoolEntry:
 
 def _is_replaceable_filler(item_name: str) -> bool:
     data = item_data_table[item_name]
-    return data.classification == ItemClassification.filler and data.category not in {'Memento', 'Journal'}
+    return data.classification == ItemClassification.filler and data.category not in {'Memento', 'Materium', 'Farsight', 'Miscellaneous', 'Bellhome', 'Journal'}
 
 
 def add_pool_only_useful_items(
@@ -1022,6 +1037,12 @@ PAIRED_ITEM_CATEGORIES: tuple[str, ...] = (
     'OldHeart',
     'Everbloom',
     'Memento',
+    'Materium',
+    'Farsight',
+    'Miscellaneous',
+    'Bellhome',
+    'Cogheart',
+    'QuestCollectible',
     'TwistedBud',
     'Eva',
     'Skill',
@@ -1068,6 +1089,7 @@ REPEATED_CATEGORY_ITEM_COUNTS: Mapping[str, Mapping[str, int]] = {
     PALE_OIL_LOCATION_CATEGORY: PALE_OIL_POOL_COUNTS,
     'Mossberry': {'Mossberry': 7},
     'PollipHeart': {'Pollip Heart': 6},
+    'Cogheart': {'Cogheart Piece': 3},
     'Silkeater': {'Silkeater': 9},
     'ToolPouch': {'Progressive Tool Pouch': 4},
 }
@@ -1180,13 +1202,21 @@ def get_vanilla_reward_name(
         return clean_item_display_name(source_location_name)
     if category in REPEATED_CATEGORY_ITEM_COUNTS:
         return next(iter(REPEATED_CATEGORY_ITEM_COUNTS[category]))
+    if category == 'Miscellaneous':
+        return {'Crow bell': 'Crawbell'}[location_name]
+    if category == 'QuestCollectible':
+        return {'crown fragment': 'Crown Fragment'}.get(location_name, location_name)
+    if category == 'Bellhome':
+        return location_name
+    if category == 'Materium':
+        return {'Materium': 'Materium', 'Flintstone': 'Flintstone', 'Magnetite Outcrop': 'Magnetite', 'Voltstone': 'Voltstone'}[location_name]
     if category == 'MajorKey':
         try:
             return {
                 'Key of Indolent': 'Key of Indolent',
                 'Key of Heretic': 'Key of Heretic',
                 'Key of Apostate': 'Key of Apostate',
-                'Songclave Shop - White Key': 'White Key',
+                'White Key': 'White Key',
                 "Surgeon's Key": "Surgeon's Key",
                 "Architect's Key": "Architect's Key",
                 'Craw Summons': 'Craw Summons',
@@ -1424,6 +1454,7 @@ def get_dynamic_trap_capacity(
     act_one_donation_tool_pouch_requirements: Mapping[str, int] | None = None,
     randomize_ledge_grab: bool = False,
     randomize_swim: bool = False,
+    bind_items: tuple[str, ...] = (),
     randomize_diving_bell_key: bool = False,
     cursed_ending: bool = False,
     steel_soul: bool = False,
@@ -1454,6 +1485,7 @@ def get_dynamic_trap_capacity(
             ),
             randomize_ledge_grab=randomize_ledge_grab,
             randomize_swim=randomize_swim,
+            bind_items=bind_items,
             randomize_diving_bell_key=randomize_diving_bell_key,
             cursed_ending=cursed_ending,
             steel_soul=steel_soul,
@@ -1504,6 +1536,21 @@ def _replace_verdania_only_key_pool_entry(
     )
 
 
+def can_include_later_act_item(name, category, category_modes, *, act_one_only, silk_soar_begone):
+    return (
+        category_modes.get(category, 'anywhere') == 'anywhere'
+        and not (silk_soar_begone and name == SILK_SOAR_ITEM)
+        and category not in {'OldHeart', 'Everbloom', 'Memento', 'Materium', 'Farsight', 'Miscellaneous', 'Bellhome', 'QuestCollectible'}
+        and not (act_one_only and category in {'Soul', 'TwistedBud', 'Cogheart'})
+        and not (act_one_only and (
+            'Cylinder' in name or name in {'Bellway: Grand Bellway', 'Ventrica: Grand Bellway'}))
+        and category not in OBSERVATION_ITEM_CATEGORIES
+        and category != RELIC_TURN_IN_LOCATION_CATEGORY
+        and not category.startswith('Resource')
+        and not name.startswith(('Rosaries (', 'Shell Shards ('))
+    )
+
+
 def build_item_pool_entries(
     starting_crest_item: str | None,
     trap_counts: Mapping[str, int] | None,
@@ -1521,6 +1568,7 @@ def build_item_pool_entries(
     act_one_donation_tool_pouch_requirements: Mapping[str, int] | None = None,
     randomize_ledge_grab: bool = False,
     randomize_swim: bool = False,
+    bind_items: tuple[str, ...] = (),
     randomize_diving_bell_key: bool = False,
     cursed_ending: bool = False,
     steel_soul: bool = False,
@@ -1539,8 +1587,8 @@ def build_item_pool_entries(
     from .act1_scope import get_act_one_excluded_location_names
 
     for category, mode in category_modes.items():
-        if mode == 'shuffle' and category != 'Key':
-            raise ValueError(f"{category} does not support shuffle.")
+        if mode == 'shuffle' or category == 'Key' and mode != 'anywhere':
+            raise ValueError(f"Unknown {category} randomization mode: {mode!r}")
     if act_one_only and act_two_only:
         raise ValueError("Act 1 and Act 2 content scopes cannot overlap.")
 
@@ -1631,12 +1679,10 @@ def build_item_pool_entries(
                 ) from exc
             item_names.append(OPTIONAL_START_REPLACEMENT_ITEM)
 
-        placement_category = 'Key' if category == 'Key' and mode == 'shuffle' else None
         entries.extend(
             ItemPoolEntry(
                 item_name,
                 category,
-                placement_category,
             )
             for item_name in item_names
         )
@@ -1667,6 +1713,15 @@ def build_item_pool_entries(
             )
 
     entries_before_goal_trim = tuple(entries)
+
+    if act_one_only or act_two_only:
+        required_goal_items = tuple(dict.fromkeys((
+            *required_goal_items,
+            *(entry.name for entry in entries_before_goal_trim
+              if entry.source_category == 'Skill' and can_include_later_act_item(
+                  entry.name, entry.source_category, category_modes,
+                  act_one_only=act_one_only, silk_soar_begone=silk_soar_begone)),
+        )))
 
     if act_one_only:
         entries = _trim_act_one_pool_entries(
@@ -1804,6 +1859,7 @@ def build_item_pool_entries(
     innate_ability_items = (
         *((LEDGE_GRAB_ITEM,) if randomize_ledge_grab else ()),
         *((SWIM_ITEM,) if randomize_swim else ()),
+        *bind_items,
         *(("Diving Bell Key",) if randomize_diving_bell_key else ()),
     )
     if not steel_soul:
@@ -1821,7 +1877,7 @@ def build_item_pool_entries(
         indices = [index for index, entry in enumerate(entries)
                    if entry.placement_category is None
                    and item_data_table[entry.name].classification == ItemClassification.filler
-                   and entry.source_category not in {'Memento', 'MemoryLocket', 'Journal'}]
+                   and entry.source_category not in {'Memento', 'Materium', 'Farsight', 'Miscellaneous', 'Bellhome', 'MemoryLocket', 'Journal'}]
         if len(indices) < len(soul_pool_entries):
             raise OptionError(
                 f"Boss and NPC Souls need {len(soul_pool_entries)} anywhere filler slots; "
@@ -1936,19 +1992,9 @@ def build_item_pool_entries(
                 remaining[key] -= 1
             elif entry.name in required_retained:
                 required_retained.remove(entry.name)
-            elif (
-                category_modes.get(entry.source_category, 'anywhere') == 'anywhere'
-                and not (silk_soar_begone and entry.name == SILK_SOAR_ITEM)
-                and entry.source_category not in {'OldHeart', 'Everbloom', 'Memento'}
-                and not (act_one_only and entry.source_category in {'Soul', 'TwistedBud'})
-                and not (act_one_only and (
-                    'Cylinder' in entry.name
-                    or entry.name in {'Bellway: Grand Bellway', 'Ventrica: Grand Bellway'}
-                ))
-                and entry.source_category not in OBSERVATION_ITEM_CATEGORIES
-                and entry.source_category != RELIC_TURN_IN_LOCATION_CATEGORY
-                and not entry.source_category.startswith('Resource')
-                and not entry.name.startswith(('Rosaries (', 'Shell Shards ('))
+            elif can_include_later_act_item(
+                entry.name, entry.source_category, category_modes,
+                act_one_only=act_one_only, silk_soar_begone=silk_soar_begone,
             ):
                 retained.append(entry)
         filler_indices = [
@@ -2008,6 +2054,7 @@ def get_configured_item_pool_size(
     act_one_donation_tool_pouch_requirements: Mapping[str, int] | None = None,
     randomize_ledge_grab: bool = False,
     randomize_swim: bool = False,
+    bind_items: tuple[str, ...] = (),
     randomize_diving_bell_key: bool = False,
     cursed_ending: bool = False,
     steel_soul: bool = False,
@@ -2032,6 +2079,7 @@ def get_configured_item_pool_size(
             ),
             randomize_ledge_grab=randomize_ledge_grab,
             randomize_swim=randomize_swim,
+            bind_items=bind_items,
             randomize_diving_bell_key=randomize_diving_bell_key,
             cursed_ending=cursed_ending,
             steel_soul=steel_soul,
@@ -2048,6 +2096,7 @@ def _get_adjusted_pool_counts(
     randomize_pale_oils: bool = False,
     randomize_ledge_grab: bool = False,
     randomize_swim: bool = False,
+    bind_items: tuple[str, ...] = (),
     randomize_diving_bell_key: bool = False,
 ) -> Dict[str, int]:
     configured_traps = {
@@ -2103,6 +2152,7 @@ def _get_adjusted_pool_counts(
     innate_ability_items = (
         *((LEDGE_GRAB_ITEM,) if randomize_ledge_grab else ()),
         *((SWIM_ITEM,) if randomize_swim else ()),
+        *bind_items,
         *(("Diving Bell Key",) if randomize_diving_bell_key else ()),
     )
     for item_name in innate_ability_items:
@@ -2160,6 +2210,7 @@ def iter_item_pool_names(
     randomize_minor_pickups: bool = False,
     randomize_ledge_grab: bool = False,
     randomize_swim: bool = False,
+    bind_items: tuple[str, ...] = (),
     randomize_diving_bell_key: bool = False,
 ):
     pool_counts = _get_adjusted_pool_counts(
@@ -2171,6 +2222,7 @@ def iter_item_pool_names(
         randomize_pale_oils=randomize_pale_oils,
         randomize_ledge_grab=randomize_ledge_grab,
         randomize_swim=randomize_swim,
+        bind_items=bind_items,
         randomize_diving_bell_key=randomize_diving_bell_key,
     )
     removed_starting_crest = False
@@ -2216,6 +2268,7 @@ def get_item_pool_size(
     randomize_minor_pickups: bool = False,
     randomize_ledge_grab: bool = False,
     randomize_swim: bool = False,
+    bind_items: tuple[str, ...] = (),
     randomize_diving_bell_key: bool = False,
 ) -> int:
     return sum(
@@ -2230,6 +2283,7 @@ def get_item_pool_size(
             randomize_pale_oils=randomize_pale_oils,
             randomize_ledge_grab=randomize_ledge_grab,
             randomize_swim=randomize_swim,
+            bind_items=bind_items,
             randomize_diving_bell_key=randomize_diving_bell_key,
         )
     )

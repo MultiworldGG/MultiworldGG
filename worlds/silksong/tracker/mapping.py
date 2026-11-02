@@ -527,6 +527,7 @@ mapping = {
 	"Abyss_08":521,
 	"Abyss_Cocoon":522,
 	"Last_Dive":523,
+	"Room_Caravan_Spa":524,
 }
 
 
@@ -748,10 +749,10 @@ tracker_map_groups = [
 		("Greymoor Entry to Bellhart", "Greymoor Entry to Bellhart"),
 		("Greymoor Halfway Home", "Greymoor Halfway Home"),
 		("Greymoor Halfway Home Exterior", "Greymoor Halfway Home Exterior"),
-		("Greymoor Kraft Room", "Greymoor Kraft Room"),
+		("Greymoor Kratt Room", "Greymoor Kratt Room"),
 		("Greymoor Middle Passage", "Greymoor Middle Passage"),
 		("Greymoor Rat Tunnel", "Greymoor Rat Tunnel"),
-		("Greymoor Silver Shells room", "Greymoor Silver Shells room"),
+		("Greymoor Silver Shells Room", "Greymoor Silver Shells Room"),
 		("Greymoor Towers Patio", "Greymoor Towers Patio"),
 		("Greymoor Upper Halfway Home Path", "Greymoor Upper Halfway Home Path"),
 		("Greymoor Upper Towers Path", "Greymoor Upper Towers Path"),
@@ -765,7 +766,7 @@ tracker_map_groups = [
 		("Wisp Thicket Shaft", "Wisp Thicket Shaft"),
 		("Wisp Thicket Bench", "Wisp Thicket Bench"),
 		("Wisp Thicket Grounds", "Wisp Thicket Grounds"),
-		("Father of the Flame", "Father of the Flame"),
+		("Father of the Flame Gamer Cave", "Father of the Flame Gamer Cave"),
 		("Wisp Thicket Secret Path", "Wisp Thicket Secret Path"),
 		("Wisp Thicket Cave", "Wisp Thicket Cave"),
 	]),
@@ -779,7 +780,7 @@ tracker_map_groups = [
 		("Verdania Capital", "Verdania Capital"),
 		("Verdania Cloverstag Steps", "Verdania Cloverstag Steps"),
 		("Verdania Entrance", "Verdania Entrance"),
-		("Verdania Kindanir egg Room", "Verdania Kindanir egg Room"),
+		("Verdania Kindanir Egg Room", "Verdania Kindanir Egg Room"),
 		("Verdania Left Side Essence Shrine", "Verdania Left Side Essence Shrine"),
 		("Verdania Left Side Tall Room", "Verdania Left Side Tall Room"),
 		("Verdania Right Side Tall Room", "Verdania Right Side Tall Room"),
@@ -1117,6 +1118,9 @@ tracker_map_groups = [
 		("Weavenest Absolom", "Weavenest Absolom"),
 		("Abyss Cocoon", "Abyss Cocoon"),
 		("Last Dive", "Last Dive"),
+	]),
+	("Flea Caravan", [
+		("Kratt Spa", "Kratt Spa"),
 	]),
 ]
 

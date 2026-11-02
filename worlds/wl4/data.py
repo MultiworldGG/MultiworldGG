@@ -25,6 +25,9 @@ class Passage(IntEnum):
     def short_name(self):
         return ("Entry", "Emerald", "Ruby", "Topaz", "Sapphire", "Golden")[self]
 
+    def is_small(self):
+        return self in (self.ENTRY, self.GOLDEN)
+
 
 class ItemFlag(IntFlag):
     JEWEL_NE = 1 << 0

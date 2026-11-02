@@ -18,6 +18,10 @@ ITEM_NAME_TO_ID = {
     "Radar": 8,
     "Gold Statue": 9,
     "Money": 10,
+    "Hostile Trap": 11,
+    "Rapid Dive": 12,
+    "Shield": 13,
+    "Insurance": 14,
 }
 
 DEFAULT_ITEM_CLASSIFICATIONS = {
@@ -25,18 +29,24 @@ DEFAULT_ITEM_CLASSIFICATIONS = {
     "Oxygen Mask": ItemClassification.progression,
     "Backpack": ItemClassification.useful,
     "Fins": ItemClassification.useful,
-    "Magnet": ItemClassification.useful,
+    "Magnet": ItemClassification.filler,
     "Raft Expansion": ItemClassification.progression,
     "Jetpack": ItemClassification.progression | ItemClassification.useful,
     "Radar": ItemClassification.useful,
     "Gold Statue": ItemClassification.filler,
     "Money": ItemClassification.filler,
+    "Hostile Trap": ItemClassification.trap,
+    "Rapid Dive": ItemClassification.useful,
+    "Shield": ItemClassification.useful,
+    "Insurance": ItemClassification.useful,
 }
 
 class BuildJetpackItem(Item):
     game = "Build a Jetpack"
 
 def get_random_filler_item_name(world: BuildJetpackWorld) -> str:
+    if world.random.randint(0, 99) < world.options.trap_chance:
+        return "Hostile Trap"
     return "Money"
 
 def create_item_with_correct_classification(world: BuildJetpackWorld, name: str) -> BuildJetpackItem:
@@ -56,6 +66,13 @@ def create_all_items(world: BuildJetpackWorld) -> None:
         "Radar": 5,
         "Gold Statue": 1
     }
+
+    if world.options.extra_upgrades:
+        upgrades.update({
+            "Rapid Dive": 3,
+            "Shield": 3,
+            "Insurance": 5
+        })
 
     itempool: list[Item] = []
 

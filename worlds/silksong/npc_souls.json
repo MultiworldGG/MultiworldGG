@@ -494,7 +494,12 @@
     "checks": [
       "Bellhart Shop - Memory Locket",
       "Frey (Bellhart) - Spool Fragment",
-      "Multibinder"
+      "Multibinder",
+      "Desk",
+      "Gleamlights",
+      "Bell Lacquer",
+      "Personal Spa",
+      "Gramophone"
     ],
     "events": [
       "Room Event: event:mapper/47e3b04b-3045-499b-8ed5-17c759d4aa5d",
@@ -777,7 +782,8 @@
       "Relic: Psalm Cylinder (Vaultkeeper Cardinius)"
     ],
     "events": [
-      "Room Event: event:mapper/05efede5-240a-4d89-bb34-beda9a392d0c"
+      "Room Event: event:mapper/05efede5-240a-4d89-bb34-beda9a392d0c",
+      "Room Event: event:mapper/reviewed:bellhome-cylinders-returned"
     ],
     "item_id": 839022,
     "act": 2
@@ -803,7 +809,6 @@
       }
     ],
     "checks": [
-      "Songclave Shop - White Key",
       "Wish: Building Up Songclave",
       "Wish: Strengthening Songclave",
       "Wish: Fine Pins",
@@ -952,7 +957,7 @@
       }
     ],
     "checks": [
-      "Sprintmaster - Beast Shard",
+      "Swift beast shard",
       "Fastest in Pharloom - Mask Shard"
     ],
     "events": [
@@ -1511,8 +1516,7 @@
     "events": [
       "Room Event: event:mapper/3ceea514-6141-4540-8362-7861c67a138d",
       "Room Event: event:mapper/1d494539-e87e-425a-9924-8d49592db7bf",
-      "Room Event: event:mapper/72aa38b8-7ca7-4642-8c2a-9d44dca06a61",
-      "Room Event: event:mapper/e24cf0d2-046f-494d-89be-9779f965e787"
+      "Room Event: event:mapper/72aa38b8-7ca7-4642-8c2a-9d44dca06a61"
     ],
     "item_id": 839040,
     "act": 1

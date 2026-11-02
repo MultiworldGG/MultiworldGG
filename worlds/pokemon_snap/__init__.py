@@ -14,6 +14,7 @@ from .items import PokemonSnapItem, PokemonSnapItemCategory, key_item_names, use
 from .locations import PokemonSnapLocation, PokemonSnapLocationCategory, location_tables, bonus, wonderful, \
     RNG_LOCATIONS, HARD_LOCATIONS
 from .options import PokemonSnapOption, PhotoBonusChecks, FillerItemNamingScheme, PressLToStop, pokemon_snap_option_groups, GoalType
+from .poses import RNG_POSES, HARD_POSES
 from .psnap_settings import PokemonSnapSettings
 from .rom import PokemonSnapProcedurePatch
 from .rules import set_rules
@@ -59,6 +60,7 @@ class PokemonSnapWorld(World):
     topology_present: bool = True
 
     enabled_location_categories: set[PokemonSnapLocationCategory]
+    enabled_regular_poses: set[PokemonSnapLocation] = set()
     required_client_version = (0, 6, 7)
     item_name_to_id = PokemonSnapItem.get_name_to_id()
     location_name_to_id = PokemonSnapLocation.get_name_to_id()
@@ -72,6 +74,16 @@ class PokemonSnapWorld(World):
         self.enabled_location_categories = set()
 
     def generate_early(self):
+        # Deprecated options
+        if self.options.hard_checks:
+            self.options.include_hard_photos.value = True
+            self.options.include_hard_poses.value  = True
+        if self.options.rng_checks:
+            self.options.include_rng_photos.value = True
+            self.options.include_rng_poses.value  = True
+        if self.options.enable_left_bumper_to_start_stop:
+            self.options.left_bumper_to_start_stop.value = PressLToStop.option_start_with
+
         self.enabled_location_categories |= {
             PokemonSnapLocationCategory.NORMAL_PHOTO,
         }
@@ -93,6 +105,20 @@ class PokemonSnapWorld(World):
         if self.options.report_score_total:
             self.enabled_location_categories.add(PokemonSnapLocationCategory.REPORT_SCORE)
 
+        if self.options.posesanity > 0:
+            self.enabled_location_categories.add(PokemonSnapLocationCategory.REGULAR_POSE)
+            all_poses = [location
+                         for region in location_tables.values() for location in region
+                         if  location.category == PokemonSnapLocationCategory.REGULAR_POSE
+                         and (location.name not in RNG_POSES or self.options.include_rng_poses)
+                         and (location.name not in HARD_POSES or self.options.include_hard_poses)]
+            self.random.shuffle(all_poses)
+            self.enabled_regular_poses = set(all_poses[:self.options.posesanity])
+            if getattr(self.multiworld, "generation_is_fake", False):
+                self.enabled_regular_poses = [
+                    location for region in location_tables.values() for location in region 
+                    if location.category == PokemonSnapLocationCategory.REGULAR_POSE
+                ]
 
         # Per-seed connect token, baked into the ROM and registered server-side.
         self.auth = self.random.randbytes(16)
@@ -107,9 +133,6 @@ class PokemonSnapWorld(World):
 
         if self.options.start_with_dash_engine:
             self.multiworld.push_precollected(self.create_item(DASH_ENGINE))
-
-        if self.options.enable_left_bumper_to_start_stop:
-            self.options.left_bumper_to_start_stop.value = PressLToStop.option_start_with
 
         if not getattr(self.multiworld, "generation_is_fake", False):
             # Check that the options don't generate too much stuff
@@ -155,8 +178,11 @@ class PokemonSnapWorld(World):
     def location_enabled(self, location) -> bool:
         return (
             location.category in self.enabled_location_categories and
-            (location.name not in RNG_LOCATIONS  or self.options.rng_checks) and
-            (location.name not in HARD_LOCATIONS or self.options.hard_checks)
+            (location.name not in RNG_LOCATIONS  or self.options.include_rng_photos)  and
+            (location.name not in RNG_POSES      or self.options.include_rng_poses)   and
+            (location.name not in HARD_LOCATIONS or self.options.include_hard_photos) and
+            (location.name not in HARD_POSES     or self.options.include_hard_poses)  and
+            (location.category != PokemonSnapLocationCategory.REGULAR_POSE or location in self.enabled_regular_poses)
         )
 
     def create_region(self, region_name, location_table) -> Region:
@@ -281,10 +307,14 @@ class PokemonSnapWorld(World):
         patch.write(out_path)
 
     def fill_slot_data(self) -> dict[str, Any]:
-        return self.options.as_dict(
+        options_dict = self.options.as_dict(
             "goal_type", "good_technique_mew_photo", "signs_required", "pokemon_required", "photo_scoring",
-            "photo_bonuses", "pokemon_signs", "secret_exits", "report_photo_count",
-            "report_score_total", "rng_checks", "hard_checks", "hard_logic",
+            "photo_bonuses", "pokemon_signs", "secret_exits", "report_photo_count", "report_score_total",
+            "include_rng_photos", "include_rng_poses", "include_hard_photos", "include_hard_poses", "hard_logic",
             "left_bumper_to_start_stop", "camera_inversion",
             "starting_film", "film_upgrade_amount", "maximum_film", 
-            "map_fragments", "per_course_items")
+            "map_fragments", "per_course_items", "posesanity"
+        )
+
+        options_dict['posesanity_poses'] = [location.id for location in self.enabled_regular_poses]
+        return options_dict

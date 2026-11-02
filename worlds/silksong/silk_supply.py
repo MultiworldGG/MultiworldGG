@@ -19,6 +19,7 @@ class _SupplyState:
     def __init__(self, program):
         self.program = program
         self.revision = program.revision
+        self.exit_count = len(program.added_exits)
         self.levels = [-1] * len(program.node_names)
         self.active = bytearray(len(program.conditions))
         self.pending = set(range(len(program.conditions)))
@@ -34,6 +35,7 @@ class _SupplyState:
         result = _SupplyState.__new__(_SupplyState)
         result.program = self.program
         result.revision = self.revision
+        result.exit_count = self.exit_count
         result.levels = self.levels.copy()
         result.active = self.active.copy()
         result.pending = self.pending.copy()
@@ -88,6 +90,7 @@ class SilkSupply:
         self._dependencies = {}
         self._solutions = OrderedDict()
         self.revision = 0
+        self.added_exits = []
         self.exit_patterns = {}
         self.exit_edges = {}
         self.exit_incoming = defaultdict(list)
@@ -204,7 +207,11 @@ class SilkSupply:
             self.actions[edge[3]].append(('route', edge))
             self.exit_incoming[edge[1]].append(edge)
         self.exit_edges[name] = edges
-        self.revision += 1
+        # Added exits extend cached paths, removed exits restart them.
+        if set(previous) - set(edges):
+            self.revision += 1
+            self.added_exits.clear()
+        self.added_exits.extend(edge for edge in edges if edge not in previous)
         self._solutions.clear()
 
     def exit_dependencies(self, name):
@@ -278,7 +285,14 @@ class SilkSupply:
             cached = state._silksong_silk_supply[self.player]
         except (AttributeError, KeyError):
             return None
-        return cached if cached.program is self and cached.revision == self.revision else None
+        if cached.program is not self or cached.revision != self.revision:
+            return None
+        if cached.exit_count != len(self.added_exits):
+            for source, _, cost, predicate in self.added_exits[cached.exit_count:]:
+                if cached.active[predicate] and cached.levels[source] >= cost:
+                    heappush(cached.queue, (-cached.levels[source], source))
+            cached.exit_count = len(self.added_exits)
+        return cached
 
     def collect(self, state, name):
         affected = self.item_conditions.get(name, ())
@@ -402,7 +416,8 @@ class SilkSupplyRule(Rule, game='Hollow Knight: Silksong'):
                     cached = state._silksong_silk_supply[self.player]
                 except (AttributeError, KeyError):
                     return self.program.evaluate(state, self.node, self.amount)
-                if cached.program is self.program and cached.revision == self.program.revision:
+                if (cached.program is self.program and cached.revision == self.program.revision
+                        and cached.exit_count == len(self.program.added_exits)):
                     if cached.levels[self.node] >= self.amount:
                         return True
                     if not cached.pending and not cached.refresh and not cached.queue and not cached.entries:

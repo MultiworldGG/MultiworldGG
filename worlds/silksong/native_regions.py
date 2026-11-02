@@ -175,12 +175,13 @@ def create_native_logic_region_map(world) -> Mapping[str, Region]:
 
 def _native_source_dependencies(world, name):
     from .native_graph import compact_requirements
-
     graph = getattr(world, '_silksong_source_graph', None)
     if graph is None:
         graph = compact_requirements(world, world._silksong_native_abstract_requirements)
         world._silksong_source_graph = graph
         world._silksong_source_dependencies = {}
+        world._silksong_source_conditions = {}
+        world._silksong_source_rule_options = native_rule_options(world)
     cache = world._silksong_source_dependencies
     if name not in cache:
         if name not in graph:
@@ -193,10 +194,15 @@ def _native_source_dependencies(world, name):
         items, regions = set(), set()
         external = False
         for anchor, rules in grouped.items():
-            rule = build_requirements_rule(
-                tuple(rules), anchor_requirement_name=anchor,
-                extra_abstract_requirement_names=names, **native_rule_options(world),
-            ).resolve(world)
+            conditions = tuple(replace(rule, all_of=tuple(n for n in rule.all_of if n != anchor))
+                               if anchor in rule.all_of else rule for rule in rules)
+            rule = world._silksong_source_conditions.get(conditions)
+            if rule is None:
+                rule = build_requirements_rule(
+                    conditions, extra_abstract_requirement_names=names,
+                    **world._silksong_source_rule_options,
+                ).resolve(world)
+                world._silksong_source_conditions[conditions] = rule
             if rule.always_false:
                 continue
             items.update(rule.item_dependencies())
@@ -348,11 +354,19 @@ def connect_native_logic_regions(
     supply = getattr(world, '_silk_supply', None)
     if supply is not None:
         from .silk_supply import SilkSupplyRule
+        indirects = {}
         for name in sorted(supply.boundaries):
+            rule = SilkSupplyRule(name).resolve(world)
+            world.register_rule_dependencies(rule)
             for source in supply.query_sources(name):
-                world.create_entrance(regions[source] if source is not None else menu,
-                                      regions[name], SilkSupplyRule(name),
-                                      f'Silksong Silk: {name} from {source or "Menu"}')
+                parent = regions[source] if source is not None else menu
+                entrance = parent.connect(regions[name], f'Silksong Silk: {name} from {source or "Menu"}', rule=rule)
+                if world.explicit_indirect_conditions:
+                    dependencies = supply.dependencies(rule.node)[1]
+                    indirects.setdefault(dependencies, set()).add(entrance)
+        for dependencies, entrances in indirects.items():
+            for name in dependencies:
+                world.multiworld.indirect_connections.setdefault(world.get_region(name), set()).update(entrances)
 
 
 @lru_cache(maxsize=1)
@@ -364,3 +378,42 @@ def _room_node_labels():
 
 def region_label(name):
     return _room_node_labels().get(name, native_region_name(name))
+
+
+def validate_native_sources(world, state):
+    from Options import OptionError
+    from .locations import PAIRED_LOCATION_CATEGORIES, location_data_table
+
+    if world.options.accessibility == 'minimal':
+        return
+    full = world.options.accessibility == 'full'
+    blocked = []
+    for location in world.get_locations():
+        data = location_data_table.get(location.name)
+        if (data is None or data.category not in PAIRED_LOCATION_CATEGORIES
+                or not location.locked or location.item is None
+                or location.item.player != world.player
+                or world.get_location_randomization_mode(location.name, data.category) != 'vanilla'
+                or not (full or location.advancement)):
+            continue
+        if not location.can_reach(state):
+            blocked.append(location.name)
+    if not blocked:
+        return
+    blocked.sort(key=lambda name: (location_data_table[name].category != 'Skill', name))
+    names = ', '.join(blocked[:6])
+    if len(blocked) > 6:
+        names += f' and {len(blocked) - 6} more'
+    if any(location_data_table[name].category == 'Skill' for name in blocked):
+        advice = 'Enable Skill Randomization or choose compatible traversal settings.'
+    elif 'Egg of Flealia' in blocked and world.get_category_mode('Flea') == 'vanilla':
+        from .display_names import FLEA_ITEM_NAMES
+        count = sum(state.count(name, world.player) for name in FLEA_ITEM_NAMES)
+        advice = (f"Only {count} of 30 vanilla fleas are reachable. "
+                  'Enable Flea Randomization or choose compatible traversal settings.')
+    else:
+        advice = 'Randomize the affected categories or choose compatible traversal settings.'
+    raise OptionError(
+        f'Player {world.player}: required vanilla checks remain unreachable even with all randomized items: '
+        f'{names}. {advice}'
+    )

@@ -178,81 +178,6 @@ def apply_crest_slot_memory_locket_rules(world) -> None:
         world.set_rule(world.multiworld.get_location(name, world.player), rule)
 
 
-def _is_matching_shuffle_item(category: str, player: int):
-    def item_rule(item: Item) -> bool:
-        return (
-            getattr(
-                item,
-                "silksong_placement_category",
-                None,
-            )
-            == category
-            and item.player == player
-        )
-
-    return item_rule
-
-
-def enforce_global_shuffle_item_rules(multiworld):
-    itempool = getattr(multiworld, "itempool", None)
-    if itempool is not None and not any(
-        getattr(item, "silksong_placement_category", None) is not None
-        for item in itempool
-    ):
-        return None
-    enabled = [True]
-    installed_rules = []
-    for location in multiworld.get_locations():
-        target_category = getattr(
-            location,
-            "silksong_placement_category",
-            None,
-        )
-        target_game = getattr(location, "game", None)
-        target_player = location.player
-
-        def item_rule(
-            item: Item,
-            target_category: str | None = target_category,
-            target_game: str | None = target_game,
-            target_player: int = target_player,
-            enabled: list[bool] = enabled,
-        ) -> bool:
-            if not enabled[0]:
-                return True
-            item_category = getattr(
-                item,
-                "silksong_placement_category",
-                None,
-            )
-            if item_category is None:
-                return True
-            if (
-                target_game != "Hollow Knight: Silksong"
-                or target_category != item_category
-                or target_player != item.player
-            ):
-                return False
-            return True
-
-        previous_rule = location.item_rule
-        add_item_rule(location, item_rule)
-        installed_rules.append(
-            (location, previous_rule, location.item_rule)
-        )
-    return enabled, installed_rules
-
-
-def restore_global_shuffle_item_rules(scope) -> None:
-    if scope is None:
-        return
-    enabled, installed_rules = scope
-    enabled[0] = False
-    for location, previous_rule, installed_rule in installed_rules:
-        if location.item_rule is installed_rule:
-            location.item_rule = previous_rule
-
-
 def set_silksong_rules(world) -> None:
     validate_requirements(
         location_data_table.keys() | COURIER_DELIVERY_WISH_LOCATION_NAMES,
@@ -370,7 +295,8 @@ def set_silksong_rules(world) -> None:
 
         location = world.multiworld.get_location(location_name, world.player)
         shuffled_requirements = getattr(world, "_progression_location_rules", {}).get(location_name)
-        if shuffled_requirements is not None:
+        if (shuffled_requirements is not None
+                and location_name not in world._silksong_native_assumed_source_locations):
             from .native_regions import native_rule_options
             location_rule = build_requirements_rule(
                 shuffled_requirements,
@@ -425,6 +351,14 @@ def set_silksong_rules(world) -> None:
                 silk_and_soul_points=get_silk_and_soul_points(world.options),
                 silk_heart_logic=bool(world.options.silk_heart_logic.value),
             )
+            from . import bind
+            if bind.enabled(world) and location_name in bind.LOCATIONS:
+                from .native_regions import native_rule_options
+                location_rule = location_rule & build_requirements_rule(
+                    (bind.req(bind.CAPABILITY, crest=False),),
+                    extra_abstract_requirement_names=world._silksong_native_abstract_names,
+                    **native_rule_options(world),
+                )
         else:
             location_rule = build_location_rule(
                 location_name,
@@ -603,9 +537,6 @@ def set_silksong_rules(world) -> None:
 
         if getattr(location, "item", None) is not None:
             continue
-
-        if location_data.category == "Key" and mode == "shuffle":
-            add_item_rule(location, _is_matching_shuffle_item("Key", world.player))
 
         if location_name in ROSARY_BANK_GATED_LOCATIONS:
             # The door's own key is excluded from these locations. Its

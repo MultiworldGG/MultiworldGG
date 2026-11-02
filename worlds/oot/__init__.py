@@ -1362,6 +1362,10 @@ class OOTWorld(World):
             if item.name in self.remove_from_start_inventory:
                 self.remove_from_start_inventory.remove(item.name)
                 removed_items.append(item.name)
+                if getattr(self.multiworld, 'generation_is_fake', False):
+                    # UT rebuilds coded starting items from the server inventory.
+                    # Keep these hidden logic grants as events so UT retains them.
+                    item.code = None
             else:
                 self.starting_items[item.name] += 1
                 if item.type == 'Song':

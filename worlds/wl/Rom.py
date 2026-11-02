@@ -1,15 +1,89 @@
 import hashlib
+import io
+import json
 import os
 import math
+import zipfile
+import pkgutil
+import settings
 import Utils
 import bsdiff4
 from worlds.Files import APDeltaPatch
+from BaseClasses import MultiWorld
+from settings import get_settings
 
 WORLDHASH = "d9d957771484ef846d4e8d241f6f2815"
+DX_PATCH_SHA256 = "599d9f59090df3e1e77c1678e069290a2cd9ce59c71cf58d66c4dc3db8b7facd"
+DX_ROM_MD5 = "ee6bcaa3ff5b992bac378591a02b2e6f"
 ROM_PLAYER_LIMIT = 65535
 
 
+def get_dx_patch_bytes(*, prompt: bool = False) -> bytes:
+    wl_options = get_settings()["wl_options"]
+    # empty optional path resolves to a directory
+    patch_file = object.__getattribute__(wl_options, "dx_patch_file")
+    path = patch_file.resolve()
+    selected = None
+    if not os.path.isfile(path):
+        if prompt and not settings.no_gui:
+            selected = wl_options.DXPatchFile(wl_options.DXPatchFile.copy_to).browse(
+                filetypes=[("IPS patch", [".ips"])]
+            )
+        if selected is None:
+            raise FileNotFoundError(
+                "DX colorization requires the DX 1.2 IPS patch. "
+                "Select it when prompted, or set wl_options.dx_patch_file in host.yaml."
+            )
+        path = selected.resolve()
+    with open(path, "rb") as stream:
+        patch = stream.read()
+    if hashlib.sha256(patch).hexdigest() != DX_PATCH_SHA256:
+        raise ValueError(
+            "Unsupported Wario Land DX patch. Use korxo's DX 1.2 IPS patch (romhacking.net/hacks/6683)."
+        )
+    if selected is not None:
+        wl_options.dx_patch_file = selected
+        wl_options._changed = True
+    return patch
+
+
+def apply_ips(buffer: bytearray, patch: bytes) -> None:
+    stream = io.BytesIO(patch)
+
+    def read(size):
+        data = stream.read(size)
+        if len(data) != size:
+            raise ValueError("Truncated IPS patch")
+        return data
+
+    if read(5) != b"PATCH":
+        raise ValueError("Invalid IPS header")
+    while True:
+        offset = read(3)
+        if offset == b"EOF":
+            ending = stream.read()
+            if len(ending) not in (0, 3):
+                raise ValueError("Invalid IPS footer")
+            if ending:
+                size = int.from_bytes(ending, "big")
+                buffer[size:] = b""
+                buffer.extend(bytes(max(0, size - len(buffer))))
+            return
+        offset = int.from_bytes(offset, "big")
+        size = int.from_bytes(read(2), "big")
+        if size:
+            data = read(size)
+        else:
+            size = int.from_bytes(read(2), "big")
+            if size == 0:
+                raise ValueError("Empty IPS RLE record")
+            data = read(1) * size
+        buffer.extend(bytes(max(0, offset + size - len(buffer))))
+        buffer[offset : offset + size] = data
+
+
 def get_base_rom_bytes(file_name: str = "") -> bytes:
+
     base_rom_bytes = getattr(get_base_rom_bytes, "base_rom_bytes", None)
     if not base_rom_bytes:
         file_name = get_base_rom_path(file_name)
@@ -28,9 +102,7 @@ def get_base_rom_bytes(file_name: str = "") -> bytes:
 
 def get_base_rom_path(file_name: str = "") -> str:
     if not file_name:
-        from settings import get_settings
-
-        file_name = get_settings().wl_options.rom_file
+        file_name = get_settings()["wl_options"]["rom_file"]
     if not os.path.exists(file_name):
         file_name = Utils.user_path(file_name)
     return file_name
@@ -41,6 +113,20 @@ class WLDeltaPatch(APDeltaPatch):
     game = "Wario Land"
     patch_file_ending = ".apwl"
     result_file_ending = ".gb"
+
+    def __init__(self, *args, patched_path="", **kwargs):
+        super().__init__(*args, patched_path=patched_path, **kwargs)
+        if patched_path:
+            ending = os.path.splitext(patched_path)[1]
+        elif self.path:
+            # AP chooses the output name before reading or applying the patch
+            with zipfile.ZipFile(self.path) as archive:
+                ending = json.loads(archive.read("archipelago.json"))["result_file_ending"]
+        else:
+            ending = ".gb"
+        if ending not in (".gb", ".gbc"):
+            raise ValueError(f"Invalid Wario Land ROM extension: {ending}")
+        self.result_file_ending = ending
 
     @classmethod
     def get_source_data(cls) -> bytes:
@@ -463,6 +549,15 @@ def patch_world_enter(rom):
     rom.write_byte(0x23F61, 0xC4)  # 8:7f61
     rom.write_byte(0x23F62, 0x41)  # 8:7f62
 
+    # the bridge is Mt. Teapot's second entrance
+    rom.write_bytes(0x23EE7, bytes.fromhex("18 7F"))
+    rom.write_bytes(0x202D5, bytes.fromhex("C3 4B 69"))
+    # stop on the overworld bridge. A/Start must use Mt. Teapot's normal unlock check
+    rom.write_bytes(
+        0x2294B,
+        bytes.fromhex("3E 07 EA 9F A7 3E 37 EA 04 A8 AF EA A5 A7 EA C1 B1 C3 8E 42"),
+    )
+
 
 def patch_world_movement(rom):
     # Block boss level entry
@@ -645,6 +740,168 @@ def speedups(rom):
     rom.write_byte(0x4660, 0x00)  # 1:4660     nop
 
 
+def patch_map_display(rom):
+    # ordinary courses open with their world. drawing paths must not mark checks as cleared.
+    visible_paths = (
+        0x228B6,
+        0x228C2,
+        0x228CE,
+        0x228DA,
+        0x228E6,  # Rice Beach, before flooding
+        0x229F8,
+        0x22A04,
+        0x22A10,
+        0x22A1C,
+        0x22A28,
+        0x22A34,  # Mt. Teapot
+        0x22BA8,
+        0x22BB4,
+        0x22BC0,
+        0x22BCC,
+        0x22BD8,  # Stove Canyon
+        0x22CDD,
+        0x22CE9,
+        0x22CF5,
+        0x22D01,  # SS Teacup
+        0x22DD0,
+        0x22DDC,
+        0x22DE8,
+        0x22DF4,
+        0x22E00,  # Parsley Woods
+        0x2302C,
+        0x23038,
+        0x23044,
+        0x23050,
+        0x2305C,
+        0x23068,  # Sherbet Land
+    )
+    for address in visible_paths:
+        rom.write_bytes(address, bytes.fromhex("3E FF 00"))  # ld a, $FF; nop
+    for address in (0x228F2, 0x22A4C, 0x22BEA, 0x22D0D, 0x22E0C):
+        rom.write_bytes(address, bytes.fromhex("AF 00 00"))  # no clear-only decorations
+
+    # old CheckLastEv space is free now. return an event mask from each AP boss gate.
+    for index in range(7):
+        rom.write_bytes(
+            0x22913 + index * 8,
+            bytes([0xFA, 0x21 + index, 0xA4, 0xA7, 0xC8, 0x3E, 0xFF, 0xC9]),
+        )
+    for address, gate in (
+        (0x228E6, 0),
+        (0x22BCC, 2),
+        (0x22E00, 3),
+        (0x22D01, 4),
+        (0x23050, 5),
+        (0x23068, 5),
+    ):
+        target = 0x6913 + gate * 8
+        rom.write_bytes(address, bytes([0xCD, target & 0xFF, target >> 8]))
+
+    # C13's dot is baked into the fallen lid: use the normal undotted tiles while locked
+    rom.write_bytes(0x22A49, bytes.fromhex("CD 59 6A"))
+    rom.write_bytes(
+        0x22A59,
+        bytes.fromhex(
+            "CD 94 68 FA 0C A8 CB 77 C8 FA 22 A4 A7 C0 "
+            "3E 8D EA 6A 98 3E 90 EA 6B 98 C9"
+        ),
+    )
+    # remember the gate used to draw this map, so receiving its unlock can refresh it safely
+    rom.write_bytes(0x21345, bytes.fromhex("CD 80 6A"))
+    rom.write_bytes(
+        0x22A80,
+        bytes.fromhex(
+            "F5 E5 D5 FA 9F A7 FE 07 20 02 3E 01 FE 07 30 0B "
+            "21 21 A4 5F 16 00 19 7E EA 8F A4 "
+            "D1 E1 F1 EA DC A7 C9"
+        ),
+    )
+
+    # flooding still changes the map, but C6's path no longer needs C3's secret exit
+    rom.write_bytes(
+        0x22717,
+        bytes.fromhex(
+            "FA A3 A7 A7 20 08 CD B6 68 AF EA 94 A7 C9 "
+            "3E 08 01 B3 69 21 BC 69 CD 79 68 AF EA 94 A7 C9"
+        ),
+    )
+    # load the current static paths, rather than starting a vanilla path reveal
+    for address in (0x2276E, 0x22794, 0x227BA, 0x227E0, 0x22806, 0x2282C):
+        target = address - 0x1C000 + 6
+        rom.write_bytes(address, bytes([0xC3, target & 0xFF, target >> 8]))
+
+    # reuse the obsolete Rice Beach CheckLastEv routine to acknowledge real clears
+    rom.write_bytes(0x2290C, bytes.fromhex("7E 12 AF EA 94 A7 C9"))
+    for address, current, previous in (
+        (0x232AF, 0xA80B, 0xA795),
+        (0x23475, 0xA80C, 0xA796),
+        (0x234E9, 0xA810, 0xA797),
+        (0x23550, 0xA811, 0xA798),
+        (0x235B7, 0xA812, 0xA799),
+        (0x2361E, 0xA813, 0xA79A),
+        (0x23685, 0xA814, 0xA79B),
+    ):
+        rom.write_bytes(
+            address,
+            bytes(
+                [
+                    0x21,
+                    current & 0xFF,
+                    current >> 8,
+                    0x11,
+                    previous & 0xFF,
+                    previous >> 8,
+                    0xC3,
+                    0x0C,
+                    0x69,
+                ]
+            ),
+        )
+    # Mt. Teapot's preceding C12 auto-move branch remains intact (entering at C12 would crash)
+    # C12 can be cleared before C10/C11 in AP, only its own bit should trigger the automove
+    rom.write_bytes(0x23496, bytes.fromhex("FA 0C A8 E6 BF EA 96 A7 00 00"))
+
+    # keep castle changes tied to real clears. the route to C40 follows its token gate.
+    rom.write_bytes(0x23148, bytes.fromhex("C3 70 71"))
+    rom.write_bytes(
+        0x23170,
+        bytes.fromhex(
+            "FA 14 A8 01 C7 71 21 01 72 CD 67 68 "
+            "FA 14 A8 01 74 72 21 88 72 CD 70 68 "
+            "3E 01 01 B3 71 21 BA 71 CD 5D 68 "
+            "01 FC 71 21 6B 72 CD A6 68 "
+            "CD 43 69 01 83 72 21 A6 72 CD 70 68 C9"
+        ),
+    )
+
+
+def patch_pause_exit(rom):
+    # Game_PauseDo: pause first, keep Start held, then press Select to exit the level
+    rom.write_bytes(0x42E5, bytes.fromhex("C3 00 7C"))  # jp $7C00
+    rom.write_bytes(
+        0x7C00,
+        bytes.fromhex(
+            "F0 81 "  # ldh a, [hJoyNewKeys]
+            "E6 0C "  # and KEY_START | KEY_SELECT
+            "FE 04 "  # cp KEY_SELECT (not a new Start press)
+            "20 19 "  # jr nz, normal_pause
+            "F0 80 "  # ldh a, [hJoyKeys]
+            "CB 5F "  # bit KEYB_START, a
+            "28 13 "  # jr z, normal_pause
+            "FA C6 A8 "  # ld a, [sDemoMode]
+            "A7 "  # and a
+            "20 0D "  # jr nz, normal_pause
+            "AF "  # xor a
+            "EA 08 A9 "  # ld [sPaused], a
+            "CD EA 43 "  # call Game_CheckTogglePause.unpause
+            "CD 37 03 "  # call Save_CopyAllToSave (no level-clear flag)
+            "C3 14 4C "  # jp Map_SwitchToMap
+            "FA 86 AC "  # normal_pause: ld a, [sStatusEditToggleCount]
+            "C3 E8 42"  # jp Game_PauseDo + 3
+        ),
+    )
+
+
 # Block player from using saveslot 3, repurposed for multiworld save data
 def remove_saveslot_three(rom):
     rom.write_byte(0x74A5, 0xCD)  # 1:74a5     call 7B82
@@ -776,80 +1033,59 @@ def shuffle_music(rom, level_music):
 
 
 def blocksanity(rom):
-    rom.write_byte(0x153A, 0xC3)  # 0:153a    jp 3C00
-    rom.write_byte(0x153B, 0x00)  # 0:153b
-    rom.write_byte(0x153C, 0x3C)  # 0:153c
-    # ---
-    rom.write_byte(0x3C00, 0xFA)  # 0:3c00    ld a,(A42F)
-    rom.write_byte(0x3C01, 0x2F)  # 0:3c01
-    rom.write_byte(0x3C02, 0xA4)  # 0:3c02
-    rom.write_byte(0x3C03, 0xFE)  # 0:3c03    cp a,0
-    rom.write_byte(0x3C04, 0x00)  # 0:3c04
-    rom.write_byte(0x3C05, 0xC2)  # 0:3c05    jp nz, 3C0E
-    rom.write_byte(0x3C06, 0x0E)  # 0:3c06
-    rom.write_byte(0x3C07, 0x3C)  # 0:3c07
-    rom.write_byte(0x3C08, 0x21)  # 0:3c08    ld hl,A430
-    rom.write_byte(0x3C09, 0x30)  # 0:3c09
-    rom.write_byte(0x3C0A, 0xA4)  # 0:3c0a
-    rom.write_byte(0x3C0B, 0xC3)  # 0:3c0b    jp 3C1B
-    rom.write_byte(0x3C0C, 0x1B)  # 0:3c0c
-    rom.write_byte(0x3C0D, 0x3C)  # 0:3c0d
-    rom.write_byte(0x3C0E, 0xFA)  # 0:3c0e    ld a,(A42E)
-    rom.write_byte(0x3C0F, 0x2E)  # 0:3c0f
-    rom.write_byte(0x3C10, 0xA4)  # 0:3c10
-    rom.write_byte(0x3C11, 0xFE)  # 0:3c11    cp a,6C
-    rom.write_byte(0x3C12, 0x6C)  # 0:3c12
-    rom.write_byte(0x3C13, 0xD2)  # 0:3c13    jp nc, 3C08
-    rom.write_byte(0x3C14, 0x08)  # 0:3c14
-    rom.write_byte(0x3C15, 0x3C)  # 0:3c15
-    rom.write_byte(0x3C16, 0x6F)  # 0:3c16    ld l, a
-    rom.write_byte(0x3C17, 0xFA)  # 0:3c17    ld a,(A42F)
-    rom.write_byte(0x3C18, 0x2F)  # 0:3c18
-    rom.write_byte(0x3C19, 0xA4)  # 0:3c19
-    rom.write_byte(0x3C1A, 0x67)  # 0:3c1a    ld h, a
-    rom.write_byte(0x3C1B, 0xFA)  # 0:3c1b    ld a,(A918)
-    rom.write_byte(0x3C1C, 0x18)  # 0:3c1c
-    rom.write_byte(0x3C1D, 0xA9)  # 0:3c1d
-    rom.write_byte(0x3C1E, 0x22)  # 0:3c1e    ldi (hl),a
-    rom.write_byte(0x3C1F, 0xFA)  # 0:3c1f    ld a,(A919)
-    rom.write_byte(0x3C20, 0x19)  # 0:3c20
-    rom.write_byte(0x3C21, 0xA9)  # 0:3c21
-    rom.write_byte(0x3C22, 0x22)  # 0:3c22    ldi (hl),a
-    rom.write_byte(0x3C23, 0x7C)  # 0:3c23    ld a, h
-    rom.write_byte(0x3C24, 0xEA)  # 0:3c24    ld (A42F),a
-    rom.write_byte(0x3C25, 0x2F)  # 0:3c25
-    rom.write_byte(0x3C26, 0xA4)  # 0:3c26
-    rom.write_byte(0x3C27, 0x7D)  # 0:3c27    ld a, l
-    rom.write_byte(0x3C28, 0xEA)  # 0:3c28    ld (A42E),a
-    rom.write_byte(0x3C29, 0x2E)  # 0:3c29
-    rom.write_byte(0x3C2A, 0xA4)  # 0:3c2a
-    rom.write_byte(0x3C2B, 0xFA)  # 0:3c2b    ld a,(A918)
-    rom.write_byte(0x3C2C, 0x18)  # 0:3c2c
-    rom.write_byte(0x3C2D, 0xA9)  # 0:3c2d
-    rom.write_byte(0x3C2E, 0x67)  # 0:3c2e    ld h, a
-    rom.write_byte(0x3C2F, 0xFA)  # 0:3c2f    ld a,(A919)
-    rom.write_byte(0x3C30, 0x19)  # 0:3c30
-    rom.write_byte(0x3C31, 0xA9)  # 0:3c31
-    rom.write_byte(0x3C32, 0x6F)  # 0:3c32    ld l, a
-    rom.write_byte(0x3C33, 0xC3)  # 0:3c33    jp 1542
-    rom.write_byte(0x3C34, 0x42)  # 0:3c34
-    rom.write_byte(0x3C35, 0x15)  # 0:3c35
+    # unreferenced movement helpers ($38AB-$38C4) and bank-0 junk ($3BF3-$3C0E)
+    # are unused in both vanilla and DX 1.2.
+    rom.write_bytes(0x153A, bytes.fromhex("C3 AB 38"))
+    rom.write_bytes(
+        0x38AB,
+        bytes.fromhex(
+            "FA 2E A4 "  # ld a, [buffer cursor low]
+            "E6 FE "  # align to a two-byte record
+            "D6 30 FE 3E "  # check the $A430-$A46C ring
+            "38 01 AF "  # reset an invalid/wrapped cursor
+            "C6 30 6F 26 A4 "  # hl = $A400 + cursor
+            "FA 18 A9 22 "  # append block address high
+            "C3 F3 3B"  # continue in the other shared free range
+        ),
+    )
+    rom.write_bytes(
+        0x3BF3,
+        bytes.fromhex(
+            "FA 19 A9 22 "  # append block address low
+            "7D EA 2E A4 7C EA 2F A4 "  # save the next cursor
+            "FA 18 A9 67 FA 19 A9 6F "  # replay the original block-pointer load
+            "C3 42 15"
+        ),
+    )
 
 
-def patch_rom(world, rom):
-    multiworld = world.multiworld
-    options = world.options
-    player = world.player
+def patch_rom(world, options, rom, player):
+    if options.use_dx:
+        if hashlib.md5(rom.buffer).hexdigest() != WORLDHASH:
+            raise ValueError(
+                "DX colorization must start from the clean World-version Wario Land ROM."
+            )
+        apply_ips(rom.buffer, get_dx_patch_bytes())
+        if hashlib.md5(rom.buffer).hexdigest() != DX_ROM_MD5:
+            raise ValueError("The DX patch did not produce the supported DX 1.2 ROM.")
 
     # Starting Life Count, hex equals displayed value directly
     rom.write_byte(0x7B7D, int(str(options.starting_life_count.value), 16))
+    rom.write_byte(0x7B94, sum(rom.buffer[0x7B74:0x7B94]) & 0xFF)
 
     patch_basic_abilities(rom)
     patch_powerups(rom)
     patch_world_movement(rom)
+    patch_map_display(rom)
     speedups(rom)
+    patch_pause_exit(rom)
     apply_fixes(rom)
     patch_world_enter(rom)
+
+    if options.level_unlocks:
+        apply_ips(
+            rom.buffer, pkgutil.get_data(__package__, "data/course_navigation.ips")
+        )
 
     if options.blocksanity:
         blocksanity(rom)
@@ -871,7 +1107,7 @@ def patch_rom(world, rom):
             0x22,
             0x27,
         ]
-        world.random.shuffle(level_music)
+        world.worlds[player].random.shuffle(level_music)
         shuffle_music(rom, level_music)
 
     # TODO: This patch is not required until level shuffle mode exists
@@ -882,23 +1118,23 @@ def patch_rom(world, rom):
     from Utils import __version__
 
     rom.name = bytearray(
-        f'WL{__version__.replace(".", "")[0:3]}_{player}_{multiworld.seed:11}\0', "utf8"
+        f'WL{__version__.replace(".", "")[0:3]}_{player}_{world.seed:11}\0', "utf8"
     )[:21]
     rom.name.extend([0] * (21 - len(rom.name)))
 
     player_name_length = 0
     # Write slot info to ROM
-    for i, byte in enumerate(multiworld.player_name[player].encode("utf-8")):
+    for i, byte in enumerate(world.player_name[player].encode("utf-8")):
         rom.write_byte(0x674B1 + i, byte)
         player_name_length += 1
     rom.write_byte(0x674B0, player_name_length)
 
     # Re-write header title
-    new_title = "WARIOLANDAP"
+    new_title = "WLCOURSEAP"
     for i, byte in enumerate(new_title.encode("utf-8")):
         rom.write_byte(0x134 + i, byte)
 
-    for i in range(5):
+    for i in range(4):
         rom.write_byte(0x13F + i, 0x00)
     # Fix checksums so emulators don't complain
     fix_checksum(rom)

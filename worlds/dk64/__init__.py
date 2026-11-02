@@ -200,7 +200,7 @@ if baseclasses_loaded:
 
         theme = "jungle"
 
-        setup_en = Tutorial("Multiworld Setup Guide", "A guide to setting up the Donkey Kong 64 randomizer connected to an Archipelago Multiworld.", "English", "setup_en.md", "setup/en", ["PoryGone"])
+        setup_en = Tutorial("Multiworld Setup Guide", "A guide to setting up the Donkey Kong 64 randomizer connected to a MultiworldGG Multiworld.", "English", "setup_en.md", "setup/en", ["PoryGone"])
 
         tutorials = [setup_en]
         option_groups = dk64_option_groups

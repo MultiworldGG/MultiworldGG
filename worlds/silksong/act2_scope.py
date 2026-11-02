@@ -11,6 +11,7 @@ from collections import Counter
 from typing import Iterable, Mapping
 
 from .eva import EVA_CREST_SLOTS, EVA_REWARDS
+from .location_display_names import location_first_name
 
 from .lore_tablets import (
     LORE_TABLET_ACT_THREE_LOCATION_NAMES,
@@ -27,6 +28,10 @@ ACT_THREE_ONLY_GOAL_LOCATION_NAMES: frozenset[str] = frozenset(
         "Bellhart Roof - Memory Locket",
         "Pollen Heart",
         "Everbloom",
+        "Farsight",
+        "Crow bell",
+        "Magnetite Outcrop",
+        "Ruined Chapel - Rosary Cache",
         "Sprintmaster's Memento",
         "Guardian's Memento",
         "Hero's Memento",
@@ -70,7 +75,7 @@ ACT_TWO_HAND_TESTED_UNAVAILABLE_LOCATION_NAMES: frozenset[str] = frozenset(
         "Pin Badge",
         "Brightvein - Mask Shard",
         "Relic: Rune Harp (High Halls)",
-        "Far Fields - Pale Rosary Necklace",
+        "Far Fields - Deep Entrance -Queen's Pearls of Hero",
         "Elegy of the Deep",
         "Craw Summons",
         "Boss: Crawfather",
@@ -91,6 +96,7 @@ ACT_TWO_HAND_TESTED_UNAVAILABLE_LOCATION_NAMES: frozenset[str] = frozenset(
         "The Abyss - Shell Shard Cache #8",
         "The Abyss - Shell Shard Cache #9",
         "Far Fields - Rosary Cache #19",
+        "Grass Doll",
         "Boss: Skarrsinger Karmelita",
         "Boss: Crust King Khann",
         "Boss: Nyleth",
@@ -131,7 +137,7 @@ ACT_TWO_SHAMAN_SLOT_LOCATION_NAMES: frozenset[str] = frozenset(
 
 
 
-ACT_TWO_SILK_SOAR_LOCATION_NAMES: frozenset[str] = frozenset((
+ACT_TWO_SILK_SOAR_LOCATION_NAMES: frozenset[str] = frozenset(location_first_name(name) for name in (
     "Grey Memento",
     "Whispering Vaults - Mask Shard",
     "Whispering Vaults - Shard Bundle",
@@ -194,6 +200,9 @@ ACT_TWO_POOL_REMOVALS_BY_SOURCE_CATEGORY: Mapping[
 ] = {
     "OldHeart": {"Pollen Heart": 1, "Hunter's Heart": 1, "Encrusted Heart": 1, "Conjoined Heart": 1},
     "Everbloom": {"Everbloom": 1},
+    "Farsight": {"Farsight": 1},
+    "Miscellaneous": {"Crawbell": 1},
+    "Materium": {"Magnetite": 1},
     "Memento": {"Sprintmaster's Memento": 1, "Guardian's Memento": 1, "Hero's Memento": 1, 'Surface Memento': 1, 'Craw Memento': 1},
     "Map": {
         "Map: The Abyss": 1,
@@ -214,7 +223,7 @@ ACT_TWO_POOL_REMOVALS_BY_SOURCE_CATEGORY: Mapping[
     "Silkeater": {"Silkeater": 1},
     "NeedleUpgrade": {"Progressive Needle Upgrade": 1},
     "PaleOil": {"Pale Oil": 1},
-    "Resource:rosary_cache": {"Rosaries (10)": 4},
+    "Resource:rosary_cache": {"Rosaries (10)": 4, "Rosaries (8)": 1},
     "Resource:shell_shard_cache": {"Shell Shards (10)": 9},
     "Boss": {
         "Rosaries (60)": 9,
@@ -246,6 +255,13 @@ def trim_act_two_pool_entries(
         for category, item_counts in
         ACT_TWO_POOL_REMOVALS_BY_SOURCE_CATEGORY.items()
     }
+    from .items import get_vanilla_reward_name
+    from .locations import LOCATION_NAMES_BY_CATEGORY
+    excluded = get_act_two_excluded_location_names(
+        starting_crest_item, skill_mode, cursed_ending, silk_soar_begone, retained_items)
+    removals['QuestCollectible'] = Counter(
+        get_vanilla_reward_name(name, 'QuestCollectible')
+        for name in LOCATION_NAMES_BY_CATEGORY['QuestCollectible'] if name in excluded)
     if skill_mode != "anywhere" or silk_soar_begone:
         for category, item_counts in {
             "Memento": {"Grey Memento": 1},

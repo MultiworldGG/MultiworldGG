@@ -145,6 +145,9 @@ A full list of these strategies, grouped by difficulty, is as follows:
     invulnerability frames to break one of the blocks and collect it from above.
     - In the switch room, you can ground pound the hard block without dash attacking the block above
     the ladder if you ground pound immediately after dropping off.
+  - Crescent Moon Village:
+    - In the first bat room, you can throw a Men'ono from a specific pixel on the ramp to get to the
+    rock puzzle without ground pound.
   - Hotel Horror:
     - You can access the frog switch on Hard without carrying the Ringosuki by throwing the Marumen
     upward and bouncing on it in midair to start a Super Ground Pound.
@@ -155,6 +158,9 @@ A full list of these strategies, grouped by difficulty, is as follows:
     the apex or else you will be bounced off.
   - Golden Passage:
     - You can skip the current puzzle room by repeatedly jumping out of the river with good timing.
+    - You can do the Keyzer puzzle without ground pound by using the box as a platform to escape
+    the area with the blue block. You can safely collect the item after breaking the blocks under
+    the blue block.
 - Anything Goes:
   - The Toxic Landfill:
     - You can skip the super ground pound requirement by carrying the Ringosuki in the switch room

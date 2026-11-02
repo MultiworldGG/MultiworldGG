@@ -33,11 +33,11 @@ class RequiredFriends(Range):
     For example, setting this to `0` is the same as the `song_of_five` goal.
     Enabling the DLC, no story mods, and setting this to `1` is equivalent to the `song_of_six` goal.
 
-    Enabling the DLC & all 7 story mods allows a maximum of 9 "friends."
+    Enabling the DLC & all 8 story mods allows a maximum of 10 "friends."
     """
     display_name = "Required Friends"
     range_start = 0
-    range_end = 9
+    range_end = 10
     default = 1
 
 
@@ -99,9 +99,13 @@ class ShuffleEquipment(Choice):
 
 
 class UpgradeCounts(OptionCounter):
-    """Choose the number of upgrades shuffled into the item pool.
-    The default in-game settings start you with 50% of each, bringing you to 200% once all upgrades are acquired.
-    You'll probably want to adjust them if you change these too drastically."""
+    """Choose the number of upgrades shuffled into the item pool for each upgradeable stat (oxygen, fuel, boost).
+
+    By default, each stat starts at 50% of vanilla, then 3 upgrade items add 50% each for a maximum of 200%.
+    This option and upgrade_maxima let you directly change the number of items and the maximum %s.
+    The minimum %s cannot be changed from 50% because any less would make locations unreachable and affect logic.
+    The effect of each individual upgrade item is indirectly determined by these options. For example, if you choose
+    5 boost upgrades and a maximum boost of 550%, then each boost upgrade item will add 100% to your boost."""
     schema = Schema({
         Optional("Oxygen Capacity Upgrade"): lambda n: n >= 0,
         Optional("Fuel Capacity Upgrade"): lambda n: n >= 0,
@@ -112,6 +116,23 @@ class UpgradeCounts(OptionCounter):
         "Oxygen Capacity Upgrade": 3,
         "Fuel Capacity Upgrade": 3,
         "Boost Duration Upgrade": 3,
+    }
+
+
+class UpgradeMaxima(OptionCounter):
+    """Choose the maximum value that each upgradeable stat will have after all upgrade items have been collected.
+    See upgrade_counts for more details.
+    Each maximum must be greater than 50%, since the minimum is already 50%."""
+    schema = Schema({
+        Optional("Maximum Oxygen Capacity %"): lambda n: n > 50,
+        Optional("Maximum Fuel Capacity %"): lambda n: n > 50,
+        Optional("Maximum Boost Duration %"): lambda n: n > 50,
+    })
+    display_name = "Upgrade Maxima"
+    default = {
+        "Maximum Oxygen Capacity %": 200,
+        "Maximum Fuel Capacity %": 200,
+        "Maximum Boost Duration %": 200,
     }
 
 
@@ -180,7 +201,7 @@ class Spawn(Choice):
 
     'vanilla' is the same as the base game: you wake up in TH Village, talk to Hornfels to get the Launch Codes, then walk by the Nomai statue to start the time loop.
     All other options (including timber_hearth) will spawn you in your spacesuit, with the time loop already started, and the Launch Codes item placed randomly like any other AP item.
-    `stranger` of course requires `enable_eotc_dlc` to be true
+    `stranger` of course requires `enable_eote_dlc` to be true
     `deep_bramble` requires `enable_fc_mod` to be true
 
     The idea is that non-vanilla spawns will require you to play "shipless" for a while, possibly using Nomai Warp Codes to visit other planets. The ship will still spawn nearby, so you can use the ship log/tracker right away.
@@ -373,6 +394,7 @@ class OuterWildsGameOptions(PerGameCommonOptions):
     trap_type_weights: TrapTypeWeights
     shuffle_equipment: ShuffleEquipment
     upgrade_counts: UpgradeCounts
+    upgrade_maxima: UpgradeMaxima
     death_link: DeathLink
     logsanity: Logsanity
     shuffle_spacesuit: ShuffleSpacesuit

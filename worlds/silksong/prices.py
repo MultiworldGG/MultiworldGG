@@ -144,13 +144,12 @@ _SHOP_PRICE_SOURCES: tuple[PriceSource, ...] = (
 
 # ShopItem.IsAvailableNotInfinite identifies finite stock
 # by a player-data bool or a SavedItem whose native IsUnique is true. These are
-# the assets that have neither and therefore remain repeatable.
+# the repeatable assets. Paint instead saves the chosen colour.
 # They must not contribute prices to shuffled pools either.
 INFINITE_SHOP_PRICE_KEYS = frozenset(
     {
         "shop:Ant Merchant Shard Pouch",
         "shop:Architect Shard Pouch",
-        "shop:Bellhart Furnishing Paint",
         "shop:Belltown Rosary String Medium",
         "shop:Belltown Shard Pouch",
         "shop:Bonebottom Rosary Set",

@@ -342,9 +342,11 @@
     "mapper_kind": "collectible"
   },
   "event:mapper/49a1fdbd-4973-4058-b7a9-213e0e508938": {
-    "name": "Bonegrave - Rosaries on grave",
+    "name": "rosaries on grave",
     "kind": "collectible",
-    "locations": [],
+    "locations": [
+      "rosaries on grave"
+    ],
     "mapper_kind": "collectible"
   },
   "event:mapper/26ec6c1c-3131-4c29-98ca-3ed6d9cb9fe6": {
@@ -906,9 +908,11 @@
     "mapper_kind": "boss"
   },
   "event:mapper/c9fa91ec-ebb7-42b5-a810-85c30d1120a6": {
-    "name": "The Marrow - Crown Fragment",
+    "name": "crown fragment",
     "kind": "collectible",
-    "locations": [],
+    "locations": [
+      "crown fragment"
+    ],
     "mapper_kind": "collectible"
   },
   "event:mapper/70fad4ac-ce80-4d88-b703-b3c687686ccf": {
@@ -1838,50 +1842,50 @@
     "mapper_kind": "collectible"
   },
   "event:mapper/f6501971-e9e8-439f-9f21-363d6444446e": {
-    "name": "Far Fields - Rosary Cache #11",
+    "name": "Far Fields - Lower Fort Sentry's Rosaries Bonds",
     "kind": "collectible",
     "locations": [
-      "Far Fields - Rosary Cache #11"
+      "Far Fields - Lower Fort Sentry's Rosaries Bonds"
     ],
     "mapper_kind": "collectible"
   },
   "event:mapper/5d314764-9c6e-4e48-a4a6-0410bdb6409d": {
-    "name": "Far Fields - Rosary Cache #12",
+    "name": "Far Fields - Lower Fort Sentry's Personal Rosaries",
     "kind": "collectible",
     "locations": [
-      "Far Fields - Rosary Cache #12"
+      "Far Fields - Lower Fort Sentry's Personal Rosaries"
     ],
     "mapper_kind": "collectible"
   },
   "event:mapper/39060ce2-f239-4bfa-895f-dead9e6a72ef": {
-    "name": "Far Fields - Rosary Cache #13",
+    "name": "Far Fields Lower Fort Last Rosaries Stipend - Queen's Final Support",
     "kind": "collectible",
     "locations": [
-      "Far Fields - Rosary Cache #13"
+      "Far Fields Lower Fort Last Rosaries Stipend - Queen's Final Support"
     ],
     "mapper_kind": "collectible"
   },
   "event:mapper/afbdeeb4-5352-4048-bb97-864a9d7c5b00": {
-    "name": "Flea: Far Fields - Captured",
+    "name": "Far Fields - Fort Flea Rescue - Flea",
     "kind": "collectible",
     "locations": [
-      "Flea: Far Fields - Captured"
+      "Far Fields - Fort Flea Rescue - Flea"
     ],
     "mapper_kind": "collectible"
   },
   "event:mapper/fab56c4f-49e7-482c-a0e5-47df5508f7df": {
-    "name": "Far Fields - Rosary Cache #16",
+    "name": "Far Fields - Fort Flea Rescue - Fort Barracks Ration Rosaries",
     "kind": "collectible",
     "locations": [
-      "Far Fields - Rosary Cache #16"
+      "Far Fields - Fort Flea Rescue - Fort Barracks Ration Rosaries"
     ],
     "mapper_kind": "collectible"
   },
   "event:mapper/02cae332-6253-429c-a123-7c4be14dc21d": {
-    "name": "Far Fields - Rosary Cache #17",
+    "name": "Far Fields - Fort Flea Rescue - Queen's Last Rosaries Stipend",
     "kind": "collectible",
     "locations": [
-      "Far Fields - Rosary Cache #17"
+      "Far Fields - Fort Flea Rescue - Queen's Last Rosaries Stipend"
     ],
     "mapper_kind": "collectible"
   },
@@ -2026,10 +2030,10 @@
     "mapper_kind": "boss"
   },
   "event:mapper/1af926c3-181a-45a8-a94b-9591ea8f3214": {
-    "name": "Far Fields - Rosary Cache #2",
+    "name": "Choir's Final Rites Beads",
     "kind": "collectible",
     "locations": [
-      "Far Fields - Rosary Cache #2"
+      "Choir's Final Rites Beads"
     ],
     "mapper_kind": "collectible"
   },
@@ -2040,9 +2044,11 @@
     "mapper_kind": "boss"
   },
   "event:mapper/e54c64bb-2486-4a2c-81f0-9af465fd3865": {
-    "name": "Far Fields Chorus - Horn Fragment",
+    "name": "Horn Fragment",
     "kind": "collectible",
-    "locations": [],
+    "locations": [
+      "Horn Fragment"
+    ],
     "mapper_kind": "collectible"
   },
   "event:mapper/reviewed:savage-beastfly-remains": {
@@ -2342,50 +2348,50 @@
     "mapper_kind": "switch"
   },
   "event:mapper/185cc0f2-687f-44c9-931c-23ddfdcc4650": {
-    "name": "Far Fields - Shell Shard Cache #4",
+    "name": "Far Fields - Deep Entrance Skarr Gate Watch Spears",
     "kind": "collectible",
     "locations": [
-      "Far Fields - Shell Shard Cache #4"
+      "Far Fields - Deep Entrance Skarr Gate Watch Spears"
     ],
     "mapper_kind": "collectible"
   },
   "event:mapper/c59cc593-90ed-448a-aaaa-403ab62a38bd": {
-    "name": "Far Fields - Shell Shard Cache #5",
+    "name": "Far Fields - Deep Entrance Skarr Sentinel's Trap Shards",
     "kind": "collectible",
     "locations": [
-      "Far Fields - Shell Shard Cache #5"
+      "Far Fields - Deep Entrance Skarr Sentinel's Trap Shards"
     ],
     "mapper_kind": "collectible"
   },
   "event:mapper/06dae876-9a6a-48a1-80ff-b9dff0f8ea33": {
-    "name": "Far Fields - Shell Shard Cache #6",
+    "name": "Far Fields - Deep Entrance -Cage Materials",
     "kind": "collectible",
     "locations": [
-      "Far Fields - Shell Shard Cache #6"
+      "Far Fields - Deep Entrance -Cage Materials"
     ],
     "mapper_kind": "collectible"
   },
   "event:mapper/f5e95a57-bd00-4aee-b24f-f272241fbfcf": {
-    "name": "Far Fields - Shell Shard Cache #7",
+    "name": "Far Fields - Deep Entrance - Curveclaw Reserve",
     "kind": "collectible",
     "locations": [
-      "Far Fields - Shell Shard Cache #7"
+      "Far Fields - Deep Entrance - Curveclaw Reserve"
     ],
     "mapper_kind": "collectible"
   },
   "event:mapper/4934ce45-7e2c-41a9-8498-74af2edbac12": {
-    "name": "Far Fields - Rosary Cache #20",
+    "name": "Far Fields - Deep Entrance -Queen's Gate Sentry Funds",
     "kind": "collectible",
     "locations": [
-      "Far Fields - Rosary Cache #20"
+      "Far Fields - Deep Entrance -Queen's Gate Sentry Funds"
     ],
     "mapper_kind": "collectible"
   },
   "event:mapper/b2660ac1-4cc3-47ba-968c-1de095e0b831": {
-    "name": "Far Fields - Rosary Cache #21",
+    "name": "Far Fields - Deep Entrance -Bounty Rosary Stash - \"To be paid in full to the Hunter who fells Gurr\"",
     "kind": "collectible",
     "locations": [
-      "Far Fields - Rosary Cache #21"
+      "Far Fields - Deep Entrance -Bounty Rosary Stash - \"To be paid in full to the Hunter who fells Gurr\""
     ],
     "mapper_kind": "collectible"
   },
@@ -2396,10 +2402,10 @@
     "mapper_kind": "collectible"
   },
   "event:mapper/8d3d0b9d-6066-438f-b289-32eff5bcb28b": {
-    "name": "Far Fields - Pale Rosary Necklace",
+    "name": "Far Fields - Deep Entrance -Queen's Pearls of Hero",
     "kind": "collectible",
     "locations": [
-      "Far Fields - Pale Rosary Necklace"
+      "Far Fields - Deep Entrance -Queen's Pearls of Hero"
     ],
     "mapper_kind": "collectible"
   },
@@ -2420,9 +2426,11 @@
     "mapper_kind": "collectible"
   },
   "event:mapper/39d48399-b34b-4597-83a7-197d857a5403": {
-    "name": "Far Fields Deep Lower East - Grass Doll",
+    "name": "Grass Doll",
     "kind": "collectible",
-    "locations": [],
+    "locations": [
+      "Grass Doll"
+    ],
     "mapper_kind": "collectible"
   },
   "event:mapper/reviewed:hidden-hunter-keepsake": {
@@ -2562,10 +2570,10 @@
     "mapper_kind": "collectible"
   },
   "event:mapper/4e7d7773-67a3-4862-9861-349cdb0ed746": {
-    "name": "Sprintmaster - Beast Shard",
+    "name": "Swift beast shard",
     "kind": "collectible",
     "locations": [
-      "Sprintmaster - Beast Shard"
+      "Swift beast shard"
     ],
     "mapper_kind": "collectible"
   },
@@ -3781,9 +3789,11 @@
     "mapper_kind": "collectible"
   },
   "event:mapper/b39d642d-8a47-4e88-a14d-90dba73dbf1f": {
-    "name": "Greymoor Craw Court - Crow bell",
+    "name": "Crow bell",
     "kind": "collectible",
-    "locations": [],
+    "locations": [
+      "Crow bell"
+    ],
     "mapper_kind": "collectible"
   },
   "event:mapper/26d1e6f5-b722-4821-ab61-42504c901169": {
@@ -5099,10 +5109,10 @@
     "mapper_kind": "collectible"
   },
   "event:mapper/cd3ea9f7-9c81-4f17-ab6a-f934d827e893": {
-    "name": "Sinner's Road - Rosary Cache #8",
+    "name": "Rosaries Looking Over The Sinner's Bench",
     "kind": "collectible",
     "locations": [
-      "Sinner's Road - Rosary Cache #8"
+      "Rosaries Looking Over The Sinner's Bench"
     ],
     "mapper_kind": "collectible"
   },
@@ -5153,18 +5163,18 @@
     "mapper_kind": "event"
   },
   "event:mapper/c244998e-45ab-4fda-a19f-bee26bc4f451": {
-    "name": "Sinner's Road - Frayed Rosary String",
+    "name": "Caged Rosaries In the Sinner's Entryway",
     "kind": "collectible",
     "locations": [
-      "Sinner's Road - Frayed Rosary String"
+      "Caged Rosaries In the Sinner's Entryway"
     ],
     "mapper_kind": "collectible"
   },
   "event:mapper/c78d1856-fabb-4e42-9989-ab5c5a9dd965": {
-    "name": "Flea: Sinner's Road",
+    "name": "Sinner's Flea",
     "kind": "collectible",
     "locations": [
-      "Flea: Sinner's Road"
+      "Sinner's Flea"
     ],
     "mapper_kind": "collectible"
   },
@@ -5177,18 +5187,18 @@
     "mapper_kind": "event"
   },
   "event:mapper/b60aef63-d800-4533-b5da-2f92e49fd03d": {
-    "name": "Sinner's Road - Shell Shard Cache #4",
+    "name": "Shell Shards Lugoli Probably Threw Out: The First",
     "kind": "collectible",
     "locations": [
-      "Sinner's Road - Shell Shard Cache #4"
+      "Shell Shards Lugoli Probably Threw Out: The First"
     ],
     "mapper_kind": "collectible"
   },
   "event:mapper/1308d6f0-ec57-461f-864e-90b5ec0e262f": {
-    "name": "Sinner's Road - Shell Shard Cache #5",
+    "name": "Shell Shards Lugoli Probably Threw Out: The Second",
     "kind": "collectible",
     "locations": [
-      "Sinner's Road - Shell Shard Cache #5"
+      "Shell Shards Lugoli Probably Threw Out: The Second"
     ],
     "mapper_kind": "collectible"
   },
@@ -5199,26 +5209,26 @@
     "mapper_kind": "switch"
   },
   "event:mapper/187bb7ea-5661-4d8c-8d62-387908c6c1ed": {
-    "name": "Sinner's Road - Shell Shard Cache #1",
+    "name": "A Few Spare Shards In The Muckroach Kennel Attic",
     "kind": "collectible",
     "locations": [
-      "Sinner's Road - Shell Shard Cache #1"
+      "A Few Spare Shards In The Muckroach Kennel Attic"
     ],
     "mapper_kind": "collectible"
   },
   "event:mapper/a67ed585-6e59-474b-b95e-0213e2b6da17": {
-    "name": "Sinner's Road - Shell Shard Cache #2",
+    "name": "A Few More Spare Shards In The Muckroach Kennel Attic",
     "kind": "collectible",
     "locations": [
-      "Sinner's Road - Shell Shard Cache #2"
+      "A Few More Spare Shards In The Muckroach Kennel Attic"
     ],
     "mapper_kind": "collectible"
   },
   "event:mapper/b23a4fc4-ff1c-43f2-ab7b-9b6c23b5221e": {
-    "name": "Sinner's Road - Shell Shard Cache #3",
+    "name": "Last Few Spare Shards In The Muckroach Kennel Attic",
     "kind": "collectible",
     "locations": [
-      "Sinner's Road - Shell Shard Cache #3"
+      "Last Few Spare Shards In The Muckroach Kennel Attic"
     ],
     "mapper_kind": "collectible"
   },
@@ -5237,18 +5247,18 @@
     "mapper_kind": "event"
   },
   "event:mapper/2aefa858-0b94-4d5d-af26-e3b6737a9a52": {
-    "name": "Sinner's Road - Shell Shard Cache #6",
+    "name": "Left Shards In the Hall of the Spike Swingers",
     "kind": "collectible",
     "locations": [
-      "Sinner's Road - Shell Shard Cache #6"
+      "Left Shards In the Hall of the Spike Swingers"
     ],
     "mapper_kind": "collectible"
   },
   "event:mapper/0a762857-5444-4a97-aaec-38b634caa605": {
-    "name": "Sinner's Road - Shell Shard Cache #7",
+    "name": "Right Shards In the Hall of the Spike Swingers",
     "kind": "collectible",
     "locations": [
-      "Sinner's Road - Shell Shard Cache #7"
+      "Right Shards In the Hall of the Spike Swingers"
     ],
     "mapper_kind": "collectible"
   },
@@ -5345,42 +5355,42 @@
     "mapper_kind": "event"
   },
   "event:mapper/f272a0fc-a61c-4fd8-a1e6-73a2efce1084": {
-    "name": "Sinner's Road - Rosary Cache #5",
+    "name": "Eastern Sinner's Cage Rosary Primus",
     "kind": "collectible",
     "locations": [
-      "Sinner's Road - Rosary Cache #5"
+      "Eastern Sinner's Cage Rosary Primus"
     ],
     "mapper_kind": "collectible"
   },
   "event:mapper/74ffa4f1-4974-40dc-8fd3-46cd84dd5486": {
-    "name": "Sinner's Road - Rosary Cache #6",
+    "name": "Eastern Sinner's Cage Rosary Secundus",
     "kind": "collectible",
     "locations": [
-      "Sinner's Road - Rosary Cache #6"
+      "Eastern Sinner's Cage Rosary Secundus"
     ],
     "mapper_kind": "collectible"
   },
   "event:mapper/c75eb85b-c102-4610-8c3c-68ffde71cddd": {
-    "name": "Sinner's Road - Rosary Cache #7",
+    "name": "Eastern Sinner's Cage Rosary Tertius",
     "kind": "collectible",
     "locations": [
-      "Sinner's Road - Rosary Cache #7"
+      "Eastern Sinner's Cage Rosary Tertius"
     ],
     "mapper_kind": "collectible"
   },
   "event:mapper/890f63bb-e718-4415-a3e2-85ecaf6ac7f5": {
-    "name": "Sinner's Road - Shard Bundle",
+    "name": "Shards on Bilewater's Doorstep",
     "kind": "collectible",
     "locations": [
-      "Sinner's Road - Shard Bundle"
+      "Shards on Bilewater's Doorstep"
     ],
     "mapper_kind": "collectible"
   },
   "event:mapper/b08ca6ef-95fe-4e21-8813-7cfe691aa778": {
-    "name": "Roachkeeper - Simple Key",
+    "name": "Key Hoarding Roachkeeper In the Attic",
     "kind": "collectible",
     "locations": [
-      "Roachkeeper - Simple Key"
+      "Key Hoarding Roachkeeper In the Attic"
     ],
     "mapper_kind": "collectible"
   },
@@ -5427,26 +5437,26 @@
     "mapper_kind": "event"
   },
   "event:mapper/c365d492-1522-49b8-9bae-8232cce1bf87": {
-    "name": "Sinner's Road - Rosary Cache #1",
+    "name": "Gross Rosaries In the Sinner's Basement",
     "kind": "collectible",
     "locations": [
-      "Sinner's Road - Rosary Cache #1"
+      "Gross Rosaries In the Sinner's Basement"
     ],
     "mapper_kind": "collectible"
   },
   "event:mapper/18fa3c25-7b0c-4626-a24a-e3a6a3bdfe9e": {
-    "name": "Sinner's Road - Rosary Cache #2",
+    "name": "First Half of the Rosaries They Took From the Gay Frog When They Put Him In Prison",
     "kind": "collectible",
     "locations": [
-      "Sinner's Road - Rosary Cache #2"
+      "First Half of the Rosaries They Took From the Gay Frog When They Put Him In Prison"
     ],
     "mapper_kind": "collectible"
   },
   "event:mapper/66ddda0c-35c8-40bb-8d9a-ab76185aee1f": {
-    "name": "Sinner's Road - Rosary Cache #3",
+    "name": "Second Half of the Rosaries They Took From the Gay Frog When They Put Him In Prison",
     "kind": "collectible",
     "locations": [
-      "Sinner's Road - Rosary Cache #3"
+      "Second Half of the Rosaries They Took From the Gay Frog When They Put Him In Prison"
     ],
     "mapper_kind": "collectible"
   },
@@ -6673,12 +6683,6 @@
     "locations": [],
     "mapper_kind": "event"
   },
-  "event:mapper/1cd7e543-0d4b-4ece-9b48-48d57b8112b4": {
-    "name": "Exhaust Organ Interior - Boss: Phantom",
-    "kind": "enemy",
-    "locations": [],
-    "mapper_kind": "enemy"
-  },
   "event:mapper/a4c573a9-2c07-4187-806e-23476b6037f7": {
     "name": "Exhaust Organ Interior - Organ Bench",
     "kind": "bench",
@@ -6910,9 +6914,11 @@
     "mapper_kind": "boss"
   },
   "event:mapper/ba13587f-01a2-4e22-bc3d-56a482e6a8d0": {
-    "name": "Slab Broodmother Alcove - Broodmother's Eye",
+    "name": "Broodmother's Eye",
     "kind": "collectible",
-    "locations": [],
+    "locations": [
+      "Broodmother's Eye"
+    ],
     "mapper_kind": "collectible"
   },
   "event:mapper/b7f47ef9-ceec-4bf2-aca0-6259e5e24d49": {
@@ -7592,9 +7598,11 @@
     "mapper_kind": "collectible"
   },
   "event:mapper/9daca89f-eada-4193-9512-be1a929b003c": {
-    "name": "Weavenest Absolom - Farsight",
+    "name": "Farsight",
     "kind": "collectible",
-    "locations": [],
+    "locations": [
+      "Farsight"
+    ],
     "mapper_kind": "collectible"
   },
   "event:mapper/36fc6f30-aed2-4adb-be9a-2d00991cdee4": {
@@ -8066,7 +8074,7 @@
     "mapper_kind": "blockade"
   },
   "event:mapper/5e59bcfe-e29b-44a1-be2f-e5cf160bea3f": {
-    "name": "Underworks Shaft - Unneeded Lever",
+    "name": "Underworks Shaft - Not-So-Unneeded Lever",
     "kind": "switch",
     "locations": [],
     "mapper_kind": "switch"
@@ -8385,20 +8393,6 @@
     "locations": [],
     "mapper_kind": "collectible"
   },
-  "event:mapper/399c5eda-e776-4279-a0f0-ba20a4913047": {
-    "name": "Boss: Clover Dancers",
-    "kind": "boss",
-    "locations": [
-      "Boss: Clover Dancers"
-    ],
-    "mapper_kind": "boss"
-  },
-  "event:mapper/f7ff1826-8efc-46f1-92a2-82bd5666acf9": {
-    "name": "Clover Dancers - Clover Dancers 2",
-    "kind": "boss",
-    "locations": [],
-    "mapper_kind": "boss"
-  },
   "event:mapper/8b856b65-4f98-495a-9924-0b2bbe47ddca": {
     "name": "Dead Verdania Bench - Dead Verdania Bench",
     "kind": "bench",
@@ -8601,12 +8595,6 @@
     "locations": [
       "Reed's personal chest"
     ],
-    "mapper_kind": "collectible"
-  },
-  "event:mapper/896f5186-1d21-4908-9361-b9b3b8e1b46e": {
-    "name": "Choral Chambers Over Dininig - Rosary Necklace - Choral Chambers #2",
-    "kind": "collectible",
-    "locations": [],
     "mapper_kind": "collectible"
   },
   "event:mapper/7e81a4e7-8e9e-4cae-a7b6-2594226a6c6b": {
@@ -8856,19 +8844,22 @@
     "kind": "collectible",
     "locations": [
       "Encrusted Heart"
-    ]
+    ],
+    "mapper_kind": "collectible"
   },
   "event:mapper/5cd1f85e-5c80-4045-b722-7a53b00e128c": {
     "name": "Boss: Crust King Khann",
     "kind": "boss",
     "locations": [
       "Boss: Crust King Khann"
-    ]
+    ],
+    "mapper_kind": "boss"
   },
   "event:mapper/3f3aa729-863e-4e11-b3b4-4e9f29026181": {
     "name": "Path of Pain Bench - path of pain wall",
     "kind": "blockade",
-    "locations": []
+    "locations": [],
+    "mapper_kind": "blockade"
   },
   "event:mapper/cac93eb2-6bac-4da5-a0f8-a0ab79f1e9a5": {
     "name": "Blasted Steps - Beast Shard",
@@ -8967,5 +8958,343 @@
     "kind": "event",
     "locations": [],
     "mapper_kind": "event"
+  },
+  "event:mapper/fbeee50d-411d-485f-9005-fa12553fc888": {
+    "name": "Whispering Vaults Hell - Fuckass Shortcut Box I Forgot About",
+    "kind": "logic-point",
+    "locations": [],
+    "mapper_kind": "logic-point"
+  },
+  "event:mapper/57519874-2947-4ae0-af2f-27f6e51be48c": {
+    "name": "Whispering Vaults Hell - Optional Fuckass Shortcut Box",
+    "kind": "logic-point",
+    "locations": [],
+    "mapper_kind": "logic-point"
+  },
+  "event:mapper/56c85c0f-c7ce-4d72-a3b9-203405f84fae": {
+    "name": "Putrified Ducts Entrance - Breakable Wall Ducts entrance Start",
+    "kind": "blockade",
+    "locations": [],
+    "mapper_kind": "blockade"
+  },
+  "event:mapper/f867b511-7877-4afe-9e9c-78606d1b8cb2": {
+    "name": "awaiting the end complete",
+    "kind": "event",
+    "locations": [],
+    "mapper_kind": "event"
+  },
+  "event:mapper/3ddb9511-768f-4c3e-858b-afe6852a5e95": {
+    "name": "Deep Docks Entrance Gate",
+    "kind": "logic-point",
+    "locations": [],
+    "mapper_kind": "logic-point"
+  },
+  "event:mapper/c4b7635c-e229-40f9-9269-439ddaff93d0": {
+    "name": "Song_Gate_small",
+    "kind": "logic-point",
+    "locations": [],
+    "mapper_kind": "logic-point"
+  },
+  "event:mapper/5a19c041-5480-4be5-99a0-b9780feb598c": {
+    "name": "Is this still Deep Docks East Blast Rock",
+    "kind": "blockade",
+    "locations": [],
+    "mapper_kind": "blockade"
+  },
+  "event:mapper/1eada053-a82d-49ce-b63e-70fc77f58d15": {
+    "name": "Rosary Wall",
+    "kind": "blockade",
+    "locations": [],
+    "mapper_kind": "blockade"
+  },
+  "event:mapper/ff5dcdc3-96ea-43b6-bfff-587d7c90637f": {
+    "name": "Deep Docks Backdoor",
+    "kind": "logic-point",
+    "locations": [],
+    "mapper_kind": "logic-point"
+  },
+  "event:mapper/9d73778d-0d7b-46f3-8bf1-885201cb5d34": {
+    "name": "Hand In Bone Scroll Relic Bone Scroll Far Fields",
+    "kind": "event",
+    "locations": [],
+    "mapper_kind": "event"
+  },
+  "event:mapper/fd037428-68a6-490e-80b4-5e535b8529a5": {
+    "name": "Hand In Bone Scroll Greymoor",
+    "kind": "event",
+    "locations": [],
+    "mapper_kind": "event"
+  },
+  "event:mapper/589ebc2f-fa7d-4503-b799-3af5821a339d": {
+    "name": "Hand In Bone Scroll Underworks",
+    "kind": "event",
+    "locations": [],
+    "mapper_kind": "event"
+  },
+  "event:mapper/539d6f29-4686-4882-8fa0-437ec045d4b6": {
+    "name": "Hand In Bone Scroll Wisp Thicket",
+    "kind": "event",
+    "locations": [],
+    "mapper_kind": "event"
+  },
+  "event:mapper/e8e5844e-15b4-4b55-af4b-6c657270b752": {
+    "name": "Hand In Weaver Effigy Moss Grotto",
+    "kind": "event",
+    "locations": [],
+    "mapper_kind": "event"
+  },
+  "event:mapper/6152a84d-78fd-47cc-944c-fcfd478a0e7f": {
+    "name": "Hand In Weaver Effigy Shellwood",
+    "kind": "event",
+    "locations": [],
+    "mapper_kind": "event"
+  },
+  "event:mapper/cb87249b-0a5b-4f4e-8ab7-837a437304b1": {
+    "name": "Hand In Weaver Effigy  The Slab",
+    "kind": "event",
+    "locations": [],
+    "mapper_kind": "event"
+  },
+  "event:mapper/342a8034-a6ad-4a17-bbed-9d4b50426d4c": {
+    "name": "Hand in Choral Commandment Jubilana",
+    "kind": "event",
+    "locations": [],
+    "mapper_kind": "event"
+  },
+  "event:mapper/09ce84db-cf83-4bb6-83fb-ce5dbceb58eb": {
+    "name": "Hand in Choral Commandment Western Whiteward",
+    "kind": "event",
+    "locations": [],
+    "mapper_kind": "event"
+  },
+  "event:mapper/5cc5918f-0200-4542-bbb9-9d4ef3762ce4": {
+    "name": "Hand in Choral Commandment Moss Grotto",
+    "kind": "event",
+    "locations": [],
+    "mapper_kind": "event"
+  },
+  "event:mapper/4d674f5f-165b-4291-a321-a121bc7cbf74": {
+    "name": "Hand in Choral Commandment Eastern Whiteward",
+    "kind": "event",
+    "locations": [],
+    "mapper_kind": "event"
+  },
+  "event:mapper/99f88879-c17a-4e2e-ba1b-580ffab9a748": {
+    "name": "Hand in Rune Harp Weavenest Atla",
+    "kind": "event",
+    "locations": [],
+    "mapper_kind": "event"
+  },
+  "event:mapper/2e05c628-8ac5-4251-90c4-23eba830849b": {
+    "name": "Hand in Rune Harp Weavenest Cindril",
+    "kind": "event",
+    "locations": [],
+    "mapper_kind": "event"
+  },
+  "event:mapper/a50578aa-b971-4c44-8235-17d2bb5f3e3e": {
+    "name": "Hand in Rune Harp High Halls",
+    "kind": "event",
+    "locations": [],
+    "mapper_kind": "event"
+  },
+  "event:mapper/535aded0-5046-42db-a3cd-070e0ac266ad": {
+    "name": "Hand in Arcane Egg",
+    "kind": "event",
+    "locations": [],
+    "mapper_kind": "event"
+  },
+  "event:mapper/a34be17f-4734-491d-947a-db1d4d086e79": {
+    "name": "Visit Bellhome",
+    "kind": "event",
+    "locations": [],
+    "mapper_kind": "event"
+  },
+  "event:mapper/20d1755f-f1ed-4600-b57f-b107fe387be3": {
+    "name": "floor blockade",
+    "kind": "blockade",
+    "locations": [],
+    "mapper_kind": "blockade"
+  },
+  "event:mapper/690ea7cf-1241-4838-8cb7-401ce1c8eb0f": {
+    "name": "stone wall",
+    "kind": "blockade",
+    "locations": [],
+    "mapper_kind": "blockade"
+  },
+  "event:mapper/75317c0b-e51c-4c57-8c35-d919503025b6": {
+    "name": "very hidden plank wall",
+    "kind": "blockade",
+    "locations": [],
+    "mapper_kind": "blockade"
+  },
+  "event:mapper/4cfc90ba-4d6a-48b6-9b8f-6c5dde9f35f5": {
+    "name": "silver room wall",
+    "kind": "blockade",
+    "locations": [],
+    "mapper_kind": "blockade"
+  },
+  "event:mapper/41d54897-5bb7-46f3-a521-f4b7e6fbe8ef": {
+    "name": "stone wall low",
+    "kind": "blockade",
+    "locations": [],
+    "mapper_kind": "blockade"
+  },
+  "event:mapper/1a7312d8-e319-4057-81d2-3a0f954aa362": {
+    "name": "Boss: Clover Dancers",
+    "kind": "boss",
+    "locations": [
+      "Boss: Clover Dancers"
+    ],
+    "mapper_kind": "boss"
+  },
+  "event:mapper/0ecfa478-3a5c-4490-ad56-e03e393aabeb": {
+    "name": "Breakable Ceiling Gate Maintenance",
+    "kind": "logic-point",
+    "locations": [],
+    "mapper_kind": "logic-point"
+  },
+  "event:mapper/a4c2389b-4b91-40d3-8acf-35fdbb070cb8": {
+    "name": "Spa block",
+    "kind": "resource",
+    "locations": [],
+    "mapper_kind": "resource"
+  },
+  "event:mapper/2dd2d662-24ce-4370-b947-e4258ed19eb1": {
+    "name": "Breakable wall Spa",
+    "kind": "blockade",
+    "locations": [],
+    "mapper_kind": "blockade"
+  },
+  "event:mapper/76655bc3-01b8-44bc-a30b-767eed1e5646": {
+    "name": "Breakable ceiling Outside Spa",
+    "kind": "blockade",
+    "locations": [],
+    "mapper_kind": "blockade"
+  },
+  "event:mapper/295c4124-2a29-4d91-839e-ef621f57f636": {
+    "name": "Air current Flea shaft",
+    "kind": "resource",
+    "locations": [],
+    "mapper_kind": "resource"
+  },
+  "event:mapper/8f833e99-d882-4c4d-9e3e-a545e51583b0": {
+    "name": "Flea Shaft Wall Air current",
+    "kind": "blockade",
+    "locations": [],
+    "mapper_kind": "blockade"
+  },
+  "event:mapper/c629ecfd-37a7-4d7c-a402-8a5a0acb3e1d": {
+    "name": "Flea Shaft Flea Wall",
+    "kind": "blockade",
+    "locations": [],
+    "mapper_kind": "blockade"
+  },
+  "event:mapper/d9a3645e-7da8-4967-ab44-cb4ee440093b": {
+    "name": "Wall over dining",
+    "kind": "blockade",
+    "locations": [],
+    "mapper_kind": "blockade"
+  },
+  "event:mapper/0fb60238-9f37-4dc4-8cb1-c384196af992": {
+    "name": "Below Ventrica to Grand Gate",
+    "kind": "logic-point",
+    "locations": [],
+    "mapper_kind": "logic-point"
+  },
+  "event:mapper/2fdae6b8-bdb1-44e6-8f35-1d246f213c1d": {
+    "name": "Breakable Floor Below Ventrica",
+    "kind": "blockade",
+    "locations": [],
+    "mapper_kind": "blockade"
+  },
+  "event:mapper/6bea8192-4568-4d35-a14f-05c26e0bd3eb": {
+    "name": "Rotating Tunnel top lever",
+    "kind": "switch",
+    "locations": [],
+    "mapper_kind": "switch"
+  },
+  "event:mapper/e5c7aee7-e86a-4992-9a77-1ef1d67342a6": {
+    "name": "Grand bellway lever",
+    "kind": "switch",
+    "locations": [],
+    "mapper_kind": "switch"
+  },
+  "event:mapper/eba9891f-8aa6-4105-8db1-2fe441a2da49": {
+    "name": "Grand bellway wall 1",
+    "kind": "blockade",
+    "locations": [],
+    "mapper_kind": "blockade"
+  },
+  "event:mapper/be553712-46c6-4918-8041-9be808376849": {
+    "name": "Grand bellway wall 2",
+    "kind": "blockade",
+    "locations": [],
+    "mapper_kind": "blockade"
+  },
+  "event:mapper/160395bd-4007-4d6d-8a96-b4df4fceaf98": {
+    "name": "Kratt Peeping",
+    "kind": "event",
+    "locations": [],
+    "mapper_kind": "event"
+  },
+  "event:mapper/fce7967e-04f6-4927-8567-330fa7d056fd": {
+    "name": "Choral Chambers Over Dininig - Rosary Necklace - Choral Chambers #2",
+    "kind": "collectible",
+    "locations": [],
+    "mapper_kind": "collectible"
+  },
+  "event:mapper/reviewed:bellhome-cylinders-returned": {
+    "name": "All Psalm Cylinders Turned In",
+    "kind": "event",
+    "locations": [],
+    "mapper_kind": "event"
+  },
+  "event:mapper/c4afe77b-1bc4-4258-a379-a5b74998ce59": {
+    "name": "Exhaust Organ Interior - Boss: Phantom",
+    "kind": "boss",
+    "locations": [],
+    "mapper_kind": "boss"
+  },
+  "event:mapper/cb3e8297-ffcb-4285-871d-fb2c984e3e03": {
+    "name": "Far Fields Wind Shaft - r4 blast rock",
+    "kind": "blockade",
+    "locations": [],
+    "mapper_kind": "blockade"
+  },
+  "event:mapper/53987f48-44fb-4962-82e8-c75393be8f10": {
+    "name": "Sinner's Road Bench - Unclogging The Overly Complicated Bench",
+    "kind": "blockade",
+    "locations": [],
+    "mapper_kind": "blockade"
+  },
+  "event:mapper/854e2b8b-6065-4ad9-9f9f-2a5c52b7c791": {
+    "name": "Sinner's Road Flea Rescue - Break Wall Flea Cage",
+    "kind": "blockade",
+    "locations": [],
+    "mapper_kind": "blockade"
+  },
+  "event:mapper/6d40805f-f98b-480c-adaf-6d976149c1c2": {
+    "name": "Sinner's Road North Hall - Secret Wall To The Mists Left",
+    "kind": "blockade",
+    "locations": [],
+    "mapper_kind": "blockade"
+  },
+  "event:mapper/88e9abd4-6b12-4544-ad50-0da5c6f6525b": {
+    "name": "Sinner's Road North Hall - Secret Wall To The Mists Right",
+    "kind": "blockade",
+    "locations": [],
+    "mapper_kind": "blockade"
+  },
+  "event:mapper/afc6baab-9c9c-45c4-81c7-f9c53c7f9407": {
+    "name": "Sinner's Road North Hall - Secret Wall Logic",
+    "kind": "logic-point",
+    "locations": [],
+    "mapper_kind": "logic-point"
+  },
+  "event:mapper/55e83ab7-dcc7-4c8b-bb6f-3e56ef380942": {
+    "name": "Lever That Gets You A Shortcut To The Bullshit Bench Door",
+    "kind": "lock",
+    "locations": [],
+    "mapper_kind": "lock"
   }
 }

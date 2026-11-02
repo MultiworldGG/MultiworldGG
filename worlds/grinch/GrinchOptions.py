@@ -86,7 +86,13 @@ class MissionCompletedIncludeGiftSquash(Toggle):
     display_name = "Include Gift Squashing in Missions Completed Goal"
     visibility = Visibility.none
 
-
+class RandomizeVacuumTubes(DefaultOnToggle):
+    """
+    Determines whether to add the vacuum tubes into the item pool.
+    Disabling this will give you access to all of them at the start.
+    "starting_area" and "progressive_vacuums" are ignored when enabling this setting.
+    """
+    display_name = "Randomize Vacuum Tubes"
 
 class StartingArea(Choice):
     """
@@ -430,6 +436,7 @@ class DeathLinkOption(Toggle):
 
 @dataclass
 class GrinchOptions(PerGameCommonOptions):
+    randomize_vacuum_tubes: RandomizeVacuumTubes
     progressive_vacuums: ProgressiveVacuums
     starting_area: StartingArea
     missionsanity: Missionsanity
@@ -475,6 +482,7 @@ class GrinchWeb(WebWorld):
         #     MissionCompletedIncludeGiftSquash,
         # ]),
         OptionGroup("Item Pool", [
+            RandomizeVacuumTubes,
             ProgressiveVacuums,
             StartingArea,
             ProgressiveGadgets,

@@ -546,7 +546,6 @@ ALL_LOCATIONS_INFO: dict[str, GrinchLocationInfo] = {
                 grinch_items.gadgets.OCTOPUS_CLIMBING_DEVICE,
                 grinch_items.gadgets.ROCKET_SPRING,
                 grinch_items.moves.PANCAKE,
-                grinch_items.moves.SEIZE,
             ],
             [
                 grinch_items.gadgets.GRINCH_COPTER,

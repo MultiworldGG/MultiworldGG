@@ -5,7 +5,7 @@ import pkgutil
 
 from dataclasses import dataclass, replace
 from functools import lru_cache
-from itertools import product
+from itertools import combinations, product
 from types import MappingProxyType
 from typing import Iterable, Mapping
 
@@ -33,6 +33,7 @@ class CompiledRoomClause:
     require_silk_spear: bool = False
     minimum_skip_tier: int = 0
     silk_cost: int = 0
+    rosary_prices: tuple[str, ...] = ()
 
 
 @dataclass(frozen=True)
@@ -322,10 +323,10 @@ _ATOM_ALTERNATIVES: Mapping[str, tuple[CompiledRoomClause, ...]] = {
         _part("Usable Sharpdart"),
         _part("Usable Silkshot (Original)"),
         _part("Usable Pimpillo"),
-        _part("Crest: Hunter"),
-        _part("Crest: Reaper"),
-        _part("Crest: Beast"),
-        _part("Crest: Shaman"),
+        _part("Ability: Needle Strike", "Crest: Hunter"),
+        _part("Ability: Needle Strike", "Crest: Reaper"),
+        _part("Ability: Needle Strike", "Crest: Beast"),
+        _part("Ability: Needle Strike", "Crest: Shaman"),
     ),
     # These describe ordinary environmental interactions, not inventory.
     "capability:break-vines": (_part(),),
@@ -874,7 +875,7 @@ _IMPLICIT_EVENT_SOURCE: Mapping[str, tuple[CompiledRoomClause, ...]] = {
     ),
     "event:greymoor/greymoor-craw-lake/lever-broken-from-greymoor-crow-nest": (
         _part(
-            room_node_name("greymoor/greymoor-craw-nest#crow-arena")
+            room_node_name("greymoor/greymoor-craw-nest#craw-arena")
         ),
     ),
     "event:greymoor/greymoor-west-bellshrine-room/lever-switch": (
@@ -1245,7 +1246,7 @@ _CURATED_EDGES: tuple[
         ),
     ),
     (
-        "greymoor/greymoor-craw-lake#craw-building",
+        "greymoor/greymoor-craw-lake#craw-building-roof",
         "greymoor/greymoor-craw-lake#middle-craw-nest",
         tuple(
             _part(
@@ -1417,6 +1418,7 @@ def _merge(left: CompiledRoomClause, right: CompiledRoomClause) -> CompiledRoomC
     return CompiledRoomClause(
         all_of=tuple(dict.fromkeys((*left.all_of, *right.all_of))),
         silk_cost=left.silk_cost + right.silk_cost,
+        rosary_prices=tuple(dict.fromkeys((*left.rosary_prices, *right.rosary_prices))),
         item_counts=tuple(merged_counts.items()),
         require_silk_spear=left.require_silk_spear or right.require_silk_spear,
         minimum_skip_tier=max(
@@ -1435,6 +1437,8 @@ def _event_requirement_name(atom: str) -> str:
 
 
 def _atom_alternatives(atom: str) -> tuple[CompiledRoomClause, ...]:
+    if atom.startswith('mapper:rosary-price:'):
+        return (CompiledRoomClause(rosary_prices=(atom.removeprefix('mapper:rosary-price:'),)),)
     if atom.startswith('mapper:enemy-presence:'):
         return (_part(),)
     if atom == 'mapper:elite-ball-knowledge:none':
@@ -1486,6 +1490,10 @@ def _atom_alternatives(atom: str) -> tuple[CompiledRoomClause, ...]:
             return (_part(),)
         if kind.endswith("-crest-attack") and difficulty in {"up", "down", "left", "right"}:
             return (_part("Crest: " + kind.removesuffix("-crest-attack").title()),)
+        if kind == 'longclaw' and difficulty in {'up', 'down', 'left', 'right'}:
+            return (_part('Usable Longclaw'),)
+        if kind.endswith('-crest-longclaw') and difficulty in {'up', 'down', 'left', 'right'}:
+            return (_part('Crest: ' + kind.removesuffix('-crest-longclaw').title(), 'Usable Longclaw'),)
         if kind == "clawline":
             casts = int(difficulty)
             if not 1 <= casts <= 8:
@@ -1509,7 +1517,7 @@ def _atom_alternatives(atom: str) -> tuple[CompiledRoomClause, ...]:
         if kind == "elegy-of-the-deep":
             return (_part("Elegy of the Deep", "Ancestral Art: Needolin"),)
         if kind == "wind-skip":
-            return (_part("Option: Proficient Movement"),)
+            return (_part("Option: Proficient Movement", "Ancestral Art: Drifter's Cloak"),)
         if kind == "needle-strike-stall":
             return tuple(_part("Ability: Needle Strike", crest.all_of[0], f"Technique: Needle Strike {max(1, tier)}") for crest in _ATOM_ALTERNATIVES["macro:any-crest"])
         if kind in {"flintslate-stall", "plasmium-phial-stall", "voltvessels-stall"}:
@@ -1552,6 +1560,11 @@ def _atom_alternatives(atom: str) -> tuple[CompiledRoomClause, ...]:
     alternatives = _ATOM_ALTERNATIVES.get(atom)
     if alternatives is not None:
         return alternatives
+    if atom == "count:cogheart-pieces:3":
+        return (_part(item_counts=(("Cogheart Piece", 3),)),)
+    if atom == "count:bellhome-items:2":
+        return tuple(_part(item_counts=tuple((name, 1) for name in pair))
+                     for pair in combinations(("Desk", "Gleamlights", "Bell Lacquer", "Gramophone"), 2))
     if atom.startswith("count:verdania-shards:"):
         minimum = int(atom.rsplit(":", 1)[1])
         if not 1 <= minimum <= 17:
@@ -1702,6 +1715,8 @@ def _clause_subsumes(
     if weaker.require_silk_spear and not stronger.require_silk_spear:
         return False
     if weaker.silk_cost > stronger.silk_cost:
+        return False
+    if not set(weaker.rosary_prices).issubset(stronger.rosary_prices):
         return False
     if weaker.minimum_skip_tier > stronger.minimum_skip_tier:
         return False

@@ -252,24 +252,82 @@ class PokemonReportTotalScore(DefaultOnToggle):
     display_name = "PKMN Report Score Rewards"
 
 
-class IncludeRNGChecks(Toggle):
+class PoseSanity(Range):
     """
-    Include the luck-heavy photos as checks. They are:
+    The number of Pokemon poses to include as checks.
+    These are the poses that Oak has a line for, but do not give a "Special Pose" bonus.
+    
+    Setting this to a high number will make your playthrough much longer. See the Pose FAQ for a guide to each pose.
+    Note that some poses are hard/RNG checks, so this number may be adjusted during generation if you do not have those enabled.
+    """
+    display_name = "Posesanity"
+    range_start = 0
+    range_end = 141
+    default = 0
+
+
+class DeprecatedIncludeRNGChecks(Toggle):
+    """
+    This option is deprecated. Please use `include_rng_photos` and/or `include_rng_poses`.
+    
+    Include the luck-heavy photos as checks. The photos are:
+    - [Volcano] Arcanine: Multiple
+    - [  River] Cloyster: Multiple and Psyduck: Multiple
+    - [ Valley] Magikarp (Valley): Multiple and Dratini: Multiple
+
+    Some regular poses are RNG checks. See the Pose FAQ for a list.
+    """
+    display_name = "[Deprecated] Include random checks"
+    visibility = Visibility.none
+
+class DeprecatedIncludeHardChecks(Toggle):
+    """
+    This option is deprecated. Please use `include_hard_photos` and/or `include_hard_poses`.
+    
+    Include the hard photos as checks. They are:
+    - [ River] Pikachu (River): Good Technique
+    - [  Cave] Zubat (Cave): Multiple, Magikarp (Cave): Wonderful, Balloon Pikachu, and Flying Pikachu
+    - [Valley] Staryu: Multiple, Starmie: Multiple, and Goldeen: Good Technique
+
+    Some regular poses are hard checks. See the Pose FAQ for a list.
+    """
+    display_name = "[Deprecated] Include hard checks"
+    visibility = Visibility.none
+
+class IncludeRNGPhotos(Toggle):
+    """
+    Include the luck-heavy photos as checks. The photos are:
     - [Volcano] Arcanine: Multiple
     - [  River] Cloyster: Multiple and Psyduck: Multiple
     - [ Valley] Magikarp (Valley): Multiple and Dratini: Multiple
     """
-    display_name = "Include random checks"
+    display_name = "Include random photos"
 
 
-class IncludeHardChecks(Toggle):
+class IncludeRNGPoses(Toggle):
+    """
+    Include the luck-heavy poses as checks.
+    See the Pose FAQ for a list of what poses are considered lucky heavy (tagged "RNG").
+    """
+    display_name = "Include random poses"
+
+
+class IncludeHardPhotos(Toggle):
     """
     Include the hard photos as checks. They are:
     - [ River] Pikachu (River): Good Technique
     - [  Cave] Zubat (Cave): Multiple, Magikarp (Cave): Wonderful, Balloon Pikachu, and Flying Pikachu
     - [Valley] Staryu: Multiple, Starmie: Multiple, and Goldeen: Good Technique
     """
-    display_name = "Include hard checks"
+    display_name = "Include hard photos"
+
+
+class IncludeHardPoses(Toggle):
+    """
+    Include the hard poses as checks.
+    See the Pose FAQ for a list of what poses are considered hard (tagged "HARD").
+    """
+    display_name = "Include hard poses"
 
 
 class UseHardLogic(Toggle):
@@ -311,7 +369,7 @@ class DeprecatedPressLToStop(Toggle):
     """
     Deprecated. Use the new option `left_bumper_to_start_stop` instead.
     """
-    display_name = "Press L to start/stop (deprecated)"
+    display_name = "[Deprecated] Press L to start/stop"
     visibility = Visibility.none
 
 
@@ -354,10 +412,15 @@ class PokemonSnapOption(PerGameCommonOptions):
     secret_exits:  SecretExits
     report_photo_count: PokemonReportPhotoCount
     report_score_total: PokemonReportTotalScore
+    posesanity: PoseSanity
 
-    rng_checks:  IncludeRNGChecks
-    hard_checks: IncludeHardChecks
-    hard_logic:  UseHardLogic
+    rng_checks:  DeprecatedIncludeRNGChecks
+    hard_checks: DeprecatedIncludeHardChecks
+    include_rng_photos:  IncludeRNGPhotos
+    include_rng_poses:   IncludeRNGPoses
+    include_hard_photos: IncludeHardPhotos
+    include_hard_poses:  IncludeHardPoses
+    hard_logic:          UseHardLogic
 
     start_with_dash_engine: StartWithDashEngine
     left_bumper_to_start_stop: PressLToStop
@@ -394,15 +457,18 @@ pokemon_snap_option_groups = [
         SecretExits,
         PokemonReportPhotoCount,
         PokemonReportTotalScore,
+        PoseSanity
     ]),
     OptionGroup("Checks - Difficulty Settings", [
-		IncludeRNGChecks,
-		IncludeHardChecks,
+        IncludeRNGPhotos,
+        IncludeRNGPoses,
+        IncludeHardPhotos,
+        IncludeHardPoses,
         UseHardLogic
-	]),
+    ]),
     OptionGroup("Quality Of Life", [
-		StartWithDashEngine,
+        StartWithDashEngine,
         PressLToStop,
         CameraInversion,
-	]),
+    ]),
 ]

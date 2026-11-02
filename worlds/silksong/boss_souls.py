@@ -6,6 +6,8 @@ from dataclasses import replace
 
 from Options import OptionError
 
+from .locations import canonicalize_location_name
+
 BOSS = "Boss: Groal the Great"
 SOUL = "Soul of Groal the Great"
 SETH_SOUL = "Soul of Seth (Progressive)"
@@ -39,7 +41,7 @@ def enabled_bosses(world):
         return tuple(passthrough.get("boss_soul_bosses", ()))
     excluded = world.get_goal_excluded_location_names()
     act = int(world.get_content_scope().removeprefix("act_"))
-    return tuple(row["boss"] for row in CATALOGUE if row["boss"] not in excluded and row.get("act", 1) <= act)
+    return tuple(row["boss"] for row in CATALOGUE if canonicalize_location_name(row["boss"]) not in excluded and row.get("act", 1) <= act)
 
 
 def gate(world, rules, boss=BOSS):
@@ -50,7 +52,8 @@ def gate(world, rules, boss=BOSS):
 
 
 def gate_location(world, name, rules):
-    return gate(world, rules, name) if name in BOSS_EVENTS else rules
+    boss = next((boss for boss in BOSS_EVENTS if canonicalize_location_name(boss) == name), None)
+    return gate(world, rules, boss) if boss is not None else rules
 
 
 def requires_bell_beast_for_travel(world):

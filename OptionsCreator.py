@@ -222,7 +222,8 @@ class VisualListSetCounter(MDDialog):
 
     def update_width(self, *args) -> None:
         """Use the available desktop space instead of MDDialog's narrow mobile-oriented cap."""
-        self.size_hint_max_x = max(dp(640), min(dp(900), Window.width - dp(96)))
+        # KivyMD 2.0.0 disables size hints for dialogs, so set the actual width.
+        self.width = max(dp(240), min(dp(900), Window.width - dp(96)))
 
     def validate_add(self, instance):
         if self.valid_keys:
@@ -420,7 +421,7 @@ class OptionsCreator(ThemedApp):
             }
             for choice in option.special_range_names
         ]
-        box.range.slider.dropdown = MDDropdownMenu(caller=box.choice, items=items)
+        box.range.slider.dropdown = MDDropdownMenu(caller=box.choice, items=items, width=dp(240))
         box.choice.bind(on_release=open_dropdown)
         self.options[name] = default
         return box
@@ -459,7 +460,7 @@ class OptionsCreator(ThemedApp):
             }
             for choice in option.name_lookup
         ]
-        dropdown = MDDropdownMenu(caller=main_button, items=items)
+        dropdown = MDDropdownMenu(caller=main_button, items=items, width=dp(240))
         self.options[name] = option.name_lookup[option.default] if not default_string else option.default
         return main_button
 

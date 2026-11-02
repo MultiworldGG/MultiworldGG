@@ -1,0 +1,431 @@
+﻿# Q. What is this file?
+# A. This file contains options which allow you to configure your multiworld experience while allowing
+#    others to play how they want as well.
+#
+# Q. How do I use it?
+# A. The options in this file are weighted. This means the higher number you assign to a value, the
+#    more chances you have for that option to be chosen. For example, an option like this:
+#
+#    map_shuffle:
+#      on: 5
+#      off: 15
+#
+#    Means you have 5 chances for map shuffle to occur, and 15 chances for map shuffle to be turned
+#    off.
+#
+# Q. I've never seen a file like this before. What characters am I allowed to use?
+# A. This is a .yaml file. You are allowed to use most characters.
+#    To test if your yaml is valid or not, you can use this website:
+#        http://www.yamllint.com/
+#    You can also verify that your Archipelago options are valid at this site:
+#        https://archipelago.gg/check
+
+# Your name in-game, limited to 16 characters.
+#     {player} will be replaced with the player's slot number.
+#     {PLAYER} will be replaced with the player's slot number, if that slot number is greater than 1.
+#     {number} will be replaced with the counter value of the name.
+#     {NUMBER} will be replaced with the counter value of the name, if the counter value is greater than 1.
+name: Player{number}
+
+# Used to describe your yaml. Useful if you have multiple files.
+description: Default Twilight Princess Template
+
+game: Twilight Princess
+requires:
+  version: 0.6.1 # Version of Archipelago required for this yaml to work as expected.
+
+Twilight Princess:
+  # Game Options
+  progression_balancing:
+    # A system that can move progression earlier, to try and prevent the player from getting stuck and bored early.
+    #
+    # A lower setting means more getting stuck. A higher setting means less getting stuck.
+    #
+    # You can define additional values between the minimum and maximum values.
+    # Minimum value is 0
+    # Maximum value is 99
+    random: 0
+    random-low: 0
+    random-high: 0
+    disabled: 0 # equivalent to 0
+    normal: 50 # equivalent to 50
+    extreme: 0 # equivalent to 99
+
+  accessibility:
+    # Set rules for reachability of your items/locations.
+    #
+    # **Full:** ensure everything can be reached and acquired.
+    #
+    # **Minimal:** ensure what is needed to reach your goal can be acquired.
+    full: 50
+    minimal: 0
+
+  death_link:
+    # When you die, everyone who enabled death link dies. Of course, the reverse is true too.
+    "false": 50
+    "true": 0
+
+  small_keys_on_bosses:
+    # If disabled, Small keys cannot be placed on boss rewards
+    "false": 50
+    "true": 0
+
+  modify_shop_models:
+    # NON-DEFAULT CHOICE NOT REPRESENTED IN GAME (must self enforce if changed from default)
+    # If enabled, swap shop models with the items that are placed there.
+    "false": 50
+    "true": 0
+
+  # Item Pool / Location Settings
+  golden_bugs_shuffled:
+    # If enabled, golden bugs will be shuffled into the itempool.
+    # If disabled, bugs will be vanilla and agitha will not be progression
+    "false": 0
+    "true": 50
+
+  sky_characters_shuffled:
+    # If enabled, sky characters will be shuffled into the itempool.
+    # If disabled, sky characters will be vanilla.
+    "false": 0
+    "true": 50
+
+  npc_items_shuffled:
+    # If enabled, Gifts from NPCs can be progression items.
+    "false": 0
+    "true": 50
+
+  shop_items_shuffled:
+    # If enabled, Shop Items can be progression items.
+    "false": 0
+    "true": 50
+
+  hidden_skills_shuffled:
+    # If enabled, golden wolfs can be progression items.
+    # *Hidden skills will always be shuffled into item pool.
+    "false": 0
+    "true": 50
+
+  poe_shuffled:
+    # If enabled, Poes will be shuffled into the itempool.
+    # If disabled, Poes will be vanilla.
+    "false": 0
+    "true": 50
+
+  heart_piece_shuffled:
+    # If enabled, Heart Piece locations can contain progression items.
+    "false": 0
+    "true": 50
+
+  overworld_shuffled:
+    # If enabled, Overworld locations can contain progression items.
+    # Cannot be disabled if Dungeon shuffle is disabled
+    # Note:
+    # Disabling may lead to generation failures as the possible location count is reduced dramtically.
+    "false": 0
+    "true": 50
+
+  dungeons_shuffled:
+    # If enabled, Dungeons locations can contain progression items.
+    # Cannot be disabled if Overworld shuffle is disabled
+    "false": 0
+    "true": 50
+
+  # Logic Settings
+  logic_rules:
+    # Controls what types of tricks the logic can expect you to perform.
+    #
+    # - Glitchless: Only intended mechanics are required
+    # - Glitched: Some glitches may be required
+    glitchless: 50
+    glitched: 0
+
+  castle_requirements:
+    # NON-DEFAULT CHOICE NOT REPRESENTED IN GAME (must self enforce if changed from default)
+    # Controls requirements for accessing Hyrule Castle.
+    #
+    # - Open: No requirements
+    # - Fused Shadows: Requires all Fused Shadows
+    # - Mirror Shards: Requires all Mirror Shards
+    # - All Dungeons: Requires completing all dungeons
+    # - Vanilla: Beat Palace of Twilight
+    #
+    # Note:
+    # Choosing All Dungeons or Vanilla will force dungeons items to be in Hyrule Castle if Any Dungeon is chosen for them
+    #     This also removes Hyrule castle from list of dungeons for other of that dungeon item to be in
+    open: 50
+    fused_shadows: 0
+    mirror_shards: 0
+    all_dungeons: 0
+    vanilla: 0
+
+  palace_requirements:
+    # NON-DEFAULT CHOICE NOT REPRESENTED IN GAME (must self enforce if changed from default)
+    # Controls requirements for accessing Palace of Twilight.
+    #
+    # - Open: No requirements
+    # - Fused Shadows: Requires all Fused Shadows
+    # - Mirror Shards: Requires all Mirror Shards
+    # - Vanilla: Beat City in the Sky
+    #
+    # Note:
+    # Choosing Vanilla will force dungeons items to be in Palace of Twilight if Any Dungeon is chosen for them
+    #     This also removes Palace of Twilight from list of dungeons for other of that dungeon item to be in
+    open: 50
+    fused_shadows: 0
+    mirror_shards: 0
+    vanilla: 0
+
+  faron_woods_logic:
+    # NON-DEFAULT CHOICE NOT REPRESENTED IN GAME (must self enforce if changed from default)
+    # Controls logic for accessing Faron Woods.
+    #
+    # - Open: No special requirements
+    # - Closed: Requires forest temple to be beaten before leaving faron woods
+    #
+    # Note:
+    # Choosing Closed will force dungeons items to be in Forest Temple if Any Dungeon is chosen for them
+    #     This also removes Forest Temple from list of dungeons for other of that dungeon item to be in
+    open: 50
+    closed: 0
+
+  # Dungeon Items
+  small_key_settings:
+    # Controls how small keys are randomized.
+    #
+    # - **Start With Small Keys:** You will start the game with the small keys for all dungeons.
+    # - **Vanilla Small Keys:** Small keys will be kept in their vanilla location (non-randomized).
+    # - **Own Dungeon Small Keys:** Small keys will be randomized locally within their own dungeon.
+    # - **Any Dungeon Small Keys:** Small keys will be randomized locally within any dungeon.
+    # - **Anywhere:** Small keys can be found in any progression location, if dungeons are randomized.
+    #
+    # Note:
+    # Not shuffling Dungeons will overwrite this to vanilla, unless you selected start with
+    vanilla: 50
+    own_dungeon: 0
+    any_dungeon: 0
+    anywhere: 0
+    startwith: 0
+
+  big_key_settings:
+    # Controls how big keys are randomized.
+    #
+    # - **Start With Big Keys:** You will start the game with the big keys for all dungeons.
+    # - **Vanilla Big Keys:** Big keys will be kept in their vanilla location (non-randomized).
+    # - **Own Dungeon Big Keys:** Big keys will be randomized locally within their own dungeon.
+    # - **Any Dungeon Big Keys:** Big keys will be randomized locally within any dungeon.
+    # - **Anywhere:** Big keys can be found in any progression location.
+    #
+    # Note:
+    # Not shuffling Dungeons will overwrite this to vanilla, unless you selected start with
+    vanilla: 50
+    own_dungeon: 0
+    any_dungeon: 0
+    anywhere: 0
+    startwith: 0
+
+  map_and_compass_settings:
+    # Controls how dungeon maps and compasses are randomized.
+    #
+    # - **Start With Maps & Compasses:** You will start the game with the dungeon maps and compasses for all dungeons.
+    # - **Vanilla Maps & Compasses:** Dungeon maps and compasses will be kept in their vanilla location (non-randomized).
+    # - **Own Dungeon Maps & Compasses:** Dungeon maps and compasses will be randomized locally within their own dungeon.
+    # - **Any Dungeon Maps & Compasses:** Dungeon maps and compasses will be randomized locally within any dungeon.
+    # - **Anywhere:** Dungeon maps and compasses can be found anywhere, without restriction.
+    #
+    # Note:
+    # Not shuffling Dungeons will overwrite this to vanilla, unless you selected start with
+    vanilla: 50
+    own_dungeon: 0
+    any_dungeon: 0
+    anywhere: 0
+    startwith: 0
+
+  dungeon_rewards_progression:
+    # Controls whether dungeon reward and heart containers are forced to have progression items.
+    "false": 0
+    "true": 50
+
+  # Timesavers
+  skip_minor_cutscenes:
+    # NON-DEFAULT CHOICE NOT REPRESENTED IN GAME (must self enforce if changed from default)
+    # If enabled, minor cutscenes are skipped.
+    "false": 0
+    "true": 50
+
+  skip_major_cutscenes:
+    # NON-DEFAULT CHOICE NOT REPRESENTED IN GAME (must self enforce if changed from default)
+    # If enabled, major cutscenes are skipped.
+    "false": 0
+    "true": 50
+
+  fast_iron_boots:
+    # NON-DEFAULT CHOICE NOT REPRESENTED IN GAME (must self enforce if changed from default)
+    # If enabled, movement is not slowed when wearing Iron Boots.
+    "false": 0
+    "true": 50
+
+  quick_transform:
+    # NON-DEFAULT CHOICE NOT REPRESENTED IN GAME (must self enforce if changed from default)
+    # If enabled, you can quickly transform by pressing R + Y.
+    "false": 0
+    "true": 50
+
+  instant_message_text:
+    # NON-DEFAULT CHOICE NOT REPRESENTED IN GAME (must self enforce if changed from default)
+    # If enabled, message text is instant.
+    "false": 0
+    "true": 50
+
+  open_map:
+    # NON-DEFAULT CHOICE NOT REPRESENTED IN GAME (must self enforce if changed from default)
+    # If enabled, Map areas are unlocked and portals unlocked.
+    "false": 0
+    "true": 50
+
+  increase_spinner_speed:
+    # NON-DEFAULT CHOICE NOT REPRESENTED IN GAME (must self enforce if changed from default)
+    # If enabled, spinner speed is increased.
+    # *Spinner speed not taken into account in logic.
+    "false": 0
+    "true": 50
+
+  open_door_of_time:
+    # NON-DEFAULT CHOICE NOT REPRESENTED IN GAME (must self enforce if changed from default)
+    # If enabled, the Door of Time is open.
+    "false": 0
+    "true": 50
+
+  early_shadow_crystal:
+    # When Enabled Shadow Crystal will be placed into Sphere 1 of the local world
+    "false": 50
+    "true": 0
+
+  # Additional Settings
+  transform_anywhere:
+    # NON-DEFAULT CHOICE NOT REPRESENTED IN GAME (must self enforce if changed from default)
+    # If enabled, the player can transform anywhere.
+    "false": 0
+    "true": 50
+
+  increase_wallet:
+    # NON-DEFAULT CHOICE NOT REPRESENTED IN GAME (must self enforce if changed from default)
+    # If enabled, the wallet capacity is increased.
+    "false": 0
+    "true": 50
+
+  bonks_do_damage:
+    # NON-DEFAULT CHOICE NOT REPRESENTED IN GAME (must self enforce if changed from default)
+    # If enabled, bonks do damage.
+    "false": 50
+    "true": 0
+
+  trap_frequency:
+    # Controls the frequency of traps in the game.
+    no_traps: 50
+    few: 0
+    many: 0
+    mayhem: 0
+    nightmare: 0
+
+  damage_magnification:
+    # NON-DEFAULT CHOICE NOT REPRESENTED IN GAME (must self enforce if changed from default)
+    # Multiplies the damage the player takes.
+    vanilla: 50
+    double: 0
+    triple: 0
+    quadruple: 0
+    ohko: 0
+
+  starting_tod:
+    # NON-DEFAULT CHOICE NOT REPRESENTED IN GAME (must self enforce if changed from default)
+    # Controls the starting time of day.
+    morning: 50
+    noon: 0
+    evening: 0
+    night: 0
+
+  # Dungeon Entrance Settings
+  skip_lakebed_entrance:
+    # NON-DEFAULT CHOICE NOT REPRESENTED IN GAME (must self enforce if changed from default)
+    # If enabled, the Lakebed does not require water bombs.
+    "false": 0
+    "true": 50
+
+  skip_arbiters_grounds_entrance:
+    # NON-DEFAULT CHOICE NOT REPRESENTED IN GAME (must self enforce if changed from default)
+    # If enabled, entering Arbiters Grounds does not require defeating King Bulblin.
+    "false": 0
+    "true": 50
+
+  skip_snowpeak_entrance:
+    # NON-DEFAULT CHOICE NOT REPRESENTED IN GAME (must self enforce if changed from default)
+    # If enabled, Snowpeak does not require Reekfish Scent.
+    "false": 0
+    "true": 50
+
+  skip_city_in_the_sky_entrance:
+    # NON-DEFAULT CHOICE NOT REPRESENTED IN GAME (must self enforce if changed from default)
+    # If enabled, City in The Sky does not require filled Skybook.
+    "false": 0
+    "true": 50
+
+  goron_mines_entrance:
+    # NON-DEFAULT CHOICE NOT REPRESENTED IN GAME (must self enforce if changed from default)
+    # Controls requirements for accessing the Goron Mines.
+    #
+    # - **Closed:** Player must wrestle Gor Coron to enter the mines.
+    # - **No Wrestling:** Player does not have to wrestle Gor Coron.
+    # - **Open:** Same as No Wrestling but you can use the elevator immediately.
+    closed: 0
+    no_wrestling: 0
+    open: 50
+
+  tot_entrance:
+    # NON-DEFAULT CHOICE NOT REPRESENTED IN GAME (must self enforce if changed from default)
+    # Controls requirements for accessing the Temple of Time.
+    #
+    # - **Closed:** Player must defeat Skull Kid to access Sacred Grove. Master Sword needed to access Past.
+    # - **Open Grove:** Player doesn't need to defeat Skull Kid. Master Sword needed to access Past.
+    # - **Open:** Open Grove but player does not need Master Sword to access Past.
+    closed: 0
+    open_grove: 0
+    open: 50
+
+  # Item & Location Options
+  local_items:
+    # Forces these items to be in their native world.
+    []
+
+  non_local_items:
+    # Forces these items to be outside their native world.
+    []
+
+  start_inventory:
+    # Start with these items.
+    {}
+
+  start_inventory_from_pool:
+    # Start with these items and don't place them in the world.
+    #
+    # The game decides what the replacement items will be.
+    {}
+
+  start_hints:
+    # Start with these item's locations prefilled into the ``!hint`` command.
+    []
+
+  start_location_hints:
+    # Start with these locations and their item prefilled into the ``!hint`` command.
+    []
+
+  exclude_locations:
+    # Prevent these locations from having an important item.
+    []
+
+  priority_locations:
+    # Prevent these locations from having an unimportant item.
+    []
+
+  item_links:
+    # Share part of your item pool with other players.
+    []

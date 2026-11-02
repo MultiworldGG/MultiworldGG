@@ -103,6 +103,7 @@
     { "category": "hn1", "code": 1734473753, "name": "Lava Core Signals Frequency", "type": "progression" },
     { "category": "hn1", "code": 1734473754, "name": "Galactic Communication Frequency", "type": "progression" },
 
+    { "category": "ac", "code": 1734473791, "name": "Astral Vision", "type": "progression" },
     { "category": "ac", "code": 1734473755, "name": "Astral Codec Frequency", "type": "progression" },
 
     { "category": "hn2", "code": 1734473756, "name": "Memory Cube Interface", "type": "progression" },
@@ -115,7 +116,8 @@
     { "category": "fc", "split_translator": true, "code": 1734473766, "name": "Translator (Deep Bramble)", "type": "progression" },
     { "category": "fc", "code": 1734473767, "name": "Expanded Dictionary", "type": "progression" },
 
-    { "category": "fc", "code": 1734473768, "name": "Deep Bramble Coordinates", "type": "progression" },
+    { "category": "eh|fc|hn1|hn2|hs", "code": 1734473768, "name": "Interstellar Warp Drive", "type": "progression" },
+
     { "category": "fc", "code": 1734473769, "name": "Taming Techniques", "type": "progression" },
     { "category": "fc", "code": 1734473770, "name": "Crystal Repair Manual", "type": "progression" },
     { "category": "fc", "code": 1734473771, "name": "Thermal Insulation", "type": "progression" },

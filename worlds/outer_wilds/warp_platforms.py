@@ -1,5 +1,6 @@
 from random import Random
-from .options import Spawn
+
+from .options import OuterWildsGameOptions, Spawn
 from Options import OptionError
 
 # Use lists instead of sets for collections whose copies will get shuffled to ensure determinism.
@@ -71,7 +72,21 @@ class WarpPlatforms:
         self.mappings = vanilla_warp_mapping.copy()
 
 
-    def randomize_unmapped_warps(self, random: Random, spawn: Spawn) -> None:
+    # This method is important encapsulation because most of the "private" methods it calls assume
+    # they'll be called in this specific order, or else they won't work correctly.
+    def apply_options(self, random: Random, options: OuterWildsGameOptions):
+        if not options.randomize_warp_platforms:
+            self.apply_vanilla_warp_platform_mapping()
+        if options.enable_eh_mod:
+            self._apply_eh_modifications()
+        if len(options.warp_platform_plando) > 0:
+            self._apply_warp_plando(options.warp_platform_plando.value)
+        if options.enable_ac_mod:
+            self._apply_ac_modifications(random)
+        self._randomize_unmapped_warps(random, options.spawn)
+
+
+    def _randomize_unmapped_warps(self, random: Random, spawn: Spawn) -> None:
         unmapped_platforms = self.get_unmapped_warps()
         platforms_reachable_by_ship = [p for p in warp_platforms if p not in self.dead_end_platforms]
         # Handle dead ends first to avoid pairing dead ends with other dead ends (e.g. Sun Station <-> ATP)
@@ -106,7 +121,8 @@ class WarpPlatforms:
         self.mappings.extend(list(zip(it, it)))
 
 
-    def shipless_connection_exists(self, from_region: str, to_region: str, two_way: bool = False) -> bool:
+    # To be precise, here "warp only" means Nomai Warp Codes and Spacesuit are the only AP items needed to use the connection.
+    def warp_only_connection_exists(self, from_region: str, to_region: str, two_way: bool = False) -> bool:
         if from_region not in warp_platform_to_logical_region.values():
             return False
         return self._connection_exists_recursive_impl(from_region, to_region, two_way, set())
@@ -155,7 +171,7 @@ class WarpPlatforms:
         return unmapped_warps
 
 
-    def apply_warp_plando(self, connections: dict[str, str]):
+    def _apply_warp_plando(self, connections: dict[str, str]):
         unmapped_warps = self.get_unmapped_warps()
         for w1, w2 in connections.items():
             if w1 in self.dead_end_platforms and w2 in self.dead_end_platforms:
@@ -163,12 +179,12 @@ class WarpPlatforms:
             if w1 == w2:
                 raise OptionError(f"Error while processing warp plando: Trying to connect {w1} to itself.")
             # Remove any existing connection (ie vanilla warp).
-            connections_to_remove = []
+            connections_to_remove = set()
             for warp_to_disconnect in (w1, w2):
                 for (wm1, wm2) in self.mappings:
                     if wm1 == warp_to_disconnect or wm2 == warp_to_disconnect:
-                        connections_to_remove.append((wm1, wm2))
-            for connection in connections_to_remove:
+                        connections_to_remove.add((wm1, wm2))
+            for connection in sorted(connections_to_remove):
                 self.mappings.remove(connection)
                 unmapped_warps.extend(connection)
 
@@ -177,13 +193,13 @@ class WarpPlatforms:
             unmapped_warps.remove(w2)
 
 
-    def apply_ac_modifications(self, random: Random) -> None:
+    def _apply_ac_modifications(self, random: Random) -> None:
         unmapped_warps = self.get_unmapped_warps()
         # Astral Codec requires a shipless warp path from the Hourglass Twins to Timber Hearth.
         # For simplicity, we connect HGT to TH directly, only randomizing which HGT pad gets used.
 
         if "TH" not in unmapped_warps:
-            if self.shipless_connection_exists("Hourglass Twins", "Timber Hearth"):
+            if self.warp_only_connection_exists("Hourglass Twins", "Timber Hearth"):
                 return # Connection already exists via plando or vanilla mapping.
             raise OptionError("Astral Codec requires Hourglass Twins to be connected to Timber Hearth, but TH is connected to somewhere else.")
 
@@ -194,8 +210,5 @@ class WarpPlatforms:
         self.mappings.append(("TH", hgt_platform))
 
 
-    def apply_eh_modifications(self) -> None:
+    def _apply_eh_modifications(self) -> None:
         self.dead_end_platforms.remove("BHF")
-        bh_connections = self.itemless_warp_region_connections.get("Brittle Hollow")
-        if bh_connections:
-            bh_connections.add("Hanging City Ceiling")

@@ -7,7 +7,8 @@ class TestDLC(OuterWildsTestBase):
     }
 
     def test_eote_dlc(self):
-        self.assertEqual(self.getLocationCount(), 128)  # 87(+3V) base game + 34(+4V) DLC locations
+        self.assertEqual(self.getLocationCount(), 121)  # 87 base game + 34 DLC locations
+        self.assertEqual(self.getLocationCount(include_events=True), 128)  # 3 base game Victory events + 4 DLC Victory events
 
         self.assertNotReachableWith("EotE: River Lowlands Workshop", [])
         self.assertReachableWith("EotE: River Lowlands Workshop", [
@@ -78,9 +79,9 @@ class TestDLCWithLogsanity(OuterWildsTestBase):
     }
 
     def test_eote_dlc_with_logsanity(self):
-        # 87(+3V) base game default locations + 176 base game logsanity locations +
-        # 34(+4V) DLC default locations + 72 DLC logsanity locations
-        self.assertEqual(self.getLocationCount(), 376)
+        # 87 base game default locations + 176 base game logsanity locations +
+        # 34 DLC default locations + 72 DLC logsanity locations
+        self.assertEqual(self.getLocationCount(), 369)
 
         # Routes to Shrouded Woodlands
 
@@ -172,7 +173,8 @@ class TestDLCOnly(OuterWildsTestBase):
     }
 
     def test_dlc_only(self):
-        self.assertEqual(self.getLocationCount(), 35)  # 34(+1V) DLC default locations
+        self.assertEqual(self.getLocationCount(), 34)  # 34 DLC default locations
+        self.assertEqual(self.getLocationCount(include_events=True), 35)  # only 1 DLC Victory location
 
 
 class TestDLCOnlyLogsanity(OuterWildsTestBase):
@@ -182,7 +184,7 @@ class TestDLCOnlyLogsanity(OuterWildsTestBase):
     }
 
     def test_dlc_only_logsanity(self):
-        self.assertEqual(self.getLocationCount(), 107)  # 34(+1V) DLC default locations + 72 DLC logsanity locations
+        self.assertEqual(self.getLocationCount(), 106)  # 34 DLC default locations + 72 DLC logsanity locations
 
 
 # dlc_only should turn the story mod options into no-ops
@@ -199,4 +201,5 @@ class TestDLCOnlyWithStoryMods(OuterWildsTestBase):
     }
 
     def test_default(self):
-        self.assertEqual(self.getLocationCount(), 35)  # 34(+1V) DLC default locations
+        self.assertEqual(self.getLocationCount(), 34)  # 34 DLC default locations
+        self.assertEqual(self.getLocationCount(include_events=True), 35)  # only 1 DLC Victory location

@@ -5,6 +5,7 @@ from .Locations import WLLocation, unlock_locations, level_location_table
 from .Levels import level_info_dict
 from .Names import LocationName, ItemName
 from .Blocks import block_info_dict
+from .Items import powerup_order, course_unlock_names
 from worlds.generic.Rules import add_rule, set_rule
 
 
@@ -14,28 +15,30 @@ def can_defeat_final_boss(
     return state.has(ItemName.boss_token, player, options.bosses_required.value)
 
 
-def can_garlic(player, state: CollectionState) -> bool:
-    return state.has(ItemName.wario_garlic, player) or state.has(
-        ItemName.progressive_powerup, player, 1
+def can_powerup(player, state: CollectionState, powerup: str) -> bool:
+    index = powerup_order.index(powerup)
+    return state.has(powerup, player) or state.has(
+        ItemName.progressive_powerup, player, index + 1
+    ) or (
+        state.multiworld.worlds[player].options.get_previous_powerups
+        and state.has_any(powerup_order[index + 1:], player)
     )
+
+
+def can_garlic(player, state: CollectionState) -> bool:
+    return can_powerup(player, state, ItemName.wario_garlic)
 
 
 def can_bull(player, state: CollectionState) -> bool:
-    return state.has(ItemName.wario_bull, player) or state.has(
-        ItemName.progressive_powerup, player, 2
-    )
+    return can_powerup(player, state, ItemName.wario_bull)
 
 
 def can_dragon(player, state: CollectionState) -> bool:
-    return state.has(ItemName.wario_dragon, player) or state.has(
-        ItemName.progressive_powerup, player, 3
-    )
+    return can_powerup(player, state, ItemName.wario_dragon)
 
 
 def can_jet(player, state: CollectionState) -> bool:
-    return state.has(ItemName.wario_jet, player) or state.has(
-        ItemName.progressive_powerup, player, 4
-    )
+    return can_powerup(player, state, ItemName.wario_jet)
 
 
 def can_create_coin(player, state: CollectionState) -> bool:
@@ -93,8 +96,6 @@ def create_regions(world, player: int, options, active_locations):
     menu_region = create_region(world, player, active_locations, "Menu", None)
 
     overworld_region_locations = []
-    if options.goal == "garlic_hunt":
-        overworld_region_locations.append(LocationName.garlic_goal)
     overworld_region = create_region(
         world,
         player,
@@ -734,9 +735,7 @@ def create_regions(world, player: int, options, active_locations):
         world, player, active_locations, LocationName.syrupcastle_40_region, None
     )
     # syrupcastle_40_exit_1 = create_region(world, player, active_locations, LocationName.syrupcastle_40_exit_1,[LocationName.syrupcastle_40_exit_1])
-    syrupcastle_boss_locations = [LocationName.syrupcastle_boss_item]
-    if options.goal == "genie":
-        syrupcastle_boss_locations += [LocationName.syrupcastle_boss]
+    syrupcastle_boss_locations = []
     syrupcastle_boss = create_region(
         world,
         player,
@@ -888,6 +887,10 @@ def create_regions(world, player: int, options, active_locations):
         # genie_region,
         syrupcastle_boss,
     ]
+    goal_region = overworld_region if options.goal == "garlic_hunt" else syrupcastle_boss
+    goal_name = LocationName.garlic_goal if options.goal == "garlic_hunt" else LocationName.syrupcastle_boss
+    goal_region.locations.append(WLLocation(player, goal_name, None, goal_region))
+
     # Handle blocksanity logic
     if options.blocksanity == 1:
         for block_index in block_info_dict:
@@ -2659,7 +2662,7 @@ def connect_regions(world, player, options, level_to_tile_dict):
         names,
         LocationName.syrupcastle_40_region,
         LocationName.syrupcastle_boss,
-        lambda state: (can_defeat_final_boss(player, state, world, options)),
+        lambda state: can_defeat_final_boss(player, state, world, options) and can_climb(player, state),
     )
 
     # Connect Worlds -> Tiles for openworld
@@ -3008,7 +3011,9 @@ def connect_regions(world, player, options, level_to_tile_dict):
         current_tile_data = level_info_dict[current_tile_id]
         current_tile_name = current_tile_data.levelName
         current_tile_name += " - Tile"
-        connect(world, player, names, current_tile_name, current_level_data.levelName)
+        unlock = course_unlock_names.get(current_level_id)
+        rule = (lambda state, name=unlock: state.has(name, player)) if options.level_unlocks and unlock else None
+        connect(world, player, names, current_tile_name, current_level_data.levelName, rule)
         # (TODO: More level shuffle work)
         # if current_tile_data.exit1Path:
         #    next_tile_id = current_tile_data.exit1Path

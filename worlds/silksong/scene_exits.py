@@ -82,7 +82,7 @@ def _scene_exits(enemy_names, silk, scope_name, content_scope, bosses):
     return tuple(exits.values())
 
 
-def scene_exits(world):
+def scene_exits(world, graph=None):
     result = getattr(world, '_scene_exit_definitions', None)
     if result is None:
         from .enemy_souls import enabled_enemies
@@ -92,7 +92,8 @@ def scene_exits(world):
 
         exits = _scene_exits(enabled_enemies(world), silk_enabled(world), scope(world) if enabled(world) else None,
                              world.get_content_scope(), tuple(boss.identity for boss in world._progression_bosses))
-        graph = world._silksong_native_abstract_requirements
+        if graph is None:
+            graph = world._silksong_native_abstract_requirements
         result = tuple(exit if exit.shuffled or graph[exit.destination] else replace(exit, requirements=())
                        for exit in exits)
         result = tuple(replace(exit, requirements=bone_bottom_bellway_requirements(
@@ -116,6 +117,7 @@ def create_exits(world, regions):
     from .requirement_rules import build_requirements_rule
     from .entrance_randomization import pairing_group, scope
     from .silk_economy import attach_exit
+    from .rosary_economy import gate as rosary_gate
 
     world.scene_exits = {}
     world._entrance_exits = {}
@@ -127,7 +129,7 @@ def create_exits(world, regions):
             continue
         entrance = world.create_entrance(
             regions[exit.source], regions[exit.destination],
-            build_requirements_rule(exit.requirements, anchor_requirement_name=exit.source,
+            build_requirements_rule(rosary_gate(world, exit.requirements,anchor=exit.source), anchor_requirement_name=exit.source,
                                     extra_abstract_requirement_names=world._silksong_native_abstract_names,
                                     **options),
             exit.name, force_creation=True,

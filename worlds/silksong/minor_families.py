@@ -19,7 +19,7 @@ SCRIPTED_BEAST_SHARD_REWARD_BY_LOCATION: dict[str, str] = {
     "Moorwing - Beast Shard": "Beast Shard",
     "Pilgrim's Rest - Beast Shard": "Beast Shard",
     "Memorium - Beast Shard": "Beast Shard",
-    "Sprintmaster - Beast Shard": "Beast Shard",
+    "Swift beast shard": "Beast Shard",
 }
 
 

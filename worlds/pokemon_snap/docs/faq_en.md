@@ -24,7 +24,10 @@ This likely isn't related to the AP and is an issue with your emulator vs base P
 Confirm by attempting to submit photos in your base ROM. The following steps have all been known to help:
 
  - Ensure you are using Project64 `3.0` NOT `4.0`
- - Swap to a different RDP plugin. Both the [angrylion-plus](https://github.com/ata4/angrylion-rdp-plus/releases) and [Parallel RDP Plugin](https://github.com/ariahiro64/pj64-parallelrdp/releases/tag/1.4) have been reported to work with Parallel having better performance.
+ - Swap to a different graphics plugin. Both the [angrylion-plus](https://github.com/ata4/angrylion-rdp-plus/releases) and [Parallel RDP Plugin](https://github.com/ariahiro64/pj64-parallelrdp/releases/tag/1.4) have been reported to work with Parallel having better performance.
+
+<img width="666" height="511" alt="image" src="https://github.com/user-attachments/assets/cbc57f23-8ae3-46bc-a49e-cb075f9065ee" />
+
 
 ---
 

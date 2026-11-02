@@ -6,8 +6,17 @@ You can read through all the settings and generate a YAML [here](../player-optio
 
 ## Important things to note
 
-- Exiting Sherbet Land will put you back onto the Sherbet Land world spot.\
-This is a side effect of the locked worlds code. Simply move left and then down to get to Mt. Teapot.
+- To leave a course, press Start to pause, keep Start held, then press Select.\
+This returns to the map without losing a life or clearing the course.
+
+- Dotted paths remain visible when you enter an unlocked world.  
+With Course Unlocks (`level_unlocks`) enabled, ordinary course markers appear only after their unlock item is received, and Wario walks past locked courses.  
+Boss courses appear when their boss unlock or token requirements are met.  
+Course 13 also needs Mt. Teapot's lid to fall.  
+Rice Beach flooding, Mt. Teapot's lid falling, and Parsley Woods draining are linked to their vanilla events.
+
+- Taking Sherbet Land's right exit returns to the overworld and stops on the bridge.\
+Press A or Start to enter Mt. Teapot. If World Unlocks is enabled, its unlock item is required.
 
 - The Jet powerup will let you dash without having the dash item.\
 This is not the case for the Bull powerup.
@@ -84,6 +93,13 @@ Powerups:
 Optional:
 - World Unlocks
 - Boss Unlocks
+- Course Unlocks (`level_unlocks`)
+
+Course unlocks add one item per ordinary course.  
+Only unlocked courses show a white map dot.  
+At a fork behind locked courses, another D-pad direction input selects the other open branch.  
+After Mt. Teapot's lid falls, press Down at Course 13 to select Course 10 at
+the same spot, and Up at Course 10 to select Course 13 again.
 
 ## What items and locations count as checks?
 

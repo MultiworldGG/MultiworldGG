@@ -1,0 +1,1172 @@
+{
+  "Bone Bottom Shop - Magnetite Brooch (Grindle in Act 3)": [
+    {
+      "node": "Room Node: bone-bottom/bone-bottom-town#ground-level",
+      "prices": [
+        "shop:Bonebottom Rosary Magnet Tool"
+      ]
+    }
+  ],
+  "Pin Purchase: Bench Pins": [
+    {
+      "node": "Room Node: the-marrow/the-marrow-map-shop#shakra-intro",
+      "prices": [
+        "shop:Mapper Bench Map Pin"
+      ]
+    },
+    {
+      "node": "Room Node: wormways/wormways-upper-east#shakra-camp",
+      "prices": [
+        "shop:Mapper Bench Map Pin"
+      ]
+    },
+    {
+      "node": "Room Node: deep-docks/deep-docks-map-shop#floor",
+      "prices": [
+        "shop:Mapper Bench Map Pin"
+      ]
+    },
+    {
+      "node": "Room Node: far-fields/far-fields-map-shop#room",
+      "prices": [
+        "shop:Mapper Bench Map Pin"
+      ]
+    },
+    {
+      "node": "Room Node: hunter-s-march/hunters-march-chapel-passage#crossing-platform",
+      "prices": [
+        "shop:Mapper Bench Map Pin"
+      ]
+    },
+    {
+      "node": "Room Node: hunter-s-march/hunters-march-map-shop#gauntlet",
+      "prices": [
+        "shop:Mapper Bench Map Pin"
+      ]
+    },
+    {
+      "node": "Room Node: shellwood/shellwood-shakra#room",
+      "prices": [
+        "shop:Mapper Bench Map Pin"
+      ]
+    },
+    {
+      "node": "Room Node: bellhart/belltown#upper-area",
+      "prices": [
+        "shop:Mapper Bench Map Pin"
+      ]
+    },
+    {
+      "node": "Room Node: greymoor/greymoor-east-bellshrine-room#lower-section-right",
+      "prices": [
+        "shop:Mapper Bench Map Pin"
+      ]
+    },
+    {
+      "node": "Room Node: blasted-steps/blasted-steps-shakra-map-room#bottom-third-right",
+      "prices": [
+        "shop:Mapper Bench Map Pin"
+      ]
+    },
+    {
+      "node": "Room Node: sinner-s-road/sinner-s-road-bench#bench",
+      "prices": [
+        "shop:Mapper Bench Map Pin"
+      ]
+    },
+    {
+      "node": "Room Node: bilewater/bilewater-shakra-room#room",
+      "prices": [
+        "shop:Mapper Bench Map Pin"
+      ]
+    },
+    {
+      "node": "Room Node: sands-of-karak/sands-of-shakra#room",
+      "prices": [
+        "shop:Mapper Bench Map Pin"
+      ]
+    },
+    {
+      "node": "Room Node: mount-fay/mount-fay-shakra#shakra",
+      "prices": [
+        "shop:Mapper Bench Map Pin"
+      ]
+    }
+  ],
+  "Bellhart Shop - Memory Locket": [
+    {
+      "node": "Room Node: bellhart/belltown#lower-area",
+      "prices": [
+        "shop:Bellhart Crest Socket"
+      ]
+    }
+  ],
+  "Pin Purchase: Ventrica Pins": [
+    {
+      "node": "Room Node: the-marrow/the-marrow-map-shop#shakra-intro",
+      "prices": [
+        "shop:Mapper Tube Map Pin"
+      ]
+    },
+    {
+      "node": "Room Node: wormways/wormways-upper-east#shakra-camp",
+      "prices": [
+        "shop:Mapper Tube Map Pin"
+      ]
+    },
+    {
+      "node": "Room Node: deep-docks/deep-docks-map-shop#floor",
+      "prices": [
+        "shop:Mapper Tube Map Pin"
+      ]
+    },
+    {
+      "node": "Room Node: far-fields/far-fields-map-shop#room",
+      "prices": [
+        "shop:Mapper Tube Map Pin"
+      ]
+    },
+    {
+      "node": "Room Node: hunter-s-march/hunters-march-chapel-passage#crossing-platform",
+      "prices": [
+        "shop:Mapper Tube Map Pin"
+      ]
+    },
+    {
+      "node": "Room Node: hunter-s-march/hunters-march-map-shop#gauntlet",
+      "prices": [
+        "shop:Mapper Tube Map Pin"
+      ]
+    },
+    {
+      "node": "Room Node: shellwood/shellwood-shakra#room",
+      "prices": [
+        "shop:Mapper Tube Map Pin"
+      ]
+    },
+    {
+      "node": "Room Node: bellhart/belltown#upper-area",
+      "prices": [
+        "shop:Mapper Tube Map Pin"
+      ]
+    },
+    {
+      "node": "Room Node: greymoor/greymoor-east-bellshrine-room#lower-section-right",
+      "prices": [
+        "shop:Mapper Tube Map Pin"
+      ]
+    },
+    {
+      "node": "Room Node: blasted-steps/blasted-steps-shakra-map-room#bottom-third-right",
+      "prices": [
+        "shop:Mapper Tube Map Pin"
+      ]
+    },
+    {
+      "node": "Room Node: sinner-s-road/sinner-s-road-bench#bench",
+      "prices": [
+        "shop:Mapper Tube Map Pin"
+      ]
+    },
+    {
+      "node": "Room Node: bilewater/bilewater-shakra-room#room",
+      "prices": [
+        "shop:Mapper Tube Map Pin"
+      ]
+    },
+    {
+      "node": "Room Node: sands-of-karak/sands-of-shakra#room",
+      "prices": [
+        "shop:Mapper Tube Map Pin"
+      ]
+    },
+    {
+      "node": "Room Node: mount-fay/mount-fay-shakra#shakra",
+      "prices": [
+        "shop:Mapper Tube Map Pin"
+      ]
+    }
+  ],
+  "Pilgrim's Rest - Tool Pouch": [
+    {
+      "node": "Room Node: far-fields/far-fields-pilgrims-rest-shop#room",
+      "prices": [
+        "shop:Pilgrims Rest Tool Pouch"
+      ]
+    }
+  ],
+  "Cogwork Wheel": [
+    {
+      "node": "Room Node: underworks/underworks-twelfth-architect#first-floor",
+      "prices": [
+        "shop:Architect Cogwork Saw"
+      ]
+    }
+  ],
+  "Grindle - Crafting Kit": [
+    {
+      "node": "Room Node: blasted-steps/blasted-steps-grindle#upper-half",
+      "prices": [
+        "shop:Grindle Tool Kit"
+      ]
+    }
+  ],
+  "Greymoor - Map Purchase": [
+    {
+      "node": "Room Node: greymoor/greymoor-east-bellshrine-room#lower-section-right",
+      "prices": [
+        "shop:Mapper Greymoor Map"
+      ]
+    }
+  ],
+  "Bellhart - Map Purchase": [
+    {
+      "node": "Room Node: the-marrow/the-marrow-map-shop#shakra-intro",
+      "prices": [
+        "shop:Mapper Bellhart Map"
+      ]
+    },
+    {
+      "node": "Room Node: wormways/wormways-upper-east#shakra-camp",
+      "prices": [
+        "shop:Mapper Bellhart Map"
+      ]
+    },
+    {
+      "node": "Room Node: deep-docks/deep-docks-map-shop#floor",
+      "prices": [
+        "shop:Mapper Bellhart Map"
+      ]
+    },
+    {
+      "node": "Room Node: far-fields/far-fields-map-shop#room",
+      "prices": [
+        "shop:Mapper Bellhart Map"
+      ]
+    },
+    {
+      "node": "Room Node: hunter-s-march/hunters-march-chapel-passage#crossing-platform",
+      "prices": [
+        "shop:Mapper Bellhart Map"
+      ]
+    },
+    {
+      "node": "Room Node: hunter-s-march/hunters-march-map-shop#gauntlet",
+      "prices": [
+        "shop:Mapper Bellhart Map"
+      ]
+    },
+    {
+      "node": "Room Node: shellwood/shellwood-shakra#room",
+      "prices": [
+        "shop:Mapper Bellhart Map"
+      ]
+    },
+    {
+      "node": "Room Node: bellhart/belltown#upper-area",
+      "prices": [
+        "shop:Mapper Bellhart Map"
+      ]
+    },
+    {
+      "node": "Room Node: greymoor/greymoor-east-bellshrine-room#lower-section-right",
+      "prices": [
+        "shop:Mapper Bellhart Map"
+      ]
+    },
+    {
+      "node": "Room Node: blasted-steps/blasted-steps-shakra-map-room#bottom-third-right",
+      "prices": [
+        "shop:Mapper Bellhart Map"
+      ]
+    },
+    {
+      "node": "Room Node: sinner-s-road/sinner-s-road-bench#bench",
+      "prices": [
+        "shop:Mapper Bellhart Map"
+      ]
+    },
+    {
+      "node": "Room Node: bilewater/bilewater-shakra-room#room",
+      "prices": [
+        "shop:Mapper Bellhart Map"
+      ]
+    },
+    {
+      "node": "Room Node: sands-of-karak/sands-of-shakra#room",
+      "prices": [
+        "shop:Mapper Bellhart Map"
+      ]
+    },
+    {
+      "node": "Room Node: mount-fay/mount-fay-shakra#shakra",
+      "prices": [
+        "shop:Mapper Bellhart Map"
+      ]
+    }
+  ],
+  "Songclave Shop - Choral Commandment": [
+    {
+      "node": "Room Node: choral-chambers/songclave#base",
+      "prices": [
+        "shop:City Merchant Seal Chit"
+      ]
+    }
+  ],
+  "Bone Bottom Shop - Simple Key (Grindle in Act 3)": [
+    {
+      "node": "Room Node: bone-bottom/bone-bottom-town#ground-level",
+      "prices": [
+        "shop:Bonebottom Faith Token"
+      ]
+    }
+  ],
+  "Sands of Karak - Map Purchase": [
+    {
+      "node": "Room Node: sands-of-karak/sands-of-shakra#room",
+      "prices": [
+        "shop:Mapper Coral Caverns Map"
+      ]
+    }
+  ],
+  "Pin Purchase: Bellway Pins": [
+    {
+      "node": "Room Node: the-marrow/the-marrow-map-shop#shakra-intro",
+      "prices": [
+        "shop:Mapper Bellway Map Pin"
+      ]
+    },
+    {
+      "node": "Room Node: wormways/wormways-upper-east#shakra-camp",
+      "prices": [
+        "shop:Mapper Bellway Map Pin"
+      ]
+    },
+    {
+      "node": "Room Node: deep-docks/deep-docks-map-shop#floor",
+      "prices": [
+        "shop:Mapper Bellway Map Pin"
+      ]
+    },
+    {
+      "node": "Room Node: far-fields/far-fields-map-shop#room",
+      "prices": [
+        "shop:Mapper Bellway Map Pin"
+      ]
+    },
+    {
+      "node": "Room Node: hunter-s-march/hunters-march-chapel-passage#crossing-platform",
+      "prices": [
+        "shop:Mapper Bellway Map Pin"
+      ]
+    },
+    {
+      "node": "Room Node: hunter-s-march/hunters-march-map-shop#gauntlet",
+      "prices": [
+        "shop:Mapper Bellway Map Pin"
+      ]
+    },
+    {
+      "node": "Room Node: shellwood/shellwood-shakra#room",
+      "prices": [
+        "shop:Mapper Bellway Map Pin"
+      ]
+    },
+    {
+      "node": "Room Node: bellhart/belltown#upper-area",
+      "prices": [
+        "shop:Mapper Bellway Map Pin"
+      ]
+    },
+    {
+      "node": "Room Node: greymoor/greymoor-east-bellshrine-room#lower-section-right",
+      "prices": [
+        "shop:Mapper Bellway Map Pin"
+      ]
+    },
+    {
+      "node": "Room Node: blasted-steps/blasted-steps-shakra-map-room#bottom-third-right",
+      "prices": [
+        "shop:Mapper Bellway Map Pin"
+      ]
+    },
+    {
+      "node": "Room Node: sinner-s-road/sinner-s-road-bench#bench",
+      "prices": [
+        "shop:Mapper Bellway Map Pin"
+      ]
+    },
+    {
+      "node": "Room Node: bilewater/bilewater-shakra-room#room",
+      "prices": [
+        "shop:Mapper Bellway Map Pin"
+      ]
+    },
+    {
+      "node": "Room Node: sands-of-karak/sands-of-shakra#room",
+      "prices": [
+        "shop:Mapper Bellway Map Pin"
+      ]
+    },
+    {
+      "node": "Room Node: mount-fay/mount-fay-shakra#shakra",
+      "prices": [
+        "shop:Mapper Bellway Map Pin"
+      ]
+    }
+  ],
+  "Mosslands - Map Purchase": [
+    {
+      "node": "Room Node: the-marrow/the-marrow-map-shop#shakra-intro",
+      "prices": [
+        "shop:Mapper Moss Grotto Map"
+      ]
+    },
+    {
+      "node": "Room Node: wormways/wormways-upper-east#shakra-camp",
+      "prices": [
+        "shop:Mapper Moss Grotto Map"
+      ]
+    },
+    {
+      "node": "Room Node: deep-docks/deep-docks-map-shop#floor",
+      "prices": [
+        "shop:Mapper Moss Grotto Map"
+      ]
+    },
+    {
+      "node": "Room Node: far-fields/far-fields-map-shop#room",
+      "prices": [
+        "shop:Mapper Moss Grotto Map"
+      ]
+    },
+    {
+      "node": "Room Node: hunter-s-march/hunters-march-chapel-passage#crossing-platform",
+      "prices": [
+        "shop:Mapper Moss Grotto Map"
+      ]
+    },
+    {
+      "node": "Room Node: hunter-s-march/hunters-march-map-shop#gauntlet",
+      "prices": [
+        "shop:Mapper Moss Grotto Map"
+      ]
+    },
+    {
+      "node": "Room Node: shellwood/shellwood-shakra#room",
+      "prices": [
+        "shop:Mapper Moss Grotto Map"
+      ]
+    },
+    {
+      "node": "Room Node: bellhart/belltown#upper-area",
+      "prices": [
+        "shop:Mapper Moss Grotto Map"
+      ]
+    },
+    {
+      "node": "Room Node: greymoor/greymoor-east-bellshrine-room#lower-section-right",
+      "prices": [
+        "shop:Mapper Moss Grotto Map"
+      ]
+    },
+    {
+      "node": "Room Node: blasted-steps/blasted-steps-shakra-map-room#bottom-third-right",
+      "prices": [
+        "shop:Mapper Moss Grotto Map"
+      ]
+    },
+    {
+      "node": "Room Node: sinner-s-road/sinner-s-road-bench#bench",
+      "prices": [
+        "shop:Mapper Moss Grotto Map"
+      ]
+    },
+    {
+      "node": "Room Node: bilewater/bilewater-shakra-room#room",
+      "prices": [
+        "shop:Mapper Moss Grotto Map"
+      ]
+    },
+    {
+      "node": "Room Node: sands-of-karak/sands-of-shakra#room",
+      "prices": [
+        "shop:Mapper Moss Grotto Map"
+      ]
+    },
+    {
+      "node": "Room Node: mount-fay/mount-fay-shakra#shakra",
+      "prices": [
+        "shop:Mapper Moss Grotto Map"
+      ]
+    }
+  ],
+  "Frey (Bellhart) - Spool Fragment": [
+    {
+      "node": "Room Node: bellhart/belltown#lower-area",
+      "prices": [
+        "shop:Belltown Spool Segment"
+      ]
+    }
+  ],
+  "Songclave Shop - Spool Extender": [
+    {
+      "node": "Room Node: choral-chambers/songclave#base",
+      "prices": [
+        "shop:City Merchant Spool Extender"
+      ]
+    }
+  ],
+  "Bone Bottom Shop - Craftmetal (Grindle in Act 3)": [
+    {
+      "node": "Room Node: bone-bottom/bone-bottom-town#ground-level",
+      "prices": [
+        "shop:Bonebottom Tool Metal"
+      ]
+    }
+  ],
+  "Songclave Shop - Simple Key": [
+    {
+      "node": "Room Node: choral-chambers/songclave#base",
+      "prices": [
+        "shop:City Merchant Simple Key"
+      ]
+    }
+  ],
+  "Shellwood - Map Purchase": [
+    {
+      "node": "Room Node: shellwood/shellwood-shakra#room",
+      "prices": [
+        "shop:Mapper Shellwood Map"
+      ]
+    }
+  ],
+  "Architect's Key": [
+    {
+      "node": "Room Node: underworks/underworks-twelfth-architect#first-floor",
+      "prices": [
+        "shop:Architect Key"
+      ]
+    }
+  ],
+  "Songclave Shop - Spool Fragment": [
+    {
+      "node": "Room Node: choral-chambers/songclave#base",
+      "prices": [
+        "shop:City Merchant Spool Piece"
+      ]
+    }
+  ],
+  "Songclave Shop - Craftmetal": [
+    {
+      "node": "Room Node: choral-chambers/songclave#base",
+      "prices": [
+        "shop:City Merchant Tool Metal"
+      ]
+    }
+  ],
+  "Sawtooth Circlet": [
+    {
+      "node": "Room Node: underworks/underworks-twelfth-architect#first-floor",
+      "prices": [
+        "shop:Architect Brolly Spike"
+      ]
+    }
+  ],
+  "Silkshot (Forge Daughter)": [
+    {
+      "node": "Room Node: deep-docks/deep-docks-forge#forge-daughter",
+      "prices": [
+        "shop:Forge SilkShot"
+      ]
+    }
+  ],
+  "Grindle (Blasted Steps) - Spool Fragment": [
+    {
+      "node": "Room Node: blasted-steps/blasted-steps-grindle#upper-half",
+      "prices": [
+        "shop:Grindle Spool Piece"
+      ]
+    }
+  ],
+  "Weighted Belt": [
+    {
+      "node": "Room Node: far-fields/far-fields-pilgrims-rest-shop#room",
+      "prices": [
+        "shop:Pilgrims Rest Weighted Anklet Tool"
+      ]
+    }
+  ],
+  "Songclave Shop - Ascendant's Grip": [
+    {
+      "node": "Room Node: choral-chambers/songclave#base",
+      "prices": [
+        "shop:City Merchant Wallcling Tool"
+      ]
+    }
+  ],
+  "Bilewater - Map Purchase": [
+    {
+      "node": "Room Node: bilewater/bilewater-shakra-room#room",
+      "prices": [
+        "shop:Mapper Shadow Map"
+      ]
+    }
+  ],
+  "Multibinder": [
+    {
+      "node": "Room Node: bellhart/belltown#lower-area",
+      "prices": [
+        "shop:Bellhart Multibind"
+      ]
+    }
+  ],
+  "Snitch Pick": [
+    {
+      "node": "Room Node: blasted-steps/blasted-steps-grindle#upper-half",
+      "prices": [
+        "shop:Grindle Thief Claw"
+      ]
+    }
+  ],
+  "Pin Purchase: Vendor Pins": [
+    {
+      "node": "Room Node: the-marrow/the-marrow-map-shop#shakra-intro",
+      "prices": [
+        "shop:Mapper Shop Map Pin"
+      ]
+    },
+    {
+      "node": "Room Node: wormways/wormways-upper-east#shakra-camp",
+      "prices": [
+        "shop:Mapper Shop Map Pin"
+      ]
+    },
+    {
+      "node": "Room Node: deep-docks/deep-docks-map-shop#floor",
+      "prices": [
+        "shop:Mapper Shop Map Pin"
+      ]
+    },
+    {
+      "node": "Room Node: far-fields/far-fields-map-shop#room",
+      "prices": [
+        "shop:Mapper Shop Map Pin"
+      ]
+    },
+    {
+      "node": "Room Node: hunter-s-march/hunters-march-chapel-passage#crossing-platform",
+      "prices": [
+        "shop:Mapper Shop Map Pin"
+      ]
+    },
+    {
+      "node": "Room Node: hunter-s-march/hunters-march-map-shop#gauntlet",
+      "prices": [
+        "shop:Mapper Shop Map Pin"
+      ]
+    },
+    {
+      "node": "Room Node: shellwood/shellwood-shakra#room",
+      "prices": [
+        "shop:Mapper Shop Map Pin"
+      ]
+    },
+    {
+      "node": "Room Node: bellhart/belltown#upper-area",
+      "prices": [
+        "shop:Mapper Shop Map Pin"
+      ]
+    },
+    {
+      "node": "Room Node: greymoor/greymoor-east-bellshrine-room#lower-section-right",
+      "prices": [
+        "shop:Mapper Shop Map Pin"
+      ]
+    },
+    {
+      "node": "Room Node: blasted-steps/blasted-steps-shakra-map-room#bottom-third-right",
+      "prices": [
+        "shop:Mapper Shop Map Pin"
+      ]
+    },
+    {
+      "node": "Room Node: sinner-s-road/sinner-s-road-bench#bench",
+      "prices": [
+        "shop:Mapper Shop Map Pin"
+      ]
+    },
+    {
+      "node": "Room Node: bilewater/bilewater-shakra-room#room",
+      "prices": [
+        "shop:Mapper Shop Map Pin"
+      ]
+    },
+    {
+      "node": "Room Node: sands-of-karak/sands-of-shakra#room",
+      "prices": [
+        "shop:Mapper Shop Map Pin"
+      ]
+    },
+    {
+      "node": "Room Node: mount-fay/mount-fay-shakra#shakra",
+      "prices": [
+        "shop:Mapper Shop Map Pin"
+      ]
+    }
+  ],
+  "Far Fields - Map Purchase": [
+    {
+      "node": "Room Node: far-fields/far-fields-map-shop#room",
+      "prices": [
+        "shop:Mapper Wilds Map"
+      ]
+    }
+  ],
+  "Mount Fay - Map Purchase": [
+    {
+      "node": "Room Node: mount-fay/mount-fay-shakra#shakra",
+      "prices": [
+        "shop:Mapper Peak Map"
+      ]
+    }
+  ],
+  "Silkshot (Twelfth Architect)": [
+    {
+      "node": "Room Node: underworks/underworks-twelfth-architect#first-floor",
+      "prices": [
+        "shop:Architect SilkShot"
+      ]
+    }
+  ],
+  "Wormways - Map Purchase": [
+    {
+      "node": "Room Node: wormways/wormways-upper-east#shakra-camp",
+      "prices": [
+        "shop:Mapper Crawl Map"
+      ]
+    }
+  ],
+  "Item: Quill": [
+    {
+      "node": "Room Node: the-marrow/the-marrow-map-shop#shakra-intro",
+      "prices": [
+        "shop:Mapper Quill"
+      ]
+    },
+    {
+      "node": "Room Node: wormways/wormways-upper-east#shakra-camp",
+      "prices": [
+        "shop:Mapper Quill"
+      ]
+    },
+    {
+      "node": "Room Node: deep-docks/deep-docks-map-shop#floor",
+      "prices": [
+        "shop:Mapper Quill"
+      ]
+    },
+    {
+      "node": "Room Node: far-fields/far-fields-map-shop#room",
+      "prices": [
+        "shop:Mapper Quill"
+      ]
+    },
+    {
+      "node": "Room Node: hunter-s-march/hunters-march-chapel-passage#crossing-platform",
+      "prices": [
+        "shop:Mapper Quill"
+      ]
+    },
+    {
+      "node": "Room Node: hunter-s-march/hunters-march-map-shop#gauntlet",
+      "prices": [
+        "shop:Mapper Quill"
+      ]
+    },
+    {
+      "node": "Room Node: shellwood/shellwood-shakra#room",
+      "prices": [
+        "shop:Mapper Quill"
+      ]
+    },
+    {
+      "node": "Room Node: bellhart/belltown#upper-area",
+      "prices": [
+        "shop:Mapper Quill"
+      ]
+    },
+    {
+      "node": "Room Node: greymoor/greymoor-east-bellshrine-room#lower-section-right",
+      "prices": [
+        "shop:Mapper Quill"
+      ]
+    },
+    {
+      "node": "Room Node: blasted-steps/blasted-steps-shakra-map-room#bottom-third-right",
+      "prices": [
+        "shop:Mapper Quill"
+      ]
+    },
+    {
+      "node": "Room Node: sinner-s-road/sinner-s-road-bench#bench",
+      "prices": [
+        "shop:Mapper Quill"
+      ]
+    },
+    {
+      "node": "Room Node: bilewater/bilewater-shakra-room#room",
+      "prices": [
+        "shop:Mapper Quill"
+      ]
+    },
+    {
+      "node": "Room Node: sands-of-karak/sands-of-shakra#room",
+      "prices": [
+        "shop:Mapper Quill"
+      ]
+    },
+    {
+      "node": "Room Node: mount-fay/mount-fay-shakra#shakra",
+      "prices": [
+        "shop:Mapper Quill"
+      ]
+    }
+  ],
+  "Pilgrim's Rest Shop - Memory Locket": [
+    {
+      "node": "Room Node: far-fields/far-fields-pilgrims-rest-shop#room",
+      "prices": [
+        "shop:Pilgrims Rest Crest Socket Unlocker"
+      ]
+    }
+  ],
+  "Sinner's Road - Map Purchase": [
+    {
+      "node": "Room Node: sinner-s-road/sinner-s-road-bench#bench",
+      "prices": [
+        "shop:Mapper Dustpens Map"
+      ]
+    }
+  ],
+  "Relic: Psalm Cylinder (Grindle)": [
+    {
+      "node": "Room Node: blasted-steps/blasted-steps-grindle#upper-half",
+      "prices": [
+        "shop:Grindle Psalm Cylinder"
+      ]
+    }
+  ],
+  "Hunter's March - Map Purchase": [
+    {
+      "node": "Room Node: hunter-s-march/hunters-march-chapel-passage#crossing-platform",
+      "prices": [
+        "shop:Mapper Hunters Nest Map"
+      ]
+    },
+    {
+      "node": "Room Node: hunter-s-march/hunters-march-map-shop#gauntlet",
+      "prices": [
+        "shop:Mapper Hunters Nest Map"
+      ]
+    }
+  ],
+  "Reserve Bind": [
+    {
+      "node": "Room Node: high-halls/high-halls-sentinel-graveyard#room",
+      "prices": [
+        "shop:Grindle Reserve Bind"
+      ]
+    }
+  ],
+  "Forge Daughter - Crafting Kit": [
+    {
+      "node": "Room Node: deep-docks/deep-docks-forge#forge-daughter",
+      "prices": [
+        "shop:Forge Tool Kit"
+      ]
+    }
+  ],
+  "Blasted Steps - Map Purchase": [
+    {
+      "node": "Room Node: blasted-steps/blasted-steps-shakra-map-room#bottom-third-right",
+      "prices": [
+        "shop:Mapper JudgeSteps Map"
+      ]
+    }
+  ],
+  "Bone Bottom Shop - Mask Shard (Grindle in Act 3)": [
+    {
+      "node": "Room Node: bone-bottom/bone-bottom-town#ground-level",
+      "prices": [
+        "shop:Bonebottom Mask Shard"
+      ]
+    }
+  ],
+  "Songclave Shop - Spider Strings": [
+    {
+      "node": "Room Node: choral-chambers/songclave#base",
+      "prices": [
+        "shop:City Merchant Needolin Tool"
+      ]
+    }
+  ],
+  "Magma Bell": [
+    {
+      "node": "Room Node: deep-docks/deep-docks-forge#forge-daughter",
+      "prices": [
+        "shop:Forge Lava Charm Tool"
+      ]
+    }
+  ],
+  "Deep Docks - Map Purchase": [
+    {
+      "node": "Room Node: deep-docks/deep-docks-map-shop#floor",
+      "prices": [
+        "shop:Mapper Docks Map"
+      ]
+    }
+  ],
+  "Thief's Mark": [
+    {
+      "node": "Room Node: blasted-steps/blasted-steps-grindle#upper-half",
+      "prices": [
+        "shop:Grindle Thief Charm"
+      ]
+    }
+  ],
+  "Twelfth Architect - Crafting Kit": [
+    {
+      "node": "Room Node: underworks/underworks-twelfth-architect#first-floor",
+      "prices": [
+        "shop:Architect Tool Kit"
+      ]
+    }
+  ],
+  "Tacks": [
+    {
+      "node": "Room Node: sinner-s-road/sinner-s-road-shack#room",
+      "prices": [
+        "shop:Forge Tacks Tool"
+      ]
+    }
+  ],
+  "The Marrow - Map Purchase": [
+    {
+      "node": "Room Node: the-marrow/the-marrow-map-shop#shakra-intro",
+      "prices": [
+        "shop:Mapper Boneforest Map"
+      ]
+    },
+    {
+      "node": "Room Node: wormways/wormways-upper-east#shakra-camp",
+      "prices": [
+        "shop:Mapper Boneforest Map"
+      ]
+    },
+    {
+      "node": "Room Node: deep-docks/deep-docks-map-shop#floor",
+      "prices": [
+        "shop:Mapper Boneforest Map"
+      ]
+    },
+    {
+      "node": "Room Node: far-fields/far-fields-map-shop#room",
+      "prices": [
+        "shop:Mapper Boneforest Map"
+      ]
+    },
+    {
+      "node": "Room Node: hunter-s-march/hunters-march-chapel-passage#crossing-platform",
+      "prices": [
+        "shop:Mapper Boneforest Map"
+      ]
+    },
+    {
+      "node": "Room Node: hunter-s-march/hunters-march-map-shop#gauntlet",
+      "prices": [
+        "shop:Mapper Boneforest Map"
+      ]
+    },
+    {
+      "node": "Room Node: shellwood/shellwood-shakra#room",
+      "prices": [
+        "shop:Mapper Boneforest Map"
+      ]
+    },
+    {
+      "node": "Room Node: bellhart/belltown#upper-area",
+      "prices": [
+        "shop:Mapper Boneforest Map"
+      ]
+    },
+    {
+      "node": "Room Node: greymoor/greymoor-east-bellshrine-room#lower-section-right",
+      "prices": [
+        "shop:Mapper Boneforest Map"
+      ]
+    },
+    {
+      "node": "Room Node: blasted-steps/blasted-steps-shakra-map-room#bottom-third-right",
+      "prices": [
+        "shop:Mapper Boneforest Map"
+      ]
+    },
+    {
+      "node": "Room Node: sinner-s-road/sinner-s-road-bench#bench",
+      "prices": [
+        "shop:Mapper Boneforest Map"
+      ]
+    },
+    {
+      "node": "Room Node: bilewater/bilewater-shakra-room#room",
+      "prices": [
+        "shop:Mapper Boneforest Map"
+      ]
+    },
+    {
+      "node": "Room Node: sands-of-karak/sands-of-shakra#room",
+      "prices": [
+        "shop:Mapper Boneforest Map"
+      ]
+    },
+    {
+      "node": "Room Node: mount-fay/mount-fay-shakra#shakra",
+      "prices": [
+        "shop:Mapper Boneforest Map"
+      ]
+    }
+  ],
+  "Fractured Mask": [
+    {
+      "node": "Room Node: hunter-s-march/ant-merchant#skarr-shop",
+      "prices": [
+        "shop:Ant Merchant Fractured Mask Tool"
+      ]
+    }
+  ],
+  "Curveclaw": [
+    {
+      "node": "Room Node: hunter-s-march/ant-merchant#skarr-shop",
+      "prices": [
+        "shop:Ant Merchant Curve Claws Tool"
+      ]
+    }
+  ],
+  "Compass": [
+    {
+      "node": "Room Node: the-marrow/the-marrow-map-shop#shakra-intro",
+      "prices": [
+        "shop:Mapper Compass Tool"
+      ]
+    },
+    {
+      "node": "Room Node: wormways/wormways-upper-east#shakra-camp",
+      "prices": [
+        "shop:Mapper Compass Tool"
+      ]
+    },
+    {
+      "node": "Room Node: deep-docks/deep-docks-map-shop#floor",
+      "prices": [
+        "shop:Mapper Compass Tool"
+      ]
+    },
+    {
+      "node": "Room Node: far-fields/far-fields-map-shop#room",
+      "prices": [
+        "shop:Mapper Compass Tool"
+      ]
+    },
+    {
+      "node": "Room Node: hunter-s-march/hunters-march-chapel-passage#crossing-platform",
+      "prices": [
+        "shop:Mapper Compass Tool"
+      ]
+    },
+    {
+      "node": "Room Node: hunter-s-march/hunters-march-map-shop#gauntlet",
+      "prices": [
+        "shop:Mapper Compass Tool"
+      ]
+    },
+    {
+      "node": "Room Node: shellwood/shellwood-shakra#room",
+      "prices": [
+        "shop:Mapper Compass Tool"
+      ]
+    },
+    {
+      "node": "Room Node: bellhart/belltown#upper-area",
+      "prices": [
+        "shop:Mapper Compass Tool"
+      ]
+    },
+    {
+      "node": "Room Node: greymoor/greymoor-east-bellshrine-room#lower-section-right",
+      "prices": [
+        "shop:Mapper Compass Tool"
+      ]
+    },
+    {
+      "node": "Room Node: blasted-steps/blasted-steps-shakra-map-room#bottom-third-right",
+      "prices": [
+        "shop:Mapper Compass Tool"
+      ]
+    },
+    {
+      "node": "Room Node: sinner-s-road/sinner-s-road-bench#bench",
+      "prices": [
+        "shop:Mapper Compass Tool"
+      ]
+    },
+    {
+      "node": "Room Node: bilewater/bilewater-shakra-room#room",
+      "prices": [
+        "shop:Mapper Compass Tool"
+      ]
+    },
+    {
+      "node": "Room Node: sands-of-karak/sands-of-shakra#room",
+      "prices": [
+        "shop:Mapper Compass Tool"
+      ]
+    },
+    {
+      "node": "Room Node: mount-fay/mount-fay-shakra#shakra",
+      "prices": [
+        "shop:Mapper Compass Tool"
+      ]
+    }
+  ],
+  "Sting Shard": [
+    {
+      "node": "Room Node: deep-docks/deep-docks-forge#forge-daughter",
+      "prices": [
+        "shop:Forge Sting Shard Tool"
+      ]
+    }
+  ],
+  "Songclave Shop - Mask Shard": [
+    {
+      "node": "Room Node: choral-chambers/songclave#base",
+      "prices": [
+        "shop:City Merchant Heart Piece"
+      ]
+    }
+  ],
+  "Scuttlebrace": [
+    {
+      "node": "Room Node: underworks/underworks-twelfth-architect#first-floor",
+      "prices": [
+        "shop:Architect Scuttlebrace"
+      ]
+    }
+  ],
+  "Magnetite Dice": [
+    {
+      "node": "Room Node: blasted-steps/lumble-the-lucky#room",
+      "prices": []
+    }
+  ]
+}

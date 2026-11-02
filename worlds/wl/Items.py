@@ -2,6 +2,13 @@ import typing
 
 from BaseClasses import Item, ItemClassification
 from .Names import ItemName
+from .Levels import full_level_list, level_info_dict
+
+boss_course_numbers = {5, 13, 19, 25, 30, 36, 40}
+course_unlock_names = {
+    level_id: f"{level_info_dict[level_id].levelName} - Unlock"
+    for number, level_id in enumerate(full_level_list, 1) if number not in boss_course_numbers
+}
 
 
 class ItemData(typing.NamedTuple):
@@ -13,6 +20,10 @@ class ItemData(typing.NamedTuple):
 
 class WLItem(Item):
     game: str = "Wario Land"
+
+
+powerup_order = (ItemName.wario_garlic, ItemName.wario_bull,
+                 ItemName.wario_dragon, ItemName.wario_jet)
 
 
 # Uh oh
@@ -80,12 +91,16 @@ collectable_table = {
 
 # It's "free" real estate
 event_table = {
-    ItemName.victory: ItemData(0xA81700, True),
+    ItemName.victory: ItemData(None, True),
     ItemName.boss_token: ItemData(0xA41200, True),
 }
 
 # Complete item table.
+course_unlock_table = {name: ItemData((0xA4B0 + level_id) << 8, True)
+                       for level_id, name in course_unlock_names.items()}
+
 item_table = {
+    **course_unlock_table,
     **junk_table,
     **collectable_table,
     **upgrade_table,

@@ -26,16 +26,25 @@ clear it.
 
 ## Generating and Patching a Game
 
-1. Download the [WarioLand.yaml](https://github.com/randomcodegen/Archipelago_WL/releases/latest) and put it in the C:\Program Files\MultiworldGG\Players folder
-2. Download [wl.apworld](https://github.com/randomcodegen/Archipelago_WL/releases/latest) and put it in C:\Program Files\MultiworldGG\lib\worlds
-3. Download [_bizhawk.apworld](https://github.com/Zunawe/Archipelago/releases/tag/bizhawk_beta-2) and put it in C:\Program Files\MultiworldGG\lib\worlds (This step is not required when using MultiworldGG)
+1. On AP: Download [wl.apworld](https://github.com/randomcodegen/Archipelago_WL/releases/latest) and put it in C:\ProgramData\Archipelago\lib\custom_worlds
+2. Generate the required .yaml file in the Launcher (Generate Template Options) and then put the Wario Land.yaml file into the .\players\ folder.
 3. Follow the general Archipelago instructions for [generating a game](../../Archipelago/setup/en#generating-a-game).
 This will generate an output file for you. Your patch file will have the `.apwl` file extension.
-4. Drag&Drop the *.apwl Patch-File onto MultiworldGGLauncher.exe (or onto MultiworldGGBizHawkClient.exe on AP 0.4.4)
-6. If this is your first time patching, you will be prompted to locate your vanilla ROM.
-7. A patched `.gb` file will be created in the same place as the patch file.
-8. On your first time opening a patch with BizHawk Client, you will also be asked to locate `EmuHawk.exe` in your
+1. Drag&Drop the *.apwl Patch-File onto MultiworldGGLauncher.exe
+2. If this is your first time patching, you will be prompted to locate your vanilla ROM.
+3. A patched `.gb` file (`.gbc` for DX) will be created in the same place as the patch file.
+4. On your first time opening a patch with BizHawk Client, you will also be asked to locate `EmuHawk.exe` in your
 BizHawk install.
+
+## Optional DX colorization
+
+To generate a color version, set `use_dx: true` in the `Wario Land` section of
+your player YAML.  
+
+If the DX IPS path is missing, generation opens a file picker.
+
+Use korxo's [DX 1.2 patch](https://www.romhacking.net/hacks/6683/) and a clean World-version ROM.  
+The default `use_dx: false` produces the original monochrome version.
 
 ## Connecting to a Server
 

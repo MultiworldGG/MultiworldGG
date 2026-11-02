@@ -59,7 +59,6 @@ class Box(IntEnum):
 class JewelPieceItemData(NamedTuple):
     passage: Passage
     box: Box
-    classification: IC
 
     def item_id(self):
         return (self.passage << 2) | self.box
@@ -67,42 +66,58 @@ class JewelPieceItemData(NamedTuple):
     def flag(self):
         return 1 << self.box
 
+    @property
+    def classification(self):
+        return IC.progression_skip_balancing
+
 
 class CdItemData(NamedTuple):
     passage: Passage
     level: int
-    classification: IC
 
     def item_id(self):
         return (1 << 5) | (self.passage << 2) | self.level
+
+    @property
+    def classification(self):
+        return IC.filler
 
 
 class KeyzerItemData(NamedTuple):
     passage: Passage
     level: int
-    classification: IC
 
     def item_id(self):
         return (6 << 5) | (self.passage << 2) | self.level
 
+    @property
+    def classification(self):
+        return IC.progression
+
 
 class AbilityItemData(NamedTuple):
     ability: int
-    classification: IC
 
     def item_id(self):
         return (1 << 6) | self.ability
 
+    @property
+    def classification(self):
+        return IC.progression
+
 
 class GoldenTreasureItemData(NamedTuple):
     treasure: int
-    classification: IC
 
     def item_id(self):
         return 0x70 | self.treasure
 
     def passage(self):
         return Passage(self.treasure // 3 + Passage.EMERALD)
+
+    @property
+    def classification(self):
+        return IC.progression_skip_balancing
 
 
 class OtherItemData(NamedTuple):
@@ -117,94 +132,94 @@ ItemData = JewelPieceItemData | CdItemData | KeyzerItemData | AbilityItemData | 
 
 
 jewel_piece_table = {
-    "Top Right Entry Jewel Piece":      JewelPieceItemData(Passage.ENTRY,    Box.JEWEL_NE, IC.filler),
-    "Top Right Emerald Piece":          JewelPieceItemData(Passage.EMERALD,  Box.JEWEL_NE, IC.progression_skip_balancing),
-    "Top Right Ruby Piece":             JewelPieceItemData(Passage.RUBY,     Box.JEWEL_NE, IC.progression_skip_balancing),
-    "Top Right Topaz Piece":            JewelPieceItemData(Passage.TOPAZ,    Box.JEWEL_NE, IC.progression_skip_balancing),
-    "Top Right Sapphire Piece":         JewelPieceItemData(Passage.SAPPHIRE, Box.JEWEL_NE, IC.progression_skip_balancing),
-    "Top Right Golden Jewel Piece":     JewelPieceItemData(Passage.GOLDEN,   Box.JEWEL_NE, IC.progression_skip_balancing),
-    "Bottom Right Entry Jewel Piece":   JewelPieceItemData(Passage.ENTRY,    Box.JEWEL_SE, IC.filler),
-    "Bottom Right Emerald Piece":       JewelPieceItemData(Passage.EMERALD,  Box.JEWEL_SE, IC.progression_skip_balancing),
-    "Bottom Right Ruby Piece":          JewelPieceItemData(Passage.RUBY,     Box.JEWEL_SE, IC.progression_skip_balancing),
-    "Bottom Right Topaz Piece":         JewelPieceItemData(Passage.TOPAZ,    Box.JEWEL_SE, IC.progression_skip_balancing),
-    "Bottom Right Sapphire Piece":      JewelPieceItemData(Passage.SAPPHIRE, Box.JEWEL_SE, IC.progression_skip_balancing),
-    "Bottom Right Golden Jewel Piece":  JewelPieceItemData(Passage.GOLDEN,   Box.JEWEL_SE, IC.progression_skip_balancing),
-    "Bottom Left Entry Jewel Piece":    JewelPieceItemData(Passage.ENTRY,    Box.JEWEL_SW, IC.filler),
-    "Bottom Left Emerald Piece":        JewelPieceItemData(Passage.EMERALD,  Box.JEWEL_SW, IC.progression_skip_balancing),
-    "Bottom Left Ruby Piece":           JewelPieceItemData(Passage.RUBY,     Box.JEWEL_SW, IC.progression_skip_balancing),
-    "Bottom Left Topaz Piece":          JewelPieceItemData(Passage.TOPAZ,    Box.JEWEL_SW, IC.progression_skip_balancing),
-    "Bottom Left Sapphire Piece":       JewelPieceItemData(Passage.SAPPHIRE, Box.JEWEL_SW, IC.progression_skip_balancing),
-    "Bottom Left Golden Jewel Piece":   JewelPieceItemData(Passage.GOLDEN,   Box.JEWEL_SW, IC.progression_skip_balancing),
-    "Top Left Entry Jewel Piece":       JewelPieceItemData(Passage.ENTRY,    Box.JEWEL_NW, IC.filler),
-    "Top Left Emerald Piece":           JewelPieceItemData(Passage.EMERALD,  Box.JEWEL_NW, IC.progression_skip_balancing),
-    "Top Left Ruby Piece":              JewelPieceItemData(Passage.RUBY,     Box.JEWEL_NW, IC.progression_skip_balancing),
-    "Top Left Topaz Piece":             JewelPieceItemData(Passage.TOPAZ,    Box.JEWEL_NW, IC.progression_skip_balancing),
-    "Top Left Sapphire Piece":          JewelPieceItemData(Passage.SAPPHIRE, Box.JEWEL_NW, IC.progression_skip_balancing),
-    "Top Left Golden Jewel Piece":      JewelPieceItemData(Passage.GOLDEN,   Box.JEWEL_NW, IC.progression_skip_balancing),
+    "Top Right Entry Jewel Piece":      JewelPieceItemData(Passage.ENTRY,    Box.JEWEL_NE),
+    "Top Right Emerald Piece":          JewelPieceItemData(Passage.EMERALD,  Box.JEWEL_NE),
+    "Top Right Ruby Piece":             JewelPieceItemData(Passage.RUBY,     Box.JEWEL_NE),
+    "Top Right Topaz Piece":            JewelPieceItemData(Passage.TOPAZ,    Box.JEWEL_NE),
+    "Top Right Sapphire Piece":         JewelPieceItemData(Passage.SAPPHIRE, Box.JEWEL_NE),
+    "Top Right Golden Jewel Piece":     JewelPieceItemData(Passage.GOLDEN,   Box.JEWEL_NE),
+    "Bottom Right Entry Jewel Piece":   JewelPieceItemData(Passage.ENTRY,    Box.JEWEL_SE),
+    "Bottom Right Emerald Piece":       JewelPieceItemData(Passage.EMERALD,  Box.JEWEL_SE),
+    "Bottom Right Ruby Piece":          JewelPieceItemData(Passage.RUBY,     Box.JEWEL_SE),
+    "Bottom Right Topaz Piece":         JewelPieceItemData(Passage.TOPAZ,    Box.JEWEL_SE),
+    "Bottom Right Sapphire Piece":      JewelPieceItemData(Passage.SAPPHIRE, Box.JEWEL_SE),
+    "Bottom Right Golden Jewel Piece":  JewelPieceItemData(Passage.GOLDEN,   Box.JEWEL_SE),
+    "Bottom Left Entry Jewel Piece":    JewelPieceItemData(Passage.ENTRY,    Box.JEWEL_SW),
+    "Bottom Left Emerald Piece":        JewelPieceItemData(Passage.EMERALD,  Box.JEWEL_SW),
+    "Bottom Left Ruby Piece":           JewelPieceItemData(Passage.RUBY,     Box.JEWEL_SW),
+    "Bottom Left Topaz Piece":          JewelPieceItemData(Passage.TOPAZ,    Box.JEWEL_SW),
+    "Bottom Left Sapphire Piece":       JewelPieceItemData(Passage.SAPPHIRE, Box.JEWEL_SW),
+    "Bottom Left Golden Jewel Piece":   JewelPieceItemData(Passage.GOLDEN,   Box.JEWEL_SW),
+    "Top Left Entry Jewel Piece":       JewelPieceItemData(Passage.ENTRY,    Box.JEWEL_NW),
+    "Top Left Emerald Piece":           JewelPieceItemData(Passage.EMERALD,  Box.JEWEL_NW),
+    "Top Left Ruby Piece":              JewelPieceItemData(Passage.RUBY,     Box.JEWEL_NW),
+    "Top Left Topaz Piece":             JewelPieceItemData(Passage.TOPAZ,    Box.JEWEL_NW),
+    "Top Left Sapphire Piece":          JewelPieceItemData(Passage.SAPPHIRE, Box.JEWEL_NW),
+    "Top Left Golden Jewel Piece":      JewelPieceItemData(Passage.GOLDEN,   Box.JEWEL_NW),
 }
 
 cd_table = {
-    "About that Shepherd CD":           CdItemData(Passage.EMERALD,  0, IC.filler),
-    "Things that Never Change CD":      CdItemData(Passage.EMERALD,  1, IC.filler),
-    "Tomorrow's Blood Pressure CD":     CdItemData(Passage.EMERALD,  2, IC.filler),
-    "Beyond the Headrush CD":           CdItemData(Passage.EMERALD,  3, IC.filler),
-    "Driftwood & the Island Dog CD":    CdItemData(Passage.RUBY,     0, IC.filler),
-    "The Judge's Feet CD":              CdItemData(Passage.RUBY,     1, IC.filler),
-    "The Moon's Lamppost CD":           CdItemData(Passage.RUBY,     2, IC.filler),
-    "Soft Shell CD":                    CdItemData(Passage.RUBY,     3, IC.filler),
-    "So Sleepy CD":                     CdItemData(Passage.TOPAZ,    0, IC.filler),
-    "The Short Futon CD":               CdItemData(Passage.TOPAZ,    1, IC.filler),
-    "Avocado Song CD":                  CdItemData(Passage.TOPAZ,    2, IC.filler),
-    "Mr. Fly CD":                       CdItemData(Passage.TOPAZ,    3, IC.filler),
-    "Yesterday's Words CD":             CdItemData(Passage.SAPPHIRE, 0, IC.filler),
-    "The Errand CD":                    CdItemData(Passage.SAPPHIRE, 1, IC.filler),
-    "You and Your Shoes CD":            CdItemData(Passage.SAPPHIRE, 2, IC.filler),
-    "Mr. Ether & Planaria CD":          CdItemData(Passage.SAPPHIRE, 3, IC.filler),
+    "About that Shepherd CD":           CdItemData(Passage.EMERALD,  0),
+    "Things that Never Change CD":      CdItemData(Passage.EMERALD,  1),
+    "Tomorrow's Blood Pressure CD":     CdItemData(Passage.EMERALD,  2),
+    "Beyond the Headrush CD":           CdItemData(Passage.EMERALD,  3),
+    "Driftwood & the Island Dog CD":    CdItemData(Passage.RUBY,     0),
+    "The Judge's Feet CD":              CdItemData(Passage.RUBY,     1),
+    "The Moon's Lamppost CD":           CdItemData(Passage.RUBY,     2),
+    "Soft Shell CD":                    CdItemData(Passage.RUBY,     3),
+    "So Sleepy CD":                     CdItemData(Passage.TOPAZ,    0),
+    "The Short Futon CD":               CdItemData(Passage.TOPAZ,    1),
+    "Avocado Song CD":                  CdItemData(Passage.TOPAZ,    2),
+    "Mr. Fly CD":                       CdItemData(Passage.TOPAZ,    3),
+    "Yesterday's Words CD":             CdItemData(Passage.SAPPHIRE, 0),
+    "The Errand CD":                    CdItemData(Passage.SAPPHIRE, 1),
+    "You and Your Shoes CD":            CdItemData(Passage.SAPPHIRE, 2),
+    "Mr. Ether & Planaria CD":          CdItemData(Passage.SAPPHIRE, 3),
 }
 
 keyzer_table = {
-    "Keyzer (Entry Passage Boss)":      KeyzerItemData(Passage.ENTRY,    0, IC.filler),
-    "Keyzer (Emerald Passage 1)":       KeyzerItemData(Passage.EMERALD,  0, IC.progression),
-    "Keyzer (Emerald Passage 2)":       KeyzerItemData(Passage.EMERALD,  1, IC.progression),
-    "Keyzer (Emerald Passage 3)":       KeyzerItemData(Passage.EMERALD,  2, IC.progression),
-    "Keyzer (Emerald Passage Boss)":    KeyzerItemData(Passage.EMERALD,  3, IC.progression),
-    "Keyzer (Ruby Passage 1)":          KeyzerItemData(Passage.RUBY,     0, IC.progression),
-    "Keyzer (Ruby Passage 2)":          KeyzerItemData(Passage.RUBY,     1, IC.progression),
-    "Keyzer (Ruby Passage 3)":          KeyzerItemData(Passage.RUBY,     2, IC.progression),
-    "Keyzer (Ruby Passage Boss)":       KeyzerItemData(Passage.RUBY,     3, IC.progression),
-    "Keyzer (Topaz Passage 1)":         KeyzerItemData(Passage.TOPAZ,    0, IC.progression),
-    "Keyzer (Topaz Passage 2)":         KeyzerItemData(Passage.TOPAZ,    1, IC.progression),
-    "Keyzer (Topaz Passage 3)":         KeyzerItemData(Passage.TOPAZ,    2, IC.progression),
-    "Keyzer (Topaz Passage Boss)":      KeyzerItemData(Passage.TOPAZ,    3, IC.progression),
-    "Keyzer (Sapphire Passage 1)":      KeyzerItemData(Passage.SAPPHIRE, 0, IC.progression),
-    "Keyzer (Sapphire Passage 2)":      KeyzerItemData(Passage.SAPPHIRE, 1, IC.progression),
-    "Keyzer (Sapphire Passage 3)":      KeyzerItemData(Passage.SAPPHIRE, 2, IC.progression),
-    "Keyzer (Sapphire Passage Boss)":   KeyzerItemData(Passage.SAPPHIRE, 3, IC.progression),
-    "Keyzer (Golden Pyramid Boss)":     KeyzerItemData(Passage.GOLDEN,   0, IC.progression),
+    "Keyzer (Entry Passage Boss)":      KeyzerItemData(Passage.ENTRY,    0),
+    "Keyzer (Emerald Passage 1)":       KeyzerItemData(Passage.EMERALD,  0),
+    "Keyzer (Emerald Passage 2)":       KeyzerItemData(Passage.EMERALD,  1),
+    "Keyzer (Emerald Passage 3)":       KeyzerItemData(Passage.EMERALD,  2),
+    "Keyzer (Emerald Passage Boss)":    KeyzerItemData(Passage.EMERALD,  3),
+    "Keyzer (Ruby Passage 1)":          KeyzerItemData(Passage.RUBY,     0),
+    "Keyzer (Ruby Passage 2)":          KeyzerItemData(Passage.RUBY,     1),
+    "Keyzer (Ruby Passage 3)":          KeyzerItemData(Passage.RUBY,     2),
+    "Keyzer (Ruby Passage Boss)":       KeyzerItemData(Passage.RUBY,     3),
+    "Keyzer (Topaz Passage 1)":         KeyzerItemData(Passage.TOPAZ,    0),
+    "Keyzer (Topaz Passage 2)":         KeyzerItemData(Passage.TOPAZ,    1),
+    "Keyzer (Topaz Passage 3)":         KeyzerItemData(Passage.TOPAZ,    2),
+    "Keyzer (Topaz Passage Boss)":      KeyzerItemData(Passage.TOPAZ,    3),
+    "Keyzer (Sapphire Passage 1)":      KeyzerItemData(Passage.SAPPHIRE, 0),
+    "Keyzer (Sapphire Passage 2)":      KeyzerItemData(Passage.SAPPHIRE, 1),
+    "Keyzer (Sapphire Passage 3)":      KeyzerItemData(Passage.SAPPHIRE, 2),
+    "Keyzer (Sapphire Passage Boss)":   KeyzerItemData(Passage.SAPPHIRE, 3),
+    "Keyzer (Golden Pyramid Boss)":     KeyzerItemData(Passage.GOLDEN,   0),
 }
 
 ability_table = {
-    "Progressive Ground Pound":         AbilityItemData(0, IC.progression),
-    "Swim":                             AbilityItemData(1, IC.progression),
-    "Head Smash":                       AbilityItemData(2, IC.progression),
-    "Progressive Grab":                 AbilityItemData(3, IC.progression),
-    "Dash Attack":                      AbilityItemData(4, IC.progression),
-    "Stomp Jump":                       AbilityItemData(5, IC.progression),
+    "Progressive Ground Pound":         AbilityItemData(0),
+    "Swim":                             AbilityItemData(1),
+    "Head Smash":                       AbilityItemData(2),
+    "Progressive Grab":                 AbilityItemData(3),
+    "Dash Attack":                      AbilityItemData(4),
+    "Stomp Jump":                       AbilityItemData(5),
 }
 
 golden_treasure_table = {
-    "Golden Tree Pot":                  GoldenTreasureItemData( 0, IC.progression_skip_balancing),
-    "Golden Apple":                     GoldenTreasureItemData( 1, IC.progression_skip_balancing),
-    "Golden Fish":                      GoldenTreasureItemData( 2, IC.progression_skip_balancing),
-    "Golden Candle Holder":             GoldenTreasureItemData( 3, IC.progression_skip_balancing),
-    "Golden Lamp":                      GoldenTreasureItemData( 4, IC.progression_skip_balancing),
-    "Golden Crescent Moon Bed":         GoldenTreasureItemData( 5, IC.progression_skip_balancing),
-    "Golden Teddy Bear":                GoldenTreasureItemData( 6, IC.progression_skip_balancing),
-    "Golden Lollipop":                  GoldenTreasureItemData( 7, IC.progression_skip_balancing),
-    "Golden Game Boy Advance":          GoldenTreasureItemData( 8, IC.progression_skip_balancing),
-    "Golden Robot":                     GoldenTreasureItemData( 9, IC.progression_skip_balancing),
-    "Golden Rocket":                    GoldenTreasureItemData(10, IC.progression_skip_balancing),
-    "Golden Rocking Horse":             GoldenTreasureItemData(11, IC.progression_skip_balancing),
+    "Golden Tree Pot":                  GoldenTreasureItemData( 0),
+    "Golden Apple":                     GoldenTreasureItemData( 1),
+    "Golden Fish":                      GoldenTreasureItemData( 2),
+    "Golden Candle Holder":             GoldenTreasureItemData( 3),
+    "Golden Lamp":                      GoldenTreasureItemData( 4),
+    "Golden Crescent Moon Bed":         GoldenTreasureItemData( 5),
+    "Golden Teddy Bear":                GoldenTreasureItemData( 6),
+    "Golden Lollipop":                  GoldenTreasureItemData( 7),
+    "Golden Game Boy Advance":          GoldenTreasureItemData( 8),
+    "Golden Robot":                     GoldenTreasureItemData( 9),
+    "Golden Rocket":                    GoldenTreasureItemData(10),
+    "Golden Rocking Horse":             GoldenTreasureItemData(11),
 }
 
 other_item_table = {

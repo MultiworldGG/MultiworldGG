@@ -650,13 +650,13 @@
  "wormways/wormways-middle@f": {
   "scene": "Crawl_03b",
   "gate": "bot1",
-  "x": 0.440741,
+  "x": 0.547794,
   "y": 0.0
  },
  "wormways/wormways-middle@c": {
   "scene": "Crawl_03b",
   "gate": "top1",
-  "x": 0.111111,
+  "x": 0.220588,
   "y": 1.0
  },
  "wormways/wormways-upper-west@f": {
@@ -692,7 +692,7 @@
  "wormways/wormways-laboratory@f": {
   "scene": "Crawl_08",
   "gate": "bot1",
-  "x": 0.9,
+  "x": 0.854167,
   "y": 0.159091
  },
  "wormways/wormways-lower-east@c": {
@@ -795,7 +795,7 @@
   "scene": "Bellway_02",
   "gate": "right1",
   "x": 1.0,
-  "y": 0.86
+  "y": 0.820513
  },
  "deep-docks/deep-docks-lace-intro@l": {
   "scene": "Bone_East_12",
@@ -812,20 +812,20 @@
  "deep-docks/is-this-still-deep-docks-east@c": {
   "scene": "Bone_East_04",
   "gate": "top2",
-  "x": 0.807229,
+  "x": 0.636364,
   "y": 1.0
  },
  "deep-docks/is-this-still-deep-docks-east@ur": {
   "scene": "Bone_East_04",
   "gate": "right2",
   "x": 1.0,
-  "y": 0.84
+  "y": 0.737705
  },
  "deep-docks/is-this-still-deep-docks-east@lr": {
   "scene": "Bone_East_04",
   "gate": "right1",
   "x": 1.0,
-  "y": 0.48
+  "y": 0.147541
  },
  "deep-docks/is-this-still-deep-docks-west@c": {
   "scene": "Bone_East_04b",
@@ -837,7 +837,7 @@
   "scene": "Bone_East_04b",
   "gate": "left1",
   "x": 0.0,
-  "y": 0.46
+  "y": 0.114754
  },
  "deep-docks/deep-docks-march-side-room@l": {
   "scene": "Bone_East_04c",
@@ -908,8 +908,8 @@
  "deep-docks/deep-docks-chains-flea-rescue@f": {
   "scene": "Dock_03d",
   "gate": "bot1",
-  "x": 0.181818,
-  "y": 0.602564
+  "x": 0.081633,
+  "y": 0.114286
  },
  "deep-docks/deep-docks-chains-center@ul": {
   "scene": "Dock_02b",
@@ -2277,7 +2277,7 @@
   "scene": "Greymoor_17",
   "gate": "left1",
   "x": 0.026316,
-  "y": 0.8
+  "y": 0.704545
  },
  "greymoor/greymoor-silver-shells-room@u": {
   "scene": "Greymoor_17",
@@ -2426,8 +2426,8 @@
  "verdania/verdania-kindanir-egg-room@r": {
   "scene": "Clover_11",
   "gate": "right1",
-  "x": 0.9,
-  "y": 0.4
+  "x": 0.971698,
+  "y": 0.277778
  },
  "verdania/verdania-left-side-essence-shrine@r": {
   "scene": "Clover_21",
@@ -2463,19 +2463,19 @@
   "scene": "Clover_03",
   "gate": "left1",
   "x": 0.0,
-  "y": 0.659091
+  "y": 0.473684
  },
  "verdania/verdania-right-side-tall-room@ll": {
   "scene": "Clover_03",
   "gate": "left2",
   "x": 0.0,
-  "y": 0.494318
+  "y": 0.219298
  },
  "verdania/verdania-right-side-tall-room@r": {
   "scene": "Clover_03",
   "gate": "right1",
   "x": 1.0,
-  "y": 0.454545
+  "y": 0.157895
  },
  "blasted-steps/blasted-steps-bellway@r": {
   "scene": "Bellway_08",
@@ -2630,8 +2630,8 @@
  "blasted-steps/lumble-the-lucky@r": {
   "scene": "Coral_33",
   "gate": "right1",
-  "x": 0.989583,
-  "y": 0.5
+  "x": 0.991379,
+  "y": 0.891892
  },
  "blasted-steps/windy-pinstress-room@l": {
   "scene": "Room_Pinstress",
@@ -3872,8 +3872,8 @@
  "bilewater/bilewater-arena-shack@l": {
   "scene": "Shadow_Bilehaven_Room",
   "gate": "left1",
-  "x": 0.175,
-  "y": 0.4
+  "x": 0.068966,
+  "y": 0.294118
  },
  "bilewater/bilewater-bellway@l": {
   "scene": "Bellway_Shadow",
@@ -4928,14 +4928,14 @@
  "putrified-ducts/putrified-ducts-bellway@l": {
   "scene": "Bellway_Aqueduct",
   "gate": "left1",
-  "x": 0.375,
-  "y": 0.294872
+  "x": 0.016393,
+  "y": 0.140625
  },
  "putrified-ducts/putrified-ducts-bellway@r": {
   "scene": "Bellway_Aqueduct",
   "gate": "right1",
-  "x": 0.989583,
-  "y": 0.910256
+  "x": 0.983607,
+  "y": 0.890625
  },
  "putrified-ducts/putrified-ducts-connection-to-bilewater@d": {
   "scene": "Aqueduct_04",

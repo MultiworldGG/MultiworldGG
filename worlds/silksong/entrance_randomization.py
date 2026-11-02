@@ -581,22 +581,55 @@ def _repair_entrance_layout(world, exits):
     groups = {}
     for source in exits:
         groups.setdefault(pairing_group(source, scope(world)), []).append(source)
+
+    def opening_score():
+        state, items, assigned, _ = _early_item_assignment(world)
+        before = sum(location.item is None and location.can_reach(state) for location in world.get_locations())
+        for item in items:
+            state.collect(item, True)
+        state.sweep_for_advancements(_early_sweep_locations(world))
+        remaining = sum(location.item is None and location not in assigned and location.can_reach(state)
+                        for location in world.get_locations())
+        starts = [source for source, entrance in exits.items() if entrance.can_reach(state)]
+        return (len(assigned), remaining, before, len(starts)), starts
+
     try:
         connect(pairs)
-        if not valid():
-            state = CollectionState(world.multiworld)
-            state.sweep_for_advancements()
-            starts = [source for source, entrance in exits.items() if entrance.can_reach(state)]
+        for _ in range(4):
+            if valid():
+                break
+            current, starts = opening_score()
+            early_count = len(_early_item_assignment(world)[1])
             world.random.shuffle(starts)
-            found = False
+            best = None
+            opened = False
             for first in starts:
                 candidates = [source for source in groups[pairing_group(first, scope(world))] if source != first]
                 world.random.shuffle(candidates)
-                if any(swap(first, second) for second in candidates):
-                    found = True
+                for second in candidates:
+                    changes = {first: pairs[second], second: pairs[first], pairs[first]: second, pairs[second]: first}
+                    connect(changes)
+                    if valid():
+                        best = None, changes
+                        opened = True
+                        break
+                    score, _ = opening_score()
+                    if score > current and (best is None or score > best[0]):
+                        if _has_possible_category_progression(world) and _has_reachable_exits(world, exits):
+                            best = score, changes
+                    connect({source: pairs[source] for source in changes})
+                    if best and (best[0][0] > current[0]
+                                 or best[0][0] == early_count and best[0][1] > current[1]):
+                        break
+                if opened or best and (best[0][0] > current[0]
+                             or best[0][0] == early_count and best[0][1] > current[1]):
                     break
-            if not found:
+            if best is None:
                 return None
+            pairs.update(best[1])
+            connect(best[1])
+        if not valid():
+            return None
         sources = [source for key, group in groups.items() if key[-1] in {'left', 'top', 'door_in'}
                    and len(group) > 1 for source in group]
         for _ in range(4):
@@ -608,6 +641,10 @@ def _repair_entrance_layout(world, exits):
                 world.random.shuffle(candidates)
                 for second in candidates[:8]:
                     if swap(first, second):
+                        if _sufficient_shuffle(world, pairs):
+                            validate_pairs(pairs, scope(world), world.get_content_scope())
+                            completed = True
+                            return [(exits[source].name, exits[target].name) for source, target in pairs.items()]
                         break
             if _sufficient_shuffle(world, pairs):
                 validate_pairs(pairs, scope(world), world.get_content_scope())

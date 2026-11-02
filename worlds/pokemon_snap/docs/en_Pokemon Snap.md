@@ -9,6 +9,7 @@ You can read through all the options and generate a YAML [here](../player-option
 * Submitting a picture of every Pokémon (62)
 * Submitting a wonderful picture of every Pokémon (62)
 * Submitting pictures with multiple of the same Pokémon in them (34)
+* Submitting pictures of Pokémon in regular poses (141)
 * Submitting pictures of Pokémon in special poses (11)
   * Beach: Surfing Pikachu, Pikachu on a Stump, Gust-Using Pidgey
   * Tunnel: Pikachu on a Ball

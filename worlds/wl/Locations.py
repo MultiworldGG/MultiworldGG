@@ -67,7 +67,6 @@ level_location_table = {
     LocationName.syrupcastle_37_exit_1: 0xA81401,
     LocationName.syrupcastle_38_exit_1: 0xA81402,
     LocationName.syrupcastle_39_exit_1: 0xA81404,
-    LocationName.syrupcastle_boss: 0xA81408,
 }
 
 treasure_location_table = {
@@ -620,20 +619,10 @@ block_location_table = {
     LocationName.syrupcastle_40_block18: 0xA82528,
 }
 
-# genie_location_table = {
-#    LocationName.genie: 0xA81700,
-# }
-
-garlic_location_table = {
-    LocationName.garlic_goal: 0xA41300,
-}
-
 all_locations = {
     **level_location_table,
     **treasure_location_table,
-    # **genie_location_table,
     **block_location_table,
-    # **garlic_location_table,
     **boss_item_location_table,
 }
 
@@ -658,15 +647,11 @@ def setup_locations(options):
         location_table.update({**treasure_location_table})
     if options.blocksanity.value:
         location_table.update({**block_location_table})
-    if options.goal == "garlic_hunt":
-        location_table.update({**garlic_location_table})
-    # else:
-    #    location_table.update({**genie_location_table})
     return location_table
 
 
 lookup_id_to_name: typing.Dict[int, str] = {
-    id: name for name, _ in all_locations.items()
+    code: name for name, code in all_locations.items()
 }
 
 boss_location_dict = {
@@ -676,5 +661,4 @@ boss_location_dict = {
     0xA81040: 0xA8104B,
     0xA81110: 0xA8111B,
     0xA81220: 0xA8122B,
-    0xA81408: 0xA8140B,
 }

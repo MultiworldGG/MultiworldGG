@@ -446,14 +446,18 @@ high_victory_checks_levels = [
         has_ocean=False
     ),
     Wargroove2Level(
-        name="Thieves' Town",
-        file_name="Thieves_Town.json",
+        name="Rapid Response",
+        file_name="Rapid_Response.json",
         location_rules={
-            "Thieves' Town: Gold Digging": None,
-            "Thieves' Town: Lock Pick": lambda player: lambda state: state.has_all(("Walls Event", "Thief"), player),
-            "Thieves' Town: Victory": lambda player: lambda state: state.has("Walls Event", player),
+            "Rapid Response: Ground Siege": lambda player: lambda state: state.has_all(
+                                                                    ("Trebuchet", "Barge", "Archer"),
+                                                                    player),
+            "Rapid Response: Air Siege": lambda player: lambda state: state.has_all(
+                                                                    ("Ballista", "Barge", "Archer"),
+                                                                    player),
+            "Rapid Response: Victory": lambda player: lambda state: state.has_all(("Barge", "Archer"), player),
         },
-        has_ocean=False
+        has_ocean=True
     ),
 ]
 

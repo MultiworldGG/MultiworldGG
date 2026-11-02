@@ -2,11 +2,12 @@ from typing import TYPE_CHECKING, override
 from dataclasses import dataclass
 
 from rule_builder.rules import Rule, True_, False_, And, Or, Has, HasGroup, CanReachLocation, CollectionState, OptionFilter
-from .locations import wonderful, multiple, secret_exit, course, bonus, species_data_tables, \
+from .locations import wonderful, multiple, secret_exit, course, bonus, regular_pose, species_data_tables, \
     PokemonSnapLocationCategory as Category, RNG_LOCATIONS, HARD_LOCATIONS, POKEMON_IN_MULTIPLE_LEVELS
 from .constants import *
 from .items import PokemonSnapItemCategory as ItemCategory, fragment, course as course_item
-from .options import GoalType, PhotoScoring, IncludeRNGChecks, UseHardLogic
+from .options import GoalType, PhotoScoring, IncludeRNGPhotos, UseHardLogic
+from .poses import *
 if TYPE_CHECKING:
     from . import PokemonSnapWorld
 
@@ -18,7 +19,7 @@ except ImportError:
 _NO_ITEMS   = True_()
 
 _SEPARATE_SCORING = OptionFilter(PhotoScoring, [PhotoScoring.option_separate, PhotoScoring.option_separate_unlocks], operator="in")
-_RNG_LOCATIONS_ON = OptionFilter(IncludeRNGChecks, IncludeRNGChecks.option_true)
+_RNG_LOCATIONS_ON = OptionFilter(IncludeRNGPhotos, IncludeRNGPhotos.option_true)
 _HARD_LOGIC_ON    = OptionFilter(UseHardLogic, UseHardLogic.option_true)
 
 REPORT_EXCLUSIONS = RNG_LOCATIONS + HARD_LOCATIONS
@@ -30,6 +31,7 @@ location_name_functions = {
     Category.WONDERFUL_PHOTO: wonderful,
     Category.MULTIPLE_PHOTO:  multiple,
     Category.SPECIAL_POSE:    _identity,
+    Category.REGULAR_POSE:    regular_pose,
     Category.POKEMON_SIGN:    _identity,
     Category.SECRET_EXIT:     secret_exit,
     Category.PHOTO_COUNT:     _identity,
@@ -72,7 +74,7 @@ def multiple_requirement(world: "PokemonSnapWorld"):
 
 
 def has(item_name: str, course_name: str):
-    if item_name == POKEMON_FOOD:
+    if item_name == POKEMON_FOOD or item_name == APPLE:
         return Has(POKEMON_FOOD) | Has(course_item(POKEMON_FOOD, course_name)) | Has(APPLE) | Has(course_item(APPLE, course_name))
     return Has(item_name) | Has(course_item(item_name, course_name))
 
@@ -225,7 +227,10 @@ _CAN_REACH_ALL_POKEMON = [
 
 
 LOCATION_RULES = {
-    # Beach
+    ###########
+    ## Beach ##
+    ###########
+    # Pokemon
     BUTTERFREE: {
         Category.NORMAL_PHOTO:    _NO_ITEMS,
         Category.WONDERFUL_PHOTO: _NO_ITEMS,
@@ -278,13 +283,41 @@ LOCATION_RULES = {
         Category.NORMAL_PHOTO:    has(POKEMON_FOOD, LVL_BEACH) | has(PESTER_BALL, LVL_BEACH),
         Category.WONDERFUL_PHOTO: has(POKEMON_FOOD, LVL_BEACH) | has(PESTER_BALL, LVL_BEACH),
     },
-    SURFING_PIKACHU:    { Category.SPECIAL_POSE: has(POKEMON_FOOD, LVL_BEACH) },
-    PIKACHU_ON_A_STUMP: { Category.SPECIAL_POSE: has(PESTER_BALL, LVL_BEACH) },
-    GUST_USING_PIDGEY:  { Category.SPECIAL_POSE: _NO_ITEMS },
-    BEACH_SIGN:         { Category.POKEMON_SIGN: Has(SIGN_DETECTOR) },
+    # Special Poses
+    SURFING_PIKACHU:     { Category.SPECIAL_POSE: has(POKEMON_FOOD, LVL_BEACH) },
+    PIKACHU_ON_A_STUMP:  { Category.SPECIAL_POSE: has(PESTER_BALL, LVL_BEACH) },
+    GUST_USING_PIDGEY:   { Category.SPECIAL_POSE: _NO_ITEMS },
+    # Environment
+    BEACH_SIGN:          { Category.POKEMON_SIGN: Has(SIGN_DETECTOR) },
+    # Regular Poses
+    PIDGEY_SCREECH:             { Category.REGULAR_POSE: _NO_ITEMS },
+    MEOWTH_FUNNY:               { Category.REGULAR_POSE: _NO_ITEMS },
+    MEOWTH_FAINTED:             { Category.REGULAR_POSE: _NO_ITEMS },
+    MEOWTH_PESTER:              { Category.REGULAR_POSE: has(PESTER_BALL, LVL_BEACH) },
+    MEOWTH_DANCING:             { Category.REGULAR_POSE: has(POKEMON_FOOD, LVL_BEACH) | has(PESTER_BALL, LVL_BEACH) | has(POKEFLUTE, LVL_BEACH) },
+    DODUO_HIT:                  { Category.REGULAR_POSE: (Has(DASH_ENGINE) | _HARD_LOGIC_ON) & (has(POKEMON_FOOD, LVL_BEACH) | has(PESTER_BALL, LVL_BEACH)) },
+    DODUO_FAINTED:              { Category.REGULAR_POSE: (Has(DASH_ENGINE) | _HARD_LOGIC_ON) & (has(POKEMON_FOOD, LVL_BEACH) | has(PESTER_BALL, LVL_BEACH)) },
+    DODUO_WAKING:               { Category.REGULAR_POSE: (Has(DASH_ENGINE) | _HARD_LOGIC_ON) & (has(POKEMON_FOOD, LVL_BEACH) | has(PESTER_BALL, LVL_BEACH)) },
+    CHANSEY_FUNNY:              { Category.REGULAR_POSE: has(POKEMON_FOOD, LVL_BEACH) | has(PESTER_BALL, LVL_BEACH) },
+    CHANSEY_JOLLY:              { Category.REGULAR_POSE: has(POKEMON_FOOD, LVL_BEACH) },
+    KANGASKHAN_ANGRY:           { Category.REGULAR_POSE: has(POKEMON_FOOD, LVL_BEACH) | has(PESTER_BALL, LVL_BEACH) },
+    KANGASKHAN_DANCE:           { Category.REGULAR_POSE: has(POKEFLUTE, LVL_BEACH) & (has(POKEMON_FOOD, LVL_BEACH) | has(PESTER_BALL, LVL_BEACH)) },
+    SCYTHER_FIGHTING:           { Category.REGULAR_POSE: has(PESTER_BALL, LVL_BEACH) },
+    LAPRAS_RELAXED:             { Category.REGULAR_POSE: HasFilm(5) | (HasFilm(2) & _HARD_LOGIC_ON) },
+    EEVEE_HAPPY:                { Category.REGULAR_POSE: has(POKEMON_FOOD, LVL_BEACH) },
+    SNORLAX_FOR_SURE:           { Category.REGULAR_POSE: has(POKEFLUTE, LVL_BEACH) },
+    SNORLAX_JOLLY:              { Category.REGULAR_POSE: has(POKEFLUTE, LVL_BEACH) },
+    SNORLAX_WAKING:             { Category.REGULAR_POSE: has(POKEFLUTE, LVL_BEACH) },
+    SNORLAX_SCRATCHING:         { Category.REGULAR_POSE: has(PESTER_BALL, LVL_BEACH) },
+    PIKACHU_BEACH_ZAPS_EVEN_ME: { Category.REGULAR_POSE: has(POKEFLUTE, LVL_BEACH) },
+    PIKACHU_BEACH_VERY_LIVELY:  { Category.REGULAR_POSE: has(POKEMON_FOOD, LVL_BEACH) | has(PESTER_BALL, LVL_BEACH) }, 
+    MAGIKARP_BEACH_GOOD_SPLASH: { Category.REGULAR_POSE: CanReachLocation(course(MAGIKARP, LVL_BEACH)) },
 
 
-    # Tunnel
+    ############
+    ## Tunnel ##
+    ############
+    # Pokemon
     KAKUNA: {
         Category.NORMAL_PHOTO:    _NO_ITEMS,
         Category.WONDERFUL_PHOTO: _NO_ITEMS,
@@ -339,12 +372,34 @@ LOCATION_RULES = {
         Category.NORMAL_PHOTO:    _NO_ITEMS,
         Category.WONDERFUL_PHOTO: _NO_ITEMS,
     },
+    # Special Poses
     PIKACHU_ON_A_BALL: { Category.SPECIAL_POSE: HasFilm(5) | (HasFilm(3) & _HARD_LOGIC_ON) },
     TUNNEL_SIGN:       { Category.POKEMON_SIGN: Has(SIGN_DETECTOR) & has(POKEMON_FOOD, LVL_TUNNEL) & has(POKEFLUTE, LVL_TUNNEL) },
+    # Environment
     LVL_TUNNEL:        { Category.SECRET_EXIT: has(POKEMON_FOOD, LVL_TUNNEL) | has(PESTER_BALL, LVL_TUNNEL) },
+    # Regular Poses
+    ELECTRODE_ROLLING:           { Category.REGULAR_POSE: _NO_ITEMS },
+    ELECTRODE_EXPLODED:          { Category.REGULAR_POSE: _NO_ITEMS },
+    ELECTABUZZ_BLAST:            { Category.REGULAR_POSE: _NO_ITEMS },
+    ELECTABUZZ_FAINTED:          { Category.REGULAR_POSE: _NO_ITEMS },
+    ELECTABUZZ_PESTER:           { Category.REGULAR_POSE: has(PESTER_BALL, LVL_TUNNEL) },
+    ELECTABUZZ_ANGRY:            { Category.REGULAR_POSE: has(POKEMON_FOOD, LVL_TUNNEL) | has(PESTER_BALL, LVL_TUNNEL) },
+    ELECTABUZZ_YUMMY:            { Category.REGULAR_POSE: CanReachLocation(ZAPDOS) & has(POKEMON_FOOD, LVL_TUNNEL) },
+    PIKACHU_TUNNEL_ZAPS_EVEN_ME: { Category.REGULAR_POSE: has(POKEFLUTE, LVL_TUNNEL) },
+    PIKACHU_TUNNEL_VERY_LIVELY:  { Category.REGULAR_POSE: CanReachLocation(ZAPDOS) },
+    PIKACHU_TUNNEL_THATS_PIKA:   { Category.REGULAR_POSE: CanReachLocation(ZAPDOS) },
+    ZAPDOS_THUNDER:              { Category.REGULAR_POSE: CanReachLocation(ZAPDOS) },
+    MAGIKARP_TUNNEL_SPLASHED:    { Category.REGULAR_POSE: _NO_ITEMS },
+    DIGLETT_POP_UP:              { Category.REGULAR_POSE: _NO_ITEMS },
+    DIGLETT_UNDERGROUND:         { Category.REGULAR_POSE: _NO_ITEMS },
+    DUGTRIO_POP_UP:              { Category.REGULAR_POSE: CanReachLocation(DUGTRIO) },
+    DUGTRIO_UNDERGROUND:         { Category.REGULAR_POSE: CanReachLocation(DUGTRIO) },
+    MAGNEMITE_HAPPY:             { Category.REGULAR_POSE: has(POKEMON_FOOD, LVL_TUNNEL) },
 
-
-    # Volcano
+    #############
+    ## Volcano ##
+    #############
+    # Pokemon
     CHARMANDER: {
         Category.NORMAL_PHOTO:    _NO_ITEMS,
         Category.WONDERFUL_PHOTO: _NO_ITEMS,
@@ -392,11 +447,39 @@ LOCATION_RULES = {
         Category.NORMAL_PHOTO:    has(POKEMON_FOOD, LVL_VOLCANO) | has(PESTER_BALL, LVL_VOLCANO),
         Category.WONDERFUL_PHOTO: has(POKEMON_FOOD, LVL_VOLCANO) | has(PESTER_BALL, LVL_VOLCANO),
     },
+    # Special Poses
     FIGHTING_MAGMAR: { Category.SPECIAL_POSE: has(POKEMON_FOOD, LVL_VOLCANO) },
+    # Environment
     VOLCANO_SIGN:    { Category.POKEMON_SIGN: Has(SIGN_DETECTOR) & has(PESTER_BALL, LVL_VOLCANO) },
+    # Regular Poses
+    RAPIDASH_NEIGHING:            { Category.REGULAR_POSE: has(POKEMON_FOOD, LVL_VOLCANO) },
+    VULPIX_PESTER:                { Category.REGULAR_POSE: has(PESTER_BALL, LVL_VOLCANO) },
+    VULPIX_HAPPY:                 { Category.REGULAR_POSE: has(POKEMON_FOOD, LVL_VOLCANO) },
+    CHARMANDER_UNSTABLE:          { Category.REGULAR_POSE: has(POKEMON_FOOD, LVL_VOLCANO) | has(PESTER_BALL, LVL_VOLCANO) },
+    CHARMANDER_HMM:               { Category.REGULAR_POSE: has(POKEMON_FOOD, LVL_VOLCANO) | has(PESTER_BALL, LVL_VOLCANO) },
+    CHARMANDER_PESTER:            { Category.REGULAR_POSE: has(PESTER_BALL, LVL_VOLCANO) },
+    CHARMANDER_HAPPY:             { Category.REGULAR_POSE: has(POKEMON_FOOD, LVL_VOLCANO) },
+    CHARMELEON_FALL:              { Category.REGULAR_POSE: has(PESTER_BALL, LVL_VOLCANO) },
+    CHARMELEON_FAINTED:           { Category.REGULAR_POSE: has(PESTER_BALL, LVL_VOLCANO) },
+    CHARMELEON_AWOKEN:            { Category.REGULAR_POSE: has(POKEMON_FOOD, LVL_VOLCANO) | has(PESTER_BALL, LVL_VOLCANO) },
+    CHARMELEON_ROARING:           { Category.REGULAR_POSE: has(POKEMON_FOOD, LVL_VOLCANO) | has(PESTER_BALL, LVL_VOLCANO) },
+    MAGMAR_UNSTABLE:              { Category.REGULAR_POSE: has(POKEMON_FOOD, LVL_VOLCANO) | has(PESTER_BALL, LVL_VOLCANO) },
+    MAGMAR_PRETTY_FUNNY:          { Category.REGULAR_POSE: has(POKEMON_FOOD, LVL_VOLCANO) | has(PESTER_BALL, LVL_VOLCANO) },
+    MAGMAR_SO_FUNNY:              { Category.REGULAR_POSE: has(POKEMON_FOOD, LVL_VOLCANO) | has(PESTER_BALL, LVL_VOLCANO) },
+    MAGMAR_DIZZY:                 { Category.REGULAR_POSE: has(POKEMON_FOOD, LVL_VOLCANO) },
+    MAGMAR_HOT:                   { Category.REGULAR_POSE: has(POKEMON_FOOD, LVL_VOLCANO) },
+    MOLTRES_WONDERFUL:            { Category.REGULAR_POSE: CanReachLocation(MOLTRES) },
+    GROWLITHE_EMBERS:             { Category.REGULAR_POSE: CanReachLocation(GROWLITHE) },
+    ARCANINE_EMBERS:              { Category.REGULAR_POSE: CanReachLocation(ARCANINE) },
+    MAGIKARP_VOLCANO_GOOD_SPLASH: { Category.REGULAR_POSE: CanReachLocation(course(MAGIKARP, LVL_VOLCANO)) },
+    CHARIZARD_SHOCKED:            { Category.REGULAR_POSE: has(PESTER_BALL, LVL_VOLCANO) },
+    CHARIZARD_FLAME:              { Category.REGULAR_POSE: has(PESTER_BALL, LVL_VOLCANO) | has(POKEMON_FOOD, LVL_VOLCANO) },
 
 
-    # River
+    ###########
+    ## River ##
+    ###########
+    # Pokemon
     METAPOD: {
         Category.NORMAL_PHOTO:    _NO_ITEMS,
         Category.WONDERFUL_PHOTO: has(PESTER_BALL, LVL_RIVER) | _HARD_LOGIC_ON,
@@ -426,7 +509,7 @@ LOCATION_RULES = {
     },
     SHELLDER: {
         Category.NORMAL_PHOTO:    _NO_ITEMS,
-        Category.WONDERFUL_PHOTO: Has(DASH_ENGINE) | _HARD_LOGIC_ON,
+        Category.WONDERFUL_PHOTO: has(POKEMON_FOOD, LVL_RIVER) | Has(DASH_ENGINE) | _HARD_LOGIC_ON,
         Category.MULTIPLE_PHOTO:  Has(DASH_ENGINE) | _HARD_LOGIC_ON,
     },
     CLOYSTER: {
@@ -452,12 +535,49 @@ LOCATION_RULES = {
         Category.NORMAL_PHOTO:    _NO_ITEMS,
         Category.WONDERFUL_PHOTO: _NO_ITEMS,
     },
+    # Special Poses
     SPEED_PIKACHU: { Category.SPECIAL_POSE: HasFilm(5) | (HasFilm(2) & _HARD_LOGIC_ON) | has(POKEMON_FOOD, LVL_RIVER) | has(PESTER_BALL, LVL_RIVER) },
+    # Environment
     RIVER_SIGN:    { Category.POKEMON_SIGN: Has(SIGN_DETECTOR) & has(POKEFLUTE, LVL_RIVER) },
     LVL_RIVER:     { Category.SECRET_EXIT: has(PESTER_BALL, LVL_RIVER) },
+    # Regular Poses
+    MAGIKARP_RIVER_SPLASHED:      { Category.REGULAR_POSE: has(POKEMON_FOOD, LVL_RIVER) | has(PESTER_BALL, LVL_RIVER) },
+    MAGIKARP_RIVER_GOOD_SPLASH:   { Category.REGULAR_POSE: has(POKEMON_FOOD, LVL_RIVER) | has(PESTER_BALL, LVL_RIVER) },
+    MAGIKARP_RIVER_WHAT_A_SPLASH: { Category.REGULAR_POSE: has(POKEMON_FOOD, LVL_RIVER) | has(PESTER_BALL, LVL_RIVER) },
+    POLIWAG_DIZZY:                { Category.REGULAR_POSE: has(POKEMON_FOOD, LVL_RIVER) | has(PESTER_BALL, LVL_RIVER) },
+    POLIWAG_FAINTED:              { Category.REGULAR_POSE: has(POKEMON_FOOD, LVL_RIVER) | has(PESTER_BALL, LVL_RIVER) },
+    POLIWAG_WAKING:               { Category.REGULAR_POSE: has(POKEMON_FOOD, LVL_RIVER) | has(PESTER_BALL, LVL_RIVER) },
+    POLIWAG_JUMPING_IN:           { Category.REGULAR_POSE: has(POKEMON_FOOD, LVL_RIVER) | has(PESTER_BALL, LVL_RIVER) },
+    POLIWAG_NICE_JUMP:            { Category.REGULAR_POSE: has(POKEMON_FOOD, LVL_RIVER) | has(PESTER_BALL, LVL_RIVER) },
+    POLIWAG_JUMPING:              { Category.REGULAR_POSE: has(POKEMON_FOOD, LVL_RIVER) | has(PESTER_BALL, LVL_RIVER) },
+    POLIWAG_WHAT_A_JUMP:          { Category.REGULAR_POSE: has(POKEMON_FOOD, LVL_RIVER) | has(PESTER_BALL, LVL_RIVER) },
+    BULBASAUR_RIVER_PESTER:       { Category.REGULAR_POSE: has(PESTER_BALL, LVL_RIVER) },
+    BULBASAUR_RIVER_HAPPY:        { Category.REGULAR_POSE: has(POKEMON_FOOD, LVL_RIVER) },
+    VILEPLUME_FUN_DANCE:          { Category.REGULAR_POSE: CanReachLocation(VILEPLUME) },
+    VILEPLUME_ROCKIN:             { Category.REGULAR_POSE: CanReachLocation(VILEPLUME) },
+    VILEPLUME_WAKING:             { Category.REGULAR_POSE: CanReachLocation(VILEPLUME) },
+    SLOWPOKE_WILL_FISH:           { Category.REGULAR_POSE: has(POKEMON_FOOD, LVL_RIVER) },
+    SLOWPOKE_FISHING:             { Category.REGULAR_POSE: has(POKEMON_FOOD, LVL_RIVER) },
+    SLOWPOKE_OH_A_BITE:           { Category.REGULAR_POSE: has(POKEMON_FOOD, LVL_RIVER) },
+    SLOWBRO_EATING:               { Category.REGULAR_POSE: has(POKEMON_FOOD, LVL_RIVER) },
+    SHELLDER_CAUGHT:              { Category.REGULAR_POSE: has(POKEMON_FOOD, LVL_RIVER) },
+    SHELLDER_SNAPPING:            { Category.REGULAR_POSE: has(POKEMON_FOOD, LVL_RIVER) },
+    PSYDUCK_SUBMERGING:           { Category.REGULAR_POSE: Has(DASH_ENGINE) },
+    PSYDUCK_UNIQUE:               { Category.REGULAR_POSE: has(POKEMON_FOOD, LVL_RIVER) | has(PESTER_BALL, LVL_RIVER) },
+    PSYDUCK_FALLING:              { Category.REGULAR_POSE: has(POKEMON_FOOD, LVL_RIVER) | has(PESTER_BALL, LVL_RIVER) },
+    PSYDUCK_NICE_JUMP:            { Category.REGULAR_POSE: has(POKEMON_FOOD, LVL_RIVER) | has(PESTER_BALL, LVL_RIVER) },
+    PSYDUCK_IT_JUMPED:            { Category.REGULAR_POSE: has(POKEMON_FOOD, LVL_RIVER) | has(PESTER_BALL, LVL_RIVER) },
+    PSYDUCK_WHAT_A_JUMP:          { Category.REGULAR_POSE: has(POKEMON_FOOD, LVL_RIVER) | has(PESTER_BALL, LVL_RIVER) },
+    PORYGON_HAPPY:                { Category.REGULAR_POSE: CanReachLocation(PORYGON) & has(POKEMON_FOOD, LVL_RIVER) },
+    PORYGON_LOOKS_JOLLY:          { Category.REGULAR_POSE: CanReachLocation(PORYGON) & has(POKEMON_FOOD, LVL_RIVER) },
+    PORYGON_SURE_JOLLY:           { Category.REGULAR_POSE: CanReachLocation(PORYGON) & has(POKEMON_FOOD, LVL_RIVER) },
+    PIKACHU_RIVER_ZAPS_EVEN_ME:   { Category.REGULAR_POSE: CanReachLocation(SPEED_PIKACHU) & has(POKEFLUTE, LVL_RIVER) },
 
 
-    # Cave
+    ##########
+    ## Cave ##
+    ##########
+    # Pokemon
     JIGGLYPUFF: {
         Category.NORMAL_PHOTO:    _NO_ITEMS,
         Category.WONDERFUL_PHOTO: _NO_ITEMS,
@@ -515,14 +635,33 @@ LOCATION_RULES = {
         Category.WONDERFUL_PHOTO: _NO_ITEMS,
         Category.MULTIPLE_PHOTO:  _NO_ITEMS,
     },
+    # Special Poses
     BALLOON_PIKACHU:     { Category.SPECIAL_POSE:  has(POKEMON_FOOD, LVL_CAVE) | has(PESTER_BALL, LVL_CAVE) },
     FLYING_PIKACHU:      { Category.SPECIAL_POSE: (has(POKEMON_FOOD, LVL_CAVE) | has(PESTER_BALL, LVL_CAVE)) & has(POKEFLUTE, LVL_CAVE) },
     JIGGLYPUFF_ON_STAGE: { Category.SPECIAL_POSE:  has(POKEMON_FOOD, LVL_CAVE) | has(PESTER_BALL, LVL_CAVE) },
     JIGGLYPUFF_TRIO:     { Category.SPECIAL_POSE:  has(POKEMON_FOOD, LVL_CAVE) | has(PESTER_BALL, LVL_CAVE) },
+    # Environment
     CAVE_SIGN:           { Category.POKEMON_SIGN: Has(SIGN_DETECTOR) },
+    # Regular Poses
+    GRIMER_HAPPY:                { Category.REGULAR_POSE: has(PESTER_BALL, LVL_CAVE) & (HasFilm(4) | (HasFilm(2) & _HARD_LOGIC_ON)) },
+    MUK_HAPPY:                   { Category.REGULAR_POSE: has(PESTER_BALL, LVL_CAVE) & (HasFilm(4) | (HasFilm(2) & _HARD_LOGIC_ON)) },
+    DITTO_HAPPY:                 { Category.REGULAR_POSE: has(PESTER_BALL, LVL_CAVE) & has(POKEMON_FOOD, LVL_CAVE) },
+    KOFFING_WEIRD_DANCE:         { Category.REGULAR_POSE: has(POKEFLUTE, LVL_CAVE) },
+    JIGGLYPUFF_DANCE:            { Category.REGULAR_POSE: CanReachLocation(JIGGLYPUFF_TRIO) },
+    JIGGLYPUFF_SHAME:            { Category.REGULAR_POSE: has(POKEMON_FOOD, LVL_CAVE) | has(PESTER_BALL, LVL_CAVE) },
+    JIGGLYPUFF_SINGING:          { Category.REGULAR_POSE: CanReachLocation(JIGGLYPUFF_ON_STAGE) },
+    VICTREEBEL_LEAPING:          { Category.REGULAR_POSE: CanReachLocation(VICTREEBEL) },
+    JYNX_JOLLY_DANCE:            { Category.REGULAR_POSE: has(POKEFLUTE, LVL_CAVE) },
+    ARTICUNO_BEAUTIFUL:          { Category.REGULAR_POSE: CanReachLocation(ARTICUNO) },
+    MAGIKARP_CAVE_WHAT_A_SPLASH: { Category.REGULAR_POSE: CanReachLocation(course(MAGIKARP, LVL_CAVE)) },
+    PIKACHU_CAVE_VERY_LIVELY:    { Category.REGULAR_POSE: CanReachLocation(course(PIKACHU, LVL_CAVE)) & has(POKEFLUTE, LVL_CAVE) },
+    PIKACHU_CAVE_ZAPS_EVEN_ME:   { Category.REGULAR_POSE: CanReachLocation(course(PIKACHU, LVL_CAVE)) & has(POKEFLUTE, LVL_CAVE) },
 
 
-    # Valley
+    ############
+    ## Valley ##
+    ############
+    # Pokemon
     SQUIRTLE: {
         Category.NORMAL_PHOTO:    _NO_ITEMS,
         Category.WONDERFUL_PHOTO: has(PESTER_BALL, LVL_VALLEY) | _HARD_LOGIC_ON,
@@ -583,18 +722,61 @@ LOCATION_RULES = {
         Category.WONDERFUL_PHOTO: has(POKEMON_FOOD, LVL_VALLEY) | has(PESTER_BALL, LVL_VALLEY),
         Category.MULTIPLE_PHOTO:  has(POKEMON_FOOD, LVL_VALLEY) | has(PESTER_BALL, LVL_VALLEY),
     },
+    # Special Poses
     GRAVELERS_GROUP_DANCE: { Category.SPECIAL_POSE: has(POKEFLUTE, LVL_VALLEY) },
+    # Environment
     VALLEY_SIGN:           { Category.POKEMON_SIGN: Has(SIGN_DETECTOR) },
     LVL_VALLEY:            { Category.SECRET_EXIT:  has(PESTER_BALL, LVL_VALLEY) },
+    # Regular Poses
+    SQUIRTLE_SHELL:                { Category.REGULAR_POSE: _NO_ITEMS },
+    SQUIRTLE_WITHDRAW:             { Category.REGULAR_POSE: _NO_ITEMS },
+    SQUIRTLE_PESTER:               { Category.REGULAR_POSE: has(PESTER_BALL, LVL_VALLEY) },
+    SQUIRTLE_COMING_OUT:           { Category.REGULAR_POSE: _NO_ITEMS },
+    SQUIRTLE_HAPPY:                { Category.REGULAR_POSE: has(POKEMON_FOOD, LVL_VALLEY) | Has(DASH_ENGINE) | _HARD_LOGIC_ON },
+    SANDSHREW_PESTER:              { Category.REGULAR_POSE: has(PESTER_BALL, LVL_VALLEY) },
+    SANDSHREW_JOLLY:               { Category.REGULAR_POSE: has(PESTER_BALL, LVL_VALLEY) & has(POKEMON_FOOD, LVL_VALLEY) },
+    SANDSHREW_POP_UP:              { Category.REGULAR_POSE: has(PESTER_BALL, LVL_VALLEY) },
+    SANDSLASH_STUMBLED:            { Category.REGULAR_POSE: has(PESTER_BALL, LVL_VALLEY) },
+    SANDSLASH_GO_UNDER:            { Category.REGULAR_POSE: Has(DASH_ENGINE) | _HARD_LOGIC_ON },
+    SANDSLASH_HAPPY:               { Category.REGULAR_POSE: has(PESTER_BALL, LVL_VALLEY) & has(POKEMON_FOOD, LVL_VALLEY) },
+    SANDSLASH_POP_UP:              { Category.REGULAR_POSE: has(PESTER_BALL, LVL_VALLEY) },
+    MANKEY_PESTER:                 { Category.REGULAR_POSE: has(PESTER_BALL, LVL_VALLEY) },
+    MANKEY_IN_THE_SKY:             { Category.REGULAR_POSE: has(PESTER_BALL, LVL_VALLEY) },
+    MANKEY_BLASTED:                { Category.REGULAR_POSE: has(PESTER_BALL, LVL_VALLEY) },
+    GRAVELER_FALLING:              { Category.REGULAR_POSE: has(PESTER_BALL, LVL_VALLEY) },
+    GRAVELER_FELL:                 { Category.REGULAR_POSE: has(PESTER_BALL, LVL_VALLEY) },
+    GOLDEEN_SPLASHING:             { Category.REGULAR_POSE: CanReachLocation(GOLDEEN) },
+    GOLDEEN_GOOD_SPLASH:           { Category.REGULAR_POSE: CanReachLocation(GOLDEEN) },
+    GOLDEEN_WHAT_A:                { Category.REGULAR_POSE: CanReachLocation(GOLDEEN) },
+    GYARADOS_SHOW_FACE:            { Category.REGULAR_POSE: CanReachLocation(GYARADOS) },
+    GYARADOS_SCARY:                { Category.REGULAR_POSE: CanReachLocation(GYARADOS) },
+    GYARADOS_FURIOUS:              { Category.REGULAR_POSE: CanReachLocation(GYARADOS) },
+    GYARADOS_ASTONISHED:           { Category.REGULAR_POSE: CanReachLocation(GYARADOS) & has(PESTER_BALL, LVL_VALLEY) },
+    GYARADOS_POWERFUL:             { Category.REGULAR_POSE: CanReachLocation(GYARADOS) },
+    DRATINI_JUMPING:               { Category.REGULAR_POSE: _NO_ITEMS },
+    DRATINI_GOOD:                  { Category.REGULAR_POSE: _NO_ITEMS },
+    DRATINI_AMAZING:               { Category.REGULAR_POSE: _NO_ITEMS },
+    DRAGONITE_OH_IT_IS:            { Category.REGULAR_POSE: CanReachLocation(DRAGONITE) },
+    MAGIKARP_VALLEY_IT_SPLASHED:   { Category.REGULAR_POSE: CanReachLocation(course(MAGIKARP, LVL_VALLEY)) },
+    MAGIKARP_VALLEY_GOOD_SPLASH:   { Category.REGULAR_POSE: CanReachLocation(course(MAGIKARP, LVL_VALLEY)) },
+    MAGIKARP_VALLEY_WHAT_A_SPLASH: { Category.REGULAR_POSE: CanReachLocation(course(MAGIKARP, LVL_VALLEY)) },
+    MAGIKARP_VALLEY_ITS_SPLASHING: { Category.REGULAR_POSE: has(PESTER_BALL, LVL_VALLEY) },
 
-    # Cloud
-    # Rainbow Cloud
+    ###################
+    ## Rainbow Cloud ##
+    ###################
     MEW: {
         Category.NORMAL_PHOTO:    has(POKEMON_FOOD, LVL_CLOUD) | has(PESTER_BALL, LVL_CLOUD),
         Category.WONDERFUL_PHOTO: has(POKEMON_FOOD, LVL_CLOUD) | has(PESTER_BALL, LVL_CLOUD),
     },
+    # Regular Poses
+    MEW_SPINNING:  { Category.REGULAR_POSE: CanReachLocation(MEW) },
+    MEW_WELL_DONE: { Category.REGULAR_POSE: CanReachLocation(MEW) },
+    MEW_PERFECT:   { Category.REGULAR_POSE: CanReachLocation(MEW) },
 
-    # Oak Rewards
+    #################
+    ## Oak Rewards ##
+    #################
     POKEMON_TOTAL_6:  { Category.PHOTO_COUNT: AtLeast(6,  *_CAN_REACH_ALL_POKEMON) },
     POKEMON_TOTAL_22: { Category.PHOTO_COUNT: AtLeast(22, *_CAN_REACH_ALL_POKEMON) },
     POKEMON_TOTAL_40: { Category.PHOTO_COUNT: AtLeast(40, *_CAN_REACH_ALL_POKEMON) },

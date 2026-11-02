@@ -5,7 +5,7 @@ from __future__ import annotations
 from typing import Mapping
 
 from .eva import EVA_CREST_SLOTS, EVA_REWARDS
-from .locations import INDIVIDUAL_RELIC_ITEM_BY_TURN_IN_LOCATION, LOCATION_NAMES_BY_CATEGORY
+from .locations import INDIVIDUAL_RELIC_ITEM_BY_TURN_IN_LOCATION, LOCATION_NAMES_BY_CATEGORY, canonicalize_location_name
 from .requirements import (
     COMPILED_ROOM_GRAPH,
     _ESTABLISHED_REQUIREMENTS_BY_LOCATION,
@@ -26,6 +26,7 @@ _UNTAGGED_POST_ACT_ONE_LOCATION_NAMES = frozenset(
         "Throwing Ring",
         "Curvesickle",
         "Egg of Flealia",
+        "Gramophone",
         "Wish: Fine Pins",
         "Wish: The Wailing Mother",
         "Wish: The Wandering Merchant",
@@ -40,6 +41,8 @@ _UNTAGGED_POST_ACT_ONE_LOCATION_NAMES = frozenset(
         "Beastling Call",
         "Craw Summons",
         "Boss: Broodmother",
+        "Broodmother's Eye",
+        "Grass Doll",
         "Boss: Second Sentinel",
         "Boss: Trobbio",
         "Boss: Palestag",
@@ -100,6 +103,10 @@ _ACT_ONE_DEPENDENCY_EXCLUDED_LOCATION_NAMES = frozenset(
     (
         "Pollen Heart",
         "Everbloom",
+        "Farsight",
+        "Crow bell",
+        "Magnetite Outcrop",
+        "Ruined Chapel - Rosary Cache",
         "Sprintmaster's Memento",
         "Guardian's Memento",
         "Hero's Memento",
@@ -151,6 +158,10 @@ _ACT_ONE_DEPENDENCY_EXCLUDED_LOCATION_NAMES = frozenset(
         "Shellwood - Shard Bundle",
         "Shellwood - Rosary String #2",
         "Relic: Weaver Effigy (Keelal, Shellwood)",
+        "Relic: Bone Scroll (Wisp Thicket)",
+        "Greymoor - Orders",
+        "Bilewater - Storeroom Record",
+        "Bilewater - Bilehaven Plaque",
         'Shell Shard Cache: Greyroots Diddy Basement 1',
         'Shell Shard Cache: Greyroots Diddy Basement 2',
         'Shell Shard Cache: Greyroots Diddy Basement 3',
@@ -169,14 +180,14 @@ _ACT_ONE_DEPENDENCY_EXCLUDED_LOCATION_NAMES = frozenset(
         "Wisp Thicket - Rosary Necklace",
         "Deep Docks - Rosary Cache #1",
         "Deep Docks - Rosary Cache #2",
-        "Sinner's Road - Rosary Cache #8",
+        "Rosaries Looking Over The Sinner's Bench",
         "Bone Bottom - Shell Shard Cache",
         "Deep Docks - Shell Shard Cache #5",
         "Deep Docks - Shell Shard Cache #6",
         "Deep Docks - Shell Shard Cache #7",
         "Deep Docks - Shell Shard Cache #8",
         "Deep Docks - Shell Shard Cache #9",
-        "Far Fields - Pale Rosary Necklace",
+        "Far Fields - Deep Entrance -Queen's Pearls of Hero",
         "Far Fields - Rosary Cache #18",
         "Far Fields - Shell Shard Cache #2",
         "Far Fields - Shell Shard Cache #3",
@@ -204,10 +215,15 @@ _ACT_ONE_DEPENDENCY_EXCLUDED_LOCATION_NAMES = frozenset(
         "Putrified Ducts - Frayed Rosary String",
         "Bilewater - Frayed Rosary String",
         "Bilewater - Rosary Cache #3",
+        "Bilewater - Rosary Cache #4",
+        "Bilewater - Rosary Cache #5",
         "Bilewater - Shell Shard Cache #1",
         "Bilewater - Shell Shard Cache #2",
         "Bilewater - Shell Shard Cache #3",
         "Bilewater - Shell Shard Cache #4",
+        "Bilewater - Shell Shard Cache #5",
+        "Bilewater - Shell Shard Cache #6",
+        "Bilewater - Shell Shard Cache #7",
         "Sands of Karak East Bench - Simple Key",
         "Sands of Karak - Upper Coral Tablet",
         "Sands of Karak - Lower Coral Tablet",
@@ -239,11 +255,19 @@ _POST_ACT_ONE_CREST_SLOT_LOCATION_NAMES_BY_CREST = {
 }
 
 
-ACT_ONE_EXCLUDED_LOCATION_NAMES = (
+ACT_ONE_EXCLUDED_LOCATION_NAMES = frozenset(canonicalize_location_name(name) for name in (
     _POST_ACT_ONE_SOURCE_LOCATION_NAMES
     | _POST_ACT_ONE_RELIC_TURN_IN_LOCATION_NAMES
     | _POST_ACT_ONE_ROOM_GRAPH_LOCATION_NAMES
     | _ACT_ONE_DEPENDENCY_EXCLUDED_LOCATION_NAMES
+))
+_ACT_ONE_EXCLUDED_RELIC_ITEMS = frozenset(
+    get_vanilla_reward_name(name, 'Relic') for name in LOCATION_NAMES_BY_CATEGORY['Relic']
+    if name in ACT_ONE_EXCLUDED_LOCATION_NAMES
+)
+ACT_ONE_EXCLUDED_LOCATION_NAMES |= frozenset(
+    location for location, item in INDIVIDUAL_RELIC_ITEM_BY_TURN_IN_LOCATION.items()
+    if item in _ACT_ONE_EXCLUDED_RELIC_ITEMS
 )
 
 

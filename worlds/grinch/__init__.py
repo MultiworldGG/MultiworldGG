@@ -97,6 +97,7 @@ class GrinchWorld(World):
                 self.options.randomize_sleigh_parts.value = slot_data["randomize_sleigh_parts"]
                 self.options.goal.value = slot_data["goal"]
                 self.options.advanced_logic.value = slot_data["advanced_logic"]
+                self.options.randomize_vacuum_tubes = slot_data["randomize_vacuum_tubes"]
             else:
                 self.using_ut = False
         else:
@@ -493,35 +494,45 @@ class GrinchWorld(World):
                 continue
 
         if not self.options.progressive_vacuums:
-            if self.options.starting_area == self.options.starting_area.option_whoville:
+            if self.options.randomize_vacuum_tubes:
+                if self.options.starting_area == self.options.starting_area.option_whoville:
+                    self.multiworld.push_precollected(self.create_item(grinch_items.keys.WHOVILLE))
+                    for vacuums_added in KEYS_TABLE.keys():
+                        if vacuums_added in [grinch_items.keys.PROGRESSIVE_VACUUM_TUBE, grinch_items.keys.WHOVILLE]:
+                            continue
+                        self_itempool.append((self.create_item(vacuums_added)))
+                elif self.options.starting_area == self.options.starting_area.option_who_forest:
+                    self.multiworld.push_precollected(self.create_item(grinch_items.keys.WHO_FOREST))
+                    for vacuums_added in KEYS_TABLE.keys():
+                        if vacuums_added in [grinch_items.keys.PROGRESSIVE_VACUUM_TUBE, grinch_items.keys.WHO_FOREST]:
+                            continue
+                        self_itempool.append((self.create_item(vacuums_added)))
+                elif self.options.starting_area == self.options.starting_area.option_who_dump:
+                    self.multiworld.push_precollected(self.create_item(grinch_items.keys.WHO_DUMP))
+                    for vacuums_added in KEYS_TABLE.keys():
+                        if vacuums_added in [grinch_items.keys.PROGRESSIVE_VACUUM_TUBE, grinch_items.keys.WHO_DUMP]:
+                            continue
+                        self_itempool.append((self.create_item(vacuums_added)))
+                elif self.options.starting_area == self.options.starting_area.option_who_lake:
+                    self.multiworld.push_precollected(self.create_item(grinch_items.keys.WHO_LAKE))
+                    for vacuums_added in KEYS_TABLE.keys():
+                        if vacuums_added in [grinch_items.keys.PROGRESSIVE_VACUUM_TUBE, grinch_items.keys.WHO_LAKE]:
+                            continue
+                        self_itempool.append((self.create_item(vacuums_added)))
+            else:
                 self.multiworld.push_precollected(self.create_item(grinch_items.keys.WHOVILLE))
-                for vacuums_added in KEYS_TABLE.keys():
-                    if vacuums_added in [grinch_items.keys.PROGRESSIVE_VACUUM_TUBE, grinch_items.keys.WHOVILLE]:
-                        continue
-                    self_itempool.append((self.create_item(vacuums_added)))
-            elif self.options.starting_area == self.options.starting_area.option_who_forest:
                 self.multiworld.push_precollected(self.create_item(grinch_items.keys.WHO_FOREST))
-                for vacuums_added in KEYS_TABLE.keys():
-                    if vacuums_added in [grinch_items.keys.PROGRESSIVE_VACUUM_TUBE, grinch_items.keys.WHO_FOREST]:
-                        continue
-                    self_itempool.append((self.create_item(vacuums_added)))
-            elif self.options.starting_area == self.options.starting_area.option_who_dump:
                 self.multiworld.push_precollected(self.create_item(grinch_items.keys.WHO_DUMP))
-                for vacuums_added in KEYS_TABLE.keys():
-                    if vacuums_added in [grinch_items.keys.PROGRESSIVE_VACUUM_TUBE, grinch_items.keys.WHO_DUMP]:
-                        continue
-                    self_itempool.append((self.create_item(vacuums_added)))
-            elif self.options.starting_area == self.options.starting_area.option_who_lake:
                 self.multiworld.push_precollected(self.create_item(grinch_items.keys.WHO_LAKE))
-                for vacuums_added in KEYS_TABLE.keys():
-                    if vacuums_added in [grinch_items.keys.PROGRESSIVE_VACUUM_TUBE, grinch_items.keys.WHO_LAKE]:
-                        continue
-                    self_itempool.append((self.create_item(vacuums_added)))
 
         else:
-            self.multiworld.push_precollected((self.create_item(grinch_items.keys.PROGRESSIVE_VACUUM_TUBE)))
-            for _ in range(3):
-                self_itempool.append((self.create_item(grinch_items.keys.PROGRESSIVE_VACUUM_TUBE)))
+            if self.options.randomize_vacuum_tubes:
+                self.multiworld.push_precollected((self.create_item(grinch_items.keys.PROGRESSIVE_VACUUM_TUBE)))
+                for _ in range(3):
+                    self_itempool.append((self.create_item(grinch_items.keys.PROGRESSIVE_VACUUM_TUBE)))
+            else:
+                for _ in range(4):
+                    self.multiworld.push_precollected(self.create_item(grinch_items.keys.PROGRESSIVE_VACUUM_TUBE))
 
         for supadow_door in SUPADOW_TABLE:
             if self.options.supadow_minigames != self.options.supadow_minigames.option_none:
@@ -618,6 +629,7 @@ class GrinchWorld(World):
             "teleport_multibind": self.options.teleport_multibind.value,
             "goal": self.options.goal.value,
             "advanced_logic": self.options.advanced_logic.value,
+            "randomize_vacuum_tubes": self.options.randomize_vacuum_tubes.value,
         }
 
     def generate_output(self, output_directory: str) -> None:

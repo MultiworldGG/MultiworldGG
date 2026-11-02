@@ -326,14 +326,14 @@
  {
   "name": "Wormways Upper East",
   "img": "01-geometry/6e9792bd-7871-4d51-87a7-833b9e17495e.webp",
-  "location_size": 15,
-  "location_border_thickness": 2
+  "location_size": 19,
+  "location_border_thickness": 3
  },
  {
   "name": "Wormways Laboratory",
   "img": "01-geometry/38fd39f0-099e-401b-80d5-9e848aab16dc.webp",
-  "location_size": 15,
-  "location_border_thickness": 2
+  "location_size": 19,
+  "location_border_thickness": 3
  },
  {
   "name": "Wormways Lower East",
@@ -362,7 +362,7 @@
  {
   "name": "Deep Docks Entrance",
   "img": "01-geometry/dc59da63-9273-4a77-92af-81b48f22f14f.webp",
-  "location_size": 20,
+  "location_size": 19,
   "location_border_thickness": 3
  },
  {
@@ -392,7 +392,7 @@
  {
   "name": "Deep Docks Bellway Flea Rescue",
   "img": "01-geometry/b50f518d-548a-4e87-ac4a-3d0f984a95a3.webp",
-  "location_size": 20,
+  "location_size": 19,
   "location_border_thickness": 3
  },
  {
@@ -416,20 +416,20 @@
  {
   "name": "Is this still Deep Docks? East",
   "img": "01-geometry/54a56b4c-5abd-4efc-85f4-73d3a169e611.webp",
-  "location_size": 12,
-  "location_border_thickness": 2
+  "location_size": 19,
+  "location_border_thickness": 3
  },
  {
   "name": "Is this still Deep Docks West",
   "img": "01-geometry/31f97267-8cb8-40bb-8d5c-8f72374c31b8.webp",
-  "location_size": 12,
-  "location_border_thickness": 2
+  "location_size": 19,
+  "location_border_thickness": 3
  },
  {
   "name": "\"Deep Docks\" March Side Room",
   "img": "01-geometry/daf75e37-946c-48ef-8a9e-381d7afd96c8.webp",
-  "location_size": 24,
-  "location_border_thickness": 4
+  "location_size": 19,
+  "location_border_thickness": 3
  },
  {
   "name": "Deep Docks Upper Spire",
@@ -470,8 +470,8 @@
  {
   "name": "Deep Docks Chains Flea Rescue",
   "img": "01-geometry/a0df57a1-155f-4274-bc4b-9b0248c65cf1.webp",
-  "location_size": 7,
-  "location_border_thickness": 1
+  "location_size": 19,
+  "location_border_thickness": 3
  },
  {
   "name": "Deep Docks Chains Center",
@@ -488,8 +488,8 @@
  {
   "name": "Deep Docks Chains Lower East",
   "img": "01-geometry/a2bb29a5-40e9-4151-b603-52ab10fc9337.webp",
-  "location_size": 17,
-  "location_border_thickness": 2
+  "location_size": 19,
+  "location_border_thickness": 3
  },
  {
   "name": "Deep Docks Forebrothers",
@@ -560,7 +560,7 @@
  {
   "name": "Far Fields Fort Flea Rescue",
   "img": "01-geometry/4d999df4-69d9-463f-b82f-041c55b5f9bc.webp",
-  "location_size": 18,
+  "location_size": 19,
   "location_border_thickness": 3
  },
  {
@@ -638,13 +638,13 @@
  {
   "name": "Far Fields Map Shop",
   "img": "01-geometry/88c5cebc-088a-4058-85a3-b8920c26530a.webp",
-  "location_size": 16,
-  "location_border_thickness": 2
+  "location_size": 19,
+  "location_border_thickness": 3
  },
  {
   "name": "Far Fields Bellway",
   "img": "01-geometry/2901bb3e-432b-4325-a071-cf24dcf7e9f9.webp",
-  "location_size": 18,
+  "location_size": 19,
   "location_border_thickness": 3
  },
  {
@@ -1158,7 +1158,7 @@
   "location_border_thickness": 3
  },
  {
-  "name": "Greymoor Kraft Room",
+  "name": "Greymoor Kratt Room",
   "img": "01-geometry/09ec56a1-f46f-479d-a453-1829bfd471a1.webp",
   "location_size": 19,
   "location_border_thickness": 3
@@ -1176,7 +1176,7 @@
   "location_border_thickness": 3
  },
  {
-  "name": "Greymoor Silver Shells room",
+  "name": "Greymoor Silver Shells Room",
   "img": "01-geometry/c355d518-9dc5-4ad4-a755-94eb3a080efe.webp",
   "location_size": 19,
   "location_border_thickness": 3
@@ -1226,29 +1226,29 @@
  {
   "name": "Eastern Wisp Thicket",
   "img": "01-geometry/a2797d37-2e98-4361-b073-eec9226213e5.webp",
-  "location_size": 18,
+  "location_size": 19,
   "location_border_thickness": 3
  },
  {
   "name": "Wisp Thicket Shaft",
   "img": "01-geometry/81e83fb0-6394-44a8-a798-1f3254355dce.webp",
-  "location_size": 18,
+  "location_size": 19,
   "location_border_thickness": 3
  },
  {
   "name": "Wisp Thicket Bench",
   "img": "01-geometry/346e2269-5e0b-4ab1-857f-0356a41ad195.webp",
-  "location_size": 17,
-  "location_border_thickness": 2
+  "location_size": 19,
+  "location_border_thickness": 3
  },
  {
   "name": "Wisp Thicket Grounds",
   "img": "01-geometry/f219512d-eb05-4daf-8b2f-bb92ca0a1a75.webp",
-  "location_size": 17,
-  "location_border_thickness": 2
+  "location_size": 19,
+  "location_border_thickness": 3
  },
  {
-  "name": "Father of the Flame",
+  "name": "Father of the Flame Gamer Cave",
   "img": "01-geometry/cec31268-d1fe-47e1-879d-f314bfada843.webp",
   "location_size": 192,
   "location_border_thickness": 32
@@ -1262,7 +1262,7 @@
  {
   "name": "Wisp Thicket Cave",
   "img": "01-geometry/df2534e5-7bfb-4cc4-928b-201951043dc0.webp",
-  "location_size": 18,
+  "location_size": 19,
   "location_border_thickness": 3
  },
  {
@@ -1280,121 +1280,121 @@
  {
   "name": "Dead Verdania Main",
   "img": "01-geometry/dee37a7b-5e24-46ff-a66e-a10c5f236fe9.webp",
-  "location_size": 22,
+  "location_size": 19,
   "location_border_thickness": 3
  },
  {
   "name": "Palestag",
   "img": "01-geometry/33c9b723-42e4-41c7-bd5d-a932ce03dab2.webp",
-  "location_size": 14,
-  "location_border_thickness": 2
+  "location_size": 19,
+  "location_border_thickness": 3
  },
  {
   "name": "Verdania Big Button Room",
   "img": "01-geometry/0ebf6484-c7c0-440a-8a19-57445550df33.webp",
-  "location_size": 21,
+  "location_size": 19,
   "location_border_thickness": 3
  },
  {
   "name": "Verdania Big Room",
   "img": "01-geometry/e83db629-1bd0-4faf-8d74-7f65fd0dbf06.webp",
-  "location_size": 20,
+  "location_size": 19,
   "location_border_thickness": 3
  },
  {
   "name": "Verdania Capital",
   "img": "01-geometry/60119afe-bbf2-4bf6-9602-337ae004654c.webp",
-  "location_size": 16,
-  "location_border_thickness": 2
+  "location_size": 19,
+  "location_border_thickness": 3
  },
  {
   "name": "Verdania Cloverstag Steps",
   "img": "01-geometry/6775d35b-01e8-4453-9425-1e9ebb8f3518.webp",
-  "location_size": 18,
+  "location_size": 19,
   "location_border_thickness": 3
  },
  {
   "name": "Verdania Entrance",
   "img": "01-geometry/081fd689-1133-49fc-a884-280e9f4affed.webp",
-  "location_size": 24,
-  "location_border_thickness": 4
+  "location_size": 19,
+  "location_border_thickness": 3
  },
  {
-  "name": "Verdania Kindanir egg Room",
+  "name": "Verdania Kindanir Egg Room",
   "img": "01-geometry/95e59896-8812-45b2-bb8e-a531878a9fad.webp",
-  "location_size": 14,
-  "location_border_thickness": 2
+  "location_size": 19,
+  "location_border_thickness": 3
  },
  {
   "name": "Verdania Left Side Essence Shrine",
   "img": "01-geometry/633fe56d-d126-4def-b593-aada9b415a5c.webp",
-  "location_size": 22,
+  "location_size": 19,
   "location_border_thickness": 3
  },
  {
   "name": "Verdania Left Side Tall Room",
   "img": "01-geometry/d0b5500b-0332-4879-92ad-efbf01e55184.webp",
-  "location_size": 20,
+  "location_size": 19,
   "location_border_thickness": 3
  },
  {
   "name": "Verdania Right Side Tall Room",
   "img": "01-geometry/086950b5-e7e2-4ec6-b348-90e5c1e42eba.webp",
-  "location_size": 14,
-  "location_border_thickness": 2
+  "location_size": 19,
+  "location_border_thickness": 3
  },
  {
   "name": "Verdania Top Room",
   "img": "01-geometry/3494da2a-aa3c-4b98-9f3e-34a2bf570077.webp",
-  "location_size": 20,
+  "location_size": 19,
   "location_border_thickness": 3
  },
  {
   "name": "Blasted Steps Bellway",
   "img": "01-geometry/b850f4e5-5de2-474e-9875-1607bdc4a171.webp",
-  "location_size": 13,
-  "location_border_thickness": 2
+  "location_size": 19,
+  "location_border_thickness": 3
  },
  {
   "name": "Blasted Steps Grindle",
   "img": "01-geometry/8232dd00-51e3-4c17-be1f-45f765439bec.webp",
-  "location_size": 14,
-  "location_border_thickness": 2
+  "location_size": 19,
+  "location_border_thickness": 3
  },
  {
   "name": "Blasted Steps Horizontal Room with Two Sand Pits",
   "img": "01-geometry/5f474404-3468-4af9-bd7a-abff829f322a.webp",
-  "location_size": 16,
-  "location_border_thickness": 2
+  "location_size": 19,
+  "location_border_thickness": 3
  },
  {
   "name": "Blasted Steps Map Edge",
   "img": "01-geometry/764c5c88-5276-4c8a-9786-fd456af98360.webp",
-  "location_size": 18,
+  "location_size": 19,
   "location_border_thickness": 3
  },
  {
   "name": "Blasted Steps Mask Shard",
   "img": "01-geometry/696c6354-f068-4c60-b33b-c7afccc32668.webp",
-  "location_size": 13,
-  "location_border_thickness": 2
+  "location_size": 19,
+  "location_border_thickness": 3
  },
  {
   "name": "Blasted Steps Shakra Room",
   "img": "01-geometry/06036063-0f5d-4ebd-8071-d70ded9a20a3.webp",
-  "location_size": 18,
+  "location_size": 19,
   "location_border_thickness": 3
  },
  {
   "name": "Blasted Steps Shell / Beast Shard",
   "img": "01-geometry/59f029ab-ffab-4fea-877f-0b6b23fd654c.webp",
-  "location_size": 14,
-  "location_border_thickness": 2
+  "location_size": 19,
+  "location_border_thickness": 3
  },
  {
   "name": "Blasted Steps Steel Soul",
   "img": "01-geometry/5af6ab6d-73a7-4d93-be3a-2eadd34d69e6.webp",
-  "location_size": 18,
+  "location_size": 19,
   "location_border_thickness": 3
  },
  {
@@ -1406,7 +1406,7 @@
  {
   "name": "Blasted Steps Toll Bench Bottom",
   "img": "01-geometry/aba8ff31-6cc1-4b23-8948-95b2f428aadd.webp",
-  "location_size": 21,
+  "location_size": 19,
   "location_border_thickness": 3
  },
  {
@@ -1424,14 +1424,14 @@
  {
   "name": "Horizontal Room with Sand Pit",
   "img": "01-geometry/d6164b19-38a6-4e1d-8d4a-cbcd132319fa.webp",
-  "location_size": 10,
-  "location_border_thickness": 1
+  "location_size": 19,
+  "location_border_thickness": 3
  },
  {
   "name": "Last Judge Arena",
   "img": "01-geometry/3b5cdb27-4c4e-4c37-9f96-250eaa2f78d0.webp",
-  "location_size": 9,
-  "location_border_thickness": 1
+  "location_size": 19,
+  "location_border_thickness": 3
  },
  {
   "name": "Lumble the Lucky",
@@ -1448,7 +1448,7 @@
  {
   "name": "Pre Last Judge Room",
   "img": "01-geometry/2fdb65f2-c8dd-4c81-9c51-8d44422930f0.webp",
-  "location_size": 18,
+  "location_size": 19,
   "location_border_thickness": 3
  },
  {
@@ -1508,80 +1508,80 @@
  {
   "name": "Sinner's Road Bench",
   "img": "01-geometry/6e297976-41e3-4350-ade1-b3beeac4a184.webp",
-  "location_size": 18,
+  "location_size": 19,
   "location_border_thickness": 3
  },
  {
   "name": "Sinner's Road Chef's Kitchen",
   "img": "01-geometry/10ce58ca-cf64-4de8-927f-159659cae28f.webp",
-  "location_size": 20,
+  "location_size": 19,
   "location_border_thickness": 3
  },
  {
   "name": "Sinner's Road Entrance",
   "img": "01-geometry/fb40fff0-e4a7-4c52-9c64-95016b7e44a3.webp",
-  "location_size": 23,
+  "location_size": 19,
   "location_border_thickness": 3
  },
  {
   "name": "Sinner's Road Flea Rescue",
   "img": "01-geometry/df817510-da31-4ce4-b749-5e6d17f91b2a.webp",
-  "location_size": 23,
+  "location_size": 19,
   "location_border_thickness": 3
  },
  {
   "name": "Sinner's Road Hanging Cages",
   "img": "01-geometry/1576eb44-6cff-4525-95af-c8bd033d01cb.webp",
-  "location_size": 18,
+  "location_size": 19,
   "location_border_thickness": 3
  },
  {
   "name": "Sinner's Road Mist Maze Completed",
   "img": "01-geometry/a54d8a60-40fa-43ac-8aa0-e01759a50dd1.webp",
-  "location_size": 21,
+  "location_size": 19,
   "location_border_thickness": 3
  },
  {
   "name": "Sinner's Road Muckroach Cages",
   "img": "01-geometry/82899b06-fcfa-45ad-b81e-9ee40b10f00a.webp",
-  "location_size": 20,
+  "location_size": 19,
   "location_border_thickness": 3
  },
  {
   "name": "Sinner's Road North Hall",
   "img": "01-geometry/7ef623f1-3755-402f-9197-f70cd95cd451.webp",
-  "location_size": 18,
+  "location_size": 19,
   "location_border_thickness": 3
  },
  {
   "name": "Sinner's Road Spike Basement",
   "img": "01-geometry/8e42a2d9-4f82-4d50-a5fb-3f5f38db5d06.webp",
-  "location_size": 21,
+  "location_size": 19,
   "location_border_thickness": 3
  },
  {
   "name": "Sinner's Road Styx Room",
   "img": "01-geometry/de3c00ef-0d95-42c2-8ff8-29aef85bc1aa.webp",
-  "location_size": 15,
-  "location_border_thickness": 2
+  "location_size": 19,
+  "location_border_thickness": 3
  },
  {
   "name": "Sinner's Road Vertical Hall East",
   "img": "01-geometry/08b6629d-b15b-4cb3-b667-6d2fdc3b8a55.webp",
-  "location_size": 18,
+  "location_size": 19,
   "location_border_thickness": 3
  },
  {
   "name": "Sinner's Road Vertical Hall West",
   "img": "01-geometry/0d7960ea-441a-4971-a16f-1e5fa4852133.webp",
-  "location_size": 20,
+  "location_size": 19,
   "location_border_thickness": 3
  },
  {
   "name": "Sinner's Road Shack",
   "img": "01-geometry/0dc1200c-db1c-427d-bf94-3ca3e84cc5f7.webp",
-  "location_size": 11,
-  "location_border_thickness": 1
+  "location_size": 19,
+  "location_border_thickness": 3
  },
  {
   "name": "Vaults & Bellway Cauldron Entrance",
@@ -1982,8 +1982,8 @@
  {
   "name": "Cogwork Core Architect's Melody",
   "img": "01-geometry/e50fa1df-a2de-4978-8885-1b9088f86362.webp",
-  "location_size": 14,
-  "location_border_thickness": 2
+  "location_size": 48,
+  "location_border_thickness": 8
  },
  {
   "name": "Cogwork Core Architect's Melody (Act 3)",
@@ -2024,8 +2024,8 @@
  {
   "name": "Cogwork Core North Main",
   "img": "01-geometry/d82962c2-5f32-44ee-be9c-8e1c472e0a13.webp",
-  "location_size": 19,
-  "location_border_thickness": 3
+  "location_size": 48,
+  "location_border_thickness": 8
  },
  {
   "name": "Cogwork Core Second Sentinel",
@@ -2078,7 +2078,7 @@
  {
   "name": "Whispering Vaults Hell",
   "img": "01-geometry/bc73a28d-ecf5-4e22-8f31-354a9f11538c.webp",
-  "location_size": 21,
+  "location_size": 19,
   "location_border_thickness": 3
  },
  {
@@ -2288,20 +2288,20 @@
  {
   "name": "Bilewater Arena Shack",
   "img": "01-geometry/d67cb58b-4bf7-4b0c-b37c-3ef8c6a570c5.webp",
-  "location_size": 16,
-  "location_border_thickness": 2
+  "location_size": 19,
+  "location_border_thickness": 3
  },
  {
   "name": "Bilewater Bellway",
   "img": "01-geometry/cb80bc26-78a9-482c-b95b-11bc91fe9157.webp",
-  "location_size": 13,
-  "location_border_thickness": 2
+  "location_size": 19,
+  "location_border_thickness": 3
  },
  {
   "name": "Bilewater Bullshit Bench",
   "img": "01-geometry/67c4c84d-798c-443b-8da7-42ae3f37de2b.webp",
-  "location_size": 16,
-  "location_border_thickness": 2
+  "location_size": 19,
+  "location_border_thickness": 3
  },
  {
   "name": "Bilewater Citadel Exit",
@@ -2312,37 +2312,37 @@
  {
   "name": "Bilewater East Bench",
   "img": "01-geometry/93810507-c0e8-4cf7-ab69-bb235f7d982c.webp",
-  "location_size": 18,
+  "location_size": 19,
   "location_border_thickness": 3
  },
  {
   "name": "Bilewater East Column",
   "img": "01-geometry/f75f6e4b-0511-40b4-886b-c68e51cc25bf.webp",
-  "location_size": 18,
+  "location_size": 19,
   "location_border_thickness": 3
  },
  {
   "name": "Bilewater Flea Rescue",
   "img": "01-geometry/0553b163-c1ea-4c0e-bcb3-4c2f21784603.webp",
-  "location_size": 17,
-  "location_border_thickness": 2
+  "location_size": 19,
+  "location_border_thickness": 3
  },
  {
   "name": "Bilewater Groal Arena",
   "img": "01-geometry/009ea94e-0688-4c46-8348-8b6c744e662e.webp",
-  "location_size": 18,
+  "location_size": 19,
   "location_border_thickness": 3
  },
  {
   "name": "Bilewater Hanging Corpse Room",
   "img": "01-geometry/7ab4bc58-b7b5-40c3-92f2-ee6351ce8bdb.webp",
-  "location_size": 18,
+  "location_size": 19,
   "location_border_thickness": 3
  },
  {
   "name": "Bilewater Lower Bloatroach Tower",
   "img": "01-geometry/5ce62cf1-4bfa-4e93-babf-1ebec11305df.webp",
-  "location_size": 18,
+  "location_size": 19,
   "location_border_thickness": 3
  },
  {
@@ -2354,37 +2354,37 @@
  {
   "name": "Bilewater Lower East Hall Secret",
   "img": "01-geometry/4c232677-5256-48b8-a485-36a3f9ddc63c.webp",
-  "location_size": 21,
+  "location_size": 19,
   "location_border_thickness": 3
  },
  {
   "name": "Bilewater Lower Trap Gauntlet Hall",
   "img": "01-geometry/2fd461cf-e5fc-4158-bb6a-4aec971f8e22.webp",
-  "location_size": 17,
-  "location_border_thickness": 2
+  "location_size": 19,
+  "location_border_thickness": 3
  },
  {
   "name": "Bilewater Mothleaf Hall",
   "img": "01-geometry/6eb0189e-e760-4ce1-8f8b-09ca82683fc5.webp",
-  "location_size": 22,
+  "location_size": 19,
   "location_border_thickness": 3
  },
  {
   "name": "Bilewater Northeast Tiny Room",
   "img": "01-geometry/eea2275c-b3e9-4fa9-bb4e-d527c43c55e3.webp",
-  "location_size": 18,
+  "location_size": 19,
   "location_border_thickness": 3
  },
  {
   "name": "Bilewater Organ Entrance",
   "img": "01-geometry/5fb4e6dc-4fb1-4f24-97f3-c3bc53945591.webp",
-  "location_size": 20,
+  "location_size": 19,
   "location_border_thickness": 3
  },
  {
   "name": "Bilewater Shakra Room",
   "img": "01-geometry/89f04b05-0933-48b4-a10f-e94fc49827de.webp",
-  "location_size": 21,
+  "location_size": 19,
   "location_border_thickness": 3
  },
  {
@@ -2456,20 +2456,20 @@
  {
   "name": "Bilewater West Secret Rooms",
   "img": "01-geometry/a05de982-e438-4c71-a604-1ab6b88339f1.webp",
-  "location_size": 21,
+  "location_size": 19,
   "location_border_thickness": 3
  },
  {
   "name": "Exhaust Organ Exterior",
   "img": "01-geometry/c5555aed-7feb-475e-b31f-65347ca185e6.webp",
-  "location_size": 20,
+  "location_size": 19,
   "location_border_thickness": 3
  },
  {
   "name": "Exhaust Organ Interior",
   "img": "01-geometry/78f4fdba-9b72-4a9f-acb7-5b2b33652783.webp",
-  "location_size": 15,
-  "location_border_thickness": 2
+  "location_size": 24,
+  "location_border_thickness": 4
  },
  {
   "name": "BEEG flea",
@@ -2906,7 +2906,7 @@
  {
   "name": "Fleatopia",
   "img": "01-geometry/0a17580d-f70f-4d97-a439-1701aca67723.webp",
-  "location_size": 20,
+  "location_size": 19,
   "location_border_thickness": 3
  },
  {
@@ -2918,13 +2918,13 @@
  {
   "name": "Putrified Ducts Bellway",
   "img": "01-geometry/3710c659-596b-4b53-be90-dd3fe5705d74.webp",
-  "location_size": 16,
-  "location_border_thickness": 2
+  "location_size": 19,
+  "location_border_thickness": 3
  },
  {
   "name": "Putrified Ducts Connection To Bilewater",
   "img": "01-geometry/8ab7a881-ca03-4fc2-a0d9-76d7f26421de.webp",
-  "location_size": 18,
+  "location_size": 19,
   "location_border_thickness": 3
  },
  {
@@ -2936,25 +2936,25 @@
  {
   "name": "Putrified Ducts Lower Bridge Room",
   "img": "01-geometry/2fa4ed90-986a-434d-be45-c78194822888.webp",
-  "location_size": 17,
-  "location_border_thickness": 2
+  "location_size": 19,
+  "location_border_thickness": 3
  },
  {
   "name": "Putrified Ducts Map Room",
   "img": "01-geometry/d5e6fb26-add8-4dd5-9ffd-367195ddd7e5.webp",
-  "location_size": 18,
+  "location_size": 19,
   "location_border_thickness": 3
  },
  {
   "name": "Putrified Ducts Path To Vog",
   "img": "01-geometry/771b9bdb-6bbc-4298-97f7-571e1ba2659b.webp",
-  "location_size": 20,
+  "location_size": 19,
   "location_border_thickness": 3
  },
  {
   "name": "Putrified Ducts Rosary Room",
   "img": "01-geometry/81b5a742-344d-4216-b8e7-7d9ade2ad13f.webp",
-  "location_size": 21,
+  "location_size": 19,
   "location_border_thickness": 3
  },
  {
@@ -3140,6 +3140,12 @@
  {
   "name": "Last Dive",
   "img": "01-geometry/aa56ed92-1d08-4aec-878c-4558570595e0.webp",
+  "location_size": 192,
+  "location_border_thickness": 32
+ },
+ {
+  "name": "Kratt Spa",
+  "img": "01-geometry/1fa46943-9b68-42ed-9cc0-4b02987fea53.webp",
   "location_size": 192,
   "location_border_thickness": 32
  }

@@ -5,6 +5,7 @@ from Options import PerGameCommonOptions
 
 from ..Hints import (buildAltarHints, buildGanonText, buildMiscDualHints, buildMiscItemHints,
                      buildMiscLocationHints, get_item_hint_text, getSimpleHintNoPrefix, writeGossipStoneHints)
+from ..Items import OOTItem
 from ..Messages import update_map_compass_messages, update_warp_song_text
 from ..OcarinaSongs import patch_songs
 from ..Options import OoTOptions
@@ -76,16 +77,18 @@ def json_value(value):
 def serialize_item(item, world):
     if item is None:
         return None
+    # Other worlds may reuse these attribute names for unrelated metadata.
+    oot_item = item if isinstance(item, OOTItem) else None
     return {
         "name": item.name, "game": item.game, "player": item.player,
-        "type": getattr(item, "type", None), "index": getattr(item, "index", None),
-        "special": {key: value for key, value in getattr(item, "special", {}).items()
+        "type": getattr(oot_item, "type", None), "index": getattr(oot_item, "index", None),
+        "special": {key: value for key, value in getattr(oot_item, "special", {}).items()
                     if key in {"item_id", "song_id", "text_id", "object", "gi_id", "shop_object"}},
         "trap": item.trap, "advancement": item.advancement,
-        "dungeonitem": getattr(item, "dungeonitem", False),
+        "dungeonitem": getattr(oot_item, "dungeonitem", False),
         "hint_text": get_item_hint_text(item, world),
         "simple_hint": getSimpleHintNoPrefix(item),
-        "looks_like_item": serialize_item(getattr(item, "looks_like_item", None), world),
+        "looks_like_item": serialize_item(getattr(oot_item, "looks_like_item", None), world),
     }
 
 

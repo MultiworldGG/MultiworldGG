@@ -26,7 +26,7 @@ from .items import (
 from .locations import WL4Location, get_level_locations, location_name_to_id
 from .options import Goal, OpenDoors, WL4Options, wl4_option_groups
 from .region_data import passage_levels
-from .regions import WL4Level, connect_regions, create_regions, set_rules
+from .regions import WL4Level, connect_regions, create_regions, set_rules, should_create_boss
 from .rom import MD5_JP, MD5_US_EU, WL4ProcedurePatch, write_tokens
 
 
@@ -131,11 +131,11 @@ class WL4World(World):
 
     filler_item_weights: tuple[int, int, int] | None
 
+    levels: dict[str, WL4Level]
+
     def __init__(self, *args, **kwargs):
         super(WL4World, self).__init__(*args, **kwargs)
         self.filler_item_weights = None
-
-    levels: dict[str, WL4Level]
 
     def generate_early(self):
         if self.is_universal_tracker():
@@ -150,6 +150,8 @@ class WL4World(World):
             logging.warning(f"{self.player_name} has Required Jewels set to at least 1 but "
                             f"Golden Jewels set to 0. Setting Golden Jewels to 1.")
             self.options.golden_jewels.value = 1
+        if self.options.required_bosses.value == 5 and not self.options.include_entry_passage.value:
+            self.options.required_bosses.value = 4
 
         # TODO: Make this more tolerant when start inventory from pool is involved?
         abilities = 8
@@ -188,12 +190,13 @@ class WL4World(World):
 
         required_jewels = self.options.required_jewels.value
         pool_jewels = self.options.pool_jewels.value
+        pool_jewels_entry = self.options.golden_jewels.value
         for name, item in jewel_piece_table.items():
-            force_non_progression = required_jewels == 0
+            force_non_progression = required_jewels == 0 or not should_create_boss(self, item.passage)
             if item.passage == Passage.ENTRY:
-                copies = min(pool_jewels, 1)
+                copies = pool_jewels_entry if self.options.include_entry_passage else min(pool_jewels, 1)
             elif item.passage == Passage.GOLDEN:
-                copies = self.options.golden_jewels.value
+                copies = pool_jewels_entry
                 if self.options.goal.is_treasure_hunt():
                     force_non_progression = True
             else:
@@ -356,6 +359,8 @@ class WL4World(World):
             "difficulty",
             "logic",
             "required_jewels",
+            "required_bosses",
+            "include_entry_passage",
             "open_doors",
             "keyzer_shuffle",
             "portal",
@@ -373,6 +378,12 @@ class WL4World(World):
         if name == self.glitches_item_name:
             return WL4EventItem(name, self.player)
         return WL4Item(name, self.player, force_non_progression)
+
+    def create_item_or_event(self, name: str):
+        try:
+            return WL4Item(name, self.player)
+        except KeyError:
+            return WL4EventItem(name, self.player)
 
     # UT integration
 
@@ -404,6 +415,8 @@ class WL4World(World):
         set_option("difficulty")
         set_option("logic")
         set_option("required_jewels")
+        set_option("required_bosses")
+        set_option("include_entry_passage")
         set_option("open_doors")
         set_option("keyzer_shuffle")
         set_option("portal")

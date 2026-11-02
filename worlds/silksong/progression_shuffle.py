@@ -605,12 +605,14 @@ _EMPTY = {"schema": SCHEMA, "wishes": {}, "bosses": []}
 
 def world_location_requirements(world, name, **options):
     from .requirements import get_location_requirements
+    from .bind import gate_location as bind_location
     override = getattr(world, "_progression_location_rules", {}).get(name)
     from .boss_souls import gate_location
     from .npc_souls import gate_location as npc_gate
     from .enemy_souls import gate_location as enemy_gate
     from .silk_economy import gate_location as silk_gate
-    return silk_gate(world, enemy_gate(world, name, npc_gate(world, name, gate_location(world, name, override if override is not None else get_location_requirements(name, **options)))))
+    from .rosary_economy import gate as rosary_gate
+    return rosary_gate(world, silk_gate(world, enemy_gate(world, name, npc_gate(world, name, gate_location(world, name, bind_location(world, name, override if override is not None else get_location_requirements(name, **options)))))), name)
 
 
 def prepare_world(world, graph):
@@ -618,13 +620,14 @@ def prepare_world(world, graph):
     from .requirements import get_location_requirements
 
     from .boss_souls import gate_graph, gate_location, location_overrides
+    from .bind import gate_graph as bind_graph, gate_location as bind_location, location_overrides as bind_locations
     from .npc_souls import gate_graph as npc_graph, location_overrides as npc_locations
     from .enemy_souls import gate_graph as enemy_graph
-    graph = enemy_graph(world, npc_graph(world, gate_graph(world, graph)))
+    graph = bind_graph(world, enemy_graph(world, npc_graph(world, gate_graph(world, graph))))
     eligible = frozenset(location_data_table) - world.get_goal_excluded_location_names()
     boss_ids = SUPPORTED_BOSS_IDS & eligible if world.get_category_mode("Boss") != "vanilla" else frozenset()
     story_events, story_locations = story_rules(graph, eligible, boss_ids)
-    bosses = tuple(BossContract(name, gate_location(world, name, story_locations.get(name, get_location_requirements(name))))
+    bosses = tuple(BossContract(name, bind_location(world, name, gate_location(world, name, story_locations.get(name, get_location_requirements(name)))))
                    for name in sorted(boss_ids))
     graph = {**graph, **story_events}
     from .npc_souls import gate_wishes
@@ -650,7 +653,10 @@ def prepare_world(world, graph):
     world._progression_location_rules = silk_locations(world, world._progression_location_rules)
     from .boss_journal import location_overrides as journal_locations
     world._progression_location_rules = journal_locations(world, world._progression_location_rules)
-    return silk_graph(world, {**graph, **world._progression_events})
+    from .rosary_economy import prepare as rosary_graph
+    graph = rosary_graph(world, silk_graph(world, {**graph, **world._progression_events}))
+    world._progression_location_rules = bind_locations(world, world._progression_location_rules)
+    return graph
 
 
 def _replace_events(world, assignments):
@@ -661,7 +667,8 @@ def _replace_events(world, assignments):
     _invalidate_native_source_player(world.multiworld, world.player)
     events = compile_events(assignments, world._progression_wishes, world._progression_bosses)
     from .silk_economy import gate_location as silk_gate
-    events = {name: silk_gate(world, rules) for name, rules in events.items()}
+    from .rosary_economy import gate as rosary_gate
+    events = {name: rosary_gate(world, silk_gate(world, rules)) for name, rules in events.items()}
     options = native_rule_options(world)
     names = world._silksong_native_abstract_names
     for owner, alternatives in events.items():

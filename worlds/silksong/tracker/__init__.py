@@ -1,6 +1,3 @@
-from functools import wraps
-import sys
-
 from rule_builder.rules import And, Rule
 
 
@@ -17,7 +14,8 @@ class ActThreeActive(Rule, game='Hollow Knight: Silksong'):
 
 
 def install_act_gate(world):
-    if not getattr(world.multiworld, 'generation_is_fake', False):
+    if (not getattr(world.multiworld, 'generation_is_fake', False)
+            or getattr(world.multiworld, 'enforce_deferred_connections', 'default') == 'off'):
         return
     region = world.multiworld.get_region('Event: Act 3 Started', world.player)
     for entrance in region.entrances:
@@ -30,58 +28,9 @@ def install_act_gate(world):
         entrance._silksong_act_gate = True
 
 
-def act_state_key(context):
-    return f'Silksong:Act3:{context.team}:{context.slot}'
-
-
-def install_marker_status():
-    client = sys.modules.get('worlds.tracker.TrackerClient')
-    context = getattr(client, 'TrackerGameContext', None)
-    if context is None or getattr(context.updateTracker, '_silksong_markers', False):
+def receive_act_state(world, value):
+    if (not getattr(world.multiworld, 'generation_is_fake', False)
+            or getattr(world.multiworld, 'enforce_deferred_connections', 'default') == 'off'):
         return
-    update = context.updateTracker
-    on_package = context.on_package
-
-    @wraps(on_package)
-    def receive_package(self, cmd, args):
-        if cmd == 'Connected':
-            self.stored_data.pop(act_state_key(self), None)
-        result = on_package(self, cmd, args)
-        world = self.tracker_core.get_current_world()
-        if world is not None and world.game == 'Hollow Knight: Silksong':
-            key = act_state_key(self)
-            if ((cmd == 'SetReply' and args.get('key') == key)
-                    or (cmd == 'Retrieved' and key in args.get('keys', {}))):
-                self.updateTracker()
-        return result
-
-    @wraps(update)
-    def update_tracker(self):
-        world = self.tracker_core.get_current_world()
-        if world is not None and world.game == 'Hollow Knight: Silksong':
-            install_act_gate(world)
-            key = act_state_key(self)
-            if getattr(self, '_silksong_act_subscription', None) != (world, key):
-                self.set_notify(key)
-                self._silksong_act_subscription = (world, key)
-            world._silksong_act_three_active = self.stored_data.get(key) is True
-        result = update(self)
-        if result.state is None or self.ui is None:
-            return result
-        world = self.tracker_core.get_current_world()
-        if world is None or world.game != 'Hollow Knight: Silksong':
-            return result
-        locations = world.multiworld.regions.location_cache[world.player]
-        # UT treats reachable parents as passable even when the check is blocked.
-        for name, coords in self.ldeferred_dict.items():
-            location = locations.get(name)
-            if location is None or location.address is not None:
-                continue
-            status = 'passed' if location.can_reach(result.state) else 'impassable'
-            for coord in coords:
-                coord.update_status(name, status)
-        return result
-
-    update_tracker._silksong_markers = True
-    context.updateTracker = update_tracker
-    context.on_package = receive_package
+    world._silksong_act_three_active = value is True
+    world.multiworld.state.stale[world.player] = True

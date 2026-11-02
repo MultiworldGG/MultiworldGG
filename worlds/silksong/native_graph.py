@@ -1,4 +1,4 @@
-from collections import defaultdict
+from collections import defaultdict, deque
 from dataclasses import replace
 
 from .requirements import req
@@ -52,21 +52,35 @@ def _components(graph, mutable=frozenset()):
 def _simplify(graph, mutable=frozenset()):
     aliases = {name: name for name in graph}
     empty = (frozenset(), frozenset(), 0)
+    affected = None
     while True:
-        changed = False
         true = {n for n, rules in graph.items() if n not in mutable and empty in rules}
         false = {n for n, rules in graph.items() if n not in mutable and not rules}
+        renamed = {name for name, target in aliases.items() if name != target}
+        dependents = defaultdict(set)
         for owner, rules in graph.items():
+            for all_of, any_of, _ in rules:
+                for name in all_of | any_of:
+                    dependents[aliases.get(name, name)].add(owner)
+        pending = deque(graph if affected is None else (name for name in graph if name in affected))
+        queued = set(pending)
+        while pending:
+            owner = pending.popleft()
+            queued.remove(owner)
+            rules = graph[owner]
             updated = set()
             for all_of, any_of, predicate in rules:
-                all_of = frozenset(aliases.get(n, n) for n in all_of)
-                any_of = frozenset(aliases.get(n, n) for n in any_of)
-                if owner in all_of or all_of & false:
+                if not all_of.isdisjoint(renamed):
+                    all_of = frozenset(aliases.get(n, n) for n in all_of)
+                if not any_of.isdisjoint(renamed):
+                    any_of = frozenset(aliases.get(n, n) for n in any_of)
+                if owner in all_of or not all_of.isdisjoint(false):
                     continue
-                all_of -= true
-                if any_of & true:
+                if not all_of.isdisjoint(true):
+                    all_of -= true
+                if not any_of.isdisjoint(true):
                     any_of = frozenset()
-                elif any_of:
+                elif not any_of.isdisjoint(false):
                     any_of -= false
                     if not any_of:
                         continue
@@ -84,8 +98,15 @@ def _simplify(graph, mutable=frozenset()):
                         if not any(previous <= atoms for previous in smaller):
                             smaller.append(atoms)
                             updated.add((atoms, any_of, predicate))
-            changed |= updated != rules
             graph[owner] = updated
+            if owner not in mutable:
+                known = true if empty in updated else false if not updated else None
+                if known is not None and owner not in known:
+                    known.add(owner)
+                    for dependent in dependents[owner]:
+                        if dependent not in queued:
+                            queued.add(dependent)
+                            pending.append(dependent)
         merges = {}
         for group in _components(graph, mutable):
             canonical = min(group)
@@ -107,18 +128,21 @@ def _simplify(graph, mutable=frozenset()):
             for name, rules in graph.items():
                 merged[canonical(name)].update(rules)
             graph = dict(merged)
+            affected = {canonical(owner) for name in merges for owner in dependents[name]}
+            affected.update(canonical(name) for name in merges.values())
             aliases = {name: canonical(target) for name, target in aliases.items()}
-            changed = True
-        if not changed:
+        if not merges:
             return graph, aliases
 
 
 def _external_roots(world):
+    from .rosary_economy import FARM
+    economy_roots = {FARM} & world._silksong_native_abstract_names
     if getattr(world, "_silk_node_rules", None):
         prefixes = ('Silk (', 'Silk route: ', 'Silk capacity: ',
                     'Silk regeneration: ', 'Silk refill: ', 'Silk restock (')
         return {name for name in world._silksong_native_abstract_names
-                if not name.startswith(prefixes)}
+                if not name.startswith(prefixes)} | economy_roots
     from .requirements import REQUIREMENTS, GOAL_EVENT_BY_KEY, get_pinmaster_oil_requirements
     from .progression_shuffle import world_location_requirements
     from .wish_events import WISH_LOGIC_EVENTS
@@ -147,7 +171,7 @@ def _external_roots(world):
             rules, extra_abstract_requirement_names=names, **options,
         ).resolve(world)
         roots.update(by_region[n] for n in resolved.region_dependencies() if n in by_region)
-    return roots
+    return roots | economy_roots
 
 
 def compact_requirements(world, original, additional_roots=(), *, silk_supply=False):
@@ -190,7 +214,7 @@ def compact_requirements(world, original, additional_roots=(), *, silk_supply=Fa
         from .silk_economy import at, MAX_SILK
         boundaries.update(node_overrides(world))
         boundaries.update("Room Node: " + node for _, node in WARP_DESTINATIONS.values())
-        boundaries.update(at(node, amount) for node in tuple(boundaries)
+        boundaries.update(at(node, amount) for node in tuple(boundaries) if node.startswith(('Room Node: ', 'Entrance landing: '))
                           for amount in range(1, MAX_SILK + 1))
     assumed = frozenset(world._progression_events) | boundaries
     from .scene_exits import fixed_exits

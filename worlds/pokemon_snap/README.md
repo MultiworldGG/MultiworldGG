@@ -13,6 +13,8 @@ See [Setup Instructions](docs/setup_en.md) for set up and [FAQ](docs/faq_en.md) 
 * Submitting a picture of every Pokémon (62)
 * Submitting a wonderful picture of every Pokémon (62)
 * Submitting pictures with multiple of the same Pokémon in them (34)
+* Submitting pictures of Pokémon in regular poses (141)
+  * See the [Pose FAQ](docs/poses.md) for a list
 * Submitting pictures of Pokémon in special poses (11)
   * Beach: Surfing Pikachu, Pikachu on a Stump, Gust-Using Pidgey
   * Tunnel: Pikachu on a Ball

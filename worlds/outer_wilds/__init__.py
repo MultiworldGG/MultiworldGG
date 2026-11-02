@@ -4,6 +4,7 @@ from typing import Any, TextIO
 
 from BaseClasses import Tutorial
 from Options import OptionError, OptionGroup
+from rule_builder.rules import Has
 from worlds.AutoWorld import WebWorld, World
 from .coordinates import coordinate_description, generate_random_coordinates
 from .db_layout import generate_random_db_layout
@@ -63,6 +64,7 @@ class OuterWildsWebWorld(WebWorld):
             TrapTypeWeights,
             ShuffleEquipment,
             UpgradeCounts,
+            UpgradeMaxima,
         ]),
     ]
 
@@ -168,15 +170,7 @@ class OuterWildsWorld(World):
         # generate game-specific randomizations separate from AP items/locations
         self.eotu_coordinates = generate_random_coordinates(self.random) \
             if self.options.randomize_coordinates else "vanilla"
-        if not self.options.randomize_warp_platforms:
-            self.warps.apply_vanilla_warp_platform_mapping()
-        if self.options.enable_eh_mod:
-            self.warps.apply_eh_modifications()
-        if len(self.options.warp_platform_plando) > 0:
-            self.warps.apply_warp_plando(self.options.warp_platform_plando.value)
-        if self.options.enable_ac_mod:
-            self.warps.apply_ac_modifications(self.random)
-        self.warps.randomize_unmapped_warps(self.random, self.options.spawn)
+        self.warps.apply_options(self.random, self.options)
         (self.planet_order, self.orbit_angles) = generate_random_orbits(self.random, self.options) \
             if self.options.randomize_orbits else ("vanilla", "vanilla")
         self.rotation_axes = generate_random_rotations(self.random) \
@@ -266,17 +260,18 @@ class OuterWildsWorld(World):
         }
 
         goal_item = option_key_to_item_name[self.options.goal.current_key]
-        self.multiworld.completion_condition[self.player] = lambda state: state.has(goal_item, self.player)
+        self.set_completion_rule(Has(goal_item))
 
     def fill_slot_data(self):
         slot_data = self.options.as_dict(
             "death_link",                   # a client/mod feature
-            "goal", "required_friends", "spawn",         # affects tons of stuff, but also a client/mod faeture
+            "goal", "required_friends", "spawn",         # affects tons of stuff, but also a client/mod feature
             "logsanity", "enable_eote_dlc", "dlc_only",  # changes AP locations, needed by in-game tracker
             "enable_hn1_mod", "enable_hn2_mod",
             "enable_outsider_mod", "enable_ac_mod", "enable_fq_mod", "enable_fc_mod", "enable_eh_mod", "enable_hs_mod",
             "split_translator",                          # changes AP items, and how client/mod implements Translator
             "shuffle_spacesuit",
+            "upgrade_counts", "upgrade_maxima"           # so the client can compute the effect of each upgrade
         )
         # more client/mod features, these are only in the apworld because we want them fixed per-slot/at gen time
         slot_data["eotu_coordinates"] = self.eotu_coordinates

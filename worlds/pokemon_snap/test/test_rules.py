@@ -13,8 +13,10 @@ class TestRuleInheritance(PokemonSnapTestBase):
 
     options = {
         "photo_bonuses": "technique_and_multiple",
-        "rng_checks": True,
-        "hard_checks": True
+        "include_rng_photos":  True,
+        "include_rng_poses":   True,
+        "include_hard_photos": True,
+        "include_hard_poses":  True,
     }
 
     def test_multiple_implies_wonderful(self):

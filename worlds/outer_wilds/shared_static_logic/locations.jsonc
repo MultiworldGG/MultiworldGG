@@ -2328,7 +2328,7 @@
     },
     { // codex_lingering_chime_tesseract
         "category": "ac", "address": 1085044002, "name": "AC: Enter The Tesseract",
-        "region": "Space", "requires": []
+        "region": "Space", "requires": [ { "item": "Astral Vision" } ]
     },
     { // codex_lingering_chime_water
         "category": "ac", "address": 1085044003, "name": "AC: LC Upper Deck",
@@ -2371,12 +2371,12 @@
     },
     { // codex_ember_hologram
         "category": "ac", "address": 1085044011, "name": "AC: Reunion Memorial (Trigger Hologram)",
-        "region": "Hourglass Twins", "requires": [ { "item": "Translator (Hourglass Twins)" }, { "region": "Lingering Chime" } ]
+        "region": "Hourglass Twins", "requires": [ { "item": "Translator (Hourglass Twins)" }, { "item": "Astral Vision" } ]
     },
 
     { // codex_interloper_recorder_warning
         "category": "ac", "address": 1085044012, "name": "AC: Missing Fuel Geode",
-        "region": "Interloper Core", "requires": [ { "item": "Translator (Other)" }, { "region": "Lingering Chime" } ]
+        "region": "Interloper Core", "requires": [ { "item": "Translator (Other)" }, { "item": "Astral Vision" } ]
     },
 
     { // codex_bramble_station
@@ -2400,7 +2400,7 @@
     },
     { // codex_bramble_hologram
         "category": "ac", "address": 1085044016, "name": "AC: Research Station (Trigger Hologram)",
-        "region": "Dark Bramble Research Station", "requires": [] // just pick up the scroll
+        "region": "Dark Bramble Research Station", "requires": [{ "item": "Astral Vision" }] // just pick up the scroll
     },
 
     { // codex_lingering_chime_spacecraft_complete
@@ -2464,7 +2464,7 @@
     },
     { // codex_lingering_chime_tesseract
         "category": "ac", "logsanity": true, "address": 1085044055, "name": "AC Ship Log: Anomalous Body 2 - Revealed",
-        "region": "Space", "requires": []
+        "region": "Space", "requires": [{ "item": "Astral Vision" }]
     },
 
     { // codex_lingering_chime_fact
@@ -2533,28 +2533,28 @@
     },
     { // codex_ember_cairns
         "category": "ac", "logsanity": true, "address": 1085044071, "name": "AC Ship Log: Reunion Memorial 4 - Scientist",
-        "region": "Hourglass Twins", "requires": [ { "item": "Translator (Hourglass Twins)" }, { "region": "Lingering Chime" } ]
+        "region": "Hourglass Twins", "requires": [ { "item": "Translator (Hourglass Twins)" }, { "item": "Astral Vision" } ]
     },
     { // codex_ember_cairns_safeguards
         "category": "ac", "logsanity": true, "address": 1085044072, "name": "AC Ship Log: Reunion Memorial 5 - Safeguards",
-        "region": "Hourglass Twins", "requires": [ { "item": "Translator (Hourglass Twins)" }, { "region": "Lingering Chime" } ]
+        "region": "Hourglass Twins", "requires": [ { "item": "Translator (Hourglass Twins)" }, { "item": "Astral Vision" } ]
     },
     { // codex_ember_cairns_safeguard_archivist
         "category": "ac", "logsanity": true, "address": 1085044073, "name": "AC Ship Log: Reunion Memorial 6 - Archivist",
-        "region": "Hourglass Twins", "requires": [ { "item": "Translator (Hourglass Twins)" }, { "region": "Lingering Chime" } ]
+        "region": "Hourglass Twins", "requires": [ { "item": "Translator (Hourglass Twins)" }, { "item": "Astral Vision" } ]
     },
     { // codex_ember_symbols
         "category": "ac", "logsanity": true, "address": 1085044074, "name": "AC Ship Log: Reunion Memorial 7 - Symbols",
-        "region": "Hourglass Twins", "requires": [ { "item": "Translator (Hourglass Twins)" }, { "region": "Lingering Chime" } ]
+        "region": "Hourglass Twins", "requires": [ { "item": "Translator (Hourglass Twins)" }, { "item": "Astral Vision" } ]
     },
     { // codex_ember_hologram
         "category": "ac", "logsanity": true, "address": 1085044075, "name": "AC Ship Log: Reunion Memorial 8 - Hologram",
-        "region": "Hourglass Twins", "requires": [ { "item": "Translator (Hourglass Twins)" }, { "region": "Lingering Chime" } ]
+        "region": "Hourglass Twins", "requires": [ { "item": "Translator (Hourglass Twins)" }, { "item": "Astral Vision" } ]
     },
 
     { // codex_interloper_recorder_warning
         "category": "ac", "logsanity": true, "address": 1085044076, "name": "AC Ship Log: Missing Fuel Geode",
-        "region": "Interloper Core", "requires": [ { "item": "Translator (Other)" }, { "region": "Lingering Chime" } ]
+        "region": "Interloper Core", "requires": [ { "item": "Translator (Other)" }, { "item": "Astral Vision" } ]
     },
 
     { // codex_bramble_station
@@ -2571,15 +2571,15 @@
     },
     { // codex_bramble_scroll
         "category": "ac", "logsanity": true, "address": 1085044079, "name": "AC Ship Log: Research Station 3 - Explorer",
-        "region": "Dark Bramble Research Station", "requires": [ { "item": "Translator (Dark Bramble)" } ]
+        "region": "Dark Bramble Research Station", "requires": [ { "item": "Translator (Dark Bramble)" }, { "item": "Astral Vision" } ]
     },
     { // codex_bramble_symbols
         "category": "ac", "logsanity": true, "address": 1085044080, "name": "AC Ship Log: Research Station 4 - Symbols",
-        "region": "Dark Bramble Research Station", "requires": [ { "item": "Translator (Dark Bramble)" } ]
+        "region": "Dark Bramble Research Station", "requires": [ { "item": "Translator (Dark Bramble)" }, { "item": "Astral Vision" } ]
     },
     { // codex_bramble_hologram
         "category": "ac", "logsanity": true, "address": 1085044081, "name": "AC Ship Log: Research Station 5 - Hologram",
-        "region": "Dark Bramble Research Station", "requires": [] // just pick up the scroll
+        "region": "Dark Bramble Research Station", "requires": [ { "item": "Astral Vision" } ] // just pick up the scroll
     },
 
     { // codex_lingering_chime_spacecraft_complete
@@ -3373,7 +3373,7 @@
     },
     {
         "category": "fc", "logsanity": true, "address": 1085047104, "name": "DB Ship Log: Stranded Nomai 5 - Warp",
-        "region": "Space", "requires": [ { "item": "Deep Bramble Coordinates" } ] // Regulated by DpB Coords to control your ability to warp into the Deep Bramble
+        "region": "Deep Bramble via Vessel Device", "requires": [ ]
     },
     {
         "category": "fc", "logsanity": true, "address": 1085047105, "name": "FC Ship Log: Bramble's Doorstep 1 - Visit",
@@ -3381,7 +3381,7 @@
     },
     {
         "category": "fc", "logsanity": true, "address": 1085047106, "name": "FC Ship Log: Bramble's Doorstep 2 - Nomai",
-        "region": "Deep Bramble", "requires": [ { "item": "Deep Bramble Coordinates" } ] // Regulated by DpB Coords to control your ability to warp out of the Deep Bramble
+        "region": "Deep Bramble", "requires": [ { "item": "Translator (Deep Bramble)" } ]
     },
     {
         "category": "fc", "logsanity": true, "address": 1085047107, "name": "FC Ship Log: Bramble's Doorstep 3 - Split",
@@ -4068,7 +4068,7 @@
 	},
 	{ // SLF__Walker_Jam5_Platform_Discovery
 		"category": "hs", "logsanity": true, "address": 1085049041, "name": "HS Ship Log: Invitation Platform 1 - Invitation",
-		"region": "Heliostudy", "requires": [ { "item": "Translator (Other)" } ]
+		"region": "Jam 5", "requires": [ { "item": "Translator (Other)" } ]
 	},
 	{ // SLF__Walker_Jam5_Platform_Combination
 		"category": "hs", "logsanity": true, "address": 1085049042, "name": "HS Ship Log: Invitation Platform 2 - Activation",

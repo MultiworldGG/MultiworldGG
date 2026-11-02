@@ -38,7 +38,7 @@ from .alphabet_mode import (
     SPELLING_BEE_GOAL_KEY,
     parse_spelling_bee_phrase,
 )
-from .category_fill import prefill_category_shuffles
+from .category_fill import validate_opening
 from .display_names import FLEA_ITEM_NAMES
 from .items import (
     ACT_TWO_START_WITH_MAP_ITEMS,
@@ -54,6 +54,7 @@ from .items import (
     ItemPoolEntry,
     SilksongItem,
     build_item_pool_entries,
+    can_include_later_act_item,
     get_act_one_start_with_map_items,
     get_configured_item_pool_size,
     get_dynamic_trap_capacity,
@@ -143,12 +144,10 @@ from .wish_events import (
     WISH_REGION_SOURCE_LOCATIONS,
 )
 from .rules import (
-    enforce_global_shuffle_item_rules,
     finalize_crest_slot_memory_locket_logic,
     get_active_crest_slot_locations,
     get_crest_slot_memory_locket_count,
     get_crest_slot_progression_item_count,
-    restore_global_shuffle_item_rules,
     set_silksong_rules,
     uses_crest_slot_locket_logic,
     uses_randomized_memory_lockets_for_crest_slots,
@@ -241,9 +240,10 @@ class SilksongWorld(CachedRuleBuilderWorld):
         return super().rule_from_dict(data)
 
     def register_rule_dependencies(self, resolved_rule):
-        from .requirement_rules import NativeSourceRule
+        from .requirement_rules import NativeSourceRule, register_native_item_rules
         from .silk_supply import SilkSupplyRule
 
+        register_native_item_rules(self, resolved_rule)
         if isinstance(resolved_rule, SilkSupplyRule.Resolved):
             return
         if isinstance(resolved_rule, NativeSourceRule.Resolved):
@@ -266,8 +266,8 @@ class SilksongWorld(CachedRuleBuilderWorld):
             self._silk_supply.collect(state, collected_name)
         results = state.rule_builder_cache[self.player]
         if changed and results:
-            for name in (item.name, collected_name, self.item_mapping.get(item.name, "")):
-                for rule_id in self.rule_item_dependencies.get(name, ()):
+            for name in dict.fromkeys((item.name, collected_name, self.item_mapping.get(item.name, ""))):
+                for rule_id in results.keys() & self.rule_item_dependencies.get(name, set()):
                     if results.get(rule_id) is False:
                         del results[rule_id]
         return changed
@@ -276,8 +276,8 @@ class SilksongWorld(CachedRuleBuilderWorld):
         dependencies = self.rule_region_dependencies.get(region.name)
         if dependencies:
             results = state.rule_builder_cache[self.player]
-            for rule_id in dependencies:
-                results.pop(rule_id, None)
+            for rule_id in results.keys() & dependencies:
+                del results[rule_id]
 
     def _enable_silk_supply(self, supply):
         self._silk_supply = supply
@@ -292,7 +292,7 @@ class SilksongWorld(CachedRuleBuilderWorld):
         return changed
 
     def _remove_with_silk_supply(self, state: CollectionState, item: Item) -> bool:
-        changed = super().remove(state, item)
+        changed = SilksongWorld.remove(self, state, item)
         if changed and hasattr(state, '_silksong_silk_supply'):
             state._silksong_silk_supply.pop(self.player, None)
         return changed
@@ -377,7 +377,7 @@ class SilksongWorld(CachedRuleBuilderWorld):
         if bool(wish_ids) != bool(wish_shuffle):
             raise TrackerException(message="Shuffle Wish Offers setting does not match its assignments.")
         boss_ids = frozenset(assignment_data.get("bosses", {}))
-        if not boss_ids.issubset(SUPPORTED_BOSS_IDS) or (boss_ids and boss_mode.value == boss_mode.option_vanilla):
+        if not boss_ids.issubset(SUPPORTED_BOSS_IDS) or (boss_ids and boss_mode.value == boss_mode.option_false):
             raise TrackerException(message="Boss Sanity setting does not match its assignments.")
         Assignments.from_slot_data(assignment_data, wish_ids, boss_ids)
         SilksongWorld._tracker_native_sources(slot_data)
@@ -580,11 +580,16 @@ class SilksongWorld(CachedRuleBuilderWorld):
             if self.is_act_one_content_scope():
                 excluded = self.get_goal_excluded_location_names()
                 retained_items = set()
+                modes = self.get_category_modes()
                 for name, data in location_data_table.items():
                     if data.category not in PAIRED_LOCATION_CATEGORIES:
                         continue
                     reward = get_vanilla_reward_name(name, data.category)
-                    (unavailable_items if name in excluded else retained_items).add(reward)
+                    retained = name not in excluded or can_include_later_act_item(
+                        reward, data.category, modes, act_one_only=True,
+                        silk_soar_begone=bool(self.options.silk_soar_begone),
+                    )
+                    (retained_items if retained else unavailable_items).add(reward)
                 unavailable_items.difference_update(retained_items)
                 unavailable_items.discard(
                     STARTING_CREST_ITEM_BY_KEY[self.resolve_starting_crest()]
@@ -596,8 +601,21 @@ class SilksongWorld(CachedRuleBuilderWorld):
             if self.is_act_two_content_scope() and (
                     self.get_category_mode('Skill') != 'anywhere' or self.options.silk_soar_begone):
                 unavailable_items.add('Silk Soar')
+            starting_items = {
+                name for inventory in (self.options.start_inventory, self.options.start_inventory_from_pool)
+                for name, count in inventory.value.items() if count > 0
+            }
+            vanilla_stations = tuple(
+                (name, get_vanilla_reward_name(name, category))
+                for category in ('Bellway', 'Ventrica')
+                if self.get_category_mode(category) == 'vanilla'
+                for name in LOCATION_NAMES_BY_CATEGORY[category]
+                if name not in self.get_goal_excluded_location_names()
+                and get_vanilla_reward_name(name, category) not in starting_items
+            )
             self._mapper_option_quarantines = get_mapper_option_quarantines(
                 unavailable_items=frozenset(unavailable_items),
+                vanilla_stations=vanilla_stations,
                 split_dash_and_sprint=self.is_split_dash_and_sprint(),
                 allow_bellways_before_bell_beast=self.allows_bellways_before_bell_beast(),
                 proficient_combat=self.get_proficient_combat_mode(),
@@ -709,6 +727,7 @@ class SilksongWorld(CachedRuleBuilderWorld):
                 self.is_ledgegrab_ability_rando_enabled()
             ),
             randomize_swim=self.is_swim_ability_rando_enabled(),
+            bind_items=self.get_bind_items(),
             directional_abilities=self.get_directional_abilities(),
             randomize_diving_bell_key=bool(self.options.diving_bell_key_randomization.value),
             cursed_ending=(self.get_goal_key() == CURSED_ENDING_GOAL_KEY),
@@ -761,6 +780,10 @@ class SilksongWorld(CachedRuleBuilderWorld):
     def is_ledgegrab_ability_rando_enabled(self) -> bool:
         return bool(self.options.ledgegrab_ability_rando.value)
 
+    def get_bind_items(self) -> tuple[str, ...]:
+        from .bind import pool_items
+        return pool_items(self)
+
     def is_swim_ability_rando_enabled(self) -> bool:
         return bool(self.options.swim_ability_rando.value)
 
@@ -769,6 +792,7 @@ class SilksongWorld(CachedRuleBuilderWorld):
             self.get_goal_key() == FLEA_HUNT_GOAL_KEY
             and self.get_category_mode('Flea') == 'vanilla'
             and location_name in LOCATION_NAMES_BY_CATEGORY['Flea']
+            and location_name not in self.get_logic_unknown_locations()
         )
 
     def is_individual_relic_turn_ins_enabled(self) -> bool:
@@ -992,6 +1016,7 @@ class SilksongWorld(CachedRuleBuilderWorld):
             category: self.get_category_mode(category)
             for category in CATEGORY_OPTION_BY_LOCATION_CATEGORY
         }
+        modes["Key"] = "anywhere"
         modes["Resource"] = get_aggregate_minor_mode_key(self.options)
         modes.update(
             {
@@ -1053,6 +1078,7 @@ class SilksongWorld(CachedRuleBuilderWorld):
                 self.is_ledgegrab_ability_rando_enabled()
             ),
             randomize_swim=self.is_swim_ability_rando_enabled(),
+            bind_items=self.get_bind_items(),
             directional_abilities=self.get_directional_abilities(),
             randomize_diving_bell_key=bool(self.options.diving_bell_key_randomization.value),
             cursed_ending=(self.get_goal_key() == CURSED_ENDING_GOAL_KEY),
@@ -1251,7 +1277,10 @@ class SilksongWorld(CachedRuleBuilderWorld):
                     location_name,
                     category,
                 )
-                if mode == 'vanilla' and location_name not in self.get_logic_unknown_locations():
+                if mode == 'vanilla' and (
+                    location_name not in self.get_logic_unknown_locations()
+                    or get_vanilla_reward_name(location_name, category) in option_replaced_item_names
+                ):
                     reward_name = get_vanilla_reward_name(
                         location_name,
                         category,
@@ -1314,6 +1343,7 @@ class SilksongWorld(CachedRuleBuilderWorld):
                 self.is_ledgegrab_ability_rando_enabled()
             ),
             randomize_swim=self.is_swim_ability_rando_enabled(),
+            bind_items=self.get_bind_items(),
             directional_abilities=self.get_directional_abilities(),
             randomize_diving_bell_key=bool(self.options.diving_bell_key_randomization.value),
             cursed_ending=(self.get_goal_key() == CURSED_ENDING_GOAL_KEY),
@@ -1364,7 +1394,8 @@ class SilksongWorld(CachedRuleBuilderWorld):
                 if entry.placement_category == placement_category
             ]
             nonadvancement_count = sum(
-                not self.create_item(pool_entries[index].name).advancement
+                not self.create_item(pool_entries[index].name).classification
+                & (ItemClassification.progression | ItemClassification.useful)
                 for index in matching_indices
             )
             shortage = nonadvancement_demand - nonadvancement_count
@@ -1373,7 +1404,7 @@ class SilksongWorld(CachedRuleBuilderWorld):
 
             raise OptionError(
                 f"{placement_category or 'Anywhere'} needs {shortage} more "
-                "non-progression items for checks with incomplete logic. "
+                "filler or trap items for checks with incomplete logic. "
                 "Use more anywhere categories or disable the affected checks."
             )
 
@@ -1393,7 +1424,8 @@ class SilksongWorld(CachedRuleBuilderWorld):
             nonadvancement_demand_by_lane.items()
         ):
             nonadvancement_count = sum(
-                not self.create_item(entry.name).advancement
+                not self.create_item(entry.name).classification
+                & (ItemClassification.progression | ItemClassification.useful)
                 for entry in pool_entries
                 if entry.placement_category == placement_category
             )
@@ -1426,6 +1458,11 @@ class SilksongWorld(CachedRuleBuilderWorld):
         finalize_world(self)
         self._configure_tracker_map()
         state = self.multiworld.get_all_state()
+        if not getattr(self.multiworld, 'generation_is_fake', False):
+            from .native_regions import validate_native_sources
+            from .craftmetal import validate_native_supply
+            validate_native_sources(self, state)
+            validate_native_supply(self, state)
         if self.get_goal_key() == "act_3":
             available = (
                 state.count(SILK_AND_SOUL_WISH_POINT_ITEM, self.player)
@@ -1447,7 +1484,7 @@ class SilksongWorld(CachedRuleBuilderWorld):
 
     @property
     def found_entrances_datastorage_key(self):
-        keys = ["Silksong:Warps:{team}:{player}"]
+        keys = ["Silksong:Warps:{team}:{player}", "Silksong:Act3:{team}:{player}"]
         if self.options.entrance_randomization:
             keys.append("Silksong:Entrances:{team}:{player}")
         return keys
@@ -1458,6 +1495,9 @@ class SilksongWorld(CachedRuleBuilderWorld):
             reconnect_warps(self, data_storage_value)
         elif found_key.startswith("Silksong:Entrances:"):
             reconnect_found(self, data_storage_value)
+        elif found_key.startswith("Silksong:Act3:"):
+            from .tracker import receive_act_state
+            receive_act_state(self, data_storage_value)
 
     def get_pre_fill_items(self):
         return [*super().get_pre_fill_items(), *getattr(self, "_entrance_construction_items", ())]
@@ -1466,7 +1506,9 @@ class SilksongWorld(CachedRuleBuilderWorld):
         from .boss_souls import prepare_start
         prepare_start(self)
         from .entrance_randomization import connect_exits
-        connect_exits(self)
+        from .rosary_economy import entrance_memo
+        with entrance_memo(self):
+            connect_exits(self)
         if getattr(self, '_silk_supply', None) is not None:
             self.explicit_indirect_conditions = False
 
@@ -1642,7 +1684,8 @@ class SilksongWorld(CachedRuleBuilderWorld):
             )
             uses_native_source = (
                 reward_name in logic_item_references
-                and name not in self._progression_location_rules
+                and (name not in self._progression_location_rules
+                     or name in self._bind_native_source_candidates)
                 and (name in restored_sources if restored_sources is not None else
                      native_source_requires_assumption(
                          self, name, reward_name, pollip_heart_count, anchor,
@@ -1668,8 +1711,6 @@ class SilksongWorld(CachedRuleBuilderWorld):
                 parent_region,
             )
             location.silksong_randomization_category = data.category
-            if data.category == 'Key' and mode == 'shuffle':
-                location.silksong_placement_category = 'Key'
             parent_region.locations.append(location)
 
         # Wish events use their verified source region and rule when available.
@@ -1801,11 +1842,10 @@ class SilksongWorld(CachedRuleBuilderWorld):
         self._configure_tracker_map()
 
     def _configure_tracker_map(self) -> None:
-        from .tracker import install_marker_status
+        from .tracker import install_act_gate
         from .tracker.wishes import location_mapping
         self.tracker_world = {**self._tracker_world, "poptracker_name_mapping": location_mapping(self)}
-        if getattr(self.multiworld, 'generation_is_fake', False):
-            install_marker_status()
+        install_act_gate(self)
 
     @classmethod
     def stage_pre_fill(cls, multiworld) -> None:
@@ -1815,41 +1855,28 @@ class SilksongWorld(CachedRuleBuilderWorld):
             world.player for world in multiworld.get_game_worlds(cls.game)
             if world.game == cls.game
         ))
-        scope = getattr(
-            multiworld,
-            "_silksong_shuffle_item_rule_scope",
-            None,
-        )
-        try:
-            point_items = Counter((item.player, item.name) for item in multiworld.get_items())
-            for world in multiworld.get_game_worlds(cls.game):
-                if world.get_goal_key() != "act_3":
-                    continue
-                available_halves = (
-                    2 * point_items[world.player, SILK_AND_SOUL_WISH_POINT_ITEM]
-                    + point_items[world.player, SILK_AND_SOUL_WISH_HALF_POINT_ITEM]
+        point_items = Counter((item.player, item.name) for item in multiworld.get_items())
+        for world in multiworld.get_game_worlds(cls.game):
+            if world.get_goal_key() != "act_3":
+                continue
+            available_halves = (
+                2 * point_items[world.player, SILK_AND_SOUL_WISH_POINT_ITEM]
+                + point_items[world.player, SILK_AND_SOUL_WISH_HALF_POINT_ITEM]
+            )
+            required = get_silk_and_soul_points(world.options)
+            if 2 * required > available_halves:
+                raise OptionError(
+                    f"Player {world.player}: Silk and Soul requires {required} points, "
+                    f"but this configuration contains at most {available_halves / 2:g}. "
+                    "Lower Silk and Soul Points."
                 )
-                required = get_silk_and_soul_points(world.options)
-                if 2 * required > available_halves:
-                    raise OptionError(
-                        f"Player {world.player}: Silk and Soul requires {required} points, "
-                        f"but this configuration contains at most {available_halves / 2:g}. "
-                        "Lower Silk and Soul Points."
-                    )
-            prefill_category_shuffles(multiworld, cls.game)
-        finally:
-            restore_global_shuffle_item_rules(scope)
-            if hasattr(
-                multiworld,
-                "_silksong_shuffle_item_rule_scope",
-            ):
-                delattr(
-                    multiworld,
-                    "_silksong_shuffle_item_rule_scope",
-                )
+        validate_opening(multiworld, cls.game)
         for world in multiworld.get_game_worlds(cls.game):
             if world.game == cls.game:
                 world._finalize_progression_shuffle()
+        from .category_fill import validate_excluded_filler, validate_flea_capacity
+        validate_flea_capacity(multiworld, cls.game)
+        validate_excluded_filler(multiworld, cls.game)
         alphabet_mode_enabled = any(
             getattr(world, "game", None) == cls.game
             and getattr(
@@ -1895,7 +1922,7 @@ class SilksongWorld(CachedRuleBuilderWorld):
         raise OptionError(
             f"The selected options leave {len(progression_items)} "
             f"progression items for {progression_location_count} "
-            "progression-legal locations after category shuffles "
+            "progression-legal locations "
             f"({non_progression_location_count} locations require "
             "non-progression items, but only "
             f"{non_progression_item_count} remain). {advice}"
@@ -1905,9 +1932,6 @@ class SilksongWorld(CachedRuleBuilderWorld):
     def stage_generate_basic(cls, multiworld) -> None:
         for world in multiworld.get_game_worlds(cls.game):
             world._prepare_start_inventory_pool()
-        multiworld._silksong_shuffle_item_rule_scope = (
-            enforce_global_shuffle_item_rules(multiworld)
-        )
 
     def fill_hook(self, progitempool, usefulitempool, filleritempool, fill_locations):
         indices = [index for index, item in enumerate(progitempool) if item.player == self.player]
@@ -1951,6 +1975,9 @@ class SilksongWorld(CachedRuleBuilderWorld):
         from .category_fill import fill_solo_progression
 
         fill_solo_progression(self, progitempool, fill_locations)
+        if self.player == self.multiworld.player_ids[-1]:
+            from .category_fill import fill_multiworld_progression
+            fill_multiworld_progression(self.multiworld, self.game, progitempool, fill_locations)
 
     @classmethod
     def _build_crest_slot_budget_state(cls, multiworld, excluded_slots, base_state=None):
@@ -2431,6 +2458,7 @@ class SilksongWorld(CachedRuleBuilderWorld):
             }
         )
         slot_data.update(slot_entrances(self))
+        slot_data["simple_key_randomization"] = "anywhere"
         slot_data["minor_pickup_randomization"] = category_modes["Resource"]
         slot_data.update(
             {
@@ -2456,12 +2484,27 @@ class SilksongWorld(CachedRuleBuilderWorld):
         export_enemy_souls(self, slot_data)
         from .silk_economy import export_world as export_silk_economy
         export_silk_economy(self, slot_data)
+        from .rosary_economy import export_world as export_rosary_economy
+        export_rosary_economy(self, slot_data)
+        from .bind import export_world as export_bind
+        export_bind(self, slot_data)
         unknown = self.get_logic_unknown_locations()
         for location in self.get_locations():
             if location.address is not None and location.name in unknown:
                 slot_data["requirements"][location.name] = {
                     "alternatives": [{"all_of": ["Victory"]}], "logic_unknown": True,
                 }
+        if self.get_category_mode('Mossberry') == 'vanilla':
+            for location in self.get_locations():
+                if (getattr(location, 'silksong_randomization_category', None) == 'Mossberry'
+                        and location.address is None and location.item is not None
+                        and location.item.player == self.player and location.item.name == 'Mossberry'):
+                    slot_data['logic_events'].append({
+                        'location': 'Native Item: ' + location.name,
+                        'item': 'Mossberry',
+                        'native_source': True,
+                        'requirement': slot_data['requirements'][location.name],
+                    })
         return slot_data
 
     def modify_multidata(self, multidata: dict) -> None:

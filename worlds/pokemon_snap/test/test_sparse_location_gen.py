@@ -9,8 +9,6 @@ class TestSparseLocationGeneration(PokemonSnapTestBase):
         "special_poses": False,
         "pokemon_signs": False,
         "secret_exits": False,
-        "rng_checks": False,
-        "hard_checks": False,
         "start_with_dash_engine": True,
     }
 

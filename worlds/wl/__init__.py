@@ -5,16 +5,16 @@ import settings
 import threading
 
 from BaseClasses import Item, MultiWorld, Tutorial, ItemClassification
-from .Items import WLItem, ItemData, item_table, junk_table
+from .Items import WLItem, ItemData, item_table, junk_table, course_unlock_names
 from .Locations import WLLocation, all_locations, setup_locations
-from .Options import WLOptions
+from .Options import WLOptions, required_garlic_cloves
 from .Regions import create_regions, connect_regions
 from .Levels import full_level_list, generate_level_list, location_id_to_level_id
 from .Rules import set_rules
 from worlds.generic.Rules import add_rule, exclusion_rules
 from .Names import ItemName, LocationName
 from worlds.AutoWorld import WebWorld, World
-from .Rom import Rom, patch_rom, get_base_rom_path, WLDeltaPatch
+from .Rom import Rom, patch_rom, get_base_rom_path, get_dx_patch_bytes, WLDeltaPatch
 
 # from Utils import visualize_regions
 from Utils import __version__
@@ -30,6 +30,15 @@ class WLSettings(settings.Group):
         md5s = [WLDeltaPatch.hash]
 
     rom_file: RomFile = RomFile(RomFile.copy_to)
+
+    class DXPatchFile(settings.OptionalUserFilePath):
+        """Optional korxo DX 1.2 IPS patch, required when DX Colorization is enabled."""
+
+        description = "Wario Land DX 1.2 IPS Patch"
+        copy_to = "Wario Land - Super Mario Land 3 DX (World).ips"
+        md5s = ["daed6ce65b759160d854b5500e20f492"]
+
+    dx_patch_file: DXPatchFile = DXPatchFile("")
 
 
 class WLWeb(WebWorld):
@@ -53,15 +62,18 @@ class WLWorld(World):
     Wario Land: Super Mario Land 3 is a 1994 platform game developed and published by Nintendo for the Game Boy.
     """
     game: str = "Wario Land"
-    author: str = "rand0"
     options: WLOptions
     options_dataclass = WLOptions
     settings: typing.ClassVar[WLSettings]
     topology_present = False
+    # Rules.py queries reachability of other course exits
+    explicit_indirect_conditions = False
     data_version = 0
-    required_client_version = (0, 4, 3)
+    required_client_version = (0, 6, 3)
 
-    item_name_to_id = {name: data.code for name, data in item_table.items()}
+    item_name_to_id = {
+        name: data.code for name, data in item_table.items() if data.code is not None
+    }
     location_name_to_id = all_locations
 
     active_level_dict: typing.Dict[int, int]
@@ -76,6 +88,8 @@ class WLWorld(World):
         rom_file = get_base_rom_path()
         if not os.path.exists(rom_file):
             raise FileNotFoundError(rom_file)
+        if any(world.options.use_dx for world in multiworld.get_game_worlds(cls.game)):
+            get_dx_patch_bytes(prompt=True)
 
     def _get_slot_data(self):
         return {
@@ -99,8 +113,13 @@ class WLWorld(World):
             "progressive_powerup": self.options.progressive_powerup.value,
             "boss_unlocks": self.options.boss_unlocks.value,
             "world_unlocks": self.options.world_unlocks.value,
+            "level_unlocks": self.options.level_unlocks.value,
             "number_of_garlic_cloves": self.options.number_of_garlic_cloves.value,
             "percentage_of_garlic_cloves": self.options.percentage_of_garlic_cloves.value,
+            "required_garlic_cloves": required_garlic_cloves(
+                self.options.number_of_garlic_cloves.value,
+                self.options.percentage_of_garlic_cloves.value,
+            ),
             "treasure_checks": self.options.treasure_checks.value,
             "blocksanity": self.options.blocksanity.value,
             "death_link": self.options.death_link.value,
@@ -163,7 +182,9 @@ class WLWorld(World):
         if self.options.world_unlocks:
             # Player always starts with a random world unlocked if there is more than one player
             # or if Blocksanity is active
-            if self.multiworld.players > 1 or self.options.blocksanity == 1:
+            if (self.multiworld.players > 1 or self.options.blocksanity == 1) and not (
+                self.options.level_unlocks and not self.options.blocksanity
+            ):
                 self.multiworld.random.shuffle(world_unlocks)
                 list_pick = world_unlocks.pop()
                 start_inventory[list_pick] = 1
@@ -200,6 +221,95 @@ class WLWorld(World):
                 start_inventory[unlock.name] = 1
                 self.multiworld.push_precollected(unlock)
 
+        if self.options.level_unlocks:
+            # guarantee an ordinary course in an open world before placing progression
+            open_world_names = {
+                item.name for item in self.multiworld.precollected_items[self.player]
+            }
+            world_names = (
+                ItemName.ricebeach,
+                ItemName.mtteapot,
+                ItemName.stovecanyon,
+                ItemName.parsleywoods,
+                ItemName.ssteacup,
+                ItemName.sherbetland,
+                ItemName.syrupcastle,
+            )
+            start_world = next(
+                i for i, name in enumerate(world_names) if name in open_world_names
+            )
+            if (
+                not self.options.blocksanity
+                and ItemName.parsleywoods in open_world_names
+            ):
+                start_world = (
+                    3  # parsley supplies checks before movement abilities are found
+                )
+            planned = set(self.options.start_inventory.value) | set(
+                self.options.start_inventory_from_pool.value
+            )
+            from .MapData import COURSES
+
+            has_start = any(
+                name in planned and world_names[COURSES[level][1]] in open_world_names
+                for level, name in course_unlock_names.items()
+            )
+            if not self.options.blocksanity:
+                starting_courses = {
+                    name
+                    for level, name in course_unlock_names.items()
+                    if COURSES[level][1] == start_world
+                } - planned
+                # sparse checks need starter courses in later worlds and an early treasure opener
+                starting_courses |= {
+                    course_unlock_names[i]
+                    for i in (7, 14, 6, 16, 33, 2, 3, 21, 0, 30, 34, 35)
+                } - planned
+                early = [ItemName.wario_climb, ItemName.wario_createcoin]
+                if self.options.treasure_checks:
+                    early = (
+                        [
+                            ItemName.wario_climb,
+                            ItemName.wario_dash,
+                            ItemName.progressive_powerup,
+                        ]
+                        if self.options.progressive_powerup
+                        else [
+                            ItemName.wario_climb,
+                            ItemName.wario_createcoin,
+                            ItemName.wario_jet,
+                        ]
+                    )
+                for name in early:
+                    if name not in self.options.non_local_items:
+                        self.multiworld.local_early_items[self.player][name] = 1
+            else:
+
+                def starting_checks(level):
+                    state = self.multiworld.state.copy()
+                    state.collect(self.create_item(course_unlock_names[level]), True)
+                    return sum(
+                        loc.address is not None and loc.can_reach(state)
+                        for loc in self.multiworld.get_locations(self.player)
+                    )
+
+                candidates = [
+                    level
+                    for level in course_unlock_names
+                    if COURSES[level][1] == start_world
+                ]
+                starter = max(candidates, key=starting_checks)
+                starting_courses = (
+                    set() if has_start else {course_unlock_names[starter]}
+                )
+            for name in sorted(starting_courses):
+                self.multiworld.push_precollected(self.create_item(name))
+            itempool += [
+                self.create_item(name)
+                for name in course_unlock_names.values()
+                if name not in starting_courses
+            ]
+
         boss_location_names = [
             LocationName.ricebeach_boss,
             LocationName.mtteapot_boss,
@@ -222,15 +332,17 @@ class WLWorld(World):
             self.multiworld.get_location(
                 LocationName.garlic_goal, self.player
             ).place_locked_item(self.create_item(ItemName.victory))
-            # garlic goal and removed genie location
-            totalLocations -= 2
         else:
             self.multiworld.get_location(
                 LocationName.syrupcastle_boss, self.player
             ).place_locked_item(self.create_item(ItemName.victory))
-            totalLocations -= 1
 
         junk_count = totalLocations - len(itempool)
+        if junk_count < 0:
+            raise ValueError(
+                "Wario Land item pool exceeds the available checks. Enable treasure checks "
+                "or blocksanity, disable course unlocks, or reduce the number of garlic cloves."
+            )
         trap_weights = []
         trap_weights += [
             ItemName.wario_grease_trap
@@ -273,11 +385,11 @@ class WLWorld(World):
             player = self.player
 
             rom = Rom(get_base_rom_path())
-            patch_rom(self, rom)
+            patch_rom(self.multiworld, self.options, rom, self.player)
 
             rompath = os.path.join(
                 output_directory,
-                f"{self.multiworld.get_out_file_name_base(self.player)}.gb",
+                f"{self.multiworld.get_out_file_name_base(self.player)}{'.gbc' if self.options.use_dx else '.gb'}",
             )
             rom.write_to_file(rompath)
             self.rom_name = rom.name

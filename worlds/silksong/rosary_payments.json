@@ -1,0 +1,141 @@
+{
+  "Room Event: event:mapper/0f7d536f-912f-4790-930a-983bcdc398c9": [
+    "bench:bone_01c:bell_toll_machine"
+  ],
+  "Room Event: event:mapper/3eeaa455-ed8b-4c03-badd-85a1edf703e3": [
+    "bench:dock_01:bell_toll_machine"
+  ],
+  "Room Event: event:mapper/bf849fde-80d4-45c9-b02e-3317a225ae9f": [
+    "bellway:Bellway_02:Bellway Toll Machine:UnlockedDocksStation"
+  ],
+  "Room Event: event:mapper/d20a7bfa-93bb-4694-8c3c-dbc944360b86": [
+    "bench:bellway_03:bell_toll_machine"
+  ],
+  "Room Event: event:mapper/90a7b53b-f1b0-4c65-a858-aab6322095ba": [
+    "bellway:Bellway_03:Bellway Toll Machine:UnlockedBoneforestEastStation"
+  ],
+  "Room Event: event:mapper/cc67fc85-d112-4f61-b1bc-2d6fa0c6f129": [
+    "bench:bone_east_15:bell_toll_machine"
+  ],
+  "Room Event: event:mapper/8135801b-036c-4d7b-8a56-c3908c69f3b2": [
+    "bellway:Shellwood_19:Bellway Toll Machine:UnlockedShellwoodStation"
+  ],
+  "Room Event: event:mapper/366ec0fe-6f12-48a8-8e0f-c969d2901229": [
+    "bench:shellwood_08c:bell_toll_machine"
+  ],
+  "Room Event: event:mapper/f468c5e6-5d9c-4451-8d6c-b07881710532": [
+    "bench:shellwood_01b:bell_toll_machine"
+  ],
+  "Room Event: event:mapper/1a9809b4-acdc-41ea-b60e-e086c872dfcc": [
+    "bellway:Belltown_basement:Bellway Toll Machine:UnlockedBelltownStation"
+  ],
+  "Room Event: event:mapper/4d49312e-510d-4f9d-b3a8-da08789bcdb6": [
+    "bellway:Bellway_04:Bellway Toll Machine:UnlockedGreymoorStation"
+  ],
+  "Room Event: event:mapper/b328f997-a795-4c60-a2cb-99f311cccf4f": [
+    "bellway:Bellway_08:Bellway Toll Machine:UnlockedCoralTowerStation"
+  ],
+  "Room Event: event:mapper/b097ea72-f6fe-454c-aa9a-9e9d5375a965": [
+    "bench:bellway_08:bell_toll_machine"
+  ],
+  "Room Event: event:mapper/fa140236-ea8c-43a1-9ce9-9ccb6ac6da26": [
+    "bench:coral_02:bell_toll_machine"
+  ],
+  "Room Event: event:mapper/04d41f69-dc9f-42e9-9c38-a5bc4608e086": [
+    "map-machine:song_19_entrance:Map Machine (1)"
+  ],
+  "Room Event: event:mapper/ba67de0c-f1ae-493e-970f-6e5131bcebe0": [
+    "bench:dust_10:bell_toll_machine"
+  ],
+  "Room Event: event:mapper/e79a6a6c-bfd4-47a4-b323-512bb3225bfb": [
+    "ventrica:under_22:tube_toll_machine"
+  ],
+  "Room Event: event:mapper/0f7e9076-c824-4449-9a8c-ca23b1efb23f": [
+    "ventrica:song_01b:tube_toll_machine"
+  ],
+  "Room Event: event:mapper/4a7d5fad-dabd-4038-8818-ad19d32accba": [
+    "ventrica:song_enclave_tube:tube_toll_machine"
+  ],
+  "Room Event: event:mapper/f94ddd41-c35c-4bb1-b48b-dbe2f9068e3e": [
+    "map-machine:bellway_city:Map Machine"
+  ],
+  "Room Event: event:mapper/eba9e5b4-85f7-4d0c-882f-17f083709ee9": [
+    "map-machine:library_04:Map Machine (1)"
+  ],
+  "Room Event: event:mapper/c85a1578-054e-42df-91ae-95a163c2f3f2": [
+    "map-machine:ward_01:Map Machine (1)"
+  ],
+  "Room Event: event:mapper/c9413060-79e7-4206-a6f9-7f908ce6bfc2": [
+    "ventrica:hang_06b:tube_toll_machine"
+  ],
+  "Room Event: event:mapper/b96a5f16-4db6-4bd4-8ea2-bfcd298c5d99": [
+    "bench:bellway_shadow:bell_toll_machine"
+  ],
+  "Room Event: event:mapper/8fd84d2a-14e3-40f7-bb17-01832eda821e": [
+    "ventrica:arborium_tube:tube_toll_machine"
+  ],
+  "Room Event: event:mapper/06e448e9-d726-413d-b8b6-2704ac7f84f7": [
+    "bellway:Slab_06:Bellway Toll Machine:UnlockedPeakStation"
+  ],
+  "Room Event: event:mapper/94eaa312-4e37-49b5-9d4b-fc916eaf3e9b": [
+    "bench:bellway_aqueduct:bell_toll_machine"
+  ],
+  "Room Event: event:mapper/c07e946c-2507-4637-b264-fe3ee4acbd14": [
+    "bellway:Bellway_Aqueduct:Bellway Toll Machine:UnlockedAqueductStation"
+  ],
+  "Room Event: event:mapper/c7a1c3f2-03f9-4b08-b699-f5b1423fbea1": [
+    "map-machine:cradle_02:Map Machine (1)"
+  ],
+  "Room Event: event:mapper/d65bf65b-288b-4802-85f4-f6cb4011f284": [
+    "ventrica:tube_hub:tube_toll_machine"
+  ],
+  "Room Event: event:mapper/reviewed:bilewater-bellway-paid": [
+    "bellway:Bellway_Shadow:Bellway Toll Machine:UnlockedShadowStation"
+  ],
+  "Pinmaster Plinney: Hivesteel Needle": [
+    "upgrade:plinney:3"
+  ],
+  "Pinmaster Plinney: Pale Steel Needle": [
+    "upgrade:plinney:4"
+  ],
+  "Room Event: event:mapper/d9d1cfb2-bf89-4b1b-a645-8b425c5e30ec": [
+    "shop:Pilgrims Rest Tool Pouch"
+  ],
+  "Room Event: event:mapper/25b01feb-9972-467c-87b8-d263b5d0c001": [
+    "shop:Grindle Tool Pouch"
+  ],
+  "Room Event: event:mapper/7348fc90-fd71-4444-aef6-734afb7b5984": [
+    "shop:Pilgrims Rest Crest Socket Unlocker"
+  ],
+  "Room Event: event:mapper/5d0c984a-77a6-4c1e-8cd5-a0c827bbec78": [
+    "shop:Grindle Crest Socket"
+  ],
+  "Room Event: event:mapper/e6555f0f-e4bc-44cf-848b-e7fdcd4569e1": [
+    "shop:Bonebottom Rosary Magnet Tool"
+  ],
+  "Room Event: event:mapper/84a51128-445c-4f80-bcc0-2651d6378ca1": [
+    "shop:Grindle Rosary Magnet"
+  ],
+  "Room Event: event:mapper/7790f847-5f31-4156-b252-258dba9db17e": [
+    "shop:Bonebottom Mask Shard"
+  ],
+  "Room Event: event:mapper/22fa10f2-f4d5-4911-b727-50889602d7aa": [
+    "shop:Grindle Mask Shard"
+  ],
+  "Room Event: event:mapper/049c9f4d-7eb0-4e3d-aa51-02cade3abab4": [
+    "shop:Bonebottom Tool Metal"
+  ],
+  "Room Event: event:mapper/36ff4778-2502-4ea1-b5b8-60ed2c3197c3": [
+    "shop:Grindle Tool Metal"
+  ],
+  "Room Event: event:mapper/8a42ddaa-1c1f-4971-bd30-215bef96b3b0": [
+    "shop:Bonebottom Faith Token"
+  ],
+  "Room Event: event:mapper/0f83ac9d-e2ba-4280-b538-9cf2a2612b7a": [
+    "shop:Grindle Simple Key"
+  ],
+  "Room Event: event:mapper/70d1f087-9a3a-4788-95a4-843e3e490ce5": [
+    "shop:Grindle Lucky Dice Tool"
+  ],
+  "Room Event: event:mapper/b271d4ca-faa9-4104-b801-dec2e1914ba5": []
+}

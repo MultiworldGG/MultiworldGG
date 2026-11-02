@@ -5,8 +5,9 @@ from typing import Any, NamedTuple
 
 from BaseClasses import CollectionState, Location, Region
 from Utils import restricted_loads
-from worlds.generic.Rules import add_rule, set_rule
-from .options import Goal, Spawn
+from rule_builder.rules import Has, HasAll, Rule, And, Or, False_, CanReachLocation, CanReachRegion
+from worlds.generic.Rules import add_rule
+from .options import Goal, Spawn, SplitTranslator
 from .should_generate import should_generate, should_generate_location
 from .warp_platforms import warp_platform_to_logical_region, warp_platform_required_items
 
@@ -118,7 +119,8 @@ def create_regions(world: "OuterWildsWorld") -> None:
 
     split_translator = options.split_translator
 
-    # add locations and connections to each region
+    # world.set_rule() checks that locations in the rule actually exist,
+    # so we have to create all locations before moving on to setting rules.
     for region_name, region_data in region_data_table.items():
         region = mw.get_region(region_name, p)
         region.add_locations({
@@ -126,11 +128,14 @@ def create_regions(world: "OuterWildsWorld") -> None:
             if location_data.region == region_name
         }, OuterWildsLocation)
 
+    # None of our rules reference entrances, so we can create entrances and set their rules in the same loop.
+    for region_name, region_data in region_data_table.items():
+        region = mw.get_region(region_name, p)
         exit_connections = [cd for cd in connections_to_create if cd["from"] == region_name]
         for connection in exit_connections:
             to = connection["to"]
             requires = connection["requires"]
-            rule = None if len(requires) == 0 else lambda state, r=requires, st=split_translator: eval_rule(state, p, r, st)
+            rule = None if len(requires) == 0 else eval_rule(requires, split_translator)
             entrance = region.connect(mw.get_region(to, p), None, rule)
             indirect_region_names = regions_referenced_by_rule(requires)
             for indirect_region_name in indirect_region_names:
@@ -139,8 +144,7 @@ def create_regions(world: "OuterWildsWorld") -> None:
     # add access rules to the created locations
     for ld in locations_data:
         if ld["name"] in locations_to_create and len(ld["requires"]) > 0:
-            set_rule(mw.get_location(ld["name"], p),
-                     lambda state, r=ld["requires"], st=split_translator: eval_rule(state, p, r, st))
+            world.set_rule(mw.get_location(ld["name"], p), eval_rule(ld["requires"], split_translator))
 
     # add dynamic logic, i.e. connections based on player options
     menu = mw.get_region("Menu", p)
@@ -158,10 +162,20 @@ def create_regions(world: "OuterWildsWorld") -> None:
         menu.add_exits(["Stranger Sunside Hangar"])
     elif options.spawn == Spawn.option_deep_bramble:
         menu.add_exits(["Deep Bramble"])
-        mw.get_entrance("Menu -> Space", p).access_rule = lambda state: state.has_all(["Launch Codes", "Deep Bramble Coordinates"], p)
-        mw.get_region("Deep Bramble", p).add_exits(["Deep Bramble via Warp Drive"], {"Deep Bramble via Warp Drive": lambda state: state.has("Launch Codes", p)})
+        world.set_rule(
+            mw.get_entrance("Menu -> Space", p),
+            HasAll("Launch Codes", "Interstellar Warp Drive")
+        )
+        world.create_entrance(
+            mw.get_region("Deep Bramble", p),
+            mw.get_region("Deep Bramble with Ship", p),
+            Has("Launch Codes")
+        )
         if options.enable_ac_mod and options.logsanity:
-            mw.get_location("AC Ship Log: Flashback Vision", p).access_rule = lambda state: state.has_all(["Launch Codes", "Deep Bramble Coordinates"], p)
+            world.set_rule(
+                mw.get_location("AC Ship Log: Flashback Vision", p),
+                HasAll("Launch Codes", "Interstellar Warp Drive")
+            )
 
     if options.goal == Goal.option_song_of_the_universe:
         friend_list = [
@@ -178,6 +192,7 @@ def create_regions(world: "OuterWildsWorld") -> None:
         ]
         available_friend_locations = [location for (location, enabled) in friend_list if enabled]
         required_count = options.required_friends
+        # This is the only rule that remains a lambda, because Rule Builder AtLeast() didn't exist until AP 0.6.8
         add_rule(mw.get_location("Victory - Song of the Universe", p),
                  lambda state: sum([state.can_reach_location(friend, p) for friend in available_friend_locations]) >= required_count)
 
@@ -201,8 +216,11 @@ def create_regions(world: "OuterWildsWorld") -> None:
 
         # To access the Black Hole Forge without the Launch Codes, there needs to be
         # a path from Brittle Hollow proper to the Hanging City Ceiling.
-        if world.warps.shipless_connection_exists("Brittle Hollow", "Hanging City Ceiling"):
-            mw.get_region("Forge via Warps Only", p).connect(mw.get_region("Black Hole Forge", p), "Forge Warp Path")
+        if world.warps.warp_only_connection_exists("Brittle Hollow", "Hanging City Ceiling"):
+            hcc_warps_only = Region("Raise Forge then HCC via Warps Only", p, mw)
+            mw.regions.append(hcc_warps_only)
+            mw.get_region("Brittle Hollow", p).connect(hcc_warps_only, None, HasAll("Spacesuit", "Nomai Warp Codes"))
+            hcc_warps_only.connect(mw.get_region("Hanging City Ceiling (After Raising Forge)", p))
 
 
 # In the .jsonc files we use, a location or region connection's "access rule" is defined
@@ -212,31 +230,31 @@ def create_regions(world: "OuterWildsWorld") -> None:
 
 # In particular: this eval_rule() function is the main piece of code which will have to
 # be implemented in both languages, so it's important we keep the implementations in sync
-def eval_rule(state: CollectionState, p: int, rule: list[Any], split_translator: bool) -> bool:
-    return all(eval_criterion(state, p, criterion, split_translator) for criterion in rule)
+def eval_rule(rule: list[Any], split_translator: SplitTranslator) -> Rule:
+    return And(*(eval_criterion(criterion, split_translator) for criterion in rule))
 
 
-def eval_criterion(state: CollectionState, p: int, criterion: Any, split_translator: bool) -> bool:
+def eval_criterion(criterion: Any, split_translator: SplitTranslator) -> Rule:
     # all valid criteria are dicts
     if isinstance(criterion, dict):
         # we're only using JSON objects / Python dicts here as discriminated unions,
         # so there should always be exactly one key-value pair
         if len(criterion.items()) != 1:
-            return False
+            return False_()
         key, value = next(iter(criterion.items()))
 
         if key == "item" and isinstance(value, str):
             if not split_translator and value.startswith("Translator ("):
-                return state.has("Translator", p)
-            return state.has(value, p)
+                return Has("Translator")
+            return Has(value)
         elif key == "anyOf" and isinstance(value, list):
-            return any(eval_criterion(state, p, sub_criterion, split_translator) for sub_criterion in value)
+            return Or(*(eval_criterion(sub_criterion, split_translator) for sub_criterion in value))
         elif key == "allOf" and isinstance(value, list):
-            return all(eval_criterion(state, p, sub_criterion, split_translator) for sub_criterion in value)
+            return And(*(eval_criterion(sub_criterion, split_translator) for sub_criterion in value))
         elif key == "location" and isinstance(value, str):
-            return state.can_reach(value, "Location", p)
+            return CanReachLocation(value)
         elif key == "region" and isinstance(value, str):
-            return state.can_reach(value, "Region", p)
+            return CanReachRegion(value)
 
     raise ValueError("Unable to evaluate rule criterion: " + json.dumps(criterion))
 
