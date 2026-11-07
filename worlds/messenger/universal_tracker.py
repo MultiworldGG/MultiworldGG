@@ -5,12 +5,9 @@ from typing import TYPE_CHECKING
 
 from BaseClasses import Entrance, Location, Region
 from Options import PlandoConnection
-from rule_builder.rules import Has
-
-from .connections import ONE_WAY_EXITS, RANDOMIZED_CONNECTIONS
+from .connections import RANDOMIZED_CONNECTIONS
 from .options import ShuffleTransitions
-from .portals import CHECKPOINTS, PORTALS, REGION_ORDER, SHOP_POINTS
-from .rules import MessengerHardRules, MessengerRules
+from .portals import REGION_ORDER, SHOP_POINTS, CHECKPOINTS
 from .shop import FIGURINES, SHOP_ITEMS
 from .transitions import TRANSITIONS
 
