@@ -1336,6 +1336,9 @@ loc_Luncheon_Captures = {
 
 loc_Luncheon_Captures_Post_Cheese_Rocks = {
     "Meat": 3740,
+}
+
+loc_Luncheon_Captures_Peace = {
     "Fire Piranha Plant": 3741,
 }
 
@@ -1646,7 +1649,7 @@ loc_Moon_Postgame = {
     "Moon Kingdom - Walking on the Moon!": 578,
     "Moon Kingdom - Moon Kingdom Regular Cup": 707,
     "Moon Kingdom - Sphynx's Hidden Vault": 599,
-    "Moon Kingdom - A Tourist in the Moon Kingdom": 911,
+    "Moon Kingdom - A Tourist in the Moon Kingdom!": 911,
     "Moon Kingdom - Peach in the Moon Kingdom": 581,
     "Wooded Kingdom - Found with Moon Kingdom Art": 1165,
     "Moon Kingdom - Mysterious Flying Object": 1049,
@@ -1677,7 +1680,7 @@ sub_area_swings = {
 }
 
 loc_Mushroom = {
-    "Mushroom Kingdom - A Tourist in the Mushroom Kingdom": 912,
+    "Mushroom Kingdom - A Tourist in the Mushroom Kingdom!": 912,
     "Mushroom Kingdom - Perched on the Castle Roof": 1134,
     "Mushroom Kingdom - Pops out of the Tail": 1027,
     "Mushroom Kingdom - Caught Hopping at Peach's Castle!": 613,

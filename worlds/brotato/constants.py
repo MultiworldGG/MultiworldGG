@@ -128,7 +128,26 @@ ABYSSAL_TERRORS_CHARACTERS = CharacterGroup(
     default_characters=("Sailor", "Curious", "Builder", "Captain", "Creature"),
 )
 
-CHARACTER_GROUPS = CharacterGroups(base=BASE_GAME_CHARACTERS, abyssal_terrors=ABYSSAL_TERRORS_CHARACTERS)
+PRIMAL_DREAD_CHARACTERS = CharacterGroup(
+    name="Primal Dread DLC",
+    characters=(
+        "Veteran",
+        "Archaeologist",
+        "Droid",
+        "Time Shifter",
+        "Variant",
+        "Caveman",
+        "Arsonist",
+        "Mad Scientist",
+        "Poacher",
+        "Survivor",
+    ),
+    default_characters=("Veteran", "Archaeologist", "Droid", "Time Shifter", "Variant"),
+)
+
+CHARACTER_GROUPS = CharacterGroups(
+    base=BASE_GAME_CHARACTERS, abyssal_terrors=ABYSSAL_TERRORS_CHARACTERS, primal_dread=PRIMAL_DREAD_CHARACTERS
+)
 """Mapping of game pack to its character group.
 
 Used to easily iterate over different groups of characters, so adding characters from future DLCs is simpler.

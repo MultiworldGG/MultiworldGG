@@ -31,6 +31,7 @@ _skillsList_L5:
 	lwz r10,16(r31)
 	add r9,r10,r9
 	lbz r9,0(r9)
+	rlwinm r9,r9,0,24,31
 	stw r9,20(r31)
 	lwz r10,36(r31)
 	lwz r7,20(r31)
@@ -39,7 +40,7 @@ _skillsList_L5:
 	addi r5,r9,_formatSkillsText@l
 	mr r4,r10
 	lwz r3,28(r31)
-	crxor 6,6,6
+	crxor cr6,cr6,cr6
 	lis r12,_after_skillsList_1__sprintf_s@ha
 	addi r12,r12,_after_skillsList_1__sprintf_s@l
 	mtlr r12

@@ -31,6 +31,7 @@ _postFieldSkillsList:
 _fieldSkills_L4:
 	lwz r9,8(r31)
 	lbz r9,0(r9)
+	rlwinm r9,r9,0,24,31
 	stw r9,16(r31)
 	lwz r10,36(r31)
 	lwz r7,16(r31)
@@ -39,7 +40,7 @@ _fieldSkills_L4:
 	addi r5,r9,_formatFieldSkillText@l
 	mr r4,r10
 	lwz r3,28(r31)
-	crxor 6,6,6
+	crxor cr6,cr6,cr6
 	lis r12,_after_fieldSkills_1__sprintf_s@ha
 	addi r12,r12,_after_fieldSkills_1__sprintf_s@l
 	mtlr r12

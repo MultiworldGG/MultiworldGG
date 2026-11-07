@@ -20,7 +20,7 @@ from .Locations import SMOLocation, loc_Cap, loc_Cascade, loc_Cascade_Revisit, \
     loc_Wooded_Captures, loc_Wooded_Captures_Post_Maze, loc_Wooded_Captures_Postgame, \
     loc_Lake_Captures, loc_Cloud_Captures, loc_Lost_Captures, loc_Metro_Captures, \
     loc_Metro_Captures_Postgame, loc_Seaside_Captures, loc_Snow_Captures, \
-    loc_Snow_Captures_Peace, loc_Luncheon_Captures, loc_Luncheon_Captures_Post_Cheese_Rocks, \
+    loc_Snow_Captures_Peace, loc_Luncheon_Captures, loc_Luncheon_Captures_Post_Cheese_Rocks, loc_Luncheon_Captures_Peace, \
     loc_Bowser_Captures, loc_Bowser_Captures_Post_Bombing, loc_Moon_Captures, \
     loc_Moon_Cave_Captures, loc_Mushroom_Captures, loc_Cascade_Peace, loc_Moon_Outfit, loc_Night_Metro, \
     loc_Cascade_Full, loc_Sand_Full
@@ -208,7 +208,7 @@ def create_regions(self, world, player):
     if self.options.goal > self.options.goal.option_metro:
         create_locs(regLuncheonCheese, *loc_Luncheon_Post_Cheese_Rocks.keys())
     world.regions.append(regLuncheonCheese)
-    regLuncheonPeace = Region("Luncheon World Peace", player, world, "Luncheon Kingdom Peace")
+    regLuncheonPeace = Region("Luncheon Peace", player, world, "Luncheon Kingdom Peace")
     if self.options.goal > self.options.goal.option_metro:
         create_locs(regLuncheonPeace, *loc_Luncheon_Peace.keys())
     world.regions.append(regLuncheonPeace)
@@ -247,7 +247,7 @@ def create_regions(self, world, player):
         create_locs(regMoon, *loc_Moon.keys())
     world.regions.append(regMoon)
 
-    if self.options.shop_sanity != 'off':
+    if self.options.shop_sanity.value != 'off':
         regMoonOutfit = Region("Moon Gift Outfit", player, world, "Moon Gift Outfit")
         if self.options.goal > self.options.goal.option_luncheon:
             create_locs(regMoonOutfit, *loc_Moon_Outfit.keys())
@@ -323,7 +323,7 @@ def create_regions(self, world, player):
     world.regions.append(regMushroomLuncheon)
 
     # Shops
-    if self.options.shop_sanity != "off":
+    if self.options.shop_sanity.value != "off":
         regCapShop = Region("Cap Shop", player, world, "Shop")
         regCascadeShop = Region("Cascade Shop", player, world, "Shop")
         regSandShop = Region("Sand Shop", player, world, "Shop")
@@ -413,6 +413,7 @@ def create_regions(self, world, player):
     regSnowPeaceCaptures = Region("Snow Peace Captures", player, world, "Captures")
     regLuncheonCaptures = Region("Luncheon Captures", player, world, "Captures")
     regLuncheonPostCheeseRocksCaptures = Region("Luncheon Post Cheese Rocks Captures", player, world, "Captures")
+    regLuncheonPeaceCaptures = Region("Luncheon Peace Captures", player, world, "Captures")
     regBowserCaptures = Region("Bowser Captures", player, world, "Captures")
     regBowserPostBombingCaptures = Region("Bowser Post Bombing Captures", player, world, "Captures")
     regMoonCaptures = Region("Moon Captures", player, world, "Captures")
@@ -430,9 +431,9 @@ def create_regions(self, world, player):
         if self.options.goal > self.options.goal.option_sand:
             create_locs(regSandPeaceCaptures, *loc_Sand_Captures_Peace)
             create_locs(regLakeCaptures, *loc_Lake_Captures)
-            create_locs(regWoodedCaptures, *loc_Wooded_Captures)
 
         if self.options.goal > self.options.goal.option_lake:
+            create_locs(regWoodedCaptures, *loc_Wooded_Captures)
             create_locs(regWoodedStoryMazeCaptures, *loc_Wooded_Captures_Post_Maze)
             create_locs(regCloudCaptures, *loc_Cloud_Captures)
             create_locs(regLostCaptures, *loc_Lost_Captures)
@@ -444,6 +445,7 @@ def create_regions(self, world, player):
             create_locs(regSnowPeaceCaptures, *loc_Snow_Captures_Peace)
             create_locs(regLuncheonCaptures, *loc_Luncheon_Captures)
             create_locs(regLuncheonPostCheeseRocksCaptures, *loc_Luncheon_Captures_Post_Cheese_Rocks)
+            create_locs(regLuncheonPeaceCaptures, *loc_Luncheon_Captures_Peace)
 
         if self.options.goal > self.options.goal.option_luncheon:
             create_locs(regBowserCaptures, *loc_Bowser_Captures)
@@ -473,6 +475,7 @@ def create_regions(self, world, player):
         world.regions.append(regSnowPeaceCaptures)
         world.regions.append(regLuncheonCaptures)
         world.regions.append(regLuncheonPostCheeseRocksCaptures)
+        world.regions.append(regLuncheonPeaceCaptures)
         world.regions.append(regBowserCaptures)
         world.regions.append(regBowserPostBombingCaptures)
         world.regions.append(regMoonCaptures)
@@ -520,6 +523,8 @@ def create_regions(self, world, player):
                         lambda state: state.has("Manhole", player))
         regSnow.connect(regSnowPeace, "Snow World Peace",
                         lambda state: state.has("Shiverian Racer", player))
+        regSnowPeace.connect(regCascadeSnow, "Snow to Cascade Painting",
+                        lambda state: state.has("Ty-foo", self.player))
         regSeaside.connect(regSeasidePeace, "Seaside World Peace",
                         lambda state: state.has("Gushen", player))
         regLuncheonCheese.connect(regMushroomLuncheon, "Luncheon Mushroom Painting",
@@ -551,6 +556,8 @@ def create_regions(self, world, player):
         regNightMetro.connect(regMetro, "Metro Enter")
         regMetro.connect(regMetroSewer, "Metro Sewer")
         regSnow.connect(regSnowPeace, "Snow World Peace")
+        regSnowPeace.connect(regCascadeSnow, "Snow to Cascade Painting")
+
         regSeaside.connect(regSeasidePeace, "Seaside World Peace")
         regLuncheonCheese.connect(regMushroomLuncheon)
         regLuncheonSpewart.connect(regLuncheonCheese, "Luncheon Meat Plateau")
@@ -563,13 +570,13 @@ def create_regions(self, world, player):
         regMoon.connect(regPostMoon)
 
 
-    regCascade.connect(regSand, "Sand Enter", lambda state: count_moons(self, state, "Cascade", player) >= self.moon_counts["cascade"])
+    regCascade.connect(regSand, "Sand Enter", lambda state: (state.can_reach_location("Cascade Kingdom - Our First Power Moon", player) or state.has("Glitch Logic", player)) and count_moons(self, state, "Cascade", player) >= self.moon_counts["cascade"])
 
     regSandPyramid.connect(regSandUnderground, "Sand Story Subarea")
 
     regSand.connect(regCap)
     regSand.connect(regCascadeRe, "Beat Madame Broode", lambda state: state.can_reach_location("Cascade Kingdom - Multi Moon Atop the Falls", self.player))
-    regSandPeace.connect(regMetroSand)
+    regSandUnderground.connect(regMetroSand)
     regSand.connect(regLake, "Lake Enter", lambda state: count_moons(self, state, "Sand", player) >= self.moon_counts["sand"])
 
     regLake.connect(regWooded, "Wooded Enter")
@@ -583,13 +590,12 @@ def create_regions(self, world, player):
 
     regMetroSewer.connect(regMetroPeace, "Metro World Peace")
     regMetro.connect(regSnow, "Snow Enter", lambda state: count_moons(self, state, "Metro", player) >= self.moon_counts["metro"])
-    regMetro.connect(regCascadeMetro)
+    regMetroPeace.connect(regCascadeMetro, "Cascade Tourist", lambda state: state.can_reach_region("Cascade Peace", self.player) and state.can_reach_region("Sand Peace", self.player))
     regMetro.connect(regWoodedMetro)
     regMetro.connect(regLostRe)
 
 
     regSnow.connect(regSeaside, "Seaside Enter")
-    regSnow.connect(regCascadeSnow)
 
 
     regSeaside.connect(regLuncheon, "Enter Luncheon", lambda state: count_moons(self, state, "Snow", player) >= self.moon_counts["snow"] and count_moons(self, state, "Seaside", player) >= self.moon_counts["seaside"])
@@ -601,7 +607,7 @@ def create_regions(self, world, player):
 
     regBowserMecha.connect(regBowserPeace, "Bowser World Peace")
     regBowserPeace.connect(regMoon, "Enter Moon", lambda state: count_moons(self, state, "Bowser", player) >= self.moon_counts["bowser"])
-    if self.options.shop_sanity != 'off':
+    if self.options.shop_sanity.value != 'off':
         regBowserPeace.connect(regMoonOutfit, "Obtain Mario Tuxedo", lambda state: count_moons(self, state, "Bowser", player) >= self.moon_counts["bowser"])
 
     regPostMoon.connect(regPostGame)
@@ -609,7 +615,7 @@ def create_regions(self, world, player):
     regPostGame.connect(regDarker, "Darker Access", lambda state: total_moons(self, state, player) >= self.moon_counts["darker"])
 
     # Shop Connections
-    if self.options.shop_sanity != "off":
+    if self.options.shop_sanity.value != "off":
         if self.options.capture_sanity.value == self.options.capture_sanity.option_true:
             regMetro.connect(regMetroShop, "Metro Shop", lambda state: state.has("Spark Pylon", player)
                              and state.has("Sherm", player))
@@ -652,6 +658,7 @@ def create_regions(self, world, player):
     regSnowPeace.connect(regSnowPeaceCaptures)
     regLuncheon.connect(regLuncheonCaptures)
     regLuncheonCheese.connect(regLuncheonPostCheeseRocksCaptures)
+    regLuncheonPeace.connect(regLuncheonPeaceCaptures)
     regBowser.connect(regBowserCaptures)
     regBowserBombing.connect(regBowserPostBombingCaptures)
     regMoon.connect(regMoonCaptures)

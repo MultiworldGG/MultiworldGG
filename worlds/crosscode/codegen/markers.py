@@ -27,15 +27,16 @@ class MarkerGenerator:
         self.map_cache = {}
         self.area_cache = {}
 
-    def __load_map(self, name: str, dlc: bool) -> dict[str, typing.Any]:
+    def __load_map(self, name: str, extension: str) -> dict[str, typing.Any]:
         try:
             return self.map_cache[name]
         except KeyError:
             pass
 
         path = name.replace(".", "/")
-        in_dlc = dlc and os.path.exists(f"worlds/crosscode/data/assets/extension/post-game/data/maps/{path}.json")
-        with open(f"worlds/crosscode/data/assets{"/extension/post-game" if in_dlc else ""}/data/maps/{path}.json") as f:
+        
+        in_extension = extension and os.path.exists(f"worlds/crosscode/data/assets/extension/{extension}/data/maps/{path}.json")
+        with open(f"worlds/crosscode/data/assets{"/extension/" + extension if in_extension else ""}/data/maps/{path}.json") as f:
             self.map_cache[name] = json.load(f)
 
         return self.map_cache[name]
@@ -62,10 +63,11 @@ class MarkerGenerator:
         map_id = loc_data.get("mapId", None)
         if map_id is None:
             return None
-            
+        extension = loc_data.get("extension", "")
+
         meta = raw_loc.get("metadata", {})
 
-        map = self.__load_map(map_name, meta.get("dlc", False))
+        map = self.__load_map(map_name, extension)
 
         raw_entity = None
         if "markerOverrides" in raw_loc and "entity" in raw_loc["markerOverrides"]:

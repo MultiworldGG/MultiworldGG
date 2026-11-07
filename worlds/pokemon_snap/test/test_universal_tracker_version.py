@@ -1,6 +1,6 @@
 
 from .bases import PokemonSnapTestBase
-from ..client import _has_invalid_universal_tracker
+from ..emu.ut_helper import has_invalid_universal_tracker
 from ..constants import MIN_UNIVERSAL_TRACKER_VERSION
 
 class TestSparseLocationGeneration(PokemonSnapTestBase):
@@ -11,13 +11,13 @@ class TestSparseLocationGeneration(PokemonSnapTestBase):
         valid_versions = [ "_v0.2.24.1" ,"v2.11.11", "v3.0.0", "0.25.120202"]
 
         for invalid_version in invalid_versions:
-            if not _has_invalid_universal_tracker(invalid_version):
+            if not has_invalid_universal_tracker(invalid_version):
                 self.fail(f"Incorrectly flagged version as valid: {invalid_version}")
 
         for valid_version in valid_versions:
-            if _has_invalid_universal_tracker(valid_version):
+            if has_invalid_universal_tracker(valid_version):
                 self.fail(f"Incorrectly flagged version as invalid: {valid_version}")
 
         current_version = '.'.join(map(str,MIN_UNIVERSAL_TRACKER_VERSION))
-        if _has_invalid_universal_tracker(current_version):
+        if has_invalid_universal_tracker(current_version):
             self.fail(f"Incorrectly flagged current minimum version as invalid: {current_version}. Check MIN_UNIVERSAL_TRACKER_VERSION.")

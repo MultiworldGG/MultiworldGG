@@ -9,6 +9,7 @@ class RegionConnection:
     region_from: str
     region_to: str
     cond: typing.Optional[list[Condition]]
+    bidirectional: bool = True
     metadata: typing.Optional[IncludeOptions] = None
 
 @dataclass

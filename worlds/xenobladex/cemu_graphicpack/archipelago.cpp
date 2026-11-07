@@ -3,11 +3,14 @@
 extern int* menuBasePtr;
 
 void _initCurl();
+void _initShopCurl();
 void _postCurl(char[]);
-char* _getCurl();
+char* _getDownloadCurl();
+char* _getShopCurl();
 void _cleanupCurl();
+void _cleanupShopCurl();
 
-void _addItem(int type, int id);
+void _addItem(int type, int id, int count = 1);
 void _addGear(int type, int id, int affixId1, int affixId2, int affixId3, int slotCount);
 void _addArt(int id, int lv);
 void _addSkill(int id, int lv);
@@ -24,8 +27,10 @@ char* _postFieldSkillsList(char* stringStartPtr, char* stringCurrentPtr, char* s
 char* _postFnNodeList(char* stringStartPtr, char* stringCurrentPtr, char* stringEndPtr, int maxEntrySize);
 char* _postFriendList(char* stringStartPtr, char* stringCurrentPtr, char* stringEndPtr, int maxEntrySize);
 char* _postItemList(char* stringStartPtr, char* stringCurrentPtr, char* stringEndPtr, int maxEntrySize);
+char* _postBattleItemList(char* stringStartPtr, char* stringCurrentPtr, char* stringEndPtr, int maxEntrySize);
 char* _postLocationList(char* stringStartPtr, char* stringCurrentPtr, char* stringEndPtr, int maxEntrySize);
 char* _postSegmentList(char* stringStartPtr, char* stringCurrentPtr, char* stringEndPtr, int maxEntrySize);
+char* _postShopList(char* stringStartPtr, char* stringCurrentPtr, char* stringEndPtr, int maxEntrySize);
 char* _postSkillsList(char* stringStartPtr, char* stringCurrentPtr, char* stringEndPtr, int maxEntrySize);
 char* _postKeyList(char* stringStartPtr, char* stringCurrentPtr, char* stringEndPtr, int maxEntrySize);
 char* _postEquipList(char* stringStartPtr, char* stringCurrentPtr, char* stringEndPtr, int maxEntrySize);
@@ -47,8 +52,11 @@ writeSystemLog = 0x02c74290 #::MenuTask
 
 __sprintf_s = 0x03133354
 __malloc = 0x03b1aeb0
+__calloc = 0x03b1aed8
 __free = 0x03b1afe8
 __strtol = 0x03b1b27c
+__strlen = 0x03b16bdc
+__strcpy = 0x03b16c34
 #endif
 
 #ifdef V102U
@@ -58,8 +66,11 @@ writeSystemLog = 0x02c74230 #::MenuTask
 
 __sprintf_s = 0x031332d4
 __malloc = 0x03b1ae30
+__calloc = 0x03b1ae58
 __free = 0x03b1af68
 __strtol = 0x03b1b1fc
+__strlen = 0x03b16b5c
+__strcpy = 0x03b16bb4
 #endif
 
 #ifdef Unsupported
@@ -75,6 +86,7 @@ int Unsupported_Game_Version;
 
 int changeTime(int hour, int minute);
 void writeSystemLog(int* menuBasePtr, char* str1, char* str2);
+void _cacheShopItemName(int type, int id, char* name);
 
 int __sprintf_s(char *buffer, size_t sizeOfBuffer, const char *format, ...);
 void* __malloc (size_t size);
@@ -101,8 +113,10 @@ void _postArchipelago(){
 	stringCurrentPtr = _postFnNodeList(stringStartPtr, stringCurrentPtr, stringEndPtr, maxEntrySize);
 	stringCurrentPtr = _postFriendList(stringStartPtr, stringCurrentPtr, stringEndPtr, maxEntrySize);
 	stringCurrentPtr = _postItemList(stringStartPtr, stringCurrentPtr, stringEndPtr, maxEntrySize);
+	stringCurrentPtr = _postBattleItemList(stringStartPtr, stringCurrentPtr, stringEndPtr, maxEntrySize);
 	stringCurrentPtr = _postLocationList(stringStartPtr, stringCurrentPtr, stringEndPtr, maxEntrySize);
 	stringCurrentPtr = _postSegmentList(stringStartPtr, stringCurrentPtr, stringEndPtr, maxEntrySize);
+	stringCurrentPtr = _postShopList(stringStartPtr, stringCurrentPtr, stringEndPtr, maxEntrySize);
 	stringCurrentPtr = _postSkillsList(stringStartPtr, stringCurrentPtr, stringEndPtr, maxEntrySize);
 	stringCurrentPtr = _postKeyList(stringStartPtr, stringCurrentPtr, stringEndPtr, maxEntrySize);
 	stringCurrentPtr = _postEquipList(stringStartPtr, stringCurrentPtr, stringEndPtr, maxEntrySize);
@@ -118,7 +132,7 @@ void _postArchipelago(){
 }
 
 void _getArchipelago(){
-	char* outputPtr = _getCurl();
+	char* outputPtr = _getDownloadCurl();
 	if (outputPtr == nullptr) return;
 
 	char* outputCurrentPtr = outputPtr;
@@ -132,7 +146,14 @@ void _getArchipelago(){
 				outputCurrentPtr += 8 + 4;
 				int itemId = (int)__strtol(outputCurrentPtr, nullptr, 16);
 				outputCurrentPtr += 8;
-				_addItem(itemType, itemId);
+				if(*outputCurrentPtr == '\n')
+					_addItem(itemType, itemId);
+				else{
+					outputCurrentPtr += 4;
+					int itemCount = (int)__strtol(outputCurrentPtr, nullptr, 16);
+					outputCurrentPtr += 8;
+					_addItem(itemType, itemId, itemCount);
+				}
 			}
 			break;
 
@@ -256,6 +277,32 @@ void _getArchipelago(){
 	__free(outputPtr);
 }
 
+void _getArchipelagoShop(){
+	_initShopCurl();
+
+	char* outputPtr = _getShopCurl();
+	if (outputPtr == nullptr) return;
+
+	char* outputCurrentPtr = outputPtr, *namePtr;
+	while(*outputCurrentPtr != 0){
+		// Type Id + Id + Name
+		int itemType = (int)__strtol(outputCurrentPtr, nullptr, 16);
+		outputCurrentPtr += 3;
+		int itemId = (int)__strtol(outputCurrentPtr, nullptr, 16);
+		outputCurrentPtr += 5;
+		namePtr = outputCurrentPtr;
+		while(*outputCurrentPtr != '\n'){
+			outputCurrentPtr += 1;
+		}
+		*outputCurrentPtr = '\0';
+		_cacheShopItemName(itemType, itemId, namePtr);
+		outputCurrentPtr += 1;
+	}
+	__free(outputPtr);
+
+	_cleanupShopCurl();
+}
+
 unsigned int _networkCounter = 0;
 int _mainArchipelago(int hour, int minute) {
 	// if(minute % 3 != 0) return changeTime(hour, minute);
@@ -264,7 +311,8 @@ int _mainArchipelago(int hour, int minute) {
 
 	_networkCounter = _networkCounter << 31;
 	_networkCounter = _networkCounter >> 31;
-	if(_networkCounter == 0) _getArchipelago();
+	if(_networkCounter == 0)
+		_getArchipelago();
 	else _postArchipelago();
 	_networkCounter = _networkCounter + 1;
 

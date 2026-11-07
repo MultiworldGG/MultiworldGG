@@ -34,6 +34,7 @@ _artsList_L5:
 	lwz r10,20(r31)
 	add r9,r10,r9
 	lbz r9,0(r9)
+	rlwinm r9,r9,0,24,31
 	stw r9,24(r31)
 	lwz r10,52(r31)
 	lwz r7,24(r31)
@@ -42,7 +43,7 @@ _artsList_L5:
 	addi r5,r9,_formatArtsText@l
 	mr r4,r10
 	lwz r3,44(r31)
-	crxor 6,6,6
+	crxor cr6,cr6,cr6
 	lis r12,_after_artsList_1__sprintf_s@ha
 	addi r12,r12,_after_artsList_1__sprintf_s@l
 	mtlr r12

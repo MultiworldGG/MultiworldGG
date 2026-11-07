@@ -46,6 +46,10 @@ EVENT_FLAGS = {
     "Jabu Jabu Permission": (True, 0x31),
     "Saved Nayru": (True, 0x11),
     "Obtained Maku Seed": (True, 0x35),
+    "Tuni Nut Placed": (True, 0x29),
+    "Library Opened": (False, 0xc8a5, 0x80),
+    "Waterfall Redirected": (False, 0xc842, 0x01),
+    "Rolling Ridge Vine Moved": (False, 0xc8f0, 0xFE),
 }
 
 
@@ -273,7 +277,11 @@ class OracleOfAgesClient(BizHawkClient):
     
     async def process_event_flags(self, ctx: "BizHawkClientContext", flag_bytes, global_bytes):
         for flagname, data in EVENT_FLAGS.items():
-            if (data[0]): # is global flag
+            if flagname == "Rolling Ridge Vine Moved":
+                addr = data[1] - RAM_ADDRS["location_flags"][0]
+                pos = flag_bytes[addr]
+                self.flags_values[flagname] = pos == 0x17
+            elif (data[0]): # is global flag
                 addr = data[1] >> 3
                 flag = 1 << (data[1] & 0x7)
                 self.flags_values[flagname] = global_bytes[addr] & flag != 0

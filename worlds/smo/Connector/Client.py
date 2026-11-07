@@ -12,6 +12,7 @@ from MultiServer import Endpoint
 from CommonClient import get_base_parser, gui_enabled, logger
 from typing import List, Any
 from .Packets import PacketHeader, PacketType, Packet, ItemType
+from .ReleaseData import ReleaseData
 
 from .Data import inverse_shop_items, shop_items, get_item_type, worlds, world_alias, valid_warps, inverse_worlds, \
     multi_moon_locations, world_prefixes
@@ -44,7 +45,7 @@ class SMOCommandProcessor(SuperCommandProcessor):
         if isinstance(self.ctx, SMOContext):
             logger.info(f"SMO Status: {self.ctx.get_smo_status()}")
             if self.ctx.disconnect_timer < 0:
-                time_string = f'{">" if self.ctx.disconnect_timer <= -50 else ""}{int(10-self.ctx.disconnect_timer)}'
+                time_string = f'{">" if self.ctx.disconnect_timer <= -50 else ""}{int(15-self.ctx.disconnect_timer)}'
                 warn = f"SMO last responded {time_string} seconds ago"
                 logger.debug(warn)
                 if self.ctx.ui:
@@ -84,6 +85,19 @@ class SMOCommandProcessor(SuperCommandProcessor):
                 self.ctx.player_data.add_message(f"Sending Mario to {valid_warps[kingdom]}")
                 self.ctx.proxy_msgs.append(Packet(guid=self.ctx.proxy_guid, packet_type=PacketType.ChangeStage,
                                                  packet_data=[kingdom, scenario]))
+
+    def _cmd_slot(self):
+        """
+        Display the active options according to slot data received from the lobby.
+        """
+        if isinstance(self.ctx, SMOContext):
+            do_not_display = ["shop_replace_data", "coin_values",
+                              "shop_games", "shop_players", "shop_ap_items",
+                              "shine_replace_data", "shine_items",
+                              "shine_slots", "shine_games"]
+            for key in self.ctx.slot_data:
+                if key not in do_not_display:
+                    logger.info(f"{key}: {self.ctx.slot_data[key]}")
 
     def _cmd_deathlink(self, enabled = ""):
         """Enable/Disable deathlink
@@ -155,14 +169,13 @@ class SMOContext(SuperContext):
         self.slot_data : dict = {}
         #self.checked_locations : set
         self.ping_task = None
-        self.awaiting_connection : bool = False
+        self.awaiting_connection : bool = True
         self.disconnect_timer : int = -50
         self.logged_in : bool = False
         self.multi_moon_anim : bool = False
         self.death_link_enabled : bool = False
         self.forced_death_link = None
         self.death_link_pause_timer : int = -1
-        self.has_warned = False
 
     async def server_auth(self, password_requested: bool = False):
         if password_requested and not self.password:
@@ -174,6 +187,8 @@ class SMOContext(SuperContext):
     def get_smo_status(self) -> str:
         if not self.game_connected:
             return "Not connected to Super Mario Odyssey"
+        elif self.awaiting_connection:
+            return "Attempting to connect to Super Mario Odyssey"
 
         return "Connected to Super Mario Odyssey"
 
@@ -389,6 +404,9 @@ class SMOContext(SuperContext):
                 self.death_link_enabled = self.forced_death_link if self.forced_death_link != None else self.death_link_enabled
                 self.logged_in = True
 
+                if 'progressive_moons' not in self.slot_data:
+                    self.ui.print_json([{'type': 'color', 'color': 'orange', 'text': 'Old slot-data detected. Universal Tracker\'s logic may not be entirely accurate'}])
+
                 if self.death_link_enabled:
                     self.server_msgs.append({"cmd" : "ConnectUpdate", "tags" : ["AP", "DeathLink"]})
                 self.server_msgs.append({"cmd" : "Get", "keys" : [f"{self.player.name}_scenarios"]})
@@ -456,9 +474,17 @@ class SMOContext(SuperContext):
                                             packet_data=[net_item.item - 3701, ItemType.Capture, index, "", "", 0])
                         # Filler
                         case -2:
-                            if str(net_item.location) in self.slot_data["coin_values"][str(net_item.player)]:
-                                packet = Packet(guid=self.proxy_guid, packet_type=PacketType.Check,
-                                    packet_data=[net_item.item, ItemType.Coins, index, "", "", self.slot_data["coin_values"][str(net_item.player)][str(net_item.location)]])
+                            coins = 50
+
+                            if str(net_item.player) not in self.slot_data["coin_values"]:
+                                coins = 50
+                            elif str(net_item.location) in self.slot_data["coin_values"][str(net_item.player)]:
+                                coins = self.slot_data["coin_values"][str(net_item.player)][str(net_item.location)]
+                            else:
+                                logger.error(f'Invalid coin placement from "{str(net_item.player)}" at "{str(net_item.location)}"')
+
+                            packet = Packet(guid=self.proxy_guid, packet_type=PacketType.Check,
+                                packet_data=[net_item.item, ItemType.Coins, index, "", "", coins])
                         # Flag items
                         case -4:
                             pass
@@ -530,8 +556,6 @@ async def ping_loop(ctx : SMOContext):
     while not ctx.exit_event.is_set():
         if ctx.endpoint:
             if ctx.disconnect_timer == 0:
-                ctx.game_connected = False
-            elif ctx.disconnect_timer == -5:
                 ctx.ui.print_json([{"type": "color", "color": "orange", "text": "Client Inactive for 15 Seconds (In a cutscene?)"}])
             if ctx.disconnect_timer > -50:
                 ctx.disconnect_timer -= 1
@@ -563,10 +587,22 @@ async def proxy_chat(ctx : SMOContext):
 
 
 async def handle_proxy(reader : asyncio.StreamReader, writer : asyncio.StreamWriter, ctx : SMOContext) -> None:
+    if not ctx.awaiting_connection:
+        ctx.ui.print_json([{"type": "color", "color": "orange", "text": "Connect receieved while already connected. Rejecting connection attempt"}])
+        writer.close()
+
+        if ctx.disconnect_timer <= 0:
+            ctx.game_connected = False
+            ctx.awaiting_connection = True
+            await asyncio.sleep(1.0)
+        return
+    ctx.awaiting_connection = False
+
     data : bytearray
     packet : Packet
     ctx.endpoint = Endpoint(writer.transport.get_extra_info("socket"))
-    ctx.awaiting_connection = True
+    ctx.disconnect_timer = 15
+
     try:
         while True:
             data : bytearray = bytearray(await reader.read(PacketHeader.SIZE))
@@ -583,9 +619,8 @@ async def handle_proxy(reader : asyncio.StreamReader, writer : asyncio.StreamWri
             data = bytearray(await reader.read(packet_size))
             packet.deserialize(data)
 
-            old_disconnect = ctx.disconnect_timer
             if packet.header.packet_type != PacketType.Unknown:
-                ctx.disconnect_timer = 10
+                ctx.disconnect_timer = 15
                 # Prevent appending server message before connected to server.
             match packet.header.packet_type:
                 case PacketType.Connect:
@@ -595,20 +630,11 @@ async def handle_proxy(reader : asyncio.StreamReader, writer : asyncio.StreamWri
                     # Insert init packet at 0 in queue so other packets added before aren't dropped.
                     ctx.proxy_msgs.insert(0, init_packet)
 
-                    if old_disconnect < -5:
-                        ctx.ui.print_json([{"type": "color", "color": "green", "text": "SMO Connected"}])
-                        if not ctx.has_warned:
-                            ctx.ui.print_json([{"type": "color",
-                                                "color": "blue",
-                                                "text": "This is an unofficial modification of the SMO Archipelago. Please report any issues to @adibtw on Discord!"}])
-                            ctx.has_warned = True
+                    ctx.ui.print_json([{"type": "color", "color": "green", "text": "SMO Connected"}])
+                    ctx.player_data.add_message(f"\x1b[32mConnected to the AP Client ({ReleaseData.release_version})")
 
-                        ctx.player_data.add_message("\x1b[32mConnected to the AP Client")
-
-                    # Only log initial connection
-                    if ctx.awaiting_connection:
-                        ctx.awaiting_connection = False
-                        ctx.game_connected = True
+                    ctx.game_connected = True
+                    ctx.awaiting_connection = False
 
                     needs_slot_data : bool = True
                     for queued_packet in ctx.proxy_msgs:
@@ -624,6 +650,7 @@ async def handle_proxy(reader : asyncio.StreamReader, writer : asyncio.StreamWri
                 case PacketType.Disconnect:
                     ctx.ui.print_json([{"type": "color", "color": "red", "text": "Client Requested Disconnect"}])
                     ctx.game_connected = False
+                    ctx.awaiting_connection = True
                     break
 
                 case PacketType.ChangeStage:
@@ -715,15 +742,17 @@ async def handle_proxy(reader : asyncio.StreamReader, writer : asyncio.StreamWri
                 #await asyncio.sleep(0.25)
 
             if not ctx.game_connected and not ctx.awaiting_connection:
-                ctx.awaiting_connection = True
-                ctx.print_json([{"type": "color", "color": "red", "text": "Invalid connection state, not sending more packets"}])
+                ctx.print_json([{"type": "color", "color": "red", "text": f"Invalid connection state, not sending more packets"}])
                 break
     except Exception as e:
-        ctx.print_json([{"type": "color", "color": "red", "text": f"Connection Error {e}"}])
-        ctx.print_json([{"type": "color", "color": "red", "text": traceback.format_exc()}])
+        ctx.ui.print_json([{"type": "color", "color": "red", "text": f"Connection Error {e}"}])
+        ctx.ui.print_json([{"type": "color", "color": "red", "text": traceback.format_exc()}])
+    finally:
         ctx.player_data.item_index = 0
         ctx.player_data.current_home_stage = ""
+        ctx.ui.print_json([{"type": "color", "color": "orange", "text": "End Connection"}])
         ctx.awaiting_connection = True
+        ctx.game_connected = False
         writer.close()
 
 
@@ -743,7 +772,6 @@ def launch(*launch_args: str):
         args = parser.parse_args(launch_args)
 
         ctx = SMOContext(args.connect, args.password)
-        logger.info("Starting Super Mario Odyssey proxy server")
 
         ctx.proxy = asyncio.start_server(functools.partial(handle_proxy, ctx=ctx), "0.0.0.0", 1027)
         ctx.proxy_chat = asyncio.create_task(proxy_chat(ctx) , name="ChatLoop")
@@ -757,6 +785,7 @@ def launch(*launch_args: str):
             ctx.run_gui()
         ctx.run_cli()
 
+        logger.info("Starting Super Mario Odyssey proxy server")
         try:
             await ctx.proxy
             await ctx.proxy_chat
@@ -781,11 +810,10 @@ def launch(*launch_args: str):
         await ctx.exit_event.wait()
 
 
-    Utils.init_logging("SMOClient")
+    Utils.init_logging("SMOClient", exception_logger="Client")
     # options = Utils.get_options()
 
     import colorama
     colorama.just_fix_windows_console()
     asyncio.run(main())
     colorama.deinit()
-    logger.info("This is an unofficial modification of the SMO Archipelago. Please report any issues to @adibtw on Discord!")

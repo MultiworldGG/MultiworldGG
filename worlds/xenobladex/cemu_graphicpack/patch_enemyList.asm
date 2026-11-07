@@ -152,6 +152,7 @@ _enemyList_L10:
 	xori r9,r9,0x3
 	cntlzw r9,r9
 	srwi r9,r9,5
+	rlwinm r9,r9,0,24,31
 	stw r9,28(r31)
 	lwz r10,52(r31)
 	lwz r7,28(r31)
@@ -160,7 +161,7 @@ _enemyList_L10:
 	addi r5,r9,_formatEnemyText@l
 	mr r4,r10
 	lwz r3,44(r31)
-	crxor 6,6,6
+	crxor cr6,cr6,cr6
 	lis r12,_after_enemyList_1__sprintf_s@ha
 	addi r12,r12,_after_enemyList_1__sprintf_s@l
 	mtlr r12

@@ -133,6 +133,8 @@ def ooa_option_medium_logic(state: CollectionState, player: int):
 def ooa_option_hard_logic(state: CollectionState, player: int):
     return state.multiworld.worlds[player].options.logic_difficulty == "hard"
 
+#def ooa_option_grindy_combat_logic(state: CollectionState, player: int):
+#    return state.multiworld.worlds[player].options.grindy_difficulty == True
 
 def ooa_is_companion_ricky(state: CollectionState, player: int):
     return state.multiworld.worlds[player].options.animal_companion == "ricky"
@@ -599,9 +601,10 @@ def ooa_can_kill_normal_enemy(state: CollectionState, player: int, can_kill_with
         ooa_can_kill_normal_using_satchel(state, player),
         ooa_can_kill_normal_using_seedshooter(state, player),
         (ooa_option_medium_logic(state, player) and ooa_has_bombs(state, player, 4)),
-        (ooa_option_medium_logic(state, player) and ooa_has_cane(state, player)),
+#               or (ooa_option_medium_logic(state, player) and ooa_option_grindy_combat_logic(state, player) and ooa_has_bombs(state, player, 1)),
+        (ooa_option_medium_logic(state, player) and ooa_has_cane(state, player)),# and ooa_option_grindy_combat_logic(state, player)
         ooa_can_punch(state, player),
-        can_kill_with_hook and ooa_has_switch_hook(state, player),
+        can_kill_with_hook and ooa_has_switch_hook(state, player),# and ooa_option_grindy_combat_logic(state, player),
     ])
 
 def ooa_can_kill_moldorm(state:CollectionState, player:int, pit_available:bool=False):
@@ -650,7 +653,7 @@ def ooa_can_kill_underwater(state: CollectionState, player: int, can_kill_with_h
 
 def ooa_can_kill_normal_using_satchel(state: CollectionState, player: int):
     # Expect a 50+ seed satchel to ensure we can chain dungeon rooms to some extent if that's our only kill option
-    if not ooa_has_satchel(state, player, 2):
+    if not (ooa_has_satchel(state, player, 2)): #or (ooa_option_grindy_combat_logic(state, player) and ooa_has_satchel(state, player, 1))):
         return False
 
     return any([
@@ -678,7 +681,7 @@ def ooa_can_kill_normal_using_satchel(state: CollectionState, player: int):
 
 def ooa_can_kill_normal_using_seedshooter(state: CollectionState, player: int):
     # Expect a 50+ seed satchel to ensure we can chain dungeon rooms to some extent if that's our only kill option
-    if not ooa_has_satchel(state, player, 2):
+    if not (ooa_has_satchel(state, player, 2)):# or (ooa_option_grindy_combat_logic(state, player) and ooa_has_satchel(state, player, 1))):
         return False
 
     return all([

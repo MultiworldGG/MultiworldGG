@@ -1,8 +1,10 @@
 {
-    "game": "Super Mario Odyssey",
-    "authors": ["Kgamer77", "Adi"],
-    "minimum_ap_version": "0.6.7",
-    "world_version": "1.7.6",
-    "compatible_version": 7,
-    "version": 7
+  "authors": [
+    "Adi",
+    "KGamer"
+  ],
+  "compatible_version": 7,
+  "game": "Super Mario Odyssey",
+  "version": 7,
+  "world_version": "1.7.7"
 }

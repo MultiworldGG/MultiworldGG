@@ -34,7 +34,7 @@ The Peggle Deluxe randomizer takes the pachinko-inspired game and layers a progr
 - Masters each have 4 Progressive Green Pegs items giving an opportunity for suboptimal masters to end up being optimal to play. 
 - Ability to set / randomize difficulty of target scores. By level or globally
 - Ability to convert filler items into useful items during generation to provide additional help
-- Scales well for all types of multiworlds: Short / Long Syncs, Asyncs; ~100-750 checks
+- Scales well for all types of multiworlds: Short / Long Syncs, Asyncs; ~200-750 checks
 - Custom client UI that displays important information and updates in real-time
 - No manual mod installation required! The Archipelago client hooks into the game at runtime. Nothing else to download, install, or configure.
 - Feature-complete and considered stable

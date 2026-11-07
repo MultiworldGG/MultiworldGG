@@ -29,7 +29,7 @@ _classList_L4:
 	addi r5,r9,_formatClassText@l
 	mr r4,r10
 	lwz r3,28(r31)
-	crxor 6,6,6
+	crxor cr6,cr6,cr6
 	lis r12,_after_classList_1__sprintf_s@ha
 	addi r12,r12,_after_classList_1__sprintf_s@l
 	mtlr r12

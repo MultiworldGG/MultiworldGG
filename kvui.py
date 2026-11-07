@@ -133,7 +133,7 @@ from kivymd.uix.label import MDLabel, MDIcon
 from kivymd.uix.recycleview import MDRecycleView
 from kivymd.uix.textfield.textfield import MDTextField
 from kivymd.uix.progressindicator import MDLinearProgressIndicator
-from kivymd.uix.scrollview import MDScrollView
+from kivymd.uix.scrollview import MDScrollView, StretchOverScrollBehavior
 from kivymd.uix.tooltip import MDTooltip, MDTooltipPlain
 
 from kivymd.uix.behaviors import HoverBehavior as MDHoverBehavior
@@ -187,6 +187,35 @@ def ripple_fbos(self: M3CommonRipple):
 
 
 M3CommonRipple.init_fbos = ripple_fbos
+
+
+# Legacy ScrollEffect compatibility for clients such as Universal Tracker (UT).
+# KivyMD 2.0 assumes all scroll effects implement its stretch hooks, but older
+# clients select Kivy's ScrollEffect in KV. Keep their normal scrolling behavior
+# and only invoke stretch hooks on effects that support them.
+def _legacy_scroll_effect_touch_move(self: StretchOverScrollBehavior, touch):
+    handled = super(StretchOverScrollBehavior, self).on_touch_move(touch)
+    if touch.ud.get(self._touch_key()) and touch.grab_current in (None, self):
+        for effect in (self.effect_x, self.effect_y):
+            convert_overscroll = getattr(effect, "convert_overscroll", None)
+            if convert_overscroll is not None:
+                convert_overscroll(touch)
+    return handled
+
+
+def _legacy_scroll_effect_touch_up(self: StretchOverScrollBehavior, touch):
+    handled = super(StretchOverScrollBehavior, self).on_touch_up(touch)
+    if touch.ud.get(self._touch_key()):
+        for effect in (self.effect_x, self.effect_y):
+            reset_scale = getattr(effect, "reset_scale", None)
+            if reset_scale is not None:
+                reset_scale()
+        touch.ud.pop(self._touch_key(), None)
+    return handled
+
+
+StretchOverScrollBehavior.on_touch_move = _legacy_scroll_effect_touch_move
+StretchOverScrollBehavior.on_touch_up = _legacy_scroll_effect_touch_up
 
 
 class ThemedApp(MDApp):

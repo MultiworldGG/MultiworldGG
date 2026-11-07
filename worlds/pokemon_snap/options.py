@@ -1,5 +1,4 @@
 from dataclasses import dataclass
-from .constants import DEFAULT_GOAL_TYPE, DEFAULT_SIGN_REQUIREMENT, DEFAULT_POKEMON_REQUIREMENT, GOAL_SIGN_PICS, GOAL_POKEMON_PICS
 from Options import Choice, DefaultOnToggle, PerGameCommonOptions, Toggle, OptionGroup, StartInventoryPool, Range, Visibility
 from .addresses import CAMERA_INVERSION_OPTION_INVERTED, CAMERA_INVERSION_OPTION_NORMAL
 
@@ -12,9 +11,9 @@ class GoalType(Choice):
     - pokemon_pictures: A number of Pokemon Pictures spread accross the multiworlds.  Can be adjusted.
     """
     display_name = "Goal Type"
-    default = DEFAULT_GOAL_TYPE
-    option_signs = GOAL_SIGN_PICS
-    option_pokemon_pictures = GOAL_POKEMON_PICS
+    default = 1
+    option_signs = 0
+    option_pokemon_pictures = 1
 
 
 class WonderfulMewRequired(Toggle):
@@ -33,7 +32,7 @@ class SignsRequired(Range):
     display_name = "Signs Required"
     range_start = 1
     range_end = 6
-    default = DEFAULT_SIGN_REQUIREMENT
+    default = 6
 
 
 class ExtraSignPictures(Range):
@@ -55,7 +54,7 @@ class PokemonRequired(Range):
     display_name = "Pokemon Required"
     range_start = 1
     range_end = 63
-    default = DEFAULT_POKEMON_REQUIREMENT
+    default = 50
 
 
 class ExtraPokemonPictures(Range):
@@ -136,6 +135,7 @@ class PhotoScoring(Choice):
     option_separate            = 1
     option_progressive_unlocks = 2
     option_separate_unlocks    = 3
+    default = 0
 
 
 class ExtraPhotoScoringItems(Range):
@@ -165,7 +165,7 @@ class MapFragments(Range):
     default = 1
 
 
-class UnlockItemsPerCourse(Toggle):
+class UnlockItemsPerCourse(DefaultOnToggle):
     """
     Unlock the Apple, Pester Ball, and PokeFlute for each level separately, rather than every level at once.
     """
@@ -340,7 +340,7 @@ class UseHardLogic(Toggle):
     display_name = "Hard logic"
 
 
-class StartWithDashEngine(Toggle):
+class StartWithDashEngine(DefaultOnToggle):
     """
     Start with the Dash Engine.
 
@@ -362,10 +362,10 @@ class PressLToStop(Choice):
     option_in_item_pool = 1
     option_disabled     = 2
 
-    default = 2
+    default = 0
 
 
-class DeprecatedPressLToStop(Toggle):
+class DeprecatedPressLToStop(DefaultOnToggle):
     """
     Deprecated. Use the new option `left_bumper_to_start_stop` instead.
     """

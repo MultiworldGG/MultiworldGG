@@ -31,12 +31,14 @@ COURSE_OVERRIDE = _addr("symbols", "gCourseOverride")
 COURSE_UNLOCK_MASK = _addr("symbols", "gCourseUnlockMask")
 DIALOG_REQUEST_FLAGS = _addr("symbols", "gDialogRequestFlags")
 DIALOG_PLAYED_FLAGS = _addr("symbols", "gDialogPlayedFlags")
-CAMERA_INVERSION = _addr("symbols", "gCameraInversionYAMLOption")
+CAMERA_INVERSION = _addr("symbols", "gCameraInversionRequest")
 LEVEL_ID = _addr("symbols", "gLevelID")
 
 # Camera inversion constants from the ROM
 CAMERA_INVERSION_OPTION_INVERTED = 0
 CAMERA_INVERSION_OPTION_NORMAL   = 1
+CAMERA_INVERSION_REQUEST_FLAG = 0x02
+CAMERA_INVERSION_ACK_FLAG     = 0x04
 
 # Vanilla save block (read-only)
 SAVE_BASE = _addr("save", "saveBase")

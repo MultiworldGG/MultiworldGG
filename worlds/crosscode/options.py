@@ -4,7 +4,9 @@ This module provides the options and option dataclass for the Options dataclass.
 
 from dataclasses import dataclass
 
-from Options import Choice, DefaultOnToggle, NamedRange, OptionGroup, PerGameCommonOptions, Toggle, Range
+from Options import Choice, DefaultOnToggle, NamedRange, OptionGroup, PerGameCommonOptions, Toggle, Range, OptionCounter
+
+TRAPS_LIST = ["Bomb Trap", "Laser Of Doom Trap", "Drunk Trap", "Naked Trap", "Override Trap", "Forgetfulness Trap", "Overload Trap", "Poverty Trap", "Element Swap Trap", "Combo Breaker Trap", "Zoom Trap", "Zoom Out Trap", "SP Trap", "Landmark Trap", "Artless Trap", "Winded Trap", "Clumsy Trap", "Burglar's Rope Trap", "Full Course Trap", "Death Trap", "Rotate Trap", "Full Rotate Trap", "Voidout Trap", "Slip Trap"]
 
 # class LogicMode(Choice):
 #     """
@@ -25,7 +27,8 @@ class Goal(Choice):
     Determines what must be done to complete the game.
     [Creator] Ascend Vermillion Tower and fight the Creator.
     [Monkey] Ascend the Grand Krys'kajo and defeat the Son of the East.
-    [Observatory] Complete all five A Promise is a Promise quests and uncover the secret of the Observatory.
+    [Observatory] Complete all five A Promise is a Promise quests and uncover the secret of the Observatory. Requires Quest Randomization to be enabled.
+    [FacilityX] Obtain four encrypted keys and enter the Facility X. Requires Quest Randomization to be enabled.
     [Di'orbis] Descend Ku'lero temple and defeat the Gods of Shape. Requires DLC to be enabled.
     """
     display_name = "Goal"
@@ -33,7 +36,8 @@ class Goal(Choice):
     option_creator = 0
     option_monkey = 1
     option_observatory = 2
-    option_diorbis = 3
+    option_facility_x = 3
+    option_diorbis = 4
     default = 0
 
 
@@ -248,6 +252,21 @@ class StartWithPet(DefaultOnToggle):
     If enabled, the player will start with a random pet. This is just for fun.
     """
     display_name = "Start with Pet"
+
+class ProgressiveSPUnlocks(NamedRange):
+    """
+    Number of Progressive SP Unlocks to be shuffled into the pool.
+    """
+    display_name = "Progressive SP Unlocks"
+
+    range_start = 1
+    range_end = 12
+
+    default = 2
+    special_range_names = {
+        "vanilla": 2,
+        "dlc": 3,
+    }
 
 class Keyrings(Toggle):
     """
@@ -546,6 +565,32 @@ class DropWeight(Range):
     range_end = 100
     default = 50
 
+class TrapWeights(OptionCounter):
+    """
+    Controls the likelihood of choosing a specific trap when filling the world.
+
+    Please note: some traps may have accessibility concerns or may have long-term negative effects on your game. See the
+    following webpage for advisories:
+    https://github.com/CodeTriangle/CCMultiworldRandomizer/wiki/Traps
+    """
+    display_name = "Trap Weights"
+    min = 0
+    valid_keys = TRAPS_LIST
+    default = {trap: 0 for trap in TRAPS_LIST }
+
+    def weights_pair(self) -> tuple[list[str], list[int]]:
+        return list(self.value.keys()), list(self.value.values())
+
+class TrapPercentage(Range):
+    """
+    Controls how much percentage of filler items is converted into traps
+    """
+    display_name = "Trap Percentage"
+
+    range_start = 0
+    range_end = 100
+    default = 5
+
 @dataclass
 class CrossCodeOptions(PerGameCommonOptions):
     """
@@ -555,6 +600,7 @@ class CrossCodeOptions(PerGameCommonOptions):
     goal: Goal
     enable_dlc: EnableDLC
     circuit_overrides: CircuitOverrides
+    progressive_sp_unlocks: ProgressiveSPUnlocks
     vt_shade_lock: VTShadeLock
     vw_meteor_passage: VWMeteorPassage
     vt_skip: VTSkip
@@ -605,6 +651,8 @@ class CrossCodeOptions(PerGameCommonOptions):
     legendary_pool_weight: LegendaryPoolWeight
     consumable_weight: ConsumableWeight
     drop_weight: DropWeight
+    trap_weights: TrapWeights
+    trap_percentage: TrapPercentage
 
 addon_options = ["quest_rando"]
 
@@ -677,7 +725,9 @@ option_groups: list[OptionGroup] = [
             EpicPoolWeight,
             LegendaryPoolWeight,
             ConsumableWeight,
-            DropWeight
+            DropWeight,
+            TrapWeights,
+            TrapPercentage
         ]
     ),
 ]

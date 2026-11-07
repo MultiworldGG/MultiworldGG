@@ -21,7 +21,7 @@ def launch_client(*args: str):
     from .Connector.Client import launch
     launch_component(launch, name="SMOClient", args=args)
 
-component = Component("Super Mario Odyssey (Adi)", component_type=component_type.CLIENT,
+component = Component("Super Mario Odyssey", component_type=component_type.CLIENT,
                       game_name="Super Mario Odyssey", func=launch_client)
 components.append(component)
 
@@ -43,6 +43,7 @@ class SMOWorld(World):
 
     #settings_key = "smo_settings"
     #settings : SMOSettings
+    ut_can_gen_without_yaml = True
 
     options_dataclass = SMOOptions
     options: SMOOptions
@@ -410,11 +411,10 @@ class SMOWorld(World):
                 shop_players.index(self.multiworld.get_player_name(location.item.player)),
                 shop_ap_items.index(location.item.name.replace("_", " ")), location.item.classification.value]
 
-        return {**(self.options.as_dict("goal", "colors", "capture_sanity", "death_link")), "counts" : self.moon_counts,
-                "shine_items" : shine_items, "shine_replace_data" : shine_replace_data, "shine_colors" : shine_colors,
-                "shop_games" : shop_games, "shop_players" : shop_players, "shop_ap_items" : shop_ap_items,
-                "shop_replace_data" : shop_replace_data, "coin_values" : coin_values,
-                "regionals" : False}
+        return {**(self.options.as_dict("goal", "progressive_moons", "shop_sanity", "capture_sanity", "common_capture_skips", "colors", "death_link")),
+                "counts" : self.moon_counts, "shine_items" : shine_items, "shine_replace_data" : shine_replace_data,
+                "shine_colors" : shine_colors, "shop_games" : shop_games, "shop_players" : shop_players, "shop_ap_items" : shop_ap_items,
+                "shop_replace_data" : shop_replace_data, "coin_values" : coin_values, "regionals" : False}
 
     def create_regions(self):
         # Check if this is Universal Tracker generation using existing slot data
@@ -424,6 +424,17 @@ class SMOWorld(World):
                     passthrough = self.multiworld.re_gen_passthrough["Super Mario Odyssey"]
                     # Use the moon counts from the original generation
                     self.moon_counts = passthrough["MoonCounts"]
+                    self.options.goal.value = passthrough["Goal"]
+                    self.options.capture_sanity.value = passthrough["CaptureSanity"]
+
+                    if 'ProgressiveMoons' in passthrough:
+                        self.options.progressive_moons.value = passthrough["ProgressiveMoons"]
+                        self.options.shop_sanity.value = passthrough["ShopSanity"]
+                        self.options.common_capture_skips.value = passthrough["CommonCaptureSkips"]
+                    else:
+                        self.options.progressive_moons.value = False
+                        self.options.shop_sanity.value = 'all'
+                        self.optoins.common_capture_skips.value = False
         elif self.options.counts > 0:
             self.randomize_moon_amounts()
         create_regions(self, self.multiworld, self.player)
@@ -438,6 +449,27 @@ class SMOWorld(World):
 
     def set_rules(self):
         set_rules(self, self.options)
+
+
+    created_moons = [
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+    ]
 
     def create_item(self, name: str) -> Item:
         # Glitch Logic item needs to be progression or UT doesn't use it
@@ -477,7 +509,7 @@ class SMOWorld(World):
                     if self.created_moons[moon_kingdom_index] < self.moon_counts[moon_kingdom.lower()]:
                         classification = ItemClassification.progression
                     else:
-                        classification = ItemClassification.filler
+                        classification = ItemClassification.useful
 
                 self.created_moons[moon_kingdom_index] += 3 if "Multi" in name else 1
 
@@ -551,18 +583,18 @@ class SMOWorld(World):
 
         revised_counts = [
             0, # Cap
-            min(floor(self.moon_counts["cascade"] * self.options.extra_moons.value), self.max_counts["cascade"]),
-            min(floor(self.moon_counts["sand"] * self.options.extra_moons.value), self.max_counts["sand"]),
-            min(floor(self.moon_counts["wooded"] * self.options.extra_moons.value), self.max_counts["wooded"]),
-            min(floor(self.moon_counts["lake"] * self.options.extra_moons.value), self.max_counts["lake"]),
+            min(floor(self.moon_counts["cascade"] * self.options.extra_moons.value / 100), self.max_counts["cascade"]),
+            min(floor(self.moon_counts["sand"] * self.options.extra_moons.value / 100), self.max_counts["sand"]),
+            min(floor(self.moon_counts["wooded"] * self.options.extra_moons.value / 100), self.max_counts["wooded"]),
+            min(floor(self.moon_counts["lake"] * self.options.extra_moons.value / 100), self.max_counts["lake"]),
             0, # Cloud
-            min(floor(self.moon_counts["lost"] * self.options.extra_moons.value), self.max_counts["lost"]),
-            min(floor(self.moon_counts["metro"] * self.options.extra_moons.value), self.max_counts["metro"]),
-            min(floor(self.moon_counts["seaside"] * self.options.extra_moons.value), self.max_counts["seaside"]),
-            min(floor(self.moon_counts["snow"] * self.options.extra_moons.value), self.max_counts["snow"]),
-            min(floor(self.moon_counts["luncheon"] * self.options.extra_moons.value), self.max_counts["luncheon"]),
-            min(floor(self.moon_counts["ruined"] * self.options.extra_moons.value), self.max_counts["ruined"]),
-            min(floor(self.moon_counts["bowser"] * self.options.extra_moons.value), self.max_counts["bowser"]),
+            min(floor(self.moon_counts["lost"] * self.options.extra_moons.value / 100), self.max_counts["lost"]),
+            min(floor(self.moon_counts["metro"] * self.options.extra_moons.value / 100), self.max_counts["metro"]),
+            min(floor(self.moon_counts["seaside"] * self.options.extra_moons.value / 100), self.max_counts["seaside"]),
+            min(floor(self.moon_counts["snow"] * self.options.extra_moons.value / 100), self.max_counts["snow"]),
+            min(floor(self.moon_counts["luncheon"] * self.options.extra_moons.value / 100), self.max_counts["luncheon"]),
+            min(floor(self.moon_counts["ruined"] * self.options.extra_moons.value / 100), self.max_counts["ruined"]),
+            min(floor(self.moon_counts["bowser"] * self.options.extra_moons.value / 100), self.max_counts["bowser"]),
             0, # Moon
             0, # Mushrom
             0, # Dark
@@ -661,23 +693,23 @@ class SMOWorld(World):
         # Outfits
         for location in outfits:
             if location in locations:
-                if self.options.shop_sanity == "outfits" or self.options.shop_sanity == "all":
+                if self.options.shop_sanity.value == "outfits" or self.options.shop_sanity.value == "all":
                     pool.append(location)
-                elif self.options.shop_sanity == "shuffle":
+                elif self.options.shop_sanity.value == "shuffle":
                     item_names.append(location)
-                elif self.options.shop_sanity != "off":
+                elif self.options.shop_sanity.value != "off":
                     self.get_location(location).place_locked_item(self.create_item(location))
 
         # Souvenirs and stickers
         for location in shop_items:
             if location in locations:
-                if self.options.shop_sanity == "non_outfits" or self.options.shop_sanity == "all":
+                if self.options.shop_sanity.value == "non_outfits" or self.options.shop_sanity.value == "all":
                     pool.append(location)
-                elif self.options.shop_sanity != "off":
+                elif self.options.shop_sanity.value != "off":
                     self.get_location(location).place_locked_item(self.create_item(location))
 
         # Shop sanity shuffle
-        if self.options.shop_sanity == "shuffle":
+        if self.options.shop_sanity.value == "shuffle":
             while len(item_names) > 0:
                 item = item_names.pop(random.randint(0, len(item_names) - 1))
                 self.get_location(item).place_locked_item(self.create_item(item))
@@ -846,31 +878,35 @@ class SMOWorld(World):
         #     write_patch(self, patch)
         #     patch.write(os.path.join(output_directory, f"{out_base}{patch.patch_file_ending}"))
 
-    def interpret_slot_data(self, slot_data: dict[str, any]) -> dict[str, any]:
+    @staticmethod
+    def interpret_slot_data(slot_data: dict[str, any]) -> dict[str, any]:
         """Parse slot data for Universal Tracker to properly validate logic and track progression."""
         relevant_data = {}
         
         # Parse moon count requirements for each kingdom
-        relevant_data["MoonCounts"] = slot_data["counts"]
+        relevant_data["MoonCounts"] = slot_data.get("counts")
         
         # Parse game options
-        relevant_data["Goal"] = slot_data["goal"]
-        relevant_data["Colors"] = slot_data["colors"]
-        relevant_data["CaptureSanity"] = slot_data["capture_sanity"]
+        relevant_data["Goal"] = slot_data.get("goal")
+        relevant_data["ProgressiveMoons"] = slot_data.get("progressive_moons")
+        relevant_data["ShopSanity"] = slot_data.get("shop_sanity")
+        relevant_data["Colors"] = slot_data.get("colors")
+        relevant_data["CaptureSanity"] = slot_data.get("capture_sanity")
+        relevant_data["CommonCaptureSkips"] = slot_data.get("common_capture_skips")
         
         # Parse shine data structures (for hint system)
-        relevant_data["ShineItems"] = slot_data["shine_items"]
-        relevant_data["ShineReplaceData"] = slot_data["shine_replace_data"]
-        relevant_data["ShineColors"] = slot_data["shine_colors"]
+        relevant_data["ShineItems"] = slot_data.get("shine_items")
+        relevant_data["ShineReplaceData"] = slot_data.get("shine_replace_data")
+        relevant_data["ShineColors"] = slot_data.get("shine_colors")
         
         # Parse shop data structures
-        relevant_data["ShopGames"] = slot_data["shop_games"]
-        relevant_data["ShopPlayers"] = slot_data["shop_players"]
-        relevant_data["ShopAPItems"] = slot_data["shop_ap_items"]
-        relevant_data["ShopReplaceData"] = slot_data["shop_replace_data"]
+        relevant_data["ShopGames"] = slot_data.get("shop_games")
+        relevant_data["ShopPlayers"] = slot_data.get("shop_players")
+        relevant_data["ShopAPItems"] = slot_data.get("shop_ap_items")
+        relevant_data["ShopReplaceData"] = slot_data.get("shop_replace_data")
         
         # Parse coin values
-        relevant_data["CoinValues"] = slot_data["coin_values"]
+        relevant_data["CoinValues"] = slot_data.get("coin_values")
         
         return relevant_data
 

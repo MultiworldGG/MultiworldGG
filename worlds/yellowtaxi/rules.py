@@ -334,11 +334,26 @@ class RuleFactory:
                 return False_()
             return Has("Psycho Taxi Cartridge")
         if token == "MorioHat":
-            return Has(ItemNames.morio_hat) | Has(ItemNames.morios_brain_hat)
+            hat_rule : Rule = Has(ItemNames.morio_hat) | Has(ItemNames.morios_brain_hat)
+            # For hatsanity, you need to be able to reach the wardrobe
+            # Non-hatsanity can always re-reach where you bought the hat initially
+            if self.world.options.hatsanity != self.world.options.hatsanity.option_disabled:
+                return hat_rule & CanReachRegion("Morio's Wardrobe")
+            return hat_rule
         if token == "EmployeeHat":
-            return Has(ItemNames.tosla_employee_hat)
+            hat_rule : Rule = Has(ItemNames.tosla_employee_hat)
+            # For hatsanity, you need to be able to reach the wardrobe
+            # Non-hatsanity can always re-reach where you bought the hat initially
+            if self.world.options.hatsanity != self.world.options.hatsanity.option_disabled:
+                return hat_rule & CanReachRegion("Morio's Wardrobe")
+            return hat_rule
         if token == "MoskHat":
-            return Has(ItemNames.alien_mosk_good_hat) | Has(ItemNames.bunny_hat)
+            hat_rule : Rule = Has(ItemNames.alien_mosk_good_hat) | Has(ItemNames.bunny_hat)
+            # For hatsanity, you need to be able to reach the wardrobe
+            # Non-hatsanity can always re-reach where you bought the hat initially
+            if self.world.options.hatsanity != self.world.options.hatsanity.option_disabled:
+                return hat_rule & CanReachRegion("Morio's Wardrobe")
+            return hat_rule
         # Portals. TODO: Allow variable portal costs beyond just final portal
         if token == "PortalMorioHome":
             if (self.world.options.goal == self.world.options.goal.option_bombeach_boss
@@ -485,10 +500,11 @@ class RuleFactory:
                             scoob_rule |= ((Has(f"{self.move_prefix}Boost{self.move_suffix}") |
                                            Has(f"{self.move_prefix}Jump{self.move_suffix}")) &
                                            Has(self.world.glitches_item_name, 3 - self.world.options.expert_level))
+
+                # Fancy UT rule for printing purposes. Can skip as an optimization on actual gen
+                if self.world.using_ut:
+                    scoob_rule &= OutOfBounds()
                 self.cached_complex_rules[f"SCOOB{self.move_suffix}"] = scoob_rule
-            # Fancy UT rule for printing purposes. Can skip as an optimization on actual gen
-            if self.world.using_ut:
-                return scoob_rule & OutOfBounds()
             return scoob_rule
         if token == "LabKey":
             return Has("Lab Key",
@@ -576,14 +592,6 @@ class RuleFactory:
             if self.world.options.pizzasanity:
                 return False_()
             return True_()
-        if token == "NHS":
-            if self.world.options.hatsanity == 0:
-                return True_()
-            return False_()
-        if token == "HS":
-            if self.world.options.hatsanity != 0:
-                return True_()
-            return False_()
         # Can you pass lasers? TODO: Add actual gating ability here
         if token == "PassLaser":
             return True_()

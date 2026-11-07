@@ -86,7 +86,9 @@ class CheckPacket:
             data += b"\x00"
         data += self.amount.to_bytes(4, "little", signed=True)
         if len(data) != self.SIZE:
-            raise f"CheckPacket failed to serialize. bytearray is incorrect size {self.SIZE}."
+            e = ValueError(f"CheckPacket failed to serialize. bytearray is incorrect size. Was {len(data)}, should be {self.SIZE}")
+            e.add_note(f'Raw Data: {data.hex()}')
+            raise e
         return data
 
     def deserialize(self, data : bytes | bytearray) -> None:
@@ -127,9 +129,10 @@ class ShineChecksPacket:
                 filler = 0
                 data += filler.to_bytes(length=2, byteorder="little", signed=True)
 
-
         if len(data) != self.SIZE:
-            raise f"ShineChecksPacket failed to serialize. bytearray is incorrect size {self.SIZE}."
+            e = ValueError(f"ShineChecksPacket failed to serialize. bytearray is incorrect size. Was {len(data)}, should be {self.SIZE}")
+            e.add_note(f'Raw Data: {data.hex()}')
+            raise e
         return data
 
     def deserialize(self, data : bytes | bytearray) -> None:
@@ -160,12 +163,14 @@ class ChatMessagePacket:
                 if size < self.MESSAGE_SIZE:
                     data += char.encode()
                 else:
-                    raise "Message too long exception"
+                    assert False, "Message too long exception"
 
             while len(data) < self.MESSAGE_SIZE * (index + 1):
                 data += b"\x00"
         if len(data) != self.SIZE:
-            raise f"ChatMessagePacket failed to serialize. bytearray is incorrect size {self.SIZE}."
+            e = ValueError(f"ChatMessagePacket failed to serialize. bytearray is incorrect size. Was {len(data)}, should be {self.SIZE}")
+            e.add_note(f'Raw Data: {data.hex()}')
+            raise e
         return data
 
 
@@ -250,7 +255,9 @@ class SlotDataPacket:
         data += self.regionals.to_bytes(1, "little")
         data += self.captures.to_bytes(1, "little")
         if len(data) != self.SIZE:
-            raise f"CountsPacket failed to serialize. bytearray is incorrect size {self.SIZE}."
+            e = ValueError(f"CountsPacket failed to serialize. bytearray is incorrect size. Was {len(data)}, should be {self.SIZE}")
+            e.add_note(f'Raw Data: {data.hex()}')
+            raise e
         return data
 
     def deserialize(self, data : bytes | bytearray) -> None:
@@ -324,7 +331,9 @@ class ChangeStagePacket:
         int_value2 : int = self.sub_scenario_type.value
         data += int_value2.to_bytes(1, "little", signed=False)
         if len(data) != self.SIZE:
-            raise f"ChangeStagePacket failed to serialize. bytearray is incorrect size {self.SIZE}."
+            e = ValueError(f"ChangeStagePacket failed to serialize. bytearray is incorrect size. Was {len(data)}, should be {self.SIZE}")
+            e.add_note(f'Raw Data: {data.hex()}')
+            raise e
         return data
 
     def deserialize(self, data : bytes | bytearray) -> None:
@@ -338,6 +347,25 @@ class ChangeStagePacket:
         self.scenario = sbyte(int.from_bytes(data[offset:offset + 1], "little"))
         offset += 1
         self.sub_scenario_type = byte(int.from_bytes(data[offset:offset + 1], "little"))
+
+# Proper utf-8 truncation as shown in https://stackoverflow.com/a/13738452
+# Allows truncating to a specific length in bytes, while fully excluding multi-byte charcters if they cross the length boundary
+def utf8_lead_byte(b: int) -> bool:
+    '''A UTF-8 intermediate byte starts with the bits 10xxxxxx.'''
+
+    # (b & 0xC0) != 0x80 # Python 3 no need for ord()
+    return (b & 0xC0) != 0x80
+
+def utf8_byte_truncate(text: str, max_bytes: int) -> bytes:
+    '''If text[max_bytes] is not a lead byte, back up until a lead byte is
+    found and truncate before that character.'''
+    utf8 = text.encode('utf8')
+    if len(utf8) <= max_bytes:
+        return utf8
+    i = max_bytes
+    while i > 0 and not utf8_lead_byte(utf8[i]):
+        i -= 1
+    return utf8[:i]
 
 class ApInfoPacket:
     INFO_SIZE : int = 40
@@ -370,8 +398,9 @@ class ApInfoPacket:
 
         for i in range(3):
             if i < len(self.info):
-                if len(self.info[i]) > 40:
-                    data += self.info[i][:40].encode()
+                self.info[i] = self.info[i].replace('%', '%%')
+                if len(self.info[i]) >= 40:
+                    data += utf8_byte_truncate(self.info[i], 40)
                 else:
                     data += self.info[i].encode()
 
@@ -379,7 +408,9 @@ class ApInfoPacket:
                 data += b"\x00"
 
         if len(data) != self.SIZE:
-            raise f"ApInfoPacket failed to serialize. bytearray is incorrect size {self.SIZE}."
+            e = ValueError(f"ApInfoPacket failed to serialize. bytearray is incorrect size. Was {len(data)}, should be {self.SIZE}.")
+            e.add_note(f'Raw Data: {data.hex()}')
+            raise e
         return data
 
     def deserialize(self, data : bytes | bytearray) -> None:
@@ -399,6 +430,9 @@ class ApInfoPacket:
         self.info.append(data[offset:offset + self.INFO_SIZE].decode("utf-16"))
         offset += self.INFO_SIZE
         self.info.append(data[offset:offset + self.INFO_SIZE].decode("utf-16"))
+
+        for i in range(3):
+            self.info[i] = self.info[i].replace('%%', '%')
 
 class ShopReplace:
     info_type : int = 255
@@ -427,7 +461,9 @@ class ShopReplace:
                 data += filler.to_bytes(1,"little", signed=False)
 
         if len(data) != self.SIZE:
-            raise f"ShopReplace failed to serialize. bytearray is incorrect size {self.SIZE}."
+            e = ValueError(f"ShopReplace failed to serialize. bytearray is incorrect size. Was {len(data)}, should be {self.SIZE}.")
+            e.add_note(f'Raw Data: {data.hex()}')
+            raise e
         return data
 
     def deserialize(self, data : bytes | bytearray) -> None:
@@ -463,7 +499,9 @@ class ShineReplace:
                 data += filler.to_bytes(1,"little", signed=False)
 
         if len(data) != self.SIZE:
-            raise f"ShineReplace failed to serialize. bytearray is incorrect size {self.SIZE}."
+            e = ValueError(f"ShineReplace failed to serialize. bytearray is incorrect size. Was {len(data)}, should be {self.SIZE}")
+            e.add_note(f'Raw Data: {data.hex()}')
+            raise e
         return data
 
     def deserialize(self, data : bytes | bytearray) -> None:
@@ -496,8 +534,9 @@ class ShineColor:
                 data += filler.to_bytes(1,"little", signed=True)
 
         if len(data) != self.SIZE:
-            print(len(data))
-            raise f"ShineColor failed to serialize. bytearray is incorrect size {self.SIZE}."
+            e = ValueError(f"ShineColor failed to serialize. bytearray is incorrect size. Was {len(data)}, should be {self.SIZE}")
+            e.add_note(f'Raw Data: {data.hex()}')
+            raise e
         return data
 
     def deserialize(self, data : bytes | bytearray) -> None:
@@ -534,7 +573,9 @@ class ShineHint:
                 data += filler.to_bytes(1,"little", signed=False)
 
         if len(data) != self.SIZE:
-            raise f"ShineReplace failed to serialize. bytearray is incorrect size {self.SIZE}."
+            e = ValueError(f"ShineReplace failed to serialize. bytearray is incorrect size. Was {len(data)}, should be {self.SIZE}")
+            e.add_note(f'Raw Data: {data.hex()}')
+            raise e
         return data
 
     def deserialize(self, data : bytes | bytearray) -> None:
@@ -594,7 +635,9 @@ class InitPacket:
         as_integer : int = self.max_players.value
         data += as_integer.to_bytes(2, "little")
         if len(data) != self.SIZE:
-            raise f"InitPacket failed to serialize. bytearray is incorrect size {self.SIZE}."
+            e = ValueError(f"InitPacket failed to serialize. bytearray is incorrect size. Was {len(data)}, should be {self.SIZE}")
+            e.add_note(f'Raw Data: {data.hex()}')
+            raise e
         return data
 
 
@@ -630,7 +673,9 @@ class PacketHeader:
         int_value2 : int = self.packet_size
         data += int_value2.to_bytes(2, "little")
         if len(data) != self.SIZE:
-            raise f"PacketHeader failed to serialize. bytearray is incorrect size {self.SIZE}."
+            e = ValueError(f"PacketHeader failed to serialize. bytearray is incorrect size. Was {len(data)}, should be {self.SIZE}")
+            e.add_note(f'Raw Data: {data.hex()}')
+            raise e
         return data
 
     def deserialize(self, data : bytes | bytearray) -> None:
@@ -709,3 +754,7 @@ class Packet:
                 self.packet = ShineChecksPacket(packet_bytes=data)
             case PacketType.ChangeStage:
                 self.packet = ChangeStagePacket(packet_bytes=data)
+        if not hasattr(self.header, 'packet_size'):
+            e = AttributeError(f'Invalid packet of type {self.header.packet_type}')
+            e.add_note(f'Raw Data: {data.hex()}')
+            raise e

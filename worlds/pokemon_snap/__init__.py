@@ -21,8 +21,14 @@ from .rules import set_rules
 
 
 def run_client(*args):
-    from .client import main  # lazy import
-    launch_subprocess(main, name="PokemonSnapClient", args=args)
+    from settings import get_settings
+    snap_options = get_settings()["pokemon_snap_options"]
+    if snap_options['use_pj64']:
+        from .emu.pj64 import launch
+        launch_subprocess(launch, name="PokemonSnapClient", args=args)
+    else:
+        from .emu.bizhawk import launch
+        launch_subprocess(launch, name="PokemonSnapClient", args=args)
 
 # Adds the launcher for our component and our client logo.
 icon_paths['pokemon_snap_icon'] = f"ap:{__name__}/icon.png"

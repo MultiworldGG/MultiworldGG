@@ -1,0 +1,37 @@
+from . import Itm as Data
+
+# https://xenoblade.github.io/xbx/bdat/common_local_us/ITM_BattleItem.html
+# flake8: noqa
+battle_items_data: list[Data] = [
+Data("ITEM_BTL_0001_name", valid=False),
+Data("ITEM_BTL_0001_name", valid=False),
+Data("ITEM_BTL_0001_name", valid=False),
+Data("ITEM_BTL_0001_name", valid=False),
+Data("ITEM_BTL_0001_name", valid=False),
+Data("ITEM_BTL_0001_name", valid=False),
+Data("ITEM_BTL_0002_name", valid=False),
+Data("ITEM_BTL_0003_name", valid=False),
+Data("Personal Patch"),
+Data("Tensifier"),
+Data("ITEM_BTL_0006_name", valid=False),
+Data("Mega Tensifier"),
+Data("ITEM_BTL_0008_name", valid=False),
+Data("ITEM_BTL_0009_name", valid=False),
+Data("ITEM_BTL_0010_name", valid=False),
+Data("ITEM_BTL_0011_name", valid=False),
+Data("ITEM_BTL_0012_name", valid=False),
+Data("Frame Patch"),
+Data("ITEM_BTL_0014_name", valid=False),
+Data("ITEM_BTL_0015_name", valid=False),
+Data("ITEM_BTL_0016_name", valid=False),
+Data("ITEM_BTL_0017_name", valid=False),
+Data("ITEM_BTL_0018_name", valid=False),
+Data("ITEM_BTL_0019_name", valid=False),
+Data("Fuel Re-up"),
+Data("Supreme Bonus"),
+Data("Special Bonus"),
+Data("ITEM_COM_0003_name", valid=False),
+Data("ITEM_COM_0004_name", valid=False),
+Data("ITEM_COM_0005_name", valid=False),
+Data("Salvage Ticket"),
+]

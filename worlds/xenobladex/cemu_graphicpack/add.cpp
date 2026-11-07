@@ -50,6 +50,10 @@ int _bladeFlag = 0x1288; // from updataStatus::MenuTotalSimpleStatus
 
 int countItem(int* basePtr, int type, int id);
 
+void _addConsumeable(int type, int id, int count);
+int getKnowledgeBit(int id, int bit, int doll);
+void setKnowledgeValue(int id, int value, int doll);
+
 void reqMenuAddItemFromId(int type, int id, int count);
 void reqMenuAddItemFromInfo(unsigned short* item, int count);
 void reqMenuSetArtsLevel(char* characterBasePtr, int id, int lvl, int filler);
@@ -105,9 +109,12 @@ void __free (void* ptr);
 // 1e = Appendage Fragments			https://xenoblade.github.io/xbx/bdat/common_local_us/ITM_PieceList.html
 // 1f = Consumeable Items			https://xenoblade.github.io/xbx/bdat/common_local_us/ITM_BattleItem.html
 // 41 = Blueprints                  https://xenoblade.github.io/xbx/bdat/common_local_us/ITM_Blueprint.html
-void _addItem(int type, int id, int count=1){
+void _addItem(int type, int id, int count = 1){
 	if(type != 9){
-		reqMenuAddItemFromId(type, id, 1);
+		if(type == 0x1f)
+			_addConsumeable(type, id, count);
+		else
+			reqMenuAddItemFromId(type, id, count);
 	} else {
 		addGarage(&id);
 	}
@@ -127,6 +134,14 @@ void _addGear(int type, int id, int affixId1, int affixId2, int affixId3, int sl
 	}
 	reqMenuAddItemFromInfo(_gearItem, 1);
 	__free(_gearItem);
+}
+
+// Save the received count inside the unused upper end of the knowledge bits for augments
+void _addConsumeable(int type, int id, int count){
+	int currentCount = getKnowledgeBit(4000 - id, 0xFF, 0);
+	int diffCount = count - currentCount;
+	reqMenuAddItemFromId(type, id, diffCount);
+	setKnowledgeValue(4000 - id, count, 0);
 }
 
 int _hasPreciousItem(int id){

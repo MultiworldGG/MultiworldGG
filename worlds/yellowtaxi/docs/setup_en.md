@@ -6,7 +6,7 @@
 
 ## Optional/Recommended Software
 - [MultiworldGG](https://github.com/MultiworldGG/MultiworldGG/releases/latest)
-- [Universal Tracker](https://github.com/FarisTheAncient/Archipelago/releases?q=Tracker) (ships with AP)
+- [Universal Tracker](https://github.com/FarisTheAncient/Archipelago/releases?q=Tracker) (only if you want to use AP)
 
 ## Generating a Game
 See [here](/tutorial/Archipelago/setup_en) for information on setting up MultiworldGG.

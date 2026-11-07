@@ -21,7 +21,6 @@ _itemTypes:
 	.long   28
 	.long   29
 	.long   30
-	.long   31
 _postItemList:
 	stwu r1,-160(r1)
 	mflr r0
@@ -39,7 +38,7 @@ _postItemList:
 	addi r9,r9,_itemTypes@l
 	stw r9,32(r31)
 	lis r9,_itemTypes@ha
-	addi r9,r9,52
+	addi r9,r9,48
 	addi r9,r9,_itemTypes@l
 	stw r9,56(r31)
 	b _itemList_L2
@@ -152,47 +151,59 @@ _itemList_L12:
 	lwz r9,36(r31)
 	addi r9,r9,12
 	lhz r9,0(r9)
+	rlwinm r9,r9,0,16,31
 	srwi r9,r9,4
+	rlwinm r9,r9,0,16,31
 	stw r9,80(r31)
 	lwz r9,36(r31)
 	addi r9,r9,14
 	lhz r9,0(r9)
+	rlwinm r9,r9,0,16,31
 	srwi r9,r9,4
+	rlwinm r9,r9,0,16,31
 	stw r9,84(r31)
 	lwz r9,36(r31)
 	addi r9,r9,16
 	lhz r9,0(r9)
+	rlwinm r9,r9,0,16,31
 	srwi r9,r9,4
+	rlwinm r9,r9,0,16,31
 	stw r9,88(r31)
 	lwz r9,36(r31)
 	addi r9,r9,12
 	lhz r9,0(r9)
+	rlwinm r9,r9,0,16,31
 	slwi r9,r9,28
 	srawi r9,r9,28
 	stw r9,92(r31)
 	lwz r9,36(r31)
 	addi r9,r9,14
 	lhz r9,0(r9)
+	rlwinm r9,r9,0,16,31
 	slwi r9,r9,28
 	srawi r9,r9,28
 	stw r9,96(r31)
 	lwz r9,36(r31)
 	addi r9,r9,16
 	lhz r9,0(r9)
+	rlwinm r9,r9,0,16,31
 	slwi r9,r9,28
 	srawi r9,r9,28
 	stw r9,100(r31)
 	lwz r9,36(r31)
 	addi r9,r9,18
 	lhz r9,0(r9)
+	rlwinm r9,r9,0,16,31
 	stw r9,104(r31)
 	lwz r9,36(r31)
 	addi r9,r9,20
 	lhz r9,0(r9)
+	rlwinm r9,r9,0,16,31
 	stw r9,108(r31)
 	lwz r9,36(r31)
 	addi r9,r9,22
 	lhz r9,0(r9)
+	rlwinm r9,r9,0,16,31
 	stw r9,112(r31)
 	lwz r4,140(r31)
 	lwz r9,112(r31)
@@ -215,7 +226,7 @@ _itemList_L12:
 	lis r5,_formatItemGearText@ha
 	addi r5,r5,_formatItemGearText@l
 	lwz r3,132(r31)
-	crxor 6,6,6
+	crxor cr6,cr6,cr6
 	lis r12,_after_itemList_1__sprintf_s@ha
 	addi r12,r12,_after_itemList_1__sprintf_s@l
 	mtlr r12
@@ -241,7 +252,7 @@ _itemList_L14:
 	addi r5,r9,_formatAugmentText@l
 	mr r4,r10
 	lwz r3,132(r31)
-	crxor 6,6,6
+	crxor cr6,cr6,cr6
 	lis r12,_after_itemList_2__sprintf_s@ha
 	addi r12,r12,_after_itemList_2__sprintf_s@l
 	mtlr r12
@@ -265,7 +276,7 @@ _itemList_L15:
 	addi r5,r9,_formatItemText@l
 	mr r4,r10
 	lwz r3,132(r31)
-	crxor 6,6,6
+	crxor cr6,cr6,cr6
 	lis r12,_after_itemList_3__sprintf_s@ha
 	addi r12,r12,_after_itemList_3__sprintf_s@l
 	mtlr r12
@@ -324,6 +335,80 @@ _itemList_L2:
 	lwz r9,132(r31)
 	mr r3,r9
 	addi r11,r31,160
+	lwz r0,4(r11)
+	mtlr r0
+	lwz r31,-4(r11)
+	mr r1,r11
+	blr
+_postBattleItemList:
+	stwu r1,-48(r1)
+	mflr r0
+	stw r0,52(r1)
+	stw r31,44(r1)
+	mr r31,r1
+	stw r3,24(r31)
+	stw r4,28(r31)
+	stw r5,32(r31)
+	stw r6,36(r31)
+	li r9,1
+	stw r9,8(r31)
+	b _itemList_L24
+_itemList_L27:
+	lwz r9,8(r31)
+	subfic r9,r9,4000
+	li r5,0
+	li r4,255
+	mr r3,r9
+	bl getKnowledgeBit
+	mr r9,r3
+	stw r9,12(r31)
+	lwz r9,12(r31)
+	cmpwi cr0,r9,0
+	beq cr0,_itemList_L29
+	lwz r10,36(r31)
+	lwz r8,12(r31)
+	li r7,31
+	lwz r6,8(r31)
+	lis r9,_formatItemText@ha
+	addi r5,r9,_formatItemText@l
+	mr r4,r10
+	lwz r3,28(r31)
+	crxor cr6,cr6,cr6
+	lis r12,_after_itemList_4__sprintf_s@ha
+	addi r12,r12,_after_itemList_4__sprintf_s@l
+	mtlr r12
+	lis r12,__sprintf_s@ha
+	addi r12,r12,__sprintf_s@l
+	mtctr r12
+	bctr
+_after_itemList_4__sprintf_s:
+	mr r9,r3
+	mr r10,r9
+	lwz r9,28(r31)
+	add r9,r9,r10
+	stw r9,28(r31)
+	lwz r10,28(r31)
+	lwz r9,32(r31)
+	cmplw cr0,r10,r9
+	ble cr0,_itemList_L26
+	lwz r3,24(r31)
+	bl _postCurl
+	lwz r9,24(r31)
+	stw r9,28(r31)
+	b _itemList_L26
+_itemList_L29:
+	nop
+_itemList_L26:
+	lwz r9,8(r31)
+	addi r9,r9,1
+	stw r9,8(r31)
+_itemList_L24:
+	lwz r9,8(r31)
+	cmpwi cr0,r9,31
+	ble cr0,_itemList_L27
+	lwz r9,28(r31)
+	mr r3,r9
+	addi r11,r31,48
 	lwz r0,4(r11)
 	mtlr r0
 	lwz r31,-4(r11)

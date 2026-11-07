@@ -17,8 +17,15 @@ from .locations.fnNodes import fn_nodes_data
 from .locations.locations import locations_data
 from .locations.segments import segments_data
 from .locations.tmp import tmp_data
+from .locations.shop_armor import shop_armor_data
+from .locations.shop_augments import shop_augments_data
+from .locations.shop_weapons import shop_weapons_data
+from .locations.shop_blueprints import shop_blueprints_data
+from .locations.shop_doll_armor import shop_doll_armor_data
+from .locations.shop_doll_weapons import shop_doll_weapons_data
+from .locations.shop_doll_augments import shop_doll_augments_data
+from .locations.shop_doll_frames import shop_doll_frames_data
 # from .locations.quests import quests_data
-# from .locations.shops import shops_data
 
 
 class XenobladeXLocation(Location):
@@ -48,8 +55,15 @@ xenobladeXLocations = {
     **_Locs.gen("SEG", 3, segments_data),
     **_Locs.gen("LOC", 4, locations_data),
     **_Locs.gen("TMP", 5, tmp_data),
-    # **_Locs.gen("QST", 5, quests_data),
-    # **_Locs.gen("SHP", 6, shops_data),
+    **_Locs.gen("SHPBP", 6, shop_blueprints_data),
+    **_Locs.gen("SHPAMR", 7, shop_armor_data),
+    **_Locs.gen("SHPWPN", 8, shop_weapons_data),
+    **_Locs.gen("SHPAUG", 9, shop_augments_data),
+    **_Locs.gen("SHPSKAMR", 10, shop_doll_armor_data),
+    **_Locs.gen("SHPSKWPN", 11, shop_doll_weapons_data),
+    **_Locs.gen("SHPSKAUG", 12, shop_doll_augments_data),
+    **_Locs.gen("SHPSKF", 13, shop_doll_frames_data),
+    # **_Locs.gen("QST", 14, quests_data),
 }
 
 

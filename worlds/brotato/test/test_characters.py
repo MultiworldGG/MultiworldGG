@@ -32,7 +32,9 @@ class TestBrotatoCharacterOptions(BrotatoTestBase):
                     available_characters, starting_characters = get_available_and_starting_characters(
                         data_set.include_base_game_characters,
                         data_set.enable_abyssal_terrors_dlc,
+                        data_set.enable_primal_dread_dlc,
                         data_set.include_abyssal_terrors_characters,
+                        data_set.include_primal_dread_characters,
                         data_set.starting_characters_mode,
                         data_set.num_starting_characters,
                         data_set.num_include_characters,
@@ -51,6 +53,8 @@ class TestBrotatoCharacterOptions(BrotatoTestBase):
         available_characters, starting_characters = get_available_and_starting_characters(
             set(BASE_GAME_CHARACTERS.characters),
             False,
+            False,
+            set(),
             set(),
             StartingCharacters(StartingCharacters.option_random_all),
             num_starting_characters,
@@ -67,7 +71,9 @@ class TestBrotatoCharacterOptions(BrotatoTestBase):
                 available_characters, starting_characters = get_available_and_starting_characters(
                     data_set.include_base_game_characters,
                     data_set.enable_abyssal_terrors_dlc,
+                    data_set.enable_primal_dread_dlc,
                     data_set.include_abyssal_terrors_characters,
+                    data_set.include_primal_dread_characters,
                     data_set.starting_characters_mode,
                     data_set.num_starting_characters,
                     data_set.num_include_characters,
@@ -78,7 +84,9 @@ class TestBrotatoCharacterOptions(BrotatoTestBase):
                     repeat_available_characters, repeat_starting_characters = get_available_and_starting_characters(
                         data_set.include_base_game_characters,
                         data_set.enable_abyssal_terrors_dlc,
+                        data_set.enable_primal_dread_dlc,
                         data_set.include_abyssal_terrors_characters,
+                        data_set.include_primal_dread_characters,
                         data_set.starting_characters_mode,
                         data_set.num_starting_characters,
                         data_set.num_include_characters,

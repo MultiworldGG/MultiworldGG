@@ -1,6 +1,6 @@
 from dataclasses import dataclass
 
-from Options import Toggle, Choice, FreeText, PerGameCommonOptions, DeathLink, Visibility
+from Options import Toggle, Choice, FreeText, PerGameCommonOptions, NamedRange, DeathLink, Visibility
 
 
 class Goal(Choice):
@@ -14,7 +14,7 @@ class Goal(Choice):
     option_moon = 13
     option_dark = 15
     option_darker = 16
-    default = 13  # default to moon
+    default = "moon"  # default to moon
 
 class StorySanity(Choice):
     """Adds story progression moons to the pool."""
@@ -23,7 +23,7 @@ class StorySanity(Choice):
     option_multi_moons = 2
     option_all = 3
     option_off = 0
-    default = 0 # default to off
+    default = "off" # default to off
 
 class ShopSanity(Choice):
     """Adds various shop items to the pool.
@@ -34,7 +34,7 @@ class ShopSanity(Choice):
     option_non_outfits = 3
     option_all = 4
     option_off = 0
-    default = 0  # default to off
+    default = "off"  # default to off
 
 class RandomizeMoonColors(Choice):
     """Changes the color of moons.
@@ -51,7 +51,7 @@ class RandomizeMoonColors(Choice):
     option_item_random = 4
     option_classification_random = 5
     option_chaos = 6
-    default = 0
+    default = "off"
     #visibility = 0b1101
 
 class RandomizeMoonCount(Choice):
@@ -68,7 +68,7 @@ class RandomizeMoonCount(Choice):
     option_moderate = 3
     option_extreme = 4
     option_off = 0
-    default = 0
+    default = "off"
 
 class MoonDistribution(Choice):
     """
@@ -81,7 +81,7 @@ class MoonDistribution(Choice):
     option_normal = 1.5
     option_low = 0.5
     option_none = 0
-    default = option_normal
+    default = "normal"
 
 class CaptureSanity(Toggle):
     """Randomizes Captures.
@@ -104,19 +104,27 @@ class CommonCaptureSkips(Toggle):
     display_name = "Common Capture Skips"
     default = False
 
-class ExtraMoons(Choice):
+class ExtraMoons(NamedRange):
     """
-    Sets the multiplier for the number of extra moons available in the pool for each kingdom.
-    Default: some = 1.2x moons
+    Sets the percentage of extra moons available in the pool for each kingdom.
+    Default: 175%
     """
     display_name = "Extra Moons"
-    option_none = 1.0
-    option_some = 1.2
-    option_more = 1.5
-    option_many = 1.75
-    option_double = 2.0
+    range_start = 100
+    range_end = 350
 
-    default = 1.2  # default to some
+    special_range_names = {
+        "none": 100,
+        "some": 125,
+        "more": 150,
+        "many": 175,
+        "double": 200,
+        "default": 200,
+        "extra": 250,
+        "all": 10000, # Set to 100x to guarantee every possible moon is spawned in
+    }
+
+    default = "double"
 
 class ProgressiveMoons(Toggle):
     """
@@ -136,7 +144,7 @@ class TrickJumpLogic(Choice):
     option_intermediate = 2
     option_hard = 3
 
-    default = 0  # default to off
+    default = "off"  # default to off
 
 class MiscTrickLogic(Choice):
     """
@@ -147,7 +155,7 @@ class MiscTrickLogic(Choice):
     option_intermediate = 2
     option_hard = 3
 
-    default = 0  # default to off
+    default = "off"  # default to off
 
 class SMODeathLink(DeathLink):
     __doc__ = DeathLink.__doc__ + "\n    In Super Mario Odyssey, Mario dying in any way sends a death and receiving a death causes Mario to die where he stands."

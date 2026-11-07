@@ -56,7 +56,7 @@ def set_rules(self, options : SMOOptions) -> None:
 
 
     # Outfit Moons
-    if self.options.shop_sanity != 'off':
+    if self.options.shop_sanity.value != 'off':
         if self.options.goal > self.options.goal.option_lake:
             set_rule(self.multiworld.get_location("Mechanic Cap", self.player),
                      lambda state: state.has("Mechanic Cap", self.player) or
@@ -365,7 +365,7 @@ def set_rules(self, options : SMOOptions) -> None:
         set_rule(self.multiworld.get_location("Cap Kingdom - Hidden Among the Push-Blocks", self.player),
                  lambda state: state.has("Spark Pylon", self.player))
 
-        if self.options.shop_sanity != 'off':
+        if self.options.shop_sanity.value != 'off':
             set_rule(self.multiworld.get_location("Bonneton Tower Model", self.player),
                      lambda state: state.has("Spark Pylon", self.player) and state.has("Paragoomba" , self.player))
 
@@ -409,7 +409,7 @@ def set_rules(self, options : SMOOptions) -> None:
                  lambda state: state.has("Goomba", self.player) or
                  state.has("Glitch Logic", self.player))
 
-        if self.options.goal > self.options.goal.option_lake:
+        if self.options.goal > self.options.goal.option_sand:
             # Sand Peace
             set_rule(self.multiworld.get_location("Sand Kingdom - Fishing in the Oasis", self.player),
                      lambda state: state.has("Lakitu", self.player))
@@ -424,10 +424,11 @@ def set_rules(self, options : SMOOptions) -> None:
             set_rule(self.multiworld.get_location("Sand Kingdom - Above a Strange Neighborhood", self.player),
                      lambda state: state.has("Mini Rocket", self.player))
 
-            if self.options.shop_sanity != 'off':
+            if self.options.shop_sanity.value != 'off':
                 set_rule(self.multiworld.get_location("Inverted Pyramid Model", self.player),
                          lambda state: state.has("Mini Rocket", self.player) and state.has("Bullet Bill", self.player) and state.has("Knucklotec's Fist", self.player))
 
+        if self.options.goal > self.options.goal.option_lake:
             # Wooded
             set_rule(self.multiworld.get_location("Wooded Kingdom - By the Babbling Brook in the Deep Woods", self.player),
                      lambda state: state.has("Coin Coffer", self.player) or state.has("T-Rex", self.player))
@@ -460,7 +461,7 @@ def set_rules(self, options : SMOOptions) -> None:
             set_rule(self.multiworld.get_location("Wooded Kingdom - Above the Clouds", self.player),
                      lambda state: state.has("Uproot", self.player) or state.has("Glitch Logic", self.player))
 
-            if self.options.shop_sanity != 'off':
+            if self.options.shop_sanity.value != 'off':
                 set_rule(self.multiworld.get_location("Scientist Outfit", self.player),
                          lambda state: state.has("Uproot", self.player) or state.has("Glitch Logic", self.player))
 
@@ -486,7 +487,7 @@ def set_rules(self, options : SMOOptions) -> None:
                      lambda state: state.has("Zipper", self.player))
             set_rule(self.multiworld.get_location("Lake Kingdom - Super-Secret Zipper", self.player),
                      lambda state: state.has("Zipper", self.player))
-            if self.options.shop_sanity != 'off':
+            if self.options.shop_sanity.value != 'off':
                 set_rule(self.multiworld.get_location("Underwater Dome", self.player),
                          lambda state: state.has("Zipper", self.player))
 
@@ -508,7 +509,7 @@ def set_rules(self, options : SMOOptions) -> None:
             set_rule(self.multiworld.get_location("Metro Kingdom - RC Car Pro!", self.player),
                      lambda state: state.has("RC Car", self.player))
 
-            if self.options.shop_sanity != 'off':
+            if self.options.shop_sanity.value != 'off':
                 set_rule(self.multiworld.get_location("Metro Kingdom - Rewiring the Neighborhood", self.player),
                          lambda state: state.has("Spark Pylon", self.player) and state.has("Builder Helmet", self.player) and state.has("Builder Outfit", self.player))
                 set_rule(self.multiworld.get_location("Metro Kingdom - Off the Beaten Wire", self.player),
@@ -533,11 +534,15 @@ def set_rules(self, options : SMOOptions) -> None:
                      lambda state: state.has("Mini Rocket", self.player))
             set_rule(self.multiworld.get_location("Metro Kingdom - Sewer Treasure", self.player),
                      lambda state: state.has("Manhole", self.player))
-            if self.options.shop_sanity != 'off':
+            if self.options.shop_sanity.value != 'off':
                 set_rule(self.multiworld.get_location("Pauline Statue", self.player),
                          lambda state: state.has("Manhole", self.player) and state.has("Mini Rocket", self.player))
 
         if self.options.goal > self.options.goal.option_metro:
+            # Metro Peace
+            set_rule(self.multiworld.get_location("Metro Kingdom - A Tourist in the Metro Kingdom!", self.player),
+                     lambda state: state.can_reach_region("Sand Peace", self.player))
+            
             # Seaside
             set_rule(self.multiworld.get_location("Seaside Kingdom - Love by the Seaside", self.player),
                      lambda state: state.has("Goomba", self.player))
@@ -547,7 +552,7 @@ def set_rules(self, options : SMOOptions) -> None:
                      lambda state: state.has("Gushen", self.player))
             set_rule(self.multiworld.get_location("Seaside Kingdom - Lighthouse Leaper", self.player),
                      lambda state: state.has("Glydon", self.player))
-            if self.options.shop_sanity != 'off':
+            if self.options.shop_sanity.value != 'off':
                 set_rule(self.multiworld.get_location("Sand Jar", self.player),
                          lambda state: state.has("Gushen", self.player))
             # Change when entrance rando implemented
@@ -564,7 +569,7 @@ def set_rules(self, options : SMOOptions) -> None:
             self.multiworld.get_location("Snow Kingdom - Snowline Circuit Class S", self.player).progress_type = LocationProgressType.EXCLUDED
             set_rule(self.multiworld.get_location("Snow Kingdom - Snowline Circuit Class S", self.player),
                      lambda state: state.has("Shiverian Racer", self.player))
-            if self.options.shop_sanity != 'off':
+            if self.options.shop_sanity.value != 'off':
                 set_rule(self.multiworld.get_location("Shiverian Nesting Dolls", self.player),
                          lambda state: state.has("Ty-foo", self.player))
             # Change when entrance rando implemented
@@ -600,10 +605,12 @@ def set_rules(self, options : SMOOptions) -> None:
                      lambda state: state.has("Lava Bubble", self.player))
             set_rule(self.multiworld.get_location("Luncheon Kingdom - Golden Turnip Recipe 3", self.player),
                      lambda state: state.has("Hammer Bro", self.player))
-            if self.options.shop_sanity != 'off':
+            set_rule(self.multiworld.get_location("Luncheon Kingdom - A Tourist in the Luncheon Kingdom!", self.player),
+                     lambda state: state.can_reach_region("Sand Peace", self.player) and state.can_reach_region("Cascade Peace", self.player))
+            if self.options.shop_sanity.value != 'off':
                 set_rule(self.multiworld.get_location("Souvenir Forks", self.player),
                          lambda state: state.has("Hammer Bro", self.player) and state.has("Lava Bubble", self.player))
-            if self.options.shop_sanity != 'off':
+            if self.options.shop_sanity.value != 'off':
                 set_rule(self.multiworld.get_location("Vegetable Plate", self.player),
                          lambda state: state.has("Hammer Bro", self.player) and state.has("Lava Bubble", self.player))
             # Change when entrance rando implemented
@@ -645,6 +652,21 @@ def set_rules(self, options : SMOOptions) -> None:
                      lambda state: state.has("Banzai Bill", self.player))
                 set_rule(self.multiworld.get_location("Moon Kingdom - Fly to the Treasure Chest and Back", self.player),
                      lambda state: state.has("Banzai Bill", self.player))
+
+                set_rule(self.multiworld.get_location("Moon Kingdom - A Tourist in the Moon Kingdom!", self.player),
+                     lambda state: state.can_reach_region("Sand Peace", self.player) and
+                                   state.can_reach_region("Cascade Peace", self.player) and
+                                   state.can_reach_region("Luncheon Peace", self.player))
+                set_rule(self.multiworld.get_location("Mushroom Kingdom - A Tourist in the Mushroom Kingdom!", self.player),
+                     lambda state: state.can_reach_region("Sand Peace", self.player) and
+                                   state.can_reach_region("Cascade Peace", self.player) and
+                                   state.can_reach_region("Luncheon Peace", self.player) and
+                                   state.can_reach_region("Post Game", self.player))
+                set_rule(self.multiworld.get_location("Sand Kingdom - Round-the-World Tourist", self.player),
+                     lambda state: state.can_reach_region("Sand Peace", self.player) and
+                                   state.can_reach_region("Cascade Peace", self.player) and
+                                   state.can_reach_region("Luncheon Peace", self.player) and
+                                   state.can_reach_region("Post Game", self.player))
 
 
 # for debugging purposes, you may want to visualize the layout of your world. Uncomment the following code to

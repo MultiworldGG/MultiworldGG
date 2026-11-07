@@ -667,7 +667,7 @@
     },
     "connections": {
       "Costipation - Roadway Gear Area": "B1 | X1+J1",
-      "Costipation - Island Gear Area": "B2 | X2+B1 | X3+J1",
+      "Costipation - Island Gear Area": "B2 | X1+B1 | X3+J1",
       "Costipation - Hat Area": "B1 | X3+J1"
     },
     "subwarps": {

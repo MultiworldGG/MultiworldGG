@@ -18,5 +18,4 @@ quest_rules: dict[str, Rule] = {
     ),
     "Quest Weaponized": Has("WPN: Ramjet Rifle_1"),
     "Quest Thats Incredible": thats_incredible_rule,
-    "Quest The Little Rich Girl": Has("WPN: Scrap Duo"),
 }

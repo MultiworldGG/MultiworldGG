@@ -15,7 +15,7 @@ import requests
 import Utils
 apname = Utils.instance_name if Utils.instance_name else "Archipelago"
 from NetUtils import ClientStatus, NetworkItem
-from typing import Any, Counter, List, NamedTuple, Optional, Set, cast, Callable
+from typing import TYPE_CHECKING, Any, Counter, List, NamedTuple, Optional, cast, Callable
 from itertools import groupby
 import colorama
 
@@ -40,12 +40,16 @@ from .Locations import game_type_location_to_offset
 from .Options import XenobladeXOption
 
 tracker_loaded = False
-try:
-    # Loaded from .apworld
-    from worlds.tracker.TrackerClient import TrackerGameContext as SuperContext  # type: ignore[import-not-found]
-    tracker_loaded = True
-except ModuleNotFoundError:
-    from CommonClient import CommonContext as SuperContext
+if TYPE_CHECKING:
+    from worlds.tracker.TrackerClient import TrackerGameContext as SuperContext
+else:
+    try:
+        # Loaded from .apworld
+        from worlds.tracker.TrackerClient import TrackerGameContext as SuperContext
+        tracker_loaded = True
+    except ModuleNotFoundError:
+        from CommonClient import CommonContext as SuperContext
+
 
 CEMU_MODS_NOT_FOUND = "Unable to find the Cemu Mods please make sure to download the community mods " \
                       "within Cemu settings first"
@@ -65,12 +69,18 @@ class GameItem(NamedTuple):
     level: int = 1
 
 
+class GameLocation(NamedTuple):
+    type: int
+    id: int
+
+
 class XenobladeXHttpServer(HTTPServer):
     address_family = socket.AF_INET6
     locations = ""
     items = ""
     items_debug = ""
     death_link = ""
+    shop_names = ""
     messages: List[str] = []
     upload_count = 0
     upload_limit = 25
@@ -152,7 +162,7 @@ class XenobladeXHttpServer(HTTPServer):
             return item_game_type + doll_augments_type_data[augment_idx]
         return item_game_type
 
-    def _upload_gear(self, item_game_type: int, item_game_id: int, seed_name: Optional[str],
+    def _upload_gear(self, item_game_type: int, item_game_id: int, item_game_level: int, seed_name: Optional[str],
                      item_name: str) -> None:
         gear = self.generate_gear(item_name, seed_name)
         item_game_type = self.adjust_item_type(item_game_type, item_game_id)
@@ -162,7 +172,10 @@ class XenobladeXHttpServer(HTTPServer):
         else:
             if item_game_type == 0x9 and item_name in doll_frame_ids:
                 item_game_id = doll_frame_ids[item_name]
-            self.items += f"I Tp={item_game_type:08x} Id={item_game_id:08x}\n"
+            if item_game_type != 0x1f:
+                self.items += f"I Tp={item_game_type:08x} Id={item_game_id:08x}\n"
+            else:
+                self.items += f"I Tp={item_game_type:08x} Id={item_game_id:08x} Cn={item_game_level:08x}\n"
 
     # Example: Invoke-WebRequest http://localhost:45872/items -Method POST -Body "I Tp=00000007 Id=00000039`n"
     def upload_item(self, item_game_type: int, item_game_id: int, seed_name: Optional[str],
@@ -179,7 +192,7 @@ class XenobladeXHttpServer(HTTPServer):
                 item_game_level = get_upper_real_level_from_logic_count(item_game_level, logic_level_steps)
             self.items += f"K Id={item_game_id:08x} Fg={item_game_level:08x}\n"
         elif item_game_type < 0x20:
-            self._upload_gear(item_game_type, item_game_id, seed_name, item_name)
+            self._upload_gear(item_game_type, item_game_id, item_game_level, seed_name, item_name)
         elif item_game_type < 0x21:
             self.items += f"A Id={item_game_id:08x} Lv={1:08x}\n"
         elif item_game_type < 0x22:
@@ -217,6 +230,13 @@ class XenobladeXHttpServer(HTTPServer):
     def _generate_message(self, heading: str, body: str) -> str:
         return f"M {self._sanitize_message(heading)}\r{(self._sanitize_message(body))[:60]}\n"
 
+    def generate_shop_name(self, game_loc: GameLocation, shop_name: str) -> str:
+        shop_name = self._sanitize_message(shop_name)
+        return f"{game_loc.type:02x} {game_loc.id:04x} {shop_name}\n"
+
+    def upload_shop_names(self, shop_names: str) -> None:
+        self.shop_names = shop_names
+
     def clear_locations(self) -> None:
         self.locations = ""
 
@@ -228,6 +248,7 @@ class XenobladeXHttpServer(HTTPServer):
         self._match_line(locations, 2, r'^FN Id=([0-9a-fA-F]{3}) Fg=([0-9a-fA-F]{1})\n')
         self._match_line(locations, 3, r'^SG Id=([0-9a-fA-F]{3}) Fg=([0-9a-fA-F]{1}) AId=[0-9a-fA-F]{2}\n', min=3)
         self._match_line(locations, 4, r'^LC Id=([0-9a-fA-F]{3}) Fg=([0-9a-fA-F]{1}) Tp=[0-9a-fA-F]{1}\n')
+        self._match_line(locations, None, r'^SH Id=([0-9a-fA-F]{3}) Tp=([0-9a-fA-F]{1})\n')
 
         return locations
 
@@ -247,6 +268,7 @@ class XenobladeXHttpServer(HTTPServer):
         self._match_line(items, None, r'^IT Id=([0-9a-fA-F]{3}) Tp=([0-9a-fA-F]{2})(?:\n| S1Id)')
         self._match_line(items, 0x1c, r'^IT Id=([0-9a-fA-F]{3}) Tp=1[cC] Cn=([0-9a-fA-F]{3})', has_lvl=True)
         self._match_line(items, 0x1d, r'^IT Id=([0-9a-fA-F]{3}) Tp=1[dD] Cn=([0-9a-fA-F]{3})', has_lvl=True)
+        self._match_line(items, 0x1f, r'^IT Id=([0-9a-fA-F]{3}) Tp=1[fF] Cn=([0-9a-fA-F]{3})', has_lvl=True)
         equip_regex = r'^EQ CId=[0-9a-fA-F]{3} Id=([0-9a-fA-F]{3}) Ix=([0-9a-fA-F]{1})'
         self._match_line(items, 0x6, equip_regex, min=0, max=1)
         self._match_line(items, 0x1, equip_regex, min=2, max=11)
@@ -304,6 +326,10 @@ class XenobladeXHTTPRequestHandler(BaseHTTPRequestHandler):
             if items_text:
                 logger.debug(f"{items_text.encode()!r}")
 
+    def get_shop_names(self) -> None:
+        self.respond_success()
+        self.wfile.write(self.http_server.shop_names.encode())
+
     def post_locations(self) -> None:
         locations = (self.rfile.read(int(self.headers['content-length']))).decode('cp437').replace(":", "\n")
         self.respond_success()
@@ -332,6 +358,8 @@ class XenobladeXHTTPRequestHandler(BaseHTTPRequestHandler):
     def do_GET(self) -> None:
         if self.path == "/items":
             self.get_items()
+        if self.path == "/shops":
+            self.get_shop_names()
         if self.path == "/locations" and self.http_server.debug:
             self.debug_get_locations()
 
@@ -346,14 +374,25 @@ class XenobladeXContext(SuperContext):  # type: ignore[misc]
     game = "Xenoblade X"
     items_handling = 0b111  # get items from your own world
     want_slot_data = True
+    single_instance_socket: Optional[socket.socket]
 
     tags = {"AP"}
 
     cemu_process: Optional[subprocess.Popen[bytes]] = None
-    locations_checked: Set[int]
+    locations_checked: set[int]
+    locations_info: dict[int, NetworkItem]
+    scout_ids: set[int] = set()
     death_link = False
     death_link_pending = False
     logic_level_steps = 0
+    shop_blueprints = False
+    shop_armor = False
+    shop_weapons = False
+    shop_augments = False
+    shop_skell_armor = False
+    shop_skell_weapons = False
+    shop_skell_augments = False
+    shop_skell_frames = False
 
     def __init__(self, server_address: Optional[str], password: Optional[str], xeno_port: int,
                  debug: bool = False) -> None:
@@ -377,10 +416,21 @@ class XenobladeXContext(SuperContext):  # type: ignore[misc]
                 if options:
                     self.death_link = options.get("death_link", 0) != 0
                     self.logic_level_steps = options.get("logic_level_steps", 0)
+                    self.shop_blueprints = options.get("shpbp", 0) != 0
+                    self.shop_armor = options.get("shpamr", 0) != 0
+                    self.shop_weapons = options.get("shpwpn", 0) != 0
+                    self.shop_augments = options.get("shpaug", 0) != 0
+                    self.shop_skell_armor = options.get("shpskamr", 0) != 0
+                    self.shop_skell_weapons = options.get("shpskwpn", 0) != 0
+                    self.shop_skell_augments = options.get("shpskaug", 0) != 0
+                    self.shop_skell_frames = options.get("shpskf", 0) != 0
                 self.http_server.clear_locations()
+                self.scout_ids = self.scout_shops()
                 self.prepare_cemu(cemu_options)
         if cmd in {"RoomInfo"}:
             self.seed_name = args["seed_name"]
+        if cmd in {"LocationInfo"}:
+            self.upload_shop_names()
         super().on_package(cmd, args)
 
     def on_deathlink(self, data: dict[str, Any]) -> None:
@@ -430,6 +480,9 @@ class XenobladeXContext(SuperContext):  # type: ignore[misc]
     def archipelago_item_to_prefix(self, archipelago_item_id: int) -> str:
         return XenobladeXWorld.item_id_to_name[archipelago_item_id].split(":")[0]
 
+    def archipelago_location_to_prefix(self, archipelago_location_id: int) -> str:
+        return XenobladeXWorld.location_id_to_name[archipelago_location_id].split(":")[0]
+
     def archipelago_item_to_game_item(self, archipelago_item_id: int) -> GameItem:
         game_item_type_offset = max([id for id in game_type_item_to_offset.values()
                                      if id < archipelago_item_id - XenobladeXWorld.base_id])
@@ -440,8 +493,57 @@ class XenobladeXContext(SuperContext):  # type: ignore[misc]
     def game_item_to_archipelago_item(self, game_item: GameItem) -> int:
         return XenobladeXWorld.base_id + game_type_item_to_offset[game_item.type] + game_item.id
 
+    def archipelago_location_to_game_location(self, archipelago_location_id: int):
+        game_location_type_offset = max([id for id in game_type_location_to_offset.values()
+                                        if id < archipelago_location_id - XenobladeXWorld.base_id])
+        game_location_type = min([key for key, offset in game_type_location_to_offset.items()
+                                 if offset == game_location_type_offset])
+        return GameLocation(game_location_type,
+                            (archipelago_location_id - XenobladeXWorld.base_id) - game_location_type_offset)
+
     def game_location_to_archipelago_location(self, game_location: GameItem) -> int:
         return XenobladeXWorld.base_id + game_type_location_to_offset[game_location.type] + game_location.id
+
+    def category_to_archipelago_locations(self, category: str) -> set[int]:
+        return set([id for id, name in XenobladeXWorld.location_id_to_name.items() if name.split(":")[0] == category])
+
+    def scout_shops(self) -> set[int]:
+        location_ids: set[int] = set()
+        if self.shop_blueprints:
+            location_ids |= self.category_to_archipelago_locations("SHPBP")
+        if self.shop_armor:
+            location_ids |= self.category_to_archipelago_locations("SHPAMR")
+        if self.shop_weapons:
+            location_ids |= self.category_to_archipelago_locations("SHPWPN")
+        if self.shop_augments:
+            location_ids |= self.category_to_archipelago_locations("SHPAUG")
+        if self.shop_skell_armor:
+            location_ids |= self.category_to_archipelago_locations("SHPSKAMR")
+        if self.shop_skell_weapons:
+            location_ids |= self.category_to_archipelago_locations("SHPSKWPN")
+        if self.shop_skell_augments:
+            location_ids |= self.category_to_archipelago_locations("SHPSKAUG")
+        if self.shop_skell_frames:
+            location_ids |= self.category_to_archipelago_locations("SHPSKF")
+        return location_ids
+
+    def upload_shop_names(self) -> None:
+        shop_names = ""
+        for network_item in self.locations_info.values():
+            shop_item_name = self.item_names.lookup_in_slot(network_item.item, network_item.player)
+            game_loc = self.archipelago_location_to_game_location(network_item.location)
+            shop_names += self.http_server.generate_shop_name(game_loc, shop_item_name)
+        self.http_server.upload_shop_names(shop_names)
+
+    async def send_scouts(self) -> None:
+        new_scouts = self.scout_ids.difference(self.locations_scouted)
+        if new_scouts:
+            await self.send_msgs([{
+                "cmd": "LocationScouts",
+                "locations": new_scouts,
+                "create_as_hint": 0
+            }])
+            self.locations_scouted |= new_scouts
 
     async def download_game_locations(self) -> None:
         game_locations = {self.game_location_to_archipelago_location(location)
@@ -449,7 +551,7 @@ class XenobladeXContext(SuperContext):  # type: ignore[misc]
         new_locations = game_locations.difference(self.locations_checked)
         if new_locations:
             await self.send_msgs([{"cmd": 'LocationChecks', "locations": new_locations}])
-            self.locations_checked = game_locations
+            self.locations_checked |= new_locations
 
     async def upload_game_items(self) -> None:
         self.http_server.clear_uploaded_items()
@@ -476,6 +578,7 @@ class XenobladeXContext(SuperContext):  # type: ignore[misc]
             try:
                 await self.update_death_link(self.death_link)
                 if self.http_server.process_game_event.is_set():
+                    await self.send_scouts()
                     self.http_server.process_game_event.clear()
                     if "DeathLink" in self.tags and self.http_server.download_death():
                         if self.death_link_pending:
@@ -521,27 +624,30 @@ class XenobladeXContext(SuperContext):  # type: ignore[misc]
         try:
             mod_path = "graphicPacks/downloadedGraphicPacks/XenobladeChroniclesX/Mods/"
             settings_path = "settings.xml"
-            appdata = None
+            cemu_mod_path = ""
+            cemu_settings_path = ""
+
             if Utils.is_windows:
-                appdata = os.getenv('APPDATA')
+                cemu_appdata_path = os.path.join(os.getenv('APPDATA', ''), "Cemu")
+                cemu_mod_path = os.path.join(cemu_appdata_path, mod_path)
+                cemu_settings_path = os.path.join(cemu_appdata_path, settings_path)
+
             elif Utils.is_linux:
                 home_path = pathlib.Path.home()
-                appdata = os.path.join(home_path, ".var/app/info.cemu.Cemu/config")
-                if not os.path.isdir(appdata):
-                    appdata = os.path.join(home_path, ".local/share")
-            if not appdata:
-                raise Exception(CEMU_APPDATA_NOT_FOUND)
-            cemu_appdata_path = os.path.join(appdata, "Cemu")
-            if not os.path.isdir(cemu_appdata_path):
-                raise Exception(CEMU_SETTINGS_NOT_FOUND)
-            cemu_mod_path = os.path.join(cemu_appdata_path, mod_path)
-            cemu_settings_path = os.path.join(cemu_appdata_path, settings_path)
-            if Utils.is_linux:
+                appdata = os.path.join(home_path, ".local/share/Cemu")
+                cemu_mod_path = os.path.join(appdata, mod_path)
                 config = os.path.join(pathlib.Path.home(), ".config/Cemu")
+                cemu_settings_path = os.path.join(config, settings_path)
+
+            if not os.path.isdir(cemu_mod_path):
+                cemu_mod_path = get_settings()["xenobladex_options"]["cemu_mods"]
                 if not os.path.isdir(cemu_mod_path):
-                    cemu_mod_path = os.path.join(config, mod_path)
-                if not os.path.isdir(cemu_settings_path):
-                    cemu_settings_path = os.path.join(config, settings_path)
+                    raise Exception(CEMU_MODS_NOT_FOUND)
+            if not os.path.isfile(cemu_settings_path):
+                cemu_settings_path = get_settings()["xenobladex_options"]["cemu_settings"]
+                if not os.path.isfile(cemu_settings_path):
+                    raise Exception(CEMU_SETTINGS_NOT_FOUND)
+
             self.copy_cemu_files(cemu_mod_path)
             self.set_cemu_graphic_packs(cemu_settings_path, mod_path, options)
             self.copy_port(cemu_mod_path)
@@ -640,8 +746,12 @@ class XenobladeXContext(SuperContext):  # type: ignore[misc]
 
 async def ensure_single_instance(ctx: XenobladeXContext) -> None:
     try:
-        ctx.single_instance_socket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
-        ctx.single_instance_socket.bind(('localhost', ctx.xeno_port))
+        if Utils.is_windows:
+            ctx.single_instance_socket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+            ctx.single_instance_socket.bind(('localhost', ctx.xeno_port))
+        elif Utils.is_linux:
+            ctx.single_instance_socket = socket.socket(socket.AF_UNIX, socket.SOCK_DGRAM)  # type: ignore
+            ctx.single_instance_socket.bind("\0ArchipelagoXenobladeXClient")
     except Exception:
         msg = "Client is already running"
         detail = "Please use the open instance of the client"
@@ -651,7 +761,9 @@ async def ensure_single_instance(ctx: XenobladeXContext) -> None:
         while ctx.ui and ctx._messagebox and ctx._messagebox._is_open:
             await asyncio.sleep(0.1)
         if ctx.ui:
-            ctx.ui.stop()
+            stop = getattr(ctx.ui, "stop", None)
+            if callable(stop):
+                stop()
         ctx.exit_event.set()
 
 

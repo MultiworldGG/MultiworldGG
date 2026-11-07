@@ -9,6 +9,7 @@ from .constants import (
     ALL_CHARACTERS,
     BASE_GAME_CHARACTERS,
     CHARACTER_GROUPS,
+    PRIMAL_DREAD_CHARACTERS,
     CharacterGroup,
 )
 from .options import StartingCharacters
@@ -28,7 +29,9 @@ class CharacterInfoOutput(NamedTuple):
 def get_available_and_starting_characters(
     include_base_game_characters: set[str],
     enable_abyssal_terrors_dlc: bool,
+    enable_primal_dread_dlc: bool,
     include_abyssal_terrors_characters: set[str],
+    include_primal_dread_characters: set[str],
     starting_character_mode: StartingCharacters,
     num_starting_characters: int,
     num_characters: int,
@@ -45,6 +48,11 @@ def get_available_and_starting_characters(
             include_characters=include_abyssal_terrors_characters,
             group=ABYSSAL_TERRORS_CHARACTERS,
         ),
+        PRIMAL_DREAD_CHARACTERS.name: CharacterGroupInfo(
+            enabled=enable_primal_dread_dlc,
+            include_characters=include_primal_dread_characters,
+            group=PRIMAL_DREAD_CHARACTERS,
+        ),
     }
 
     valid_characters: set[str] = set()
@@ -54,7 +62,7 @@ def get_available_and_starting_characters(
 
     # Pick characters from the starting character pool first, then add more others until we have the requested amount.
     all_starting_characters_for_option: list[str] = get_starting_characters_for_option(
-        starting_character_mode, enable_abyssal_terrors_dlc
+        starting_character_mode, enable_abyssal_terrors_dlc, enable_primal_dread_dlc
     )
     valid_starting_characters: list[str] = [
         char for char in all_starting_characters_for_option if char in valid_characters
@@ -86,7 +94,9 @@ def get_available_and_starting_characters(
 
 
 def get_starting_characters_for_option(
-    starting_character_mode: StartingCharacters, enable_abyssal_terrors_dlc: bool
+    starting_character_mode: StartingCharacters,
+    enable_abyssal_terrors_dlc: bool,
+    enable_primal_dread_dlc: bool,
 ) -> list[str]:
     """Returns a sorted list of the possible starting characters for the given starting character mode.
 
@@ -118,6 +128,20 @@ def get_starting_characters_for_option(
                     f"Starting option set to {starting_character_mode}, but Abyssal Terrors DLC is disabled."
                 )
             starting_characters = ABYSSAL_TERRORS_CHARACTERS.characters
+
+        case StartingCharacters.option_default_primal_dread:
+            if not enable_primal_dread_dlc:
+                raise OptionError(
+                    f"Starting option set to {starting_character_mode}, but Primal Dread DLC is disabled."
+                )
+            starting_characters = PRIMAL_DREAD_CHARACTERS.default_characters
+        case StartingCharacters.option_random_primal_dread:
+            if not enable_primal_dread_dlc:
+                raise OptionError(
+                    f"Starting option set to {starting_character_mode}, but Primal Dread DLC is disabled."
+                )
+            starting_characters = PRIMAL_DREAD_CHARACTERS.characters
+
         case _:
             raise OptionError(f"Unknown value for starting character option: {starting_character_mode}")
 

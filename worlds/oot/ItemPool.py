@@ -542,10 +542,10 @@ def get_pool_core(world):
             shuffle_item = False
             location.show_in_spoiler = False
 
-        # Gold Skulltula Tokens
+        # Gold Skulltula Tokens - fix location.dungeon check for APPP serialization
         elif location.vanilla_item == 'Gold Skulltula Token':
             shuffle_item = (world.tokensanity == 'all'
-                            or (world.tokensanity == 'dungeons' and location.dungeon)
+                            or (world.tokensanity == 'dungeons' and location.dungeon is not None)
                             or (world.tokensanity == 'overworld' and not location.dungeon))
             location.show_in_spoiler = shuffle_item
 

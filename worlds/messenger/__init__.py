@@ -392,7 +392,6 @@ class MessengerWorld(World):
                 if slot_data["transitions"]:
                     self.options.plando_connections.value = reverse_transitions_into_plando_connections(self.options.shuffle_transitions,
                                                                                                         slot_data["transitions"])
-                keep_entrance_logic = True
 
         add_closed_portal_reqs(self)
         # i need portal shuffle to happen after rules exist so i can validate it

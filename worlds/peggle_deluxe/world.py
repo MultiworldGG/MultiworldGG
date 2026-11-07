@@ -192,9 +192,9 @@ class PeggleDeluxeWorld(World):
 
         level_pool = list(sorted(level_pool, key=lambda l: l.value))
 
-        if len(level_pool) < 12:
+        if len(level_pool) < 15:
             raise OptionError(
-                f"Peggle Deluxe: {self.player_name} must have at least 12 levels selected to play. "
+                f"Peggle Deluxe: {self.player_name} must have at least 15 levels selected to play. "
                 f"They only have {len(level_pool)} selected."
             )
 
@@ -311,7 +311,7 @@ class PeggleDeluxeWorld(World):
                 if not self.include_full_clears and PeggleDeluxeAPTags.FULL_CLEAR_LOCATION in data.tags:
                     continue
 
-                if level == self.selected_goal_level and PeggleDeluxeAPTags.LEVEL_CLEAR_LOCATION not in data.tags:
+                if level == self.selected_goal_level:
                     continue
 
                 location: PeggleDeluxeLocation = PeggleDeluxeLocation(

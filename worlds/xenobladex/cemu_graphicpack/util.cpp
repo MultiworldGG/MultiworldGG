@@ -1,6 +1,16 @@
+#include <cstddef>
+
 extern int* menuBasePtr;
 
 void writeSystemLog(int* menuBasePtr, const char* str1, const char* str2);
+size_t __strlen (const char * str);
+int __sprintf_s(char *buffer, size_t sizeOfBuffer, const char *format, ...);
+
+namespace import{
+	namespace coreinit{
+		void OSConsoleWrite(const char* strPtr, int length);
+	}
+}
 
 #ifdef ALL
 moduleMatches = 0xF882D5CF, 0x30B6E091, 0x218F6E07 ; 1.0.1E, 1.0.2U, 1.0.0E
@@ -13,6 +23,10 @@ menuBasePtr = 0x1038ae50 # from error::menu::BladeHomeMenu
 void getInnerHandle(unsigned int* handle, int partyId);
 void requestSoundCreate(int* soundPtr, int id, int flag);
 
+
+void _writeConsole(const char* output){
+	import::coreinit::OSConsoleWrite(output, __strlen(output));
+}
 
 void _writeDebug(const char* output){
 	writeSystemLog(menuBasePtr, "Debug Message", output);

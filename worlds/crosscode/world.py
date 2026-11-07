@@ -201,6 +201,22 @@ class CrossCodeWorld(World):
         """
         return CrossCodeItem(self.player, self.world_data.items_by_full_name[name])
 
+    def get_trap_items(self, k: int = 1) -> list[CrossCodeItem]:
+        """
+        Get a list of CrossCodeItem instances chosen randomly from the weighted trap pools.
+        """
+        k = int(k * (self.options.trap_percentage / 100))
+        names: list[str] = list(self.options.trap_weights.value.keys())
+        weights: list[int] = list(self.options.trap_weights.value.values())
+
+        trap_pool = self.random.choices(names, weights=weights, k=k)
+
+        result: list[CrossCodeItem] = []
+        for trap in trap_pool:
+            result.append(self.create_item(trap))
+        
+        return result
+
     def get_filler_pool_names(self, k: int = 1) -> list[str]:
         """
         Get a list of filler pools from which you can pull.
@@ -212,12 +228,13 @@ class CrossCodeWorld(World):
         Generate a random filler item name based on the weighted filler pools.
         """
         return self.pools.pull_items_from_pool(self.get_filler_pool_names()[0], self.random)[0].name
-
+    
     def get_filler_item_data(self, k: int = 1) -> list[ItemData]:
         """
         Get a list of item data instances chosen randomly from the weighted filler pools.
         """
         pool_count = Counter(self.get_filler_pool_names(k))
+
         result: list[ItemData] = []
         for name, cnt in pool_count.items():
             result.extend(self.pools.pull_items_from_pool(name, self.random, cnt))
@@ -302,6 +319,14 @@ class CrossCodeWorld(World):
                 "Observatory goal requires quest randomization to be enabled"
             )
 
+        if (
+            self.options.goal.value == self.options.goal.option_facility_x and
+            not self.options.quest_rando.value
+        ):
+            raise OptionError(
+                "Facility X goal requires quest randomization to be enabled"
+            )
+            
         if (
             self.options.goal.value == self.options.goal.option_diorbis and
             not self.options.enable_dlc.value
@@ -512,11 +537,18 @@ class CrossCodeWorld(World):
                 self.region_dict[conn.region_to] = Region(conn.region_to, self.player, self.multiworld)
             if conn.region_from not in self.region_dict:
                 self.region_dict[conn.region_from] = Region(conn.region_from, self.player, self.multiworld)
+            callback = condition_satisfied(self.player, conn.cond, None, self) if conn.cond is not None else None
             self.region_dict[conn.region_from].connect(
                 self.region_dict[conn.region_to],
                 f"{conn.region_from} => {conn.region_to}",
-                condition_satisfied(self.player, conn.cond, None, self) if conn.cond is not None else None
+                callback
             )
+            if conn.bidirectional:
+                self.region_dict[conn.region_to].connect(
+                    self.region_dict[conn.region_from],
+                    f"{conn.region_from} <= {conn.region_to}",
+                    callback
+                )
 
             self.create_event_conditions(conn.cond)
 
@@ -578,6 +610,10 @@ class CrossCodeWorld(World):
         for _ in range(self.options.circuit_overrides.value):
             self.multiworld.itempool.append(self.create_item("Circuit Override"))
         num_needed_items -= self.options.circuit_overrides.value
+
+        for _ in range(self.options.progressive_sp_unlocks.value):
+            self.multiworld.itempool.append(self.create_item("SP Upgrade"))
+        num_needed_items -= self.options.progressive_sp_unlocks.value
 
         if self.options.shop_rando.value:
             if self.options.shop_send_mode.value == ShopSendMode.option_per_item_type:
@@ -644,6 +680,12 @@ class CrossCodeWorld(World):
 
                 if add_to_pool:
                     self.multiworld.itempool.append(item)
+
+        # Add traps into the pool depending on the filler replace percentage. Having trap weights set to 0 will 
+        if sum(self.options.trap_weights.values()) and self.options.trap_percentage >= 0:
+            trap_pool = self.get_trap_items(num_needed_items)
+            self.multiworld.itempool.extend(trap_pool)
+            num_needed_items -= len(trap_pool)    
 
         # Add filler items to fill up the pool.
         self.multiworld.itempool.extend(self.get_filler_items(num_needed_items))

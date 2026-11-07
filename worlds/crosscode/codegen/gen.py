@@ -75,7 +75,7 @@ class FileGenerator:
         """
         Generates common.py, which provides the base ID, game name, and data version.
         """
-        template = self.environment.get_template("common.template.py")
+        template = self.environment.get_template("common.py.jinja2")
 
         locations_complete = template.render(
             **self.common_args
@@ -88,7 +88,7 @@ class FileGenerator:
         """
         Generates locations.py, which provides a list of locations and events.
         """
-        template = self.environment.get_template("locations.template.py")
+        template = self.environment.get_template("locations.py.jinja2")
 
         locations_complete = template.render(
             locations_data=self.lists.locations_data.values(),
@@ -109,7 +109,7 @@ class FileGenerator:
         * multiples of items
         * full item names to items
         """
-        template = self.environment.get_template("items.template.py")
+        template = self.environment.get_template("items.py.jinja2")
 
         sorted_single_item_data = sorted(
             self.lists.single_items_dict.items(),
@@ -136,7 +136,7 @@ class FileGenerator:
         """
         Generates item_pools.py, which provides instructions on how to build item pools based on options.
         """
-        template = self.environment.get_template("item_pools.template.py")
+        template = self.environment.get_template("item_pools.py.jinja2")
 
         item_pools_complete = template.render(
             item_pools=self.lists.item_pools,
@@ -151,7 +151,7 @@ class FileGenerator:
         """
         Generates prog_items.py, which provides information on progressive chains.
         """
-        template = self.environment.get_template("prog_items.template.py")
+        template = self.environment.get_template("prog_items.py.jinja2")
 
         item_pools_complete = template.render(
             prog_chains=self.lists.progressive_chains,
@@ -170,7 +170,7 @@ class FileGenerator:
         """
         Generates regions.py, which provides information on which regions exist and how they are connected.
         """
-        template = self.environment.get_template("regions.template.py")
+        template = self.environment.get_template("regions.py.jinja2")
 
         regions_complete = template.render(
             modes_string=", ".join([f'"{x}"' for x in self.ctx.rando_data["modes"]]),
@@ -186,7 +186,7 @@ class FileGenerator:
         """
         Generates vars.py, which includes definitions of variable condition
         """
-        template = self.environment.get_template("vars.template.py")
+        template = self.environment.get_template("vars.py.jinja2")
 
         regions_complete = template.render(
             variable_definitions=self.lists.variable_definitions,
@@ -200,7 +200,7 @@ class FileGenerator:
         """
         Generates locations.py, which provides a list of locations and events.
         """
-        template = self.environment.get_template("shops.template.py")
+        template = self.environment.get_template("shops.py.jinja2")
 
         locations_complete = template.render(
             shop_data=self.lists.shop_data,

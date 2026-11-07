@@ -549,43 +549,63 @@ class MoonJumpHeight(CemuChoice):
 #     ]
 
 
-class WereGoingToPladHorizontal(CemuChoice):
-    """Alters the skell flight speed"""
-    display_name = "Were Going To Plad"
-    option_none = 0
-    option_speed_125_percent = 1
-    option_speed_150_percent = 2
-    option_speed_200_percent = 3
-    option_speed_300_percent = 4
-    default = 3
-    cemu_pack = "PhysicsWereGoingToPlad"
-    cemu_option = "Horizontal Speed"
-    cemu_selection_names = [
-        "Speed x1",
-        "Speed x1.25",
-        "Speed x1.5",
-        "Speed x2",
-        "Speed x3",
-    ]
+# class WereGoingToPladHorizontal(CemuChoice):
+#     """Alters the skell flight speed"""
+#     display_name = "Were Going To Plad"
+#     option_none = 0
+#     option_speed_125_percent = 1
+#     option_speed_150_percent = 2
+#     option_speed_200_percent = 3
+#     option_speed_300_percent = 4
+#     default = 3
+#     cemu_pack = "PhysicsWereGoingToPlad"
+#     cemu_option = "Horizontal Speed"
+#     cemu_selection_names = [
+#         "Speed x1",
+#         "Speed x1.25",
+#         "Speed x1.5",
+#         "Speed x2",
+#         "Speed x3",
+#     ]
 
 
-class WereGoingToPladVertical(CemuChoice):
-    """Alters the skell flight speed"""
-    display_name = "Were Going To Plad"
+# class WereGoingToPladVertical(CemuChoice):
+#     """Alters the skell flight speed"""
+#     display_name = "Were Going To Plad"
+#     option_none = 0
+#     option_speed_125_percent = 1
+#     option_speed_150_percent = 2
+#     option_speed_200_percent = 3
+#     option_speed_300_percent = 4
+#     default = 3
+#     cemu_pack = "PhysicsWereGoingToPlad"
+#     cemu_option = "Vertical Speed"
+#     cemu_selection_names = [
+#         "Speed x1",
+#         "Speed x1.25",
+#         "Speed x1.5",
+#         "Speed x2",
+#         "Speed x3",
+#     ]
+
+
+class FastWalkSpeed(CemuChoice):
+    """Alters the walking speed"""
+    display_name = "Fast Walk Speed"
     option_none = 0
-    option_speed_125_percent = 1
-    option_speed_150_percent = 2
-    option_speed_200_percent = 3
+    option_speed_150_percent = 1
+    option_speed_200_percent = 2
+    option_speed_250_percent = 3
     option_speed_300_percent = 4
-    default = 3
-    cemu_pack = "PhysicsWereGoingToPlad"
-    cemu_option = "Vertical Speed"
+    default = 2
+    cemu_pack = "AP"
+    cemu_option = "FastWalkSpeed"
     cemu_selection_names = [
-        "Speed x1",
-        "Speed x1.25",
-        "Speed x1.5",
-        "Speed x2",
-        "Speed x3",
+        "1.0x",
+        "1.5x",
+        "2.0x",
+        "2.5x",
+        "3.0x",
     ]
 
 
@@ -597,7 +617,7 @@ class FastRunSpeed(CemuChoice):
     option_speed_200_percent = 2
     option_speed_250_percent = 3
     option_speed_300_percent = 4
-    default = 3
+    default = 2
     cemu_pack = "AP"
     cemu_option = "FastRunSpeed"
     cemu_selection_names = [
@@ -669,14 +689,120 @@ class IncludeQuestLocations(DefaultOnToggle):
     display_name = "Include Quest Locations"
 
 
-class IncludeShopLocations(CemuChoice):
-    """Allows you to receive items from the shop and adds those locations to the pool"""
-    display_name = "Include Shop Locations"
-    default = 1
+class IncludeShopBlueprintLocations(CemuChoice):
+    """Allows you to receive items from the shop blueprints and adds those locations to the pool.
+    Logic is not fleshed out right now"""
+    display_name = "Include Shop Blueprint Locations"
+    default = 0
     option_off = 0
     option_on = 1
     cemu_pack = "AP"
-    cemu_option = "Shops"
+    cemu_option = "ShopBlueprint"
+    cemu_selection_names = [
+        "disable",
+        "on",
+    ]
+
+
+class IncludeShopArmorLocations(CemuChoice):
+    """Allows you to receive items from the shop armor and adds those locations to the pool.
+    Logic is not fleshed out right now"""
+    display_name = "Include Shop Armor Locations"
+    default = 0
+    option_off = 0
+    option_on = 1
+    cemu_pack = "AP"
+    cemu_option = "ShopArmor"
+    cemu_selection_names = [
+        "disable",
+        "on",
+    ]
+
+
+class IncludeShopWeaponLocations(CemuChoice):
+    """Allows you to receive items from the shop weapons and adds those locations to the pool.
+    Logic is not fleshed out right now"""
+    display_name = "Include Shop Weapon Locations"
+    default = 0
+    option_off = 0
+    option_on = 1
+    cemu_pack = "AP"
+    cemu_option = "ShopWeapon"
+    cemu_selection_names = [
+        "disable",
+        "on",
+    ]
+
+
+class IncludeShopAugmentLocations(CemuChoice):
+    """Allows you to receive items from the shop augments and adds those locations to the pool.
+    Logic is not fleshed out right now"""
+    display_name = "Include Shop Augment Locations"
+    default = 0
+    option_off = 0
+    option_on = 1
+    cemu_pack = "AP"
+    cemu_option = "ShopAugment"
+    cemu_selection_names = [
+        "disable",
+        "on",
+    ]
+
+
+class IncludeShopSkellArmorLocations(CemuChoice):
+    """Allows you to receive items from the shop skell armor and adds those locations to the pool.
+    Logic is not fleshed out right now"""
+    display_name = "Include Shop Skell Armor Locations"
+    default = 0
+    option_off = 0
+    option_on = 1
+    cemu_pack = "AP"
+    cemu_option = "ShopSkellArmor"
+    cemu_selection_names = [
+        "disable",
+        "on",
+    ]
+
+
+class IncludeShopSkellWeaponLocations(CemuChoice):
+    """Allows you to receive items from the shop skell weapon and adds those locations to the pool.
+    Logic is not fleshed out right now"""
+    display_name = "Include Shop Skell Weapon Locations"
+    default = 0
+    option_off = 0
+    option_on = 1
+    cemu_pack = "AP"
+    cemu_option = "ShopSkellWeapon"
+    cemu_selection_names = [
+        "disable",
+        "on",
+    ]
+
+
+class IncludeShopSkellAugmentLocations(CemuChoice):
+    """Allows you to receive items from the shop skell augments and adds those locations to the pool.
+    Logic is not fleshed out right now"""
+    display_name = "Include Shop Skell Augment Locations"
+    default = 0
+    option_off = 0
+    option_on = 1
+    cemu_pack = "AP"
+    cemu_option = "ShopSkellAugment"
+    cemu_selection_names = [
+        "disable",
+        "on",
+    ]
+
+
+class IncludeShopSkellFrameLocations(CemuChoice):
+    """Allows you to receive items from the shop skell frames and adds those locations to the pool.
+    Logic is not fleshed out right now"""
+    display_name = "Include Shop Skell Frame Locations"
+    default = 0
+    option_off = 0
+    option_on = 1
+    cemu_pack = "AP"
+    cemu_option = "ShopSkellFrame"
     cemu_selection_names = [
         "disable",
         "on",
@@ -931,10 +1057,17 @@ class XenobladeXOptions(PerGameCommonOptions):
     # Locations
     clp: IncludeCollectopediaLocations
     loc: IncludeLocationLocations
-    # shp: IncludeShopLocations
     # qst: IncludeQuestLocations
     ebk: IncludeEnemyBookLocations
     enemy_book_threshold: EnemyBookThreshold
+    shpbp: IncludeShopBlueprintLocations
+    shpamr: IncludeShopArmorLocations
+    shpwpn: IncludeShopWeaponLocations
+    shpaug: IncludeShopAugmentLocations
+    shpskamr: IncludeShopSkellArmorLocations
+    shpskwpn: IncludeShopSkellWeaponLocations
+    shpskaug: IncludeShopSkellAugmentLocations
+    shpskf: IncludeShopSkellFrameLocations
 
     # Items
     amr: IncludeGroundArmor
@@ -987,8 +1120,9 @@ class XenobladeXOptions(PerGameCommonOptions):
     moon_jump_width: MoonJumpWidth
     moon_jump_height: MoonJumpHeight
     # run_forrest_run: RunForrestRun
-    were_going_to_plad_horizontal: WereGoingToPladHorizontal
-    were_going_to_plad_vertical: WereGoingToPladVertical
+    # were_going_to_plad_horizontal: WereGoingToPladHorizontal
+    # were_going_to_plad_vertical: WereGoingToPladVertical
+    fast_walk_speed: FastWalkSpeed
     fast_run_speed: FastRunSpeed
     faster_run_speed: FasterRunSpeed
 
@@ -1012,9 +1146,16 @@ option_groups: list[OptionGroup] = [
         IncludeCollectopediaLocations,
         IncludeLocationLocations,
         # IncludeQuestLocations,
-        # IncludeShopLocations,
         IncludeEnemyBookLocations,
         EnemyBookThreshold,
+        IncludeShopBlueprintLocations,
+        IncludeShopArmorLocations,
+        IncludeShopWeaponLocations,
+        IncludeShopAugmentLocations,
+        IncludeShopSkellArmorLocations,
+        IncludeShopSkellWeaponLocations,
+        IncludeShopSkellAugmentLocations,
+        IncludeShopSkellFrameLocations,
     ]),
     OptionGroup("Items", [
         IncludeGroundArmor,
@@ -1067,8 +1208,9 @@ option_groups: list[OptionGroup] = [
         MoonJumpWidth,
         MoonJumpHeight,
         # RunForrestRun,
-        WereGoingToPladHorizontal,
-        WereGoingToPladVertical,
+        # WereGoingToPladHorizontal,
+        # WereGoingToPladVertical,
+        FastWalkSpeed,
         FastRunSpeed,
         FasterRunSpeed,
     ])

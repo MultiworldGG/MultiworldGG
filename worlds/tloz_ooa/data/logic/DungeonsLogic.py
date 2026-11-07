@@ -928,15 +928,15 @@ def make_d8_logic(player: int):
 
 def make_d11_logic(player: int):
     return [
-        [Inside("d11"), "d11 pots puzzle 1", False, lambda state: all([
-            # Entrance Stuff
-            ooa_has_bracelet(state, player),
+        [Inside("d11"), "d11 entrance", False, lambda state: all([
+            ooa_can_break_pot(state, player),
             ooa_can_use_ember_seeds(state, player, True),
-
-            # Actual Requirements
+        ])],
+        ["d11 entrance", "d11 pots puzzle 1", False, lambda state: all([
+            ooa_has_bracelet(state, player),
             ooa_has_cane(state, player)
         ])],
-        [Inside("d11"), "d11 statue 1 puzzle", False, lambda state: all([
+        ["d11 entrance", "d11 statue 1 puzzle", False, lambda state: all([
             ooa_has_small_keys(state, player, 11, 1),
             ooa_can_jump_2_wide_pit(state, player, False),
             any([
@@ -947,13 +947,13 @@ def make_d11_logic(player: int):
                 ])
             ])
         ])],
-        [Inside("d11"), "d11 bridge puzzle 1", False, lambda state: all([
+        ["d11 entrance", "d11 bridge puzzle 1", False, lambda state: all([
             ooa_has_small_keys(state, player, 11, 2),
             ooa_can_jump_2_wide_pit(state, player, False),
             ooa_can_use_pegasus_seeds(state, player),
             ooa_has_seedshooter(state, player)
         ])],
-        [Inside("d11"), "d11 shoot eyes", False, lambda state: all([
+        ["d11 entrance", "d11 shoot eyes", False, lambda state: all([
             ooa_has_small_keys(state, player, 11, 3),
             ooa_can_jump_2_wide_pit(state, player, False),
             ooa_has_seedshooter(state, player),

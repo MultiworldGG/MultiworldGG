@@ -288,7 +288,7 @@
       "Granny's Island - First Island Towards Sewer": "B1 | GP+J1+OS | X1+GP | X2+J1",
       "Granny's Island - Second Island Towards Sewer": "B1 & X2/OS/GP/J1 | X1+GP+OS",
       "Granny's Island - Island Past Cloro-Phil": "GP | B2 | X1 & B1/J2",
-      "Granny's Island - High Pillar by Lab": "X1/GP/J1 & B1 | NSAR+X1+GP & X2/J1 | X1+GP+J2 | X3+J1",
+      "Granny's Island - High Pillar by Lab": "X2/GP/J1 & B1 | NSAR+X1+GP & X2/J1 | X1+GP+J2 | X3+J1",
       "Granny's Island - Crash Again Island": "X1+B2+GP | X2+B2 & X3/J1 | X2+GP & X3/B1 | X3+J1",
       "Granny's Island - Crash Again Roof": "X2+GP & X3/B2 | GP+OS & X2/B1",
       "Granny's Island - Sewer Island": "X1+B2+J2+GP | X2+B2+J1 | X2+B1+GP",
@@ -474,8 +474,7 @@
       "Granny's Island - Coin Bag on Mountain Ramp House": 300749,
       "Granny's Island - Coin Bag on Roofs Behind Granny's Statue": 300318,
       "Granny's Island - Coin Bag on Path to Granny's Statue": 300573,
-      "Granny's Island - Coin Bag on Roof in Front of Granny's Statue": 300474,
-      "Granny's Island - Coin Bag on Power Shovel": 300270
+      "Granny's Island - Coin Bag on Roof in Front of Granny's Statue": 300474
     },
     "coins": {
       "Granny's Island - Coin on Roofs Behind Granny's Statue": 300300,
@@ -544,6 +543,7 @@
       "Granny's Island - Gear - Gym Gears Roof": 100012
     },
     "coinbags": {
+      "Granny's Island - Coin Bag on Power Shovel": 300270,
       "Granny's Island - Coin Bag Near MMA Champion": 300704,
       "Granny's Island - Coin Bag on Roof by Spin Blocks #1": 300394,
       "Granny's Island - Coin Bag on Roof by Spin Blocks #2": 300395,
@@ -1405,7 +1405,7 @@
     },
     "connections": {
       "Morio's Lab - Ground Floor Second Wrench": "",
-      "Morio's Lab - Inside Morio's Room": "NHS+MorioHat | HS+MorioHat & {Morio's Wardrobe}"
+      "Morio's Lab - Inside Morio's Room": "MorioHat"
     }
   },
   "Morio's Lab - Inside Morio's Room": {
@@ -1643,7 +1643,7 @@
     "connections": {
       "Morio's Lab - Path to Morio's Room": "FGU",
       "Morio's Lab - Outside Morio's Room": "FGU",
-      "Morio's Lab - Inside Morio's Room Jump": "NHS+FGU+MorioHat | HS+FGU+MorioHat & {Morio's Wardrobe}",
+      "Morio's Lab - Inside Morio's Room Jump": "FGU+MorioHat",
       "Morio's Lab - Third Floor Wrenches Lower": "FGU/Spike",
       "Morio's Lab - Third Floor Wrenches Middle": "FGU",
       "Morio's Lab - Third Floor Wrenches Upper": "Spike",
@@ -1867,7 +1867,7 @@
       "Morio's Lab - Second Floor Access to Shortcut Pipe": "X1",
       "Morio's Lab - Fifth Floor Crash Test Area": "X3+OS+FGU",
       "Morio's Lab - Middle Floors 3 Golden Propellers": "FGU+B1+Spike",
-      "Morio's Lab - Inside Morio's Room Jump": "NHS+MorioHat+B1 | HS+MorioHat+B1 & {Morio's Wardrobe}",
+      "Morio's Lab - Inside Morio's Room Jump": "MorioHat+B1",
       "Morio's Lab - Outside Morio's Room": "X2",
       "Morio's Lab - Ground Floor Orange Blocks": "X2",
       "Morio's Lab - Alcove Above Arcade Panik": "X2",

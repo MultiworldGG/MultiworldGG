@@ -30,7 +30,6 @@ item_pools_template: dict[str, list[ItemPoolEntry]] = {
         ItemPoolEntry(item=items_dict['Cold', 1], quantity=1),
         ItemPoolEntry(item=items_dict['Shock', 1], quantity=1),
         ItemPoolEntry(item=items_dict['Wave', 1], quantity=1),
-        ItemPoolEntry(item=items_dict['SP Upgrade', 1], quantity=2),
         ItemPoolEntry(item=items_dict['Disc of Flora', 1], quantity=1),
         ItemPoolEntry(item=items_dict['Disc of Insight', 1], quantity=1),
         ItemPoolEntry(item=items_dict['Cursed Coin', 1], quantity=1),
@@ -84,6 +83,7 @@ item_pools_template: dict[str, list[ItemPoolEntry]] = {
         ItemPoolEntry(item=items_dict['Omni Lock', 1], quantity=1),
         ItemPoolEntry(item=items_dict['Golden Triangle', 1], quantity=3),
         ItemPoolEntry(item=items_dict["King's Ring", 1], quantity=1),
+        ItemPoolEntry(item=items_dict['Encrypted Key', 1], quantity=4),
     ],
     "Common Consumables": [
         ItemPoolEntry(item=items_dict['Sandwich', 3], quantity=40),

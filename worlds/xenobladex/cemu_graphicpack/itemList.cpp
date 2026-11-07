@@ -16,10 +16,11 @@ extern int itemListBase; // be especially careful here
 char _formatAugmentText[] = "IT Id=%03x Tp=%02x:";
 char _formatItemText[] = "IT Id=%03x Tp=%02x Cn=%03x:";
 char _formatItemGearText[]="IT Id=%03x Tp=%02x S1Id=%03x U1=%01x S2Id=%03x U2=%01x S3Id=%03x U3=%01x A1Id=%04x A2Id=%04x A3Id=%04x:";
-int _itemTypes[] = {1, 6, 7, 0xa, 0xf, 0x14, 0x19, 0x1a, 0x1b, 0x1c, 0x1d, 0x1e, 0x1f};
+int _itemTypes[] = {1, 6, 7, 0xa, 0xf, 0x14, 0x19, 0x1a, 0x1b, 0x1c, 0x1d, 0x1e};
 
 unsigned int** getItemTypeInfo(int*, int);
 
+int getKnowledgeBit(int id, int bit, int doll);
 
 char* _postItemList(char* stringStartPtr, char* stringCurrentPtr, char* stringEndPtr, int maxEntrySize) {
     for(int type : _itemTypes){
@@ -73,6 +74,22 @@ char* _postItemList(char* stringStartPtr, char* stringCurrentPtr, char* stringEn
             }
         }
 
+    }
+    return stringCurrentPtr;
+}
+
+char* _postBattleItemList(char* stringStartPtr, char* stringCurrentPtr, char* stringEndPtr, int maxEntrySize) {
+    for(int id = 1; id < 32; id++){
+        int value = getKnowledgeBit(4000 - id, 0xFF, 0);
+        if (value == 0)
+            continue;
+
+        stringCurrentPtr += __sprintf_s(stringCurrentPtr, maxEntrySize, _formatItemText, id, 0x1f, value);
+            
+        if(stringCurrentPtr > stringEndPtr){
+            _postCurl(stringStartPtr);
+            stringCurrentPtr = stringStartPtr;
+        }
     }
     return stringCurrentPtr;
 }

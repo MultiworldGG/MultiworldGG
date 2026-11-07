@@ -77,14 +77,14 @@ class OracleOfAgesWorld(World):
         return cls.world_version.as_simple_string()
 
     def __init__(self, multiworld, player):
-
-        super().__init__(multiworld, player)
         self.tracker_world["poptracker_name_mapping"] = {}
         for location_name, location_data in LOCATIONS_DATA.items():
             split = location_name.split(": ")
             poptrackerName = split[-1] + "/"
             self.tracker_world["poptracker_name_mapping"][poptrackerName] = self.location_name_to_id[location_name]
             #print(f"{poptrackerName} ({location_name}) => {self.location_name_to_id[location_name]}")
+
+        super().__init__(multiworld, player)
 
         self.pre_fill_items = []
         self.dungeon_items = []

@@ -20,17 +20,27 @@ _addItem:
 	lwz r9,8(r31)
 	cmpwi cr0,r9,9
 	beq cr0,_add_L2
+	lwz r9,8(r31)
+	cmpwi cr0,r9,31
+	bne cr0,_add_L3
 	lwz r9,12(r31)
-	li r5,1
+	lwz r5,16(r31)
+	mr r4,r9
+	lwz r3,8(r31)
+	bl _addConsumeable
+	b _add_L5
+_add_L3:
+	lwz r9,12(r31)
+	lwz r5,16(r31)
 	mr r4,r9
 	lwz r3,8(r31)
 	bl reqMenuAddItemFromId
-	b _add_L4
+	b _add_L5
 _add_L2:
 	addi r9,r31,12
 	mr r3,r9
 	bl addGarage
-_add_L4:
+_add_L5:
 	nop
 	addi r11,r31,32
 	lwz r0,4(r11)
@@ -89,12 +99,12 @@ _after_add_1__malloc:
 	sth r10,0(r9)
 	li r9,0
 	stw r9,8(r31)
-	b _add_L6
-_add_L9:
+	b _add_L7
+_add_L10:
 	lwz r10,8(r31)
 	lwz r9,44(r31)
 	cmpw cr0,r10,r9
-	bge cr0,_add_L7
+	bge cr0,_add_L8
 	lwz r9,8(r31)
 	addi r9,r9,9
 	slwi r9,r9,1
@@ -102,8 +112,8 @@ _add_L9:
 	add r9,r10,r9
 	li r10,0
 	sth r10,0(r9)
-	b _add_L8
-_add_L7:
+	b _add_L9
+_add_L8:
 	lwz r9,8(r31)
 	addi r9,r9,9
 	slwi r9,r9,1
@@ -111,14 +121,14 @@ _add_L7:
 	add r9,r10,r9
 	li r10,-1
 	sth r10,0(r9)
-_add_L8:
+_add_L9:
 	lwz r9,8(r31)
 	addi r9,r9,1
 	stw r9,8(r31)
-_add_L6:
+_add_L7:
 	lwz r9,8(r31)
 	cmpwi cr0,r9,2
-	ble cr0,_add_L9
+	ble cr0,_add_L10
 	li r4,1
 	lwz r3,12(r31)
 	bl reqMenuAddItemFromInfo
@@ -133,6 +143,44 @@ _add_L6:
 _after_add_2__free:
 	nop
 	addi r11,r31,64
+	lwz r0,4(r11)
+	mtlr r0
+	lwz r31,-4(r11)
+	mr r1,r11
+	blr
+_addConsumeable:
+	stwu r1,-48(r1)
+	mflr r0
+	stw r0,52(r1)
+	stw r31,44(r1)
+	mr r31,r1
+	stw r3,24(r31)
+	stw r4,28(r31)
+	stw r5,32(r31)
+	lwz r9,28(r31)
+	subfic r9,r9,4000
+	li r5,0
+	li r4,255
+	mr r3,r9
+	bl getKnowledgeBit
+	mr r9,r3
+	stw r9,8(r31)
+	lwz r10,32(r31)
+	lwz r9,8(r31)
+	subf r9,r9,r10
+	stw r9,12(r31)
+	lwz r5,12(r31)
+	lwz r4,28(r31)
+	lwz r3,24(r31)
+	bl reqMenuAddItemFromId
+	lwz r9,28(r31)
+	subfic r9,r9,4000
+	li r5,0
+	lwz r4,32(r31)
+	mr r3,r9
+	bl setKnowledgeValue
+	nop
+	addi r11,r31,48
 	lwz r0,4(r11)
 	mtlr r0
 	lwz r31,-4(r11)
@@ -170,8 +218,8 @@ _addArt:
 	stw r4,28(r31)
 	li r9,0
 	stw r9,8(r31)
-	b _add_L13
-_add_L14:
+	b _add_L15
+_add_L16:
 	lwz r3,8(r31)
 	bl GetCharaDataPtr
 	mr r9,r3
@@ -183,10 +231,10 @@ _add_L14:
 	lwz r9,8(r31)
 	addi r9,r9,1
 	stw r9,8(r31)
-_add_L13:
+_add_L15:
 	lwz r9,8(r31)
 	cmpwi cr0,r9,18
-	ble cr0,_add_L14
+	ble cr0,_add_L16
 	nop
 	nop
 	addi r11,r31,48
@@ -205,8 +253,8 @@ _addSkill:
 	stw r4,28(r31)
 	li r9,0
 	stw r9,8(r31)
-	b _add_L16
-_add_L17:
+	b _add_L18
+_add_L19:
 	lwz r3,8(r31)
 	bl GetCharaDataPtr
 	mr r9,r3
@@ -218,10 +266,10 @@ _add_L17:
 	lwz r9,8(r31)
 	addi r9,r9,1
 	stw r9,8(r31)
-_add_L16:
+_add_L18:
 	lwz r9,8(r31)
 	cmpwi cr0,r9,18
-	ble cr0,_add_L17
+	ble cr0,_add_L19
 	nop
 	nop
 	addi r11,r31,48
@@ -288,7 +336,7 @@ _addKey:
 	stw r4,60(r31)
 	lwz r9,56(r31)
 	cmpwi cr0,r9,6
-	bne cr0,_add_L21
+	bne cr0,_add_L23
 	addi r9,r31,44
 	li r4,0
 	mr r3,r9
@@ -297,50 +345,50 @@ _addKey:
 	mr r4,r9
 	li r3,0
 	bl SetDead
-	b _add_L22
-_add_L21:
-	lwz r9,56(r31)
-	cmpwi cr0,r9,13
-	bne cr0,_add_L23
-	li r3,0
-	bl _reqForceDamagePlayerTargetGoner
-	b _add_L22
+	b _add_L24
 _add_L23:
 	lwz r9,56(r31)
+	cmpwi cr0,r9,13
+	bne cr0,_add_L25
+	li r3,0
+	bl _reqForceDamagePlayerTargetGoner
+	b _add_L24
+_add_L25:
+	lwz r9,56(r31)
 	cmpwi cr0,r9,32
-	bne cr0,_add_L24
+	bne cr0,_add_L26
 	lwz r5,60(r31)
 	li r4,1
 	li r3,16
 	bl setLocal
-	b _add_L22
-_add_L24:
+	b _add_L24
+_add_L26:
 	lwz r9,56(r31)
 	cmpwi cr0,r9,33
-	bne cr0,_add_L25
+	bne cr0,_add_L27
 	lis r9,fnetBasePtr@ha
 	lwz r9,fnetBasePtr@l(r9)
 	lwz r4,60(r31)
 	mr r3,r9
 	bl changeScenarioFlag
-	b _add_L22
-_add_L25:
+	b _add_L24
+_add_L27:
 	lwz r9,56(r31)
 	cmpwi cr0,r9,34
-	bne cr0,_add_L26
+	bne cr0,_add_L28
 	li r5,1
 	lwz r4,60(r31)
 	li r3,1
 	bl setLocal
-	b _add_L22
-_add_L26:
+	b _add_L24
+_add_L28:
 	lwz r9,56(r31)
 	addi r9,r9,23
 	li r5,1
 	mr r4,r9
 	li r3,29
 	bl _addItem
-_add_L22:
+_add_L24:
 	li r9,24155
 	stw r9,16(r31)
 	li r9,30224
@@ -349,34 +397,34 @@ _add_L22:
 	stw r9,24(r31)
 	lwz r9,56(r31)
 	cmpwi cr0,r9,1
-	bne cr0,_add_L27
+	bne cr0,_add_L29
 	lwz r5,60(r31)
 	lwz r4,16(r31)
 	li r3,1
 	bl setLocal
-	b _add_L42
-_add_L27:
+	b _add_L44
+_add_L29:
 	lwz r9,56(r31)
 	cmpwi cr0,r9,2
-	bne cr0,_add_L29
+	bne cr0,_add_L31
 	lwz r5,60(r31)
 	lwz r4,20(r31)
 	li r3,1
 	bl setLocal
-	b _add_L42
-_add_L29:
+	b _add_L44
+_add_L31:
 	lwz r9,56(r31)
 	cmpwi cr0,r9,3
-	bne cr0,_add_L30
+	bne cr0,_add_L32
 	lwz r5,60(r31)
 	lwz r4,24(r31)
 	li r3,1
 	bl setLocal
-	b _add_L42
-_add_L30:
+	b _add_L44
+_add_L32:
 	lwz r9,56(r31)
 	cmpwi cr0,r9,4
-	bne cr0,_add_L31
+	bne cr0,_add_L33
 	lis r9,fnetBasePtr@ha
 	lwz r10,fnetBasePtr@l(r9)
 	lwz r9,60(r31)
@@ -384,11 +432,11 @@ _add_L30:
 	mr r4,r9
 	mr r3,r10
 	bl changeScenarioFlag
-	b _add_L42
-_add_L31:
+	b _add_L44
+_add_L33:
 	lwz r9,56(r31)
 	cmpwi cr0,r9,5
-	bne cr0,_add_L32
+	bne cr0,_add_L34
 	lis r9,_collepediaFlag@ha
 	lwz r9,_collepediaFlag@l(r9)
 	li r5,3
@@ -403,7 +451,7 @@ _add_L31:
 	bl setLocal
 	lwz r9,60(r31)
 	cmpwi cr0,r9,1
-	ble cr0,_add_L33
+	ble cr0,_add_L35
 	li r5,1
 	li r4,24
 	li r3,29
@@ -412,10 +460,10 @@ _add_L31:
 	lwz r4,16(r31)
 	li r3,1
 	bl setLocal
-_add_L33:
+_add_L35:
 	lwz r9,60(r31)
 	cmpwi cr0,r9,2
-	ble cr0,_add_L42
+	ble cr0,_add_L44
 	li r5,1
 	li r4,25
 	li r3,29
@@ -424,25 +472,25 @@ _add_L33:
 	lwz r4,20(r31)
 	li r3,1
 	bl setLocal
-	b _add_L42
-_add_L32:
+	b _add_L44
+_add_L34:
 	lwz r9,56(r31)
 	cmpwi cr0,r9,14
-	bne cr0,_add_L42
+	bne cr0,_add_L44
 	lis r9,characterLevel@ha
 	lwz r9,characterLevel@l(r9)
 	cmpwi cr0,r9,0
-	beq cr0,_add_L42
+	beq cr0,_add_L44
 	lwz r9,60(r31)
 	cmpwi cr0,r9,60
-	ble cr0,_add_L34
+	ble cr0,_add_L36
 	li r9,60
 	stw r9,60(r31)
-_add_L34:
+_add_L36:
 	li r9,0
 	stw r9,8(r31)
-	b _add_L35
-_add_L36:
+	b _add_L37
+_add_L38:
 	lwz r9,60(r31)
 	mr r30,r9
 	lwz r3,8(r31)
@@ -453,14 +501,14 @@ _add_L36:
 	lwz r9,8(r31)
 	addi r9,r9,1
 	stw r9,8(r31)
-_add_L35:
+_add_L37:
 	lwz r9,8(r31)
 	cmpwi cr0,r9,18
-	ble cr0,_add_L36
+	ble cr0,_add_L38
 	li r9,0
 	stw r9,12(r31)
-	b _add_L37
-_add_L41:
+	b _add_L39
+_add_L43:
 	li r9,0
 	stw r9,52(r31)
 	addi r9,r31,52
@@ -472,6 +520,7 @@ _add_L41:
 	stw r9,28(r31)
 	lwz r9,52(r31)
 	srwi r9,r9,19
+	rlwinm r9,r9,0,20,31
 	stw r9,32(r31)
 	lwz r9,32(r31)
 	mulli r9,r9,12
@@ -481,7 +530,7 @@ _add_L41:
 	lwz r9,36(r31)
 	lwz r9,0(r9)
 	cmpwi cr0,r9,0
-	beq cr0,_add_L43
+	beq cr0,_add_L45
 	lwz r9,36(r31)
 	lwz r9,0(r9)
 	mr r3,r9
@@ -491,18 +540,18 @@ _add_L41:
 	lwz r4,60(r31)
 	lwz r3,40(r31)
 	bl setLv
-	b _add_L40
-_add_L43:
+	b _add_L42
+_add_L45:
 	nop
-_add_L40:
+_add_L42:
 	lwz r9,12(r31)
 	addi r9,r9,1
 	stw r9,12(r31)
-_add_L37:
+_add_L39:
 	lwz r9,12(r31)
 	cmpwi cr0,r9,3
-	ble cr0,_add_L41
-_add_L42:
+	ble cr0,_add_L43
+_add_L44:
 	nop
 	addi r11,r31,80
 	lwz r0,4(r11)

@@ -165,7 +165,8 @@ def get_item_hint_text(item: Item, world: 'OOTWorld') -> str:
 def get_remote_world_display(local_player: int, other_player: Optional[int]) -> Optional[int]:
     if other_player is None or other_player == local_player:
         return None
-    return other_player + 1
+    # APWorld required change: AP Player IDs already start with 1
+    return other_player
 
 
 def is_major_item(item: Item) -> bool:
@@ -732,7 +733,8 @@ def get_goal_hint(world: 'OOTWorld', checked: set[str]) -> HintReturn:
         player_text = "the"
         goal_text = goal.hint_text
     else:
-        player_text = "Player %s's" % (world_id + 1)
+        # APWorld required change: AP Player IDs already start with 1
+        player_text = "Player %s's" % world_id
         other_world = world.multiworld.worlds[world_id]
         if hasattr(other_world, 'goal_categories') and other_world.goal_categories and goal_category.name in other_world.goal_categories:
             goal_text = other_world.goal_categories[goal_category.name].get_goal(goal.name).hint_text
@@ -1779,9 +1781,9 @@ def build_boss_string(reward: str, color: str, world: 'OOTWorld') -> str:
                 hint_area = HintArea.at(location)
                 location_text = hint_area.text(world.clearer_hints, preposition=True, world=remote_world)
             except HintAreaNotFound:
-                # Cross-game placement (anywhere mode) - location lives in a non-OoT world
-                # with no hint-area mapping. Render a generic preposition + world annotation.
-                location_text = HintArea.ROOT.text(world.clearer_hints, preposition=True, world=remote_world)
+                # Other games have no OoT hint areas. Describe the location's world
+                location_text = (f"in #player {remote_world}'s world#" if remote_world is not None
+                                 else "in #your world#")
         text = GossipText(f"\x08\x13{item_icon}One {location_text}...", [color], prefix='')
     return str(text) + '\x04'
 

@@ -12,6 +12,7 @@ from .constants import (
     MAX_REQUIRED_RUN_WINS,
     MAX_SHOP_SLOTS,
     NUM_WAVES,
+    PRIMAL_DREAD_CHARACTERS,
     TOTAL_NUM_CHARACTERS,
 )
 
@@ -57,6 +58,8 @@ class StartingCharacters(Choice):
     * Random Base Game: Start with random characters from the base game only.
     * Default Abyssal Terrors: Start with Sailor, Curious, Builder, Captain, and Creature.
     * Random Abyssal Terrors: Start with random characters from the Abyssal Terrors DLC.
+    * Default Primal Dread: Start with Veteran, Archaeologist, Droid, Time Shifter, and Variant.
+    * Random Primal Dread: Start with random characters from the Primal Dread DLC.
     """
 
     option_default_all = 0
@@ -65,6 +68,8 @@ class StartingCharacters(Choice):
     option_random_base_game = 3
     option_default_abyssal_terrors = 4
     option_random_abyssal_terrors = 5
+    option_default_primal_dread = 6
+    option_random_primal_dread = 7
 
     default = 0
     display_name = "Starting Characters"
@@ -521,6 +526,29 @@ class IncludeAbyssalTerrorsCharacters(OptionSet):
     valid_keys = ABYSSAL_TERRORS_CHARACTERS.characters
 
 
+class EnablePrimalDreadDLC(Toggle):
+    """Enable options which require the "Primal Dread" DLC.
+
+    Currently, this only enables adding the checks for all the DLC characters.
+    """
+
+    display_name = "Enable Primal Dread DLC"
+
+
+class IncludePrimalDreadCharacters(OptionSet):
+    """Which characters from the "Primal Dread" DLC to include for checks.
+
+    Characters not listed here will not be available to play. There will be no item to unlock them, and there will be
+    no run or wave complete checks associated with them.
+
+    Does nothing if "Enable Primal Dread DLC" is not set.
+    """
+
+    default = frozenset(PRIMAL_DREAD_CHARACTERS.characters)
+    display_name = "Include Primal Dread Characters"
+    valid_keys = PRIMAL_DREAD_CHARACTERS.characters
+
+
 @dataclass
 class BrotatoOptions(PerGameCommonOptions, DeathLinkMixin):
     num_victories: NumberRequiredWins
@@ -556,3 +584,5 @@ class BrotatoOptions(PerGameCommonOptions, DeathLinkMixin):
     num_starting_lock_buttons: NumberStartingShopLockButtons
     enable_abyssal_terrors_dlc: EnableAbyssalTerrorsDLC
     include_abyssal_terrors_characters: IncludeAbyssalTerrorsCharacters
+    enable_primal_dread_dlc: EnablePrimalDreadDLC
+    include_primal_dread_characters: IncludePrimalDreadCharacters

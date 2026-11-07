@@ -574,7 +574,7 @@
     },
     "subwarps": {
       "Tosla Offices (Fifth Floor) - Down Elevator": ["Tosla Offices (Fourth Floor) - After Golden Spring", ""],
-      "Tosla Offices (Fifth Floor) - Employees Only Door": ["Tosla Offices (Employees Only) - Starting Area", "EmployeeHat"]
+      "Tosla Offices (Fifth Floor) - Employees Only Door": ["Tosla Offices (Employees Only) - Starting Area", "EmployeeHat | X1+OOB+B1+J1 & X2/B2"]
     },
     "specialrules": {
       "Tosla Offices (Fifth Floor) - Gear - On Pillar": "PMB/PMJ"

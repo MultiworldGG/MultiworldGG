@@ -1,5 +1,5 @@
 from rule_builder.options import OptionFilter
-from rule_builder.rules import Has, HasAny, Rule
+from rule_builder.rules import Has, HasAny, Rule, HasGroup
 from .level import LogicLevelResolv
 from ..Options import LogicLevelSteps
 
@@ -63,4 +63,5 @@ doll_rules: dict[str, Rule] = {
     "Blade License": Has("KEY: Progressive License"),
     "Skell License": Has("KEY: Progressive License", 2) & skell_rule,
     "Flight Module": Has("KEY: Progressive License", 3) & skell_rule,
+    "Skell Frame": HasGroup("SKF"),
 }

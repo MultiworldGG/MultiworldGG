@@ -39,7 +39,7 @@ class XenobladeXWorld(CachedRuleBuilderWorld):
     topology_present = True
     web = XenobladeXWeb()
 
-    data_version = 18
+    data_version = 19
     base_id: int = 4100000
     ut_can_gen_without_yaml = True
 

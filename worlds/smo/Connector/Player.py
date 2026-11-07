@@ -128,7 +128,7 @@ class SMOPlayer:
             raise f"The message ({message}) cannot be UTF-8 encoded."
 
         # % sign is a formatting character, so it needs to be handled specially
-        message.replace('%', '%%')
+        message = message.replace('%', '%%')
 
         if len(message) <= self.MAX_MESSAGE_SIZE:
             self.messages.append(message)

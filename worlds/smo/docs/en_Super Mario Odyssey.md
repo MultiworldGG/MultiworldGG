@@ -15,6 +15,8 @@ The [player options page for this game](../player-options) contains all the opti
 - Choose which kingdom is your win condition.
 
 ## Credits
-- Sanae Author of original server code
-- CraftyBoss Author of SMO Online
+- Sanae: Author of original server code
+- CraftyBoss: Author of SMO Online
+- KGamer77: Original SMO AP implementation
+- OvOPlant: Archipelago Logo
 - All other contributors to the aforementioned repos.

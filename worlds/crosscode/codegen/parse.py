@@ -1,7 +1,6 @@
 """
 Provides a memoizing parser for the JSON data.
 """
-
 import string
 import typing
 
@@ -351,10 +350,13 @@ class JsonParser:
         if "condition" in raw:
             condition = self.parse_condition(raw["condition"])
 
+        bidirectional = raw.get("bidirectional", True)
+
         return RegionConnection(
             region_from=region_from,
             region_to=region_to,
             cond=condition,
+            bidirectional=bidirectional,
             metadata=raw.get("metadata", None)
         )
 

@@ -25,6 +25,7 @@ _dollList_L8:
 	mr r9,r3
 	addic r10,r9,-1
 	subfe r9,r10,r9
+	rlwinm r9,r9,0,24,31
 	cmpwi cr0,r9,0
 	beq cr0,_dollList_L3
 	li r9,0
@@ -39,55 +40,69 @@ _dollList_L7:
 	stw r9,48(r31)
 	lwz r9,48(r31)
 	lhz r9,0(r9)
+	rlwinm r9,r9,0,16,31
 	cmpwi cr0,r9,0
 	beq cr0,_dollList_L10
 	lwz r9,48(r31)
 	lhz r9,0(r9)
+	rlwinm r9,r9,0,16,31
 	stw r9,52(r31)
 	lwz r9,48(r31)
 	addi r9,r9,2
 	lhz r9,0(r9)
+	rlwinm r9,r9,0,16,31
 	srwi r9,r9,4
+	rlwinm r9,r9,0,16,31
 	stw r9,56(r31)
 	lwz r9,48(r31)
 	addi r9,r9,4
 	lhz r9,0(r9)
+	rlwinm r9,r9,0,16,31
 	srwi r9,r9,4
+	rlwinm r9,r9,0,16,31
 	stw r9,60(r31)
 	lwz r9,48(r31)
 	addi r9,r9,6
 	lhz r9,0(r9)
+	rlwinm r9,r9,0,16,31
 	srwi r9,r9,4
+	rlwinm r9,r9,0,16,31
 	stw r9,64(r31)
 	lwz r9,48(r31)
 	addi r9,r9,2
 	lhz r9,0(r9)
+	rlwinm r9,r9,0,16,31
 	slwi r9,r9,28
 	srawi r9,r9,28
 	stw r9,68(r31)
 	lwz r9,48(r31)
 	addi r9,r9,4
 	lhz r9,0(r9)
+	rlwinm r9,r9,0,16,31
 	slwi r9,r9,28
 	srawi r9,r9,28
 	stw r9,72(r31)
 	lwz r9,48(r31)
 	addi r9,r9,6
 	lhz r9,0(r9)
+	rlwinm r9,r9,0,16,31
 	slwi r9,r9,28
 	srawi r9,r9,28
 	stw r9,76(r31)
 	lwz r9,48(r31)
 	addi r9,r9,8
 	lhz r9,0(r9)
+	rlwinm r9,r9,0,16,31
 	stw r9,80(r31)
 	lwz r9,48(r31)
 	addi r9,r9,10
 	lhz r9,0(r9)
+	rlwinm r9,r9,0,16,31
 	stw r9,84(r31)
 	lwz r9,48(r31)
 	addi r9,r9,12
 	lhz r9,0(r9)
+	rlwinm r9,r9,0,16,31
 	stw r9,88(r31)
 	lwz r4,484(r31)
 	addi r9,r31,92
@@ -114,7 +129,7 @@ _dollList_L7:
 	lis r5,_formatDollText@ha
 	addi r5,r5,_formatDollText@l
 	lwz r3,476(r31)
-	crxor 6,6,6
+	crxor cr6,cr6,cr6
 	lis r12,_after_dollList_1__sprintf_s@ha
 	addi r12,r12,_after_dollList_1__sprintf_s@l
 	mtlr r12

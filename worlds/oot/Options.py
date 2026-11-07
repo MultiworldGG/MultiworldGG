@@ -869,13 +869,14 @@ shuffle_options: typing.Dict[str, type(Option)] = {
 
 class ShuffleDungeonRewards(Choice):
     """Control where Medallions and Spiritual Stones can be placed.
+    All modes except Anywhere keep rewards in your own world.
     Vanilla: Rewards appear at their vanilla locations (blue warps in their respective dungeons).
     Reward: Rewards are shuffled among all nine blue-warp reward locations.
     Dungeon: Each reward is shuffled within its own dungeon.
     Regional: Rewards are shuffled within their region.
     Overworld: Rewards are shuffled into overworld locations only.
     Any Dungeon: Rewards are shuffled into any dungeon location.
-    Anywhere: Rewards are shuffled into any location in the pool."""
+    Anywhere: Rewards can be anywhere in the multiworld."""
     display_name = "Shuffle Dungeon Rewards"
     option_vanilla = 0
     option_reward = 1

@@ -6,7 +6,7 @@ from ..constants import *
 class TestAlternativeGoals(PokemonSnapTestBase):
 
     options = {
-        "goal_type" : GOAL_POKEMON_PICS,
+        "goal_type": "pokemon_pictures",
         "pokemon_required" : 63,
         "photo_bonuses": "none",
         "special_poses": False,

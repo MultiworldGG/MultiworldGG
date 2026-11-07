@@ -37,51 +37,64 @@ _equipList_L6:
 	beq cr0,_equipList_L9
 	lwz r9,52(r31)
 	lhz r9,0(r9)
+	rlwinm r9,r9,0,16,31
 	stw r9,56(r31)
 	lwz r9,52(r31)
 	addi r9,r9,2
 	lhz r9,0(r9)
+	rlwinm r9,r9,0,16,31
 	srwi r9,r9,4
+	rlwinm r9,r9,0,16,31
 	stw r9,60(r31)
 	lwz r9,52(r31)
 	addi r9,r9,4
 	lhz r9,0(r9)
+	rlwinm r9,r9,0,16,31
 	srwi r9,r9,4
+	rlwinm r9,r9,0,16,31
 	stw r9,64(r31)
 	lwz r9,52(r31)
 	addi r9,r9,6
 	lhz r9,0(r9)
+	rlwinm r9,r9,0,16,31
 	srwi r9,r9,4
+	rlwinm r9,r9,0,16,31
 	stw r9,68(r31)
 	lwz r9,52(r31)
 	addi r9,r9,2
 	lhz r9,0(r9)
+	rlwinm r9,r9,0,16,31
 	slwi r9,r9,28
 	srawi r9,r9,28
 	stw r9,72(r31)
 	lwz r9,52(r31)
 	addi r9,r9,4
 	lhz r9,0(r9)
+	rlwinm r9,r9,0,16,31
 	slwi r9,r9,28
 	srawi r9,r9,28
 	stw r9,76(r31)
 	lwz r9,52(r31)
 	addi r9,r9,6
 	lhz r9,0(r9)
+	rlwinm r9,r9,0,16,31
 	slwi r9,r9,28
 	srawi r9,r9,28
 	stw r9,80(r31)
 	lwz r9,52(r31)
 	addi r9,r9,8
 	lhz r9,0(r9)
+	rlwinm r9,r9,0,16,31
 	stw r9,84(r31)
 	lwz r9,52(r31)
 	addi r9,r9,10
 	lhz r9,0(r9)
+	rlwinm r9,r9,0,16,31
 	stw r9,88(r31)
 	lwz r9,52(r31)
 	addi r9,r9,12
 	lhz r9,0(r9)
+	rlwinm r9,r9,0,16,31
 	stw r9,92(r31)
 	lwz r4,116(r31)
 	lwz r9,92(r31)
@@ -106,7 +119,7 @@ _equipList_L6:
 	lis r5,_formatEquipText@ha
 	addi r5,r5,_formatEquipText@l
 	lwz r3,108(r31)
-	crxor 6,6,6
+	crxor cr6,cr6,cr6
 	lis r12,_after_equipList_1__sprintf_s@ha
 	addi r12,r12,_after_equipList_1__sprintf_s@l
 	mtlr r12
@@ -148,6 +161,7 @@ _equipList_L2:
 	mr r9,r3
 	addic r10,r9,-1
 	subfe r9,r10,r9
+	rlwinm r9,r9,0,24,31
 	cmpwi cr0,r9,0
 	bne cr0,_equipList_L7
 	lwz r9,108(r31)

@@ -34,7 +34,7 @@ _friendList_L4:
 	addi r5,r9,_formatFriendText@l
 	mr r4,r10
 	lwz r3,28(r31)
-	crxor 6,6,6
+	crxor cr6,cr6,cr6
 	lis r12,_after_friendList_1__sprintf_s@ha
 	addi r12,r12,_after_friendList_1__sprintf_s@l
 	mtlr r12
@@ -66,6 +66,7 @@ _friendList_L2:
 	mr r9,r3
 	addic r10,r9,-1
 	subfe r9,r10,r9
+	rlwinm r9,r9,0,24,31
 	cmpwi cr0,r9,0
 	bne cr0,_friendList_L4
 	lwz r9,28(r31)

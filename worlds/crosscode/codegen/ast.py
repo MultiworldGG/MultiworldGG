@@ -314,6 +314,11 @@ def create_expression_region_connection(conn: RegionConnection):
         ]
     )
 
+    if not conn.bidirectional:
+        ast_region.keywords.append(
+            ast.keyword("bidirectional", ast.Constant(conn.bidirectional))
+        )
+
     if conn.metadata is not None:
         # this will never be none, but it must claim that it can be to satisfy the typing gods
         keys: list[ast.expr | None] = [ast.Constant(k) for k in conn.metadata.keys()]

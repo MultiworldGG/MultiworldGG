@@ -83,6 +83,10 @@ class BrotatoWeb(WebWorld):
             "Abyssal Terrors DLC",
             [options.EnableAbyssalTerrorsDLC, options.IncludeAbyssalTerrorsCharacters],
         ),
+        OptionGroup(
+            "Primal Dread DLC",
+            [options.EnablePrimalDreadDLC, options.IncludePrimalDreadCharacters],
+        ),
     ]
 
 
@@ -189,7 +193,9 @@ class BrotatoWorld(World):
             self._include_characters, self._starting_characters = get_available_and_starting_characters(
                 self.options.include_base_game_characters.value,
                 bool(self.options.enable_abyssal_terrors_dlc.value),
+                bool(self.options.enable_primal_dread_dlc.value),
                 self.options.include_abyssal_terrors_characters.value,
+                self.options.include_primal_dread_characters.value,
                 self.options.starting_characters,
                 self.options.num_starting_characters.value,
                 self.options.num_characters.value,

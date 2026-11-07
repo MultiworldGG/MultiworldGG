@@ -427,7 +427,7 @@ class OOTWorld(World):
         if max_required_hearts > self.starting_hearts + 9 and self.item_pool_value == 'scarce':
             self.item_pool_value = 'balanced'
 
-        # If songs/keys locked to own world by settings, add them to local_items
+        # Register local items with AP so other games' locations reject them too.
         local_types = []
         if self.shuffle_song_items != 'any':
             local_types.append('Song')
@@ -443,6 +443,8 @@ class OOTWorld(World):
             local_types.append('BossKey')
         if self.shuffle_ganon_bosskey != 'keysanity':
             local_types.append('GanonBossKey')
+        if self.shuffle_dungeon_rewards != 'anywhere':
+            local_types.append('DungeonReward')
         self.options.local_items.value |= set(name for name, data in item_table.items() if data[0] in local_types)
 
         # If any songs are itemlinked, set songs_as_items
@@ -1806,7 +1808,8 @@ class OOTWorld(World):
         # pre_fill_items. The dungeon-item fill below restricts them to their
         # own dungeon while still respecting the active logic graph.
 
-        # Place dungeon items
+        # Place dungeon items. Sweep earlier placements instead of assuming them:
+        # a key behind silver rupees must not unlock locations for those rupees.
         special_fill_types = [
             'SmallKey', 'GanonBossKey', 'BossKey', 'HideoutSmallKey',
             'Map', 'Compass', 'SilverRupee',
@@ -1833,7 +1836,7 @@ class OOTWorld(World):
                         remove_prefill_item(item)
                     placement_items = stage_items[:]
                     self.random.shuffle(locations)
-                    fill_restrictive(self.multiworld, prefill_state(state, excluded_items=placement_items),
+                    fill_restrictive(self.multiworld, prefill_state(state, excluded_items=placement_items, collect_placed_items=False),
                         locations, placement_items[:],
                         single_player_placement=True, lock=True, allow_excluded=True,
                         on_place=lambda loc: placed_prefill_items.append(loc.item))
@@ -1858,7 +1861,7 @@ class OOTWorld(World):
                             self.pre_fill_items.append(item)
                             continue
                         self.random.shuffle(locations)
-                        fill_restrictive(self.multiworld, prefill_state(state, excluded_items=stage_items),
+                        fill_restrictive(self.multiworld, prefill_state(state, excluded_items=stage_items, collect_placed_items=False),
                             locations, [item],
                             single_player_placement=True, lock=True, swap=False, allow_excluded=True,
                             on_place=lambda loc: placed_prefill_items.append(loc.item))
@@ -1888,7 +1891,7 @@ class OOTWorld(World):
                         remove_prefill_item(item)
                     placement_items = dungeon_items[:]
                     self.random.shuffle(locations)
-                    fill_restrictive(self.multiworld, prefill_state(state, excluded_items=placement_items),
+                    fill_restrictive(self.multiworld, prefill_state(state, excluded_items=placement_items, collect_placed_items=False),
                         locations, placement_items[:],
                         single_player_placement=True, lock=True, allow_excluded=True,
                         on_place=lambda loc: placed_prefill_items.append(loc.item))

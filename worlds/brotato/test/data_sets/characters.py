@@ -1,4 +1,4 @@
-from dataclasses import dataclass
+from dataclasses import dataclass, field
 from typing import Any
 
 from Options import OptionError
@@ -7,6 +7,7 @@ from ...constants import (
     ABYSSAL_TERRORS_CHARACTERS,
     ALL_CHARACTERS,
     BASE_GAME_CHARACTERS,
+    PRIMAL_DREAD_CHARACTERS,
     TOTAL_NUM_CHARACTERS,
 )
 from ...options import StartingCharacters
@@ -16,6 +17,8 @@ BASE_GAME_CHARACTERS_SET = set(BASE_GAME_CHARACTERS.characters)
 BASE_GAME_DEFAULT_CHARACTERS_SET = set(BASE_GAME_CHARACTERS.default_characters)
 ABYSSAL_TERRORS_CHARACTERS_SET = set(ABYSSAL_TERRORS_CHARACTERS.characters)
 ABYSSAL_TERRORS_DEFAULT_CHARACTERS_SET = set(ABYSSAL_TERRORS_CHARACTERS.default_characters)
+PRIMAL_DREAD_CHARACTERS_SET = set(PRIMAL_DREAD_CHARACTERS.characters)
+PRIMAL_DREAD_DEFAULT_CHARACTERS_SET = set(PRIMAL_DREAD_CHARACTERS.default_characters)
 
 
 @dataclass(frozen=True)
@@ -33,6 +36,10 @@ class BrotatoCharacterOptionDataSet(BrotatoTestDataSet):
     expected_exception: type[Exception] | None = None
     # Metadata
     description: str = ""
+
+    # Primal Dread DLC Character options, appearing later because datasets require it.+
+    enable_primal_dread_dlc: bool = False
+    include_primal_dread_characters: set[str] = field(default_factory=PRIMAL_DREAD_CHARACTERS_SET.copy)
 
     @property
     def test_name(self) -> str:
