@@ -1,7 +1,7 @@
-# Setup Guide for Twilight Princess MultiworldGG
+# Setup Guide for Twilight Princess MultiworldGG 
 
 Welcome to Twilight Princess MultiworldGG! This guide will help you set up the randomizer and play your first multiworld.
-Whether playing, generating, or hosting an Archipelago room with Twilight Princess, you must follow a few simple steps to
+Whether playing, generating, or hosting a MultiworldGG room with Twilight Princess, you must follow a few simple steps to
 get started.
 
 Unfortunately, Mac OS is not officially supported at this time.
@@ -39,6 +39,8 @@ All users should follow these steps:
 ### Note: If you have a previous version of the apworld you will need to remove it.
 
 If you're playing Twilight Princess, you must also download the REL loader from https://tprandomizer.com/downloads/ and place it in the save data of dolphin (See [Placing the files](https://github.com/WritingHusky/Twilight_Princess_apworld/blob/main/docs/setup_en.md#Placing-the-files)).
+
+Note: If you started the Game before placing the Files in the Folder, you might have a Vanilla Save called `01-GZ2E-gczelda2.gci` which needs to be removed to make the `REL Loader v2` show up in the 3rd save slot in game.
 
 ## Setting Up a YAML
 
@@ -112,6 +114,12 @@ Once you do, follow these steps to connect to the room:
    `MultiworldGGServer.exe` (without `.exe` on Linux), this will default to `38281` but may be changed in the `host.yaml`.
 7. If the incorrect seed was loaded a message will appear with the name of the seed you are supossed to load.
 
+## PopTracker
+
+There's a working PopTracker pack for TP at: https://github.com/Kizugaya/TPRAP_poptracker/releases/latest <br/>
+You will need to install PopTracker itself at: https://github.com/black-sliver/PopTracker/releases/latest <br/>
+If you have any issues with it, please DM `☆☬𝓚𝓲𝓻𝓲𝓽𝓸☬☆`/`kizugaya` on Discord or ping him in the [#twilight-princess](https://discord.com/channels/731205301247803413/1369050080887312506) channel in the [Archipelago Discord](https://discord.gg/archipelago). You can also open an Issue on GitHub on his Pack.
+
 ## Troubleshooting
 
 - Ensure that you are running version v0.7 or higher of MultiworldGG, and the latest version of the world.
@@ -131,3 +139,47 @@ Once you do, follow these steps to connect to the room:
   There may be a normal save file in your dolphin save folder, this will need to be removed in order for the randomizer to load.
 - If you have killed Ganon but the world has not been realesed. Ensure that the host settings allows player releases.
   Check that the Archipelego Randomizer is loaded by bringing up the console window.
+
+## Frequently Asked Questions
+
+### Setup
+
+**Q:** "I can't find my GCI folder!" / "What do I do with the MemoryCardA.raw file?"<br/>
+**A:** In Dolphin settings, under the GC tab, please set Slot A to 'GCI Folder'; once you do, press the [...] button to set/confirm the directory for it if you don't want to use the default one (default ends in `Card A`).
+
+**Q:** "What goes in the GCI folder?"<br/>
+**A:** `GZ2E01_REL_Loader_v2.gci` and the generated seed file.
+
+**Q:** "What do I do with the APTP patch file?"<br/>
+**A:** Go to the [patching website](https://ap.tprandomizer.com) and upload the file to get a custom seed to use.
+
+**Q:** "I can't connect, the client says 'Invalid Slot'!"<br/>
+**A:** Make sure you have the correct seed loaded. In the client should be a message with what seed to load.
+
+### In-Game
+
+**Q:** "I'm getting items twice!"<br/>
+**A:** The REL Loader file must only be run **once** per Dolphin session. Running more than once can cause you to receive items multiple times.
+
+**Q:** "I received an item but never got it!"<br/>
+**A:** If it is an important item (Not a ruppe or ammo), wait a few seconds on the ground and you will recieve the item.
+
+**Q:** "I'm stuck in the Darknut room in Temple of Time!"<br/>
+**A:** This is because the of the Open Door of Time setting. If you save and quit it will bring you to start of the Dungeon. Midna can bring you back to Links house at anytime if that is needed.
+
+**Q:** "I'm stuck in the Gerudo Desert and don't have the Shadow Crystal to warp out!"<br/>
+**A:** Same Answer as above: save and quit to get back to Lake Hylia or Midna to links house
+
+**Q:** "How do I move the statue in the basement of the Kakariko hut?"<br/>
+**A:** You don't. If skip_city_in_the_sky_entrance: false, then you need seven Progressive Sky Books (the book itself and then six letters) before CitS is logically accessible.
+
+### PopTracker (Under devlopment for v0.4.0 compatibilty)
+
+**Q:** "What are these blue squares?"<br/>
+**A:** For Twilight Princess's Poptracker, the blue squares indicate howling stone locations. There is a blue square both at the howling stone itself and at the golden wolf that howling stone spawns. The golden wolf will not be shown as logically-available until the howling stone is activated.
+
+**Q:** "Why is a check marked red when I can get it?"<br/>
+**A:** If you are in a dungeon, the answer is probably key logic; essentially, logic has to assume you have used small keys on every other accessible locked door first, to ensure that you can't lock yourself out of a necessary progression item. If you are not in a dungeon, or you're absolutely sure key logic isn't the problem here, then please tell us about it!
+
+**Q:** "Why does the tracker only auto-tab _sometimes_?"<br/>
+**A:** The Twilight Princess APworld can only track which "region" you're in to send to Poptracker. For some places, like Ordona Province, or dungeons, there's only one map for that region anyway, and Poptracker is able to auto-tab to that map. For the major regions (Faron, Eldin, and Lanaryu), as there are multiple possible maps, Poptracker cannot tell which one you're in specifically. For the partial auto-tabbing (the default), this means it does not shift maps at all. If you instead set it to full auto-tabbing, then entering any of these regions will set Poptracker to switch to the full map.

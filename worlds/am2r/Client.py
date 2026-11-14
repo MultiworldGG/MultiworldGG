@@ -6,7 +6,6 @@ import re
 from asyncio import StreamReader, StreamWriter
 from random import randint
 
-from worlds import terraria
 from worlds.am2r.items import item_table
 from worlds.am2r.locations import get_location_datas
 

@@ -32,7 +32,7 @@ The exact checks and options available can change as the randomizer develops. Us
 
 - *Hollow Knight: Silksong* on PC
 - BepInEx configured for Silksong
-- MultiworldGG (v0.7.200+)
+- MultiworldGG (v0.7.275+)
 
 There are multiple installation methods due to different issues with each of them at times, follow one of the methods below to install the MultiworldGG randomizer.
 
@@ -52,7 +52,7 @@ The profile code contains the Archipelago Randomizer Mod, Custom Music Randomize
 
 **NOTE: Please make sure to press "Update Mods" when installing or when new versions release and it'll automatically update you to the latest version of the mod.**
 
-**Cogfly Import Code:** `01a18ae7-61f6-2d35-4c42-ed7578c6fc75` (Same as R2Modman)
+**Cogfly Import Code:** `01a199f2-e780-ee3e-dcf9-9cdff4c98dce` (Same as R2Modman)
 
 ### Using R2Modman (3.2.18+) / Thunderstore Manager (1.123.1+)
 1.) First start off by installing [R2Modman](https://r2modman.com/download-latest/) to the latest version for your preferred operating system.
@@ -65,7 +65,7 @@ The profile code contains the Archipelago Randomizer Mod, Custom Music Randomize
 
 **NOTE: Please make sure to press "Update Mods" when installing or when new versions release and it'll automatically update you to the latest version of the mod.**
 
-**R2Modman Import Code:** `01a18ae7-61f6-2d35-4c42-ed7578c6fc75` (Same as Cogfly)
+**R2Modman Import Code:** `01a199f2-e780-ee3e-dcf9-9cdff4c98dce` (Same as Cogfly)
 
 ### Manually
 1.) Find your Hollow Knight: Silksong installation folder based on your Silksong storefront.
@@ -163,6 +163,8 @@ Alternatively, you can always replace Cogfly with a different mod manager that a
 
 #### Old Import Codes
 
+[**v0.5.4**](https://github.com/Batatvideogames/silksong-archipelago-randomizer/releases/tag/v0.5.4) Import Code: `01a199f2-e780-ee3e-dcf9-9cdff4c98dce`
+
 [**v0.5.3**](https://github.com/Batatvideogames/silksong-archipelago-randomizer/releases/tag/v0.5.3) Import Code: `01a18ae7-61f6-2d35-4c42-ed7578c6fc75`
 
 [**v0.5.2**](https://github.com/Batatvideogames/silksong-archipelago-randomizer/releases/tag/v0.5.2) Import Code: `01a15150-4496-f47c-5102-41aae48899c7`
@@ -170,8 +172,6 @@ Alternatively, you can always replace Cogfly with a different mod manager that a
 [**v0.5.1**](https://github.com/Batatvideogames/silksong-archipelago-randomizer/releases/tag/v0.5.1) Import Code: `01a12cf3-f4cb-5402-d6a8-0f266b3e7aa8`
 
 [**v0.5.0**](https://github.com/Batatvideogames/silksong-archipelago-randomizer/releases/tag/v0.5.0) Import Code: `01a109ba-4c4f-b4f0-8695-8b4d42cb8159`
-
-[**v0.4.7**](https://github.com/Batatvideogames/silksong-archipelago-randomizer/releases/tag/v0.4.7) Import Code: `01a0dfd5-7d5b-682a-324c-6e2f385ad7df`
 
 ### My Mod Manager Boots The Game In Vanilla
 For **Cogfly**, press 'Copy Launch Arguments' at the top. Go to Hollow Knight: Silksong on Steam, right-click and press "Properties...". In Launch Options, paste the the arguments Cogfly copied for you and start your game.

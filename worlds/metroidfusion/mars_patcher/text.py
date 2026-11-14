@@ -4,15 +4,22 @@ from enum import Enum
 from functools import cache
 
 from .constants.game_data import character_widths
+from .convert_array import u16_to_u8
 from .mf.constants.game_data import file_screen_text_ptrs
-from .mf.data import get_relative_data_path
-from .rom import Region, Rom
+from .mf.data import get_relative_data_path as get_relative_data_path_mf
+from .rom import Game, Rom
+from .zm.constants.game_data import seed_hash_addr
+from .zm.data import get_data_path as get_data_path_zm
 
 SPACE_CHAR = 0x40
 SPACE_TAG = 0x8000
 NEXT = 0xFD00
 NEWLINE = 0xFE00
 END = 0xFF00
+
+BREAKING_CHARS = {SPACE_CHAR, NEXT, NEWLINE}
+NEWLINE_CHARS = {NEXT, NEWLINE}
+
 VALUE_MARKUP_TAG = {
     "SPACE": (SPACE_TAG, 8),
     "COLOR": (0x8100, 8),
@@ -22,16 +29,21 @@ VALUE_MARKUP_TAG = {
     "STOP_SOUND": (0xA000, 12),
     "WAIT": (0xE100, 8),
 }
-ADAM = 0xE200
-SAMUS = 0xE201
-FEDERATION = 0xE202
-BREAKING_CHARS = {SPACE_CHAR, NEXT, NEWLINE}
-NEWLINE_CHARS = {NEXT, NEWLINE}
-SPEAKER_CHARS = {ADAM, FEDERATION, SAMUS}
 
 KANJI_START = 0x4A0
 KANJI_WIDTH = 10
 MAX_LINE_WIDTH = 224
+
+MAX_CONTINUOUS_LINES = {
+    Game.MF: 2,  # Only used for navigation text
+    Game.ZM: 8,  # Only used for intro text
+}
+
+# Fusion specific
+ADAM = 0xE200
+SAMUS = 0xE201
+FEDERATION = 0xE202
+SPEAKER_CHARS = {ADAM, FEDERATION, SAMUS}
 
 
 class Language(Enum):
@@ -57,12 +69,17 @@ class MessageType(Enum):
 
 
 @cache
-def get_char_map(region: Region) -> dict[str, int]:
-    path = get_relative_data_path(__file__, "char_map_mf.json")
+def get_char_map(rom: Rom) -> dict[str, int]:
+    if rom.is_mf():
+        path = get_relative_data_path_mf(__file__, "char_map_mf.json")
+    elif rom.is_zm():
+        path = get_data_path_zm("char_map_zm.json")
+    else:
+        raise ValueError(rom.game)
     sections = json.loads(pkgutil.get_data(__name__, path).decode())
     char_map: dict[str, int] = {}
     for section in sections:
-        if region.name in section["regions"]:
+        if rom.region.name in section["regions"]:
             char_map.update(section["chars"])
     char_map["\n"] = NEWLINE
     return char_map
@@ -103,7 +120,7 @@ def center_text(rom: Rom, char_vals: list[int], max_width: int) -> None:
         line_width += get_char_width(rom, char_widths_addr, char_val)
         if char_val in NEWLINE_CHARS or index == len(char_vals):
             if line_width > 0:
-                assert line_width <= max_width, "Line exceeds maximum width"
+                assert line_width <= max_width
                 space_val = SPACE_TAG + (max_width - line_width) // 2
                 char_vals.insert(line_start, space_val)
                 index += 1
@@ -118,7 +135,7 @@ def encode_text(
     max_width: int = MAX_LINE_WIDTH,
     centered: bool = False,
 ) -> bytes:
-    char_map = get_char_map(rom.region)
+    char_map = get_char_map(rom)
     char_widths_addr = character_widths(rom)
     text: list[int] = []
     line_width = 0
@@ -177,7 +194,7 @@ def encode_text(
         else:
             escaped = False
 
-        char_val = char_map.get(char, char_map["?"])
+        char_val = char_map[char]
         char_width = get_char_width(rom, char_widths_addr, char_val)
         line_width += char_width
         width_since_break += char_width
@@ -195,20 +212,19 @@ def encode_text(
             if message_type == MessageType.ONE_LINE:
                 raise ValueError(f'String does not fit on one line:\n"{string}"')
             if width_since_break > max_width:
-                break
-                #raise ValueError(f'Word does not fit on one line:\n"{string}"')
+                raise ValueError(f'Word does not fit on one line:\n"{string}"')
             line_width = width_since_break
             line_number += 1
             extra_char = NEWLINE
 
-        if line_number > 1:
-            match message_type:
-                case MessageType.CONTINUOUS:
-                    line_number = 0
-                    extra_char = NEXT
-                case MessageType.TWO_LINE:
-                    # Limited to 2 lines, trim any other characters
-                    break
+        if message_type == MessageType.CONTINUOUS:
+            if line_number == MAX_CONTINUOUS_LINES[rom.game]:
+                line_number = 0
+                extra_char = NEXT
+        elif message_type == MessageType.TWO_LINE:
+            if line_number == 2:
+                # Limited to 2 lines, trim any other characters
+                break
 
         if extra_char is not None:
             if prev_break is not None:
@@ -238,28 +254,31 @@ def encode_text(
 
     text.append(END)
 
-    text_bytes = bytearray()
-    for val in text:
-        text_bytes.append(val & 0xFF)
-        text_bytes.append(val >> 8)
-    return bytes(text_bytes)
+    return u16_to_u8(text)
 
 
 def write_seed_hash(rom: Rom, seed_hash: str) -> None:
-    char_map = get_char_map(rom.region)
-    lang_ptrs = file_screen_text_ptrs(rom)
-    for lang in Language:
-        # Get address of first text entry
-        text_ptrs = rom.read_ptr(lang_ptrs + lang.value * 4)
-        addr = rom.read_ptr(text_ptrs)
-        # Find newline after "SAMUS DATA"
-        try:
-            line_len = next(i for i in range(20) if rom.read_16(addr + i * 2) == NEWLINE)
-        except StopIteration:
-            raise ValueError("Invalid file screen text data")
-        pad_left = (line_len - 8) // 2
-        pad_right = line_len - 8 - pad_left
-        # Overwrite with seed hash
-        string = (" " * pad_left) + seed_hash + (" " * pad_right)
-        for i, c in enumerate(string):
-            rom.write_16(addr + i * 2, char_map[c])
+    if rom.is_mf():
+        char_map = get_char_map(rom)
+        lang_ptrs = file_screen_text_ptrs(rom)
+        for lang in Language:
+            # Get address of first text entry
+            text_ptrs = rom.read_ptr(lang_ptrs + lang.value * 4)
+            addr = rom.read_ptr(text_ptrs)
+            # Find newline after "SAMUS DATA"
+            try:
+                line_len = next(i for i in range(20) if rom.read_16(addr + i * 2) == NEWLINE)
+            except StopIteration:
+                raise ValueError("Invalid file screen text data")
+            pad_left = (line_len - 8) // 2
+            pad_right = line_len - 8 - pad_left
+            # Overwrite with seed hash
+            string = (" " * pad_left) + seed_hash + (" " * pad_right)
+            for i, c in enumerate(string):
+                rom.write_16(addr + i * 2, char_map[c])
+    elif rom.is_zm():
+        encoded_text = encode_text(rom, MessageType.ONE_LINE, seed_hash, 8 * 12, True)
+        addr = seed_hash_addr(rom)
+        rom.write_bytes(addr, encoded_text)
+    else:
+        raise ValueError(rom.game)

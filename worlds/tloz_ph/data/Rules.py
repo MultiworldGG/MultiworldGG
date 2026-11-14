@@ -51,7 +51,7 @@ def has_spirit(spirit: Literal["Power", "Wisdom", "Courage"], count=1):
             And(
                 Or(
                     Has(f"Spirit of {spirit}"),
-                    Has(f"Spirit (Progressive", spirit_index)
+                    Has(f"Spirit (Progressive)", spirit_index)
                 ),
                 Or(
                     Has(f"{spirit} Upgrade", count-1),
@@ -62,7 +62,7 @@ def has_spirit(spirit: Literal["Power", "Wisdom", "Courage"], count=1):
     return Or(
         Has(f"Spirit of {spirit} (Progressive)"),
         Has(f"Spirit of {spirit}"),
-        Has(f"Spirit (Progressive)")
+        Has(f"Spirit (Progressive)", spirit_index)
     )
 
 def has_spirit_gems(spirit: Literal["Power", "Wisdom", "Courage"], count):

@@ -1,6 +1,6 @@
 import typing
 from dataclasses import dataclass
-from Options import Toggle, DefaultOnToggle, Option, Range, Choice, ItemDict, DeathLink, PerGameCommonOptions
+from Options import Toggle, DefaultOnToggle, Option, Range, Choice, ItemDict, OptionSet, DeathLink, PerGameCommonOptions
 
 
 
@@ -46,7 +46,54 @@ class EasyMonochromonOption(DefaultOnToggle):
 class FastDrimogemonOption(DefaultOnToggle):
     """Makes Drimogen dig in 1 day instead of 10"""
     display_name = "Fast Drimogemon"
-    
+
+class IncludeCardLocationsOption(DefaultOnToggle):
+    """Include card locations in the randomization pool"""
+    display_name = "Include Card Locations"
+
+class TabbedChartOption(DefaultOnToggle):
+    """Replace the evolution chart with the tabbed chart that has room for the extra Digimon."""
+    display_name = "Tabbed Evolution Chart"
+
+
+class MegaChartPageOption(DefaultOnToggle):
+    """Add a Mega page to the tabbed chart (Machinedramon and other Megas move there).
+    Only applies when the tabbed chart is on."""
+    display_name = "Mega Chart Page"
+
+
+ALL_CUSTOM_DIGIMON = frozenset(["snowagumon", "panjyamon", "blackagumon", "metalgreymon_orange", "blackgreymon", "icedevimon", "hyogamon", "dokunemon", "metaletemon", "myotismon", "warumonzaemon", "goburimon", "gotsumon", "flarerizamon", "darkrizamon", "otamamon", "tentomon", "gekomon", "guardromon", "tankmon", "mastertyrannomon", "demimeramon", "machinedramon"])
+
+
+class ExcludedCustomDigimonOption(OptionSet):
+    """Custom Digimon (recolours and NPC forms) to leave OUT of this game. All of them are in by
+    default; list the ones you do not want, or "all" to disable every custom Digimon."""
+    display_name = "Excluded Custom Digimon"
+    valid_keys = ALL_CUSTOM_DIGIMON | {"all"}
+    default = frozenset()
+
+
+class RecruitSoulsOption(DefaultOnToggle):
+    """Recruitable Digimon only appear in the world once you have received their Soul item.
+    When off, every Soul is pre-granted by the game patch and recruits appear as in vanilla."""
+    display_name = "Recruit Souls"
+
+
+
+class EnemysanityOption(DefaultOnToggle):
+    """Enemysanity: one location per wild Digimon species, checked the first
+    time you win a fight against one of them."""
+    display_name = "Enemysanity"
+
+class IncludeShopLocationsOption(DefaultOnToggle):
+    """Shopsanity: 27 one-time "AP Item" purchases in the item shops (two per shopkeeper), the Gear
+    Savanna shop and ShogunGekomon's merit shop."""
+    display_name = "Include Shop Locations"
+
+class IncludeChestLocationsOption(DefaultOnToggle):
+    """Include chest locations in the randomization pool"""
+    display_name = "Include Chest Locations"
+
 class RandomStarterOption(Choice):
     """Randomise the 2 starter digimon options
     Vanilla = Agumon and Gabumon are the starters
@@ -79,3 +126,11 @@ class DigimonWorldOption(PerGameCommonOptions):
     random_techniques: RandomTechniqueOption
     fast_drimogemon: FastDrimogemonOption
     easy_monochromon: EasyMonochromonOption
+    include_card_locations: IncludeCardLocationsOption
+    include_chest_locations: IncludeChestLocationsOption
+    include_shop_locations: IncludeShopLocationsOption
+    enemysanity: EnemysanityOption
+    recruit_souls: RecruitSoulsOption
+    tabbed_chart: TabbedChartOption
+    mega_chart_page: MegaChartPageOption
+    excluded_custom_digimon: ExcludedCustomDigimonOption

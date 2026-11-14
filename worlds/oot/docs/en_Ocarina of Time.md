@@ -42,4 +42,4 @@ The following commands are only available when using the OoTClient to play with 
 
 ## Universal Tracker
 
-Seds support YAML-free tracking with the exact generated entrance layout. With UT's deferred connections enabled, shuffled connections become available to its logic as you discover them.
+Seeds support YAML-free tracking with the exact generated entrance layout. Reachable undiscovered entrances appear in its entrance list.

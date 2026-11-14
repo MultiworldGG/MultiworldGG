@@ -95,7 +95,7 @@ item_name_groups = {
     "Carvings"          : [item for item in item_dictionary.keys() if "carving" in item.lower()],
     "Multiplayer Items" : [item for item in multiplayer_items],
     "Covenant Items"    : [item for item in covenant_items],
-    "Junk"              : [item for item in item_dictionary.keys() if "carving" in item.lower()] + [item for item in multiplayer_items] + [item for item in covenant_items] + ["Pendant"] + ["Prism Stone x20"],
+    "Junk"              : [item for item in item_dictionary.keys() if "carving" in item.lower()] + [item for item in multiplayer_items] + [item for item in covenant_items] + ["Pendant", "Prism Stone x20", "Gold Coin", "Silver Coin x5"],
 
     # Following groups are used for skips
     # These items can be wielded by almost (max needs 5 levels of investment) any character from beginning of the game. 
@@ -123,85 +123,113 @@ item_name_groups = {
 
 
 location_name_groups = {
-    "All Doors": set(),
-    "All Item Lots": set(),
-    "All DLC regions": set(),
-    "All Fog Walls": set(),
-    "All Boss Fog Walls": set(),
-    "All Shop Extended Items": set(),
-    "After O+S": set()
+    "Fog Walls": set(),
+    "Boss Fog Walls": set(),
+    "Shop Basic Items": set(),
+    "Shop Extended Items": set(),
+    "Boss Souls" : set(),
+    "Boss Humanity" : set(),
+    "Boss Bones" : set(),
+    "Boss Drops" : set(),
+    "Lord Souls" : set(),
+    "Mimic Drops" : set(),
+    "Black Knight Titanites" : set(),
+    "Black Knight Weapons" : set(),
+    "Crystal Lizards" : set(),
+    "Chest Items" : set(),
+    "Corpse Filler Items": set(),
+    "Corpse Prog Items": set(),
+    "Corpse Useful Items": set(),
+    "Hostile Npc Drops": set(),
+    "Miniboss Drops": set(),
+    "Misc Drops": set(),
+    "Frozen Blacksmiths": set(),
+    "Corpse Ring Items": set(),
+    "Npc Prog Items": set(),
 }
 
 category_to_loc_name_map = {
-    # "DOOR": "All Doors",
-    "ITEM_LOT": "All Item Lots",
-    "FOG_WALL": "All Fog Walls",
-    "BOSS_FOG_WALL": "All Boss Fog Walls",
-    "SHOP_EXTENDED_ITEM": "All Shop Extended Items",
+    "FOG_WALL": "Fog Walls",
+    "BOSS_FOG_WALL": "Boss Fog Walls",
+    "SHOP_ITEM": "Shop Basic Items",
+    "SHOP_EXTENDED_ITEM": "Shop Extended Items",
+    "BOSS_SOUL": "Boss Souls",
+    "BOSS_HUMANITY": "Boss Humanity",
+    "BOSS_BONE": "Boss Bones",
+    "BOSS_DROP": "Boss Drops",
+    "LORD_SOUL": "Lord Souls",
+    "MIMIC_DROP": "Mimic Drops",
+    "BK_TITANITE": "Black Knight Titanites",
+    "BK_WEAPON": "Black Knight Weapons",
+    "CRYSTAL_LIZARD": "Crystal Lizards",
+    "CHEST_ITEM": "Chest Items",
+    "CORPSE_FILLER_ITEM": "Corpse Filler Items",
+    "CORPSE_PROG_ITEM": "Corpse Prog Items",
+    "CORPSE_USEFUL_ITEM": "Corpse Useful Items",
+    "HOSTILE_NPC_DROP": "Hostile Npc Drops",
+    "MINIBOSS_DROP": "Miniboss Drops",
+    "MISC_DROP": "Misc Drops",
+    "FROZEN_BLACKSMITH": "Frozen Blacksmiths",
+    "CORPSE_RING_ITEM": "Corpse Ring Items",
+    "NPC_PROG_ITEM": "Npc Prog Items",
 }
 
-# regions to add to "All DLC regions" group
-dlc_regions = [
-    "Sanctuary Garden",
-    "Sanctuary Garden - Sanctuary Guardian",
-    "Oolacile Sanctuary",
-    "Royal Wood",
-    "Royal Wood - Artorias",
-    "Royal Wood - After Hawkeye Gough",
-    "Royal Wood - Hawkeye Gough",
-    "Royal Wood - Marvelous Chester",
-    "Oolacile Township",
-    "Oolacile Township - Behind Light-Dispelled Walls",
-    "Oolacile Township - After Crest Key",
-    "Chasm of the Abyss",
-    "Chasm of the Abyss - Manus",
-    "Firelink Shrine - Domhnall of Zena Under Aqueduct After Artorias",
+dlc_prog_items = [
+    "Broken Pendant",
+    "Crest Key",
+    "Boss Fog Wall Key - Sanctuary Guardian",
+    "Boss Fog Wall Key - Artorias",
+    "Boss Fog Wall Key - Manus",
+    # sunlight maggot and lantern?
+]
+
+pw_prog_items = [
+    "Peculiar Doll",
+    "Annex Key",
+    "Fog Wall Key - Painted World",
+    "Boss Fog Wall Key - Crossbreed Priscilla",
+]
+
+gh_prog_items = [
+    "Fog Wall Key - Ash Lake Entrance",
 ]
 
 #Post Ornstein And Smough
-post_os_regions  = [
-    "Anor Londo - After Ornstein and Smough",
-    "Firelink Shrine - Domhnall of Zena After O+S",
-    "The Duke's Archives",
-    "The Duke's Archives - After First Seath Encounter",
-    "The Duke's Archives - After Archive Tower Cell Key",
-    "The Duke's Archives - After Archive Prison Extra Key",
-    "The Duke's Archives - Out of Cell",
-    "The Duke's Archives - After Archive Tower Giant Door Key",
-    "The Duke's Archives - Big Hat Logan",
-    "The Duke's Archives - Courtyard",
-    "The Duke's Archives - Giant Cell",
-    "Crystal Cave",
-    "Crystal Cave - After Seath",
-    "The Duke's Archives - First Arena after Seath's Death",
-    "Demon Ruins - Demon Firesage",
-    "Demon Ruins - After Demon Firesage",
-    "Demon Ruins - Centipede Demon",
-    "Demon Ruins Shortcut",
-    "Lost Izalith",
-    "Lost Izalith - Bed of Chaos",
-    "Tomb of the Giants - Behind Golden Fog Wall",
-    "Tomb of the Giants - Nito",
-    "Tomb of the Giants - After Nito",
-    "Sanctuary Garden",
-    "Sanctuary Garden - Sanctuary Guardian",
-    "Oolacile Sanctuary",
-    "Royal Wood",
-    "Royal Wood - Artorias",
-    "Royal Wood - After Hawkeye Gough",
-    "Royal Wood - Hawkeye Gough",
-    "Royal Wood - Marvelous Chester",
-    "Oolacile Township",
-    "Oolacile Township - Behind Light-Dispelled Walls",
-    "Oolacile Township - After Crest Key",
-    "Chasm of the Abyss",
-    "Chasm of the Abyss - Manus",
-    "Firelink Shrine - Domhnall of Zena Under Aqueduct After Artorias",
-    "Firelink Altar",
-    "Kiln of the First Flame",
-    "Kiln of the First Flame - Gwyn"
+post_os_prog_items = [
+    "Lordvessel",
+    "Boss Fog Wall Key - Seath First Encounter",
+    "Archive Tower Cell Key",
+    "Archive Prison Extra Key",
+    "Archive Tower Giant Cell Key",
+    "Archive Tower Giant Door Key",
+    "Boss Fog Wall Key - Demon Firesage",
+    "Boss Fog Wall Key - Centipede Demon",
+    "Boss Fog Wall Key - Bed of Chaos",
+    "Boss Fog Wall Key - Gwyn",
+    "Boss Fog Wall Key - Sanctuary Guardian",
+    "Boss Fog Wall Key - Artorias",
+    "Boss Fog Wall Key - Manus",
+    "Boss Fog Wall Key - Nito",
+    "Key to the Seal",
+    "Fog Wall Key - New Londo (Lower)",
+    "Covenant of Artorias",
+    "Boss Fog Wall Key - Four Kings",
+    "Lord Soul (Nito)",
+    "Lord Soul (Bed of Chaos)",
+    "Bequeathed Lord Soul Shard (Four Kings)",
+    "Bequeathed Lord Soul Shard (Seath)",
+    "Orange Charred Ring",
 ]
 
+post_os_cata_prog_items = [
+    "Fog Wall Key - Catacombs",
+    "Fog Wall Key - Tomb of the Giants",
+    "Boss Fog Wall Key - Pinwheel",
+    "Skull Lantern", # light only needed in dlc and TotG, and dlc is known excluded if this is included
+    "Sunlight Maggot", # light only needed in dlc and TotG, and dlc is known excluded if this is included
+    "Darkmoon Seance Ring",
+    "Boss Fog Wall Key - Gwyndolin",
+]
 
 # Map door+shortcut regions to their "parent" region
 region_parents = {
@@ -219,11 +247,6 @@ for region in location_tables.keys(): # For each region
     for location in location_tables[region]: # For each location in each region
         # Add each location to its region location group
         location_name_groups[region].add(location.name)
-        # Add all DLC locations to the DLC location group
-        if (region in dlc_regions): 
-            location_name_groups['All DLC regions'].add(location.name)
-        if (region in post_os_regions):
-            location_name_groups["After O+S"].add(location.name)
         # Add each location to its category type location group (e.g. DOOR -> All Doors, ITEM_LOT -> All ITEM_LOTs, etc)
         if location.category.name in category_to_loc_name_map.keys():
             location_name_groups[category_to_loc_name_map[location.category.name]].add(location.name)

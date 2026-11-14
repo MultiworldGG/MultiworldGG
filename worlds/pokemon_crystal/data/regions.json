@@ -4606,9 +4606,6 @@
     "events": [
       "EVENT_CINNABAR_ROCKS_CLEARED"
     ],
-    "signs": [
-      "Route20CinnabarGym"
-    ],
     "wild_encounters": {
       "surfing": "ROUTE_20",
       "fishing": "Ocean"
@@ -4619,6 +4616,9 @@
     "exits": [
       "REGION_ROUTE_20",
       "REGION_SEAFOAM_GYM"
+    ],
+    "signs": [
+      "Route20CinnabarGym"
     ],
     "wild_encounters": {
       "surfing": "ROUTE_20",

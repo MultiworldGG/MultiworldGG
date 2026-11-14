@@ -18,7 +18,12 @@ See full instructions on [the setup page].
 The [player options page for this game][options] contains all the options you
 need to configure and export a config file.
 
-[options]: ../player-options
+## How do I set options?
+
+You can read through all the options and generate a YAML [here](../player-options).
+The DS3 client download includes an example YAML file which includes
+documentation for every option Dark Souls III supports. Use this to customize
+your experience.
 
 ## What does randomization do to this game?
 
@@ -27,31 +32,39 @@ need to configure and export a config file.
    worlds, and any items from your world can appear in other players' worlds.
 
 2. By default, all enemies and bosses are randomized. This can be disabled by
-   setting "Randomize Enemies" to false.
+   setting `randomize_enemies: false` in your YAML.
 
 3. By default, the starting equipment for each class is randomized. This can be
-   disabled by setting "Randomize Starting Loadout" to false.
-
-4. By setting the "Randomize Weapon Level" or "Randomize Infusion" options, you
-   can randomize whether the weapons you find will be upgraded or infused.
+   disabled by setting `randomize_starting_loadout: false` in your YAML.
 
 There are also options that can make playing the game more convenient or
-bring a new experience, like removing equip loads or auto-equipping weapons as
-you pick them up. Check out [the options page][options] for more!
+bring a new experience. Check out the example YAML file for more information!
 
 ## What's the goal?
 
-Your goal is to find the four "Cinders of a Lord" items randomized into the
-multiworld and defeat the boss in the Kiln of the First Flame.
+By default, your goal is to find the four "Cinders of a Lord" items randomized
+into the multiworld and defeat the boss in the Kiln of the First Flame.
+
+You can customize which bosses you fight by setting the `goal` option in your
+YAML. For example, if you want to make both DLCs mandatory in addition to the
+main game, you would use:
+
+```yaml
+Dark Souls III:
+  goal:
+  - Kiln of the First Flame Boss
+  - Ringed City End Boss
+  - Painted World of Ariandel End Boss
+```
 
 ## Do I have to check every item in every area?
 
 Dark Souls III has about 1500 item locations, which is a lot of checks for a
 single run! But you don't necessarily need to check all of them. Locations that
-you can potentially miss, such as rewards for failable quests or soul
+you can miss permanently, such as rewards for failable quests or soul
 transposition items, will _never_ have items required for any game to progress.
-The following types of locations are also guaranteed not to contain progression
-items by default:
+The following types of locations also won't contain progression items by
+default:
 
 * **Hidden:** Locations that are particularly difficult to find, such as behind
   illusory walls, down hidden drops, and so on. Does not include large locations
@@ -96,9 +109,9 @@ Dark Souls III:
 
 If you want a shorter DS3 randomizer experience, you can exclude entire regions
 from containing progression items. The items and enemies from those regions will
-still be included in the randomization pool, but none of them will be mandatory.
-For example, the following configuration just requires you to play the game
-through Irithyll of the Boreal Valley:
+still be included in the randomization pool, but none of the locations there
+will be mandatory. For example, the following configuration just requires you to
+play the game through Irithyll of the Boreal Valley:
 
 ```yaml
 Dark Souls III:
@@ -106,24 +119,54 @@ Dark Souls III:
   enable_dlc: true
 
   exclude_locations:
-    # Exclude late-game and DLC regions
-    - Anor Londo
-    - Lothric Castle
-    - Consumed King's Garden
-    - Untended Graves
-    - Grand Archives
-    - Archdragon Peak
-    - Painted World of Ariandel
-    - Dreg Heap
-    - Ringed City
+  # Exclude late-game and DLC regions
+  - Anor Londo
+  - Lothric Castle
+  - Consumed King's Garden
+  - Untended Graves
+  - Grand Archives
+  - Archdragon Peak
+  - Painted World of Ariandel
+  - Dreg Heap
+  - Ringed City
 
-    # Default exclusions
-    - Hidden
-    - Small Crystal Lizards
-    - Upgrade
-    - Small Souls
-    - Miscellaneous
+  # Default exclusions
+  - Hidden
+  - Small Crystal Lizards
+  - Upgrade
+  - Small Souls
+  - Miscellaneous
 ```
+
+## I'm sending too many items into the multiworld!
+
+Because Dark Souls III has so many more checks than most AP/MultiworldGG games, it
+also sends many more items into the multiworld. If you're playing in a small
+group, this may mean that most players' games are mostly full of items from DS3.
+That's not ideal!
+
+You can mitigate this by forcing certain item groups to be local, meaning that
+those items will only ever be placed in your game and not anyone else's. For
+example, the following configuration substantially limits how many items you'll
+send out into the multiworld:
+
+```yaml
+Dark Souls III:
+  local_items:
+  - Armor
+  - Miscellaneous
+  - Small Souls
+  - Upgrade
+```
+
+**Warning:** Because AP/MultiworldGG places local items before placing progression
+items, marking too many items as local can mean there's not enough room for all
+the progression you need which can cause generation to fail. If you're getting a
+lot of failures, try reducing the number of local items. Also consider adding
+your 👍 to [this pull request] which would allow *locations* to be marked as
+local instead of items!
+
+[this pull request]: https://github.com/ArchipelagoMW/Archipelago/pull/3758
 
 ## Where can I learn more about Dark Souls III locations?
 
@@ -148,64 +191,37 @@ categories and even remove annoying enemy types outright.
 
 [enemy randomization guide]: /tutorial/Dark%20Souls%20III/enemy-randomization/en
 
-## What's new from 2.x.x?
+## What's new from 3.x.x?
 
-Version 3.0.0 of the Dark Souls III MultiworldGG client has a number of
-substantial differences with the older 2.x.x versions. Improvements include:
+Version 4.0.0 of the Dark Souls III MultiworldGG client has a number of
+substantial differences with the older 3.x.x versions. Improvements include:
 
-* Support for randomizing all item locations, not just unique items.
+* It's built on Mod Engine 3, which is more reliable than Mod Engine 2 and
+  is actively maintained.
 
-* Support for randomizing items in shops, starting loadouts, Path of the Dragon,
-  and more.
+* There's now a dedicated in-game Archipelago overlay which displays the
+  AP/MultiworldGG message log and allows the player to change their room URL
+  settings in-game.
 
-* Built-in integration with the enemy randomizer, including consistent seeding
-  for races.
+* There's better protection against issues like collecting items while
+  disconnected from the server.
 
-* Support for the latest patch for Dark Souls III, 1.15.2. Older patches are
-  *not* supported.
+* Auto-equip is no longer supported.
 
-* Optional smooth distribution for upgrade items, upgraded weapons, and soul
-  items so you're more likely to see weaker items earlier and more powerful
-  items later.
 
-* More detailed location names that indicate where a location is, not just what
-  it replaces.
+* The goal is now customizable. You can choose any boss or set of bosses to be
+  required. The default is still just defeating Soul of Cinder.
 
-* Other players' item names are visible in DS3.
+* Death link is now more customizable. You can choose to only send death links
+  when you die *without* picking up your souls. You can also enable "death link
+  amnesty", which allows you to choose how many deaths you have to experience
+  before sending a death link to your team.
 
-* If you pick up items while static, they'll still send once you reconnect.
+* Visiting a shop will now send hints to the Archipelago server for all the
+  items in that shop, so that your teammates can see which items you can buy for
+  them.
  
-However, 2.x.x YAMLs are not compatible with 3.0.0. You'll need to [generate a
-new YAML configuration] for use with 3.x.x.
-
-[generating a new YAML configuration]: /games/Dark%20Souls%20III/player-options
-
-The following options have been removed:
-
-* `enable_boss_locations` is now controlled by the `soul_locations` option.
-
-* `enable_progressive_locations` was removed because all locations are now
-  individually randomized rather than replaced with a progressive list.
-
-* `pool_type` has been removed. Since there are no longer any non-randomized
-  items in randomized categories, there's not a meaningful distinction between
-  "shuffle" and "various" mode.
-
-* `enable_*_locations` options have all been removed. Instead, you can now add
-  [location group names] to the `exclude_locations` option to prevent them from
-  containing important items.
-
-  [location group names]: /tutorial/Dark%20Souls%20III/locations/en#location-groups
-
-  By default, the Hidden, Small Crystal Lizards, Upgrade, Small Souls, and
-  Miscellaneous groups are in `exclude_locations`. Once you've chosen your
-  excluded locations, you can set `excluded_locations: unrandomized` to preserve
-  the default vanilla item placements for all excluded locations.
-
-* `guaranteed_items`: In almost all cases, all items from the base game are now
-  included somewhere in the multiworld.
-
-In addition, the following options have changed:
-
-* The location names used in options like `exclude_locations` have changed. See
-  the [location guide] for a full description.
+In general, 3.x.x YAMLs and multiworlds that use the 3.x.x apworld *are*
+compatible with 4.0.0. However, the `auto_equip` and `lock_equip` options have
+been removed, and if they're set in your YAML they will no longer have any
+effect.

@@ -582,7 +582,7 @@
       {
         "boss": "Boss: Savage Beastfly (Chapel of the Beast)",
         "events": [
-          "Room Event: event:mapper/2d005e67-8f66-4a7d-ad7e-55bf8e697953"
+          "Room Event: event:mapper/95c9171c-2553-48ef-8966-b568167eaf2d"
         ],
         "act": 1,
         "scene": "Ant_19",
@@ -600,7 +600,7 @@
     ],
     "kills_required": 2,
     "completion_events": [
-      "Room Event: event:mapper/2d005e67-8f66-4a7d-ad7e-55bf8e697953",
+      "Room Event: event:mapper/95c9171c-2553-48ef-8966-b568167eaf2d",
       "Room Event: event:mapper/reviewed:savage-beastfly-remains"
     ],
     "completion_act": 2

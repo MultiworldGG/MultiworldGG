@@ -230,6 +230,21 @@ trade_items = (
     "Claim Check",
 )
 
+
+def get_skipped_adult_trade_items(world):
+    """Return trade-ins pre-completed by the ROM for an unshuffled quest."""
+    if world.adult_trade_shuffle or not world.adult_trade_start:
+        return ()
+    trade_item = getattr(world, 'adult_trade_starting_inventory', '') or world.selected_adult_trade_item
+    if not world.disable_trade_revert:
+        trade_item = {
+            'Odd Mushroom': 'Cojiro',
+            'Eyeball Frog': 'Prescription',
+            'Eyedrops': 'Prescription',
+        }.get(trade_item, trade_item)
+    return trade_items[:trade_items.index(trade_item)]
+
+
 child_trade_items = (
     "Weird Egg",
     "Chicken",
@@ -576,6 +591,14 @@ def get_pool_core(world):
         elif location.vanilla_item == 'Kokiri Sword':
             shuffle_item = world.shuffle_kokiri_sword
 
+        # Mask shop purchases only report AP checks when their masks are shuffled.
+        # Keep vanilla purchases as logic locations so mask access still progresses.
+        elif location.type == 'MaskShop':
+            shuffle_item = location.vanilla_item in world.shuffle_child_trade
+            location.show_in_spoiler = shuffle_item
+            if not shuffle_item:
+                location.address = None
+
         # Child Trade Quest Items
         elif location.vanilla_item in child_trade_items:
             if location.vanilla_item == 'Weird Egg' and world.skip_child_zelda:
@@ -867,10 +890,6 @@ def get_pool_core(world):
             else:
                 # dungeon, overworld, any_dungeon, regional, anywhere
                 shuffle_item = True
-
-        elif location.type == 'MaskShop':
-            shuffle_item = location.vanilla_item in world.shuffle_child_trade
-            location.show_in_spoiler = shuffle_item
 
         elif location.type == 'TCGSmallKey' or (location.scene == 0x10 and location.vanilla_item != 'Piece of Heart (Treasure Chest Game)'):
             if world.shuffle_tcgkeys == 'vanilla':

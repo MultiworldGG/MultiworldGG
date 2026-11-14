@@ -3,7 +3,7 @@ from BaseClasses import Location
 from .Routes import ROUTES, ROUTE_NAMES, UNDERWORLD, SURFACE, NIGHTMARE, DREAM, MAX_ROOMS, \
     WEAPON_ROOM_STRIDE, boss_event, active_routes, NPC_ROUTE_LOCK, NPC_RANDOMIZED_HELPERS, \
     COMBAT_HELPER_NPCS, COMBAT_HELPER_NATIVE_ROUTE, ZJ_RANDOMIZED_ONLY, \
-    combat_helper_native_fallback
+    combat_helper_native_fallback, zagreus_reachable
 from .Items import keepsake_titles, KEEPSAKE_NO_LOCATION, WEAPON_SHORT_NAMES, KEEPSAKE_NPC, \
     weapon_aspect_slots
 
@@ -30,6 +30,9 @@ hades2_base_location_id = 1
 #   Dream per-aspect Room:    228000 + lane*DREAM_ASPECT_ROOM_STRIDE(500) + depth
 #   Dream Enemy counter:      241000 .. +~1000    Dream Miniboss counter: 242000 .. +~1000
 #   Dream Boss counter:       243000 .. +12        "Beat Dream" event: no id (locked event)
+#   Dream Room " +k" slots:   221500 + slot*DREAM_ROOM_SLOT_STRIDE(250) + depth (inside the 2000)
+#   Dream per-weapon " +k":   250000 + (slot-1)*3000 + weapon*500 + depth   (slots 1..7)
+#   Dream per-aspect " +k":   280000 + (slot-1)*12000 + lane*500 + depth    (slots 1..7, to 364000)
 # (Dream has no fixed 4-zone shape -- see Routes.DREAM's definition comment for why it doesn't
 # reuse ROUTES/_zone_bounds. All Dream ids are reserved fresh, clear of every range above.)
 # NOTE: this id layout is unaffected by the per-zone room-check renumbering (_room_name/
@@ -110,8 +113,8 @@ DREAM_ROOM_LOCATIONS_PER_REGION = 12   # N for every Dream region (see Routes.RO
 # K for every Dream region: a region's biome is random per attempt, so this is the minimum over
 # biomes. Mirrored in the mod's Routes.DREAM_ROOM_GUARANTEED_PER_REGION.
 DREAM_ROOM_GUARANTEED_PER_REGION = 2
-DREAM_REGIONS_AVAILABLE_NO_ZJ = 8      # native DreamDiveTweaks biome pool without Nightmare/ZJ
-DREAM_REGIONS_AVAILABLE_ZJ = 12        # native pool with Nightmare/ZJ folded in
+DREAM_REGIONS_AVAILABLE_NO_ZJ = 8      # native DreamDiveTweaks biome pool without ZJ
+DREAM_REGIONS_AVAILABLE_ZJ = 12        # native pool with ZJ folded in (dream_zj_biomes)
 DREAM_WEAPON_ROOM_STRIDE = 500         # per-weapon depth stride (vs. WEAPON_ROOM_STRIDE=100)
 DREAM_ASPECT_ROOM_STRIDE = 500         # per-aspect-lane depth stride (vs. ASPECT_ROOM_STRIDE=100)
 dream_score_id_base = 220000                   # "Dream Score NNNN" -- 1000 ids reserved
@@ -121,6 +124,15 @@ dream_aspect_room_id_base = 228000              # "<Aspect> <Weapon> Dream Room 
 dream_enemy_id_base = 241000                    # "Dream Enemy NNN" (cumulative counter)
 dream_miniboss_id_base = 242000                 # "Dream Miniboss NN" (cumulative counter)
 dream_boss_id_base = 243000                     # "Dream Boss NN" (cumulative counter, always exists)
+# Location-multiplier slots for Dream's room checks. Slot 0 keeps the ids above (shipped, never
+# renumbered). Plain rooms fit their " +k" slots inside the 2000 ids already reserved; the
+# per-weapon and per-aspect blocks above have no room left (the next base starts right after the
+# last lane), so their slots 1..MAX_LOCATION_MULTIPLIER-1 live in fresh blocks past every other id.
+DREAM_ROOM_SLOT_STRIDE = 250                    # 8 slots * 250 == the 2000 reserved
+DREAM_WEAPON_ROOM_SLOT_STRIDE = 3000            # 6 weapons * DREAM_WEAPON_ROOM_STRIDE
+DREAM_ASPECT_ROOM_SLOT_STRIDE = 12000           # 24 lanes * DREAM_ASPECT_ROOM_STRIDE
+dream_weapon_room_slot_id_base = 250000         # slots 1..7 -> 250000 .. 271000
+dream_aspect_room_slot_id_base = 280000         # slots 1..7 -> 280000 .. 364000
 # How many "Dream Enemy NNNN" / "Dream Miniboss NN" names the datapackage reserves. Fixed rather
 # than derived from the roster: moving a species between the two counters (9/24: six miniboss-room
 # headliners moved to Miniboss) would otherwise shrink one range and drop names that shipped.
@@ -271,6 +283,29 @@ def _dream_bounds(count: int, n: int) -> list:
     for i in range(n):
         bounds.append(bounds[-1] + base + (1 if i < extra else 0))
     return bounds
+
+
+def _dream_room_id(slot: int, depth: int) -> int:
+    """Id of a plain Dream room check. depth is the dive-wide depth (1-based)."""
+    return hades2_base_location_id + dream_room_id_base + slot * DREAM_ROOM_SLOT_STRIDE + depth - 1
+
+
+def _dream_weapon_room_id(slot: int, w: int, depth: int) -> int:
+    """Id of a per-weapon Dream room check; w is the weapon's WEAPON_SHORT_NAMES position."""
+    lane = w * DREAM_WEAPON_ROOM_STRIDE + depth - 1
+    if slot == 0:
+        return hades2_base_location_id + dream_weapon_room_id_base + lane
+    return hades2_base_location_id + dream_weapon_room_slot_id_base \
+        + (slot - 1) * DREAM_WEAPON_ROOM_SLOT_STRIDE + lane
+
+
+def _dream_aspect_room_id(slot: int, lane: int, depth: int) -> int:
+    """Id of a per-aspect Dream room check; lane = weapon * ASPECT_LANES_PER_WEAPON + aspect."""
+    offset = lane * DREAM_ASPECT_ROOM_STRIDE + depth - 1
+    if slot == 0:
+        return hades2_base_location_id + dream_aspect_room_id_base + offset
+    return hades2_base_location_id + dream_aspect_room_slot_id_base \
+        + (slot - 1) * DREAM_ASPECT_ROOM_SLOT_STRIDE + offset
 
 
 def fill_score_checks(route: str, count: int) -> None:
@@ -462,7 +497,7 @@ def fill_route_checks(route: str, options, multiplier: int = 1, dream_met: bool 
         # Dream can't reuse _zone_bounds/fill_*_checks below (variable region count, no fixed
         # ROUTES entry) -- see Routes.DREAM's definition comment. combine_pools handling is
         # inside fill_dream_checks itself (same early-return shape as this function).
-        fill_dream_checks(options, dream_met)
+        fill_dream_checks(options, dream_met, multiplier)
         return
     system = options.location_system.value
     if combine_active(options):
@@ -481,11 +516,14 @@ def fill_route_checks(route: str, options, multiplier: int = 1, dream_met: bool 
 
 # Mirrors Lua LocationManager.DREAM_BOSS_NAMES (keep in sync by hand): species the mod counts on
 # the Dream BOSS counter, so they can never advance the Miniboss counter even though several are
-# in MINIBOSS_ENEMY_NAMES.
+# in MINIBOSS_ENEMY_NAMES. Scylla's bandmates Roxy and Jetty are deliberately absent (10/4): the
+# one fight was taking three Boss slots, so they advance the Miniboss counter instead. Asterius
+# followed on 11/2 (same ruling): the Theseus fight takes one Boss slot (Theseus), and Asterius
+# counts on the Miniboss tier in both the boss arena and Elysium's Warden room.
 DREAM_BOSS_NAMES = {
-    "Headmistress Hecate", "Scylla", "Roxy", "Jetty", "Infernal Beast", "Chronos",
+    "Headmistress Hecate", "Scylla", "Infernal Beast", "Chronos",
     "The Cyclops Polyphemus", "Eris", "Prometheus", "Typhon", "Megaera", "Alecto", "Tisiphone",
-    "Bone Hydra", "Theseus", "Asterius", "Hades",
+    "Bone Hydra", "Theseus", "Hades",
 }
 # Regular species that only spawn in the Underworld's Asphodel "Anomaly" detour, which a Dream
 # Dive never visits -- they can't advance the Dream Enemy counter.
@@ -512,15 +550,27 @@ def _dream_roster_counts(routes_included, obtainable_only: bool = True) -> tuple
     return y, z
 
 
-def fill_dream_checks(options, dream_met: bool = True) -> None:
+def dream_zj_biomes(options) -> bool:
+    """Whether a Dream Dive draws Zagreus' Journey's four biomes this seed (12-biome pool instead
+    of 8). Follows include_zagreus_journey, NOT whether the Nightmare route is in the seed: a
+    dive deals those biomes whenever the mod is there, and the mod forces DreamDiveTweaks' own
+    "cleared a Zagreus' Journey run" requirement on the same condition (ItemManager.apply_settings).
+    Whether it is actually installed can't be known here -- the mod re-clamps
+    (ItemManager.dream_region_max)."""
+    return bool(options.include_zagreus_journey) or NIGHTMARE in active_routes(options)
+
+
+def fill_dream_checks(options, dream_met: bool = True, multiplier: int = 1) -> None:
     """Dream's dedicated location-filling function. Not fill_route_checks/_zone_bounds --
     Dream has a variable region count (dream_region_count, 1-12, clamped to whatever the
     native DreamDiveTweaks pool actually supports) and no fixed boss identity per region (see
     Routes.DREAM's definition comment). Populates zone_tables[DREAM] with the same
     {location_name: id} dict shape every other route uses, so Regions.py/Rules.py read it
     identically -- they just populate it differently. dream_met=False rebuilds a seed generated
-    before Dream had boss "Met" checks (Hades2World._resolve_dream_met_checks)."""
-    zj_active = NIGHTMARE in active_routes(options)
+    before Dream had boss "Met" checks (Hades2World._resolve_dream_met_checks). multiplier
+    scales the room checks exactly like fill_room_checks: each depth gets m checks (slot 0 the
+    bare name, slots 1..m-1 the " +k" names the mod's send_room_slots already sends)."""
+    zj_active = dream_zj_biomes(options)
     regions_available = DREAM_REGIONS_AVAILABLE_ZJ if zj_active else DREAM_REGIONS_AVAILABLE_NO_ZJ
     n = min(int(options.dream_region_count.value), regions_available)
     zones = [f"Dream Region {i}" for i in range(1, n + 1)]
@@ -553,46 +603,48 @@ def fill_dream_checks(options, dream_met: bool = True) -> None:
         else:
             per_region = DREAM_ROOM_LOCATIONS_PER_REGION
             if system == ROOM_BASED:
-                for z in range(n):
-                    zone = zones[z]
-                    zone_display = f"Region {z + 1}"
-                    for i in range(per_region):
-                        depth = z * per_region + i + 1        # global depth: id math only
-                        name = _room_name(DREAM, zone_display, i + 1, 0)
-                        zone_tables[DREAM][zone][name] = \
-                            hades2_base_location_id + dream_room_id_base + depth - 1
+                for slot in range(multiplier):
+                    for z in range(n):
+                        zone = zones[z]
+                        zone_display = f"Region {z + 1}"
+                        for i in range(per_region):
+                            depth = z * per_region + i + 1        # global depth: id math only
+                            name = _room_name(DREAM, zone_display, i + 1, slot)
+                            zone_tables[DREAM][zone][name] = _dream_room_id(slot, depth)
             elif system == PER_WEAPON_ROOM_BASED:
                 included_weapons = options.included_weapons.value
-                for z in range(n):
-                    zone = zones[z]
-                    zone_display = f"Region {z + 1}"
-                    for w, weapon in enumerate(WEAPON_SHORT_NAMES):
-                        if weapon not in included_weapons:
-                            continue
-                        for i in range(per_region):
-                            depth = z * per_region + i + 1     # global depth: id math only
-                            name = _room_name(DREAM, zone_display, i + 1, 0, weapon)
-                            zone_tables[DREAM][zone][name] = hades2_base_location_id + \
-                                dream_weapon_room_id_base + w * DREAM_WEAPON_ROOM_STRIDE + depth - 1
+                for slot in range(multiplier):
+                    for z in range(n):
+                        zone = zones[z]
+                        zone_display = f"Region {z + 1}"
+                        for w, weapon in enumerate(WEAPON_SHORT_NAMES):
+                            if weapon not in included_weapons:
+                                continue
+                            for i in range(per_region):
+                                depth = z * per_region + i + 1     # global depth: id math only
+                                name = _room_name(DREAM, zone_display, i + 1, slot, weapon)
+                                zone_tables[DREAM][zone][name] = \
+                                    _dream_weapon_room_id(slot, w, depth)
             else:  # PER_ASPECT_ROOM_BASED
                 included_weapons = options.included_weapons.value
                 included_aspects = int(options.included_aspects.value)
-                for z in range(n):
-                    zone = zones[z]
-                    zone_display = f"Region {z + 1}"
-                    for w, weapon in enumerate(WEAPON_SHORT_NAMES):
-                        if weapon not in included_weapons:
-                            continue
-                        for a, (_aspect_key, display_key) in enumerate(weapon_aspect_slots(weapon)):
-                            if a >= included_aspects:
+                for slot in range(multiplier):
+                    for z in range(n):
+                        zone = zones[z]
+                        zone_display = f"Region {z + 1}"
+                        for w, weapon in enumerate(WEAPON_SHORT_NAMES):
+                            if weapon not in included_weapons:
                                 continue
-                            lane = w * ASPECT_LANES_PER_WEAPON + a
-                            for i in range(per_region):
-                                depth = z * per_region + i + 1     # global depth: id math only
-                                name = _aspect_room_name(DREAM, zone_display, i + 1, 0, weapon,
-                                                         display_key)
-                                zone_tables[DREAM][zone][name] = hades2_base_location_id + \
-                                    dream_aspect_room_id_base + lane * DREAM_ASPECT_ROOM_STRIDE + depth - 1
+                            for a, (_aspect_key, display_key) in enumerate(weapon_aspect_slots(weapon)):
+                                if a >= included_aspects:
+                                    continue
+                                lane = w * ASPECT_LANES_PER_WEAPON + a
+                                for i in range(per_region):
+                                    depth = z * per_region + i + 1     # global depth: id math only
+                                    name = _aspect_room_name(DREAM, zone_display, i + 1, slot,
+                                                             weapon, display_key)
+                                    zone_tables[DREAM][zone][name] = \
+                                        _dream_aspect_room_id(slot, lane, depth)
 
     # Enemy/Miniboss/Boss cumulative counters (only meaningful when enemysanity adds
     # locations at all -- gated by the caller via enemysanity_has_locations, same as every
@@ -858,6 +910,24 @@ MINIBOSS_ZONE_OVERRIDE = {
     "Tisiphone": (NIGHTMARE, 2),
 }
 
+# Spawn SLOTS that only open once a given zone's boss is beatable: native name -> (route, zone
+# index of that boss). The gate belongs to the slot, not the creature -- the mod substitutes after
+# the encounter is rolled, so in shuffled seeds it moves to whatever check the slot now yields
+# (Rules._set_spawn_slot_gates).
+#  - Wringer (ZJ HadesEnemyData DisembodiedHand: RequiredSeenEncounter "BossHades") and Wretched
+#    Sneak (A_MiniBoss03 / MiniBossWretchAssassin: same requirement) appear only after Hades has
+#    been fought. Hades II's own Wringer comes only from Chronos' Vow of Rivals summon
+#    (WeaponData_Chronos BossDifficultyActive), which logic doesn't count.
+#  - Brush-Stalker / Dread-Wailer come only from GeneratedH_Treant2 / GeneratedH_Screamer2: one
+#    reward-cage encounter in ten, at Fields depth 4+, once per run. The mod releases both on the
+#    Cerberus kill, so logic promises them with Cerberus.
+SPAWN_SLOT_BOSS_GATE = {
+    "Wringer": (NIGHTMARE, 3),
+    "Wretched Sneak": (NIGHTMARE, 3),
+    "Brush-Stalker": (UNDERWORLD, 2),
+    "Dread-Wailer": (UNDERWORLD, 2),
+}
+
 enemy_location_base = hades2_base_location_id + 30000
 
 # Each enemy check's id, as an offset from enemy_location_base. FROZEN: an id is part of every
@@ -1019,6 +1089,11 @@ SCRIPTED_ONLY_CHECK_NAMES = {
     #   Sister of the Dead: only Hecate's boss-fight adds (HecateSpawns01/02).
     "Eye of Typhon", "Tail of Typhon", "Lanthorn", "Canine", "Pinhead", "Polyp",
     "Sister of the Dead",
+    # 2026-11-02: Megagorgon (HitAndRunUnit) is in no regular ZJ pool. It spawns as
+    # HitAndRunUnitElite in MiniBossHitAndRun (Asphodel X_MiniBoss01), a Miniboss encounter the
+    # mod never substitutes, and as SuperElite in the Erebus-gate/Hades EM sets. In the regular
+    # cycle its target was never produced.
+    "Megagorgon",
 }
 
 # Checks only obtainable inside another enemy's fight: summoned by it, spawned as its arena's
@@ -1152,6 +1227,10 @@ def compute_miniboss_room_map(options, rand, routes=None) -> dict:
 
     "host: dest" means the run's `host` slot loads `dest`'s room instead. The mod keeps routing in
     the host region via ChooseNextRoomData's own ForceNextRoomSet, so the run's shape is unchanged.
+    `dest` is always a room from a different biome than `host`.
+
+    Dream Dives do not read this map: their miniboss checks count species rather than name them,
+    so the mod rolls its own permutation over all twenty rooms each dive (MinibossRooms.lua).
 
     Pooled across the seed's ACTIVE routes only -- Zagreus' Journey rooms are excluded when the
     YAML excludes ZJ (user ruling), and a route that isn't generated contributes no rooms, so a
@@ -1166,15 +1245,35 @@ def compute_miniboss_room_map(options, rand, routes=None) -> dict:
     n = len(rooms)
     if n < 2:
         return {}
-    # Sattolo's algorithm -- a random cyclic permutation, so no room ever maps to itself and every
-    # room hosts exactly one other. Same generator the enemy shuffle uses.
-    shuffled = rooms[:]
-    i = n - 1
-    while i > 0:
-        j = rand.randrange(i)
-        shuffled[i], shuffled[j] = shuffled[j], shuffled[i]
-        i -= 1
-    return {rooms[k]: shuffled[k] for k in range(n)}
+
+    # A slot never loads a room from its OWN biome. "No room maps to itself" was not enough: a
+    # region has two to four miniboss rooms, so a slot handed one of its siblings shows a miniboss
+    # that region rolls anyway and reads as not shuffled at all (seen live 2026-10-04: an
+    # Underworld-only map with G_MiniBoss01 -> G_MiniBoss03 and H_MiniBoss02 -> H_MiniBoss01).
+    def biome(room):
+        return MINIBOSS_ROOMS[room][:2]
+
+    # Uniform over the permutations that satisfy it, by rejection: about one shuffle in eighteen
+    # passes for Underworld alone or both routes together, one in thirty for Surface alone.
+    for _ in range(1000):
+        shuffled = rooms[:]
+        rand.shuffle(shuffled)
+        if all(biome(rooms[k]) != biome(shuffled[k]) for k in range(n)):
+            return {rooms[k]: shuffled[k] for k in range(n)}
+
+    # Not reached in practice. Biomes laid end to end in a random order and rotated by the largest
+    # biome's size: every slot lands outside its own biome as long as no biome holds more than
+    # half the rooms, which is true of every route combination.
+    by_biome = {}
+    for room in rooms:
+        by_biome.setdefault(biome(room), []).append(room)
+    groups = [by_biome[key] for key in sorted(by_biome)]
+    rand.shuffle(groups)
+    for group in groups:
+        rand.shuffle(group)
+    order = [room for group in groups for room in group]
+    shift = max(len(group) for group in groups)
+    return {order[k]: order[(k + shift) % n] for k in range(n)}
 
 
 def miniboss_check_relabel(room_map: dict) -> dict:
@@ -1470,8 +1569,9 @@ def npc_boss_locations_for(route: str) -> dict:
 # its last region is sure to pass the boss in question -- the same "final zone" bar
 # Routes.NPC_RANDOMIZED_ZONE_INDEX sets for the other randomized meets. (When the route IS in the
 # seed its checks stay in their own zones; a dive can still send them, just out of logic.)
-# Nightmare's bosses need no entry: its biomes only join the dive's pool when the Nightmare route
-# is itself in the seed (fill_dream_checks' zj_active), where their checks already exist.
+# Nightmare's bosses have no entry: with the Nightmare route in the seed their checks already
+# exist, and without it (a dive can still deal Zagreus' Journey's biomes -- dream_zj_biomes)
+# none are generated for Dream, so the mod's route gate drops them.
 # Mirrored by the mod's LocationManager.DREAM_MET_ROUTES.
 DREAM_MET_ROUTES = (UNDERWORLD, SURFACE)
 
@@ -1535,11 +1635,20 @@ def _route_locked_out(npc: str, routes: list, options=None) -> bool:
     return required is not None and required not in routes
 
 
+def keepsake_has_locations(options) -> bool:
+    """Whether this seed has "<NPC> Keepsake" checks at all: KeepsakeSanity on, and not
+    keepsake_items_only (keepsakes still shuffled as items, gifting an NPC sends nothing)."""
+    return options.keepsakesanity.value != 0 \
+        and not bool(getattr(options, "keepsake_items_only", False))
+
+
 def keepsake_locations_for(options) -> dict:
     """Active-seed "<NPC> Keepsake" locations: drops route-locked NPCs whose route isn't
     included this seed, instead of leaving an ungated dead check behind. Nothing extra is
     dropped with Dream the only route: vanilla won't take gifts during a Dream run, but the mod
     keeps every giver giftable there (reload.lua's SilenceForDreamRun wrap)."""
+    if not keepsake_has_locations(options):
+        return {}
     routes = active_routes(options)
     return {name: loc_id for name, loc_id in location_keepsakes.items()
             if not _route_locked_out(name[:-len(" Keepsake")], routes, options)}
@@ -1594,9 +1703,13 @@ def setup_location_table_with_settings(options, multiplier: int = 1, dream_met: 
             total.update(locs)
 
     # Zagreus (secret superboss): a standalone event, not tied to either route's zone-boss
-    # list, so it isn't in zone_tables. Always present, like the Chronos/Typhon boss events
-    # (harmless if the goal doesn't need it -- see Rules.py's access rule).
-    total[boss_event("Zagreus")] = None
+    # list, so it isn't in zone_tables. Present whenever he can be fought at all, like the
+    # Chronos/Typhon boss events (harmless if the goal doesn't need it -- see Rules.py's access
+    # rule). Not on a Dream-only seed: no 4-zone route means no contract, the event could never
+    # be reached, and a full-accessibility seed with an unreachable location fails generation
+    # on forks that enforce it (Ionium's index CI, 10/1).
+    if zagreus_reachable(active_routes(options)):
+        total[boss_event("Zagreus")] = None
 
     # Dream's single "Beat Dream" event (no fixed boss identity -- see Routes.DREAM's
     # definition comment). Unlike Zagreus this is NOT always present: it only makes sense
@@ -1611,8 +1724,9 @@ def setup_location_table_with_settings(options, multiplier: int = 1, dream_met: 
         else:
             total.update(combined_score_table(options))
 
-    # Keepsake checks exist in randomized (1) and progressive (2), not normal (0).
-    if options.keepsakesanity.value != 0:
+    # Keepsake checks exist in randomized (1) and progressive (2), not normal (0) -- and not
+    # with keepsake_items_only.
+    if keepsake_has_locations(options):
         total.update(keepsake_locations_for(options))
 
     # Enemy first-defeat checks, per active route (vanilla_plus_locations / shuffled_plus_locations).
@@ -1698,23 +1812,25 @@ def give_all_locations_table() -> dict:
     per_region = DREAM_ROOM_LOCATIONS_PER_REGION
     for i in range(MAX_SCORE_CHECKS):
         table[f"Dream Score {_pad(i + 1)}"] = hades2_base_location_id + dream_score_id_base + i
-    for i in range(n * per_region):
-        z, local = divmod(i, per_region)
-        name = _room_name(DREAM, f"Region {z + 1}", local + 1, 0)
-        table[name] = hades2_base_location_id + dream_room_id_base + i
-    for w, weapon in enumerate(WEAPON_SHORT_NAMES):
+    if n * per_region > DREAM_ROOM_SLOT_STRIDE:
+        raise ValueError(f"Dream's {n * per_region} room depths outgrew DREAM_ROOM_SLOT_STRIDE")
+    for slot in range(MAX_LOCATION_MULTIPLIER):
         for i in range(n * per_region):
             z, local = divmod(i, per_region)
-            name = _room_name(DREAM, f"Region {z + 1}", local + 1, 0, weapon)
-            table[name] = hades2_base_location_id + \
-                dream_weapon_room_id_base + w * DREAM_WEAPON_ROOM_STRIDE + i
-        for a, (_aspect_key, display_key) in enumerate(weapon_aspect_slots(weapon)):
-            lane = WEAPON_SHORT_NAMES.index(weapon) * ASPECT_LANES_PER_WEAPON + a
+            name = _room_name(DREAM, f"Region {z + 1}", local + 1, slot)
+            table[name] = _dream_room_id(slot, i + 1)
+        for w, weapon in enumerate(WEAPON_SHORT_NAMES):
             for i in range(n * per_region):
                 z, local = divmod(i, per_region)
-                name = _aspect_room_name(DREAM, f"Region {z + 1}", local + 1, 0, weapon, display_key)
-                table[name] = hades2_base_location_id + \
-                    dream_aspect_room_id_base + lane * DREAM_ASPECT_ROOM_STRIDE + i
+                name = _room_name(DREAM, f"Region {z + 1}", local + 1, slot, weapon)
+                table[name] = _dream_weapon_room_id(slot, w, i + 1)
+            for a, (_aspect_key, display_key) in enumerate(weapon_aspect_slots(weapon)):
+                lane = w * ASPECT_LANES_PER_WEAPON + a
+                for i in range(n * per_region):
+                    z, local = divmod(i, per_region)
+                    name = _aspect_room_name(DREAM, f"Region {z + 1}", local + 1, slot, weapon,
+                                             display_key)
+                    table[name] = _dream_aspect_room_id(slot, lane, i + 1)
     # Enemy/Miniboss/Boss counters: max possible count is the full ZJ-inclusive roster (Y/Z at
     # dream_enemy_locations=12/regions_available=12 collapses to Y/Z directly). The reserved
     # blocks are fixed-size (DREAM_*_ID_SLOTS) and must cover it.

@@ -3,6 +3,7 @@ from .sprites import SpriteIdZM
 EXCLUDED_ENEMIES_ZM = {
     SpriteIdZM.UNUSED_10,
     SpriteIdZM.MESSAGE_BANNER,
+    SpriteIdZM.AREA_BANNER,
 }
 
 

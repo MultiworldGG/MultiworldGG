@@ -921,6 +921,9 @@ class ManifestData:
     world_version: str
     pokemon_crystal_version: str | None
     minimum_patch_version: str
+    apworld_name: str
+    patch_file_ending: str
+    settings_key: str
 
 
 @dataclass(frozen=True)
@@ -1661,11 +1664,15 @@ def _init() -> None:
         ) for encounter_data in data_json["bug_contest"]
     ]
 
+    apworld_name = __package__.rsplit(".", 1)[-1]
     manifest = ManifestData(
         game=manifest_json["game"],
         world_version=manifest_json["world_version"],
         pokemon_crystal_version=manifest_json.get("pokemon_crystal_version", manifest_json["world_version"]),
-        minimum_patch_version=manifest_json["minimum_patch_version"]
+        minimum_patch_version=manifest_json["minimum_patch_version"],
+        apworld_name=apworld_name,
+        patch_file_ending=f".ap{apworld_name.removeprefix('pokemon_').replace('_', '')}",
+        settings_key=f"{apworld_name}_settings",
     )
 
     palettes = [

@@ -4327,7 +4327,7 @@ LOCATION_TABLE = {
         type=TPLocationType.Region,
         region=NodeID.Lanayru,
         offset=0x1B,
-        bit=0x1,
+        bit=0x2,
     ),
     "Lake Hylia Portal": TPLocationData(
         code=None,
@@ -4354,7 +4354,7 @@ LOCATION_TABLE = {
         type=TPLocationType.Region,
         region=NodeID.Lanayru,
         offset=0x1B,
-        bit=0x2,
+        bit=0x1,
     ),
     "Lake Hylia Shell Blade Grotto Chest": TPLocationData(
         code=389,
@@ -5128,7 +5128,7 @@ LOCATION_TABLE = {
         type=TPLocationType.Region,
         region=NodeID.Lanayru,
         offset=0x1B,
-        bit=0x8,
+        bit=0x10,
     ),
     "Zoras Domain Shortcut Lower Boulder Rupee": TPLocationData(
         code=529,
@@ -5173,7 +5173,7 @@ LOCATION_TABLE = {
         type=TPLocationType.Region,
         region=NodeID.Lanayru,
         offset=0x1B,
-        bit=0x20,
+        bit=0x80,
     ),
     "Zoras Domain Throne South Underwater Rupee": TPLocationData(
         code=534,
@@ -5200,7 +5200,7 @@ LOCATION_TABLE = {
         type=TPLocationType.Region,
         region=NodeID.Lanayru,
         offset=0x1B,
-        bit=0x80,
+        bit=0x20,
     ),
     "Zoras Domain Top Ledge Rupee": TPLocationData(
         code=537,
@@ -5209,7 +5209,7 @@ LOCATION_TABLE = {
         type=TPLocationType.Region,
         region=NodeID.Lanayru,
         offset=0x1B,
-        bit=0x10,
+        bit=0x8,
     ),
     "Zoras Domain Underwater Goron": TPLocationData(
         code=453,
@@ -5344,7 +5344,7 @@ LOCATION_TABLE = {
         type=TPLocationType.Region,
         region=NodeID.Ordon,
         offset=0x19,
-        bit=0x2,
+        bit=0x20,
     ),
     "Ordon Rupee In River 2": TPLocationData(
         code=547,
@@ -5353,7 +5353,7 @@ LOCATION_TABLE = {
         type=TPLocationType.Region,
         region=NodeID.Ordon,
         offset=0x19,
-        bit=0x20,
+        bit=0x2,
     ),
     "Ordon Rupee Under Bridge": TPLocationData(
         code=548,
@@ -5371,7 +5371,7 @@ LOCATION_TABLE = {
         type=TPLocationType.Region,
         region=NodeID.Ordon,
         offset=0x1B,
-        bit=0x20,
+        bit=0x80,
     ),
     "Ordon Rupee Under Tall Tree 2": TPLocationData(
         code=550,
@@ -5380,7 +5380,7 @@ LOCATION_TABLE = {
         type=TPLocationType.Region,
         region=NodeID.Ordon,
         offset=0x1B,
-        bit=0x80,
+        bit=0x20,
     ),
     "Ordon Rusl House Roof Rupee 1": TPLocationData(
         code=551,
@@ -5514,8 +5514,8 @@ LOCATION_TABLE = {
         stage_id=TPStages.Snowpeak,
         type=TPLocationType.Region,
         region=NodeID.Snowpeak,
-        offset=0x19,
-        bit=0x2,
+        offset=0x1B,
+        bit=0x10,
     ),
     "Snowboarding Bridge Ledge Middle Rupee": TPLocationData(
         code=557,
@@ -5523,8 +5523,8 @@ LOCATION_TABLE = {
         stage_id=TPStages.Snowpeak,
         type=TPLocationType.Region,
         region=NodeID.Snowpeak,
-        offset=0x19,
-        bit=0x4,
+        offset=0x1B,
+        bit=0x8,
     ),
     "Snowboarding Bridge Ledge Upper Rupee": TPLocationData(
         code=558,
@@ -5541,8 +5541,8 @@ LOCATION_TABLE = {
         stage_id=TPStages.Snowpeak,
         type=TPLocationType.Region,
         region=NodeID.Snowpeak,
-        offset=0x1B,
-        bit=0x2,
+        offset=0x1A,
+        bit=0x1,
     ),
     "Snowboarding Shortcut Rupee 2": TPLocationData(
         code=562,
@@ -5550,8 +5550,8 @@ LOCATION_TABLE = {
         stage_id=TPStages.Snowpeak,
         type=TPLocationType.Region,
         region=NodeID.Snowpeak,
-        offset=0x1B,
-        bit=0x1,
+        offset=0x1A,
+        bit=0x2,
     ),
     "Snowboarding Shortcut Rupee 3": TPLocationData(
         code=563,
@@ -5560,7 +5560,7 @@ LOCATION_TABLE = {
         type=TPLocationType.Region,
         region=NodeID.Snowpeak,
         offset=0x1A,
-        bit=0x40,
+        bit=0x4,
     ),
     "Snowboarding Shortcut Rupee 4": TPLocationData(
         code=564,
@@ -5569,7 +5569,7 @@ LOCATION_TABLE = {
         type=TPLocationType.Region,
         region=NodeID.Snowpeak,
         offset=0x1A,
-        bit=0x80,
+        bit=0x8,
     ),
     "Snowboarding Shortcut Rupee 5": TPLocationData(
         code=565,
@@ -5577,8 +5577,8 @@ LOCATION_TABLE = {
         stage_id=TPStages.Snowpeak,
         type=TPLocationType.Region,
         region=NodeID.Snowpeak,
-        offset=0x19,
-        bit=0x1,
+        offset=0x1A,
+        bit=0x10,
     ),
     "Snowboarding Shortcut Rupee 6": TPLocationData(
         code=566,
@@ -5586,8 +5586,8 @@ LOCATION_TABLE = {
         stage_id=TPStages.Snowpeak,
         type=TPLocationType.Region,
         region=NodeID.Snowpeak,
-        offset=0x1B,
-        bit=0x8,
+        offset=0x1A,
+        bit=0x20,
     ),
     "Snowboarding Shortcut Rupee 7": TPLocationData(
         code=567,
@@ -5595,8 +5595,8 @@ LOCATION_TABLE = {
         stage_id=TPStages.Snowpeak,
         type=TPLocationType.Region,
         region=NodeID.Snowpeak,
-        offset=0x1B,
-        bit=0x10,
+        offset=0x1A,
+        bit=0x40,
     ),
     "Snowboarding Shortcut Rupee 8": TPLocationData(
         code=568,
@@ -5604,8 +5604,8 @@ LOCATION_TABLE = {
         stage_id=TPStages.Snowpeak,
         type=TPLocationType.Region,
         region=NodeID.Snowpeak,
-        offset=0x1B,
-        bit=0x20,
+        offset=0x1A,
+        bit=0x80,
     ),
     "Snowboarding Shortcut Rupee 9": TPLocationData(
         code=569,
@@ -5613,8 +5613,8 @@ LOCATION_TABLE = {
         stage_id=TPStages.Snowpeak,
         type=TPLocationType.Region,
         region=NodeID.Snowpeak,
-        offset=0x1B,
-        bit=0x40,
+        offset=0x19,
+        bit=0x1,
     ),
     "Snowboarding Shortcut Rupee 10": TPLocationData(
         code=560,
@@ -5622,8 +5622,8 @@ LOCATION_TABLE = {
         stage_id=TPStages.Snowpeak,
         type=TPLocationType.Region,
         region=NodeID.Snowpeak,
-        offset=0x1B,
-        bit=0x800,
+        offset=0x19,
+        bit=0x2,
     ),
     "Snowboarding Shortcut Rupee 11": TPLocationData(
         code=561,
@@ -5631,8 +5631,8 @@ LOCATION_TABLE = {
         stage_id=TPStages.Snowpeak,
         type=TPLocationType.Region,
         region=NodeID.Snowpeak,
-        offset=0x1A,
-        bit=0x1,
+        offset=0x19,
+        bit=0x4,
     ),
     "Snowboarding Snowy Tree Top Rupee 1": TPLocationData(
         code=570,
@@ -5640,8 +5640,8 @@ LOCATION_TABLE = {
         stage_id=TPStages.Snowpeak,
         type=TPLocationType.Region,
         region=NodeID.Snowpeak,
-        offset=0x1A,
-        bit=0x2,
+        offset=0x1B,
+        bit=0x20,
     ),
     "Snowboarding Snowy Tree Top Rupee 2": TPLocationData(
         code=571,
@@ -5649,8 +5649,8 @@ LOCATION_TABLE = {
         stage_id=TPStages.Snowpeak,
         type=TPLocationType.Region,
         region=NodeID.Snowpeak,
-        offset=0x1A,
-        bit=0x4,
+        offset=0x1B,
+        bit=0x40,
     ),
     "Snowboarding Snowy Tree Top Rupee 3": TPLocationData(
         code=572,
@@ -5667,8 +5667,8 @@ LOCATION_TABLE = {
         stage_id=TPStages.Snowpeak,
         type=TPLocationType.Region,
         region=NodeID.Snowpeak,
-        offset=0x1A,
-        bit=0x10,
+        offset=0x1B,
+        bit=0x1,
     ),
     "Snowboarding Top Right Rupee": TPLocationData(
         code=574,
@@ -5676,8 +5676,8 @@ LOCATION_TABLE = {
         stage_id=TPStages.Snowpeak,
         type=TPLocationType.Region,
         region=NodeID.Snowpeak,
-        offset=0x1A,
-        bit=0x20,
+        offset=0x1B,
+        bit=0x2,
     ),
     "Snowpeak Above Freezard Grotto Poe": TPLocationData(
         code=468,

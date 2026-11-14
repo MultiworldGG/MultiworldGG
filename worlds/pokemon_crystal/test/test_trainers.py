@@ -4,8 +4,8 @@ from .bases import PokemonCrystalTestBase
 from ..trainers import set_rival_starter_pokemon, randomize_trainers
 from ..pokemon_data import VANILLA_STARTERS
 from ..moves import get_random_move_from_learnset
-from ..pokemon import get_evolution_at_level
-from ..data import LearnsetData, TMHMData, EvolutionType, data
+from ..pokemon import get_evolution_at_level, evolution_level
+from ..data import LearnsetData, TMHMData, data
 
 
 class RivalStarterVanillaTrainersTest(PokemonCrystalTestBase):
@@ -130,8 +130,8 @@ class ForceFullyEvolvedAtEvolutionLevelTest(PokemonCrystalTestBase):
     }
 
     def _min_evolution_level(self, pokemon_name):
-        levels = [evo.level for evo in self.world.generated_pokemon[pokemon_name].evolutions
-                  if evo.evo_type in (EvolutionType.Level, EvolutionType.Stats) and evo.level is not None]
+        levels = [level for evo in self.world.generated_pokemon[pokemon_name].evolutions
+                  if (level := evolution_level(self.world, evo)) is not None]
         return min(levels) if levels else None
 
     def test_trainer_pokemon_below_their_evolution_level(self):
@@ -149,7 +149,7 @@ class ForceFullyEvolvedAtEvolutionLevelTest(PokemonCrystalTestBase):
         for pokemon_name, pokemon_data in self.world.generated_pokemon.items():
             evolved = get_evolution_at_level(self.world, pokemon_name, 100)
             self.assertIsNone(self._min_evolution_level(evolved),
-                              f"{pokemon_name} evolved to {evolved}, which still evolves by level")
+                              f"{pokemon_name} evolved to {evolved}, which can still evolve")
 
 
 class ForceFullyEvolvedAtEvolutionLevelRandomEvolutionsTest(ForceFullyEvolvedAtEvolutionLevelTest):
@@ -158,6 +158,20 @@ class ForceFullyEvolvedAtEvolutionLevelRandomEvolutionsTest(ForceFullyEvolvedAtE
         "force_fully_evolved": "evolution_level",
         "randomize_evolution": "increase_bst",
     }
+
+
+class ForceFullyEvolvedAtEvolutionLevelMaxEvolutionLevelTest(ForceFullyEvolvedAtEvolutionLevelTest):
+    options = {
+        "randomize_trainer_parties": "completely_random",
+        "force_fully_evolved": "evolution_level",
+        "maximum_evolution_level": 20,
+    }
+
+    def test_non_level_evolutions_capped(self):
+        for pokemon_name, pokemon_data in self.world.generated_pokemon.items():
+            for evo in pokemon_data.evolutions:
+                self.assertLessEqual(evolution_level(self.world, evo), 20,
+                                     f"{pokemon_name} -> {evo.pokemon} exceeds maximum_evolution_level")
 
 
 class ForceFullyEvolvedAtEvolutionLevelBlocklistTest(PokemonCrystalTestBase):

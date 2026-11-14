@@ -349,7 +349,7 @@ def create_all_items(world: ALttPRWorld) -> None:
     itempool = []
     for item in dr_itempool:
         code = item.code
-        classification = get_classification(item.name, world.options.door_shuffle != "vanilla" or world.options.boss_shuffle != "vanilla")
+        classification = get_classification(item.name, world.is_bug_net_progression())
 
         if world.options.shopsanity.value and (item.name == "Bee" or (item.name == "Red Potion" and not item.priority)):
             # Having bees and potions as randomized items is kinda wonky. Usually when you receive them they
@@ -444,10 +444,10 @@ def place_pre_fill_items(world: ALttPRWorld) -> None:
                                      "Hyrule Castle - Boomerang Chest", "Hyrule Castle - Boomerang Guard Key Drop", "Hyrule Castle - Big Key Drop"]
                 place_escape_key(big_key_locations, world, "Big")
 
-    # If Shopsanity is enabled, there should be one each of Red/Green/Blue Potions that can be repeatedly purchased
+    # If Shopsanity is enabled, there should be one each of Red/Green/Blue Potions that can be repeatedly purchased, as well as a Bee in case of bee ganon vulnerability
     if world.options.shopsanity:
         shop_locations = [location for location in world.door_rando_world.get_locations() if location.type == LocationType.Shop]
-        for shop_item in ["Red Potion", "Green Potion", "Blue Potion"]:
+        for shop_item in ["Red Potion", "Green Potion", "Blue Potion", "Bee"]:
             location = world.door_rando_world.find_items(shop_item, 1)[0]
             potion = ALttPRItem(shop_item, ItemClassification.useful, ItemFactory(shop_item, 1).code, world.player)
             world.multiworld.get_location(location.name, world.player).place_locked_item(potion)

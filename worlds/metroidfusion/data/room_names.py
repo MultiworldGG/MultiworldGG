@@ -1,1842 +1,1842 @@
 room_names = [
         {
-            "Area": 0,
-            "Room": 0,
-            "Name": "Docking Bay Hangar"
+            "area": 0,
+            "room": 0,
+            "name": "Docking Bay Hangar"
         },
         {
-            "Area": 0,
-            "Room": 63,
-            "Name": "Docking Bay Hangar"
+            "area": 0,
+            "room": 63,
+            "name": "Docking Bay Hangar"
         },
         {
-            "Area": 0,
-            "Room": 3,
-            "Name": "Docking Bay Access"
+            "area": 0,
+            "room": 3,
+            "name": "Docking Bay Access"
         },
         {
-            "Area": 0,
-            "Room": 4,
-            "Name": "Docking Bay Access"
+            "area": 0,
+            "room": 4,
+            "name": "Docking Bay Access"
         },
         {
-            "Area": 0,
-            "Room": 6,
-            "Name": "Docking Bay Climb"
+            "area": 0,
+            "room": 6,
+            "name": "Docking Bay Climb"
         },
         {
-            "Area": 0,
-            "Room": 7,
-            "Name": "Station Entrance"
+            "area": 0,
+            "room": 7,
+            "name": "Station Entrance"
         },
         {
-            "Area": 0,
-            "Room": 8,
-            "Name": "Concourse Recharge Room"
+            "area": 0,
+            "room": 8,
+            "name": "Concourse Recharge Room"
         },
         {
-            "Area": 0,
-            "Room": 9,
-            "Name": "Crew Quarters Navigation Room"
+            "area": 0,
+            "room": 9,
+            "name": "Crew Quarters Navigation Room"
         },
         {
-            "Area": 0,
-            "Room": 10,
-            "Name": "Crew Quarters East"
+            "area": 0,
+            "room": 10,
+            "name": "Crew Quarters East"
         },
         {
-            "Area": 0,
-            "Room": 11,
-            "Name": "Habitation Deck Save Room"
+            "area": 0,
+            "room": 11,
+            "name": "Habitation Deck Save Room"
         },
         {
-            "Area": 0,
-            "Room": 12,
-            "Name": "Crew Quarters West"
+            "area": 0,
+            "room": 12,
+            "name": "Crew Quarters West"
         },
         {
-            "Area": 0,
-            "Room": 13,
-            "Name": "Operations Deck"
+            "area": 0,
+            "room": 13,
+            "name": "Operations Deck"
         },
         {
-            "Area": 0,
-            "Room": 74,
-            "Name": "Operations Deck"
+            "area": 0,
+            "room": 74,
+            "name": "Operations Deck"
         },
         {
-            "Area": 0,
-            "Room": 85,
-            "Name": "Operations Deck"
+            "area": 0,
+            "room": 85,
+            "name": "Operations Deck"
         },
         {
-            "Area": 0,
-            "Room": 14,
-            "Name": "Concourse Ventilation"
+            "area": 0,
+            "room": 14,
+            "name": "Concourse Ventilation"
         },
         {
-            "Area": 0,
-            "Room": 15,
-            "Name": "Habitation Deck Entrance"
+            "area": 0,
+            "room": 15,
+            "name": "Habitation Deck Entrance"
         },
         {
-            "Area": 0,
-            "Room": 16,
-            "Name": "Nexus Navigation Room"
+            "area": 0,
+            "room": 16,
+            "name": "Nexus Navigation Room"
         },
         {
-            "Area": 0,
-            "Room": 17,
-            "Name": "Restricted Airlock"
+            "area": 0,
+            "room": 17,
+            "name": "Restricted Airlock"
         },
         {
-            "Area": 0,
-            "Room": 77,
-            "Name": "Restricted Airlock"
+            "area": 0,
+            "room": 77,
+            "name": "Restricted Airlock"
         },
         {
-            "Area": 0,
-            "Room": 18,
-            "Name": "Central Nexus"
+            "area": 0,
+            "room": 18,
+            "name": "Central Nexus"
         },
         {
-            "Area": 0,
-            "Room": 20,
-            "Name": "Dark Stairwell"
+            "area": 0,
+            "room": 20,
+            "name": "Dark Stairwell"
         },
         {
-            "Area": 0,
-            "Room": 21,
-            "Name": "Concourse"
+            "area": 0,
+            "room": 21,
+            "name": "Concourse"
         },
         {
-            "Area": 0,
-            "Room": 22,
-            "Name": "Habitation Ventilation"
+            "area": 0,
+            "room": 22,
+            "name": "Habitation Ventilation"
         },
         {
-            "Area": 0,
-            "Room": 23,
-            "Name": "Quarantine Junction"
+            "area": 0,
+            "room": 23,
+            "name": "Quarantine Junction"
         },
         {
-            "Area": 0,
-            "Room": 24,
-            "Name": "Sector Hub"
+            "area": 0,
+            "room": 24,
+            "name": "Sector Hub"
         },
         {
-            "Area": 0,
-            "Room": 25,
-            "Name": "Sector Hub Lift 2"
+            "area": 0,
+            "room": 25,
+            "name": "Sector Hub Lift 2"
         },
         {
-            "Area": 0,
-            "Room": 26,
-            "Name": "Sector Hub Lift 4"
+            "area": 0,
+            "room": 26,
+            "name": "Sector Hub Lift 4"
         },
         {
-            "Area": 0,
-            "Room": 27,
-            "Name": "Sector Hub Lift 6"
+            "area": 0,
+            "room": 27,
+            "name": "Sector Hub Lift 6"
         },
         {
-            "Area": 0,
-            "Room": 28,
-            "Name": "Sector Hub Lift 1"
+            "area": 0,
+            "room": 28,
+            "name": "Sector Hub Lift 1"
         },
         {
-            "Area": 0,
-            "Room": 29,
-            "Name": "Sector Hub Lift 3"
+            "area": 0,
+            "room": 29,
+            "name": "Sector Hub Lift 3"
         },
         {
-            "Area": 0,
-            "Room": 30,
-            "Name": "Sector Hub Lift 5"
+            "area": 0,
+            "room": 30,
+            "name": "Sector Hub Lift 5"
         },
         {
-            "Area": 0,
-            "Room": 32,
-            "Name": "Operations Deck Navigation Room"
+            "area": 0,
+            "room": 32,
+            "name": "Operations Deck Navigation Room"
         },
         {
-            "Area": 0,
-            "Room": 33,
-            "Name": "Concourse Save Room"
+            "area": 0,
+            "room": 33,
+            "name": "Concourse Save Room"
         },
         {
-            "Area": 0,
-            "Room": 34,
-            "Name": "Main Elevator Shaft"
+            "area": 0,
+            "room": 34,
+            "name": "Main Elevator Shaft"
         },
         {
-            "Area": 0,
-            "Room": 43,
-            "Name": "Main Elevator Shaft"
+            "area": 0,
+            "room": 43,
+            "name": "Main Elevator Shaft"
         },
         {
-            "Area": 0,
-            "Room": 35,
-            "Name": "Operations Ventilation"
+            "area": 0,
+            "room": 35,
+            "name": "Operations Ventilation"
         },
         {
-            "Area": 0,
-            "Room": 36,
-            "Name": "Operations Ventilation"
+            "area": 0,
+            "room": 36,
+            "name": "Operations Ventilation"
         },
         {
-            "Area": 0,
-            "Room": 37,
-            "Name": "Crew Quarters Save Room"
+            "area": 0,
+            "room": 37,
+            "name": "Crew Quarters Save Room"
         },
         {
-            "Area": 0,
-            "Room": 38,
-            "Name": "Arachnus Arena"
+            "area": 0,
+            "room": 38,
+            "name": "Arachnus Arena"
         },
         {
-            "Area": 0,
-            "Room": 39,
-            "Name": "Operations Deck Data Room"
+            "area": 0,
+            "room": 39,
+            "name": "Operations Deck Data Room"
         },
         {
-            "Area": 0,
-            "Room": 40,
-            "Name": "Main Elevator"
+            "area": 0,
+            "room": 40,
+            "name": "Main Elevator"
         },
         {
-            "Area": 0,
-            "Room": 19,
-            "Name": "Main Elevator"
+            "area": 0,
+            "room": 19,
+            "name": "Main Elevator"
         },
         {
-            "Area": 0,
-            "Room": 42,
-            "Name": "Main Elevator Access"
+            "area": 0,
+            "room": 42,
+            "name": "Main Elevator Access"
         },
         {
-            "Area": 0,
-            "Room": 41,
-            "Name": "Main Elevator Access"
+            "area": 0,
+            "room": 41,
+            "name": "Main Elevator Access"
         },
         {
-            "Area": 0,
-            "Room": 44,
-            "Name": "Operations Deck Save Room"
+            "area": 0,
+            "room": 44,
+            "name": "Operations Deck Save Room"
         },
         {
-            "Area": 0,
-            "Room": 45,
-            "Name": "Operations Ventilation Storage"
+            "area": 0,
+            "room": 45,
+            "name": "Operations Ventilation Storage"
         },
         {
-            "Area": 0,
-            "Room": 46,
-            "Name": "Sub-Zero Containment"
+            "area": 0,
+            "room": 46,
+            "name": "Sub-Zero Containment"
         },
         {
-            "Area": 0,
-            "Room": 47,
-            "Name": "Genesis Speedway"
+            "area": 0,
+            "room": 47,
+            "name": "Genesis Speedway"
         },
         {
-            "Area": 0,
-            "Room": 48,
-            "Name": "Silo Entry"
+            "area": 0,
+            "room": 48,
+            "name": "Silo Entry"
         },
         {
-            "Area": 0,
-            "Room": 83,
-            "Name": "Silo Entry"
+            "area": 0,
+            "room": 83,
+            "name": "Silo Entry"
         },
         {
-            "Area": 0,
-            "Room": 49,
-            "Name": "Central Reactor Core"
+            "area": 0,
+            "room": 49,
+            "name": "Central Reactor Core"
         },
         {
-            "Area": 0,
-            "Room": 59,
-            "Name": "Central Reactor Core"
+            "area": 0,
+            "room": 59,
+            "name": "Central Reactor Core"
         },
         {
-            "Area": 0,
-            "Room": 50,
-            "Name": "Silo Catwalk"
+            "area": 0,
+            "room": 50,
+            "name": "Silo Catwalk"
         },
         {
-            "Area": 0,
-            "Room": 51,
-            "Name": "Silo Scaffolding"
+            "area": 0,
+            "room": 51,
+            "name": "Silo Scaffolding"
         },
         {
-            "Area": 0,
-            "Room": 52,
-            "Name": "Silo Checkpoint"
+            "area": 0,
+            "room": 52,
+            "name": "Silo Checkpoint"
         },
         {
-            "Area": 0,
-            "Room": 54,
-            "Name": "Auxiliary Power Station"
+            "area": 0,
+            "room": 54,
+            "name": "Auxiliary Power Station"
         },
         {
-            "Area": 0,
-            "Room": 55,
-            "Name": "Silo Tunnel"
+            "area": 0,
+            "room": 55,
+            "name": "Silo Tunnel"
         },
         {
-            "Area": 0,
-            "Room": 68,
-            "Name": "Silo Tunnel"
+            "area": 0,
+            "room": 68,
+            "name": "Silo Tunnel"
         },
         {
-            "Area": 0,
-            "Room": 56,
-            "Name": "Auxiliary Navigation Room"
+            "area": 0,
+            "room": 56,
+            "name": "Auxiliary Navigation Room"
         },
         {
-            "Area": 0,
-            "Room": 57,
-            "Name": "Nexus Storage"
+            "area": 0,
+            "room": 57,
+            "name": "Nexus Storage"
         },
         {
-            "Area": 0,
-            "Room": 58,
-            "Name": "Silo Save Room"
+            "area": 0,
+            "room": 58,
+            "name": "Silo Save Room"
         },
         {
-            "Area": 0,
-            "Room": 60,
-            "Name": "Operations Deck Elevator"
+            "area": 0,
+            "room": 60,
+            "name": "Operations Deck Elevator"
         },
         {
-            "Area": 0,
-            "Room": 61,
-            "Name": "Crew Quarters Elevator"
+            "area": 0,
+            "room": 61,
+            "name": "Crew Quarters Elevator"
         },
         {
-            "Area": 0,
-            "Room": 62,
-            "Name": "Restricted Back Door"
+            "area": 0,
+            "room": 62,
+            "name": "Restricted Back Door"
         },
         {
-            "Area": 0,
-            "Room": 64,
-            "Name": "Restricted Save Room"
+            "area": 0,
+            "room": 64,
+            "name": "Restricted Save Room"
         },
         {
-            "Area": 0,
-            "Room": 65,
-            "Name": "Restricted Corridor"
+            "area": 0,
+            "room": 65,
+            "name": "Restricted Corridor"
         },
         {
-            "Area": 0,
-            "Room": 66,
-            "Name": "Restricted Navigation Room"
+            "area": 0,
+            "room": 66,
+            "name": "Restricted Navigation Room"
         },
         {
-            "Area": 0,
-            "Room": 67,
-            "Name": "Restricted Zone Elevator"
+            "area": 0,
+            "room": 67,
+            "name": "Restricted Zone Elevator"
         },
         {
-            "Area": 0,
-            "Room": 69,
-            "Name": "Habitation Deck"
+            "area": 0,
+            "room": 69,
+            "name": "Habitation Deck"
         },
         {
-            "Area": 0,
-            "Room": 70,
-            "Name": "Hornoad Hallway"
+            "area": 0,
+            "room": 70,
+            "name": "Hornoad Hallway"
         },
         {
-            "Area": 0,
-            "Room": 71,
-            "Name": "Quarantine Bay"
+            "area": 0,
+            "room": 71,
+            "name": "Quarantine Bay"
         },
         {
-            "Area": 0,
-            "Room": 72,
-            "Name": "Cubby Hole"
+            "area": 0,
+            "room": 72,
+            "name": "Cubby Hole"
         },
         {
-            "Area": 0,
-            "Room": 73,
-            "Name": "Main Elevator Cache"
+            "area": 0,
+            "room": 73,
+            "name": "Main Elevator Cache"
         },
         {
-            "Area": 0,
-            "Room": 75,
-            "Name": "Nexus Elevator"
+            "area": 0,
+            "room": 75,
+            "name": "Nexus Elevator"
         },
         {
-            "Area": 0,
-            "Room": 76,
-            "Name": "Habitation Deck Elevator"
+            "area": 0,
+            "room": 76,
+            "name": "Habitation Deck Elevator"
         },
         {
-            "Area": 0,
-            "Room": 81,
-            "Name": "Operations Deck Recharge Room"
+            "area": 0,
+            "room": 81,
+            "name": "Operations Deck Recharge Room"
         },
         {
-            "Area": 0,
-            "Room": 82,
-            "Name": "Operations Room"
+            "area": 0,
+            "room": 82,
+            "name": "Operations Room"
         },
         {
-            "Area": 0,
-            "Room": 84,
-            "Name": "Attic"
+            "area": 0,
+            "room": 84,
+            "name": "Attic"
         },
         {
-            "Area": 0,
-            "Room": 86,
-            "Name": "Yakuza Arena"
+            "area": 0,
+            "room": 86,
+            "name": "Yakuza Arena"
         },
         {
-            "Area": 1,
-            "Room": 0,
-            "Name": "Entrance Lobby"
+            "area": 1,
+            "room": 0,
+            "name": "Entrance Lobby"
         },
         {
-            "Area": 1,
-            "Room": 1,
-            "Name": "Entrance Save Room"
+            "area": 1,
+            "room": 1,
+            "name": "Entrance Save Room"
         },
         {
-            "Area": 1,
-            "Room": 2,
-            "Name": "Entrance Navigation Room"
+            "area": 1,
+            "room": 2,
+            "name": "Entrance Navigation Room"
         },
         {
-            "Area": 1,
-            "Room": 3,
-            "Name": "Yameba Corridor"
+            "area": 1,
+            "room": 3,
+            "name": "Yameba Corridor"
         },
         {
-            "Area": 1,
-            "Room": 4,
-            "Name": "Atmospheric Stabilizer Northwest"
+            "area": 1,
+            "room": 4,
+            "name": "Atmospheric Stabilizer Northwest"
         },
         {
-            "Area": 1,
-            "Room": 5,
-            "Name": "Hornoad Hole"
+            "area": 1,
+            "room": 5,
+            "name": "Hornoad Hole"
         },
         {
-            "Area": 1,
-            "Room": 6,
-            "Name": "Twin Junctions West"
+            "area": 1,
+            "room": 6,
+            "name": "Twin Junctions West"
         },
         {
-            "Area": 1,
-            "Room": 7,
-            "Name": "Moto Motorway"
+            "area": 1,
+            "room": 7,
+            "name": "Moto Motorway"
         },
         {
-            "Area": 1,
-            "Room": 8,
-            "Name": "Zebesian Zig"
+            "area": 1,
+            "room": 8,
+            "name": "Zebesian Zig"
         },
         {
-            "Area": 1,
-            "Room": 9,
-            "Name": "Atmospheric Stabilizer Central"
+            "area": 1,
+            "room": 9,
+            "name": "Atmospheric Stabilizer Central"
         },
         {
-            "Area": 1,
-            "Room": 10,
-            "Name": "Charge Core Upper Access"
+            "area": 1,
+            "room": 10,
+            "name": "Charge Core Upper Access"
         },
         {
-            "Area": 1,
-            "Room": 11,
-            "Name": "Entrance Recharge Room"
+            "area": 1,
+            "room": 11,
+            "name": "Entrance Recharge Room"
         },
         {
-            "Area": 1,
-            "Room": 12,
-            "Name": "Moto Manor"
+            "area": 1,
+            "room": 12,
+            "name": "Moto Manor"
         },
         {
-            "Area": 1,
-            "Room": 13,
-            "Name": "Atmospheric Stabilizer Southwest"
+            "area": 1,
+            "room": 13,
+            "name": "Atmospheric Stabilizer Southwest"
         },
         {
-            "Area": 1,
-            "Room": 14,
-            "Name": "Stabilizer Checkpoint"
+            "area": 1,
+            "room": 14,
+            "name": "Stabilizer Checkpoint"
         },
         {
-            "Area": 1,
-            "Room": 15,
-            "Name": "Atmospheric Stabilizer Southeast"
+            "area": 1,
+            "room": 15,
+            "name": "Atmospheric Stabilizer Southeast"
         },
         {
-            "Area": 1,
-            "Room": 16,
-            "Name": "Tourian Trapdoor"
+            "area": 1,
+            "room": 16,
+            "name": "Tourian Trapdoor"
         },
         {
-            "Area": 1,
-            "Room": 17,
-            "Name": "Lava Lake"
+            "area": 1,
+            "room": 17,
+            "name": "Lava Lake"
         },
         {
-            "Area": 1,
-            "Room": 18,
-            "Name": "Tourian Tower"
+            "area": 1,
+            "room": 18,
+            "name": "Tourian Tower"
         },
         {
-            "Area": 1,
-            "Room": 19,
-            "Name": "Tourian Save Room East"
+            "area": 1,
+            "room": 19,
+            "name": "Tourian Save Room East"
         },
         {
-            "Area": 1,
-            "Room": 20,
-            "Name": "Lava Lake Annex"
+            "area": 1,
+            "room": 20,
+            "name": "Lava Lake Annex"
         },
         {
-            "Area": 1,
-            "Room": 21,
-            "Name": "Tourian Eastern Hub"
+            "area": 1,
+            "room": 21,
+            "name": "Tourian Eastern Hub"
         },
         {
-            "Area": 1,
-            "Room": 22,
-            "Name": "Gold Pirate Crossing"
+            "area": 1,
+            "room": 22,
+            "name": "Gold Pirate Crossing"
         },
         {
-            "Area": 1,
-            "Room": 23,
-            "Name": "Tourian Western Hub"
+            "area": 1,
+            "room": 23,
+            "name": "Tourian Western Hub"
         },
         {
-            "Area": 1,
-            "Room": 24,
-            "Name": "Tourian Save Room West"
+            "area": 1,
+            "room": 24,
+            "name": "Tourian Save Room West"
         },
         {
-            "Area": 1,
-            "Room": 25,
-            "Name": "Genesis Habitation"
+            "area": 1,
+            "room": 25,
+            "name": "Genesis Habitation"
         },
         {
-            "Area": 1,
-            "Room": 26,
-            "Name": "Neo-Ridley Arena Access"
+            "area": 1,
+            "room": 26,
+            "name": "Neo-Ridley Arena Access"
         },
         {
-            "Area": 1,
-            "Room": 27,
-            "Name": "Neo-Ridley Arena"
+            "area": 1,
+            "room": 27,
+            "name": "Neo-Ridley Arena"
         },
         {
-            "Area": 1,
-            "Room": 28,
-            "Name": "Tourian Checkpoint"
+            "area": 1,
+            "room": 28,
+            "name": "Tourian Checkpoint"
         },
         {
-            "Area": 1,
-            "Room": 29,
-            "Name": "Yameba Pool"
+            "area": 1,
+            "room": 29,
+            "name": "Yameba Pool"
         },
         {
-            "Area": 1,
-            "Room": 30,
-            "Name": "Ripper Maze"
+            "area": 1,
+            "room": 30,
+            "name": "Ripper Maze"
         },
         {
-            "Area": 1,
-            "Room": 31,
-            "Name": "Tourian Elevator"
+            "area": 1,
+            "room": 31,
+            "name": "Tourian Elevator"
         },
         {
-            "Area": 1,
-            "Room": 32,
-            "Name": "Atmospheric Stabilizer Northeast"
+            "area": 1,
+            "room": 32,
+            "name": "Atmospheric Stabilizer Northeast"
         },
         {
-            "Area": 1,
-            "Room": 33,
-            "Name": "Twin Junctions East"
+            "area": 1,
+            "room": 33,
+            "name": "Twin Junctions East"
         },
         {
-            "Area": 1,
-            "Room": 34,
-            "Name": "Twin Junctions Save Room"
+            "area": 1,
+            "room": 34,
+            "name": "Twin Junctions Save Room"
         },
         {
-            "Area": 1,
-            "Room": 35,
-            "Name": "Zebesian Zag"
+            "area": 1,
+            "room": 35,
+            "name": "Zebesian Zag"
         },
         {
-            "Area": 1,
-            "Room": 36,
-            "Name": "Ripper Sauna"
+            "area": 1,
+            "room": 36,
+            "name": "Ripper Sauna"
         },
         {
-            "Area": 1,
-            "Room": 37,
-            "Name": "Charge Core Lower Access"
+            "area": 1,
+            "room": 37,
+            "name": "Charge Core Lower Access"
         },
         {
-            "Area": 1,
-            "Room": 38,
-            "Name": "Sciser Playground"
+            "area": 1,
+            "room": 38,
+            "name": "Sciser Playground"
         },
         {
-            "Area": 1,
-            "Room": 39,
-            "Name": "Antechamber"
+            "area": 1,
+            "room": 39,
+            "name": "Antechamber"
         },
         {
-            "Area": 1,
-            "Room": 40,
-            "Name": "Charge Core Arena"
+            "area": 1,
+            "room": 40,
+            "name": "Charge Core Arena"
         },
         {
-            "Area": 1,
-            "Room": 41,
-            "Name": "Sector 1 (SRX) Entrance Elevator"
+            "area": 1,
+            "room": 41,
+            "name": "Sector 1 (SRX) Entrance Elevator"
         },
         {
-            "Area": 1,
-            "Room": 42,
-            "Name": "Central Save Room"
+            "area": 1,
+            "room": 42,
+            "name": "Central Save Room"
         },
         {
-            "Area": 1,
-            "Room": 43,
-            "Name": "Crab Rave"
+            "area": 1,
+            "room": 43,
+            "name": "Crab Rave"
         },
         {
-            "Area": 1,
-            "Room": 44,
-            "Name": "Stabilizer Storage"
+            "area": 1,
+            "room": 44,
+            "name": "Stabilizer Storage"
         },
         {
-            "Area": 1,
-            "Room": 45,
-            "Name": "Sciser Puddle"
+            "area": 1,
+            "room": 45,
+            "name": "Sciser Puddle"
         },
         {
-            "Area": 1,
-            "Room": 46,
-            "Name": "Hornoad Housing"
+            "area": 1,
+            "room": 46,
+            "name": "Hornoad Housing"
         },
         {
-            "Area": 1,
-            "Room": 47,
-            "Name": "Watering Hole"
+            "area": 1,
+            "room": 47,
+            "name": "Watering Hole"
         },
         {
-            "Area": 1,
-            "Room": 48,
-            "Name": "Sector 1 (SRX) Eastbound Glass Tube"
+            "area": 1,
+            "room": 48,
+            "name": "Sector 1 (SRX) Eastbound Glass Tube"
         },
         {
-            "Area": 1,
-            "Room": 49,
-            "Name": "Sector 1 (SRX) Westbound Glass Tube"
+            "area": 1,
+            "room": 49,
+            "name": "Sector 1 (SRX) Westbound Glass Tube"
         },
         {
-            "Area": 1,
-            "Room": 50,
-            "Name": "Wall Jump Tutorial"
+            "area": 1,
+            "room": 50,
+            "name": "Wall Jump Tutorial"
         },
         {
-            "Area": 1,
-            "Room": 51,
-            "Name": "Animorphs"
+            "area": 1,
+            "room": 51,
+            "name": "Animorphs"
         },
         {
-            "Area": 1,
-            "Room": 52,
-            "Name": "Animorphs Cache"
+            "area": 1,
+            "room": 52,
+            "name": "Animorphs Cache"
         },
         {
-            "Area": 2,
-            "Room": 0,
-            "Name": "Entrance Lobby"
+            "area": 2,
+            "room": 0,
+            "name": "Entrance Lobby"
         },
         {
-            "Area": 2,
-            "Room": 1,
-            "Name": "Entrance Save Room"
+            "area": 2,
+            "room": 1,
+            "name": "Entrance Save Room"
         },
         {
-            "Area": 2,
-            "Room": 2,
-            "Name": "Entrance Navigation Room"
+            "area": 2,
+            "room": 2,
+            "name": "Entrance Navigation Room"
         },
         {
-            "Area": 2,
-            "Room": 3,
-            "Name": "Courtyard Access"
+            "area": 2,
+            "room": 3,
+            "name": "Courtyard Access"
         },
         {
-            "Area": 2,
-            "Room": 30,
-            "Name": "Courtyard Access"
+            "area": 2,
+            "room": 30,
+            "name": "Courtyard Access"
         },
         {
-            "Area": 2,
-            "Room": 4,
-            "Name": "Security Corridor"
+            "area": 2,
+            "room": 4,
+            "name": "Security Corridor"
         },
         {
-            "Area": 2,
-            "Room": 5,
-            "Name": "Security Access"
+            "area": 2,
+            "room": 5,
+            "name": "Security Access"
         },
         {
-            "Area": 2,
-            "Room": 6,
-            "Name": "Lobby Cache"
+            "area": 2,
+            "room": 6,
+            "name": "Lobby Cache"
         },
         {
-            "Area": 2,
-            "Room": 8,
-            "Name": "Data Room"
+            "area": 2,
+            "room": 8,
+            "name": "Data Room"
         },
         {
-            "Area": 2,
-            "Room": 9,
-            "Name": "Zig-Zag-Zone"
+            "area": 2,
+            "room": 9,
+            "name": "Zig-Zag-Zone"
         },
         {
-            "Area": 2,
-            "Room": 10,
-            "Name": "Cultivation Station"
+            "area": 2,
+            "room": 10,
+            "name": "Cultivation Station"
         },
         {
-            "Area": 2,
-            "Room": 11,
-            "Name": "Puyo Corridor"
+            "area": 2,
+            "room": 11,
+            "name": "Puyo Corridor"
         },
         {
-            "Area": 2,
-            "Room": 12,
-            "Name": "Shooting Gallery"
+            "area": 2,
+            "room": 12,
+            "name": "Shooting Gallery"
         },
         {
-            "Area": 2,
-            "Room": 13,
-            "Name": "Cathedral"
+            "area": 2,
+            "room": 13,
+            "name": "Cathedral"
         },
         {
-            "Area": 2,
-            "Room": 46,
-            "Name": "Cathedral"
+            "area": 2,
+            "room": 46,
+            "name": "Cathedral"
         },
         {
-            "Area": 2,
-            "Room": 14,
-            "Name": "Cathedral Corridor"
+            "area": 2,
+            "room": 14,
+            "name": "Cathedral Corridor"
         },
         {
-            "Area": 2,
-            "Room": 15,
-            "Name": "Cathedral Save Access"
+            "area": 2,
+            "room": 15,
+            "name": "Cathedral Save Access"
         },
         {
-            "Area": 2,
-            "Room": 16,
-            "Name": "Cathedral Save Room"
+            "area": 2,
+            "room": 16,
+            "name": "Cathedral Save Room"
         },
         {
-            "Area": 2,
-            "Room": 17,
-            "Name": "Zazabi Arena Access"
+            "area": 2,
+            "room": 17,
+            "name": "Zazabi Arena Access"
         },
         {
-            "Area": 2,
-            "Room": 18,
-            "Name": "Zazabi Arena"
+            "area": 2,
+            "room": 18,
+            "name": "Zazabi Arena"
         },
         {
-            "Area": 2,
-            "Room": 19,
-            "Name": "Cloister"
+            "area": 2,
+            "room": 19,
+            "name": "Cloister"
         },
         {
-            "Area": 2,
-            "Room": 20,
-            "Name": "Nettori Arena Access"
+            "area": 2,
+            "room": 20,
+            "name": "Nettori Arena Access"
         },
         {
-            "Area": 2,
-            "Room": 34,
-            "Name": "Nettori Arena Access"
+            "area": 2,
+            "room": 34,
+            "name": "Nettori Arena Access"
         },
         {
-            "Area": 2,
-            "Room": 21,
-            "Name": "Overgrown Cache"
+            "area": 2,
+            "room": 21,
+            "name": "Overgrown Cache"
         },
         {
-            "Area": 2,
-            "Room": 22,
-            "Name": "Nettori Arena"
+            "area": 2,
+            "room": 22,
+            "name": "Nettori Arena"
         },
         {
-            "Area": 2,
-            "Room": 51,
-            "Name": "Nettori Arena"
+            "area": 2,
+            "room": 51,
+            "name": "Nettori Arena"
         },
         {
-            "Area": 2,
-            "Room": 23,
-            "Name": "Kihunter Hallway"
+            "area": 2,
+            "room": 23,
+            "name": "Kihunter Hallway"
         },
         {
-            "Area": 2,
-            "Room": 24,
-            "Name": "Overgrown Entrance"
+            "area": 2,
+            "room": 24,
+            "name": "Overgrown Entrance"
         },
         {
-            "Area": 2,
-            "Room": 36,
-            "Name": "Overgrown Entrance"
+            "area": 2,
+            "room": 36,
+            "name": "Overgrown Entrance"
         },
         {
-            "Area": 2,
-            "Room": 25,
-            "Name": "Oasis Storage"
+            "area": 2,
+            "room": 25,
+            "name": "Oasis Storage"
         },
         {
-            "Area": 2,
-            "Room": 26,
-            "Name": "Level 1 Security Room"
+            "area": 2,
+            "room": 26,
+            "name": "Level 1 Security Room"
         },
         {
-            "Area": 2,
-            "Room": 27,
-            "Name": "Dessgeega Dorm"
+            "area": 2,
+            "room": 27,
+            "name": "Dessgeega Dorm"
         },
         {
-            "Area": 2,
-            "Room": 28,
-            "Name": "Reo Room"
+            "area": 2,
+            "room": 28,
+            "name": "Reo Room"
         },
         {
-            "Area": 2,
-            "Room": 29,
-            "Name": "Sector 2 (TRO) Entrance Elevator"
+            "area": 2,
+            "room": 29,
+            "name": "Sector 2 (TRO) Entrance Elevator"
         },
         {
-            "Area": 2,
-            "Room": 31,
-            "Name": "Data Courtyard"
+            "area": 2,
+            "room": 31,
+            "name": "Data Courtyard"
         },
         {
-            "Area": 2,
-            "Room": 7,
-            "Name": "Data Courtyard"
+            "area": 2,
+            "room": 7,
+            "name": "Data Courtyard"
         },
         {
-            "Area": 2,
-            "Room": 32,
-            "Name": "Overgrown Spire"
+            "area": 2,
+            "room": 32,
+            "name": "Overgrown Spire"
         },
         {
-            "Area": 2,
-            "Room": 35,
-            "Name": "Overgrown Spire"
+            "area": 2,
+            "room": 35,
+            "name": "Overgrown Spire"
         },
         {
-            "Area": 2,
-            "Room": 33,
-            "Name": "Kago Room"
+            "area": 2,
+            "room": 33,
+            "name": "Kago Room"
         },
         {
-            "Area": 2,
-            "Room": 37,
-            "Name": "Entrance Recharge Room"
+            "area": 2,
+            "room": 37,
+            "name": "Entrance Recharge Room"
         },
         {
-            "Area": 2,
-            "Room": 38,
-            "Name": "Courtyard Save Room"
+            "area": 2,
+            "room": 38,
+            "name": "Courtyard Save Room"
         },
         {
-            "Area": 2,
-            "Room": 39,
-            "Name": "Owtch Office"
+            "area": 2,
+            "room": 39,
+            "name": "Owtch Office"
         },
         {
-            "Area": 2,
-            "Room": 40,
-            "Name": "Zazabi Save Room"
+            "area": 2,
+            "room": 40,
+            "name": "Zazabi Save Room"
         },
         {
-            "Area": 2,
-            "Room": 41,
-            "Name": "Sanctum"
+            "area": 2,
+            "room": 41,
+            "name": "Sanctum"
         },
         {
-            "Area": 2,
-            "Room": 42,
-            "Name": "Oasis"
+            "area": 2,
+            "room": 42,
+            "name": "Oasis"
         },
         {
-            "Area": 2,
-            "Room": 43,
-            "Name": "Maintenance Wing"
+            "area": 2,
+            "room": 43,
+            "name": "Maintenance Wing"
         },
         {
-            "Area": 2,
-            "Room": 47,
-            "Name": "Puyo Palace"
+            "area": 2,
+            "room": 47,
+            "name": "Puyo Palace"
         },
         {
-            "Area": 2,
-            "Room": 48,
-            "Name": "Hidden Recharge Room"
+            "area": 2,
+            "room": 48,
+            "name": "Hidden Recharge Room"
         },
         {
-            "Area": 2,
-            "Room": 49,
-            "Name": "Nettori Save Room"
+            "area": 2,
+            "room": 49,
+            "name": "Nettori Save Room"
         },
         {
-            "Area": 2,
-            "Room": 50,
-            "Name": "Ripper Tower"
+            "area": 2,
+            "room": 50,
+            "name": "Ripper Tower"
         },
         {
-            "Area": 2,
-            "Room": 52,
-            "Name": "Sector 2 (TRO) Westbound Glass Tube"
+            "area": 2,
+            "room": 52,
+            "name": "Sector 2 (TRO) Westbound Glass Tube"
         },
         {
-            "Area": 2,
-            "Room": 53,
-            "Name": "Sector 2 (TRO) Eastbound Glass Tube"
+            "area": 2,
+            "room": 53,
+            "name": "Sector 2 (TRO) Eastbound Glass Tube"
         },
         {
-            "Area": 2,
-            "Room": 54,
-            "Name": "Crumble City"
+            "area": 2,
+            "room": 54,
+            "name": "Crumble City"
         },
         {
-            "Area": 2,
-            "Room": 55,
-            "Name": "Zazabi Speedway"
+            "area": 2,
+            "room": 55,
+            "name": "Zazabi Speedway"
         },
         {
-            "Area": 2,
-            "Room": 56,
-            "Name": "Overgrown Hallway"
+            "area": 2,
+            "room": 56,
+            "name": "Overgrown Hallway"
         },
         {
-            "Area": 2,
-            "Room": 60,
-            "Name": "Overgrown Hallway"
+            "area": 2,
+            "room": 60,
+            "name": "Overgrown Hallway"
         },
         {
-            "Area": 2,
-            "Room": 57,
-            "Name": "Overgrown Checkpoint"
+            "area": 2,
+            "room": 57,
+            "name": "Overgrown Checkpoint"
         },
         {
-            "Area": 2,
-            "Room": 58,
-            "Name": "Overgrown Checkpoint"
+            "area": 2,
+            "room": 58,
+            "name": "Overgrown Checkpoint"
         },
         {
-            "Area": 2,
-            "Room": 59,
-            "Name": "Broom Closet"
+            "area": 2,
+            "room": 59,
+            "name": "Broom Closet"
         },
         {
-            "Area": 3,
-            "Room": 0,
-            "Name": "Entrance Lobby"
+            "area": 3,
+            "room": 0,
+            "name": "Entrance Lobby"
         },
         {
-            "Area": 3,
-            "Room": 1,
-            "Name": "Entrance Save Room"
+            "area": 3,
+            "room": 1,
+            "name": "Entrance Save Room"
         },
         {
-            "Area": 3,
-            "Room": 2,
-            "Name": "Entrance Navigation Room"
+            "area": 3,
+            "room": 2,
+            "name": "Entrance Navigation Room"
         },
         {
-            "Area": 3,
-            "Room": 3,
-            "Name": "Security Access"
+            "area": 3,
+            "room": 3,
+            "name": "Security Access"
         },
         {
-            "Area": 3,
-            "Room": 4,
-            "Name": "Level 2 Security Room"
+            "area": 3,
+            "room": 4,
+            "name": "Level 2 Security Room"
         },
         {
-            "Area": 3,
-            "Room": 5,
-            "Name": "Checkpoint Crossing"
+            "area": 3,
+            "room": 5,
+            "name": "Checkpoint Crossing"
         },
         {
-            "Area": 3,
-            "Room": 6,
-            "Name": "Bob's Abode"
+            "area": 3,
+            "room": 6,
+            "name": "Bob's Abode"
         },
         {
-            "Area": 3,
-            "Room": 24,
-            "Name": "Bob's Abode"
+            "area": 3,
+            "room": 24,
+            "name": "Bob's Abode"
         },
         {
-            "Area": 3,
-            "Room": 8,
-            "Name": "Alcove"
+            "area": 3,
+            "room": 8,
+            "name": "Alcove"
         },
         {
-            "Area": 3,
-            "Room": 9,
-            "Name": "Deserted Runway"
+            "area": 3,
+            "room": 9,
+            "name": "Deserted Runway"
         },
         {
-            "Area": 3,
-            "Room": 10,
-            "Name": "Red Tower"
+            "area": 3,
+            "room": 10,
+            "name": "Red Tower"
         },
         {
-            "Area": 3,
-            "Room": 11,
-            "Name": "Lava Reservoirs"
+            "area": 3,
+            "room": 11,
+            "name": "Lava Reservoirs"
         },
         {
-            "Area": 3,
-            "Room": 12,
-            "Name": "Lava Maze"
+            "area": 3,
+            "room": 12,
+            "name": "Lava Maze"
         },
         {
-            "Area": 3,
-            "Room": 13,
-            "Name": "Sova Suite"
+            "area": 3,
+            "room": 13,
+            "name": "Sova Suite"
         },
         {
-            "Area": 3,
-            "Room": 14,
-            "Name": "Pyrochamber Access"
+            "area": 3,
+            "room": 14,
+            "name": "Pyrochamber Access"
         },
         {
-            "Area": 3,
-            "Room": 15,
-            "Name": "Pyrochamber"
+            "area": 3,
+            "room": 15,
+            "name": "Pyrochamber"
         },
         {
-            "Area": 3,
-            "Room": 16,
-            "Name": "Boiler Access"
+            "area": 3,
+            "room": 16,
+            "name": "Boiler Access"
         },
         {
-            "Area": 3,
-            "Room": 17,
-            "Name": "Main Boiler"
+            "area": 3,
+            "room": 17,
+            "name": "Main Boiler"
         },
         {
-            "Area": 3,
-            "Room": 29,
-            "Name": "Main Boiler"
+            "area": 3,
+            "room": 29,
+            "name": "Main Boiler"
         },
         {
-            "Area": 3,
-            "Room": 19,
-            "Name": "Sova Processing"
+            "area": 3,
+            "room": 19,
+            "name": "Sova Processing"
         },
         {
-            "Area": 3,
-            "Room": 20,
-            "Name": "Sector 3 (PYR) Entrance Elevator"
+            "area": 3,
+            "room": 20,
+            "name": "Sector 3 (PYR) Entrance Elevator"
         },
         {
-            "Area": 3,
-            "Room": 21,
-            "Name": "Data Room"
+            "area": 3,
+            "room": 21,
+            "name": "Data Room"
         },
         {
-            "Area": 3,
-            "Room": 22,
-            "Name": "B.O.X. Arena Access"
+            "area": 3,
+            "room": 22,
+            "name": "B.O.X. Arena Access"
         },
         {
-            "Area": 3,
-            "Room": 7,
-            "Name": "B.O.X. Arena Access"
+            "area": 3,
+            "room": 7,
+            "name": "B.O.X. Arena Access"
         },
         {
-            "Area": 3,
-            "Room": 23,
-            "Name": "B.O.X. Arena"
+            "area": 3,
+            "room": 23,
+            "name": "B.O.X. Arena"
         },
         {
-            "Area": 3,
-            "Room": 18,
-            "Name": "B.O.X. Arena"
+            "area": 3,
+            "room": 18,
+            "name": "B.O.X. Arena"
         },
         {
-            "Area": 3,
-            "Room": 25,
-            "Name": "Main Boiler Control Room"
+            "area": 3,
+            "room": 25,
+            "name": "Main Boiler Control Room"
         },
         {
-            "Area": 3,
-            "Room": 26,
-            "Name": "Entrance Recharge Room"
+            "area": 3,
+            "room": 26,
+            "name": "Entrance Recharge Room"
         },
         {
-            "Area": 3,
-            "Room": 27,
-            "Name": "Monkey Bars of Fire"
+            "area": 3,
+            "room": 27,
+            "name": "Monkey Bars of Fire"
         },
         {
-            "Area": 3,
-            "Room": 28,
-            "Name": "Fiery Storage"
+            "area": 3,
+            "room": 28,
+            "name": "Fiery Storage"
         },
         {
-            "Area": 3,
-            "Room": 30,
-            "Name": "Namihe's Lair"
+            "area": 3,
+            "room": 30,
+            "name": "Namihe's Lair"
         },
         {
-            "Area": 3,
-            "Room": 31,
-            "Name": "Data Recharge Room"
+            "area": 3,
+            "room": 31,
+            "name": "Data Recharge Room"
         },
         {
-            "Area": 3,
-            "Room": 32,
-            "Name": "Data Save Room"
+            "area": 3,
+            "room": 32,
+            "name": "Data Save Room"
         },
         {
-            "Area": 3,
-            "Room": 33,
-            "Name": "Geron's Treasure"
+            "area": 3,
+            "room": 33,
+            "name": "Geron's Treasure"
         },
         {
-            "Area": 3,
-            "Room": 34,
-            "Name": "Processing Access"
+            "area": 3,
+            "room": 34,
+            "name": "Processing Access"
         },
         {
-            "Area": 3,
-            "Room": 35,
-            "Name": "Garbage Chute"
+            "area": 3,
+            "room": 35,
+            "name": "Garbage Chute"
         },
         {
-            "Area": 3,
-            "Room": 36,
-            "Name": "Chute Access"
+            "area": 3,
+            "room": 36,
+            "name": "Chute Access"
         },
         {
-            "Area": 3,
-            "Room": 37,
-            "Name": "Sector 3 (PYR) Westbound Glass Tube"
+            "area": 3,
+            "room": 37,
+            "name": "Sector 3 (PYR) Westbound Glass Tube"
         },
         {
-            "Area": 3,
-            "Room": 38,
-            "Name": "Sector 3 (PYR) Eastbound Glass Tube"
+            "area": 3,
+            "room": 38,
+            "name": "Sector 3 (PYR) Eastbound Glass Tube"
         },
         {
-            "Area": 4,
-            "Room": 0,
-            "Name": "Entrance Lobby"
+            "area": 4,
+            "room": 0,
+            "name": "Entrance Lobby"
         },
         {
-            "Area": 4,
-            "Room": 1,
-            "Name": "Entrance Save Room"
+            "area": 4,
+            "room": 1,
+            "name": "Entrance Save Room"
         },
         {
-            "Area": 4,
-            "Room": 2,
-            "Name": "Entrance Navigation Room"
+            "area": 4,
+            "room": 2,
+            "name": "Entrance Navigation Room"
         },
         {
-            "Area": 4,
-            "Room": 3,
-            "Name": "Powamp Playhouse"
+            "area": 4,
+            "room": 3,
+            "name": "Powamp Playhouse"
         },
         {
-            "Area": 4,
-            "Room": 4,
-            "Name": "Data Room"
+            "area": 4,
+            "room": 4,
+            "name": "Data Room"
         },
         {
-            "Area": 4,
-            "Room": 5,
-            "Name": "Sciser Stall"
+            "area": 4,
+            "room": 5,
+            "name": "Sciser Stall"
         },
         {
-            "Area": 4,
-            "Room": 6,
-            "Name": "Reservoir East"
+            "area": 4,
+            "room": 6,
+            "name": "Reservoir East"
         },
         {
-            "Area": 4,
-            "Room": 7,
-            "Name": "Skultera Cisterns"
+            "area": 4,
+            "room": 7,
+            "name": "Skultera Cisterns"
         },
         {
-            "Area": 4,
-            "Room": 8,
-            "Name": "Bridge Access"
+            "area": 4,
+            "room": 8,
+            "name": "Bridge Access"
         },
         {
-            "Area": 4,
-            "Room": 9,
-            "Name": "Serris Speedway"
+            "area": 4,
+            "room": 9,
+            "name": "Serris Speedway"
         },
         {
-            "Area": 4,
-            "Room": 10,
-            "Name": "Broken Bridge"
+            "area": 4,
+            "room": 10,
+            "name": "Broken Bridge"
         },
         {
-            "Area": 4,
-            "Room": 11,
-            "Name": "Reservoir Save Room"
+            "area": 4,
+            "room": 11,
+            "name": "Reservoir Save Room"
         },
         {
-            "Area": 4,
-            "Room": 12,
-            "Name": "Aquarium Speedway"
+            "area": 4,
+            "room": 12,
+            "name": "Aquarium Speedway"
         },
         {
-            "Area": 4,
-            "Room": 13,
-            "Name": "Reservoir Vault"
+            "area": 4,
+            "room": 13,
+            "name": "Reservoir Vault"
         },
         {
-            "Area": 4,
-            "Room": 14,
-            "Name": "Aquarium Shaft"
+            "area": 4,
+            "room": 14,
+            "name": "Aquarium Shaft"
         },
         {
-            "Area": 4,
-            "Room": 15,
-            "Name": "Yard Firing Range"
+            "area": 4,
+            "room": 15,
+            "name": "Yard Firing Range"
         },
         {
-            "Area": 4,
-            "Room": 16,
-            "Name": "Evir Enclosure"
+            "area": 4,
+            "room": 16,
+            "name": "Evir Enclosure"
         },
         {
-            "Area": 4,
-            "Room": 17,
-            "Name": "Aquarium Pirate Tank"
+            "area": 4,
+            "room": 17,
+            "name": "Aquarium Pirate Tank"
         },
         {
-            "Area": 4,
-            "Room": 18,
-            "Name": "Aquarium Hub Access"
+            "area": 4,
+            "room": 18,
+            "name": "Aquarium Hub Access"
         },
         {
-            "Area": 4,
-            "Room": 19,
-            "Name": "Aquarium Hub"
+            "area": 4,
+            "room": 19,
+            "name": "Aquarium Hub"
         },
         {
-            "Area": 4,
-            "Room": 20,
-            "Name": "Reservoir West"
+            "area": 4,
+            "room": 20,
+            "name": "Reservoir West"
         },
         {
-            "Area": 4,
-            "Room": 21,
-            "Name": "Pump Control Access"
+            "area": 4,
+            "room": 21,
+            "name": "Pump Control Access"
         },
         {
-            "Area": 4,
-            "Room": 22,
-            "Name": "Pump Control Save Room"
+            "area": 4,
+            "room": 22,
+            "name": "Pump Control Save Room"
         },
         {
-            "Area": 4,
-            "Room": 23,
-            "Name": "Cargo Hold"
+            "area": 4,
+            "room": 23,
+            "name": "Cargo Hold"
         },
         {
-            "Area": 4,
-            "Room": 24,
-            "Name": "Cheddar Bay"
+            "area": 4,
+            "room": 24,
+            "name": "Cheddar Bay"
         },
         {
-            "Area": 4,
-            "Room": 25,
-            "Name": "Security Access"
+            "area": 4,
+            "room": 25,
+            "name": "Security Access"
         },
         {
-            "Area": 4,
-            "Room": 26,
-            "Name": "Level 4 Security Room"
+            "area": 4,
+            "room": 26,
+            "name": "Level 4 Security Room"
         },
         {
-            "Area": 4,
-            "Room": 27,
-            "Name": "Sector 4 (AQA) Entrance Elevator"
+            "area": 4,
+            "room": 27,
+            "name": "Sector 4 (AQA) Entrance Elevator"
         },
         {
-            "Area": 4,
-            "Room": 28,
-            "Name": "Waterway"
+            "area": 4,
+            "room": 28,
+            "name": "Waterway"
         },
         {
-            "Area": 4,
-            "Room": 29,
-            "Name": "Entrance Recharge Room"
+            "area": 4,
+            "room": 29,
+            "name": "Entrance Recharge Room"
         },
         {
-            "Area": 4,
-            "Room": 30,
-            "Name": "Breeding Tank Access"
+            "area": 4,
+            "room": 30,
+            "name": "Breeding Tank Access"
         },
         {
-            "Area": 4,
-            "Room": 31,
-            "Name": "Breeding Tank"
+            "area": 4,
+            "room": 31,
+            "name": "Breeding Tank"
         },
         {
-            "Area": 4,
-            "Room": 32,
-            "Name": "Bridge Save Room"
+            "area": 4,
+            "room": 32,
+            "name": "Bridge Save Room"
         },
         {
-            "Area": 4,
-            "Room": 33,
-            "Name": "Pump Control Unit"
+            "area": 4,
+            "room": 33,
+            "name": "Pump Control Unit"
         },
         {
-            "Area": 4,
-            "Room": 34,
-            "Name": "Security Bypass"
+            "area": 4,
+            "room": 34,
+            "name": "Security Bypass"
         },
         {
-            "Area": 4,
-            "Room": 35,
-            "Name": "Powamp Shaft"
+            "area": 4,
+            "room": 35,
+            "name": "Powamp Shaft"
         },
         {
-            "Area": 4,
-            "Room": 36,
-            "Name": "Drain Pipe"
+            "area": 4,
+            "room": 36,
+            "name": "Drain Pipe"
         },
         {
-            "Area": 4,
-            "Room": 37,
-            "Name": "Owtch Atrium"
+            "area": 4,
+            "room": 37,
+            "name": "Owtch Atrium"
         },
         {
-            "Area": 4,
-            "Room": 38,
-            "Name": "Aquarium Kago Storage"
+            "area": 4,
+            "room": 38,
+            "name": "Aquarium Kago Storage"
         },
         {
-            "Area": 4,
-            "Room": 39,
-            "Name": "Aquarium Save Room West"
+            "area": 4,
+            "room": 39,
+            "name": "Aquarium Save Room West"
         },
         {
-            "Area": 4,
-            "Room": 40,
-            "Name": "Sciser Sanctuary"
+            "area": 4,
+            "room": 40,
+            "name": "Sciser Sanctuary"
         },
         {
-            "Area": 4,
-            "Room": 41,
-            "Name": "Sanctuary Cache"
+            "area": 4,
+            "room": 41,
+            "name": "Sanctuary Cache"
         },
         {
-            "Area": 4,
-            "Room": 42,
-            "Name": "Serris Arena"
+            "area": 4,
+            "room": 42,
+            "name": "Serris Arena"
         },
         {
-            "Area": 4,
-            "Room": 43,
-            "Name": "Sector 4 (AQA) Eastbound Glass Tube"
+            "area": 4,
+            "room": 43,
+            "name": "Sector 4 (AQA) Eastbound Glass Tube"
         },
         {
-            "Area": 4,
-            "Room": 44,
-            "Name": "Sector 4 (AQA) Westbound Glass Tube"
+            "area": 4,
+            "room": 44,
+            "name": "Sector 4 (AQA) Westbound Glass Tube"
         },
         {
-            "Area": 4,
-            "Room": 45,
-            "Name": "Hideout"
+            "area": 4,
+            "room": 45,
+            "name": "Hideout"
         },
         {
-            "Area": 4,
-            "Room": 46,
-            "Name": "C-Cache"
+            "area": 4,
+            "room": 46,
+            "name": "C-Cache"
         },
         {
-            "Area": 4,
-            "Room": 47,
-            "Name": "Aquarium Save Room East"
+            "area": 4,
+            "room": 47,
+            "name": "Aquarium Save Room East"
         },
         {
-            "Area": 5,
-            "Room": 0,
-            "Name": "Entrance Lobby"
+            "area": 5,
+            "room": 0,
+            "name": "Entrance Lobby"
         },
         {
-            "Area": 5,
-            "Room": 1,
-            "Name": "Entrance Save Room"
+            "area": 5,
+            "room": 1,
+            "name": "Entrance Save Room"
         },
         {
-            "Area": 5,
-            "Room": 2,
-            "Name": "Entrance Navigation Room"
+            "area": 5,
+            "room": 2,
+            "name": "Entrance Navigation Room"
         },
         {
-            "Area": 5,
-            "Room": 3,
-            "Name": "Training Grounds"
+            "area": 5,
+            "room": 3,
+            "name": "Training Grounds"
         },
         {
-            "Area": 5,
-            "Room": 6,
-            "Name": "Training Grounds"
+            "area": 5,
+            "room": 6,
+            "name": "Training Grounds"
         },
         {
-            "Area": 5,
-            "Room": 4,
-            "Name": "Training Aerie"
+            "area": 5,
+            "room": 4,
+            "name": "Training Aerie"
         },
         {
-            "Area": 5,
-            "Room": 7,
-            "Name": "Arctic Containment"
+            "area": 5,
+            "room": 7,
+            "name": "Arctic Containment"
         },
         {
-            "Area": 5,
-            "Room": 15,
-            "Name": "Arctic Containment"
+            "area": 5,
+            "room": 15,
+            "name": "Arctic Containment"
         },
         {
-            "Area": 5,
-            "Room": 8,
-            "Name": "Zeela Checkpoint"
+            "area": 5,
+            "room": 8,
+            "name": "Zeela Checkpoint"
         },
         {
-            "Area": 5,
-            "Room": 9,
-            "Name": "Security Shaft West"
+            "area": 5,
+            "room": 9,
+            "name": "Security Shaft West"
         },
         {
-            "Area": 5,
-            "Room": 10,
-            "Name": "Level 3 Security Room"
+            "area": 5,
+            "room": 10,
+            "name": "Level 3 Security Room"
         },
         {
-            "Area": 5,
-            "Room": 11,
-            "Name": "Waver Ward"
+            "area": 5,
+            "room": 11,
+            "name": "Waver Ward"
         },
         {
-            "Area": 5,
-            "Room": 12,
-            "Name": "E-Tank Mimic Den"
+            "area": 5,
+            "room": 12,
+            "name": "E-Tank Mimic Den"
         },
         {
-            "Area": 5,
-            "Room": 13,
-            "Name": "Frozen Tower"
+            "area": 5,
+            "room": 13,
+            "name": "Frozen Tower"
         },
         {
-            "Area": 5,
-            "Room": 14,
-            "Name": "Mini-Fridge"
+            "area": 5,
+            "room": 14,
+            "name": "Mini-Fridge"
         },
         {
-            "Area": 5,
-            "Room": 16,
-            "Name": "Data Room"
+            "area": 5,
+            "room": 16,
+            "name": "Data Room"
         },
         {
-            "Area": 5,
-            "Room": 17,
-            "Name": "Ruined Corridor"
+            "area": 5,
+            "room": 17,
+            "name": "Ruined Corridor"
         },
         {
-            "Area": 5,
-            "Room": 18,
-            "Name": "Nightmare Hub"
+            "area": 5,
+            "room": 18,
+            "name": "Nightmare Hub"
         },
         {
-            "Area": 5,
-            "Room": 19,
-            "Name": "Nightmare Upper Access"
+            "area": 5,
+            "room": 19,
+            "name": "Nightmare Upper Access"
         },
         {
-            "Area": 5,
-            "Room": 20,
-            "Name": "Nightmare Arena"
+            "area": 5,
+            "room": 20,
+            "name": "Nightmare Arena"
         },
         {
-            "Area": 5,
-            "Room": 22,
-            "Name": "Security Shaft East"
+            "area": 5,
+            "room": 22,
+            "name": "Security Shaft East"
         },
         {
-            "Area": 5,
-            "Room": 21,
-            "Name": "Security Shaft East"
+            "area": 5,
+            "room": 21,
+            "name": "Security Shaft East"
         },
         {
-            "Area": 5,
-            "Room": 23,
-            "Name": "Ripper's Treasure"
+            "area": 5,
+            "room": 23,
+            "name": "Ripper's Treasure"
         },
         {
-            "Area": 5,
-            "Room": 24,
-            "Name": "Cellar"
+            "area": 5,
+            "room": 24,
+            "name": "Cellar"
         },
         {
-            "Area": 5,
-            "Room": 25,
-            "Name": "Sector 5 (ARC) Entrance Elevator"
+            "area": 5,
+            "room": 25,
+            "name": "Sector 5 (ARC) Entrance Elevator"
         },
         {
-            "Area": 5,
-            "Room": 26,
-            "Name": "Ripper Road"
+            "area": 5,
+            "room": 26,
+            "name": "Ripper Road"
         },
         {
-            "Area": 5,
-            "Room": 27,
-            "Name": "Nightmare Lower Access"
+            "area": 5,
+            "room": 27,
+            "name": "Nightmare Lower Access"
         },
         {
-            "Area": 5,
-            "Room": 28,
-            "Name": "Flooded Access"
+            "area": 5,
+            "room": 28,
+            "name": "Flooded Access"
         },
         {
-            "Area": 5,
-            "Room": 29,
-            "Name": "Security Save Room"
+            "area": 5,
+            "room": 29,
+            "name": "Security Save Room"
         },
         {
-            "Area": 5,
-            "Room": 30,
-            "Name": "Magic Box"
+            "area": 5,
+            "room": 30,
+            "name": "Magic Box"
         },
         {
-            "Area": 5,
-            "Room": 31,
-            "Name": "Sector 5 (ARC) Westbound Glass Tube"
+            "area": 5,
+            "room": 31,
+            "name": "Sector 5 (ARC) Westbound Glass Tube"
         },
         {
-            "Area": 5,
-            "Room": 32,
-            "Name": "Entrance Recharge Room"
+            "area": 5,
+            "room": 32,
+            "name": "Entrance Recharge Room"
         },
         {
-            "Area": 5,
-            "Room": 33,
-            "Name": "Gerubus Gully"
+            "area": 5,
+            "room": 33,
+            "name": "Gerubus Gully"
         },
         {
-            "Area": 5,
-            "Room": 34,
-            "Name": "Nightmare Nook"
+            "area": 5,
+            "room": 34,
+            "name": "Nightmare Nook"
         },
         {
-            "Area": 5,
-            "Room": 35,
-            "Name": "Data Checkpoint"
+            "area": 5,
+            "room": 35,
+            "name": "Data Checkpoint"
         },
         {
-            "Area": 5,
-            "Room": 36,
-            "Name": "Crow's Nest"
+            "area": 5,
+            "room": 36,
+            "name": "Crow's Nest"
         },
         {
-            "Area": 5,
-            "Room": 37,
-            "Name": "Sector 5 (ARC) Eastbound Glass Tube"
+            "area": 5,
+            "room": 37,
+            "name": "Sector 5 (ARC) Eastbound Glass Tube"
         },
         {
-            "Area": 5,
-            "Room": 38,
-            "Name": "Cellar Save Room"
+            "area": 5,
+            "room": 38,
+            "name": "Cellar Save Room"
         },
         {
-            "Area": 5,
-            "Room": 39,
-            "Name": "Kago Roadblock"
+            "area": 5,
+            "room": 39,
+            "name": "Kago Roadblock"
         },
         {
-            "Area": 5,
-            "Room": 41,
-            "Name": "Kago Speedway"
+            "area": 5,
+            "room": 41,
+            "name": "Kago Speedway"
         },
         {
-            "Area": 5,
-            "Room": 42,
-            "Name": "Arctic Underside"
+            "area": 5,
+            "room": 42,
+            "name": "Arctic Underside"
         },
         {
-            "Area": 5,
-            "Room": 43,
-            "Name": "Subway"
+            "area": 5,
+            "room": 43,
+            "name": "Subway"
         },
         {
-            "Area": 5,
-            "Room": 45,
-            "Name": "Flooded Tower"
+            "area": 5,
+            "room": 45,
+            "name": "Flooded Tower"
         },
         {
-            "Area": 5,
-            "Room": 46,
-            "Name": "Zebesian Waters"
+            "area": 5,
+            "room": 46,
+            "name": "Zebesian Waters"
         },
         {
-            "Area": 5,
-            "Room": 47,
-            "Name": "Ruined Break Room"
+            "area": 5,
+            "room": 47,
+            "name": "Ruined Break Room"
         },
         {
-            "Area": 5,
-            "Room": 48,
-            "Name": "Nightmare Recharge Room"
+            "area": 5,
+            "room": 48,
+            "name": "Nightmare Recharge Room"
         },
         {
-            "Area": 5,
-            "Room": 49,
-            "Name": "Nightmare Save Room"
+            "area": 5,
+            "room": 49,
+            "name": "Nightmare Save Room"
         },
         {
-            "Area": 5,
-            "Room": 50,
-            "Name": "Flooded Airlock"
+            "area": 5,
+            "room": 50,
+            "name": "Flooded Airlock"
         },
         {
-            "Area": 5,
-            "Room": 51,
-            "Name": "Transmutation Trial"
+            "area": 5,
+            "room": 51,
+            "name": "Transmutation Trial"
         },
         {
-            "Area": 6,
-            "Room": 0,
-            "Name": "Entrance Lobby"
+            "area": 6,
+            "room": 0,
+            "name": "Entrance Lobby"
         },
         {
-            "Area": 6,
-            "Room": 1,
-            "Name": "Entrance Save Room"
+            "area": 6,
+            "room": 1,
+            "name": "Entrance Save Room"
         },
         {
-            "Area": 6,
-            "Room": 2,
-            "Name": "Entrance Navigation Room"
+            "area": 6,
+            "room": 2,
+            "name": "Entrance Navigation Room"
         },
         {
-            "Area": 6,
-            "Room": 3,
-            "Name": "Geron's Crossing"
+            "area": 6,
+            "room": 3,
+            "name": "Geron's Crossing"
         },
         {
-            "Area": 6,
-            "Room": 4,
-            "Name": "Nocturnal Access"
+            "area": 6,
+            "room": 4,
+            "name": "Nocturnal Access"
         },
         {
-            "Area": 6,
-            "Room": 5,
-            "Name": "Nocturnal Shaft"
+            "area": 6,
+            "room": 5,
+            "name": "Nocturnal Shaft"
         },
         {
-            "Area": 6,
-            "Room": 6,
-            "Name": "Blue-X Blockade"
+            "area": 6,
+            "room": 6,
+            "name": "Blue-X Blockade"
         },
         {
-            "Area": 6,
-            "Room": 7,
-            "Name": "Forbidden Entrance"
+            "area": 6,
+            "room": 7,
+            "name": "Forbidden Entrance"
         },
         {
-            "Area": 6,
-            "Room": 8,
-            "Name": "Nocturnal Playground"
+            "area": 6,
+            "room": 8,
+            "name": "Nocturnal Playground"
         },
         {
-            "Area": 6,
-            "Room": 9,
-            "Name": "Clogged Cavern"
+            "area": 6,
+            "room": 9,
+            "name": "Clogged Cavern"
         },
         {
-            "Area": 6,
-            "Room": 33,
-            "Name": "Clogged Cavern"
+            "area": 6,
+            "room": 33,
+            "name": "Clogged Cavern"
         },
         {
-            "Area": 6,
-            "Room": 10,
-            "Name": "Warehouse"
+            "area": 6,
+            "room": 10,
+            "name": "Warehouse"
         },
         {
-            "Area": 6,
-            "Room": 11,
-            "Name": "Data Save Room"
+            "area": 6,
+            "room": 11,
+            "name": "Data Save Room"
         },
         {
-            "Area": 6,
-            "Room": 12,
-            "Name": "Data Access"
+            "area": 6,
+            "room": 12,
+            "name": "Data Access"
         },
         {
-            "Area": 6,
-            "Room": 13,
-            "Name": "Varia Core-X Arena"
+            "area": 6,
+            "room": 13,
+            "name": "Varia Core-X Arena"
         },
         {
-            "Area": 6,
-            "Room": 14,
-            "Name": "X-B.O.X. Arena Access"
+            "area": 6,
+            "room": 14,
+            "name": "X-B.O.X. Arena Access"
         },
         {
-            "Area": 6,
-            "Room": 15,
-            "Name": "Zozoro Wine Cellar"
+            "area": 6,
+            "room": 15,
+            "name": "Zozoro Wine Cellar"
         },
         {
-            "Area": 6,
-            "Room": 16,
-            "Name": "X-B.O.X. Arena"
+            "area": 6,
+            "room": 16,
+            "name": "X-B.O.X. Arena"
         },
         {
-            "Area": 6,
-            "Room": 17,
-            "Name": "Sector 6 (NOC) Entrance Elevator"
+            "area": 6,
+            "room": 17,
+            "name": "Sector 6 (NOC) Entrance Elevator"
         },
         {
-            "Area": 6,
-            "Room": 18,
-            "Name": "X-B.O.X. Garage"
+            "area": 6,
+            "room": 18,
+            "name": "X-B.O.X. Garage"
         },
         {
-            "Area": 6,
-            "Room": 19,
-            "Name": "Bull Bend"
+            "area": 6,
+            "room": 19,
+            "name": "Bull Bend"
         },
         {
-            "Area": 6,
-            "Room": 20,
-            "Name": "Neglected Shaft"
+            "area": 6,
+            "room": 20,
+            "name": "Neglected Shaft"
         },
         {
-            "Area": 6,
-            "Room": 21,
-            "Name": "Neglected Save Room"
+            "area": 6,
+            "room": 21,
+            "name": "Neglected Save Room"
         },
         {
-            "Area": 6,
-            "Room": 22,
-            "Name": "Authorization Checkpoint"
+            "area": 6,
+            "room": 22,
+            "name": "Authorization Checkpoint"
         },
         {
-            "Area": 6,
-            "Room": 23,
-            "Name": "Cavern Save Room"
+            "area": 6,
+            "room": 23,
+            "name": "Cavern Save Room"
         },
         {
-            "Area": 6,
-            "Room": 24,
-            "Name": "Missile Mimic Lodge"
+            "area": 6,
+            "room": 24,
+            "name": "Missile Mimic Lodge"
         },
         {
-            "Area": 6,
-            "Room": 25,
-            "Name": "Data Room"
+            "area": 6,
+            "room": 25,
+            "name": "Data Room"
         },
         {
-            "Area": 6,
-            "Room": 26,
-            "Name": "Catacombs"
+            "area": 6,
+            "room": 26,
+            "name": "Catacombs"
         },
         {
-            "Area": 6,
-            "Room": 27,
-            "Name": "Weapons Testing Grounds"
+            "area": 6,
+            "room": 27,
+            "name": "Weapons Testing Grounds"
         },
         {
-            "Area": 6,
-            "Room": 28,
-            "Name": "Warehouse Access"
+            "area": 6,
+            "room": 28,
+            "name": "Warehouse Access"
         },
         {
-            "Area": 6,
-            "Room": 29,
-            "Name": "Entrance Recharge Room"
+            "area": 6,
+            "room": 29,
+            "name": "Entrance Recharge Room"
         },
         {
-            "Area": 6,
-            "Room": 30,
-            "Name": "Twin Caverns West"
+            "area": 6,
+            "room": 30,
+            "name": "Twin Caverns West"
         },
         {
-            "Area": 6,
-            "Room": 31,
-            "Name": "Twin Caverns East"
+            "area": 6,
+            "room": 31,
+            "name": "Twin Caverns East"
         },
         {
-            "Area": 6,
-            "Room": 32,
-            "Name": "Maintenance Wing"
+            "area": 6,
+            "room": 32,
+            "name": "Maintenance Wing"
         },
         {
-            "Area": 6,
-            "Room": 34,
-            "Name": "Vault"
+            "area": 6,
+            "room": 34,
+            "name": "Vault"
         },
         {
-            "Area": 6,
-            "Room": 35,
-            "Name": "Twin Cavern Save Room"
+            "area": 6,
+            "room": 35,
+            "name": "Twin Cavern Save Room"
         },
         {
-            "Area": 6,
-            "Room": 36,
-            "Name": "Sector 6 (NOC) Westbound Glass Tube"
+            "area": 6,
+            "room": 36,
+            "name": "Sector 6 (NOC) Westbound Glass Tube"
         },
         {
-            "Area": 6,
-            "Room": 37,
-            "Name": "Sector 6 (NOC) Eastbound Glass Tube"
+            "area": 6,
+            "room": 37,
+            "name": "Sector 6 (NOC) Eastbound Glass Tube"
         },
         {
-            "Area": 6,
-            "Room": 38,
-            "Name": "Pillar Highway"
+            "area": 6,
+            "room": 38,
+            "name": "Pillar Highway"
         },
         {
-            "Area": 6,
-            "Room": 39,
-            "Name": "Spaceboost Alley"
+            "area": 6,
+            "room": 39,
+            "name": "Spaceboost Alley"
         },
         {
-            "Area": 6,
-            "Room": 40,
-            "Name": "Cavern Save Access"
+            "area": 6,
+            "room": 40,
+            "name": "Cavern Save Access"
         }
     ]

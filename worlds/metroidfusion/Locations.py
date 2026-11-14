@@ -33,24 +33,24 @@ class LocationData:
     def to_json(self, item: str, item_sprite: str, item_classification: ItemClassification):
         ap_name = mars_name_to_ap_name[item]
         if ap_name in major_jingles or (item_classification & ItemClassification.progression and ap_name != "Energy Tank"):
-            jingle = "Major"
+            jingle = "MAJOR"
         else:
-            jingle = "Minor"
+            jingle = "MINOR"
         if self.major:
             return {
-                "Source": self.source_name,
-                "Item": item,
-                "Jingle": jingle
+                "source": self.source_name,
+                "item": item,
+                "jingle": jingle
             }
         else:
             return {
-                "Area": self.mars_id[0],
-                "Room": self.mars_id[1],
-                "BlockX": self.room_location[0],
-                "BlockY": self.room_location[1],
-                "Item": item,
-                "ItemSprite": item_sprite,
-                "Jingle": jingle
+                "area": self.mars_id[0],
+                "room": self.mars_id[1],
+                "block_x": self.room_location[0],
+                "block_y": self.room_location[1],
+                "item": item,
+                "item_sprite": item_sprite,
+                "jingle": jingle
             }
 
     def __repr__(self):
@@ -61,37 +61,37 @@ def escape_string(string: str) -> str:
 
 def build_item_message(item_name: str, player_name: str):
     return {
-        "Languages": {
-            "English": f"Found {escape_string(player_name)}'s\n{escape_string(item_name)}",
+        "languages": {
+            "ENGLISH": f"Found {escape_string(player_name)}'s\n{escape_string(item_name)}",
         },
-        "Kind": "CustomMessage"
+        "kind": "CUSTOM_MESSAGE"
     }
 
 def build_shiny_item_message(item_name: str):
     return {
-        "Languages": {
-            "English": f"Found a Shiny {item_name}!\nIt's shiny, so it's special.",
+        "languages": {
+            "ENGLISH": f"Found a Shiny {item_name}!\nIt's shiny, so it's special.",
         },
-        "Kind": "CustomMessage"
+        "kind": "CUSTOM_MESSAGE"
     }
 
 
 def populate_json_data(location_data: LocationData):
     file = pkgutil.get_data(__name__, "data/new_locations.json").decode()
     json_data = json.loads(file)
-    locations = json_data["MajorLocations"]
+    locations = json_data["major_locations"]
     for location in locations:
         if location["room_name"] == location_data.name:
-            location_data.source_name = location["Source"]
-    locations = json_data["MinorLocations"]
+            location_data.source_name = location["source"]
+    locations = json_data["minor_locations"]
     for location in locations:
         if location["room_name"] == location_data.name:
-            location_data.mars_id = location["Area"], location["Room"]
-            location_data.room_location = location["BlockX"], location["BlockY"]
+            location_data.mars_id = location["area"], location["room"]
+            location_data.room_location = location["block_x"], location["block_y"]
 
 file = pkgutil.get_data(__name__, "data/new_locations.json").decode()
 json_data = json.loads(file)
-locations = json_data["MinorLocations"]
+locations = json_data["minor_locations"]
 
 all_locations: list[LocationData] = []
 location_ids: dict[str, int] = dict()
@@ -107,6 +107,7 @@ for region in fusion_regions:
         if location.major:
             major_location_names.append(location.name)
         ap_id += 1
+
 
 
 shinespark_locations = [

@@ -465,14 +465,14 @@ DYNAMIC_FLAGS = {
     "Spawn Phantoms in Totok B13 Progressive": {
         "on_scenes": [0x2511],
         "has_items": [("Sword (Progressive)", 2)],
-        "has_slot_data": [("bellum_access", [1, 2, 3])],
+        "has_slot_data": [("bellum_access", [1, 2, 3, 4])],
         "set_if_true": [(PHAddr.adv_flags_22, 0x40)],
         "reset_flags": ["RESET Spawn Phantoms in Totok B13"]
     },
     "Spawn Phantoms in Totok B13": {
         "on_scenes": [0x2511],
         "has_items": [("Oshus' Sword", 1), ("Phantom Sword", 1)],
-        "has_slot_data": [("bellum_access", [1, 2, 3])],
+        "has_slot_data": [("bellum_access", [1, 2, 3, 4])],
         "set_if_true": [(PHAddr.adv_flags_22, 0x40)],
         "reset_flags": ["RESET Spawn Phantoms in Totok B13"]
     },

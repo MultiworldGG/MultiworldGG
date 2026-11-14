@@ -2,7 +2,7 @@
 
 ## Installation & Usage
 
-See the [setup guide](https://github.com/WritingHusky/twilight_princess/blob/main/docs/setup_en.md) for instructions.
+See the [setup guide](https://github.com/WritingHusky/Twilight_Princess_apworld/blob/main/docs/setup_en.md) for instructions.
 
 ## What does randomization do to this game?
 

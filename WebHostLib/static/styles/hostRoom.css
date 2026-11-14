@@ -48,6 +48,12 @@
     padding: 10px;
 }
 
+#host-room #slots-table th:nth-child(4),
+#host-room #slots-table td:nth-child(4){
+    width: 1%;
+    white-space: nowrap;
+}
+
 #host-room #logger{
     margin-top: 0;
     padding: 0.5rem 0.25rem;

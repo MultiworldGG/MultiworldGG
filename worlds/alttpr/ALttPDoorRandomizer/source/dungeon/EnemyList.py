@@ -559,13 +559,18 @@ class Sprite(object):
                 ((self.sub_type & 7) << 5) | self.tile_x, self.kind]
         if self.location is not None:
             item_id = self.location.item.code if self.location.item is not None else 0x5A
-            code = 0xF9 if self.location.item.player != self.location.player else 0xF8
+            code = 0xF9 if self.location.item.mw_player != 0 else 0xF8
             if code == 0xF8:
                 world = self.location.parent_region.world
                 if world.dropshuffle[self.location.player] == 'none' or self.location.locked:
                     item_id = handle_native_dungeon(self.location, item_id)
             data.append(item_id)
-            data.append(0 if code == 0xF8 else self.location.item.player)
+            if code == 0xF8:
+                data.append(0)
+            elif self.location.item.mw_player > 254:
+                data.append(255)
+            else:
+                data.append(self.location.item.mw_player)
             data.append(code)
         return data
 
@@ -2290,10 +2295,11 @@ def create_drop_location(sprite, index, super_tile, world, player):
     region_name = sprite.region
     parent = world.get_region(region_name, player)
     enemy_name = enemy_names[sprite.kind]
+    enemy_hint = enemy_hint_names[sprite.kind] if sprite.kind in enemy_hint_names else "a " + enemy_name
     descriptor = f'Enemy #{index + 1}'
     modifier = parent.hint_text not in {'a storyteller', 'fairies deep in a cave', 'a spiky hint',
                                         'a bounty of five items', 'the sick kid', 'Sahasrahla'}
-    hint_text = f'held by a {enemy_name} {"in" if modifier else "near"} {parent.hint_text}'
+    hint_text = f'held by {enemy_hint.lower()} {"in" if modifier else "near"} {parent.hint_text}'
     drop_location = Location(player, f'{region_name} {descriptor}', address, hint_text=hint_text, parent=parent,
                              note=enemy_name)
     world.dynamic_locations.append(drop_location)
@@ -2581,6 +2587,63 @@ enemy_names = {
     0xf2: 'MedallionTablet',
     0xf3: 'PositionTarget',
     0xf4: 'Boulders'
+}
+
+enemy_hint_names = {
+    0x08: 'an Octorok',
+    0x09: 'Moldorm',
+    0x0a: 'an Octorok',
+    0x13: 'a Mini Helmasaur',
+    0x15: 'an Anti-Fairy',
+    0x18: 'a Mini Moldorm',
+    0x23: 'a Red Bari',
+    0x24: 'a Blue Bari',
+    0x26: 'a Hardhat Beetle',
+    0x3e: 'a Hoarder',
+    0x41: 'a Blue Guard',
+    0x42: 'a Green Guard',
+    0x43: 'a Red Spear Guard',
+    0x44: 'a Fast Guard',
+    0x45: 'a Fast Guard',
+    0x46: 'a Blue Archer',
+    0x47: 'a Green Bush Guard',
+    0x48: 'a Red Javelin Guard',
+    0x49: 'a Red Bush Guard',
+    0x4a: 'a Bomb Guard',
+    0x4b: 'a Green Knife Guard',
+    0x4f: 'a Popo',
+
+    0x51: 'an Armos Statue',
+    0x53: 'an Armos Knight',
+    0x55: 'a Zora',
+    0x63: 'a Debirando',
+    0x6a: 'a Ball-and-Chain Guard',
+    0x6b: 'a Cannon Trooper',
+    0x6d: 'a Cricket/Rat',
+
+    0x7c: 'a Floating Skull',
+    0x82: 'an Anti-Fairy Circle',
+    0x83: 'a Green Eyegore',
+    0x84: 'a Red Eyegore',
+    0x85: 'a Yellow Stalfos',  # falling stalfos that shoots head
+    0x91: 'a Stalfos Knight',
+    0x92: 'Helmasaur King',
+    0xa2: 'Kholdstare',
+    0xa3: 'Kholdstare\'s Shell',
+    0xa5: 'a Blue Zazak',
+    0xa6: 'a Red Zazak',
+    0xa8: 'a Green Zirro',
+    0xa9: 'a Blue Zirro',
+    0xc7: 'a Hokkubokku',
+    0xcb: 'Trinexx',
+    0xcc: 'Trinexx',
+    0xcd: 'Trinexx',
+    0xce: 'Blind',
+    0xd1: 'a Bunnybeam',
+    0xd2: 'a Flopping Fish',
+    0xd6: 'Ganon',
+    0xef: 'a Green Mimic',
+    0xf0: 'a Red Mimic',
 }
 
 overlord_names = {

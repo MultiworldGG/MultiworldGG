@@ -62,7 +62,8 @@ def rule_cost(rule):
 
 
 def clean(rule):
-    return replace(rule, all_of=tuple(n for n in rule.all_of if not n.startswith(COST_PREFIX)))
+    names = tuple(n for n in rule.all_of if not n.startswith(COST_PREFIX))
+    return replace(rule, all_of=names) if names != rule.all_of else rule
 
 
 def at(node, amount):
@@ -192,7 +193,8 @@ def prepare_world(world, graph):
         for rule in incoming:
             source = source_node(rule)
             if source is not None and possible(rule):
-                routes[(source, rule_cost(rule))].append(replace(clean(rule), all_of=tuple(n for n in clean(rule).all_of if n != source)))
+                cleaned = clean(rule)
+                routes[(source, rule_cost(rule))].append(replace(cleaned, all_of=tuple(n for n in cleaned.all_of if n != source)))
         transfers = []
         for (source, cost), rules in sorted(routes.items()):
             route = f'Silk route: {route_index}'

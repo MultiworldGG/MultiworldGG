@@ -84,7 +84,10 @@ UwGeneralDeny:
   - [ 0x0039, 4, [ "RollerVerticalUp", "RollerVerticalDown", "RollerHorizontalLeft", "RollerHorizontalRight", "FirebarCW", "FirebarCCW" ] ]  #"Skull Woods - Play Pen - Spike Trap 1"
   - [0x0039, 5, ["RollerVerticalUp", "RollerVerticalDown", "RollerHorizontalLeft", "Bumper", "AntiFairyCircle"]]  #"Skull Woods - Play Pen - Hardhat Beetle"
   - [ 0x0039, 6, [ "RollerVerticalUp", "RollerVerticalDown", "RollerHorizontalLeft", "RollerHorizontalRight", "FirebarCW", "FirebarCCW" ] ]  #"Skull Woods - Play Pen - Spike Trap 2"
-  - [0x003a, 1, ["RollerVerticalUp", "RollerVerticalDown"]]
+  - [ 0x003a, 1, ["RollerVerticalUp", "RollerVerticalDown"]]
+  - [ 0x003a, 1, ["RollerVerticalUp", "RollerVerticalDown"]]
+  - [ 0x003a, 3, ["RollerHorizontalLeft", "RollerHorizontalRight"]]
+  - [ 0x003a, 4, ["RollerHorizontalLeft", "RollerHorizontalRight"]]
   - [ 0x003b, 1, [ "Bumper", "AntiFairyCircle" ]]
   - [ 0x003b, 4, ["RollerVerticalUp", "RollerVerticalDown"]]
   - [ 0x003c, 0, ["BigSpike"]]
@@ -306,7 +309,7 @@ UwGeneralDeny:
   - [0x00b0, 7, [ "StalfosKnight", "Blob", "Stal", "Wizzrobe"]] # blocked, but Geldmen are probably okay
   - [0x00b0, 8, [ "StalfosKnight", "Blob", "Stal", "Wizzrobe"]] # blocked, but Geldmen are probably okay
   - [ 0x00b1, 2, [ "RollerVerticalUp", "RollerVerticalDown" ] ]  #"Misery Mire - Hourglass - Spike Trap 1"
-  - [ 0x00b1, 3, [ "RollerVerticalUp", "RollerVerticalDown" ] ]  #"Misery Mire - Hourglass - Spike Trap 2"
+  - [ 0x00b1, 3, [ "RollerVerticalUp", "RollerVerticalDown", "Bumper" ] ]  #"Misery Mire - Hourglass - Spike Trap 2"
   - [0x00b1, 4, ["Bumper", "BigSpike", "AntiFairyCircle", "Statue"]]  # Wizzrobe near door
   - [ 0x00b2, 1, [ "Wizzrobe", "Statue" ] ]  # Wizzrobes can't spawn on pots
   - [ 0x00b2, 3, [ "Wizzrobe", "Statue" ] ]  # Wizzrobes can't spawn on pots
@@ -339,11 +342,11 @@ UwGeneralDeny:
   - [ 0x00c2, 5, [ "Wizzrobe", "Statue" ] ]  # Wizzrobes can't spawn on pots
   - [ 0x00c5, 6, [ "RollerVerticalUp", "RollerVerticalDown", "RollerHorizontalLeft", "RollerHorizontalRight", "Beamos", "AntiFairyCircle", "BigSpike", "SpikeBlock", "Bumper" ] ]  #"Turtle Rock - Catwalk - Mini Helmasaur"
   - [ 0x00c5, 7, [ "Statue" ] ]  #"Turtle Rock - Catwalk - Laser Eye (Left) 4"
-  - [0x00c6, 2, ["Bumper", "AntiFairyCircle"]]
-  - [0x00c6, 3, ["Bumper", "AntiFairyCircle"]]
-  - [0x00c6, 4, ["Bumper", "AntiFairyCircle"]]
-  - [0x00c6, 5, ["Bumper", "AntiFairyCircle"]]
-  - [0x00c6, 6, ["Bumper", "AntiFairyCircle"]]
+  - [0x00c6, 2, ["Bumper", "AntiFairyCircle", "BigSpike"]]
+  - [0x00c6, 3, ["Bumper", "AntiFairyCircle", "BigSpike"]]
+  - [0x00c6, 4, ["Bumper", "AntiFairyCircle", "BigSpike"]]
+  - [0x00c6, 5, ["Bumper", "AntiFairyCircle", "BigSpike"]]
+  - [0x00c6, 6, ["Bumper", "AntiFairyCircle", "BigSpike"]]
   - [ 0x00cb, 0, [ "Wizzrobe", "Statue" ] ]  # Wizzrobes can't spawn on pots
   - [ 0x00cb, 3, [ "RollerVerticalUp", "RollerVerticalDown", "Beamos", "AntiFairyCircle", "BigSpike", "SpikeBlock", "Bumper" ] ]  #"Thieves' Town - Grand Room NW - Zol 1"
   - [ 0x00cb, 5, [ "RollerVerticalUp", "RollerVerticalDown", "Beamos", "AntiFairyCircle", "BigSpike", "SpikeBlock", "Bumper" ] ]  #"Thieves' Town - Grand Room NW - Zol 2"

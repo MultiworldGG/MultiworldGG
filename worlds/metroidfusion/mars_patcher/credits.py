@@ -1,25 +1,19 @@
 from .constants.credits import (
     LINE_TYPE_HEIGHTS,
-    LINE_TYPE_VALS,
     TEXT_LINE_TYPES,
     LineType,
 )
-from .mf.auto_generated_types import MarsschemamfCreditstextItem
+from .mf.auto_generated_types import MarsschemamfCreditsTextItem
 from .rom import Rom
+from .zm.auto_generated_types import MarsschemazmCreditsTextItem
+
+CreditsTextItem = MarsschemamfCreditsTextItem | MarsschemazmCreditsTextItem
 
 FULL_LINE_LEN = 36
 LINE_WIDTH = 30
 
 
 class CreditsLine:
-    LINE_TYPE_ENUMS = {
-        "Blank": LineType.BLANK,
-        "Blue": LineType.BLUE,
-        "Red": LineType.RED,
-        "White1": LineType.WHITE1,
-        "White2": LineType.WHITE2,
-    }
-
     def __init__(
         self,
         line_type: LineType,
@@ -33,38 +27,57 @@ class CreditsLine:
         self.centered = centered
 
     @classmethod
-    def from_json(cls, data: MarsschemamfCreditstextItem) -> "CreditsLine":
-        line_type = cls.LINE_TYPE_ENUMS[data["LineType"]]
-        blank_lines = data.get("BlankLines", 0)
-        text = data.get("Text")
-        centered = data.get("Centered", True)
+    def from_json(cls, data: CreditsTextItem) -> "CreditsLine":
+        line_type = LineType[data["line_type"]]
+        blank_lines = data.get("blank_lines", 0)
+        text = data.get("text")
+        centered = data.get("centered", True)
         return CreditsLine(line_type, blank_lines, text, centered)
 
 
 class CreditsWriter:
-    def __init__(self, rom: Rom, addr: int):
+    def __init__(self, rom: Rom):
         self.rom = rom
-        self.addr = addr
+        self.data = bytearray()
         self.num_lines = 0
 
     def write_lines(self, lines: list[CreditsLine]) -> None:
         for line in lines:
-            lt_val = LINE_TYPE_VALS[line.line_type]
-            line_bytes = bytearray([lt_val, line.blank_lines])
+            line_data = bytearray([line.line_type.value])
+            if self.rom.is_mf():
+                line_data.append(line.blank_lines)
             if line.line_type in TEXT_LINE_TYPES and line.text:
                 text = line.text
-                if line.centered:
+                if self.rom.is_mf() and line.centered:
                     spacing = " " * ((LINE_WIDTH - len(text)) // 2)
                     text = spacing + text
-                line_bytes.extend(text.encode("ascii"))
-            self.write_line(line_bytes)
+                line_data.extend(text.encode("ascii"))
+
+            # Write line data
+            if len(line_data) > FULL_LINE_LEN:
+                raise ValueError(f"Line too long: {text}")
+            self.data += line_data
+            remainder = FULL_LINE_LEN - len(line_data)
+
+            # Fill remainder of line with 0
+            self.data.extend([0] * remainder)
+
+            # Add blank lines
+            if self.rom.is_zm():
+                for _ in range(line.blank_lines):
+                    self.data.append(LineType.BLANK.value)
+                    self.data.extend([0] * (FULL_LINE_LEN - 1))
+
+            # Update the total number of lines
             line_height = LINE_TYPE_HEIGHTS.get(line.line_type, 0)
             self.num_lines += line_height + line.blank_lines
 
-    def write_line(self, line: bytearray) -> None:
-        if len(line) > FULL_LINE_LEN:
-            raise ValueError(f"Line too long: {line}")
-        self.rom.write_bytes(self.addr, line)
-        for i in range(len(line), FULL_LINE_LEN):
-            self.rom.write_8(self.addr + i, 0)
-        self.addr += FULL_LINE_LEN
+
+def get_credits_size(rom: Rom, addr: int) -> int:
+    start = addr
+    while True:
+        line_type = rom.read_8(addr)
+        addr += FULL_LINE_LEN
+        if line_type == LineType.END:
+            break
+    return addr - start

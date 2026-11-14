@@ -74,6 +74,10 @@ class InitialSram:
         starting_bombs = 0
         starting_arrows = 0
         starting_magic = 0
+        if world.flute_mode[player] == 'pseudo':
+            self._initial_sram_bytes[0x3C2] = 0xFF
+            equip[0x34C] = 0x03
+            equip[0x38C] = 0x01
 
         startingstate = CollectionState(world)
 

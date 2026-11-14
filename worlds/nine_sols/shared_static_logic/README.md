@@ -18,7 +18,7 @@ Part of maintaining this AP integration is running the `serialize_static_data.py
 
 To run the script, go to the root Archipelago/ folder and run:
 ```shell
-python worlds/nine_sols/shared_static_logic/serialize_static_data.py
+python worlds/nine_sols/shared_static_logic/serialize_static_logic.py
 ```
 
 The unit test `test_logic_files` checks that the generated files are up-to-date.

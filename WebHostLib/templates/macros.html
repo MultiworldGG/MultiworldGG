@@ -6,7 +6,7 @@
         {{ caller() }}
     </ul>
 {%- endmacro %}
-{% macro list_patches_room(room) %}
+{% macro list_patches_room(room, world_versions) %}
     {% if room.seed.slots %}
         <table id="slots-table">
             <thead>
@@ -14,6 +14,7 @@
                     <th>Id</th>
                     <th>Name</th>
                     <th>Game</th>
+                    <th>Version</th>
                     <th>Download Link</th>
                     <th>Tracker Page</th>
                 </tr>
@@ -24,6 +25,13 @@
                     <td>{{ patch.player_id }}</td>
                     <td data-tooltip="Connect via Game Client"><a href="mwgg://{{ patch.player_name | e}}:None@{{ config['HOST_ADDRESS'] }}:{{ room.last_port }}?game={{ patch.game }}&room={{ room.id | suuid }}">{{ patch.player_name }}</a></td>
                     <td>{{ patch.game }}</td>
+                    {% set version = world_versions.get(patch.game) %}
+                    <td>
+                        {{ version or "Unknown" }}
+                        {% if version == "0.0.0" %}
+                            <small class="interactive" data-tooltip="(no version defined by maintainer)">?</small>
+                        {% endif %}
+                    </td>
                     <td>
                         {% if patch.data %}
                             {% if patch.game == "VVVVVV" and room.seed.slots|length == 1 %}

@@ -548,6 +548,7 @@ class IncreaseSpinnerSpeed(Toggle):
 class OpenDoorOfTime(Toggle):
     """
     If enabled, the Door of Time is open.
+    Note: This will remove the darknut from the miniboss room. You can save and quit to go back to the start of the dungeon
     """
 
     display_name = "Open Door of Time"

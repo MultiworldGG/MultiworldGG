@@ -26,17 +26,8 @@ fogwall_sanity_on = [OptionFilter(FogwallSanity, FogwallSanity.option_true)]
 # Special location rules
 location_rules_table = [
   DsrLocationRule("UP: Bell of Awakening #1 rung", Has("Bell Gargoyles Defeated")),
-  DsrLocationRule("NL: Key to the Seal", Has("Lordvessel")),
-  DsrLocationRule("FA: Lordvessel Placed", Has("Lordvessel")),
-  # DLC access
-  DsrLocationRule("DA: Broken Pendant", Has("Princess Dusk Rescued")),
-  # Demon ruins checks that require the lava-walking ring
-  DsrLocationRule("DR: Large Soul of a Proud Knight - First Jump over the Lava", Has("Orange Charred Ring")),
-  DsrLocationRule("DR: Chaos Flame Ember", Has("Orange Charred Ring")),
   # Fogs that do not affect region accessibility
   DsrLocationRule("DE: Fog Wall - Depths Rat Room", Has("Fog Wall Key - Depths Rat Room") | fogwall_sanity_off),
-  DsrLocationRule("TC: Fog Wall - Catacombs", Has("Fog Wall Key - Catacombs") | fogwall_sanity_off),
-  DsrLocationRule("NL: Fog Wall - New Londo (Lower)", Has("Fog Wall Key - New Londo (Lower)") | fogwall_sanity_off),
 ]
 
 # All region rules
@@ -69,7 +60,6 @@ region_rules_table: dict[str, list[DsrEntranceRule]] = {
     DsrEntranceRule("Upper New Londo Ruins", True_()),
     DsrEntranceRule("Firelink Shrine - After Undead Parish Elevator", True_()),
   ],
-
   "Firelink Shrine - Trusty Patches": [
     DsrEntranceRule("Firelink Shrine", Has("Gravelord Nito Defeated")), # vanilla
   ],
@@ -150,6 +140,9 @@ region_rules_table: dict[str, list[DsrEntranceRule]] = {
   ],
   "Northern Undead Asylum Second Visit - Behind F2 West Door": [
     DsrEntranceRule("Northern Undead Asylum Second Visit - F2 West Door", True_()),
+  ],
+  "Northern Undead Asylum Second Visit - Cell": [
+    DsrEntranceRule("Northern Undead Asylum Second Visit", True_()),
   ],
   # "Northern Undead Asylum Second Visit - Snuggly Trades": [ # none yet
   # ],
@@ -279,7 +272,7 @@ region_rules_table: dict[str, list[DsrEntranceRule]] = {
     DsrEntranceRule("Darkroot Garden - Moonlight Butterfly", True_()), # Has("Moonlight Butterfly Defeated")),
   ],
   "The Great Hollow": [
-    DsrEntranceRule("Lower Blighttown", Has("Lordvessel") | fogwall_sanity_on | bossfogwall_sanity_on), # Add slight logic for the no-fog-sanity people,
+    DsrEntranceRule("Lower Blighttown", True_())
   ],
   "Ash Lake": [
     DsrEntranceRule("The Great Hollow", Has("Fog Wall Key - Ash Lake Entrance") | fogwall_sanity_off),
@@ -327,9 +320,9 @@ region_rules_table: dict[str, list[DsrEntranceRule]] = {
     DsrEntranceRule("Anor Londo - Ornstein and Smough", True_()), # Has("Ornstein and Smough Defeated")),
   ],
   "Anor Londo - Gwyndolin": [
-    # attacking the illusion -> no ring needed
-    DsrEntranceRule("Anor Londo - After Ornstein and Smough", Has("Boss Fog Wall Key - Gwyndolin") | bossfogwall_sanity_off),
-    DsrEntranceRule("Anor Londo - After First Fog", Has("Darkmoon Seance Ring") & (Has("Boss Fog Wall Key - Gwyndolin") | bossfogwall_sanity_off)),
+    # access via darkmoon seance ring
+    DsrEntranceRule("Anor Londo - After First Fog", Has("Darkmoon Seance Ring")
+                    & (Has("Boss Fog Wall Key - Gwyndolin") | bossfogwall_sanity_off)),
   ],
   "Anor Londo - After Gwyndolin": [
     DsrEntranceRule("Anor Londo - Gwyndolin", True_()), # Has("Gwyndolin Defeated")),
@@ -359,12 +352,18 @@ region_rules_table: dict[str, list[DsrEntranceRule]] = {
   "Upper New Londo Ruins - Ingward": [
     DsrEntranceRule("Upper New Londo Ruins - After Fog", True_()),
   ],
+  "Upper New Londo Ruins - Ingward, After Lordvessel": [
+    DsrEntranceRule("Upper New Londo Ruins - After Fog", Has("Lordvessel")),
+  ],
   "New Londo Ruins Door to the Seal": [
     DsrEntranceRule("Upper New Londo Ruins - After Fog", Has("Key to the Seal") 
       & (CanReachRegion("Anor Londo - After Ornstein and Smough") | fogwall_sanity_on | bossfogwall_sanity_on)), # Add slight logic for the no-fog-sanity people
   ],
   "Lower New Londo Ruins": [
     DsrEntranceRule("New Londo Ruins Door to the Seal", True_()),
+  ],
+  "Lower New Londo Ruins - Fog": [
+    DsrEntranceRule("Lower New Londo Ruins", Has("Fog Wall Key - New Londo (Lower)") | fogwall_sanity_off),
   ],
   "The Abyss": [
     DsrEntranceRule("Lower New Londo Ruins", Has("Covenant of Artorias") & (Has("Boss Fog Wall Key - Four Kings") | bossfogwall_sanity_off)),
@@ -374,6 +373,9 @@ region_rules_table: dict[str, list[DsrEntranceRule]] = {
   ],
   "The Duke's Archives": [
     DsrEntranceRule("Anor Londo", Has("Lordvessel Placed")),
+  ],
+  "The Duke's Archives - Golem After Dusk Rescue": [
+    DsrEntranceRule("The Duke's Archives", Has("Princess Dusk Rescued")),
   ],
   "The Duke's Archives - After First Seath Encounter": [
     DsrEntranceRule("The Duke's Archives", Has("Boss Fog Wall Key - Seath First Encounter") | bossfogwall_sanity_off),
@@ -419,6 +421,9 @@ region_rules_table: dict[str, list[DsrEntranceRule]] = {
   "Demon Ruins": [
     DsrEntranceRule("Demon Ruins - Early", CanReachRegion("Demon Ruins - Ceaseless Discharge")), # Has("Ceaseless Discharge Defeated")),
   ],
+  "Demon Ruins - After Orange Charred Ring": [
+    DsrEntranceRule("Demon Ruins", Has("Orange Charred Ring")),
+  ],
   "Demon Ruins - Demon Firesage": [
     DsrEntranceRule("Demon Ruins", Has("Lordvessel Placed") & (Has("Boss Fog Wall Key - Demon Firesage") | bossfogwall_sanity_off)),
   ],
@@ -451,6 +456,9 @@ region_rules_table: dict[str, list[DsrEntranceRule]] = {
   ],
   "The Catacombs - After Door 1": [
     DsrEntranceRule("The Catacombs - Door 1", True_()),
+  ],
+  "The Catacombs - Fog": [
+    DsrEntranceRule("The Catacombs - After Door 1", Has("Fog Wall Key - Catacombs") | fogwall_sanity_off),
   ],
   "The Catacombs - Vamos": [
     DsrEntranceRule("The Catacombs - After Door 1", True_()),
@@ -488,8 +496,11 @@ region_rules_table: dict[str, list[DsrEntranceRule]] = {
       True_(options=[OptionFilter(LogicToAccessFirelinkAltar, [LogicToAccessFirelinkAltar.option_frampt, LogicToAccessFirelinkAltar.option_either_serpent], operator="in")])
       )),
   ],
+  "Firelink Altar - With Lordvessel": [
+    DsrEntranceRule("Firelink Altar", Has("Lordvessel")),
+  ],
   "Kiln of the First Flame": [
-    DsrEntranceRule("Firelink Altar", HasAll("Lord Soul (Bed of Chaos)", "Lord Soul (Nito)", "Bequeathed Lord Soul Shard (Four Kings)", "Bequeathed Lord Soul Shard (Seath)", "Lordvessel")),
+    DsrEntranceRule("Firelink Altar - With Lordvessel", HasAll("Lord Soul (Bed of Chaos)", "Lord Soul (Nito)", "Bequeathed Lord Soul Shard (Four Kings)", "Bequeathed Lord Soul Shard (Seath)", "Lordvessel")),
   ],
   "Kiln of the First Flame - Gwyn": [
     DsrEntranceRule("Kiln of the First Flame", Has("Boss Fog Wall Key - Gwyn") | bossfogwall_sanity_off),

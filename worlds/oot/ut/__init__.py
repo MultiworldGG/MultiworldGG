@@ -1,4 +1,5 @@
 from .entrances import serialize_entrances
+from .shops import serialize_shop_items
 
 
 def apply_replay_options(world, slot_data: dict) -> None:
@@ -41,6 +42,7 @@ def serialize_generation_results(world):
         'silver_rupee_pouches': sorted(world.silver_rupee_pouches),
         'selected_adult_trade_item': world.selected_adult_trade_item,
         'shop_prices': dict(world.shop_prices),
+        'shop_items': serialize_shop_items(world),
         'scrub_prices': dict(world.scrub_prices),
         'randomized_starting_items': dict(world.randomized_starting_items),
         'song_notes': {name: str(notes) for name, notes in world.song_notes.items()},

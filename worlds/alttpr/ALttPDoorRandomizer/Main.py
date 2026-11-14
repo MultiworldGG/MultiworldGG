@@ -61,6 +61,24 @@ def check_python_version():
     if version.major < 3 or version.minor < 7:
         logging.warning(BabelFish().translate("cli","cli","old.python.version"), sys.version)
 
+def random_ganon_item(sword_mode):
+    options = [
+        "silver",
+        "boomerang",
+        "hookshot",
+        "powder",
+        "fire_rod",
+        "ice_rod",
+        "hammer",
+        "bee",
+        "somaria",
+        "byrna",
+        "bombos",
+        "ether",
+        "quake",
+    ]
+    max_choice = len(options) - 3 if sword_mode == "swordless" else len(options) 
+    return options[random.randint(0, max_choice - 1)]
 
 def main(args, seed=None, fish=None):
     check_python_version()
@@ -456,11 +474,18 @@ def init_world(args, fish):
     world.keyshuffle = args.keyshuffle.copy()
     world.bigkeyshuffle = args.bigkeyshuffle.copy()
     world.prizeshuffle = args.prizeshuffle.copy()
+    world.showloot = args.showloot.copy()
+    world.loothud = args.loothud.copy()
+    world.showmap = args.showmap.copy()
     world.bombbag = args.bombbag.copy()
     world.flute_mode = args.flute_mode.copy()
     world.bow_mode = args.bow_mode.copy()
     world.crystals_ganon_orig = args.crystals_ganon.copy()
     world.crystals_gt_orig = args.crystals_gt.copy()
+    world.ganon_item_orig = args.ganon_item.copy()
+    world.require_ganon_item = args.require_ganon_item.copy()
+    world.bosses_ganon = {player: int(args.bosses_ganon[player]) for player in range(1, world.players + 1)}
+    world.bosshunt_include_agas = args.bosshunt_include_agas.copy()
     world.owTerrain = args.ow_terrain.copy()
     world.owKeepSimilar = args.ow_keepsimilar.copy()
     world.owWhirlpoolShuffle = args.ow_whirlpool.copy()
@@ -496,10 +521,13 @@ def init_world(args, fish):
     world.linked_drops = args.linked_drops.copy()
     world.pseudoboots = args.pseudoboots.copy()
     world.mirrorscroll = args.mirrorscroll.copy()
+    world.crystal_book = args.crystal_book.copy()
+    world.extra_keys = {player: int(args.extra_keys[player]) for player in range(1, world.players + 1)}
     world.overworld_map = args.overworld_map.copy()
     world.take_any = args.take_any.copy()
     world.restrict_boss_items = args.restrict_boss_items.copy()
     world.collection_rate = args.collection_rate.copy()
+    world.junk_item_frames = args.junk_item_frames.copy()
     world.colorizepots = args.colorizepots.copy()
     world.aga_randomness = args.aga_randomness.copy()
     world.money_balance = args.money_balance.copy()
@@ -519,6 +547,7 @@ def init_world(args, fish):
 def resolve_random_settings(world, args):
     world.crystals_needed_for_ganon = {player: random.randint(0, 7) if args.crystals_ganon[player] == 'random' else int(args.crystals_ganon[player]) for player in range(1, world.players + 1)}
     world.crystals_needed_for_gt = {player: random.randint(0, 7) if args.crystals_gt[player] == 'random' else int(args.crystals_gt[player]) for player in range(1, world.players + 1)}
+    world.ganon_item = {player: random_ganon_item(args.swords[player]) if args.ganon_item[player] == 'random' else args.ganon_item[player] for player in range(1, world.players + 1)}
     world.intensity = {player: random.randint(1, 3) if args.intensity[player] == 'random' else int(args.intensity[player]) for player in range(1, world.players + 1)}
 
     world.treasure_hunt_count = {}
@@ -704,7 +733,7 @@ def set_starting_inventory(world, args):
         if args.usestartinventory[player]:
             for tok in filter(None, args.startinventory[player].split(',')):
                 name = tok.strip()
-                name = name if name != 'Ocarina' or world.flute_mode[player] != 'active' else 'Ocarina (Activated)'
+                name = name if name != 'Ocarina' or world.flute_mode[player] not in ['active', 'pseudo'] else 'Ocarina (Activated)'
                 item = ItemFactory(name, player)
                 if item:
                     world.push_precollected(item)
@@ -728,7 +757,7 @@ def set_starting_inventory(world, args):
                                 world.push_precollected(item)
                     elif inv_item == 'RandomFollower':
                         name = random.choice([f for f in follower_pickups if f != 'Zelda Herself' or world.mode[p] == 'standard'])
-                    name = name if name != 'Ocarina' or world.flute_mode[p] != 'active' else 'Ocarina (Activated)'
+                    name = name if name != 'Ocarina' or world.flute_mode[p] not in ['active', 'pseudo'] else 'Ocarina (Activated)'
                     if name in follower_pickups:
                         if not world.shuffle_followers[p] or follower_added:
                             continue
@@ -768,14 +797,22 @@ def copy_world(world):
     ret.keyshuffle = world.keyshuffle.copy()
     ret.bigkeyshuffle = world.bigkeyshuffle.copy()
     ret.prizeshuffle = world.prizeshuffle.copy()
+    ret.showloot = world.showloot.copy()
+    ret.loothud = world.loothud.copy()
+    ret.showmap = world.showmap.copy()
     ret.bombbag = world.bombbag.copy()
     ret.flute_mode = world.flute_mode.copy()
     ret.bow_mode = world.bow_mode.copy()
     ret.free_lamp_cone = world.free_lamp_cone.copy()
     ret.crystals_needed_for_ganon = world.crystals_needed_for_ganon.copy()
     ret.crystals_needed_for_gt = world.crystals_needed_for_gt.copy()
+    ret.bosses_ganon = world.bosses_ganon.copy()
+    ret.bosshunt_include_agas = world.bosshunt_include_agas.copy()
+    ret.ganon_item = world.ganon_item.copy()
+    ret.require_ganon_item = world.require_ganon_item.copy()
     ret.crystals_ganon_orig = world.crystals_ganon_orig.copy()
     ret.crystals_gt_orig = world.crystals_gt_orig.copy()
+    ret.ganon_item_orig = world.ganon_item_orig.copy()
     ret.owTerrain = world.owTerrain.copy()
     ret.owKeepSimilar = world.owKeepSimilar.copy()
     ret.owWhirlpoolShuffle = world.owWhirlpoolShuffle.copy()
@@ -791,6 +828,8 @@ def copy_world(world):
     ret.linked_drops = world.linked_drops.copy()
     ret.pseudoboots = world.pseudoboots.copy()
     ret.mirrorscroll = world.mirrorscroll.copy()
+    ret.crystal_book = world.crystal_book.copy()
+    ret.extra_keys = world.extra_keys.copy()
     ret.overworld_map = world.overworld_map.copy()
     ret.take_any = world.take_any.copy()
     ret.boss_shuffle = world.boss_shuffle.copy()
@@ -993,14 +1032,22 @@ def copy_world_premature(world, player, create_flute_exits=True):
     ret.keyshuffle = world.keyshuffle.copy()
     ret.bigkeyshuffle = world.bigkeyshuffle.copy()
     ret.prizeshuffle = world.prizeshuffle.copy()
+    ret.showloot = world.showloot.copy()
+    ret.loothud = world.loothud.copy()
+    ret.showmap = world.showmap.copy()
     ret.bombbag = world.bombbag.copy()
     ret.flute_mode = world.flute_mode.copy()
     ret.bow_mode = world.bow_mode.copy()
     ret.free_lamp_cone = world.free_lamp_cone.copy()
     ret.crystals_needed_for_ganon = world.crystals_needed_for_ganon.copy()
     ret.crystals_needed_for_gt = world.crystals_needed_for_gt.copy()
+    ret.bosses_ganon = world.bosses_ganon.copy()
+    ret.bosshunt_include_agas = world.bosshunt_include_agas.copy()
+    ret.ganon_item = world.ganon_item.copy()
+    ret.require_ganon_item = world.require_ganon_item.copy()
     ret.crystals_ganon_orig = world.crystals_ganon_orig.copy()
     ret.crystals_gt_orig = world.crystals_gt_orig.copy()
+    ret.ganon_item_orig = world.ganon_item_orig.copy()
     ret.owTerrain = world.owTerrain.copy()
     ret.owKeepSimilar = world.owKeepSimilar.copy()
     ret.owWhirlpoolShuffle = world.owWhirlpoolShuffle.copy()
@@ -1016,6 +1063,8 @@ def copy_world_premature(world, player, create_flute_exits=True):
     ret.linked_drops = world.linked_drops.copy()
     ret.pseudoboots = world.pseudoboots.copy()
     ret.mirrorscroll = world.mirrorscroll.copy()
+    ret.crystal_book = world.crystal_book.copy()
+    ret.extra_keys = world.extra_keys.copy()
     ret.overworld_map = world.overworld_map.copy()
     ret.take_any = world.take_any.copy()
     ret.boss_shuffle = world.boss_shuffle.copy()

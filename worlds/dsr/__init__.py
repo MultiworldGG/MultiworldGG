@@ -2,22 +2,27 @@
 from typing import Dict, Set, List, ClassVar, TextIO, Any, Optional
 
 from BaseClasses import MultiWorld, Region, Item, Entrance, Tutorial, ItemClassification, Location, LocationProgressType
+from Fill import FillError
 from Options import Toggle, OptionError, Option
 
 from worlds.AutoWorld import World, WebWorld
 from worlds.generic.Rules import add_rule, add_item_rule
 from rule_builder.rules import Rule, True_, Has, HasAll
 
-from .Items import DSRItem, DSRItemCategory, item_dictionary, key_item_names, item_descriptions 
-from .PoolGeneration import BuildRequiredItemPool, BuildGuaranteedItemPool, UpgradeEquipment, ReplaceItem, titanite_replacements
-from .Locations import DSRLocation, DSRLocationCategory, location_tables, location_dictionary, location_skip_categories, location_locked_categories
-from .Groups import location_name_groups, item_name_groups
-from .Options import DSROption, option_groups, GoalConditionOption
+from .Items import DSRItem, DSRItemCategory, item_dictionary, key_item_names, item_descriptions, _all_items
+from .PoolGeneration import BuildRequiredItemPool, BuildGuaranteedItemPool, ReplaceItem, titanite_replacements
+from .Locations import DSRLocation, DSRLocationCategory, location_tables, location_dictionary, location_skip_categories, \
+    region_name_list
+from .Groups import location_name_groups, item_name_groups, \
+    dlc_prog_items, pw_prog_items, gh_prog_items, post_os_prog_items, post_os_cata_prog_items
+from .Options import DSROption, option_groups, GoalConditionOption, LogicToAccessCatacombs, GhostDifficulty, \
+    LocalRandoChoice
 from .Rules import region_rules_table, DsrEntranceRule, location_rules_table, DsrLocationRule
 from .Skips import get_all_skips
-
+from . import Patch as Patch
 
 from settings import Group, FilePath
+
 
 class DSRWeb(WebWorld):
     bug_report_page = ""
@@ -43,6 +48,13 @@ class DSRSettings(Group):
         required = False
     ut_poptracker_path: UTPoptrackerPath | str = UTPoptrackerPath()
 
+    class GamePath(FilePath):
+        """Path to the game executable"""
+        description = "The DSR game executable"
+        required = True
+        md5s = ["878b4603a2cc1ba2cbcd15fc6248e37e"]
+    exe_path : GamePath | str = GamePath(r'C:\Program Files (x86)\Steam\steamapps\common\DARK SOULS REMASTERED\DarkSoulsRemastered.exe')
+    
 def map_page_index(data: Any) -> int:
     if (data is None or data == ""):
         return 0
@@ -61,6 +73,10 @@ class DSRWorld(World):
     data_version = 0
     base_id = 11110000
     enabled_location_categories: Set[DSRLocationCategory]
+    locked_location_categories: Set[DSRLocationCategory]
+    ap_loc_categories = []
+    local_loc_categories = []
+    vanilla_loc_categories = []
     required_client_version = (0, 5, 1)
     item_name_to_id = DSRItem.get_name_to_id()
     location_name_to_id = DSRLocation.get_name_to_id()
@@ -75,7 +91,14 @@ class DSRWorld(World):
         "map_page_locations" : "locations/locations.json",
         "external_pack_key" : "ut_poptracker_path",
         "map_page_setting_key" : "DSR_current_map_{team}_{player}",
-        "map_page_index" : map_page_index
+        "map_page_index" : map_page_index,
+        "item_page_items" : "items/items.json",
+        "map_page_item_layouts_left" : [
+            { "name": "Lord Souls",        "items": ["Lordvessel", "Lord Souls"],       "orientation": "lr", "cols": 5 },
+            { "name": "Progression Items", "items": ["Key items", "Progression Items"], "orientation": "lr", "cols": 5 },
+            { "name": "Fog Walls",         "items": "Fog Wall Keys",                    "orientation": "lr", "cols": 6, "item_size": (36, 48) },
+            { "name": "Boss Fog Walls",    "items": "Boss Fog Wall Keys",               "orientation": "lr", "cols": 6, "item_size": (36, 48) }
+        ]
     }
 
     # Tell UT we don't need a yaml
@@ -94,14 +117,36 @@ class DSRWorld(World):
 
     def __init__(self, multiworld: MultiWorld, player: int):
         super().__init__(multiworld, player)
+        self.ignorable_items = set()
         self.locked_items = []
         self.locked_locations = []
         self.main_path_locations = []
         self.enabled_location_categories = set()
-        self.all_excluded_locations = set()
+        self.locked_location_categories = set()
 
 
     def generate_early(self):
+        # For optional location categories, map their options to the slot data string. This has to be defined before UT yamlless support to map it backward
+        acr_cat_map : List[tuple[str, Option, DSRLocationCategory]] = [
+            ("BS", self.options.boss_soul_shuffle, DSRLocationCategory.BOSS_SOUL),
+            ("BH", self.options.boss_humanity_shuffle, DSRLocationCategory.BOSS_HUMANITY),
+            ("BB", self.options.boss_bone_shuffle, DSRLocationCategory.BOSS_BONE),
+
+            # One Time Drop Shuffle
+            ("BKW", self.options.bk_weapon_shuffle, DSRLocationCategory.BK_WEAPON),
+            ("BKT", self.options.bk_titanite_shuffle, DSRLocationCategory.BK_TITANITE),
+            ("LIZ", self.options.lizard_shuffle, DSRLocationCategory.CRYSTAL_LIZARD),
+            ("MIM", self.options.mimic_drop_shuffle, DSRLocationCategory.MIMIC_DROP),
+            ("MBD", self.options.miniboss_drop_shuffle, DSRLocationCategory.MINIBOSS_DROP),
+            ("NPC", self.options.hostile_npc_drop_shuffle, DSRLocationCategory.HOSTILE_NPC_DROP),
+            ("MIS", self.options.misc_drop_shuffle, DSRLocationCategory.MISC_DROP),
+
+            # Item Pickup Shuffling
+            ("CFI", self.options.corpse_filler_item_shuffle, DSRLocationCategory.CORPSE_FILLER_ITEM),
+            ("CUI", self.options.corpse_useful_item_shuffle, DSRLocationCategory.CORPSE_USEFUL_ITEM),
+            ("CRI", self.options.corpse_ring_item_shuffle, DSRLocationCategory.CORPSE_RING_ITEM),
+        ]
+
         # Start UT yamlless support
         re_gen_passthrough = getattr(self.multiworld, "re_gen_passthrough", {})
         if re_gen_passthrough and self.game in re_gen_passthrough:
@@ -115,15 +160,16 @@ class DSRWorld(World):
                 if opt is not None:
                     # You can also set .value directly but that won't work if you have OptionSets
                     setattr(self.options, key, opt.from_any(value))
-        # End UT yamlless support
-            
-        # if upgrade level max < min, reverse them
-        if self.options.upgraded_weapons_percentage.value > 0 and self.options.upgraded_weapons_max_level.value < self.options.upgraded_weapons_min_level.value:
-            (self.options.upgraded_weapons_min_level, self.options.upgraded_weapons_max_level) = (self.options.upgraded_weapons_max_level, self.options.upgraded_weapons_min_level)
+            if "ap_loc_categories" in slot_data:
+                # maybe go the other way, to check for unknown acronyms in the slot data?
+                for (acr, copt, cat) in acr_cat_map:
+                    if acr in slot_data["ap_loc_categories"].split(","):
+                        copt.value = LocalRandoChoice.option_true
 
-        # If % > 0 but no allowed infusion types, default to normal
-        if self.options.upgraded_weapons_percentage.value > 0 and len(self.options.upgraded_weapons_allowed_infusions.value) == 0:
-            self.options.upgraded_weapons_allowed_infusions.value = ['Normal']
+
+
+
+        # End UT yamlless support
 
         ## Soul Multiplier
         # If soul multiplier steps is 0, don't make there be an increase at all. Base is both the base and max
@@ -151,42 +197,114 @@ class DSRWorld(World):
         if self.options.weight_multiplier_base.value < self.options.weight_multiplier_min.value:
             (self.options.weight_multiplier_base.value, self.options.weight_multiplier_min.value) = (self.options.weight_multiplier_min.value, self.options.weight_multiplier_base.value)
 
+        # If steps > 0 but no allowed infusion types, default to normal
+        if self.options.incoming_weapon_upgrade_steps.value > 0 and len(
+                self.options.incoming_weapon_upgrade_infusion_paths.value) == 0:
+            self.options.incoming_weapon_upgrade_infusion_paths.value = ['Normal']
+
+        ## Incoming Weapon Upgrades
+        # If there won't be enough AP weapons for upgrades to matter much (and not many souls to replace), reduce steps to 0
+        # This prevents the problem of having to remove weapons from the pool to support the weapon upgrade items
+        if self.options.limited_shop_item_shuffle.value == False and self.options.corpse_filler_item_shuffle.value != LocalRandoChoice.option_true:
+            if (self.options.incoming_weapon_upgrade_steps.value > 0):
+                print(f"DSR [{self.player_name}]: Very few weapons and locations in item pool - disabling progressive incoming weapon upgrade system")
+                self.options.incoming_weapon_upgrade_steps.value = 0
+
+            # For O+S goal, 10 seems to be the max to add
+            if self.options.goal_condition == GoalConditionOption.option_ornstein_and_smough and (self.options.soul_multiplier_steps.value + self.options.weight_multiplier_steps > 10):
+                print(f"DSR [{self.player_name}]: Not enough locations for number of soul + weight multiplier steps. Decrease them to 10 total (e.g. 5 and 5)")
+                raise OptionError(f"DSR [{self.player_name}]: Not enough locations for number of soul + weight multiplier steps. Decrease them to 10 total (e.g. 5 and 5)")
+
+            # For gwyn goal, 20 as a limit is fine (weapon upgrades are already limited!)
+
+
+        # If Incoming Weapon Upgrade Steps is 0, don't make there be an increase at all. Base is both the base and max
+        if self.options.incoming_weapon_upgrade_steps.value == 0:
+            self.options.incoming_weapon_upgrade_max.value = self.options.incoming_weapon_upgrade_base.value
+
+        # If Incoming Weapon Upgrade base and max are equal, set steps to 0.
+        if self.options.incoming_weapon_upgrade_base.value == self.options.incoming_weapon_upgrade_max.value:
+            self.options.incoming_weapon_upgrade_steps.value = 0
+
+        # If Incoming Weapon Upgrade base > max, reverse them
+        if self.options.incoming_weapon_upgrade_base.value > self.options.incoming_weapon_upgrade_max.value:
+            (self.options.incoming_weapon_upgrade_base.value, self.options.incoming_weapon_upgrade_max.value) = (
+                self.options.incoming_weapon_upgrade_max.value, self.options.incoming_weapon_upgrade_base.value)
+
+        # If goal_condition is o+s, force no dlc
+        if self.options.include_dlc.value == True and self.options.goal_condition.value == GoalConditionOption.option_ornstein_and_smough:
+            self.options.include_dlc.value = False
+
+        # If goal_condition is manus, force dlc
+        if self.options.include_dlc.value == False and self.options.goal_condition.value == GoalConditionOption.option_manus:
+            self.options.include_dlc.value = True
+
 
 
         self.enabled_location_categories.add(DSRLocationCategory.EVENT)
         self.enabled_location_categories.add(DSRLocationCategory.BOSS)
-        self.enabled_location_categories.add(DSRLocationCategory.ITEM_LOT)
-        # self.enabled_location_categories.add(DSRLocationCategory.MISSABLE_DROP)
-        self.enabled_location_categories.add(DSRLocationCategory.MIMIC_DROP)
-        self.enabled_location_categories.add(DSRLocationCategory.LORD_SOUL)
         self.enabled_location_categories.add(DSRLocationCategory.BOSS_DROP)
-        
-        if (self.options.boss_soul_shuffle.value == True):
-            self.enabled_location_categories.add(DSRLocationCategory.BOSS_SOUL)
-        if (self.options.boss_humanity_shuffle.value == True):
-            self.enabled_location_categories.add(DSRLocationCategory.BOSS_HUMANITY)
-        if (self.options.boss_bone_shuffle.value == True):
-            self.enabled_location_categories.add(DSRLocationCategory.BOSS_BONE)
 
-        self.enabled_location_categories.add(DSRLocationCategory.BK_DROP)
-        if (self.options.bk_weapon_shuffle.value == True):
-            self.enabled_location_categories.add(DSRLocationCategory.BK_WEAPON)
+        self.enabled_location_categories.add(DSRLocationCategory.CHEST_ITEM)
 
-        if (self.options.lizard_shuffle.value == True):
-            self.enabled_location_categories.add(DSRLocationCategory.CRYSTAL_LIZARD)
+        # Always shuffle corpse prog items. If player wants to make them vanilla, they can use plando
+        self.enabled_location_categories.add(DSRLocationCategory.CORPSE_PROG_ITEM)
+        # Always shuffle frozen blacksmiths, and npc prog items
+        self.enabled_location_categories.add(DSRLocationCategory.FROZEN_BLACKSMITH)
+        self.enabled_location_categories.add(DSRLocationCategory.NPC_PROG_ITEM)
 
-        # self.enabled_location_categories.add(DSRLocationCategory.DOOR)
+
+        self.ap_loc_categories = []
+        self.local_loc_categories = []
+        self.vanilla_loc_categories = []
+
+
+        # Build optional ap location categories into their loc lists
+        for (acr, copt, cat) in acr_cat_map:
+            if copt.value == LocalRandoChoice.option_true:
+                self.ap_loc_categories.append(acr)
+            elif copt.value == LocalRandoChoice.option_local_only:
+                self.local_loc_categories.append(acr)
+            elif copt.value == LocalRandoChoice.option_false:
+                self.vanilla_loc_categories.append(acr)
+        # Use the values in the ap loc list to enable those categories specifically
+        for (acr, copt, cat) in acr_cat_map:
+            if acr in self.ap_loc_categories:
+                self.enabled_location_categories.add(cat)
+
+        if (self.options.lord_soul_shuffle == True):
+            self.enabled_location_categories.add(DSRLocationCategory.LORD_SOUL) # Add to pool if setting is true
+        else:
+            self.locked_location_categories.add(DSRLocationCategory.LORD_SOUL) # Add as "event" items otherwise, so they aren't duplicated to pool
+
         if (self.options.fogwall_sanity.value == True):
             self.enabled_location_categories.add(DSRLocationCategory.FOG_WALL)
         if (self.options.boss_fogwall_sanity.value == True):
             self.enabled_location_categories.add(DSRLocationCategory.BOSS_FOG_WALL)
-        # if (self.options.shop_sanity.value == True):
+
+
         if (self.options.limited_shop_item_shuffle.value == True):
             self.enabled_location_categories.add(DSRLocationCategory.SHOP_ITEM)
             self.enabled_location_categories.add(DSRLocationCategory.SHOP_EXTENDED_ITEM)
-            # self.enabled_location_categories.add(DSRLocationCategory.MISSABLE_SHOP_ITEM)
+        else:
+            self.locked_location_categories.add(DSRLocationCategory.SHOP_ITEM) # add shop_item as locked, so residence key and crest of artorias aren't duplicated to pool
 
-        self.all_excluded_locations.update(self.options.exclude_locations.value)
+        self.ignorable_items = [item.name for item in _all_items if
+                              ((self.options.include_dlc.value == False) and item.name in dlc_prog_items)
+                           or ((self.options.include_pw.value == False) and item.name in pw_prog_items)
+                           or ((self.options.include_gh.value == False) and item.name in gh_prog_items)
+                           or ((self.options.goal_condition.value == GoalConditionOption.option_ornstein_and_smough)
+                               and item.name in post_os_prog_items)
+                           or ((self.options.goal_condition.value == GoalConditionOption.option_ornstein_and_smough)
+                               and self.options.logic_to_access_catacombs == LogicToAccessCatacombs.option_ornstein_and_smough
+                                and item.name in post_os_cata_prog_items)]
+        # print(f"DSR [{self.player_name}]: totg logic = {self.options.logic_to_access_totg.current_key}")
+        # print(f"DSR [{self.player_name}]: sunlight maggot ignored = {"Sunlight Maggot" in self.ignorable_items}")
+        # print(f"DSR [{self.player_name}]: ignorable items = {self.ignorable_items}")
+        # Remove sunlight maggot from ignored items if it's required
+        # if self.options.logic_to_access_totg.current_key == "sunlight_maggot" and "Sunlight Maggot" in self.ignorable_items:
+        #     self.ignorable_items.remove("Sunlight Maggot")
+        #     print("Removing Sunlight Maggot from ignorable list")
 
 
     def create_regions(self):
@@ -194,162 +312,25 @@ class DSRWorld(World):
         regions: Dict[str, Region] = {}
         regions["Menu"] = self.create_region("Menu", [])
 
-        our_regions = [
-            "Undead Asylum Cell",
-            "Undead Asylum Cell Door",
-            "Northern Undead Asylum - F2 East Door",
-            "Northern Undead Asylum", 
-            "Northern Undead Asylum - After Fog",
-            "Northern Undead Asylum - After F2 East Door",
-            "Northern Undead Asylum - Big Pilgrim Door",
-            "Firelink Shrine", 
-            "Upper Undead Burg - Before Fog", 
-            "Upper Undead Burg - Fog", 
-            "Upper Undead Burg", 
-            "Upper Undead Burg - Pine Resin Chest",
-            "Upper Undead Burg - Taurus Demon",
-            "Upper Undead Burg - Hellkite Bridge",
-            "Undead Parish - Before Fog", 
-            "Undead Parish - Fog", 
-            "Undead Parish", 
-            "Undead Parish - Bell Gargoyles",
-            "Firelink Shrine - After Undead Parish Elevator",
-            "Northern Undead Asylum Second Visit",
-            "Northern Undead Asylum Second Visit - F2 West Door",
-            "Northern Undead Asylum Second Visit - Behind F2 West Door",
-            # "Northern Undead Asylum Second Visit - Snuggly Trades",
-            "Undead Burg Basement Door",
-            "Lower Undead Burg", 
-            "Lower Undead Burg - After Residence Key",
-            "Lower Undead Burg - Capra Demon",
-            "Lower Undead Burg - After Capra Demon",
-            "Watchtower Basement",
-            "Depths", 
-            # "Depths - After Sewer Chamber Key",
-            "Depths - Gaping Dragon",
-            "Depths - After Gaping Dragon",
-            "Depths to Blighttown Door",
-            "Upper Blighttown Depths Side", 
-            "Upper Blighttown VotD Side", 
-            "Lower Blighttown - Fog", 
-            "Lower Blighttown", 
-            "Lower Blighttown - Quelaag", 
-            "Lower Blighttown - After Quelaag", 
-            "Valley of the Drakes", 
-            "Valley of the Drakes - After Defeating Four Kings", 
-            "Door between Upper New Londo and Valley of the Drakes",
-            "Darkroot Basin", 
-            "Darkroot Garden - Before Fog",
-            "Darkroot Garden", 
-            "Darkroot Garden - Behind Artorias Door", 
-            "Darkroot Garden - Moonlight Butterfly",
-            "Darkroot Garden - After Moonlight Butterfly",
-            "The Great Hollow", 
-            "Ash Lake",
-            "Sen's Fortress",
-            "Sen's Fortress - After First Fog",
-            "Sen's Fortress - After Second Fog",
-            "Sen's Fortress - After Cage Key",
-            "Sen's Fortress - Iron Golem",
-            "Sen's Fortress - After Iron Golem",
-            "Anor Londo",
-            "Anor Londo - After First Fog",
-            "Anor Londo - Painting Room",
-            "Anor Londo - After Second Fog",
-            "Anor Londo - Ornstein and Smough",
-            "Anor Londo - After Ornstein and Smough",
-            "Anor Londo - Gwyndolin",
-            "Anor Londo - After Gwyndolin",
-            "Painted World of Ariamis",
-            "Painted World of Ariamis - After Fog",
-            "Painted World of Ariamis - After Annex Key",
-            "Painted World of Ariamis - Crossbreed Priscilla",
-            "Upper New Londo Ruins",
-            "Upper New Londo Ruins - After Fog",
-            "New Londo Ruins Door to the Seal",
-            "Lower New Londo Ruins", 
-            "The Abyss", 
-            "The Abyss - After Four Kings", 
-            "The Duke's Archives", 
-            "The Duke's Archives - After First Seath Encounter",
-            "The Duke's Archives - After Archive Tower Cell Key",
-            "The Duke's Archives - After Archive Prison Extra Key",
-            "The Duke's Archives - Out of Cell",
-            "The Duke's Archives - After Archive Tower Giant Door Key", 
-            "The Duke's Archives - Courtyard",
-            "The Duke's Archives - Giant Cell", 
-            "Crystal Cave", 
-            "Crystal Cave - After Seath", 
-            "The Duke's Archives - First Arena after Seath's Death", 
-            "Demon Ruins - Early",
-            "Demon Ruins - Ceaseless Discharge",
-            "Demon Ruins", 
-            "Demon Ruins - Demon Firesage",
-            "Demon Ruins - After Demon Firesage",
-            "Demon Ruins - Centipede Demon",
-            "Demon Ruins Shortcut",
-            "Lost Izalith", 
-            "Lost Izalith - Bed of Chaos", 
-            "The Catacombs", 
-            "The Catacombs - Door 1",
-            "The Catacombs - After Door 1",
-            "The Catacombs - Pinwheel",
-            "The Catacombs - After Pinwheel",
-            "Tomb of the Giants", 
-            "Tomb of the Giants - After White Fog", 
-            "Tomb of the Giants - Behind Golden Fog Wall",
-            "Tomb of the Giants - Nito",
-            "Tomb of the Giants - After Nito",
-            "Firelink Altar",
-            "Kiln of the First Flame",
-            "Kiln of the First Flame - Gwyn",
-            "Sanctuary Garden", 
-            "Sanctuary Garden - Sanctuary Guardian",
-            "Oolacile Sanctuary", 
-            "Royal Wood", 
-            "Royal Wood - Artorias",
-            "Royal Wood - After Hawkeye Gough",
-            "Oolacile Township", 
-            "Oolacile Township - Behind Light-Dispelled Walls",
-            # "Oolacile Township - After Crest Key",
-            "Chasm of the Abyss",
-            "Chasm of the Abyss - Manus",
-            # start merchants
-            "Firelink Shrine - Trusty Patches",
-            "Firelink Shrine - Griggs of Vinheim",
-            "Firelink Shrine - Griggs of Vinheim, After Logan Leaves",
-            "Firelink Shrine - Laurentius of the Great Swamp",
-            "Firelink Shrine - Petrus of Thorolund",
-            "Firelink Shrine - Rhea of Thorolund",
-            "Firelink Shrine - Domhnall of Zena",
-            "Firelink Shrine - Domhnall of Zena After Iron Golem",
-            "Firelink Shrine - Domhnall of Zena After O+S",
-            "Firelink Shrine - Domhnall of Zena After Gwyndolin",
-            "Firelink Shrine - Domhnall of Zena Under Aqueduct After Artorias",
-            "Upper Undead Burg - Male Undead Merchant",
-            "Undead Parish - Andre of Astora",
-            "Undead Parish - Oswald of Carim",
-            "Lower Undead Burg - Female Undead Merchant",
-            "Lower Blighttown - Shiva of the East",
-            "Lower Blighttown - Quelana of Izalith",
-            "Lower Blighttown - Eingyi",
-            "Darkroot Basin - Princess Dusk",
-            "Sen's Fortress - Crestfallen Merchant",
-            "Anor Londo - Giant Blacksmith",
-            "The Duke's Archives - Big Hat Logan",
-            "Upper New Londo Ruins - Rickert of Vinheim",
-            "Upper New Londo Ruins - Ingward",
-            "The Catacombs - Vamos",
-            "Oolacile Sanctuary - Elizabeth",
-            "Royal Wood - Marvelous Chester",
-            "Royal Wood - Hawkeye Gough",
-            # start merchants' shared items
-            "2 Merchants - Bottomless Box",
-            "4 Merchants - Repairbox",
-            "3 Blacksmiths - Smithboxen",
-            ]
-        regions.update({region_name: self.create_region(region_name, location_tables[region_name]) for region_name in our_regions})
-       
+        valid_regions: List = []
+        valid_regions.extend(region_name_list.keys())
+
+        removable_regions: List = []
+        if not self.options.include_dlc.value:
+            removable_regions.extend([reg for reg,tags in region_name_list.items() if "dlc" in tags])
+        if not self.options.include_gh.value:
+            removable_regions.extend([reg for reg,tags in region_name_list.items() if "gh" in tags])
+        if not self.options.include_pw.value:
+            removable_regions.extend([reg for reg,tags in region_name_list.items() if "pw" in tags])
+        if self.options.goal_condition == GoalConditionOption.option_ornstein_and_smough:
+            removable_regions.extend([reg for reg,tags in region_name_list.items() if "postos" in tags])
+            if self.options.logic_to_access_catacombs == LogicToAccessCatacombs.option_ornstein_and_smough:
+                removable_regions.extend([reg for reg,tags in region_name_list.items() if "postos_cata" in tags])
+        for region in removable_regions:
+            if region in valid_regions:
+                valid_regions.remove(region)
+
+        regions.update({region_name: self.create_region(region_name, location_tables[region_name]) for region_name in valid_regions})
         # print("DSR: created " + str(self.gc) + " real and "+ str(self.bc) + " fake locations")
 
         # Connect Regions
@@ -357,8 +338,12 @@ class DSRWorld(World):
             self.create_entrance(regions[from_region], regions[to_region], rule)
 
         for region in region_rules_table.keys():
-            for entrance in region_rules_table[region]:
-                create_connection(entrance.source, region, rule=entrance.rule)
+            if region in valid_regions:
+                # print(f"Creating region {region}")
+                for entrance in region_rules_table[region]:
+                    if entrance.source in valid_regions or entrance.source == "Menu":
+                        # print(f"Creating connection {entrance.source} -> {region}")
+                        create_connection(entrance.source, region, rule=entrance.rule)
 
         # for skip in get_all_skips():
         #     self.create_entrance(regions[skip.starting_location], regions[skip.ending_location], rule=skip.get_rule(self), name=f"SKIP {skip.name}", force_creation=True)
@@ -375,65 +360,50 @@ class DSRWorld(World):
             if (default_item in titanite_replacements.keys()):
                 default_item = ReplaceItem(self, default_item)
 
-            if (location.category in self.enabled_location_categories and 
-                location.category not in location_skip_categories # [DSRLocationCategory.EVENT, DSRLocationCategory.DOOR]:
-                and location.category not in location_locked_categories
-                and not (self.options.excluded_location_behavior == "do_not_randomize" and location.name in self.all_excluded_locations)): 
-                self.gc = self.gc + 1
-                if (location.category in [DSRLocationCategory.FOG_WALL, DSRLocationCategory.BOSS_FOG_WALL]):
-                    default_item = "Fogwall Filler"
-                # print("Adding location: " + location.name + " with default item " + location.default_item)
-                new_location = DSRLocation(
-                    self.player,
-                    location.name,
-                    location.category,
-                    default_item,
-                    self.location_name_to_id[location.name],
-                    new_region
-                )
-                if (location.category in [DSRLocationCategory.MISSABLE_DROP, DSRLocationCategory.MISSABLE_SHOP_ITEM]):
-                    new_location.progress_type = LocationProgressType.EXCLUDED
-            # elif (location.category in self.enabled_location_categories and
-            #       location.category in location_locked_categories): # DSRLocationCategory.BONFIRE_WARP
-            #     self.bw = self.bw + 1
-            #     default_item = location.default_item
-            #     # Place bonfire warp locations statically
-            #     event_item = self.create_item(default_item)
-            #     new_location = DSRLocation(
-            #         self.player,
-            #         location.name,
-            #         location.category,
-            #         default_item,
-            #         self.location_name_to_id[location.name],
-            #         new_region
-            #     )
-            #     new_location.place_locked_item(event_item)
-            else:
-                self.bc = self.bc + 1
-                if (location.category in [DSRLocationCategory.FOG_WALL, DSRLocationCategory.BOSS_FOG_WALL, 
-                                          DSRLocationCategory.DOOR]):
-                    default_item = "Nothing"
-                    # print("Placing event: " + default_item + " in location: " + location.name)
+            # Allow progression items here - so that unrandomized progression items (e.g. archive cell key, or crest of artorias with shop shuffle off) are still considered for the rules
+            if location.category in self.enabled_location_categories or self.is_item_prog(default_item) or self.is_item_useful(default_item):
+                if (location.category in self.enabled_location_categories
+                    and location.category not in location_skip_categories   # [DSRLocationCategory.EVENT, DSRLocationCategory.DOOR]:
+                    and location.category not in self.locked_location_categories):
+                    self.gc = self.gc + 1
+                    if (location.category in [DSRLocationCategory.FOG_WALL, DSRLocationCategory.BOSS_FOG_WALL]):
+                        default_item = "Fogwall Filler"
+                    # print("Adding location: " + location.name + " with default item " + location.default_item)
+                    new_location = DSRLocation(
+                        self.player,
+                        location.name,
+                        location.category,
+                        default_item,
+                        self.location_name_to_id[location.name],
+                        new_region
+                    )
+                    if location.category in [DSRLocationCategory.MISSABLE_DROP, DSRLocationCategory.MISSABLE_SHOP_ITEM]:
+                        new_location.progress_type = LocationProgressType.EXCLUDED
+                else:
+                    self.bc = self.bc + 1
+                    if (location.category in [DSRLocationCategory.FOG_WALL, DSRLocationCategory.BOSS_FOG_WALL,
+                                              DSRLocationCategory.DOOR]):
+                        default_item = "Nothing"
+                        # print("Placing event: " + default_item + " in location: " + location.name)
 
-
-                # Replace non-randomized progression items with events
-                event_item = self.create_item(default_item)
-                # if event_item.classification != ItemClassification.progression:
-                #    continue
-                # print("Adding Location: " + location.name + " as an event with default item " + default_item)
-                new_location = DSRLocation(
-                    self.player,
-                    location.name,
-                    location.category,
-                    default_item,
-                    None,
-                    new_region
-                )
-                event_item.code = None
-                new_location.place_locked_item(event_item)
+                    # Replace non-randomized progression items with events
+                    event_item = self.create_item(default_item)
+                    # if event_item.classification != ItemClassification.progression:
+                    #    continue
+                    # print("Adding Location: " + location.name + " as an event with default item " + default_item)
+                    new_location = DSRLocation(
+                        self.player,
+                        location.name,
+                        location.category,
+                        default_item,
+                        None,
+                        new_region
+                    )
+                    event_item.code = None
+                    new_location.place_locked_item(event_item)
                 
 
-            new_region.locations.append(new_location)
+                new_region.locations.append(new_location)
         
         # print("created " + str(len(new_region.locations)) + " locations")
         self.multiworld.regions.append(new_region)
@@ -455,37 +425,32 @@ class DSRWorld(World):
             citem = self.create_item(itemname)
             
             if (location.category in location_skip_categories 
-             or location.category in location_locked_categories): # [DSRLocationCategory.EVENT]:
+             or location.category in self.locked_location_categories): # [DSRLocationCategory.EVENT]:
                 # print("Adding skip item: " + location.default_item_name + " for location: " + location.name)
-                skip_itemlocs.append((citem, location))
-                skipitempool.append(citem)
-            elif location.category in self.enabled_location_categories:
-                if self.options.excluded_location_behavior == "do_not_randomize" and location.name in self.all_excluded_locations:
-                    # print("Adding skip item: " + location.default_item_name + " for location: " + location.name)
+                if self.is_item_prog(citem.name) or self.is_item_useful(citem.name):
                     skip_itemlocs.append((citem, location))
                     skipitempool.append(citem)
-                else:
-                    #print("Adding item: " + location.default_item_name)
-                    itempoolSize += 1
-                    itempool.append(citem)
+            elif location.category in self.enabled_location_categories:
+                #print("Adding item: " + location.default_item_name)
+                itempoolSize += 1
+                itempool.append(citem)
         
         # print("Requesting itempool size: " + str(itempoolSize))
         # foo = BuildItemPool(itempoolSize, self.options, self)
         # print("Created item pool size: " + str(len(foo)))
 
         # Add any Key + useful items
-        rip, required_skip_item_names = BuildRequiredItemPool(self, itempoolSize)
+        rip, required_skip_item_names = BuildRequiredItemPool(self, itempoolSize, self.ignorable_items)
         crip = [self.create_item(item.name) for item in rip]
 
-
-
-        disabled_items = [loc.default_item for loc in location_dictionary.values() if loc.category not in self.enabled_location_categories]
-        StillRequiredPool = [item for item in crip if item not in itempool and item not in skipitempool and item.name not in disabled_items]
+        StillRequiredPool = [item for item in crip if item not in itempool and item not in skipitempool]
         guaranteedpool = BuildGuaranteedItemPool(self)
 
         filler_items = [item for item in itempool if item_dictionary[item.name].category in [DSRItemCategory.FILLER]]
         junk_items = [item for item in itempool if item.name in item_name_groups["Junk"]]
         removable_items = filler_items + junk_items
+
+        # print(f"DSR [{self.player_name}]: stillRequiredPool: {StillRequiredPool}")
 
         # print("marked " + str(len(removable_items)) + " items as removable")
         # print("marked " + str(len(filler_items)) + " items as filler")
@@ -503,22 +468,81 @@ class DSRWorld(World):
         #     print("StillRequiredPool item: " + str(item))
         # for item in skipitempool:
         #     print("skip item: " + str(item))
-        limited_pool = [item for item in StillRequiredPool if item_dictionary[item.name].category not in [DSRItemCategory.FOGWALL, DSRItemCategory.BOSSFOGWALL]]
+        # limited_pool = [item for item in StillRequiredPool if item_dictionary[item.name].category not in [DSRItemCategory.FOGWALL, DSRItemCategory.BOSSFOGWALL]]
         
         # for item in limited_pool:
         #     print("non-fogwall required item: " + str(item))
 
-        # Replace "Soul of a Lost Undead" if needed
+        # print(f"required pool = {StillRequiredPool}")
+        replacable_filler = [
+            "Soul of a Lost Undead",
+            "Large Soul of a Lost Undead",
+            "Soul of a Nameless Soldier",
+            "Large Soul of a Nameless Soldier",
+            "Soul of a Proud Knight",
+            "Homeward Bone", # 11 in pool with boss bones on
+        ]
+        # Replace each of the above souls, in order, as needed
         if len(StillRequiredPool) + len(guaranteedpool) > len(removable_items):
-            print("Adding " + str(len([item for item in itempool if item.name == 'Soul of a Lost Undead'])) +" Souls of a Lost Undead to removable items")
-            removable_items += [item for item in itempool if item.name == 'Soul of a Lost Undead']
-            print("now " + str(len(removable_items)) + " are removable")
+            print(f"DSR [{self.player_name}]: Detected additional replacements required ({len(removable_items)}/{len(StillRequiredPool) + len(guaranteedpool)}).")
+            for soul in replacable_filler:
+                if (len([item for item in itempool if item.name == soul]) > 0):
+                    print(f"DSR [{self.player_name}]: Adding " + str(len([item for item in itempool if item.name == soul])) + f" {soul} items to removable items.")
+                    removable_items += [item for item in itempool if item.name == soul]
+                    if len(StillRequiredPool) + len(guaranteedpool) <= len(removable_items):
+                        break
 
-        # Replace "Large Soul of a Lost Undead" if needed
-        if len(StillRequiredPool) > len(removable_items):
-            print("Adding " + str(len([item for item in itempool if item.name == 'Large Soul of a Lost Undead'])) +" Large Souls of a Lost Undead to removable items")
-            removable_items += [item for item in itempool if item.name == 'Large Soul of a Lost Undead']
-            print("now " + str(len(removable_items)) + " are removable")
+        num_required_to_remove = len(StillRequiredPool) + len(guaranteedpool)
+        num_removable = len(removable_items)
+        print(f"DSR [{self.player_name}]: Now {num_removable} filler items are removable out of {num_required_to_remove} required")
+
+        excluded_consumables = []
+        if self.options.ghost_difficulty != GhostDifficulty.option_normal:
+            excluded_consumables.extend(["Transient Curse x2", "Transient Curse x4"])
+
+        consumables = [item.name for item in _all_items if item.category == DSRItemCategory.CONSUMABLE
+                       and item.name not in [item2.name for item2 in removable_items]
+                       and item.name not in excluded_consumables
+                       ]
+
+
+        if num_required_to_remove > num_removable:
+            armors = [item.name for item in _all_items if item.category == DSRItemCategory.ARMOR]
+            weapons = [item.name for item in _all_items if item.category == DSRItemCategory.WEAPON]
+            shields = [item.name for item in _all_items if
+                       item.category == DSRItemCategory.SHIELD and item.name not in ["Grass Crest Shield"]]
+            upg_mats = [item.name for item in _all_items if item.category == DSRItemCategory.UPGRADE_MATERIAL]
+
+            num_more_required = num_required_to_remove - num_removable
+            print(f"DSR [{self.player_name}]: Could not remove enough Soul items to meet requirements from yaml settings...removing additional items")
+
+            # list all the items, first
+            # print("_items:")
+            # print(f"{itempool}")
+            # print("_req_items:")
+            # print(f"{StillRequiredPool}")
+            typelists = [("armor", armors, 0.6),
+                         ("consumable", consumables, 0.8),
+                         ("shield", shields, 0.8),
+                         ("upgrade material", upg_mats, 0.9),
+                         ("weapon", weapons, 0.7),
+                         ]
+            for i in range(5):
+                if num_more_required <= 0:
+                    break
+                tlname = typelists[i][0]
+                typelist = typelists[i][1]
+                weight = typelists[i][2]
+                type_removable_items = [item for item in itempool if item.name in typelist and item.name not in key_item_names and item.name not in self.options.guaranteed_items.value.keys()]
+                self.random.shuffle(type_removable_items)
+                num_items_to_replace = min(num_more_required, int(len(type_removable_items) * weight))  # don't replace more than weight *100 %
+                print(f"DSR [{self.player_name}]: Removing {num_items_to_replace} {tlname} items from group of {len(type_removable_items)} eligible {tlname}s")
+                removable_items += type_removable_items[0:num_items_to_replace]
+                num_more_required -= num_items_to_replace
+            # if after all of that, there still aren't enough removed, throw an error
+            if num_more_required > 0:
+                print(f"DSR [{self.player_name}]: ERROR: Still could not remove enough items to meet requirements from yaml settings ({len(removable_items)}/{len(StillRequiredPool) + len(guaranteedpool)}). Reduce number of \"steps\" specified.")
+                raise FillError(f"DSR [{self.player_name}]: ERROR: Still could not remove enough items to meet requirements from yaml settings ({len(removable_items)}/{len(StillRequiredPool) + len(guaranteedpool)}). Reduce number of \"steps\" specified.")
 
         for item in removable_items:
             if len(StillRequiredPool) > 0:
@@ -537,6 +561,7 @@ class DSRWorld(World):
         # print("leftover removable items: " + str(len(removable_items)))
         # print("leftover filler items: " + str(len(filler_items)))
 
+        # convert leftover filler into 'Soul of a Proud Knight' items (2k souls)
         for item in removable_items:
             # print("removable item: " + item.name)
             itempool.remove(item)
@@ -561,25 +586,41 @@ class DSRWorld(World):
         #for item in self.multiworld.itempool:
             #print(item.name)
 
+    def is_item_prog(self, name: str) -> bool:
+        if (name in key_item_names or item_dictionary[name].category in [DSRItemCategory.EVENT,
+                                                                         DSRItemCategory.KEY_ITEM,
+                                                                         DSRItemCategory.FOGWALL,
+                                                                         DSRItemCategory.BOSSFOGWALL]
+                and name not in self.ignorable_items):
+            return True
+        return False
+
+    def is_item_useful(self, name: str) -> bool:
+        useful_categories = [
+                DSRItemCategory.EMBER,
+                DSRItemCategory.FIRE_KEEPER_SOUL,
+                DSRItemCategory.PROGRESSIVE_MULTIPLIER,
+                DSRItemCategory.USEFUL_KEY_ITEM,
+                DSRItemCategory.USEFUL_CONSUMABLE,
+            ]
+        if item_dictionary[name].category in useful_categories:
+            return True
+        return False
+
 
     def create_item(self, name: str) -> DSRItem:
-        useful_categories = [
-            DSRItemCategory.EMBER,
-            DSRItemCategory.FIRE_KEEPER_SOUL,
-            DSRItemCategory.PROGRESSIVE_MULTIPLIER,
-            DSRItemCategory.USEFUL_KEY_ITEM,
-            DSRItemCategory.USEFUL_CONSUMABLE,
-        ]
+
 
         data = self.item_name_to_id[name]
 
-        if name in key_item_names or item_dictionary[name].category in [DSRItemCategory.EVENT, DSRItemCategory.KEY_ITEM, DSRItemCategory.FOGWALL, DSRItemCategory.BOSSFOGWALL]:
+        if self.is_item_prog(name):
             item_classification = ItemClassification.progression
-        elif item_dictionary[name].category in useful_categories:
+        elif self.is_item_useful(name):
             item_classification = ItemClassification.useful
         else:
             item_classification = ItemClassification.filler
-
+        # if (name in self.ignorable_items):
+        # print(f"item {name} created as {item_classification}")
         return DSRItem(name, item_classification, data, self.player)
 
 
@@ -599,7 +640,11 @@ class DSRWorld(World):
                     item.name
                     for item in item_dictionary.values()
                     if item.category == DSRItemCategory.EVENT and "Defeated" in item.name
+                    and item.name in [loc.item.name for loc in self.get_locations() if loc.player == self.player and loc.item is not None] # limit to active locations
                 ]
+                # Move this print to spoiler log, and add the boss list to slot data
+                # print(f"--\nRequired bosses:{boss_defeated_items}\n--")
+
                 self.set_completion_rule(HasAll(*boss_defeated_items))
                 
             case GoalConditionOption.option_ornstein_and_smough:
@@ -629,14 +674,14 @@ class DSRWorld(World):
         items_names = []
         items_upgrades = []
         items_address = []
-        for location in self.multiworld.get_filled_locations():
-            if location.item.player == self.player:
-                #we are the receiver of the item
-                items_id.append(location.item.code)
-                items_names.append(location.item.name)
-                upgrade = UpgradeEquipment(location.item.code, self.options, self)
-                items_upgrades.append(upgrade)
-                items_address.append(f'{location.player}:{location.address}')
+        # for location in self.multiworld.get_filled_locations():
+        #     if location.item.player == self.player:
+        #         #we are the receiver of the item
+        #         items_id.append(location.item.code)
+        #         items_names.append(location.item.name)
+        #         upgrade = UpgradeEquipment(location.item.code, self.options, self)
+        #         items_upgrades.append(upgrade)
+        #         items_address.append(f'{location.player}:{location.address}')
 
         slot_data = {
             "options": {
@@ -647,6 +692,9 @@ class DSRWorld(World):
                 # QoL
                 "can_warp_without_lordvessel": self.options.can_warp_without_lordvessel.value,
                 "warp_to_all_bonfires": self.options.warp_to_all_bonfires.value,
+                # Sanity
+                "fogwall_sanity": self.options.fogwall_sanity.value,
+                "boss_fogwall_sanity": self.options.boss_fogwall_sanity.value,
                 # Difficulty
                 "ghost_difficulty": self.options.ghost_difficulty.value,
                 "soul_multiplier_base": self.options.soul_multiplier_base.value,
@@ -655,15 +703,22 @@ class DSRWorld(World):
                 "weight_multiplier_base": self.options.weight_multiplier_base.value,
                 "weight_multiplier_min": self.options.weight_multiplier_min.value,
                 "weight_multiplier_steps": self.options.weight_multiplier_steps.value,
-                # Sanity
-                "fogwall_sanity": self.options.fogwall_sanity.value,
-                "boss_fogwall_sanity": self.options.boss_fogwall_sanity.value,
-                # Shuffle
-                "boss_soul_shuffle": self.options.boss_soul_shuffle.value,
-                "boss_humanity_shuffle": self.options.boss_humanity_shuffle.value,
-                "boss_bone_shuffle": self.options.boss_bone_shuffle.value,
-                "bk_weapon_shuffle": self.options.bk_weapon_shuffle.value,
-                "lizard_shuffle": self.options.lizard_shuffle.value,
+                # Upgraded Weapons
+                "incoming_weapon_upgrade_infusion_paths": self.options.incoming_weapon_upgrade_infusion_paths.value,
+                "incoming_weapon_upgrade_base": self.options.incoming_weapon_upgrade_base.value,
+                "incoming_weapon_upgrade_max": self.options.incoming_weapon_upgrade_max.value,
+                "incoming_weapon_upgrade_steps": self.options.incoming_weapon_upgrade_steps.value,
+                # Optional Region Selection
+                "include_dlc": self.options.include_dlc.value,
+                "include_pw": self.options.include_pw.value,
+                "include_gh": self.options.include_gh.value,
+
+                # lord soul setting
+                "lord_soul_shuffle": self.options.lord_soul_shuffle.value,
+
+                # info about which location categories are ap randomized
+                "ap_loc_categories": ",".join(self.ap_loc_categories),
+                "local_loc_categories": ",".join(self.local_loc_categories),
 
                 # Shops
                 "unlimited_shop_item_shuffle": self.options.unlimited_shop_item_shuffle.value,
@@ -688,20 +743,11 @@ class DSRWorld(World):
                 "no_weapon_requirements": self.options.no_weapon_requirements.value,
                 "no_spell_stat_requirements": self.options.no_spell_stat_requirements.value,
                 "no_miracle_covenant_requirements": self.options.no_miracle_covenant_requirements.value,
-                # Upgraded Weapons
-                "upgraded_weapons_percentage": self.options.upgraded_weapons_percentage.value,
-                "upgraded_weapons_allowed_infusions": self.options.upgraded_weapons_allowed_infusions.value,
-                "upgraded_weapons_adjusted_levels": self.options.upgraded_weapons_adjusted_levels.value,
-                "upgraded_weapons_min_level": self.options.upgraded_weapons_min_level.value,
-                "upgraded_weapons_max_level": self.options.upgraded_weapons_max_level.value,
             },
             "seed": self.multiworld.seed_name,  # to verify the server's multiworld
             "slot": self.multiworld.player_name[self.player],  # to connect to server
             "base_id": self.base_id,  # to merge location and items lists
-            "itemsId": items_id,
-            "itemsUpgrades": items_upgrades,
-            "itemsAddress": items_address,
-            "apworld_api_version" : "0.2.6" # Manually set our apworld api level, for detecting compatibility with client
+            "apworld_api_version" : "0.3.0" # Manually set our apworld api level, for detecting compatibility with client
         }
 
         self.items_id = items_id
@@ -710,16 +756,16 @@ class DSRWorld(World):
         self.items_address = items_address
 
         return slot_data
-
-    def write_spoiler(self, spoiler_handle: TextIO) -> None:
-        wrote_items = False
-        if (len(self.items_upgrades) > 0):
-            spoiler_handle.write(f"\nDSR weapon upgrades for {self.multiworld.player_name[self.player]}:\n")
-            for i in range(len(self.items_upgrades)):
-                if self.items_upgrades[i] == None or self.items_upgrades[i] == "":
-                    continue
-                spoiler_handle.write(f"\nitem {self.items_names[i]} at loc {self.items_address[i]} upgraded to {self.items_upgrades[i]}.")
-                wrote_items = True
-            if not wrote_items:
-                spoiler_handle.write("\nNo items upgraded")
-            spoiler_handle.write("\n") # Spacing
+    #
+    # def write_spoiler(self, spoiler_handle: TextIO) -> None:
+    #     wrote_items = False
+    #     if (len(self.items_upgrades) > 0):
+    #         spoiler_handle.write(f"\nDSR weapon upgrades for {self.multiworld.player_name[self.player]}:\n")
+    #         for i in range(len(self.items_upgrades)):
+    #             if self.items_upgrades[i] == None or self.items_upgrades[i] == "":
+    #                 continue
+    #             spoiler_handle.write(f"\nitem {self.items_names[i]} at loc {self.items_address[i]} upgraded to {self.items_upgrades[i]}.")
+    #             wrote_items = True
+    #         if not wrote_items:
+    #             spoiler_handle.write("\nNo items upgraded")
+    #         spoiler_handle.write("\n") # Spacing

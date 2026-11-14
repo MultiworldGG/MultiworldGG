@@ -1,5 +1,7 @@
 from __future__ import annotations
 
+from . import enemy_souls
+
 from .directional_abilities import requirements as directional_requirements, split_requirement_counts
 
 from .combat import SKILLS_BY_TIER, TOOLS_BY_TIER, build_requirements as build_combat_requirements
@@ -1271,6 +1273,7 @@ class ItemCountRequirement:
 class LocationRequirement:
     all_of: tuple[str, ...] = field(default_factory=tuple)
     any_of: tuple[str, ...] = field(default_factory=tuple)
+    minimum_any_of: int = 1
     required_locations: tuple[str, ...] = field(default_factory=tuple)
     require_any_crest: bool = True
     require_silk_spear: bool = False
@@ -1290,6 +1293,7 @@ class LocationRequirement:
                 clean_item_display_name(item_name)
                 for item_name in self.any_of
             ],
+            **({"minimum_any_of": self.minimum_any_of} if self.minimum_any_of != 1 else {}),
             "required_locations": list(self.required_locations),
             "require_any_crest": self.require_any_crest,
             "require_silk_spear": self.require_silk_spear,
@@ -1310,6 +1314,7 @@ def item_count(minimum: int, *item_names: str) -> ItemCountRequirement:
 def req(
     *all_of: str,
     any_of: Iterable[str] = (),
+    minimum_any_of: int = 1,
     required_locations: Iterable[str] = (),
     crest: bool = True,
     silk_spear: bool = False,
@@ -1322,6 +1327,7 @@ def req(
     return LocationRequirement(
         all_of=tuple(all_of),
         any_of=tuple(any_of),
+        minimum_any_of=minimum_any_of,
         required_locations=tuple(
             canonicalize_location_name(location_name)
             for location_name in required_locations
@@ -1414,6 +1420,13 @@ def grindle_access(
     )
 
 
+def _void_mass_requirements() -> dict[str, tuple[LocationRequirement, ...]]:
+    events = sorted('Room Event: ' + event.id
+                    for room in load_room_graph().rooms for event in room.events
+                    if event.id.startswith('event:mapper/reviewed:void-mass:'))
+    return {'Void Masses: 12': (req(any_of=events, minimum_any_of=12, crest=False),)}
+
+
 def _verdania_shard_requirements() -> dict[str, tuple[LocationRequirement, ...]]:
     events = {
         int(event.label.rsplit(' ', 1)[1]): 'Room Event: ' + event.id
@@ -1423,21 +1436,9 @@ def _verdania_shard_requirements() -> dict[str, tuple[LocationRequirement, ...]]
     }
     if set(events) != set(range(1, 18)):
         raise ValueError('Verdania essence events are incomplete.')
-    result = {}
-    for prefix in range(1, 18):
-        for minimum in range(1, prefix + 1):
-            name = f"Verdania Shards: {minimum} of first {prefix}"
-            collect = (events[prefix],)
-            if minimum > 1:
-                collect += (f"Verdania Shards: {minimum - 1} of first {prefix - 1}",)
-            alternatives = (req(*collect, crest=False),)
-            if minimum < prefix:
-                alternatives += (req(f"Verdania Shards: {minimum} of first {prefix - 1}", crest=False),)
-            result[name] = alternatives
-    result.update({f"Verdania Shards: {minimum}":
-                   (req(f"Verdania Shards: {minimum} of first 17", crest=False),)
-                   for minimum in range(1, 18)})
-    return result
+    return {f"Verdania Shards: {minimum}":
+            (req(any_of=tuple(events[index] for index in range(1, 18)), minimum_any_of=minimum, crest=False),)
+            for minimum in range(1, 18)}
 
 
 def _compiled_room_clause_requirement(
@@ -3067,6 +3068,8 @@ ABSTRACT_REQUIREMENTS = _VersionedRequirementMap(
         # of the same name.
         **ROOM_EVENT_REQUIREMENTS,
         **_verdania_shard_requirements(),
+        **_void_mass_requirements(),
+        "Pilgrim Shawls: 12": enemy_souls.pilgrim_shawl_requirements(),
     }
 )
 
@@ -5683,6 +5686,9 @@ _ROOM_GRAPH_PRESERVED_LOCAL_GATES: Mapping[
     'Wish: My Missing Courier': (
         req('Event: Missing Courier Rescued', crest=False),
     ),
+    'Wish: The Lost Merchant': (
+        req('Room Event: event:mapper/36657c01-a7ca-49db-b968-25cddb4d03fc', crest=False),
+    ),
     SINNER_MISSING_BROTHER_LOCATION: (
         req('Event: Missing Brother Rescued', crest=False),
     ),
@@ -5833,12 +5839,16 @@ def _combine_room_graph_gate(
 ) -> LocationRequirement:
     """Attach one non-source gate to one source."""
 
+    if (graph_source.any_of and gate.any_of
+            and (graph_source.minimum_any_of != 1 or gate.minimum_any_of != 1)):
+        raise ValueError('Counted requirements need separate gates.')
     return LocationRequirement(
         all_of=tuple(dict.fromkeys((
             *graph_source.all_of,
             *gate.all_of,
         ))),
         any_of=tuple(dict.fromkeys((*graph_source.any_of, *gate.any_of))),
+        minimum_any_of=max(graph_source.minimum_any_of, gate.minimum_any_of),
         required_locations=tuple(dict.fromkeys((
             *graph_source.required_locations,
             *gate.required_locations,
@@ -6046,8 +6056,6 @@ JUNK_ONLY_LOCATIONS: frozenset[str] = frozenset(
         *SINNER_ROAD_NON_COMMUNITY_FALLBACK_CHECK_NAMES,
         # These scripted or held sources have incomplete encounter
         # requirements, so they may hold only non-advancement rewards.
-        'Fleatopia - Rosary Necklace',
-        'Fleatopia - Rosary String',
         *HELD_MINOR_PICKUP_LOCATIONS,
         # These caches remain non-advancement-only until their room movement
         # requirements are represented.
@@ -6889,17 +6897,16 @@ def _satisfies_requirement_with_values(
         for item_name in requirement.all_of
     ):
         return False
-    if requirement.any_of and not any(
-        _has_named_requirement_with_values(
-            item_name,
-            abstract_values,
-            has_item,
-            logic_item_dependencies,
-            scuttlebrace_logic_enabled,
-        )
-        for item_name in requirement.any_of
-    ):
-        return False
+    if requirement.any_of or requirement.minimum_any_of != 1:
+        remaining = requirement.minimum_any_of
+        for name in dict.fromkeys(requirement.any_of):
+            if _has_named_requirement_with_values(
+                    name, abstract_values, has_item, logic_item_dependencies, scuttlebrace_logic_enabled):
+                remaining -= 1
+                if remaining <= 0:
+                    break
+        if remaining > 0:
+            return False
     if any(
         not _can_reach_required_location_with_values(
             location_name,

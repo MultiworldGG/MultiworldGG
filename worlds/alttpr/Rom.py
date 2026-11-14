@@ -6,7 +6,6 @@ from pathlib import Path
 import pkgutil
 import shutil
 import tempfile
-from tkinter import filedialog, Tk
 from typing import Any, Callable, Sequence
 from urllib.request import urlopen
 
@@ -57,6 +56,8 @@ class ALttPRBaseRandomizerPatch(APPatchExtension):
 
     @staticmethod
     def apply_sprite(caller: ALttPRProcedurePatch, rom: bytes, sprite_name_file: str) -> bytes:
+        # Importing inside this function so generation can be done by a headless server
+        from tkinter import filedialog, Tk
         sprite_name = caller.get_file(sprite_name_file).decode()
         if not sprite_name:
             return rom

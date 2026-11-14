@@ -66,6 +66,8 @@ CONTROL_CODES = {
     0xF1: ('small-key-count', 1, lambda d: '<small key count ' + "{:02x}".format(d) + '>'),
     0xF2: ('player-name', 0, lambda _: '<player name>'),
     0xF3: ('farores_wind_destination', 0, lambda _: '<farores_wind_destination>'),
+    # F4 and F6 collide with Unicode accented letters in encode_text_string.
+    0xF7: ('outgoing-recipient', 0, lambda _: '<for recipient if outgoing>'),
 }
 
 # Maps unicode characters to corresponding bytes in OOTR's character set.
@@ -130,21 +132,23 @@ ERROR_MESSAGE = 0x0001
 
 # messages for shorter item messages
 # ids are in the space freed up by move_shop_item_messages()
+# APWorld change: Acquisition messages must start with "You got" (or a verb normalized by
+# make_player_message) so multiplayer text identifies both finder and recipient.
 ITEM_MESSAGES = {
     0x0001: "\x08\x06\x30\x05\x41TEXT ID ERROR!\x05\x40",
     0x9001: "\x08\x13\x2DYou borrowed a \x05\x41Pocket Egg\x05\x40!\x01A Pocket Cucco will hatch from\x01it overnight. Be sure to give it\x01back.",
-    0x0002: "\x08\x13\x2FYou returned the Pocket Cucco\x01and got \x05\x41Cojiro\x05\x40 in return!\x01Unlike other Cuccos, Cojiro\x01rarely crows.",
+    0x0002: "\x08\x13\x2FYou got \x05\x41Cojiro\x05\x40!\x01Unlike other Cuccos, Cojiro\x01rarely crows.",
     0x0003: "\x08\x13\x30You got an \x05\x41Odd Mushroom\x05\x40!\x01It is sure to spoil quickly! Take\x01it to the Kakariko Potion Shop.",
     0x0004: "\x08\x13\x31You received an \x05\x41Odd Potion\x05\x40!\x01It may be useful for something...\x01Hurry to the Lost Woods!",
-    0x0005: "\x08\x13\x32You returned the Odd Potion \x01and got the \x05\x41Poacher's Saw\x05\x40!\x01The young punk guy must have\x01left this.",
+    0x0005: "\x08\x13\x32You got the \x05\x41Poacher's Saw\x05\x40!\x01The young punk guy must have\x01left this.",
     0x0007: "\x08\x13\x48You got a \x01\x05\x41Deku Seeds Bullet Bag\x05\x40.\x01This bag can hold up to \x05\x4640\x05\x40\x01slingshot bullets.",
-    0x0008: "\x08\x13\x33You traded the Poacher's Saw \x01for a \x05\x41Broken Goron's Sword\x05\x40!\x01Visit Biggoron to get it repaired!",
-    0x0009: "\x08\x13\x34You checked in the Broken \x01Goron's Sword and received a \x01\x05\x41Prescription\x05\x40!\x01Go see King Zora!",
+    0x0008: "\x08\x13\x33You got a \x05\x41Broken Goron's Sword\x05\x40!\x01Visit Biggoron to get it repaired!",
+    0x0009: "\x08\x13\x34You got a \x05\x41Prescription\x05\x40!\x01Go see King Zora!",
     0x000A: "\x08\x13\x37The Biggoron's Sword...\x01You got a \x05\x41Claim Check \x05\x40for it!\x01You can't wait for the sword!",
     0x000B: "\x08\x13\x2EYou got a \x05\x41Pocket Cucco, \x05\x40one\x01of Anju's prized hens! It fits \x01in your pocket.",
     0x000C: "\x08\x13\x3DYou got the \x05\x41Biggoron's Sword\x05\x40!\x01This blade was forged by a \x01master smith and won't break!",
-    0x000D: "\x08\x13\x35You used the Prescription and\x01received an \x05\x41Eyeball Frog\x05\x40!\x01Be quick and deliver it to Lake \x01Hylia!",
-    0x000E: "\x08\x13\x36You traded the Eyeball Frog \x01for the \x05\x41World's Finest Eye Drops\x05\x40!\x01Hurry! Take them to Biggoron!",
+    0x000D: "\x08\x13\x35You got an \x05\x41Eyeball Frog\x05\x40!\x01Be quick and deliver it to Lake \x01Hylia!",
+    0x000E: "\x08\x13\x36You got the \x05\x41World's Finest Eye Drops\x05\x40!\x01Hurry! Take them to Biggoron!",
     0x0010: "\x08\x13\x25You borrowed a \x05\x41Skull Mask\x05\x40.\x01You feel like a monster while you\x01wear this mask!",
     0x0011: "\x08\x13\x26You borrowed a \x05\x41Spooky Mask\x05\x40.\x01You can scare many people\x01with this mask!",
     0x0012: "\x08\x13\x24You borrowed a \x05\x41Keaton Mask\x05\x40.\x01You'll be a popular guy with\x01this mask on!",
@@ -175,7 +179,7 @@ ITEM_MESSAGES = {
     0x0043: "\x08\x13\x15You got a \x05\x41Red Potion\x05\x40!\x01It will restore your health",
     0x0044: "\x08\x13\x16You got a \x05\x42Green Potion\x05\x40!\x01It will restore your magic.",
     0x0045: "\x08\x13\x17You got a \x05\x43Blue Potion\x05\x40!\x01It will recover your health\x01and magic.",
-    0x0046: "\x08\x13\x18You caught a \x05\x41Fairy\x05\x40 in a bottle!\x01It will revive you\x01the moment you run out of life \x01energy.",
+    0x0046: "\x08\x13\x18You got a \x05\x41Fairy\x05\x40 in a bottle!\x01It will revive you\x01the moment you run out of life \x01energy.",
     0x0047: "\x08\x13\x19You got a \x05\x41Fish\x05\x40!\x01It looks so fresh and\x01delicious!",
     0x0048: "\x08\x13\x10You got a \x05\x41Magic Bean\x05\x40!\x01Find a suitable spot for a garden\x01and plant it.",
     0x9048: "\x08\x13\x10You got a \x05\x41Pack of Magic Beans\x05\x40!\x01Find suitable spots for a garden\x01and plant them.",
@@ -191,14 +195,14 @@ ITEM_MESSAGES = {
     0x0053: "\x08\x13\x45You got the \x05\x41Iron Boots\x05\x40!\x01So heavy, you can't run.\x01So heavy, you can't float.",
     0x0054: "\x08\x13\x46You got the \x05\x41Hover Boots\x05\x40!\x01With these mysterious boots\x01you can hover above the ground.",
     0x0055: "\x08You got a \x05\x45Recovery Heart\x05\x40!\x01Your life energy is recovered!",
-    0x0056: "\x08\x13\x4BYou upgraded your quiver to a\x01\x05\x41Big Quiver\x05\x40!\x01Now you can carry more arrows-\x01\x05\x4640 \x05\x40in total!",
-    0x0057: "\x08\x13\x4CYou upgraded your quiver to\x01the \x05\x41Biggest Quiver\x05\x40!\x01Now you can carry to a\x01maximum of \x05\x4650\x05\x40 arrows!",
+    0x0056: "\x08\x13\x4BYou got a \x05\x41Big Quiver\x05\x40!\x01Now you can carry more arrows-\x01\x05\x4640 \x05\x40in total!",
+    0x0057: "\x08\x13\x4CYou got the \x05\x41Biggest Quiver\x05\x40!\x01Now you can carry to a\x01maximum of \x05\x4650\x05\x40 arrows!",
     0x0058: "\x08\x13\x4DYou found a \x05\x41Bomb Bag\x05\x40!\x01You found \x05\x4120 Bombs\x05\x40 inside!",
     0x0059: "\x08\x13\x4EYou got a \x05\x41Big Bomb Bag\x05\x40!\x01Now you can carry more \x01Bombs, up to a maximum of \x05\x4630\x05\x40!",
     0x005A: "\x08\x13\x4FYou got the \x01\x05\x41Biggest Bomb Bag\x05\x40!\x01Now, you can carry up to \x01\x05\x4640\x05\x40 Bombs!",
     0x005B: "\x08\x13\x51You found the \x05\x43Silver Gauntlets\x05\x40!\x01You feel the power to lift\x01big things with it!",
     0x005C: "\x08\x13\x52You found the \x05\x43Golden Gauntlets\x05\x40!\x01You can feel even more power\x01coursing through your arms!",
-    0x005D: "\x08\x13\x1CYou put a \x05\x44Blue Fire\x05\x40\x01into the bottle!\x01This is a cool flame you can\x01use on red ice.",
+    0x005D: "\x08\x13\x1CYou got \x05\x44Blue Fire\x05\x40\x01in a bottle!\x01This is a cool flame you can\x01use on red ice.",
     0x005E: "\x08\x13\x56You got an \x05\x43Adult's Wallet\x05\x40!\x01Now you can hold\x01up to \x05\x46200\x05\x40 \x05\x46Rupees\x05\x40.",
     0x005F: "\x08\x13\x57You got a \x05\x43Giant's Wallet\x05\x40!\x01Now you can hold\x01up to \x05\x46500\x05\x40 \x05\x46Rupees\x05\x40.",
     0x0060: "\x08\x13\x77You found a \x05\x41Small Key\x05\x40!\x01This key will open a locked \x01door. You can use it only\x01in this dungeon.",
@@ -206,7 +210,7 @@ ITEM_MESSAGES = {
     0x0067: "\x08\x13\x75You found the \x05\x41Compass\x05\x40!\x01Now you can see the locations\x01of many hidden things in the\x01dungeon!",
     0x0068: "\x08\x13\x6FYou obtained the \x05\x41Stone of Agony\x05\x40!\x01If you equip a \x05\x44Rumble Pak\x05\x40, it\x01will react to nearby...secrets.",
     0x0069: "\x08\x13\x23You received \x05\x41Zelda's Letter\x05\x40!\x01Wow! This letter has Princess\x01Zelda's autograph!",
-    0x006C: "\x08\x13\x49Your \x05\x41Deku Seeds Bullet Bag \x01\x05\x40has become bigger!\x01This bag can hold \x05\x4650\x05\x41 \x05\x40bullets!",
+    0x006C: "\x08\x13\x49You got a \x05\x41Deku Seeds Bullet Bag\x05\x40!\x01This bag can hold \x05\x4650\x05\x41 \x05\x40bullets!",
     0x006F: "\x08You got a \x05\x42Green Rupee\x05\x40!\x01That's \x05\x42one Rupee\x05\x40!",
     0x0070: "\x08\x13\x04You got the \x05\x41Fire Arrow\x05\x40!\x01If you hit your target,\x01it will catch fire.",
     0x0071: "\x08\x13\x0CYou got the \x05\x43Ice Arrow\x05\x40!\x01If you hit your target,\x01it will freeze.",
@@ -218,26 +222,26 @@ ITEM_MESSAGES = {
     0x0077: "\x08\x06\x28You have learned the\x01\x06\x28\x05\x45Nocturne of Shadow\x05\x40!",
     0x0078: "\x08\x06\x28You have learned the\x01\x06\x32\x05\x44Prelude of Light\x05\x40!",
     0x0079: "\x08\x13\x50You got the \x05\x41Goron's Bracelet\x05\x40!\x01Now you can pull up Bomb\x01Flowers.",
-    0x007A: "\x08\x13\x1DYou put a \x05\x41Bug \x05\x40in the bottle!\x01This kind of bug prefers to\x01live in small holes in the ground.",
+    0x007A: "\x08\x13\x1DYou got a \x05\x41Bug \x05\x40in a bottle!\x01This kind of bug prefers to\x01live in small holes in the ground.",
     0x007B: "\x08\x13\x70You obtained the \x05\x41Gerudo's \x01Membership Card\x05\x40!\x01You can get into the Gerudo's\x01training ground.",
     0x0080: "\x08\x13\x6CYou got the \x05\x42Kokiri's Emerald\x05\x40!\x01This is the Spiritual Stone of \x01Forest passed down by the\x01Great Deku Tree.",
     0x0081: "\x08\x13\x6DYou obtained the \x05\x41Goron's Ruby\x05\x40!\x01This is the Spiritual Stone of \x01Fire passed down by the Gorons!",
     0x0082: "\x08\x13\x6EYou obtained \x05\x43Zora's Sapphire\x05\x40!\x01This is the Spiritual Stone of\x01Water passed down by the\x01Zoras!",
-    0x0090: "\x08\x13\x00Now you can pick up \x01many \x05\x41Deku Sticks\x05\x40!\x01You can carry up to \x05\x4620\x05\x40 of them!",
-    0x0091: "\x08\x13\x00You can now pick up \x01even more \x05\x41Deku Sticks\x05\x40!\x01You can carry up to \x05\x4630\x05\x40 of them!",
-    0x0097: "\x08\x13\x20You caught a \x05\x41Poe \x05\x40in a bottle!\x01Something good might happen!",
+    0x0090: "\x08\x13\x00You got a \x05\x41Deku Stick\x01Capacity Upgrade\x05\x40!\x01You can carry up to \x05\x4620\x05\x40 of them!",
+    0x0091: "\x08\x13\x00You got a \x05\x41Deku Stick\x01Capacity Upgrade\x05\x40!\x01You can carry up to \x05\x4630\x05\x40 of them!",
+    0x0097: "\x08\x13\x20You got a \x05\x41Poe \x05\x40in a bottle!\x01Something good might happen!",
     0x0098: "\x08\x13\x1AYou got \x05\x41Lon Lon Milk\x05\x40!\x01This milk is very nutritious!\x01There are two drinks in it.",
     0x0099: "\x08\x13\x1BYou found \x05\x41Ruto's Letter\x05\x40 in a\x01bottle! Show it to King Zora.",
     0x9099: "\x08\x13\x1BYou found \x05\x41a letter in a bottle\x05\x40!\x01You remove the letter from the\x01bottle, freeing it for other uses.",
     0x90A0: "\x08\x13\x15You got a \x05\x41Red Potion\x05\x40!\x01It will restore your health",
     0x90A1: "\x08\x13\x16You got a \x05\x42Green Potion\x05\x40!\x01It will restore your magic.",
     0x90A2: "\x08\x13\x17You got a \x05\x43Blue Potion\x05\x40!\x01It will recover your health\x01and magic.",
-    0x90A3: "\x08\x13\x18You caught a \x05\x41Fairy\x05\x40 in a bottle!\x01It will revive you\x01the moment you run out of life \x01energy.",
+    0x90A3: "\x08\x13\x18You got a \x05\x41Fairy\x05\x40 in a bottle!\x01It will revive you\x01the moment you run out of life \x01energy.",
     0x90A4: "\x08\x13\x19You got a \x05\x41Fish\x05\x40!\x01It looks so fresh and\x01delicious!",
-    0x90A5: "\x08\x13\x1CYou put a \x05\x44Blue Fire\x05\x40\x01into the bottle!\x01This is a cool flame you can\x01use on red ice.",
-    0x90A6: "\x08\x13\x1DYou put a \x05\x41Bug \x05\x40in the bottle!\x01This kind of bug prefers to\x01live in small holes in the ground.",
-    0x90A7: "\x08\x13\x1EYou put a \x05\x41Big Poe \x05\x40in a bottle!\x01Let's sell it at the \x05\x41Ghost Shop\x05\x40!\x01Something good might happen!",
-    0x90A8: "\x08\x13\x20You caught a \x05\x41Poe \x05\x40in a bottle!\x01Something good might happen!",
+    0x90A5: "\x08\x13\x1CYou got \x05\x44Blue Fire\x05\x40\x01in a bottle!\x01This is a cool flame you can\x01use on red ice.",
+    0x90A6: "\x08\x13\x1DYou got a \x05\x41Bug \x05\x40in a bottle!\x01This kind of bug prefers to\x01live in small holes in the ground.",
+    0x90A7: "\x08\x13\x1EYou got a \x05\x41Big Poe \x05\x40in a bottle!\x01Let's sell it at the \x05\x41Ghost Shop\x05\x40!\x01Something good might happen!",
+    0x90A8: "\x08\x13\x20You got a \x05\x41Poe \x05\x40in a bottle!\x01Something good might happen!",
     0x90A9: "\x08\x13\x02You got \x05\x41Bombs\x05\x40!\x01If you see something\x01suspicious, bomb it!",
     0x90AA: "\x08\x13\x01You got a \x05\x41Deku Nut\x05\x40!",
     0x90AB: "\x08\x13\x09You got \x05\x41Bombchus\x05\x40!",
@@ -254,8 +258,8 @@ ITEM_MESSAGES = {
     0x009A: "\x08\x13\x21You got a \x05\x41Weird Egg\x05\x40!\x01Feels like there's something\x01moving inside!",
     0x9097: "\x08\x13\x2EYou got a \x05\x41Chicken, \x05\x40one\x01of Anju's prized hens! It fits \x01in your pocket.",
     0x00A4: "\x08\x13\x3BYou got the \x05\x42Kokiri Sword\x05\x40!\x01This is a hidden treasure of\x01the Kokiri.",
-    0x00A7: "\x08\x13\x01Now you can carry\x01many \x05\x41Deku Nuts\x05\x40!\x01You can hold up to \x05\x4630\x05\x40 nuts!",
-    0x00A8: "\x08\x13\x01You can now carry even\x01more \x05\x41Deku Nuts\x05\x40! You can carry\x01up to \x05\x4640\x05\x41 \x05\x40nuts!",
+    0x00A7: "\x08\x13\x01You got a \x05\x41Deku Nut\x01Capacity Upgrade\x05\x40!\x01You can hold up to \x05\x4630\x05\x40 nuts!",
+    0x00A8: "\x08\x13\x01You got a \x05\x41Deku Nut\x01Capacity Upgrade\x05\x40!\x01You can carry up to \x05\x4640\x05\x40 nuts!",
     0x00AD: "\x08\x13\x05You got \x05\x41Din's Fire\x05\x40!\x01Its fireball engulfs everything!",
     0x00AE: "\x08\x13\x0DYou got \x05\x42Farore's Wind\x05\x40!\x01This is warp magic you can use!",
     0x00AF: "\x08\x13\x13You got \x05\x43Nayru's Love\x05\x40!\x01Cast this to create a powerful\x01protective barrier.",
@@ -279,15 +283,15 @@ ITEM_MESSAGES = {
     0x00D6: "\x08You've learned the \x05\x45Song of Storms\x05\x40!",
     0x00DC: "\x08\x13\x58You got \x05\x41Deku Seeds\x05\x40!\x01Use these as bullets\x01for your Slingshot.",
     0x00DD: "\x08You mastered the secret sword\x01technique of the \x05\x41Spin Attack\x05\x40!",
-    0x00E4: "\x08You can now use \x05\x42Magic\x05\x40!",
+    0x00E4: "\x08You got a \x05\x42Magic Meter\x05\x40!",
     0x00E5: "\x08Your \x05\x44defensive power\x05\x40 is enhanced!",
     0x00E6: "\x08You got a \x05\x46bundle of arrows\x05\x40!",
-    0x00E8: "\x08Your magic power has been \x01enhanced! Now you have twice\x01as much \x05\x41Magic Power\x05\x40!",
-    0x00E9: "\x08Your defensive power has been \x01enhanced! Damage inflicted by \x01enemies will be \x05\x41reduced by half\x05\x40.",
+    0x00E8: "\x08You got \x05\x41Double Magic\x05\x40!\x01Now you have twice\x01as much \x05\x41Magic Power\x05\x40!",
+    0x00E9: "\x08You got \x05\x41Double Defense\x05\x40!\x01Damage inflicted by \x01enemies will be \x05\x41reduced by half\x05\x40.",
     0x00F0: "\x08You got a \x05\x41Red Rupee\x05\x40!\x01That's \x05\x41twenty Rupees\x05\x40!",
     0x00F1: "\x08You got a \x05\x45Purple Rupee\x05\x40!\x01That's \x05\x45fifty Rupees\x05\x40!",
     0x00F2: "\x08You got a \x05\x46Huge Rupee\x05\x40!\x01This Rupee is worth a whopping\x01\x05\x46two hundred Rupees\x05\x40!",
-    0x00F9: "\x08\x13\x1EYou put a \x05\x41Big Poe \x05\x40in a bottle!\x01Let's sell it at the \x05\x41Ghost Shop\x05\x40!\x01Something good might happen!",
+    0x00F9: "\x08\x13\x1EYou got a \x05\x41Big Poe \x05\x40in a bottle!\x01Let's sell it at the \x05\x41Ghost Shop\x05\x40!\x01Something good might happen!",
     0x00FA: "\x08\x06\x49\x05\x41WINNER\x05\x40!\x04\x08\x13\x73You got a \x05\x41Piece of Heart\x05\x40!\x01Collect four pieces total to get\x01another Heart Container.",
     0x00FB: "\x08\x06\x49\x05\x41WINNER\x05\x40!\x04\x08\x13\x73You got a \x05\x41Piece of Heart\x05\x40!\x01So far, you've collected two \x01pieces.",
     0x00FC: "\x08\x06\x49\x05\x41WINNER\x05\x40!\x04\x08\x13\x73You got a \x05\x41Piece of Heart\x05\x40!\x01Now you've collected three \x01pieces!",
@@ -297,8 +301,8 @@ ITEM_MESSAGES = {
     0x9003: "\x08You found a piece of the \x05\x41Triforce\x05\x40!",
     0x9019: "\x08\x13\x09You found a \x05\x41Bombchu Bag\x05\x40!\x01It has some \x05\x41Bombchus\x05\x40 inside!\x01Find more in tall grass.",
     0x901A: "\x08You can't buy Bombchus without a\x01\x05\x41Bombchu Bag\x05\x40!",
-    0x90B6: "\x08You found \xF0\xFE \x05\x46\xF0\xFF\x05\x40\x01for \x05\x42\xF2\x05\x40!",
-    0x90B7: "\x08You found \xF0\xFE \xF0\xFF\x01for \x05\x42\xF2\x05\x40!",
+    0x90B6: "\x08You got \xF0\xFE \x05\x46\xF0\xFF\x05\x40\x01for \x05\x42\xF2\x05\x40!",
+    0x90B7: "\x08You got \xF0\xFE \xF0\xFF\x01for \x05\x42\xF2\x05\x40!",
 
     0x00F4: "\x08\x05\x44Loser!\x05\x40\x04\x08You found only \x05\x42one Rupee\x05\x40.\x01You are not very lucky.",
     0x00F5: "\x08\x05\x44Loser!\x05\x40\x04\x08You found \x05\x43five Rupees\x05\x40.\x01Even so, you are not very lucky.",
@@ -1063,21 +1067,6 @@ def move_shop_item_messages(messages, shop_items):
             shop.purchase_message |= 0x8000
 
 def make_player_message(text):
-    player_text = '\x05\x42\x0F\x05\x40'
-    pronoun_mapping = {
-        "You have ": player_text + " ",
-        "You are ":  player_text + " is ",
-        "You've ":   player_text + " ",
-        "Your ":     player_text + "'s ",
-        "You ":      player_text + " ",
-
-        "you have ": player_text + " ",
-        "you are ":  player_text + " is ",
-        "you've ":   player_text + " ",
-        "your ":     player_text + "'s ",
-        "you ":      player_text + " ",
-    }
-
     verb_mapping = {
         'obtained ': 'got ',
         'received ': 'got ',
@@ -1088,24 +1077,24 @@ def make_player_message(text):
 
     new_text = text
 
-    # Replace the first instance of a 'You' with the player name
-    lower_text = text.lower()
-    you_index = lower_text.find('you')
-    if you_index != -1:
-        for find_text, replace_text in pronoun_mapping.items():
-            # if the index do not match, then it is not the first 'You'
-            if text.find(find_text) == you_index:
-                new_text = new_text.replace(find_text, replace_text, 1)
-                break
-
-    # because names are longer, we shorten the verbs to they fit in the textboxes better
+    # APWorld Change: Use a consistent acquisition phrase while keeping the finder as "You".
     for find_text, replace_text in verb_mapping.items():
         new_text = new_text.replace(find_text, replace_text)
+    new_text = new_text.replace('You have got ', 'You got ').replace("You've got ", 'You got ')
 
-    wrapped_text = line_wrap(new_text, False, False, False)
-    if wrapped_text != new_text:
-        new_text = line_wrap(new_text, True, False, False)
+    acquisition = 'You got '
+    if acquisition in new_text:
+        # F7 adds the recipient only when the item belongs to another player.
+        prefix, item_text = new_text.split(acquisition, 1)
+        codes = parse_control_codes(item_text)
+        for index, code in enumerate(codes):
+            if code.code in (ord('!'), ord('.')):
+                codes[index:index] = parse_control_codes('\x05\x42\xF7\x05\x40')
+                break
+        new_text = prefix + acquisition + ''.join(code.get_string() for code in codes)
 
+    # AP names and recipient suffixes are expanded and wrapped at runtime,
+    # using the actual recipient name (including updates from the client).
     return new_text
 
 
@@ -1114,7 +1103,8 @@ def make_player_message(text):
 def update_item_messages(messages, player_count):
     new_item_messages = {**ITEM_MESSAGES, **IMPORTANT_ITEM_MESSAGES}
     for id, text in new_item_messages.items():
-        if player_count > 1:
+        # Cross-game messages already identify the recipient after "for".
+        if player_count > 1 and id not in (0x90B6, 0x90B7):
             update_message_by_id(messages, id, make_player_message(text), 0x23)
         else:
             update_message_by_id(messages, id, text, 0x23)

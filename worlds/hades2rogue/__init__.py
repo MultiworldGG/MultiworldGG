@@ -4,7 +4,7 @@ import string
 
 from BaseClasses import CollectionState, Entrance, Item, ItemClassification, MultiWorld, Region, \
     Tutorial
-from .Items import item_table, item_table_weapons, \
+from .Items import item_table, item_table_weapons, item_table_traps, \
     item_table_arcana, item_table_arcana_progressive, \
     item_table_keepsakes_randomized, item_table_keepsakes_progressive_per, \
     item_table_familiars_randomized, item_table_familiars_progressive_per, WEAPON_SHORT_NAMES, ASPECT_MAX_RANK, \
@@ -24,7 +24,7 @@ from .Locations import setup_location_table_with_settings, give_all_locations_ta
     combine_active, compute_enemysanity_shuffle_map, serialize_shuffle_map, \
     parse_shuffle_map, _repair_shuffle_map, enemy_zone_placement, compute_miniboss_room_map, \
     combined_relabel, DREAM_REGIONS_AVAILABLE_ZJ, \
-    DREAM_REGIONS_AVAILABLE_NO_ZJ
+    DREAM_REGIONS_AVAILABLE_NO_ZJ, dream_zj_biomes
 from .Options import Hades2Options, hades2_option_groups, hades2_option_presets
 from .Regions import create_regions
 from .Rules import set_rules
@@ -105,7 +105,7 @@ class Hades2World(World):
     # mod's manifest.json version_number -- and bump them on any breaking datapackage or
     # protocol change, or the mismatch warning can never fire (it sat at "0.1" for seven
     # releases, spanning a breaking keepsake-id relocation).
-    mod_version = "0.10.0"
+    mod_version = "0.11.0"
 
     item_name_to_id = {name: data.code for name, data in item_table.items() if data.code is not None}
     location_name_to_id = give_all_locations_table()
@@ -690,7 +690,8 @@ class Hades2World(World):
         # (Items.item_table_extras) -- Rules._set_victory_rules gates both the Zagreus goal
         # event and Zagreus Defeated on holding a share of these, so it does gate location
         # reachability; no prog.add needed here since Items.py already marks it True.
-        if goal_includes(self.options, "zagreus") and self.options.zagreus_encounter_mode.value == 1:
+        # Empowered Final Challenge (3) empowers him too, so it gets the same items.
+        if goal_includes(self.options, "zagreus") and self.options.zagreus_encounter_mode.value in (1, 3):
             pool += ["Progressive Zagreus Weaken"] * int(self.options.zagreus_weaken_tiers)
 
         # Vow removal items (reverse_vow): one per starting level. These gate the vow-weight
@@ -731,10 +732,13 @@ class Hades2World(World):
         # keepsake-gated sets. Each grants its world-upgrade in-game; no check locations.
         # A Dream Dive deals the real Underworld and Surface biomes into its regions, so for
         # incantations Dream counts as both (mirrored by the mod's incantation_route_active).
+        # It deals Zagreus' Journey's biomes too when that's included (dream_zj_biomes), so
+        # then it counts as Nightmare as well.
         dream_on = DREAM in self.active_routes
         underworld_on = UNDERWORLD in self.active_routes or dream_on
         surface_on = SURFACE in self.active_routes or dream_on
-        nightmare_on = NIGHTMARE in self.active_routes
+        nightmare_on = NIGHTMARE in self.active_routes \
+            or (dream_on and dream_zj_biomes(self.options))
         incantations = list(incantation_always)
         if underworld_on:
             incantations += incantation_underworld
@@ -774,7 +778,7 @@ class Hades2World(World):
         if self.options.lock_routes:
             for route in self.active_routes:
                 if route == DREAM:
-                    regions_available = DREAM_REGIONS_AVAILABLE_ZJ if NIGHTMARE in self.active_routes \
+                    regions_available = DREAM_REGIONS_AVAILABLE_ZJ if dream_zj_biomes(self.options) \
                         else DREAM_REGIONS_AVAILABLE_NO_ZJ
                     dream_n = min(int(self.options.dream_region_count.value), regions_available)
                     pool += ["Progressive Dream"] * ((dream_n - 1) + self.route_offsets[DREAM])
@@ -854,7 +858,26 @@ class Hades2World(World):
         unconditionally, so a YAML with Nectar at 0% still got Nectar.)"""
         return next((n for n in self.FILLER_ABSORBER_ORDER if percentages.get(n, 0) > 0), "Nectar")
 
-    def build_filler_pool(self, amount: int) -> list:
+    def trap_roster(self) -> list:
+        """The traps that can fire on this seed. One that never could would only ever turn into
+        the mod's stand-in (Traps.lua FALLBACK)."""
+        unusable = set()
+        # The Anomaly is a detour out of an Underworld or Surface run (Traps.lua Asphodel.can_fire).
+        if not {UNDERWORLD, SURFACE} & set(self.active_routes):
+            unusable.add("Asphodel Trap")
+        # It swaps to another Aspect of the same weapon.
+        if int(self.options.included_aspects) <= 1:
+            unusable.add("Aspect Trap")
+        # Table order, so the same YAML always deals from the same list.
+        enabled = self.options.enabled_traps.value
+        return [name for name in item_table_traps if name in enabled and name not in unusable]
+
+    def build_filler_pool(self, amount: int, traps: bool = True) -> list:
+        # Traps come off the top; the rest splits by the filler percentages exactly as before,
+        # so trap_percentage 0 builds the same pool it always did.
+        trap_names = self.trap_roster() if traps else []
+        trap_count = int(amount * int(self.options.trap_percentage) / 100) if trap_names else 0
+        amount -= trap_count
         percentages = self._filler_percentages()
         absorber = self._filler_absorber(percentages)
         total_percentage = sum(percentages.values())
@@ -872,6 +895,13 @@ class Hades2World(World):
             allocated += count
         for _ in range(amount - allocated):
             filler.append(Hades2Item(absorber, self.player))
+        if trap_count:
+            # Dealt round the roster so the kinds stay even, from a random start: in table order
+            # a seed with four traps always held the table's first four. Only touches the RNG
+            # when there are traps to deal.
+            self.random.shuffle(trap_names)
+        for i in range(trap_count):
+            filler.append(Hades2Item(trap_names[i % len(trap_names)], self.player))
         return filler
 
     # Fewer open checks than this at the very start and the fill tends to bury the few of them
@@ -887,6 +917,7 @@ class Hades2World(World):
 
     def pre_fill(self) -> None:
         self._grant_starting_items()
+        self._check_dream_capacity(getattr(self, "_dream_region_cleared", []))
 
     def _grant_starting_items(self) -> None:
         """Hand out free starting items (user ruling 10/1) when the seed has too few open checks
@@ -987,7 +1018,7 @@ class Hades2World(World):
         for item in granted:
             mw.itempool.remove(item)
             mw.push_precollected(item)
-        mw.itempool += self.build_filler_pool(len(granted))
+        mw.itempool += self.build_filler_pool(len(granted), traps=False)
         logging.info("Hades 2 (player %s): %d free starting item(s), too few checks open at the "
                      "start to hold them: %s", self.player_name, len(granted),
                      ", ".join(item.name for item in granted))
@@ -999,11 +1030,117 @@ class Hades2World(World):
 
     def set_rules(self) -> None:
         starting_weapon = INITIAL_WEAPON_BY_VALUE.get(self.options.initial_weapon.value)
-        set_rules(self.multiworld, self.player, self.options, self.route_offsets,
-                  self.surface_access_via_progressive, self.nightmare_access_via_progressive,
-                  starting_weapon, self.starting_aspect_index,
-                  self.dream_access_via_progressive,
-                  self.enemy_zone_placement)
+        dream_region_cleared = set_rules(self.multiworld, self.player, self.options, self.route_offsets,
+                                         self.surface_access_via_progressive, self.nightmare_access_via_progressive,
+                                         starting_weapon, self.starting_aspect_index,
+                                         self.dream_access_via_progressive,
+                                         self.enemy_zone_placement)
+        self._dream_region_cleared = dream_region_cleared
+
+    def _check_dream_capacity(self, region_cleared: list) -> None:
+        """Reject a seed whose Dream regions can't hold the items it takes to clear them, and
+        give the fill a head start on one that only just can (_prefill_behind_dream_clears).
+        Region i of n is cleared at i/n of every resource pool (Rules._set_dream_rules), and
+        everything behind that clear -- the region's rooms past the guaranteed count, in every
+        multiplier slot, and all later regions -- can't hold an item the clear itself needs. A
+        dive with one or two regions keeps most of its checks back there, so the item and
+        location counts can match (create_items) on a seed that still can't be filled.
+        Solo seeds only, like _grant_starting_items (which runs first: what it gave away no
+        longer needs a place): other players' checks can hold the items."""
+        mw, player = self.multiworld, self.player
+        if not region_cleared or mw.players > 1 or hasattr(mw, "generation_is_fake"):
+            return
+        from .Locations import DREAM_ROOM_GUARANTEED_PER_REGION
+
+        def past_guaranteed(name: str) -> bool:
+            at = name.find(" Room ")
+            digits = name[at + 6:at + 8]
+            return at >= 0 and digits.isdigit() and int(digits) > DREAM_ROOM_GUARANTEED_PER_REGION
+
+        progression = [item for item in mw.itempool if item.player == player and item.advancement]
+        everything = CollectionState(mw)
+        for item in progression:
+            everything.collect(item, True)
+        zones = [[name for name, loc_id in locs.items() if loc_id is not None]
+                 for locs in self.dream_zone_tables.values()]     # this player's own (create_regions)
+        total = sum(1 for loc in mw.get_locations(player) if loc.item is None)
+        behind_clear = []       # per region: the checks its clear opens
+        tight = False
+        for i, cleared in enumerate(region_cleared):
+            # The fewest items the clear needs: drop every one it can do without.
+            state = everything.copy()
+            needed = 0
+            for item in progression:
+                state.remove(item)
+                if not cleared(state):
+                    state.collect(item, True)
+                    needed += 1
+            behind = [name for name in zones[i] if past_guaranteed(name)] \
+                + [name for names in zones[i + 1:] for name in names]
+            room = total - len(behind)
+            # Minimal accessibility: only three quarters of it. That fill stops caring where an
+            # item lands once the goal is in reach, and the seeds that sat above this (0.78 and
+            # up, measured 10/7 on Dream-only seeds) ran out of spots even with the head start.
+            if self.options.accessibility.value == self.options.accessibility.option_minimal:
+                room = room * 3 // 4
+            if needed > room:
+                from Options import OptionError
+                raise OptionError(
+                    f"Hades 2 Rogue ({self.player_name}): {needed} progression "
+                    f"items but only {room} locations to hold them. Raise score_rewards_amount "
+                    "(point_based), use a location system or route selection with more checks, "
+                    "or turn off some sanities.")
+            behind_clear.append(behind)
+            tight = tight or needed * self.DREAM_TIGHT_DEN > room * self.DREAM_TIGHT_NUM
+        if tight:
+            self._prefill_behind_dream_clears(behind_clear)
+
+    # A Dream region's clear counts as tight when it needs more than this share (2/5) of the
+    # checks open before it. Measured 10/7 on 100 Dream-only seeds: nearly every seed that filled
+    # on its own sat under 0.55, the ones that ran out of spots at 0.78 and up.
+    DREAM_TIGHT_NUM, DREAM_TIGHT_DEN = 2, 5
+
+    def _prefill_behind_dream_clears(self, behind_clear: list) -> None:
+        """Place this seed's progression before the main fill does, deepest check first.
+        The fill drops progression into any open check, so the few checks open before a Dream
+        region's clear fill up with items that could have gone anywhere, and the items the clear
+        needs are left with no spot ("No more spots to place N items"). fill_restrictive takes the
+        first check in the list an item is allowed in, so the list is ordered by how much has to
+        be cleared to reach a check: behind the last clear first, then the one before it, ...,
+        then the checks before any clear that still need an item of their own, and the ones open
+        from a cold start last of all. It won't put an item behind a clear that needs it, so the
+        items nothing is waiting on sink to the back and the near checks stay free for the rest.
+        One call rather than one per clear: a later placement can then still swap an earlier one
+        out. All or nothing: when anything doesn't fit, every placement is undone and the main fill
+        starts clean. 11/2, 300 Dream-start seeds: the head start fired on 31, filled 29 completely
+        (all generated), and left items over on 2. Both of those then failed ("No more spots": e.g.
+        a last Progressive Surface whose only open checks sat behind it), and one of them fills
+        without the head start."""
+        from BaseClasses import LocationProgressType
+        from Fill import fill_restrictive
+        mw, player = self.multiworld, self.player
+        depth = {}      # check name -> how many clears it sits behind
+        for behind in behind_clear:
+            for name in behind:
+                depth[name] = depth.get(name, 0) + 1
+        cold = CollectionState(mw)
+        cold.sweep_for_advancements([loc for loc in mw.get_locations(player) if loc.item is not None])
+        targets = sorted((loc for loc in mw.get_locations(player) if loc.item is None
+                          and loc.progress_type != LocationProgressType.EXCLUDED),
+                         key=lambda loc: loc.name)
+        self.random.shuffle(targets)
+        targets.sort(key=lambda loc: (-depth.get(loc.name, 0), loc.can_reach(cold)))
+        items = [item for item in mw.itempool if item.player == player and item.advancement]
+        placing = list(items)       # fill_restrictive pops from `items`
+        fill_restrictive(mw, CollectionState(mw), targets, items, single_player_placement=True,
+                         allow_partial=True, name="Hades 2 Dream")
+        if any(item.location is None for item in placing):
+            for item in placing:
+                if item.location is not None:
+                    item.location.item = None
+                    item.location = None
+            return
+        mw.itempool[:] = [item for item in mw.itempool if item.location is None]
 
     def create_item(self, name: str) -> Item:
         item = Hades2Item(name, self.player)
@@ -1031,10 +1168,11 @@ class Hades2World(World):
             "included_weapons", "weapon_amount", "initial_weapon", "included_aspects", "location_system",
             "score_rewards_amount", "npc_locations",
             "grasp_intervals", "grasp_count", "arcanasanity",
-            "aspectsanity", "keepsakesanity", "enemysanity", "include_minibosses", "petsanity",
-            "helper_room_sanity", "combat_helper_sanity", "godsanity",
+            "aspectsanity", "keepsakesanity", "keepsake_items_only", "enemysanity",
+            "include_minibosses", "petsanity",
+            "helper_room_sanity", "combat_helper_sanity", "godsanity", "unlimited_gods",
             "starting_npc_gifts",
-            "reverse_vow", "reverse_rivals",
+            "reverse_vow", "reverse_rivals", "minimum_fear",
             "vow_pain", "vow_grit", "vow_wards", "vow_frenzy", "vow_hordes",
             "vow_menace", "vow_return", "vow_fangs", "vow_scars", "vow_debt",
             "vow_shadow", "vow_forfeit", "vow_time", "vow_void", "vow_hubris",
@@ -1054,6 +1192,7 @@ class Hades2World(World):
             "starting_gold_value", "starting_gold_percentage",
             "starting_armor_value", "starting_armor_percentage",
             "rarity_increase_percentage", "major_finds_percentage",  # "help_odds_percentage" REMOVED: stubbed out
+            "trap_percentage",
             "daedalus_upgrade", "progressive_boon_level",
             "deathlink", "deathlink_percent", "deathlink_amnesty")
         # Which of the starting weapon's 4 Aspects is already active at rank 1 (random

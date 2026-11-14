@@ -79,64 +79,6 @@ class ALttPRCrystalPath:
         return set(self.path).issubset(set(other.path))
 
 
-dungeon_portals = {
-    "Hyrule Castle": ["Hyrule Castle South Portal", "Hyrule Castle West Portal", "Hyrule Castle East Portal", "Sanctuary Portal", "Sewer Drop"],
-    "Eastern Palace": ["Eastern Portal"],
-    "Desert Palace": ["Desert South Portal", "Desert East Portal", "Desert West Portal", "Desert Back Portal"],
-    "Tower of Hera": ["Hera Portal"],
-    "Agahnims Tower": ["Agahnims Tower Portal"],
-    "Palace of Darkness": ["Palace of Darkness Portal"],
-    "Swamp Palace": ["Swamp Portal"],
-    "Skull Woods": ["Skull 1 Portal", "Skull 2 West Portal", "Skull 2 East Portal", "Skull 3 Portal", "Skull Pinball",
-                    "Skull Pot Circle", "Skull Left Drop", "Skull Back Drop"],
-    "Thieves Town": ["Thieves Town Portal"],
-    "Ice Palace": ["Ice Portal"],
-    "Misery Mire": ["Mire Portal"],
-    "Turtle Rock": ["Turtle Rock Main Portal", "Turtle Rock Lazy Eyes Portal", "Turtle Rock Chest Portal", "Turtle Rock Eye Bridge Portal"],
-    "Ganons Tower": ["Ganons Tower Portal"],
-}
-
-glitched_only_entrances = [
-    "Ice Lake Iceberg Bomb Jump",
-]
-
-# Regions that can only be reached in glitched modes
-glitched_only_regions = [
-    "Central Cliffs",
-    "Chris Houlihan Room",
-    "Dark Central Cliffs",
-    "Darkness Cliff",
-    "Desert Northern Cliffs",
-    "Eastern Cliff",
-    "Hyrule Castle Water",
-    "Mire Northern Cliffs",
-    "Pyramid Water",
-]
-
-glitched_or_inverted_only_regions = [
-    "Ice Lake Iceberg",
-]
-
-inverted_only_regions = [
-    "Spiral Mimic Ledge Extend",
-]
-
-unreachable_entrances = [
-    "PoD Arena Right to Ranged Crystal",
-    "PoD Arena Ledge to Ranged Crystal",
-    "GT Double Switch Entry to Ranged Switches",
-    "GT Double Switch Pot Corners to Ranged Switches",
-]
-
-# ??????????
-unreachable_regions = [
-    "PoD Arena Ledge - Ranged Crystal",
-    "PoD Arena Right - Ranged Crystal",
-    "GT Double Switch Entry - Ranged Switches",
-    "GT Double Switch Pot Corners - Ranged Switches",
-]
-
-
 def create_and_connect_regions(world: ALttPRWorld) -> None:
     # First define every region, then loop through a second time to connect them.
     # Otherwise we're trying to connect to regions that don't exist yet.
@@ -512,7 +454,7 @@ def get_event_locations(world: ALttPRWorld):
         event_locations["Murahdahla"] = "Triforce"
     if goal == "pedestal" or goal == "trinity":
         event_locations["Master Sword Pedestal"] = "Triforce"
-    if world.options.world_mode.current_key != "inverted" and not world.options.pre_activated_flute.value:
+    if world.options.world_mode.current_key != "inverted" and not world.options.pre_activated_flute.value and not world.options.pseudoflute.value:
         event_locations["Flute Activation"] = "Ocarina (Activated)"
 
     return event_locations
@@ -552,6 +494,10 @@ def init_lookups():
             if sprite.sub_type == 0x07:  # overlord
                 index_adj += 1
                 continue
+            elif not sprite.region:
+                # These are all non-enemy sprites, like pull switches, NPCs, and bosses
+                continue
+
             if (super_tile, index) in key_drop_data:
                 loc_name = key_drop_data[(super_tile, index)]
                 location_id = PotShuffle.key_drop_data[loc_name][1][0]
@@ -565,3 +511,269 @@ def init_lookups():
             lookup_id_to_name[location_id] = loc_name
 
 init_lookups()
+
+
+dungeon_portals = {
+    "Hyrule Castle": ["Hyrule Castle South Portal", "Hyrule Castle West Portal", "Hyrule Castle East Portal", "Sanctuary Portal", "Sewer Drop"],
+    "Eastern Palace": ["Eastern Portal"],
+    "Desert Palace": ["Desert South Portal", "Desert East Portal", "Desert West Portal", "Desert Back Portal"],
+    "Tower of Hera": ["Hera Portal"],
+    "Agahnims Tower": ["Agahnims Tower Portal"],
+    "Palace of Darkness": ["Palace of Darkness Portal"],
+    "Swamp Palace": ["Swamp Portal"],
+    "Skull Woods": ["Skull 1 Portal", "Skull 2 West Portal", "Skull 2 East Portal", "Skull 3 Portal", "Skull Pinball",
+                    "Skull Pot Circle", "Skull Left Drop", "Skull Back Drop"],
+    "Thieves Town": ["Thieves Town Portal"],
+    "Ice Palace": ["Ice Portal"],
+    "Misery Mire": ["Mire Portal"],
+    "Turtle Rock": ["Turtle Rock Main Portal", "Turtle Rock Lazy Eyes Portal", "Turtle Rock Chest Portal", "Turtle Rock Eye Bridge Portal"],
+    "Ganons Tower": ["Ganons Tower Portal"],
+}
+
+dungeon_portals_to_names = {
+    "Hyrule Castle South Portal": "Hyrule Castle Entrance (South)",
+    "Hyrule Castle West Portal": "Hyrule Castle Entrance (West)",
+    "Hyrule Castle East Portal": "Hyrule Castle Entrance (East)",
+    "Sanctuary Portal": "Sanctuary",
+    "Eastern Portal": "Eastern Palace",
+    "Desert South Portal": "Desert Palace Entrance (South)",
+    "Desert East Portal": "Desert Palace Entrance (East)",
+    "Desert West Portal": "Desert Palace Entrance (West)",
+    "Desert Back Portal": "Desert Palace Entrance (North)",
+    "Hera Portal": "Tower of Hera",
+    "Agahnims Tower Portal": "Agahnims Tower",
+    "Palace of Darkness Portal": "Palace of Darkness",
+    "Swamp Portal": "Swamp Palace",
+    "Skull 1 Portal": "Skull Woods First Section",
+    "Skull 2 West Portal": "Skull Woods Second Section (West)",
+    "Skull 2 East Portal": "Skull Woods Second Section (East)",
+    "Skull 3 Portal": "Skull Woods Final Section",
+    "Skull Pinball": "Skull Pinball",
+    "Skull Pot Circle": "Skull Pot Circle",
+    "Skull Left Drop": "Skull Left Drop",
+    "Skull Back Drop": "Skull Back Drop",
+    "Thieves Town Portal": "Thieves Town",
+    "Ice Portal": "Ice Palace",
+    "Mire Portal": "Misery Mire",
+    "Turtle Rock Main Portal": "Turtle Rock Main",
+    "Turtle Rock Lazy Eyes Portal": "Turtle Rock Lazy Eyes",
+    "Turtle Rock Chest Portal": "Turtle Rock Chest",
+    "Turtle Rock Eye Bridge Portal": "Turtle Rock Eye Bridge",
+    "Ganons Tower Portal": "Ganons Tower",
+}
+
+dungeon_entrances = [
+    'Hyrule Castle Entrance (South)',
+    'Hyrule Castle Entrance (West)',
+    'Hyrule Castle Entrance (East)',
+    'Sanctuary',
+    'Sanctuary Grave',
+    'Eastern Palace',
+    'Desert Palace Entrance (South)',
+    'Desert Palace Entrance (East)',
+    'Desert Palace Entrance (West)',
+    'Desert Palace Entrance (North)',
+    'Tower of Hera',
+    'Agahnims Tower',
+    'Palace of Darkness',
+    'Swamp Palace',
+    'Skull Woods First Section Door',
+    'Skull Woods Second Section Door (East)',
+    'Skull Woods Second Section Door (West)',
+    'Skull Woods Final Section',
+    'Skull Woods First Section Hole (East)',
+    'Skull Woods First Section Hole (West)',
+    'Skull Woods First Section Hole (North)',
+    'Skull Woods Second Section Hole',
+    'Thieves Town',
+    'Ice Palace',
+    'Misery Mire',
+    'Turtle Rock',
+    'Dark Death Mountain Ledge (West)',
+    'Dark Death Mountain Ledge (East)',
+    'Turtle Rock Isolated Ledge Entrance',
+    'Ganons Tower',
+]
+
+glitched_only_entrances = [
+    "Ice Lake Iceberg Bomb Jump",
+]
+
+# Regions that can only be reached in glitched modes
+glitched_only_regions = [
+    "Central Cliffs",
+    "Chris Houlihan Room",
+    "Dark Central Cliffs",
+    "Darkness Cliff",
+    "Desert Northern Cliffs",
+    "Eastern Cliff",
+    "Hyrule Castle Water",
+    "Mire Northern Cliffs",
+    "Pyramid Water",
+]
+
+glitched_or_inverted_only_regions = [
+    "Ice Lake Iceberg",
+]
+
+inverted_only_regions = [
+    "Spiral Mimic Ledge Extend",
+]
+
+unreachable_entrances = [
+    "PoD Arena Right to Ranged Crystal",
+    "PoD Arena Ledge to Ranged Crystal",
+    "GT Double Switch Entry to Ranged Switches",
+    "GT Double Switch Pot Corners to Ranged Switches",
+]
+
+# ??????????
+unreachable_regions = [
+    "PoD Arena Ledge - Ranged Crystal",
+    "PoD Arena Right - Ranged Crystal",
+    "GT Double Switch Entry - Ranged Switches",
+    "GT Double Switch Pot Corners - Ranged Switches",
+]
+
+entrance_list = [
+    'Lost Woods Gamble',
+    'Lost Woods Hideout Drop',
+    'Lost Woods Hideout Stump',
+    'Lumberjack House',
+    'Lumberjack Tree Tree',
+    'Lumberjack Tree Cave',
+    'Death Mountain Return Cave (West)',
+    'Old Man Cave (West)',
+    'Death Mountain Return Cave (East)',
+    'Old Man Cave (East)',
+    'Spectacle Rock Cave',
+    'Spectacle Rock Cave Peak',
+    'Spectacle Rock Cave (Bottom)',
+    'Old Man House (Bottom)',
+    'Old Man House (Top)',
+    'Tower of Hera',
+    'Spiral Cave',
+    'Spiral Cave (Bottom)',
+    'Mimic Cave',
+    'Fairy Ascension Cave (Top)',
+    'Fairy Ascension Cave (Bottom)',
+    'Hookshot Fairy',
+    'Paradox Cave (Top)',
+    'Paradox Cave (Middle)',
+    'Paradox Cave (Bottom)',
+    'Waterfall of Wishing',
+    'Fortune Teller (Light)',
+    'Bonk Rock Cave',
+    'Sanctuary',
+    'Sanctuary Grave',
+    'Graveyard Cave',
+    'Kings Grave',
+    'North Fairy Cave Drop',
+    'North Fairy Cave',
+    'Potion Shop',
+    'Kakariko Well Drop',
+    'Kakariko Well Cave',
+    'Blinds Hideout',
+    'Elder House (West)',
+    'Elder House (East)',
+    'Snitch Lady (West)',
+    'Snitch Lady (East)',
+    'Chicken House',
+    'Sick Kids House',
+    'Bush Covered House',
+    'Light World Bomb Hut',
+    'Kakariko Shop',
+    'Tavern North',
+    'Tavern (Front)',
+    'Blacksmiths Hut',
+    'Bat Cave Drop',
+    'Bat Cave Cave',
+    'Two Brothers House (West)',
+    'Two Brothers House (East)',
+    'Library',
+    'Kakariko Gamble Game',
+    'Bonk Fairy (Light)',
+    'Links House',
+    'Hyrule Castle Secret Entrance Drop',
+    'Hyrule Castle Secret Entrance Stairs',
+    'Hyrule Castle Entrance (South)',
+    'Hyrule Castle Entrance (West)',
+    'Hyrule Castle Entrance (East)',
+    'Agahnims Tower',
+    'Lake Hylia Fairy',
+    'Sahasrahlas Hut',
+    'Eastern Palace',
+    'Long Fairy Cave',
+    'Checkerboard Cave',
+    'Aginahs Cave',
+    'Desert Palace Entrance (South)',
+    'Desert Palace Entrance (East)',
+    'Desert Palace Entrance (West)',
+    'Desert Palace Entrance (North)',
+    'Cave 45',
+    'Light Hype Fairy',
+    'Lake Hylia Fortune Teller',
+    'Lake Hylia Shop',
+    'Capacity Upgrade',
+    'Mini Moldorm Cave',
+    'Ice Rod Cave',
+    'Good Bee Cave',
+    '20 Rupee Cave',
+    'Desert Fairy',
+    '50 Rupee Cave',
+    'Dam',
+    'Dark Lumberjack Shop',
+    'Bumper Cave (Top)',
+    'Bumper Cave (Bottom)',
+    'Fortune Teller (Dark)',
+    'Dark Sanctuary Hint',
+    'Red Shield Shop',
+    'Skull Woods First Section Door',
+    'Skull Woods Second Section Door (East)',
+    'Skull Woods Second Section Door (West)',
+    'Skull Woods Final Section',
+    'Skull Woods First Section Hole (East)',
+    'Skull Woods First Section Hole (West)',
+    'Skull Woods First Section Hole (North)',
+    'Skull Woods Second Section Hole',
+    'Chest Game',
+    'Thieves Town',
+    'C-Shaped House',
+    'Dark World Shop',
+    'Brewery',
+    'Hammer Peg Cave',
+    'Archery Game',
+    'Bonk Fairy (Dark)',
+    'Big Bomb Shop',
+    'Hype Cave',
+    'Swamp Palace',
+    'Dark Lake Hylia Shop',
+    'Pyramid Hole',
+    'Pyramid Entrance',
+    'Pyramid Fairy',
+    'Dark Lake Hylia Fairy',
+    'Palace of Darkness Hint',
+    'East Dark World Hint',
+    'Palace of Darkness',
+    'Dark Potion Shop',
+    'Dark Lake Hylia Ledge Fairy',
+    'Dark Lake Hylia Ledge Hint',
+    'Dark Lake Hylia Ledge Spike Cave',
+    'Ice Palace',
+    'Mire Shed',
+    'Mire Hint',
+    'Mire Fairy',
+    'Misery Mire',
+    'Dark Death Mountain Fairy',
+    'Spike Cave',
+    'Hookshot Cave Back Entrance',
+    'Hookshot Cave',
+    'Superbunny Cave (Top)',
+    'Superbunny Cave (Bottom)',
+    'Dark Death Mountain Shop',
+    'Turtle Rock',
+    'Dark Death Mountain Ledge (West)',
+    'Dark Death Mountain Ledge (East)',
+    'Turtle Rock Isolated Ledge Entrance',
+    'Ganons Tower',
+]

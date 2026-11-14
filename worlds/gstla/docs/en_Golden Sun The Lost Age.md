@@ -52,3 +52,14 @@ To help reduce issues with inventory management the Psynergy items such as Douse
 Yes, the client and connector are only necessary for sending and receiving items. If you're playing a solo game, you
 don't need to play online unless you want the rest of MultiworldGG's functionality (like hints and auto-tracking). If
 you're playing a multiworld game, the client will sync your game with the server the next time you connect.
+
+## Local Commands
+
+The following commands are only available when using the BizHawkClient with Golden Sun: The Lost Age to play with MultiworldGG.
+
+- `/unchecked_djinn` prints djinn locations that have not yet been checked.
+- `/djinn` prints djinn locations that have been checked.
+- `/goals` print the goals for this seed.
+- `/goals_completed` prints the current progress towards the goal.
+- `/deathlink` toggles deathlink between On and Off.
+- `/deathlink_test` simulates an incoming deathlink. Will wipe your party and only your party.

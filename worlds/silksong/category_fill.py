@@ -192,10 +192,11 @@ def validate_goal(world, all_state):
                    if location.name in world.location_name_to_id and location.locked and location.item is not None
                    and location.item.advancement and not location.can_reach(all_state)]
         detail = (' Blocked fixed rewards: ' + ', '.join(blocked[:8]) + '.') if blocked else ''
+        from .generation_diagnostics import native_failure_detail
         raise OptionError(
             f'Player {world.player}: the goal cannot be reached with all available items under the current mapped logic. '
             'Check vanilla ability settings and fixed reward access before generating again.'
-            + detail
+            + detail + native_failure_detail(world, all_state)
         )
 
 
@@ -226,6 +227,13 @@ def fill_solo_progression(world, progression, locations):
             )
     if any(location.progress_type == LocationProgressType.PRIORITY for location in locations):
         return
+    if world.options.force_naked:
+        from .entrance_randomization import _has_early_item_space
+        if not _has_early_item_space(world):
+            raise OptionError(
+                'Force Naked leaves too few reachable starting checks for the items needed to leave. '
+                'Choose another starting location, enable more check categories or disable Force Naked.'
+            )
     available = [location for location in locations
                  if location.progress_type == LocationProgressType.DEFAULT]
     failure = None

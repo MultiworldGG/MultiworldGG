@@ -74,6 +74,11 @@ class World(object):
         self.fix_palaceofdarkness_exit = {}
         self.fix_trock_exit = {}
         self.shuffle_ganon = shuffle_ganon
+        self.bosses_ganon = {}
+        self.bosshunt_include_agas = {}
+        self.ganon_item = {}
+        self.require_ganon_item = {}
+        self.ganon_item_orig = {}
         self.custom = custom
         self.customitemarray = customitemarray
         self.can_take_damage = True
@@ -115,6 +120,7 @@ class World(object):
         self.damage_table = {}
         # district + nearby: dungeon names whose nearby items are forced in-dungeon
         self.district_nearby_forced_inside = defaultdict(set)
+        self.scams = {}
 
 
         for player in range(1, players + 1):
@@ -155,9 +161,12 @@ class World(object):
             set_player_attr('keyshuffle', 'none')
             set_player_attr('bigkeyshuffle', 'none')
             set_player_attr('prizeshuffle', 'none')
+            set_player_attr('showloot', 'never')
+            set_player_attr('loothud', 'never')
+            set_player_attr('showmap', 'map')
             set_player_attr('restrict_boss_items', 'none')
             set_player_attr('bombbag', False)
-            set_player_attr('flute_mode', False)
+            set_player_attr('flute_mode', 'normal')
             set_player_attr('bow_mode', False)
             set_player_attr('free_lamp_cone', False)
 
@@ -172,8 +181,13 @@ class World(object):
             set_player_attr('escape_assist', [])
             set_player_attr('crystals_needed_for_ganon', 7)
             set_player_attr('crystals_needed_for_gt', 7)
+            set_player_attr('bosses_ganon', 8)
+            set_player_attr('bosshunt_include_agas', False)
+            set_player_attr('ganon_item', 'silver')
+            set_player_attr('require_ganon_item', False)
             set_player_attr('crystals_ganon_orig', {})
             set_player_attr('crystals_gt_orig', {})
+            set_player_attr('ganon_item_orig', 'silver')
             set_player_attr('open_pyramid', 'auto')
             set_player_attr('take_any', 'none')
             set_player_attr('treasure_hunt_icon', 'Triforce Piece')
@@ -183,7 +197,10 @@ class World(object):
             set_player_attr('pot_contents', None)
             set_player_attr('pseudoboots', False)
             set_player_attr('mirrorscroll', False)
+            set_player_attr('crystal_book', False)
+            set_player_attr('extra_keys', 0)
             set_player_attr('collection_rate', False)
+            set_player_attr('junk_item_frames', 16)
             set_player_attr('colorizepots', True)
             set_player_attr('pot_pool', {})
             set_player_attr('decoupledoors', False)
@@ -205,6 +222,8 @@ class World(object):
             set_player_attr('exp_cache', defaultdict(dict))
             set_player_attr('enabled_entrances', {})
             set_player_attr('data_tables', None)
+
+            set_player_attr('scams', False)
 
     def finish_init(self):
         for player in range(1, self.players + 1):
@@ -363,7 +382,7 @@ class World(object):
         else:
             if self.shuffle[player] not in ['vanilla', 'dungeonssimple', 'dungeonsfull', 'district']:
                 return False
-            elif self.goal[player] in ['crystals', 'trinity', 'ganonhunt']:
+            elif self.goal[player] in ['crystals', 'trinity', 'ganonhunt', 'bosshunt']:
                 return True
             else:
                 return False
@@ -1416,6 +1435,42 @@ class CollectionState(object):
     def has_blunt_weapon(self, player):
         return self.has_sword(player) or self.has('Hammer', player)
 
+    def can_hit_stunned_ganon(self, player):
+        ganon_item = self.world.ganon_item[player]
+        if ganon_item == "silver":
+            return self.has("Silver Arrows", player) and self.can_shoot_arrows(player)
+        elif ganon_item == "boomerang":
+            return self.has("Blue Boomerang", player) or self.has("Red Boomerang", player)
+        elif ganon_item == "hookshot":
+            return self.has("Hookshot", player)
+        elif ganon_item == "bomb":
+            return self.can_use_bombs(player)
+        elif ganon_item == "powder":
+            return self.has("Magic Powder", player)
+        elif ganon_item == "fire_rod":
+            return self.has("Fire Rod", player)
+        elif ganon_item == "ice_rod":
+            return self.has("Ice Rod", player)
+        elif ganon_item == "bombos":
+            return self.has("Bombos", player) and self.can_use_medallions(player)
+        elif ganon_item == "ether":
+            return self.has("Ether", player) and self.can_use_medallions(player)
+        elif ganon_item == "quake":
+            return self.has("Quake", player) and self.can_use_medallions(player)
+        elif ganon_item == "hammer":
+            return self.has("Hammer", player)
+        elif ganon_item == "bee":
+            return (self.has_bottle(player) and (self.has("Bug Catching Net", player) or self.can_buy_unlimited("Bee", player)))
+        elif ganon_item == "somaria":
+            return self.has("Cane of Somaria", player)
+        elif ganon_item == "byrna":
+            return self.has("Cane of Byrna", player)
+        else:
+            return False
+
+    def can_use_medallions(self, player):
+        return self.has_sword(player)
+
     def has_Mirror(self, player):
         return self.has('Magic Mirror', player)
 
@@ -1434,7 +1489,7 @@ class CollectionState(object):
         return self.has('Ocarina (Activated)', player)
 
     def can_melt_things(self, player):
-        return self.has('Fire Rod', player) or (self.has('Bombos', player) and self.has_sword(player))
+        return self.has('Fire Rod', player) or (self.has('Bombos', player) and self.can_use_medallions(player))
 
     def can_avoid_lasers(self, player):
         return (self.has('Mirror Shield', player) or self.has('Cape', player)
@@ -1495,7 +1550,10 @@ class CollectionState(object):
         if not item:
             return
         changed = False
-        if item.name.startswith('Progressive '):
+        if item.name == "Sword and Shield":
+            self.prog_items["Fighter Sword", item.player] += 1
+            self.prog_items["Blue Shield", item.player] += 1
+        elif item.name.startswith('Progressive '):
             if 'Sword' in item.name:
                 if self.has('Golden Sword', item.player):
                     pass
@@ -1962,6 +2020,7 @@ class Dungeon(object):
         self.prize = None
         self.big_key = big_key
         self.small_keys = small_keys
+        self.extra_small_keys = 0
         self.dungeon_items = dungeon_items
         self.bosses = dict()
         self.player = player
@@ -2837,7 +2896,7 @@ class Item(object):
 
     def __init__(self, name='', advancement=False, priority=False, type=None, code=None, price=999, pedestal_hint=None,
                  pedestal_credit=None, sickkid_credit=None, zora_credit=None, witch_credit=None, fluteboy_credit=None,
-                 hint_text=None, player=None):
+                 hint_text=None, player=None, mw_player=0):
         self.name = name
         self.advancement = advancement
         self.priority = priority
@@ -2854,6 +2913,7 @@ class Item(object):
         self.location = None
         self.dungeon_object = None
         self.world = None
+        self.mw_player = mw_player
         self.player = player
 
     @property
@@ -2944,12 +3004,12 @@ class Item(object):
         return str(self.__unicode__())
 
     def __unicode__(self):
-        return self.world.get_name_string_for_object(self) if self.world else f'{self.name} (Player {self.player})'
+        return self.world.get_name_string_for_object(self) if self.world else f'{self.name} (Player {self.mw_player})'
 
     def __eq__(self, other):
         if type(other) is str:
             return self.name == other
-        return other is not None and self.name == other.name and self.player == other.player
+        return other is not None and self.name == other.name and self.player == other.player and self.mw_player == self.mw_player
 
 
 # have 6 address that need to be filled
@@ -3152,6 +3212,10 @@ class Spoiler(object):
                          'beemizer': self.world.beemizer,
                          'gt_crystals': self.world.crystals_needed_for_gt,
                          'ganon_crystals': self.world.crystals_needed_for_ganon,
+                         'ganon_bosses': self.world.bosses_ganon,
+                         'bosshunt_include_agas': self.world.bosshunt_include_agas,
+                         'ganon_item': self.world.ganon_item,
+                         'require_ganon_item': self.world.require_ganon_item,
                          'open_pyramid': self.world.open_pyramid,
                          'accessibility': self.world.accessibility,
                          'restricted_boss_items': self.world.restrict_boss_items,
@@ -3161,6 +3225,9 @@ class Spoiler(object):
                          'keyshuffle': self.world.keyshuffle,
                          'bigkeyshuffle': self.world.bigkeyshuffle,
                          'prizeshuffle': self.world.prizeshuffle,
+                         'showloot': self.world.showloot,
+                         'loothud': self.world.loothud,
+                         'showmap': self.world.showmap,
                          'boss_shuffle': self.world.boss_shuffle,
                          'enemy_shuffle': self.world.enemy_shuffle,
                          'enemy_health': self.world.enemy_health,
@@ -3175,6 +3242,8 @@ class Spoiler(object):
                          'shopsanity': self.world.shopsanity,
                          'pseudoboots': self.world.pseudoboots,
                          'mirrorscroll': self.world.mirrorscroll,
+                         'crystal_book': self.world.crystal_book,
+                         'extra_keys': self.world.extra_keys,
                          'triforcegoal': self.world.treasure_hunt_count,
                          'triforcepool': self.world.treasure_hunt_total,
                          'race': self.world.settings.world_rep['meta']['race'],
@@ -3372,6 +3441,10 @@ class Spoiler(object):
                     if custom['ganongoal'] and 'requirements' in custom['ganongoal']:
                         outfile.write('Ganon Requirement:'.ljust(line_width) + 'custom\n')
                         outfile.write('    %s\n' % custom['ganongoal']['goaltext'])
+                    elif self.metadata['goal'][player] == 'bosshunt':
+                        outfile.write('Ganon Requirement:'.ljust(line_width) + '%s bosses%s\n' %
+                              (str(self.world.bosses_ganon[player]),
+                               ' (including both Agahnims)' if self.world.bosshunt_include_agas[player] else ''))
                     else:
                         outfile.write('Ganon Requirement:'.ljust(line_width) + '%s crystals\n' % str(self.world.crystals_ganon_orig[player]))
                     if custom['pedgoal'] and 'requirements' in custom['pedgoal']:
@@ -3380,6 +3453,8 @@ class Spoiler(object):
                     if custom['murahgoal'] and 'requirements' in custom['murahgoal']:
                         outfile.write('Murahdahla Requirement:'.ljust(line_width) + 'custom\n')
                         outfile.write('    %s\n' % custom['murahgoal']['goaltext'])
+                    outfile.write('Item to Hurt Stunned Ganon:'.ljust(line_width) + '%s\n' % str(self.world.ganon_item_orig[player]))
+                    outfile.write('Item Required for Ganon:'.ljust(line_width) + '%s\n' % yn(self.world.require_ganon_item[player]))
                     outfile.write('Swords:'.ljust(line_width) + '%s\n' % self.metadata['weapons'][player])
                     outfile.write('\n')
                     outfile.write('Accessibility:'.ljust(line_width) + '%s\n' % self.metadata['accessibility'][player])
@@ -3428,6 +3503,9 @@ class Spoiler(object):
                     outfile.write('Small Key Shuffle:'.ljust(line_width) + '%s\n' % self.metadata['keyshuffle'][player])
                     outfile.write('Big Key Shuffle:'.ljust(line_width) + '%s\n' % self.metadata['bigkeyshuffle'][player])
                     outfile.write('Prize Shuffle:'.ljust(line_width) + '%s\n' % self.metadata['prizeshuffle'][player])
+                    outfile.write('Show Value of Checks:'.ljust(line_width) + '%s\n' % self.metadata['showloot'][player])
+                    outfile.write('Show Value of Checks on HUD:'.ljust(line_width) + '%s\n' % self.metadata['loothud'][player])
+                    outfile.write('Show Map:'.ljust(line_width) + '%s\n' % self.metadata['showmap'][player])
                     outfile.write('Key Logic Algorithm:'.ljust(line_width) + '%s\n' % self.metadata['key_logic'][player])
                     outfile.write('\n')
                     outfile.write('Door Shuffle:'.ljust(line_width) + '%s\n' % self.metadata['door_shuffle'][player])
@@ -3449,6 +3527,8 @@ class Spoiler(object):
                     outfile.write('\n')
                     outfile.write('Pseudoboots:'.ljust(line_width) + '%s\n' % yn(self.metadata['pseudoboots'][player]))
                     outfile.write('Mirror Scroll:'.ljust(line_width) + '%s\n' % yn(self.metadata['mirrorscroll'][player]))
+                    outfile.write('Crystal Book:'.ljust(line_width) + '%s\n' % yn(self.metadata['crystal_book'][player]))
+                    outfile.write('Extra Keys:'.ljust(line_width) + '%d%%\n' % self.metadata['extra_keys'][player])
                     outfile.write('Hints:'.ljust(line_width) + '%s\n' % yn(self.metadata['hints'][player]))
                     outfile.write('Race:'.ljust(line_width) + '%s\n' % yn(self.world.settings.world_rep['meta']['race']))
                     if self.metadata['limited_run'][player] != 'none':
@@ -3806,8 +3886,9 @@ world_mode = {"open": 0, "standard": 1, "inverted": 2}
 sword_mode = {"random": 0, "assured": 1, "swordless": 2, "vanilla": 3}
 
 # byte 2: GGGD DFFH (goal, diff, item_func, hints)
-goal_mode = {'ganon': 0, 'pedestal': 1, 'dungeons': 2, 'triforcehunt': 3, 'crystals': 4, 'trinity': 5,
-             'ganonhunt': 6, 'completionist': 7}
+goal_mode = {'ganon': 0, 'pedestal': 1, 'dungeons': 2, 'triforcehunt': 3,
+             'crystals': 4, 'trinity': 5, 'ganonhunt': 6, 'completionist': 7,
+             'bosshunt': 6}
 diff_mode = {"normal": 0, "hard": 1, "expert": 2}
 func_mode = {"normal": 0, "hard": 1, "expert": 2}
 
@@ -3855,7 +3936,7 @@ orcrossed_mode = {"none": 0, "polar": 1, "grouped": 2, "unrestricted": 4}
 flutespot_mode = {"vanilla": 0, "balanced": 1, "random": 2}
 
 # byte 13: FBBB TTPP (flute_mode, bow_mode, take_any, prize shuffle)
-flute_mode = {'normal': 0, 'active': 1}
+flute_mode = {'normal': 0, 'active': 1, 'pseudo': 1}
 bow_mode = {'progressive': 0, 'silvers': 1, 'retro': 2, 'retro_silvers': 3}  # reserved 8 modes?
 take_any_mode = {'none': 0, 'random': 1, 'fixed': 2}
 prizeshuffle_mode = {'none': 0, 'dungeon': 1, 'nearby': 2, 'wild': 3}

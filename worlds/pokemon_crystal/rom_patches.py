@@ -189,4 +189,56 @@ ROM_PATCHES: list[RomPatch] = [
         RomPatchEntry(0x0d, 0x5606, [0xcd, 0xf3, 0x7f, 0x00, 0x00],
                       expected=[0x78, 0xcb, 0x3f, 0x80, 0x47]),
     ]),
+    # midpoint mischief accessed EVENT_MAGNET_TRAIN_MIDPOINT_SEEN in WRAM bank 5 instead of wEventFlags' bank 1
+    RomPatch("Magnet train midpoint seen flag WRAM bank", [
+        # bank $23 free space: nz if already seen; sets the flag either way
+        RomPatchEntry(0x23, 0x7f7a, [
+            0x3e, 0x01,        # ld a, BANK(wEventFlags)
+            0xe0, 0x70,        # ldh [rSVBK], a
+            0x11, 0x6a, 0x01,  # ld de, EVENT_MAGNET_TRAIN_MIDPOINT_SEEN
+            0x06, 0x02,        # ld b, CHECK_FLAG
+            0xcd, 0x80, 0x2e,  # call EventFlagAction
+            0x79,              # ld a, c
+            0xa7,              # and a
+            0xf5,              # push af
+            0x11, 0x6a, 0x01,  # ld de, EVENT_MAGNET_TRAIN_MIDPOINT_SEEN
+            0x06, 0x01,        # ld b, SET_FLAG
+            0xcd, 0x80, 0x2e,  # call EventFlagAction
+            0x3e, 0x05,        # ld a, BANK(wMagnetTrain)
+            0xe0, 0x70,        # ldh [rSVBK], a
+            0xf1,              # pop af
+            0xc9,              # ret
+        ], expected=[0x00] * 29),
+        # MagnetTrain_Jumptable.MidpointStep flag check/set -> call $7f7a / jr nz, .skip_midpoint / jr past old code
+        RomPatchEntry(0x23, 0x4eaf, [0xcd, 0x7a, 0x7f, 0x20, 0x2b, 0x18, 0x0d], expected=[
+            0x11, 0x6a, 0x01, 0x06, 0x02, 0xcd, 0x80, 0x2e, 0x79, 0xa7,
+            0x20, 0x24, 0x11, 0x6a, 0x01, 0x06, 0x01, 0xcd, 0x80, 0x2e,
+        ]),
+    ]),
+    # arriving on Bill's house trigger tile without stepping (fly, continue) skipped Misty's date
+    RomPatch("Misty's date triggers on arrival at Bill's house", [
+        # bank $67 free space: SCENE_ROUTE25_MISTYS_DATE scene script
+        RomPatchEntry(0x67, 0x7d11, [
+            0x0e, 0x67, 0x1c, 0x7d,  # callasm $7d1c
+            0x08, 0x1b, 0x7d,        # iffalse .end
+            0x8d, 0x64, 0x75,        # sdefer Route25MistyDate3Script
+            0x91,                    # .end: end
+        ], expected=[0x00] * 11),
+        # wScriptVar = player is on (47, 6)
+        RomPatchEntry(0x67, 0x7d1c, [
+            0xaf,              # xor a
+            0xea, 0xdd, 0xc2,  # ld [wScriptVar], a
+            0xfa, 0xec, 0xd4,  # ld a, [wPlayerMapX]
+            0xfe, 0x33,        # cp 47 + 4
+            0xc0,              # ret nz
+            0xfa, 0xed, 0xd4,  # ld a, [wPlayerMapY]
+            0xfe, 0x0a,        # cp 6 + 4
+            0xc0,              # ret nz
+            0x3e, 0x01,        # ld a, TRUE
+            0xea, 0xdd, 0xc2,  # ld [wScriptVar], a
+            0xc9,              # ret
+        ], expected=[0x00] * 22),
+        # Route25_MapScripts: scene_script Route25Noop2Scene -> $7d11
+        RomPatchEntry(0x67, 0x74b6, [0x11, 0x7d], expected=[0xdd, 0x74]),
+    ]),
 ]

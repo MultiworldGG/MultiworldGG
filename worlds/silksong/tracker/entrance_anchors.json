@@ -662,20 +662,20 @@
  "wormways/wormways-upper-west@f": {
   "scene": "Crawl_03",
   "gate": "bot1",
-  "x": 0.427778,
+  "x": 0.394118,
   "y": 0.0
  },
  "wormways/wormways-upper-west@c": {
   "scene": "Crawl_03",
   "gate": "top1",
-  "x": 0.827778,
-  "y": 1.0
+  "x": 0.817647,
+  "y": 0.7
  },
  "wormways/wormways-upper-west@wd": {
   "scene": "Crawl_03",
   "gate": "left1",
-  "x": 0.060833,
-  "y": 0.191558
+  "x": 0.005588,
+  "y": 0.134091
  },
  "wormways/wormways-upper-east@l": {
   "scene": "Crawl_01",
@@ -800,14 +800,14 @@
  "deep-docks/deep-docks-lace-intro@l": {
   "scene": "Bone_East_12",
   "gate": "left1",
-  "x": 0.008333,
-  "y": 0.3125
+  "x": 0.008929,
+  "y": 0.241379
  },
  "deep-docks/deep-docks-spire-lower@l": {
   "scene": "Bone_East_03",
   "gate": "left1",
   "x": 0.0,
-  "y": 0.714286
+  "y": 0.692308
  },
  "deep-docks/is-this-still-deep-docks-east@c": {
   "scene": "Bone_East_04",
@@ -855,7 +855,7 @@
   "scene": "Room_Forge",
   "gate": "left1",
   "x": 0.0,
-  "y": 0.115942
+  "y": 0.089552
  },
  "deep-docks/deep-docks-lower-west-shaft@mr": {
   "scene": "Dock_04",
@@ -1433,12 +1433,6 @@
   "x": 0.0,
   "y": 0.470588
  },
- "hunter-s-march/hunters-march-chapel-passage@l": {
-  "scene": "Ant_20",
-  "gate": "left1",
-  "x": 0.0,
-  "y": 0.229167
- },
  "hunter-s-march/hunters-march-entrance@l": {
   "scene": "Ant_02",
   "gate": "left1",
@@ -1496,7 +1490,7 @@
  "hunter-s-march/hunters-march-early-pathway-east@l": {
   "scene": "Ant_04",
   "gate": "left1",
-  "x": 0.597656,
+  "x": 0.003226,
   "y": 0.382353
  },
  "hunter-s-march/hunters-march-shaft@l5": {
@@ -1556,8 +1550,8 @@
  "hunter-s-march/hunters-march-treasure-vault@r": {
   "scene": "Ant_21",
   "gate": "right1",
-  "x": 0.797101,
-  "y": 0.865169
+  "x": 0.730769,
+  "y": 0.4
  },
  "hunter-s-march/hunters-march-statue@l": {
   "scene": "Ant_05c",
@@ -1571,6 +1565,12 @@
   "x": 1.0,
   "y": 0.780488
  },
+ "hunter-s-march/hunters-march-chapel-passage@l": {
+  "scene": "Ant_20",
+  "gate": "left1",
+  "x": 0.0,
+  "y": 0.229167
+ },
  "hunter-s-march/hunters-march-deep-docks-passage@r": {
   "scene": "Ant_05b",
   "gate": "right1",
@@ -1580,13 +1580,13 @@
  "hunter-s-march/hunters-march-deep-docks-passage@lf": {
   "scene": "Ant_05b",
   "gate": "bot1",
-  "x": 0.183333,
+  "x": 0.100917,
   "y": 0.0
  },
  "hunter-s-march/hunters-march-deep-docks-passage@rf": {
   "scene": "Ant_05b",
   "gate": "bot2",
-  "x": 0.733333,
+  "x": 0.706422,
   "y": 0.0
  },
  "hunter-s-march/hunters-march-deep-entrance@l": {
@@ -3315,7 +3315,7 @@
   "scene": "Cog_09",
   "gate": "bot1",
   "x": 0.125,
-  "y": 0.235043
+  "y": 0.023438
  },
  "cogwork-core/cogwork-core-architect-s-melody-act-3@r": {
   "scene": "Cog_09_Destroyed",
@@ -4172,14 +4172,14 @@
  "bilewater/bilewater-west-hall@l": {
   "scene": "Shadow_04b",
   "gate": "left1",
-  "x": 0.332432,
-  "y": 0.918919
+  "x": 0.057252,
+  "y": 0.8125
  },
  "bilewater/bilewater-west-hall@r": {
   "scene": "Shadow_04b",
   "gate": "right1",
   "x": 1.0,
-  "y": 0.783784
+  "y": 0.5
  },
  "bilewater/bilewater-west-secret-rooms@l": {
   "scene": "Shadow_20",

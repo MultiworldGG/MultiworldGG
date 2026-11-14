@@ -61,6 +61,9 @@ ValidItems = typ.Literal[
     'MISSILE_TANK',
     'SUPER_MISSILE_TANK',
     'POWER_BOMB_TANK',
+    'MAIN_MISSILES',
+    'MAIN_SUPER_MISSILES',
+    'MAIN_POWER_BOMBS',
     'LONG_BEAM',
     'CHARGE_BEAM',
     'ICE_BEAM',
@@ -75,6 +78,11 @@ ValidItems = typ.Literal[
     'SCREW_ATTACK',
     'SPACE_JUMP',
     'POWER_GRIP',
+    'SPRING_BALL',
+    'WALL_JUMP',
+    'INFINITE_BOMB_JUMP',
+    'PROGRESSIVE_JUMP',
+    'PROGRESSIVE_BOMB',
     'FULLY_POWERED',
     'ZIPLINES',
     'ICE_TRAP'
@@ -86,6 +94,9 @@ ValidItemSprites = typ.Literal[
     'MISSILE_TANK',
     'SUPER_MISSILE_TANK',
     'POWER_BOMB_TANK',
+    'MAIN_MISSILES',
+    'MAIN_SUPER_MISSILES',
+    'MAIN_POWER_BOMBS',
     'LONG_BEAM',
     'CHARGE_BEAM',
     'ICE_BEAM',
@@ -100,13 +111,20 @@ ValidItemSprites = typ.Literal[
     'SCREW_ATTACK',
     'SPACE_JUMP',
     'POWER_GRIP',
+    'SPRING_BALL',
+    'WALL_JUMP',
+    'INFINITE_BOMB_JUMP',
     'FULLY_POWERED',
     'ZIPLINES',
     'ANONYMOUS',
     'SHINY_MISSILE_TANK',
+    'SHINY_SUPER_MISSILE_TANK',
     'SHINY_POWER_BOMB_TANK'
 ]
 ValidAbilities = typ.Literal[
+    'MAIN_MISSILES',
+    'MAIN_SUPER_MISSILES',
+    'MAIN_POWER_BOMBS',
     'LONG_BEAM',
     'CHARGE_BEAM',
     'ICE_BEAM',
@@ -120,7 +138,10 @@ ValidAbilities = typ.Literal[
     'HI_JUMP',
     'SCREW_ATTACK',
     'SPACE_JUMP',
-    'POWER_GRIP'
+    'POWER_GRIP',
+    'SPRING_BALL',
+    'WALL_JUMP',
+    'INFINITE_BOMB_JUMP'
 ]
 ValidElevatorTops = typ.Literal[
     'BRINSTAR_TO_KRAID',
@@ -145,6 +166,71 @@ ValidLanguages = typ.Literal[
     'ITALIAN',
     'SPANISH'
 ]
+ValidMusicTracks = typ.Literal[
+    'BRINSTAR',
+    'TITLE_SCREEN',
+    'SAVE_ELEVATOR_ROOM',
+    'INTRO',
+    'CHOZO_STATUE_HINT',
+    'NORFAIR',
+    'KRAID',
+    'ESCAPE',
+    'FILE_SELECT',
+    'STATUE_ROOM',
+    'BOSS_KILLED',
+    'MAP_ROOM',
+    'CHOZO_RUINS_DEPTH',
+    'CHOZO_RUINS',
+    'CHOZO_RUINS_LIGHT',
+    'RIDLEY_IN_SPACE',
+    'RIDLEY_LANDING',
+    'CHOZO_STATUE_HINT_DELAY',
+    'GETTING_FULLY_POWERED_SUIT_CUTSCENE',
+    'ESCAPING_ZEBES_CUTSCENE',
+    'CHOZO_VOICE_1',
+    'CHOZO_VOICE_2',
+    'BEFORE_RUINS_TEST_UNUSED',
+    'ELEVATOR_ROOM',
+    'BRINSTAR_REMIX',
+    'ESCAPE_SUCCESFUL',
+    'CREDITS',
+    'STATUE_ROOM_OPENED',
+    'RIDLEY',
+    'KRAID_BATTLE_WITH_INTRO',
+    'RIDLEY_BATTLE',
+    'LOADING_JINGLE',
+    'GETTING_ITEM_JINGLE',
+    'INTRO_MOTHER_BRAIN',
+    'GETTING_TANK_JINGLE',
+    'TOURIAN',
+    'WORMS_BATTLE',
+    'MOTHER_BRAIN_BATTLE',
+    'CATTERPILLARS_BATTLE',
+    'IMAGO_COCOON_BATTLE',
+    'IMAGO_BATTLE',
+    'MECHA_RIDLEY_BATTLE',
+    'GETTING_UNKNOWN_ITEM_JINGLE',
+    'RUINS_TEST_BATTLE_WITH_INTRO',
+    'ENTERING_TOURIAN_CUTSCENE',
+    'ALARM_ACTIVATED',
+    'STEALTH',
+    'ENTERING_NORFAIR_CUTSCENE',
+    'CHOZODIA_DETECTED',
+    'GETTING_FULLY_POWERED_SUIT_JINGLE',
+    'KRAID_BATTLE',
+    'RIDLEY_BATTLE_2',
+    'MECHA_RIDLEY_BATTLE_2',
+    'RUINS_TEST_BATTLE',
+    'CATTERPILLARS_BATTLE_2',
+    'CRATERIA',
+    'GAME_OVER',
+    'CHOZODIA_SURFACE',
+    'MAP_ROOM_2',
+    'SAVE_ELEVATOR_ROOM_2',
+    'BEFORE_RUINS_TEST_ROOM',
+    'STEALTH_2'
+]
+MusicMapping: typ.TypeAlias = dict[ValidMusicTracks, ValidMusicTracks]
 MessageLanguages: typ.TypeAlias = dict[ValidLanguages, str]
 
 class ItemMessages(typ.TypedDict, total=False):
@@ -286,7 +372,7 @@ class MarsschemazmStartingItems(typ.TypedDict, total=False):
     downloaded_maps: typ.Annotated[list[AreaId], 'Unique items'] = []
     """Which area maps will be downloaded from the start."""
 
-    suit_type: MarsschemazmStartingItemsSuitType = 'normal'
+    suit_type: MarsschemazmStartingItemsSuitType = 'NORMAL'
     """Which suit type the player should start with."""
 
     ziplines_activated: bool = False
@@ -307,6 +393,15 @@ class MarsschemazmTankIncrements(typ.TypedDict):
 
     power_bomb_tank: typ.Annotated[int, '-100 <= value <= 100'] = 2
     """How much ammo power bomb tanks provide when collected."""
+
+    main_missiles: typ.NotRequired[typ.Annotated[int, '0 <= value <= 1000']] = 5
+    """How much ammo the main missiles item provides when collected."""
+
+    main_super_missiles: typ.NotRequired[typ.Annotated[int, '0 <= value <= 100']] = 2
+    """How much ammo the main super missiles item provides when collected."""
+
+    main_power_bombs: typ.NotRequired[typ.Annotated[int, '0 <= value <= 100']] = 2
+    """How much ammo the main power bombs item provides when collected."""
 
 
 class MarsschemazmElevatorConnections(typ.TypedDict):
@@ -338,10 +433,10 @@ class MarsschemazmDoorLocksItem(typ.TypedDict):
     """The type of cover on the hatch."""
 
 MarsschemazmPalettesRandomizeKey = typ.Literal[
-    'tilesets',
-    'enemies',
-    'samus',
-    'beams'
+    'TILESETS',
+    'ENEMIES',
+    'SAMUS',
+    'BEAMS'
 ]
 
 @typ.final
@@ -377,17 +472,47 @@ class MarsschemazmPalettes(typ.TypedDict, total=False):
     """Randomly rotates hues in the positive or negative direction true."""
 
 
+@typ.final
+class MarsschemazmHintText(typ.TypedDict, total=False):
+    """Assigns each hint statue a specific text."""
+
+    LONG_BEAM: str
+    """Specifies what text should appear at the long beam hint statue in Brinstar."""
+
+    ICE_BEAM: str
+    """Specifies what text should appear at the ice beam hint statue in Brinstar."""
+
+    WAVE_BEAM: str
+    """Specifies what text should appear at the wave beam hint statue in Brinstar."""
+
+    BOMBS: str
+    """Specifies what text should appear at the bombs hint statue in Brinstar."""
+
+    SPEED_BOOSTER: str
+    """Specifies what text should appear at the speed booster hint statue in Norfair."""
+
+    HI_JUMP: str
+    """Specifies what text should appear at the hi-jump hint statue in Brinstar."""
+
+    SCREW_ATTACK: str
+    """Specifies what text should appear at the screw attack hint statue in Norfair."""
+
+    VARIA_SUIT: str
+    """Specifies what text should appear at the varia suit hint statue in Norfair."""
+
+
+
 class MarsschemazmTitleTextItem(typ.TypedDict, total=False):
     text: typ.Annotated[str, '/^[ -~]{0,30}$/']
     """The ASCII text for this line"""
 
-    line_num: typ.Annotated[int, '0 <= value <= 14']
+    line_num: typ.Annotated[int, '0 <= value <= 20']
 MarsschemazmCreditsTextItemLineType = typ.Literal[
     'BLANK',
     'BLUE',
     'RED',
-    'WHITE1',
-    'WHITE2'
+    'WHITE',
+    'WHITE_BIG'
 ]
 
 class MarsschemazmCreditsTextItem(typ.TypedDict, total=False):
@@ -448,9 +573,9 @@ class MarsschemazmRoomNamesItem(typ.TypedDict):
     room: TypeU8 = 0
     """The room ID."""
 
-    name: typ.Annotated[str, 'len() <= 112']
-    """Specifies what text should appear for this room. Two lines are available, with an absolute maximum of 56 characters per line, if all characters used are small. Text will auto-wrap if the next word doesn't fit on the line. If the text is too long, it will be truncated.  Use 
- to force a line break. If not provided, will display 'Unknown Room'."""
+    name: typ.Annotated[str, 'len() <= 224']
+    """Specifies what text should appear for this room. Two lines are available, with an absolute maximum of 112 characters per line, if all characters used are small. Text will auto-wrap if the next word doesn't fit on the line. If the text is too long, it will be truncated. Use 
+ to force a line break. If not provided, will display 'Room name not provided'."""
 
 
 class Marsschemazm(typ.TypedDict, total=False):
@@ -482,11 +607,17 @@ class Marsschemazm(typ.TypedDict, total=False):
     palettes: MarsschemazmPalettes = None
     """Properties for randomized in-game palettes."""
 
+    music_replacement: MusicMapping
+    """Shuffles the in-game music."""
+
     intro_text: dict[ValidLanguages, str] = None
     """Specifies what text should appear during the new game intro."""
 
+    hint_text: dict[ValidLanguages, MarsschemazmHintText] = None
+    """Specifies text to be displayed at the hint statues."""
+
     title_text: list[MarsschemazmTitleTextItem] = None
-    """Lines of ascii text to write to the title screen."""
+    """Lines of ASCII text to write to the title screen."""
 
     credits_text: list[MarsschemazmCreditsTextItem]
     """Lines of text to insert into the credits."""
@@ -505,6 +636,12 @@ class Marsschemazm(typ.TypedDict, total=False):
 
     disable_sound_effects: bool = False
     """Disables all sound effects when true."""
+
+    remove_cutscenes: bool = False
+    """Removes most cutscenes from the game."""
+
+    fast_item_grab: bool = False
+    """Skips opening the status screen when an item is obtained."""
 
     unexplored_map: bool = False
     """When enabled, starts you with a map where all unexplored items and non-visited tiles have a gray background. This is different from the downloaded map stations where there, the full tile is gray."""

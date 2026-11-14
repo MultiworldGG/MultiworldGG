@@ -1,5 +1,4 @@
 import json
-import os
 import pkgutil
 
 from typing_extensions import Self
@@ -7,9 +6,6 @@ from typing_extensions import Self
 from ..item_messages import ItemMessages
 from .auto_generated_types import MarsschemamfLocations
 from .constants.items import (
-    ITEM_ENUMS,
-    ITEM_SPRITE_ENUMS,
-    JINGLE_ENUMS,
     KEY_AREA,
     KEY_BLOCK_X,
     KEY_BLOCK_Y,
@@ -23,7 +19,6 @@ from .constants.items import (
     KEY_ORIGINAL,
     KEY_ROOM,
     KEY_SOURCE,
-    SOURCE_ENUMS,
     ItemJingle,
     ItemSprite,
     ItemType,
@@ -105,8 +100,8 @@ class LocationSettings:
             major_loc = MajorLocation(
                 entry[KEY_AREA],
                 entry[KEY_ROOM],
-                SOURCE_ENUMS[entry[KEY_SOURCE]],
-                ITEM_ENUMS[entry[KEY_ORIGINAL]],
+                MajorSource[entry[KEY_SOURCE]],
+                ItemType[entry[KEY_ORIGINAL]],
             )
             major_locs.append(major_loc)
 
@@ -118,7 +113,7 @@ class LocationSettings:
                 entry[KEY_BLOCK_X],
                 entry[KEY_BLOCK_Y],
                 entry[KEY_HIDDEN],
-                ITEM_ENUMS[entry[KEY_ORIGINAL]],
+                ItemType[entry[KEY_ORIGINAL]],
             )
             minor_locs.append(minor_loc)
 
@@ -127,14 +122,14 @@ class LocationSettings:
     def set_assignments(self, data: MarsschemamfLocations) -> None:
         for maj_loc_entry in data[KEY_MAJOR_LOCS]:
             # Get source and item
-            source = SOURCE_ENUMS[maj_loc_entry[KEY_SOURCE]]
-            item = ITEM_ENUMS[maj_loc_entry[KEY_ITEM]]
+            source = MajorSource[maj_loc_entry[KEY_SOURCE]]
+            item = ItemType[maj_loc_entry[KEY_ITEM]]
             # Find location with this source
             maj_loc = next(m for m in self.major_locs if m.major_src == source)
             maj_loc.new_item = item
             if KEY_ITEM_MESSAGES in maj_loc_entry:
                 maj_loc.item_messages = ItemMessages.from_json(maj_loc_entry[KEY_ITEM_MESSAGES])
-            maj_loc.item_jingle = JINGLE_ENUMS[maj_loc_entry[KEY_ITEM_JINGLE]]
+            maj_loc.item_jingle = ItemJingle[maj_loc_entry[KEY_ITEM_JINGLE]]
         for min_loc_entry in data[KEY_MINOR_LOCS]:
             # Get area, room, block X, block Y
             area = min_loc_entry[KEY_AREA]
@@ -156,10 +151,10 @@ class LocationSettings:
                     f"Invalid minor location: Area {area}, Room {room}, X {block_x}, Y {block_y}"
                 )
             # Set item and item sprite
-            item = ITEM_ENUMS[min_loc_entry[KEY_ITEM]]
+            item = ItemType[min_loc_entry[KEY_ITEM]]
             min_loc.new_item = item
             if KEY_ITEM_SPRITE in min_loc_entry:
-                min_loc.item_sprite = ITEM_SPRITE_ENUMS[min_loc_entry[KEY_ITEM_SPRITE]]
+                min_loc.item_sprite = ItemSprite[min_loc_entry[KEY_ITEM_SPRITE]]
             if KEY_ITEM_MESSAGES in min_loc_entry:
                 min_loc.item_messages = ItemMessages.from_json(min_loc_entry[KEY_ITEM_MESSAGES])
-            min_loc.item_jingle = JINGLE_ENUMS[min_loc_entry[KEY_ITEM_JINGLE]]
+            min_loc.item_jingle = ItemJingle[min_loc_entry[KEY_ITEM_JINGLE]]

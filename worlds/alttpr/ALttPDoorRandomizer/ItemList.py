@@ -219,8 +219,9 @@ def get_custom_array_key(item):
 
 def generate_itempool(world, player):
     if (world.difficulty[player] not in ['normal', 'hard', 'expert']
-       or world.goal[player] not in ['ganon', 'pedestal', 'dungeons', 'triforcehunt', 'trinity', 'crystals',
-                                     'ganonhunt', 'completionist']
+       or world.goal[player] not in ['ganon', 'pedestal', 'dungeons',
+                                     'triforcehunt', 'trinity', 'crystals',
+                                     'ganonhunt', 'completionist', 'bosshunt']
        or world.mode[player] not in ['open', 'standard', 'inverted']
        or world.timer not in ['none', 'display', 'timed', 'timed-ohko', 'ohko', 'timed-countdown']
        or world.progressive not in ['on', 'off', 'random']):
@@ -253,7 +254,7 @@ def generate_itempool(world, player):
         loc.locked = True
         loc.forced_item = loc.item
 
-    if (world.flute_mode[player] != 'active' and not world.is_tile_swapped(0x18, player)
+    if (world.flute_mode[player] not in ['active', 'pseudo'] and not world.is_tile_swapped(0x18, player)
             and 'Ocarina (Activated)' not in list(map(str, [i for i in world.precollected_items if i.player == player]))):
         region = world.get_region('Kakariko Village',player)
 
@@ -288,7 +289,7 @@ def generate_itempool(world, player):
         (pool, placed_items, precollected_items, clock_mode, treasure_hunt_count, treasure_hunt_total, treasure_hunt_icon) = make_custom_item_pool(world, player, world.progressive, world.shuffle[player], world.difficulty[player], world.timer, world.goal[player], world.mode[player], world.swords[player], world.bombbag[player], world.customitemarray[player])
         world.rupoor_cost = min(world.customitemarray[player]["rupoorcost"], 9999)
     else:
-        (pool, placed_items, precollected_items, clock_mode) = get_pool_core(world, player, world.progressive, world.shuffle[player], world.difficulty[player], world.treasure_hunt_total[player], world.timer, world.goal[player], world.mode[player], world.swords[player], world.bombbag[player], world.doorShuffle[player], world.logic[player], world.flute_mode[player] == 'active' or world.is_tile_swapped(0x18, player))
+        (pool, placed_items, precollected_items, clock_mode) = get_pool_core(world, player, world.progressive, world.shuffle[player], world.difficulty[player], world.treasure_hunt_total[player], world.timer, world.goal[player], world.mode[player], world.swords[player], world.bombbag[player], world.doorShuffle[player], world.logic[player], world.flute_mode[player] in ['active', 'pseudo'] or world.is_tile_swapped(0x18, player))
 
     if player in world.pool_adjustment.keys() and not skip_pool_adjustments:
         amt = world.pool_adjustment[player]
@@ -385,7 +386,7 @@ def generate_itempool(world, player):
 
     items = ItemFactory(pool, player)
     if world.shopsanity[player]:
-        for potion in ['Green Potion', 'Blue Potion', 'Red Potion']:
+        for potion in ['Green Potion', 'Blue Potion', 'Red Potion', 'Bee']:
             p_item = next(item for item in items if item.name == potion and item.player == player)
             p_item.priority = True  # don't beemize one of each potion
 
@@ -852,7 +853,7 @@ def set_up_shops(world, player):
                 rss.locked = True
                 cap_shop = world.get_region('Capacity Upgrade', player).shop
                 cap_shop.inventory[1] = None  # remove arrow capacity upgrades in retro
-            for shop in random.sample([s for s in world.shops[player] if not s.locked and s.region.player == player], 5):
+            for shop in random.sample([s for s in world.shops[player] if not s.locked and s.region.name != 'Red Shield Shop' and s.region.player == player], 5):
                 shop.custom = True
                 shop.locked = True
                 if retro_bow:
@@ -1526,12 +1527,12 @@ def make_customizer_pool(world, player):
         world.get_location('Master Sword Pedestal', player).locked = True
 
     guaranteed_items = alwaysitems + ['Magic Mirror', 'Moon Pearl']
-    if world.is_tile_swapped(0x18, player) or world.flute_mode[player] == 'active':
+    if world.is_tile_swapped(0x18, player) or world.flute_mode[player] in ['active', 'pseudo']:
         guaranteed_items.remove('Ocarina')
         guaranteed_items.append('Ocarina (Activated)')
     missing_items = []
     if world.shopsanity[player]:
-        guaranteed_items.extend(['Blue Potion', 'Green Potion', 'Red Potion'])
+        guaranteed_items.extend(['Blue Potion', 'Green Potion', 'Red Potion', 'Bee'])
         if world.keyshuffle[player] == 'universal':
             guaranteed_items.append('Small Key (Universal)')
     for item in guaranteed_items:

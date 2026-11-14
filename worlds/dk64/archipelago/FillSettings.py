@@ -52,6 +52,7 @@ from randomizer.Enums.Settings import (
     TroffSetting,
     WrinklyHints,
     KroolInBossPool,
+    TagAnywhere,
 )
 from randomizer.Enums.Items import Items as DK64RItems
 from randomizer.Enums.Types import Types
@@ -129,7 +130,7 @@ def get_default_settings() -> dict[str, Any]:
         "dk_portal_location_rando_v2": DKPortalRando.off,
         "dos_door_rando": False,
         "enable_shop_hints": True,
-        "enable_tag_anywhere": True,
+        "enable_tag_anywhere": TagAnywhere.on,
         "enemies_selected": [],
         "enemy_kill_crown_timer": True,
         "enemy_speed_rando": False,

@@ -12,7 +12,7 @@ from .Items import WEAPON_SHORT_NAMES, arcana_titles, keepsake_titles, aspect_ti
 from .Locations import combine_active, _score_count_for, _combined_room_count, \
     _combined_score_count, COMBINED_SCORE_PREFIX, COMBINED_ROOM_PREFIX, _zone_bounds, \
     SHARED_ENEMY_ZONES, ENEMY_BY_ZONE, MINIBOSS_ENEMY_NAMES, MINIBOSS_ZONE_OVERRIDE, \
-    ENEMY_COMPANIONS, \
+    ENEMY_COMPANIONS, SPAWN_SLOT_BOSS_GATE, combined_relabel, \
     ZAGREUS_MET_LOCATION, ZAGREUS_DEFEATED_LOCATION, NPC_INTRO, DREAM_ROOM_GUARANTEED_PER_REGION
 
 if TYPE_CHECKING:
@@ -642,7 +642,7 @@ def set_rules(world: "Hades2World", player: int, options, route_offsets: dict,
               starting_weapon: str = None,
               starting_aspect_index: int = None,
               dream_access_via_progressive: bool = False,
-              enemy_placement: dict = None) -> None:
+              enemy_placement: dict = None) -> list:
     locked = bool(options.lock_routes)
     routes = active_routes(options)
     system = options.location_system.value
@@ -758,6 +758,7 @@ def set_rules(world: "Hades2World", player: int, options, route_offsets: dict,
             use_pred = route_boss_conditions[override][1] if override in route_boss_conditions else pred
             add_rule(location, use_pred)
     _set_shared_enemy_rules(world, player, routes, route_boss_conditions)
+    _set_spawn_slot_gates(world, player, route_boss_conditions)
 
     # The Surface route needs the Surface Access item to open the door. The Surface
     # Penalty Cure no longer gates entry: per Logic.txt you can play the early Surface
@@ -806,12 +807,13 @@ def set_rules(world: "Hades2World", player: int, options, route_offsets: dict,
     # Routes.DREAM's definition comment), and Zagreus-via-Dream was never part of this design.
     zagreus_final_zones = [ROUTES[route]["zones"][-1] for route in routes if route != DREAM]
     weaken_needed = -(-(options.zagreus_weaken_tiers.value * 3) // 5) \
-        if options.zagreus_encounter_mode.value == 1 and goal_includes(options, "zagreus") \
-        else 0   # ceil(0.6 * tiers), Empowered only, and only when the pool has Weaken items
-    add_rule(world.get_location(boss_event("Zagreus"), player),
-             lambda state, zones=zagreus_final_zones, need=weaken_needed:
-                 any(state.can_reach(z, "Region", player) for z in zones)
-                 and state.count("Progressive Zagreus Weaken", player) >= need)
+        if options.zagreus_encounter_mode.value in (1, 3) and goal_includes(options, "zagreus") \
+        else 0   # ceil(0.6 * tiers), Empowered modes only, and only when the pool has Weaken items
+    if zagreus_final_zones:     # empty on a Dream-only seed, where the event doesn't exist
+        add_rule(world.get_location(boss_event("Zagreus"), player),
+                 lambda state, zones=zagreus_final_zones, need=weaken_needed:
+                     any(state.can_reach(z, "Region", player) for z in zones)
+                     and state.count("Progressive Zagreus Weaken", player) >= need)
 
     # "Met Chronos" (user request): moved into zone 0 (Erebus) in Locations.py so its region
     # is reachable from the start of the Underworld route, same as Hecate's -- but region
@@ -865,7 +867,7 @@ def set_rules(world: "Hades2World", player: int, options, route_offsets: dict,
     except KeyError:
         pass
     else:
-        if options.zagreus_encounter_mode.value == 2 and goal_includes(options, "zagreus"):
+        if options.zagreus_encounter_mode.value in (2, 3) and goal_includes(options, "zagreus"):
             add_rule(met_zagreus, lambda state, preds=final_preds: any(pred(state) for pred in preds))
         else:
             add_rule(met_zagreus, lambda state, preds=tier1_preds: any(pred(state) for pred in preds))
@@ -878,7 +880,7 @@ def set_rules(world: "Hades2World", player: int, options, route_offsets: dict,
     # unreachable and failing generation outright. Now mirrors the "Beat Zagreus" goal event's
     # own guard just above.
     defeat_weaken_needed = options.zagreus_weaken_tiers.value \
-        if options.zagreus_encounter_mode.value == 1 and goal_includes(options, "zagreus") else 0
+        if options.zagreus_encounter_mode.value in (1, 3) and goal_includes(options, "zagreus") else 0
     try:
         zagreus_defeated = world.get_location(ZAGREUS_DEFEATED_LOCATION, player)
     except KeyError:
@@ -895,6 +897,7 @@ def set_rules(world: "Hades2World", player: int, options, route_offsets: dict,
                      and state.count("Progressive Zagreus Weaken", player) >= need)
 
     world.completion_condition[player] = lambda state: state._hades2_can_get_victory(player, options)
+    return dream_region_cleared
 
 
 def _set_room_tail_rules(world: "Hades2World", player: int, routes: list,
@@ -1026,7 +1029,10 @@ def _set_keepsake_rules(world: "Hades2World", player: int, options, routes: list
                 pass
         return found
 
-    keepsakes_active = options.keepsakesanity.value != 0
+    # keepsake_items_only: no "<NPC> Keepsake" checks, and the keepsake-count thresholds below
+    # come off the "Met <NPC>" checks too -- in that mode keepsakes gate nothing but themselves.
+    keepsakes_active = options.keepsakesanity.value != 0 \
+        and not bool(getattr(options, "keepsake_items_only", False))
 
     # KEEPSAKE_FREE gets no rule at all -- reachable at the Crossroads from the start.
 
@@ -1233,6 +1239,25 @@ def _set_shared_enemy_rules(world: "Hades2World", player: int, routes: list,
             add_rule(location,
                      lambda state, pairs=pairs: any(
                          state.can_reach(zone, "Region", player) for zone, pred in pairs))
+
+
+def _set_spawn_slot_gates(world: "Hades2World", player: int, route_boss_conditions: dict) -> None:
+    """Locations.SPAWN_SLOT_BOSS_GATE: a slot that opens only with a given zone's boss gates the
+    check it yields this seed -- the creature itself, or its shuffle target (the same relabel
+    enemy_zone_placement used) -- on that boss's zone being reachable and the boss beatable."""
+    ctx = world.worlds[player]
+    relabel = combined_relabel(getattr(ctx, "enemysanity_shuffle_map", None) or {},
+                               getattr(ctx, "miniboss_room_map", None) or {})
+    for slot, key in SPAWN_SLOT_BOSS_GATE.items():
+        if key not in route_boss_conditions:
+            continue    # that route isn't in the seed
+        zone, pred = route_boss_conditions[key]
+        try:
+            location = world.get_location(f"{relabel.get(slot, slot)} Defeated", player)
+        except KeyError:
+            continue    # enemysanity off, or a miniboss with include_minibosses off
+        add_rule(location, lambda state, z=zone, p=pred:
+                 state.can_reach(z, "Region", player) and p(state))
 
 
 def _set_per_weapon_rules(world: "Hades2World", player: int, options, routes: list) -> None:

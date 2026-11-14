@@ -542,6 +542,33 @@ item_table_progressive_filler: Dict[str, ItemData] = {
     "Starting Armor": ItemData(hades2_base_item_id + 209, False),
 }
 
+# --- Traps --------------------------------------------------------------------
+# Only ever placed in filler slots (build_filler_pool takes the trap share off the top). The mod
+# queues most of them and fires each once, mid-run; Onion Trap, Rarity Decrease and the three
+# "Starting ... Loss" items are counters instead (Traps.lua, whose ITEMS table mirrors this one).
+# Offsets 447-470 are set aside for traps.
+item_table_traps: Dict[str, ItemData] = {
+    "Sheep Trap": ItemData(hades2_base_item_id + 447, False, trap=True),
+    "Chronos Trap": ItemData(hades2_base_item_id + 448, False, trap=True),
+    "Invisible Trap": ItemData(hades2_base_item_id + 449, False, trap=True),
+    "Pause Trap": ItemData(hades2_base_item_id + 450, False, trap=True),
+    "Asphodel Trap": ItemData(hades2_base_item_id + 451, False, trap=True),
+    "Aspect Trap": ItemData(hades2_base_item_id + 452, False, trap=True),
+    "Onion Trap": ItemData(hades2_base_item_id + 453, False, trap=True),
+    "Keepsake Trap": ItemData(hades2_base_item_id + 454, False, trap=True),
+    "Rarity Decrease": ItemData(hades2_base_item_id + 455, False, trap=True),
+    "Starting Max Health Loss": ItemData(hades2_base_item_id + 456, False, trap=True),
+    "Starting Armor Loss": ItemData(hades2_base_item_id + 457, False, trap=True),
+    "Starting Mana Loss": ItemData(hades2_base_item_id + 458, False, trap=True),
+    "Eagle Trap": ItemData(hades2_base_item_id + 459, False, trap=True),
+    "Typhon Trap": ItemData(hades2_base_item_id + 460, False, trap=True),
+    "Spawn Trap": ItemData(hades2_base_item_id + 461, False, trap=True),
+    "Shield Trap": ItemData(hades2_base_item_id + 462, False, trap=True),
+    "Music Trap": ItemData(hades2_base_item_id + 463, False, trap=True),
+    "Boulder Trap": ItemData(hades2_base_item_id + 464, False, trap=True),
+    "Chaos Curse Trap": ItemData(hades2_base_item_id + 465, False, trap=True),
+}
+
 # --- Combined weapon + aspect progressives -------------------------------------
 # With AspectSanity=progressive, these replace the per-weapon unlock items and Aspect
 # items. The first "Progressive <Weapon>" unlocks that weapon and all of its Aspects;
@@ -771,6 +798,7 @@ item_table = {
     **item_table_combat_helpers,
     **item_table_extras,
     **item_table_progressive_filler,
+    **item_table_traps,
     **item_table_weapon_combine,
     **item_table_incantations,
     **items_table_event,
@@ -780,6 +808,7 @@ item_table = {
 # --- Item name groups (for yaml/plando convenience) ---------------------------
 group_weapons = {"weapons": list(item_table_weapons) + list(item_table_weapon_combine)}
 group_fillers = {"fillers": list(item_table_filler) + list(item_table_progressive_filler)}
+group_traps = {"traps": list(item_table_traps)}
 group_arcana = {"arcana": list(item_table_arcana) + list(item_table_arcana_progressive)}
 group_vows = {"vows": item_table_vows.keys()}
 group_aspects = {"aspects": item_table_aspects.keys()}
@@ -788,12 +817,21 @@ group_familiars = {"familiars": item_table_familiars.keys()}
 group_incantations = {"incantations": item_table_incantations.keys()}
 group_gods = {"gods": list(item_table_gods) + list(item_table_shop_gods)
                        + list(item_table_chaos_god) + list(item_table_god_keepsake_combined)}
+# One group per gated god, named after the god, holding both forms of its unlock. A seed with
+# GodSanity AND KeepsakeSanity=randomized only places "<God> Unlock + Keepsake", so "!hint Zeus
+# Unlock" names a real item this seed never placed and the server answers "No hints found."
+# (Tyrtle 10/4). "!hint Zeus" resolves to this group and finds whichever form the seed has.
+group_god_unlocks = {
+    god: [name for name in (f"{god} Unlock", f"{god} Unlock + Keepsake") if name in item_table]
+    for god in godsanity_gods + godsanity_shop_gods + [GODSANITY_CHAOS]
+}
 group_helper_npcs = {"helper_npcs": item_table_helper_npcs.keys()}
 group_combat_helpers = {"combat_helpers": item_table_combat_helpers.keys()}
 
 item_name_groups = {
     **group_weapons,
     **group_fillers,
+    **group_traps,
     **group_arcana,
     **group_vows,
     **group_aspects,
@@ -801,6 +839,7 @@ item_name_groups = {
     **group_familiars,
     **group_incantations,
     **group_gods,
+    **group_god_unlocks,
     **group_helper_npcs,
     **group_combat_helpers,
 }

@@ -879,7 +879,7 @@ def sell_potions(world, player):
         if shop.region.name in shop_to_location_table and shop.region.name != 'Capacity Upgrade':
             loc_choices += [world.get_location(loc, player) for loc in shop_to_location_table[shop.region.name]]
     locations = [loc for loc in loc_choices if not loc.item]
-    for potion in ['Green Potion', 'Blue Potion', 'Red Potion']:
+    for potion in ['Green Potion', 'Blue Potion', 'Red Potion', 'Bee']:
         location = random.choice(filter_locations(ItemFactory(potion, player), locations, world, potion=True))
         locations.remove(location)
         p_item = next((item for item in world.itempool if item.name == potion and item.player == player), None)

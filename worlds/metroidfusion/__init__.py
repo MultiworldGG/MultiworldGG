@@ -84,7 +84,6 @@ class MetroidFusionWorld(World):
     """
     settings: typing.ClassVar[MetroidFusionSettings]
     game = "Metroid Fusion"
-    author: str = "Rosalie"
     options_dataclass = MetroidFusionOptions
     options: MetroidFusionOptions
 
@@ -121,7 +120,7 @@ class MetroidFusionWorld(World):
     item_name_groups = {
         "MajorUpgrades": major_upgrades
     }
-    version = "1.22.4"
+    version = "1.22.7"
     debug = False
 
 
@@ -155,7 +154,7 @@ class MetroidFusionWorld(World):
                 self.starting_location_object = main_deck_hub
             self.starting_major_upgrades = 0
             self.starting_energy_tanks = 0
-            self.filler_items = None
+            self.filler_items = []
             self.open_sector_elevators = False
             self.navigation_room_hint_locks = False
         elif self.options.GameMode == self.options.GameMode.option_open_sector_hub:
@@ -165,7 +164,7 @@ class MetroidFusionWorld(World):
                 self.starting_location_object = sector_hub
             self.starting_major_upgrades = 1
             self.starting_energy_tanks = 1
-            self.filler_items = None
+            self.filler_items = []
             self.open_sector_elevators = True
             self.navigation_room_hint_locks = True
         elif self.options.GameMode == self.options.GameMode.option_custom:
@@ -244,7 +243,7 @@ class MetroidFusionWorld(World):
                         else:
                             eligible_elevators = []
                         if origin_region_data in eligible_elevators:
-                            if "Top" in connection.destination.name:
+                            if "TOP" in connection.destination.name:
                                 group = ERGroups.ELEVATOR_BOTTOM
                             else:
                                 group = ERGroups.ELEVATOR_TOP
@@ -291,8 +290,6 @@ class MetroidFusionWorld(World):
                 for source, destination in self.spoiler_region_map.items():
                     # print(f"{source} <-> {destination}")
                     logging.info(f"{source} <-> {destination}")
-            from Utils import visualize_regions
-            visualize_regions(self.get_region("Menu"), f"fusiondiagram{self.player}.puml")
 
     def build_early_progression(self):
         starting_inventory = self.options.start_inventory.value | self.options.start_inventory_from_pool.value
@@ -435,26 +432,26 @@ class MetroidFusionWorld(World):
     @staticmethod
     def create_palette_rando(seed: int):
         return {
-            "Seed": seed % 2**32,
-            "Randomize": {
-                "Samus": {
-                    "HueMin": 0,
-                    "HueMax": 360
+            "seed": seed % 2**31,
+            "randomize": {
+                "SAMUS": {
+                    "hue_min": 0,
+                    "hue_max": 360
                 },
-                "Beams": {
-                    "HueMin": 0,
-                    "HueMax": 360
+                "BEAMS": {
+                    "hue_min": 0,
+                    "hue_max": 360
                 },
-                "Enemies": {
-                    "HueMin": 0,
-                    "HueMax": 360
+                "ENEMIES": {
+                    "hue_min": 0,
+                    "hue_max": 360
                 },
-                "Tilesets": {
-                    "HueMin": 0,
-                    "HueMax": 360
+                "TILESETS": {
+                    "hue_min": 0,
+                    "hue_max": 360
                 }
             },
-            "ColorSpace": "Oklab"
+            "color_space": "OKLAB"
         }
 
     def create_navigation_text(self, hint_text: list[str], required_metroids: int):
@@ -477,111 +474,111 @@ class MetroidFusionWorld(World):
             briefing_text_addition_end = (f"Uplink at [COLOR=2]Navigation Rooms[/COLOR] along the way. "
                                        f"I can scan the station for useful equipment from there.")
         navigation_text = {
-            "English": {
-                "ShipText": {
-                    "InitialText": f"{briefing_text_addition_start}"
+            "ENGLISH": {
+                "ship_text": {
+                    "INITIAL_TEXT": f"{briefing_text_addition_start}"
                                    f"Your objective is as follows: Find enough [COLOR=3]Infant Metroids[/COLOR] "
                                    f"({required_metroids}) to lure out the SA-X. "
                                    f"Then initiate the station's self-destruct sequence. "
                                    f"{briefing_text_addition_end}"
                                    f"[OBJECTIVE]Good. Move out.",
-                    "ConfirmText": "Any objections, Lady?"
+                    "CONFIRM_TEXT": "Any objections, Lady?"
                 }
             }
         }
         if self.options.EnableHints:
             nav_room_text = {
-                    "MainDeckEast": hint_text[0],
-                    "MainDeckWest": hint_text[1],
-                    "OperationsDeck": hint_text[2],
-                    "AuxiliaryPower": hint_text[3],
-                    "RestrictedLabs": hint_text[4],
-                    "Sector1Entrance": hint_text[5],
-                    "Sector2Entrance": hint_text[6],
-                    "Sector3Entrance": hint_text[7],
-                    "Sector4Entrance": hint_text[8],
-                    "Sector5Entrance": hint_text[9],
-                    "Sector6Entrance": hint_text[10]
+                    "MAIN_DECK_EAST": hint_text[0],
+                    "MAIN_DECK_WEST": hint_text[1],
+                    "OPERATIONS_DECK": hint_text[2],
+                    "AUXILIARY_POWER": hint_text[3],
+                    "RESTRICTED_LABS": hint_text[4],
+                    "SECTOR_1_ENTRANCE": hint_text[5],
+                    "SECTOR_2_ENTRANCE": hint_text[6],
+                    "SECTOR_3_ENTRANCE": hint_text[7],
+                    "SECTOR_4_ENTRANCE": hint_text[8],
+                    "SECTOR_5_ENTRANCE": hint_text[9],
+                    "SECTOR_6_ENTRANCE": hint_text[10]
                 }
         else:
             nav_room_text = {
-                    "MainDeckEast": "No hint data available.",
-                    "MainDeckWest": "No hint data available.",
-                    "OperationsDeck": "No hint data available.",
-                    "AuxiliaryPower": "No hint data available.",
-                    "RestrictedLabs": "No hint data available.",
-                    "Sector1Entrance": "No hint data available.",
-                    "Sector2Entrance": "No hint data available.",
-                    "Sector3Entrance": "No hint data available.",
-                    "Sector4Entrance": "No hint data available.",
-                    "Sector5Entrance": "No hint data available.",
-                    "Sector6Entrance": "No hint data available."
+                    "MAIN_DECK_EAST": "No hint data available.",
+                    "MAIN_DECK_WEST": "No hint data available.",
+                    "OPERATIONS_DECK": "No hint data available.",
+                    "AUXILIARY_POWER": "No hint data available.",
+                    "RESTRICTED_LABS": "No hint data available.",
+                    "SECTOR_1_ENTRANCE": "No hint data available.",
+                    "SECTOR_2_ENTRANCE": "No hint data available.",
+                    "SECTOR_3_ENTRANCE": "No hint data available.",
+                    "SECTOR_4_ENTRANCE": "No hint data available.",
+                    "SECTOR_5_ENTRANCE": "No hint data available.",
+                    "SECTOR_6_ENTRANCE": "No hint data available."
                 }
-        navigation_text["English"]["NavigationTerminals"] = nav_room_text
+        navigation_text["ENGLISH"]["navigation_terminals"] = nav_room_text
         return navigation_text
 
     @staticmethod
     def build_door_dict():
         return [
         {
-            "Area": 0,
-            "Door": 51,
-            "LockType": "Open"
+            "area": 0,
+            "door": 51,
+            "lock_type": "OPEN"
         },
         {
-            "Area": 0,
-            "Door": 57,
-            "LockType": "Open"
+            "area": 0,
+            "door": 57,
+            "lock_type": "OPEN"
         },
         {
-            "Area": 0,
-            "Door": 52,
-            "LockType": "Open"
+            "area": 0,
+            "door": 52,
+            "lock_type": "OPEN"
         },
         {
-            "Area": 0,
-            "Door": 53,
-            "LockType": "Open"
+            "area": 0,
+            "door": 53,
+            "lock_type": "OPEN"
         },
         {
-            "Area": 0,
-            "Door": 54,
-            "LockType": "Open"
+            "area": 0,
+            "door": 54,
+            "lock_type": "OPEN"
         },
         {
-            "Area": 0,
-            "Door": 55,
-            "LockType": "Open"
+            "area": 0,
+            "door": 55,
+            "lock_type": "OPEN"
         },
         {
-            "Area": 0,
-            "Door": 56,
-            "LockType": "Open"
+            "area": 0,
+            "door": 56,
+            "lock_type": "OPEN"
         },
         {
-            "Area": 0,
-            "Door": 58,
-            "LockType": "Open"
+            "area": 0,
+            "door": 58,
+            "lock_type": "OPEN"
         },
         {
-            "Area": 0,
-            "Door": 59,
-            "LockType": "Open"
+            "area": 0,
+            "door": 59,
+            "lock_type": "OPEN"
         },
         {
-            "Area": 0,
-            "Door": 60,
-            "LockType": "Open"
+            "area": 0,
+            "door": 60,
+            "lock_type": "OPEN"
         },
         {
-            "Area": 0,
-            "Door": 61,
-            "LockType": "Open"
+            "area": 0,
+            "door": 61,
+            "lock_type": "OPEN"
         },
         {
-            "Area": 0,
-            "Door": 62,
-            "LockType": "Open"
+            "area": 0,
+            "door": 62,
+            "lock_type": "OPEN"
         }
     ]
 
@@ -592,75 +589,75 @@ class MetroidFusionWorld(World):
     def build_credits_text() -> list[dict]:
         return [
             {
-                "LineType": "White2",
-                "Text": "",
-                "BlankLines": 2
+                "line_type": "WHITE_BIG",
+                "text": "",
+                "blank_lines": 2
             },
             {
-                "LineType": "Blue",
-                "Text": "Archipelago Integration",
-                "BlankLines": 1
+                "line_type": "BLUE",
+                "text": "Archipelago Integration",
+                "blank_lines": 1
             },
             {
-                "LineType": "White2",
-                "Text": "Rosalie",
-                "BlankLines": 1
+                "line_type": "WHITE_BIG",
+                "text": "Rosalie",
+                "blank_lines": 1
             },
             {
-                "LineType": "White2",
-                "Text": "CRIT MAGNET",
-                "BlankLines": 1
+                "line_type": "WHITE_BIG",
+                "text": "CRIT MAGNET",
+                "blank_lines": 1
             },
             {
-                "LineType": "White2",
-                "Text": "JaggerG",
-                "BlankLines": 1
+                "line_type": "WHITE_BIG",
+                "text": "JaggerG",
+                "blank_lines": 1
             },
             {
-                "LineType": "White2",
-                "Text": "Palm__",
-                "BlankLines": 2
+                "line_type": "WHITE_BIG",
+                "text": "Palm__",
+                "blank_lines": 2
             },
             {
-                "LineType": "White1",
-                "Text": "And the AP community",
-                "BlankLines": 4
+                "line_type": "WHITE",
+                "text": "And the AP community",
+                "blank_lines": 4
             },
         ]
 
     def build_nav_locks_dict(self):
         if not self.navigation_room_hint_locks:
             return {
-                "MainDeckWest": "OPEN",
-                "MainDeckEast": "OPEN",
-                "OperationsDeck": "OPEN",
-                "Sector1Entrance": "OPEN",
-                "Sector2Entrance": "OPEN",
-                "Sector3Entrance": "OPEN",
-                "Sector4Entrance": "OPEN",
-                "Sector5Entrance": "OPEN",
-                "Sector6Entrance": "OPEN",
-                "AuxiliaryPower": "OPEN",
-                "RestrictedLabs": "OPEN"
+                "MAIN_DECK_WEST": "OPEN",
+                "MAIN_DECK_EAST": "OPEN",
+                "OPERATIONS_DECK": "OPEN",
+                "SECTOR_1_ENTRANCE": "OPEN",
+                "SECTOR_2_ENTRANCE": "OPEN",
+                "SECTOR_3_ENTRANCE": "OPEN",
+                "SECTOR_4_ENTRANCE": "OPEN",
+                "SECTOR_5_ENTRANCE": "OPEN",
+                "SECTOR_6_ENTRANCE": "OPEN",
+                "AUXILIARY_POWER": "OPEN",
+                "RESTRICTED_LABS": "OPEN"
             }
         else:
             return {
-                "MainDeckWest": "OPEN",
-                "MainDeckEast": "OPEN",
-                "OperationsDeck": "OPEN",
-                "Sector1Entrance": "BLUE",
-                "Sector2Entrance": "BLUE",
-                "Sector3Entrance": "GREEN",
-                "Sector4Entrance": "GREEN",
-                "Sector5Entrance": "YELLOW",
-                "Sector6Entrance": "YELLOW",
-                "AuxiliaryPower": "OPEN",
-                "RestrictedLabs": "OPEN"
+                "MAIN_DECK_WEST": "OPEN",
+                "MAIN_DECK_EAST": "OPEN",
+                "OPERATIONS_DECK": "OPEN",
+                "SECTOR_1_ENTRANCE": "BLUE",
+                "SECTOR_2_ENTRANCE": "BLUE",
+                "SECTOR_3_ENTRANCE": "GREEN",
+                "SECTOR_4_ENTRANCE": "GREEN",
+                "SECTOR_5_ENTRANCE": "YELLOW",
+                "SECTOR_6_ENTRANCE": "YELLOW",
+                "AUXILIARY_POWER": "OPEN",
+                "RESTRICTED_LABS": "OPEN"
             }
 
     def build_sector_connections(self):
         return {
-            "LeftAreas": [
+            "left_areas": [
                 sector_tube_id_lookups[self.region_map[Sector1TubeLeft.name]],
                 sector_tube_id_lookups[self.region_map[Sector2TubeLeft.name]],
                 sector_tube_id_lookups[self.region_map[Sector3TubeLeft.name]],
@@ -668,7 +665,7 @@ class MetroidFusionWorld(World):
                 sector_tube_id_lookups[self.region_map[Sector5TubeLeft.name]],
                 sector_tube_id_lookups[self.region_map[Sector6TubeLeft.name]],
             ],
-            "RightAreas": [
+            "right_areas": [
                 sector_tube_id_lookups[self.region_map[Sector1TubeRight.name]],
                 sector_tube_id_lookups[self.region_map[Sector2TubeRight.name]],
                 sector_tube_id_lookups[self.region_map[Sector3TubeRight.name]],
@@ -680,29 +677,29 @@ class MetroidFusionWorld(World):
 
     def build_elevator_connections(self):
         return {
-            "ElevatorTops": {
-                "OperationsDeckTop": elevator_id_lookups[self.region_map[OperationsDeckElevatorTop.name]],
-                "MainHubToSector1": elevator_id_lookups[self.region_map[SectorHubElevator1Top.name]],
-                "MainHubToSector2": elevator_id_lookups[self.region_map[SectorHubElevator2Top.name]],
-                "MainHubToSector3": elevator_id_lookups[self.region_map[SectorHubElevator3Top.name]],
-                "MainHubToSector4": elevator_id_lookups[self.region_map[SectorHubElevator4Top.name]],
-                "MainHubToSector5": elevator_id_lookups[self.region_map[SectorHubElevator5Top.name]],
-                "MainHubToSector6": elevator_id_lookups[self.region_map[SectorHubElevator6Top.name]],
-                "MainHubTop": elevator_id_lookups[self.region_map[SectorHubElevatorTop.name]],
-                "HabitationDeckTop": elevator_id_lookups[self.region_map[HabitationDeckElevatorTop.name]],
-                "Sector1ToRestrictedLab": elevator_id_lookups[self.region_map[Sector1TourianHubElevatorTop.name]]
+            "elevator_tops": {
+                "OPERATIONS_DECK_TOP": elevator_id_lookups[self.region_map[OperationsDeckElevatorTop.name]],
+                "MAIN_HUB_TO_SECTOR_1": elevator_id_lookups[self.region_map[SectorHubElevator1Top.name]],
+                "MAIN_HUB_TO_SECTOR_2": elevator_id_lookups[self.region_map[SectorHubElevator2Top.name]],
+                "MAIN_HUB_TO_SECTOR_3": elevator_id_lookups[self.region_map[SectorHubElevator3Top.name]],
+                "MAIN_HUB_TO_SECTOR_4": elevator_id_lookups[self.region_map[SectorHubElevator4Top.name]],
+                "MAIN_HUB_TO_SECTOR_5": elevator_id_lookups[self.region_map[SectorHubElevator5Top.name]],
+                "MAIN_HUB_TO_SECTOR_6": elevator_id_lookups[self.region_map[SectorHubElevator6Top.name]],
+                "MAIN_HUB_TOP": elevator_id_lookups[self.region_map[SectorHubElevatorTop.name]],
+                "HABITATION_DECK_TOP": elevator_id_lookups[self.region_map[HabitationDeckElevatorTop.name]],
+                "SECTOR_1_TO_RESTRICTED_LAB": elevator_id_lookups[self.region_map[Sector1TourianHubElevatorTop.name]]
             },
-            "ElevatorBottoms": {
-                "OperationsDeckBottom": elevator_id_lookups[self.region_map[OperationsDeckElevatorBottom.name]],
-                "MainHubBottom": elevator_id_lookups[self.region_map[SectorHubElevatorBottom.name]],
-                "RestrictedLabToSector1": elevator_id_lookups[self.region_map[Sector6RestrictedZoneElevatorToTourian.name]],
-                "HabitationDeckBottom": elevator_id_lookups[self.region_map[HabitationDeckElevatorBottom.name]],
-                "Sector1ToMainHub": elevator_id_lookups[self.region_map[Sector1Hub.name]],
-                "Sector2ToMainHub": elevator_id_lookups[self.region_map[Sector2Hub.name]],
-                "Sector3ToMainHub": elevator_id_lookups[self.region_map[Sector3Hub.name]],
-                "Sector4ToMainHub": elevator_id_lookups[self.region_map[Sector4Hub.name]],
-                "Sector5ToMainHub": elevator_id_lookups[self.region_map[Sector5Hub.name]],
-                "Sector6ToMainHub": elevator_id_lookups[self.region_map[Sector6Hub.name]]
+            "elevator_bottoms": {
+                "OPERATIONS_DECK_BOTTOM": elevator_id_lookups[self.region_map[OperationsDeckElevatorBottom.name]],
+                "MAIN_HUB_BOTTOM": elevator_id_lookups[self.region_map[SectorHubElevatorBottom.name]],
+                "RESTRICTED_LAB_TO_SECTOR_1": elevator_id_lookups[self.region_map[Sector6RestrictedZoneElevatorToTourian.name]],
+                "HABITATION_DECK_BOTTOM": elevator_id_lookups[self.region_map[HabitationDeckElevatorBottom.name]],
+                "SECTOR_1_TO_MAIN_HUB": elevator_id_lookups[self.region_map[Sector1Hub.name]],
+                "SECTOR_2_TO_MAIN_HUB": elevator_id_lookups[self.region_map[Sector2Hub.name]],
+                "SECTOR_3_TO_MAIN_HUB": elevator_id_lookups[self.region_map[Sector3Hub.name]],
+                "SECTOR_4_TO_MAIN_HUB": elevator_id_lookups[self.region_map[Sector4Hub.name]],
+                "SECTOR_5_TO_MAIN_HUB": elevator_id_lookups[self.region_map[Sector5Hub.name]],
+                "SECTOR_6_TO_MAIN_HUB": elevator_id_lookups[self.region_map[Sector6Hub.name]]
             }
         }
 
@@ -769,18 +766,18 @@ class MetroidFusionWorld(World):
 
 
         return {
-            "Energy": energy,
-            "Abilities": abilities,
-            "SecurityLevels": security_levels,
-            "DownloadedMaps": [0, 1, 2, 3, 4, 5, 6],
-            "Missiles": missiles,
-            "PowerBombs": power_bombs
+            "energy": energy,
+            "abilities": abilities,
+            "security_levels": security_levels,
+            "downloaded_maps": [0, 1, 2, 3, 4, 5, 6],
+            "missiles": missiles,
+            "power_bombs": power_bombs
         }
 
     def generate_output(self, output_directory: str):
         patch_dict = dict()
-        patch_dict["SeedHash"] = str(self.multiworld.seed)[:8]
-        patch_dict["Locations"] = {"MajorLocations": [], "MinorLocations": []}
+        patch_dict["seed_hash"] = str(self.multiworld.seed)[:8]
+        patch_dict["locations"] = {"major_locations": [], "minor_locations": []}
 
         for location in self.get_locations():
             # Victory location isn't real and can't hurt you.
@@ -790,13 +787,13 @@ class MetroidFusionWorld(World):
             item_sprite = None
             if location.item.player == self.player:
                 item_name = ap_name_to_mars_name[location.item.name]
-                if item_name == "None":   # Empty items, when we implement them,
-                    item_sprite = "Empty" # have a different sprite name than item name
+                if item_name == "NONE":   # Empty items, when we implement them,
+                    item_sprite = "EMPTY" # have a different sprite name than item name
                 else:
                     item_sprite = item_name
                 message = None # A None message leaves the default Fusion message.
             else:
-                item_name = "None" # Remote items shouldn't give anything ingame.
+                item_name = "NONE" # Remote items shouldn't give anything ingame.
                 message = build_item_message(location.item.name, self.multiworld.player_name[location.item.player])
                 # Check if the item is in the list of eligible offworld items we can use a Fusion sprite for.
                 game = self.multiworld.worlds[location.item.player].game
@@ -822,64 +819,66 @@ class MetroidFusionWorld(World):
                         message = build_shiny_item_message(location.item.name)
             json_data = location_data.to_json(item_name, item_sprite, location.item.classification)
             if message is not None:
-                json_data["ItemMessages"] = message
+                json_data["item_messages"] = message
             if location_data.major:
-                patch_dict["Locations"]["MajorLocations"].append(json_data)
+                patch_dict["locations"]["major_locations"].append(json_data)
             else:
-                patch_dict["Locations"]["MinorLocations"].append(json_data)
+                patch_dict["locations"]["minor_locations"].append(json_data)
 
         infant_metroids_required = self.options.InfantMetroidsRequired.value
         if infant_metroids_required > self.options.InfantMetroidsInPool.value:
             infant_metroids_required = self.options.InfantMetroidsInPool.value
 
-        patch_dict["RequiredMetroidCount"] = infant_metroids_required
-        patch_dict["RevealHiddenTiles"] = bool(self.options.RevealHiddenBlocks.value)
-        patch_dict["DisableDemos"] = True
-        patch_dict["SkipDoorTransitions"] = bool(self.options.FastDoorTransitions.value)
-        patch_dict["UnexploredMap"] = True
-        patch_dict["RoomNames"] = room_names
-        patch_dict["TitleText"] = [{"Text": "         Archipelago", "LineNum": 12}]
-        patch_dict["CreditsText"] = self.build_credits_text()
-        patch_dict["NerfGerons"] = bool(self.options.NerfGeronWeaknesses.value)
+        patch_dict["required_metroid_count"] = infant_metroids_required
+        patch_dict["reveal_hidden_tiles"] = bool(self.options.RevealHiddenBlocks.value)
+        patch_dict["disable_demos"] = True
+        patch_dict["skip_door_transitions"] = bool(self.options.FastDoorTransitions.value)
+        patch_dict["unexplored_map"] = True
+        patch_dict["room_names"] = room_names
+        patch_dict["title_text"] = [{"text": "         Archipelago", "line_num": 12}]
+        patch_dict["credits_text"] = self.build_credits_text()
+        patch_dict["nerf_gerons"] = bool(self.options.NerfGeronWeaknesses.value)
 
         if self.options.PaletteRandomization:
-            patch_dict["Palettes"] = self.create_palette_rando(self.multiworld.seed)
+            patch_dict["palettes"] = self.create_palette_rando(self.multiworld.seed)
         if self.options.EnableHints:
             if self.hint_text is None:
                 self.hint_text, self.hint_pairs = create_hints(self)
-            patch_dict["NavigationText"] = self.create_navigation_text(
+            patch_dict["navigation_text"] = self.create_navigation_text(
                 self.hint_text,
                 infant_metroids_required)
         else:
-            patch_dict["NavigationText"] = self.create_navigation_text([], infant_metroids_required)
+            patch_dict["navigation_text"] = self.create_navigation_text([], infant_metroids_required)
         if len(self.options.start_inventory.value) > 0 or len(self.options.start_inventory_from_pool.value) > 0:
-            patch_dict["StartingItems"] = self.build_starting_items_dict()
-        patch_dict["TankIncrements"] = {
-            "MissileTank": self.options.MissileTankAmmo.value,
-            "PowerBombTank": self.options.PowerBombTankAmmo.value,
-            "EnergyTank": 100,
-            "MissileData": self.options.MissileDataAmmo.value,
-            "PowerBombData": self.options.PowerBombDataAmmo.value
+            patch_dict["starting_items"] = self.build_starting_items_dict()
+        patch_dict["tank_increments"] = {
+            "missile_tank": self.options.MissileTankAmmo.value,
+            "power_bomb_tank": self.options.PowerBombTankAmmo.value,
+            "energy_tank": 100,
+            "missile_data": self.options.MissileDataAmmo.value,
+            "power_bomb_data": self.options.PowerBombDataAmmo.value
         }
 
         if self.open_sector_elevators:
-            patch_dict["DoorLocks"] = self.build_door_dict()
+            patch_dict["door_locks"] = self.build_door_dict()
 
-        patch_dict["StartingLocation"] = self.build_starting_location_dict()
+        patch_dict["starting_location"] = self.build_starting_location_dict()
 
-        patch_dict["NavStationLocks"] = self.build_nav_locks_dict()
+        patch_dict["nav_station_locks"] = self.build_nav_locks_dict()
 
-        patch_dict["GenerationVersion"] = MetroidFusionWorld.version
+        patch_dict["generation_version"] = MetroidFusionWorld.version
+        patch_dict["minimum_compatible_version"] = \
+                MetroidFusionProcedurePatch.minimum_patch_version.as_simple_string()
 
-        patch_dict["SectorShortcuts"] = self.build_sector_connections()
-        patch_dict["ElevatorConnections"] = self.build_elevator_connections()
+        patch_dict["sector_shortcuts"] = self.build_sector_connections()
+        patch_dict["elevator_connections"] = self.build_elevator_connections()
 
         rom_name_text = f'MFU{Utils.__version__.replace(".", "")[0:3]}_{self.player}_{self.multiworld.seed:11}'
         rom_name_text = rom_name_text[:20]
         rom_name = bytearray(rom_name_text, 'utf-8')
         rom_name.extend([0] * (20 - len(rom_name)))
-        patch_dict["RomName"] = f'MFU{Utils.__version__.replace(".", "")[0:3]}_{self.player}_{self.multiworld.seed:11}'
-        patch_dict["OutputFile"] = f'{self.multiworld.get_out_file_name_base(self.player)}' + '.gba'
+        patch_dict["rom_name"] = f'MFU{Utils.__version__.replace(".", "")[0:3]}_{self.player}_{self.multiworld.seed:11}'
+        patch_dict["output_file"] = f'{self.multiworld.get_out_file_name_base(self.player)}' + '.gba'
 
         # Our actual patch is just a set of instructions and data for MARS to use.
         patch = MetroidFusionProcedurePatch(player=self.player, player_name=self.player_name)
@@ -916,17 +915,17 @@ class MetroidFusionWorld(World):
             infant_metroids_required = self.options.InfantMetroidsInPool.value
         if self.options.EnableHints:
             hint_data = {
-                "MainDeckEast": self.get_hint(self.hint_pairs[0]),
-                "MainDeckWest": self.get_hint(self.hint_pairs[1]),
-                "OperationsDeck": self.get_hint(self.hint_pairs[2]),
-                "AuxiliaryPower": self.get_hint(self.hint_pairs[3]),
-                "RestrictedLabs": self.get_hint(self.hint_pairs[4]),
-                "Sector1Entrance": self.get_hint(self.hint_pairs[5]),
-                "Sector2Entrance": self.get_hint(self.hint_pairs[6]),
-                "Sector3Entrance": self.get_hint(self.hint_pairs[7]),
-                "Sector4Entrance": self.get_hint(self.hint_pairs[8]),
-                "Sector5Entrance": self.get_hint(self.hint_pairs[9]),
-                "Sector6Entrance": self.get_hint(self.hint_pairs[10])
+                "MAIN_DECK_EAST": self.get_hint(self.hint_pairs[0]),
+                "MAIN_DECK_WEST": self.get_hint(self.hint_pairs[1]),
+                "OPERATIONS_DECK": self.get_hint(self.hint_pairs[2]),
+                "AUXILIARY_POWER": self.get_hint(self.hint_pairs[3]),
+                "RESTRICTED_LABS": self.get_hint(self.hint_pairs[4]),
+                "SECTOR_1_ENTRANCE": self.get_hint(self.hint_pairs[5]),
+                "SECTOR_2_ENTRANCE": self.get_hint(self.hint_pairs[6]),
+                "SECTOR_3_ENTRANCE": self.get_hint(self.hint_pairs[7]),
+                "SECTOR_4_ENTRANCE": self.get_hint(self.hint_pairs[8]),
+                "SECTOR_5_ENTRANCE": self.get_hint(self.hint_pairs[9]),
+                "SECTOR_6_ENTRANCE": self.get_hint(self.hint_pairs[10])
             }
         return {
             "Hints": hint_data,

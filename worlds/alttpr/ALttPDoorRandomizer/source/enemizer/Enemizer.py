@@ -333,8 +333,21 @@ def randomize_underworld_rooms(data_tables, world, player, custom_uw):
                 data_tables.room_headers[room_id].sprite_sheet = chosen_sheet.id - 0x40
                 candidate_sprites = get_possible_enemy_sprites(room_id, chosen_sheet, uw_candidates, data_tables)
                 randomized = True
-                # wallmaster in hera basement throws off hera basement key code
-                wallmaster_chosen = room_id in {0x0039, 0x0049, 0x0056, 0x0057, 0x0068, 0x0087, 0x008d}
+                # wallmaster in hera basement throws off hera basement and key drop key codes
+                wallmaster_chosen = room_id in {0x0039, 0x0049, 0x0056, 0x0057, 0x0068, 0x0087, 0x008d,
+                                                0x000e,  # IP Entrance
+                                                0x0021,  # HC Key Rat
+                                                0x00b6,  # TR Chain Chomps
+                                                0x003d,  # GT Mini Helmasaur
+                                                0x003e,  # IP Stalfos/conveyor
+                                                0x00d5,  # TR Pokey 2
+                                                0x0071,  # HC Map Chest
+                                                0x0072,  # HC Boomerang Chest
+                                                0x0080,  # HC Zelda's Cell
+                                                0x0099,  # EP Eyegore
+                                                0x00b0,  # CT Circle of Pots
+                                                0x00c0,  # CT Dark Bridge
+                                                0x00c1}  # Mire Compass supertile
                 for i, sprite in randomizeable_sprites.items():
                     use_custom = False
                     if room_id in custom_uw and i in custom_uw[room_id]:

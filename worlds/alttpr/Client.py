@@ -20,6 +20,7 @@ ROM_PLAYER_LIMIT = 255
 class ALttPRSNIClient(SNIClient):
     game = "The Legend of Zelda: A Link to the Past"
     patch_suffix = ".apalttpr"
+    missing_blind_maiden = False
 
 
     async def get_rom_name(self, ctx: SNIContext) -> str:
@@ -94,7 +95,8 @@ class ALttPRSNIClient(SNIClient):
 
     def on_package(self, ctx: SNIContext, cmd: str, args: Dict[str, Any]) -> None:
         # TODO: Get items from server
-        pass
+        if cmd == "Connected":
+            self.missing_blind_maiden = args["slot_data"]["bosses"]["1"]["Thieves Town"] != "Blind"
 
 
     def should_collect(self, ctx, location_id: int) -> bool:
@@ -242,6 +244,11 @@ class ALttPRSNIClient(SNIClient):
             sprite_items_data = await snes_read(ctx, RomAddresses.SPRITE_ITEMS_SRAM_START, RomAddresses.ITEM_SRAM_SIZE)
             if sprite_items_data is not None:
                 for location, (offset, mask) in RomAddresses.location_table_sprite_items.items():
+                    if offset == 0x8a and self.missing_blind_maiden:
+                        # The Blind Maiden is missing in Thieves Town if Blind isn't the boss,
+                        # causing the sprite indices to be off by one
+                        mask = mask << 1
+
                     sprite_value = sprite_items_data[offset] | (sprite_items_data[offset + 1] << 8)
                     if sprite_value & mask != 0 and location not in ctx.locations_checked:
                         new_check(Regions.lookup_name_to_id[location])

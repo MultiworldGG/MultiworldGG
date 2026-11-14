@@ -479,17 +479,23 @@ def build_pokemon_pool_index(world: "PokemonCrystalWorld"):
     }
 
 
+def evolution_level(world: "PokemonCrystalWorld", evo) -> int | None:
+    """The level an evolution is treated as triggering at; non-level evolutions use the target's BST / 15."""
+    if evo.evo_type in (EvolutionType.Level, EvolutionType.Stats):
+        return evo.level
+    return min(world.generated_pokemon[evo.pokemon].bst // 15, world.options.maximum_evolution_level.value)
+
+
 def _level_evolutions(world: "PokemonCrystalWorld", pokemon: str, level: int):
     """Evolutions of a species that would have triggered by the given level."""
     return [evo for evo in world.generated_pokemon[pokemon].evolutions
-            if evo.evo_type in (EvolutionType.Level, EvolutionType.Stats)
-            and evo.level is not None and evo.level <= level]
+            if (evo_level := evolution_level(world, evo)) is not None and evo_level <= level]
 
 
 def get_evolution_at_level(world: "PokemonCrystalWorld", pokemon: str, level: int) -> str:
     """
     Returns the Pokemon this species would have naturally evolved into by the given level.
-    If more than one level evolution is available, one is picked at random
+    If more than one evolution is available, one is picked at random
     """
     evolutions = _level_evolutions(world, pokemon, level)
     if not evolutions:

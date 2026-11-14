@@ -856,7 +856,7 @@ class PhantomHourglassClient(DSZeldaClient):
                                     if self.location_name_to_id[loc] not in ctx.checked_locations:
                                         has_spirits = False
                                 printl(f"\t\tProgressive Spirits < 3: {spirit_pool} {has_spirits}")
-                        elif spirit_pool[0].endswith("(Progressive)"):
+                        elif spirit_pool and spirit_pool[0].endswith("(Progressive)"):
                             has_spirits = all([self.item_count(ctx, i) for i in spirit_pool])
                             for loc in ctx.slot_data["required_dungeon_locations"]:
                                 if self.location_name_to_id[loc] not in ctx.checked_locations:

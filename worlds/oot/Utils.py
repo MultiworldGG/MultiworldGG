@@ -8,6 +8,8 @@ import zipfile
 from functools import lru_cache
 
 OOT_PLAYER_NAME_LENGTH = 8
+AP_DISPLAY_NAME_LENGTH = 16
+AP_DISPLAY_NAME_SIZE = 20  # 16 message characters, NUL, and padding to whole words.
 OOT_PLAYER_NAME_PAD = 0xDF
 OOT_PLAYER_NAME_CHARACTERS = {
     **{str(i): i for i in range(10)},
@@ -34,6 +36,14 @@ def encode_oot_player_name(name: str, max_length: int = OOT_PLAYER_NAME_LENGTH) 
 
     encoded.extend([OOT_PLAYER_NAME_PAD] * (max_length - len(encoded)))
     return encoded
+
+
+def encode_ap_display_name(name: str) -> bytes:
+    # Message characters, not the save-file alphabet. Never allow a name to
+    # inject message control codes; unsupported Unicode becomes a visible '?'.
+    safe = ''.join(c if 0x20 <= ord(c) <= 0x7D else '?' for c in name.strip())
+    safe = safe[:AP_DISPLAY_NAME_LENGTH].rstrip() or 'Player'
+    return safe.encode('ascii').ljust(AP_DISPLAY_NAME_SIZE, b'\0')
 
 
 def _is_apworld_archive(path):

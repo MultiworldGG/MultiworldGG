@@ -20,6 +20,7 @@ from .lore_tablets import (
     ADDITIONAL_LORE_TABLET_SOURCES,
     LORE_TABLET_CATEGORY,
     LORE_TABLET_LOCATION_NAMES,
+    THREAD_MEMORY_LOCATION_NAMES,
 )
 from .minor_caches import (
     MINOR_CACHE_LOCATION_NAMES,
@@ -912,6 +913,12 @@ PALE_OIL_LOCATION_NAMES: tuple[str, ...] = tuple(
 PINMASTER_OIL_QUEST_LOCATION = "Wish: Pinmaster's Oil"
 VOLATILE_FLINTBEETLES_QUEST_LOCATION = 'Wish: Volatile Flintbeetles'
 
+# Keep the unused festival rewards' IDs reserved.
+_RETIRED_FLEATOPIA_LOCATIONS = (
+    "Fleatopia - Rosary Necklace",
+    "Fleatopia - Rosary String",
+)
+
 _LOCATION_TABLE_SOURCE_UNNORMALIZED: tuple[tuple[str, str], ...] = tuple(
     (canonicalize_location_name(source_name), category)
     for source_name, category in CURRENT_LOCATION_SOURCE_ROWS_WITH_QUESTS
@@ -923,7 +930,8 @@ _LOCATION_TABLE_SOURCE_UNNORMALIZED: tuple[tuple[str, str], ...] = tuple(
     for location_name in PALE_OIL_LOCATION_NAMES
 ) + tuple(
     (location_name, 'Resource')
-    for location_name in MINOR_PICKUP_LOCATION_NAMES
+    for location_name in (*MINOR_PICKUP_LOCATION_NAMES[:2],
+                          *_RETIRED_FLEATOPIA_LOCATIONS, *MINOR_PICKUP_LOCATION_NAMES[2:])
 ) + tuple(
     (location_name, 'Resource')
     for location_name in MINOR_CACHE_LOCATION_NAMES
@@ -1095,14 +1103,14 @@ from .boss_journal import ITEM_BY_LOCATION as JOURNAL_ITEMS
 _LOCATION_TABLE_SOURCE_UNNORMALIZED += tuple((name, "Journal") for name in JOURNAL_ITEMS)
 _LOCATION_TABLE_SOURCE_UNNORMALIZED += tuple((source.location_name, LORE_TABLET_CATEGORY) for source in ADDITIONAL_LORE_TABLET_SOURCES[:1])
 _LOCATION_TABLE_SOURCE_UNNORMALIZED += (("Boss: Lace (Deep Docks)", "Boss"),)
-_LOCATION_TABLE_SOURCE_UNNORMALIZED += tuple((source.location_name, LORE_TABLET_CATEGORY) for source in ADDITIONAL_LORE_TABLET_SOURCES[1:])
+_LOCATION_TABLE_SOURCE_UNNORMALIZED += tuple((source.location_name, LORE_TABLET_CATEGORY) for source in ADDITIONAL_LORE_TABLET_SOURCES[1:2])
 
 _LOCATION_TABLE_SOURCE_UNNORMALIZED += (('Loddie - Heavy Rosary Necklace', 'Resource'),)
 _LOCATION_TABLE_SOURCE_UNNORMALIZED += (('Key of Indolent', 'MajorKey'), ('Key of Heretic', 'MajorKey'))
 _LOCATION_TABLE_SOURCE_UNNORMALIZED += (('Conjoined Heart', 'OldHeart'),)
 _LOCATION_TABLE_SOURCE_UNNORMALIZED += (('Quest Completion: Broodmother Hunt', 'Resource'),)
 _LOCATION_TABLE_SOURCE_UNNORMALIZED += (('Materium', 'Materium'), ('Flintstone', 'Materium'), ('Magnetite Outcrop', 'Materium'), ('Farsight', 'Farsight'))
-_LOCATION_TABLE_SOURCE_UNNORMALIZED += (('Crow bell', 'Miscellaneous'),) + tuple(
+_LOCATION_TABLE_SOURCE_UNNORMALIZED += (('Crow bell', 'Bellhome'),) + tuple(
     (name, 'Resource') for name in MINOR_CACHE_LOCATION_NAMES
     if name in ADDITIONAL_MINOR_CACHE_LOCATION_NAMES
 )
@@ -1113,6 +1121,9 @@ _LOCATION_TABLE_SOURCE_UNNORMALIZED += (("Voltstone", "Materium"),)
 _LOCATION_TABLE_SOURCE_UNNORMALIZED += tuple((name, "Cogheart") for name in ('Choral Chambers Cogheart Piece', 'Whispering Vaults: Cogheart Piece', 'Memorimum Cogheart Piece'))
 
 _LOCATION_TABLE_SOURCE_UNNORMALIZED += tuple((name, "QuestCollectible") for name in ('Grass Doll', 'Horn Fragment', 'crown fragment', "Broodmother's Eye"))
+_LOCATION_TABLE_SOURCE_UNNORMALIZED += tuple((source.location_name, LORE_TABLET_CATEGORY) for source in ADDITIONAL_LORE_TABLET_SOURCES[2:])
+
+_LOCATION_TABLE_SOURCE_UNNORMALIZED += (("Swift rosary necklace", "Resource"),)
 
 WISH_REWARD_LOCATION_BY_COMPLETION: Mapping[str, str] = {
     "Wish: Pinmaster's Oil": canonicalize_location_name('Pinmaster Plinney: Shining Needle'),
@@ -1152,7 +1163,8 @@ location_table: Dict[str, int] = {
     )
 }
 
-RETIRED_LOCATION_NAMES = RETIRED_MINOR_CACHE_LOCATION_NAMES | {
+RETIRED_LOCATION_NAMES = RETIRED_MINOR_CACHE_LOCATION_NAMES | THREAD_MEMORY_LOCATION_NAMES | {
+    *_RETIRED_FLEATOPIA_LOCATIONS,
     "Whispering Vaults - Heavy Rosary Necklace",
     "The Slab - Weaver Gate Inscription",
 }
@@ -1170,7 +1182,6 @@ PAIRED_LOCATION_CATEGORIES: tuple[str, ...] = (
     'Memento',
     'Materium',
     'Farsight',
-    'Miscellaneous',
     'Bellhome',
     'Cogheart',
     'QuestCollectible',

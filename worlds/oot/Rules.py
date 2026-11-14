@@ -176,6 +176,9 @@ class OOTLogic(LogicMixin):
                     queue.extend(new_region.exits)
                     self.path[new_region] = (new_region.name, self.path.get(connection, None))
 
+        # APWorld change: UT enumerates disconnected exits through AP's region cache. Keep it in sync without replacing OoT's age-specific traversal and rules.
+        self.reachable_regions[player] = self.child_reachable_regions[player] | self.adult_reachable_regions[player]
+
 
 # Sets extra rules on various specific locations not handled by the rule parser.
 def set_rules(ootworld):

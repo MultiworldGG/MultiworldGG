@@ -1,7 +1,8 @@
 {
-    "game": "Digimon World",
-    "authors": ["ArsonAssassin"],
-    "minimum_ap_version": "0.6.2",
-    "compatible_version": 7,
-    "version": 7
+  "game": "Digimon World",
+  "world_version": "0.5.1",
+  "authors": ["ArsonAssassin"],
+  "minimum_ap_version": "0.6.7",
+  "compatible_version": 7,
+  "version": 7
 }

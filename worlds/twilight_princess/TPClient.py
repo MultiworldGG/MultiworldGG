@@ -7,7 +7,7 @@ import math
 from typing import TYPE_CHECKING, Any, Optional
 
 from MultiServer import mark_raw
-import dolphin_memory_engine
+import dolphin_memory_engine  # type: ignore
 
 from .ClientItemChecker import check_dungeon_item_count, check_item_count  # type: ignore
 
@@ -47,7 +47,7 @@ from .ClientUtils import ITEM_APID_BASE
 if TYPE_CHECKING:
     import kvui
 
-CONNECTION_REFUSED_GAME_STATUS = "Dolphin connected but wrong game found. Please load a ROM for Twilight Princess. Trying again in 5 seconds..."
+CONNECTION_REFUSED_GAME_STATUS = "Dolphin connected but wrong game found. Please load a ROM for Twilight Princess. Trying again in 5 seconds... Loaded ROM ID is: "
 CONNECTION_REFUSED_SAVE_STATUS = "Dolphin failed to connect. Please load into the save file. Trying again in 5 seconds..."
 CONNECTION_LOST_STATUS = "Dolphin connection was lost. Please restart your emulator and make sure Twilight Princess is running."
 CONNECTION_CONNECTED_STATUS = "Dolphin connected successfully."
@@ -77,6 +77,7 @@ LINK_POINTER_ADDR = 0x8040BF6C
 M_EVENT_STATUS_ADDR = 0x8040B16D
 
 DEBUGGING = False
+STRING_ENCODING = "latin"
 
 
 def set_address(
@@ -464,7 +465,9 @@ class TPContext(CommonContext):
         return ui
 
     def event_invalid_slot(self):
-        raise Exception("Invalid Slot; Make sure that the right seed is loaded")
+        raise Exception(
+            "Invalid Slot; Make sure that you are connecting to the right place and the right seed is loaded"
+        )
 
 
 def read_byte(console_address: int) -> int:
@@ -1519,7 +1522,10 @@ async def dolphin_sync_task(ctx: TPContext) -> None:
                                 ord("J"),
                             ]
                         ):
-                            logger.info(CONNECTION_REFUSED_GAME_STATUS)
+                            logger.info(
+                                CONNECTION_REFUSED_GAME_STATUS
+                                + read_string(0x80000000, 4)
+                            )
                             ctx.dolphin_status = CONNECTION_REFUSED_GAME_STATUS
                             dolphin_memory_engine.un_hook()
                             await asyncio.sleep(5)

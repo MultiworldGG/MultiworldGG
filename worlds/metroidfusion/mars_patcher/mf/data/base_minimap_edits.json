@@ -1,709 +1,709 @@
 {
     "0": [
         {
-            "Description": "Sector 1 Marker from Restricted Lab",
-            "X": 7,
-            "Y": 18,
-            "Tile": 172,
-            "Palette": 0
+            "description": "Sector 1 Marker from Restricted Lab",
+            "x": 7,
+            "y": 18,
+            "tile": 172,
+            "palette": 0
         },
         {
-            "Description": "Sector 1 Elevator Lines from Restricted Lab",
-            "X": 7,
-            "Y": 19,
-            "Tile": 169,
-            "Palette": 2
+            "description": "Sector 1 Elevator Lines from Restricted Lab",
+            "x": 7,
+            "y": 19,
+            "tile": 169,
+            "palette": 2
         },
         {
-            "Description": "Add Item to Quarantine Bay",
-            "X": 8,
-            "Y": 9,
-            "Tile": 386,
-            "Palette": 0
+            "description": "Add Item to Quarantine Bay",
+            "x": 8,
+            "y": 9,
+            "tile": 386,
+            "palette": 0
         },
         {
-            "Description": "Add Item to Subzero Containment",
-            "X": 9,
-            "Y": 10,
-            "Tile": 386,
-            "Palette": 0
+            "description": "Add Item to Subzero Containment",
+            "x": 9,
+            "y": 10,
+            "tile": 386,
+            "palette": 0
         },
         {
-            "Description": "Add L3 Locks to Subzero Containment",
-            "X": 10,
-            "Y": 10,
-            "Tile": 84,
-            "Palette": 0,
-            "HFlip": "True"
+            "description": "Add L3 Locks to Subzero Containment",
+            "x": 10,
+            "y": 10,
+            "tile": 84,
+            "palette": 0,
+            "h_flip": "True"
         },
         {
-            "Description": "Sector 6 Arrow from Restricted Lab",
-            "X": 10,
-            "Y": 23,
-            "Tile": 170,
-            "Palette": 0,
-            "HFlip": "True"
+            "description": "Sector 6 Arrow from Restricted Lab",
+            "x": 10,
+            "y": 23,
+            "tile": 170,
+            "palette": 0,
+            "h_flip": "True"
         },
         {
-            "Description": "Sector 6 Marker from Restricted Lab",
-            "X": 11,
-            "Y": 23,
-            "Tile": 177,
-            "Palette": 0
+            "description": "Sector 6 Marker from Restricted Lab",
+            "x": 11,
+            "y": 23,
+            "tile": 177,
+            "palette": 0
         },
         {
-            "Description": "Add L3 Locks to Dark Stairwell",
-            "X": 11,
-            "Y": 10,
-            "Tile": 117,
-            "Palette": 0,
-            "VFlip": "True"
+            "description": "Add L3 Locks to Dark Stairwell",
+            "x": 11,
+            "y": 10,
+            "tile": 117,
+            "palette": 0,
+            "v_flip": "True"
         },
         {
-            "Description": "Sector 2 Marker from Central Reactor Core",
-            "X": 14,
-            "Y": 16,
-            "Tile": 173,
-            "Palette": 0
+            "description": "Sector 2 Marker from Central Reactor Core",
+            "x": 14,
+            "y": 16,
+            "tile": 173,
+            "palette": 0
         },
         {
-            "Description": "Connector Arrow to Sector 2 from Central Reactor Core",
-            "X": 15,
-            "Y": 16,
-            "Tile": 164,
-            "Palette": 0,
-            "HFlip": "True"
+            "description": "Connector Arrow to Sector 2 from Central Reactor Core",
+            "x": 15,
+            "y": 16,
+            "tile": 164,
+            "palette": 0,
+            "h_flip": "True"
         },
         {
-            "Description": "Change Operations Deck Door from L4 to L0",
-            "X": 16,
-            "Y": 0,
-            "Tile": 299,
-            "Palette": 0,
-            "HFlip": "True"
+            "description": "Change Operations Deck Door from L4 to L0",
+            "x": 16,
+            "y": 0,
+            "tile": 299,
+            "palette": 0,
+            "h_flip": "True"
         },
         {
-            "Description": "Change Operations Deck Door from L4 to L0",
-            "X": 17,
-            "Y": 0,
-            "Tile": 293,
-            "Palette": 0
+            "description": "Change Operations Deck Door from L4 to L0",
+            "x": 17,
+            "y": 0,
+            "tile": 293,
+            "palette": 0
         },
         {
-            "Description": "Change Hidden Concourse Recharge Into Normal",
-            "X": 17,
-            "Y": 7,
-            "Tile": 344,
-            "Palette": 0
+            "description": "Change Hidden Concourse Recharge Into Normal",
+            "x": 17,
+            "y": 7,
+            "tile": 344,
+            "palette": 0
         },
         {
-            "Description": "Add Animals Event Marker",
-            "X": 9,
-            "Y": 2,
-            "Tile": 369,
-            "Palette": 0
+            "description": "Add Animals Event Marker",
+            "x": 9,
+            "y": 2,
+            "tile": 369,
+            "palette": 0
         },
         {
-            "Description": "Remove Left Of Main Elevator Vents To Cold Storage",
-            "X": 7,
-            "Y": 10,
-            "Tile": 160,
-            "Palette": 1
+            "description": "Remove Left Of Main Elevator Vents To Cold Storage",
+            "x": 7,
+            "y": 10,
+            "tile": 160,
+            "palette": 1
         },
         {
-            "Description": "Remove Right Of Main Elevator Vents To Cold Storage",
-            "X": 8,
-            "Y": 10,
-            "Tile": 160,
-            "Palette": 1
+            "description": "Remove Right Of Main Elevator Vents To Cold Storage",
+            "x": 8,
+            "y": 10,
+            "tile": 160,
+            "palette": 1
         },
         {
-            "Description": "Add Auxillary Power Event Marker",
-            "X": 20,
-            "Y": 19,
-            "Tile": 370,
-            "Palette": 2
+            "description": "Add Auxillary Power Event Marker",
+            "x": 20,
+            "y": 19,
+            "tile": 370,
+            "palette": 2
         },
         {
-            "Description": "Fix Yakuza Boss Tile",
-            "X": 21,
-            "Y": 21,
-            "Tile": 270,
-            "Palette": 2
+            "description": "Fix Yakuza Boss Tile",
+            "x": 21,
+            "y": 21,
+            "tile": 270,
+            "palette": 2
         }
     ],
     "9": [
         {
-            "Description": "Sector 1 Marker from Restricted Lab",
-            "X": 7,
-            "Y": 18,
-            "Tile": 172,
-            "Palette": 0
+            "description": "Sector 1 Marker from Restricted Lab",
+            "x": 7,
+            "y": 18,
+            "tile": 172,
+            "palette": 0
         },
         {
-            "Description": "Sector 1 Elevator Lines from Restricted Lab",
-            "X": 7,
-            "Y": 19,
-            "Tile": 169,
-            "Palette": 2
+            "description": "Sector 1 Elevator Lines from Restricted Lab",
+            "x": 7,
+            "y": 19,
+            "tile": 169,
+            "palette": 2
         },
         {
-            "Description": "Add Item to Quarantine Bay",
-            "X": 8,
-            "Y": 9,
-            "Tile": 386,
-            "Palette": 0
+            "description": "Add Item to Quarantine Bay",
+            "x": 8,
+            "y": 9,
+            "tile": 386,
+            "palette": 0
         },
         {
-            "Description": "Add Item to Subzero Containment",
-            "X": 9,
-            "Y": 10,
-            "Tile": 386,
-            "Palette": 0
+            "description": "Add Item to Subzero Containment",
+            "x": 9,
+            "y": 10,
+            "tile": 386,
+            "palette": 0
         },
         {
-            "Description": "Add L3 Locks to Subzero Containment",
-            "X": 10,
-            "Y": 10,
-            "Tile": 84,
-            "Palette": 0,
-            "HFlip": "True"
+            "description": "Add L3 Locks to Subzero Containment",
+            "x": 10,
+            "y": 10,
+            "tile": 84,
+            "palette": 0,
+            "h_flip": "True"
         },
         {
-            "Description": "Sector 6 Arrow from Restricted Lab",
-            "X": 10,
-            "Y": 23,
-            "Tile": 170,
-            "Palette": 0,
-            "HFlip": "True"
+            "description": "Sector 6 Arrow from Restricted Lab",
+            "x": 10,
+            "y": 23,
+            "tile": 170,
+            "palette": 0,
+            "h_flip": "True"
         },
         {
-            "Description": "Sector 6 Marker from Restricted Lab",
-            "X": 11,
-            "Y": 23,
-            "Tile": 177,
-            "Palette": 0
+            "description": "Sector 6 Marker from Restricted Lab",
+            "x": 11,
+            "y": 23,
+            "tile": 177,
+            "palette": 0
         },
         {
-            "Description": "Add L3 Locks to Dark Stairwell",
-            "X": 11,
-            "Y": 10,
-            "Tile": 117,
-            "Palette": 0,
-            "VFlip": "True"
+            "description": "Add L3 Locks to Dark Stairwell",
+            "x": 11,
+            "y": 10,
+            "tile": 117,
+            "palette": 0,
+            "v_flip": "True"
         },
         {
-            "Description": "Sector 2 Marker from Central Reactor Core",
-            "X": 14,
-            "Y": 16,
-            "Tile": 173,
-            "Palette": 0
+            "description": "Sector 2 Marker from Central Reactor Core",
+            "x": 14,
+            "y": 16,
+            "tile": 173,
+            "palette": 0
         },
         {
-            "Description": "Connector Arrow to Sector 2 from Central Reactor Core",
-            "X": 15,
-            "Y": 16,
-            "Tile": 164,
-            "Palette": 0,
-            "HFlip": "True"
+            "description": "Connector Arrow to Sector 2 from Central Reactor Core",
+            "x": 15,
+            "y": 16,
+            "tile": 164,
+            "palette": 0,
+            "h_flip": "True"
         },
         {
-            "Description": "Change Operations Deck Door from L4 to L0",
-            "X": 16,
-            "Y": 0,
-            "Tile": 299,
-            "Palette": 0,
-            "HFlip": "True"
+            "description": "Change Operations Deck Door from L4 to L0",
+            "x": 16,
+            "y": 0,
+            "tile": 299,
+            "palette": 0,
+            "h_flip": "True"
         },
         {
-            "Description": "Change Operations Deck Door from L4 to L0",
-            "X": 17,
-            "Y": 0,
-            "Tile": 293,
-            "Palette": 0
+            "description": "Change Operations Deck Door from L4 to L0",
+            "x": 17,
+            "y": 0,
+            "tile": 293,
+            "palette": 0
         },
         {
-            "Description": "Change Hidden Concourse Recharge Into Normal Recharge",
-            "X": 17,
-            "Y": 7,
-            "Tile": 344,
-            "Palette": 0
+            "description": "Change Hidden Concourse Recharge Into Normal Recharge",
+            "x": 17,
+            "y": 7,
+            "tile": 344,
+            "palette": 0
         },
         {
-            "Description": "Add Animals Event Marker",
-            "X": 9,
-            "Y": 2,
-            "Tile": 369,
-            "Palette": 0
+            "description": "Add Animals Event Marker",
+            "x": 9,
+            "y": 2,
+            "tile": 369,
+            "palette": 0
         },
         {
-            "Description": "Remove Left Section Of Main Elevator Vents To Cold Storage",
-            "X": 7,
-            "Y": 10,
-            "Tile": 160,
-            "Palette": 1
+            "description": "Remove Left Section Of Main Elevator Vents To Cold Storage",
+            "x": 7,
+            "y": 10,
+            "tile": 160,
+            "palette": 1
         },
         {
-            "Description": "Remove Right Section Of Main Elevator Vents To Cold Storage",
-            "X": 8,
-            "Y": 10,
-            "Tile": 160,
-            "Palette": 1
+            "description": "Remove Right Section Of Main Elevator Vents To Cold Storage",
+            "x": 8,
+            "y": 10,
+            "tile": 160,
+            "palette": 1
         },
         {
-            "Description": "Add Auxillary Power Event Marker",
-            "X": 20,
-            "Y": 19,
-            "Tile": 370,
-            "Palette": 2
+            "description": "Add Auxillary Power Event Marker",
+            "x": 20,
+            "y": 19,
+            "tile": 370,
+            "palette": 2
         },
         {
-            "Description": "Fix Yakuza Boss Tile",
-            "X": 21,
-            "Y": 21,
-            "Tile": 270,
-            "Palette": 2
+            "description": "Fix Yakuza Boss Tile",
+            "x": 21,
+            "y": 21,
+            "tile": 270,
+            "palette": 2
         }
     ],
     "1": [
         {
-            "Description": "Sector 3 Marker",
-            "X": 1,
-            "Y": 2,
-            "Tile": 174,
-            "Palette": 0
+            "description": "Sector 3 Marker",
+            "x": 1,
+            "y": 2,
+            "tile": 174,
+            "palette": 0
         },
         {
-            "Description": "Sector 3 Arrow",
-            "X": 2,
-            "Y": 2,
-            "Tile": 164,
-            "Palette": 2,
-            "HFlip": "True"
+            "description": "Sector 3 Arrow",
+            "x": 2,
+            "y": 2,
+            "tile": 164,
+            "palette": 2,
+            "h_flip": "True"
         },
         {
-            "Description": "Main Deck Elevator Lines to Restricted Lab",
-            "X": 2,
-            "Y": 13,
-            "Tile": 168,
-            "Palette": 2
+            "description": "Main Deck Elevator Lines to Restricted Lab",
+            "x": 2,
+            "y": 13,
+            "tile": 168,
+            "palette": 2
         },
         {
-            "Description": "Main Deck Marker to Restricted Lab",
-            "X": 2,
-            "Y": 14,
-            "Tile": 171,
-            "Palette": 0
+            "description": "Main Deck Marker to Restricted Lab",
+            "x": 2,
+            "y": 14,
+            "tile": 171,
+            "palette": 0
         },
         {
-            "Description": "Sector 2 Arrow",
-            "X": 9,
-            "Y": 0,
-            "Tile": 164,
-            "Palette": 2
+            "description": "Sector 2 Arrow",
+            "x": 9,
+            "y": 0,
+            "tile": 164,
+            "palette": 2
         },
         {
-            "Description": "Sector 2 Marker",
-            "X": 10,
-            "Y": 0,
-            "Tile": 173,
-            "Palette": 0
+            "description": "Sector 2 Marker",
+            "x": 10,
+            "y": 0,
+            "tile": 173,
+            "palette": 0
         },
         {
-            "Description": "Add Item to Northeast Stabilizer",
-            "X": 16,
-            "Y": 1,
-            "Tile": 390,
-            "Palette": 0,
-            "HFlip": "True"
+            "description": "Add Item to Northeast Stabilizer",
+            "x": 16,
+            "y": 1,
+            "tile": 390,
+            "palette": 0,
+            "h_flip": "True"
         },
         {
-            "Description": "Fix Lower Charge Core Access Hall",
-            "X": 12,
-            "Y": 6,
-            "Tile": 299,
-            "Palette": 0
+            "description": "Fix Lower Charge Core Access Hall",
+            "x": 12,
+            "y": 6,
+            "tile": 299,
+            "palette": 0
         },
         {
-            "Description": "Add Charge Core Boss Tile",
-            "X": 9,
-            "Y": 6,
-            "Tile": 267,
-            "Palette": 0,
-            "HFlip": "True"
+            "description": "Add Charge Core Boss Tile",
+            "x": 9,
+            "y": 6,
+            "tile": 267,
+            "palette": 0,
+            "h_flip": "True"
         }
     ],
     "2": [
         {
-            "Description": "Sector 1 Marker",
-            "X": 1,
-            "Y": 3,
-            "Tile": 172,
-            "Palette": 0
+            "description": "Sector 1 Marker",
+            "x": 1,
+            "y": 3,
+            "tile": 172,
+            "palette": 0
         },
         {
-            "Description": "Sector 1 Arrow",
-            "X": 2,
-            "Y": 3,
-            "Tile": 164,
-            "Palette": 2,
-            "HFlip": "True"
+            "description": "Sector 1 Arrow",
+            "x": 2,
+            "y": 3,
+            "tile": 164,
+            "palette": 2,
+            "h_flip": "True"
         },
         {
-            "Description": "Add Upper Level One Security Section",
-            "X": 9,
-            "Y": 0,
-            "Tile": 368,
-            "Palette": 0
+            "description": "Add Upper Level One Security Section",
+            "x": 9,
+            "y": 0,
+            "tile": 368,
+            "palette": 0
         },
         {
-            "Description": "Add Lower Level One Security Section",
-            "X": 9,
-            "Y": 1,
-            "Tile": 364,
-            "Palette": 0
+            "description": "Add Lower Level One Security Section",
+            "x": 9,
+            "y": 1,
+            "tile": 364,
+            "palette": 0
         },
         {
-            "Description": "Sector 4 Arrow",
-            "X": 12,
-            "Y": 2,
-            "Tile": 164,
-            "Palette": 2
+            "description": "Sector 4 Arrow",
+            "x": 12,
+            "y": 2,
+            "tile": 164,
+            "palette": 2
         },
         {
-            "Description": "Sector 4 Marker",
-            "X": 13,
-            "Y": 2,
-            "Tile": 175,
-            "Palette": 0
+            "description": "Sector 4 Marker",
+            "x": 13,
+            "y": 2,
+            "tile": 175,
+            "palette": 0
         },
         {
-            "Description": "Add Nettori Boss Tile",
-            "X": 13,
-            "Y": 6,
-            "Tile": 267,
-            "Palette": 2,
-            "HFlip": "True"
+            "description": "Add Nettori Boss Tile",
+            "x": 13,
+            "y": 6,
+            "tile": 267,
+            "palette": 2,
+            "h_flip": "True"
         },
         {
-            "Description": "Fix Zazabi Boss Tile",
-            "X": 14,
-            "Y": 13,
-            "Tile": 267,
-            "Palette": 2
+            "description": "Fix Zazabi Boss Tile",
+            "x": 14,
+            "y": 13,
+            "tile": 267,
+            "palette": 2
         },
         {
-            "Description": "Main Deck Arrow to Reactor Core",
-            "X": 17,
-            "Y": 8,
-            "Tile": 164,
-            "Palette": 2
+            "description": "Main Deck Arrow to Reactor Core",
+            "x": 17,
+            "y": 8,
+            "tile": 164,
+            "palette": 2
         },
         {
-            "Description": "Main Deck Marker to Reactor Core",
-            "X": 18,
-            "Y": 8,
-            "Tile": 171,
-            "Palette": 0
+            "description": "Main Deck Marker to Reactor Core",
+            "x": 18,
+            "y": 8,
+            "tile": 171,
+            "palette": 0
         }
     ],
     "3": [
         {
-            "Description": "Sector 5 Marker",
-            "X": 0,
-            "Y": 4,
-            "Tile": 176,
-            "Palette": 0
+            "description": "Sector 5 Marker",
+            "x": 0,
+            "y": 4,
+            "tile": 176,
+            "palette": 0
         },
         {
-            "Description": "Remove Extra tile left of Level Two Security",
-            "X": 2,
-            "Y": 5,
-            "Tile": 160,
-            "Palette": 0
+            "description": "Remove Extra tile left of Level Two Security",
+            "x": 2,
+            "y": 5,
+            "tile": 160,
+            "palette": 0
         },
         {
-            "Description": "Add Level Two Security Tile",
-            "X": 3,
-            "Y": 5,
-            "Tile": 365,
-            "Palette": 0
+            "description": "Add Level Two Security Tile",
+            "x": 3,
+            "y": 5,
+            "tile": 365,
+            "palette": 0
         },
         {
-            "Description": "Add Boiler Pad Event Tile",
-            "X": 3,
-            "Y": 8,
-            "Tile": 262,
-            "Palette": 0
+            "description": "Add Boiler Pad Event Tile",
+            "x": 3,
+            "y": 8,
+            "tile": 262,
+            "palette": 0
         },
         {
-            "Description": "Add Boss Marker To Boiler Control",
-            "X": 4,
-            "Y": 8,
-            "Tile": 267,
-            "Palette": 0
+            "description": "Add Boss Marker To Boiler Control",
+            "x": 4,
+            "y": 8,
+            "tile": 267,
+            "palette": 0
         },
         {
-            "Description": "Fix Entrance Recharge Room",
-            "X": 7,
-            "Y": 2,
-            "Tile": 346,
-            "Palette": 0
+            "description": "Fix Entrance Recharge Room",
+            "x": 7,
+            "y": 2,
+            "tile": 346,
+            "palette": 0
         },
         {
-            "Description": "Add Box Boss Tile Functions Similar To Serris Hallway",
-            "X": 17,
-            "Y": 3,
-            "Tile": 264,
-            "Palette": 0
+            "description": "Add Box Boss Tile Functions Similar To Serris Hallway",
+            "x": 17,
+            "y": 3,
+            "tile": 264,
+            "palette": 0
         },
         {
-            "Description": "Sector 1 Arrow",
-            "X": 18,
-            "Y": 0,
-            "Tile": 164,
-            "Palette": 2
+            "description": "Sector 1 Arrow",
+            "x": 18,
+            "y": 0,
+            "tile": 164,
+            "palette": 2
         },
         {
-            "Description": "Sector 1 Marker",
-            "X": 19,
-            "Y": 0,
-            "Tile": 172,
-            "Palette": 0
+            "description": "Sector 1 Marker",
+            "x": 19,
+            "y": 0,
+            "tile": 172,
+            "palette": 0
         }
     ],
     "4": [
         {
-            "Description": "Sector 5 Marker",
-            "X": 3,
-            "Y": 8,
-            "Tile": 176,
-            "Palette": 0
+            "description": "Sector 5 Marker",
+            "x": 3,
+            "y": 8,
+            "tile": 176,
+            "palette": 0
         },
         {
-            "Description": "Add Level Four Security Tile",
-            "X": 3,
-            "Y": 14,
-            "Tile": 366,
-            "Palette": 0
+            "description": "Add Level Four Security Tile",
+            "x": 3,
+            "y": 14,
+            "tile": 366,
+            "palette": 0
         },
         {
-            "Description": "Sector 5 Arrow",
-            "X": 4,
-            "Y": 8,
-            "Tile": 164,
-            "Palette": 2,
-            "HFlip": "True"
+            "description": "Sector 5 Arrow",
+            "x": 4,
+            "y": 8,
+            "tile": 164,
+            "palette": 2,
+            "h_flip": "True"
         },
         {
-            "Description": "Add Level Four Hatch To Security Access To Cheddar Bay",
-            "X": 4,
-            "Y": 11,
-            "Tile": 114,
-            "Palette": 0,
-            "HFlip": "True"
+            "description": "Add Level Four Hatch To Security Access To Cheddar Bay",
+            "x": 4,
+            "y": 11,
+            "tile": 114,
+            "palette": 0,
+            "h_flip": "True"
         },
         {
-            "Description": "Add Level Four Hatch To Security Access to Level Four Security",
-            "X": 4,
-            "Y": 14,
-            "Tile": 114,
-            "Palette": 0,
-            "VFlip": "True"
+            "description": "Add Level Four Hatch To Security Access to Level Four Security",
+            "x": 4,
+            "y": 14,
+            "tile": 114,
+            "palette": 0,
+            "v_flip": "True"
         },
         {
-            "Description": "Add Level Four Hatch To Cheddar Bay To Security Access",
-            "X": 5,
-            "Y": 11,
-            "Tile": 79,
-            "Palette": 0
+            "description": "Add Level Four Hatch To Cheddar Bay To Security Access",
+            "x": 5,
+            "y": 11,
+            "tile": 79,
+            "palette": 0
         },
         {
-            "Description": "Fix Top Left Serris Arena Corner",
-            "X": 10,
-            "Y": 0,
-            "Tile": 0,
-            "Palette": 0
+            "description": "Fix Top Left Serris Arena Corner",
+            "x": 10,
+            "y": 0,
+            "tile": 0,
+            "palette": 0
         },
         {
-            "Description": "Add New Serris Arena Boss Tile",
-            "X": 11,
-            "Y": 0,
-            "Tile": 266,
-            "Palette": 0
+            "description": "Add New Serris Arena Boss Tile",
+            "x": 11,
+            "y": 0,
+            "tile": 266,
+            "palette": 0
         },
         {
-            "Description": "Sector 2 Marker",
-            "X": 18,
-            "Y": 11,
-            "Tile": 173,
-            "Palette": 0
+            "description": "Sector 2 Marker",
+            "x": 18,
+            "y": 11,
+            "tile": 173,
+            "palette": 0
         },
         {
-            "Description": "Sector 2 Arrow",
-            "X": 19,
-            "Y": 11,
-            "Tile": 164,
-            "Palette": 2,
-            "HFlip": "True"
+            "description": "Sector 2 Arrow",
+            "x": 19,
+            "y": 11,
+            "tile": 164,
+            "palette": 2,
+            "h_flip": "True"
         },
         {
-            "Description": "Add Level Four Hatch To Owtch Atrium To Powamp Playhouse",
-            "X": 19,
-            "Y": 5,
-            "Tile": 240,
-            "Palette": 0,
-            "HFlip": "True"
+            "description": "Add Level Four Hatch To Owtch Atrium To Powamp Playhouse",
+            "x": 19,
+            "y": 5,
+            "tile": 240,
+            "palette": 0,
+            "h_flip": "True"
         },
         {
-            "Description": "Sector 6 Arrow",
-            "X": 22,
-            "Y": 5,
-            "Tile": 164,
-            "Palette": 2
+            "description": "Sector 6 Arrow",
+            "x": 22,
+            "y": 5,
+            "tile": 164,
+            "palette": 2
         },
         {
-            "Description": "Sector 6 Marker",
-            "X": 23,
-            "Y": 5,
-            "Tile": 177,
-            "Palette": 0
+            "description": "Sector 6 Marker",
+            "x": 23,
+            "y": 5,
+            "tile": 177,
+            "palette": 0
         }
     ],
     "5": [
         {
-            "Description": "Sector 6 Marker",
-            "X": 0,
-            "Y": 4,
-            "Tile": 177,
-            "Palette": 0
+            "description": "Sector 6 Marker",
+            "x": 0,
+            "y": 4,
+            "tile": 177,
+            "palette": 0
         },
         {
-            "Description": "Sector 6 Arrow",
-            "X": 1,
-            "Y": 4,
-            "Tile": 164,
-            "Palette": 2,
-            "HFlip": "True"
+            "description": "Sector 6 Arrow",
+            "x": 1,
+            "y": 4,
+            "tile": 164,
+            "palette": 2,
+            "h_flip": "True"
         },
         {
-            "Description": "Add Level Three Hatch To Magic Box",
-            "X": 3,
-            "Y": 4,
-            "Tile": 430,
-            "Palette": 0,
-            "HFlip": "True"
+            "description": "Add Level Three Hatch To Magic Box",
+            "x": 3,
+            "y": 4,
+            "tile": 430,
+            "palette": 0,
+            "h_flip": "True"
         },
         {
-            "Description": "Add Level Three Security Tile",
-            "X": 6,
-            "Y": 10,
-            "Tile": 367,
-            "Palette": 2
+            "description": "Add Level Three Security Tile",
+            "x": 6,
+            "y": 10,
+            "tile": 367,
+            "palette": 2
         },
         {
-            "Description": "Change Level 4 Door to Level 3 Door in Arctic Containment",
-            "X": 10,
-            "Y": 4,
-            "Tile": 20,
-            "Palette": 0,
-            "HFlip": "True"
+            "description": "Change Level 4 Door to Level 3 Door in Arctic Containment",
+            "x": 10,
+            "y": 4,
+            "tile": 20,
+            "palette": 0,
+            "h_flip": "True"
         },
         {
-            "Description": "Change Level 4 Door to Level 3 Door in Crows Nest",
-            "X": 11,
-            "Y": 4,
-            "Tile": 245,
-            "Palette": 0,
-            "HFlip": "True"
+            "description": "Change Level 4 Door to Level 3 Door in Crows Nest",
+            "x": 11,
+            "y": 4,
+            "tile": 245,
+            "palette": 0,
+            "h_flip": "True"
         },
         {
-            "Description": "Sector 3 Arrow",
-            "X": 12,
-            "Y": 3,
-            "Tile": 164,
-            "Palette": 2
+            "description": "Sector 3 Arrow",
+            "x": 12,
+            "y": 3,
+            "tile": 164,
+            "palette": 2
         },
         {
-            "Description": "Sector 3 Marker",
-            "X": 13,
-            "Y": 3,
-            "Tile": 174,
-            "Palette": 0
+            "description": "Sector 3 Marker",
+            "x": 13,
+            "y": 3,
+            "tile": 174,
+            "palette": 0
         },
         {
-            "Description": "Flooded Tower",
-            "X": 16,
-            "Y": 5,
-            "Tile": 97,
-            "Palette": 2
+            "description": "Flooded Tower",
+            "x": 16,
+            "y": 5,
+            "tile": 97,
+            "palette": 2
         },
         {
-            "Description": "Ruined Break Room",
-            "X": 17,
-            "Y": 5,
-            "Tile": 384,
-            "Palette": 2,
-            "HFlip": "True"
+            "description": "Ruined Break Room",
+            "x": 17,
+            "y": 5,
+            "tile": 384,
+            "palette": 2,
+            "h_flip": "True"
         },
         {
-            "Description": "Sector 4 Arrow",
-            "X": 22,
-            "Y": 8,
-            "Tile": 164,
-            "Palette": 2
+            "description": "Sector 4 Arrow",
+            "x": 22,
+            "y": 8,
+            "tile": 164,
+            "palette": 2
         },
         {
-            "Description": "Sector 4 Marker",
-            "X": 23,
-            "Y": 8,
-            "Tile": 175,
-            "Palette": 0
+            "description": "Sector 4 Marker",
+            "x": 23,
+            "y": 8,
+            "tile": 175,
+            "palette": 0
         }
     ],
     "6": [
         {
-            "Description": "Main Deck Marker to Restricted Lab",
-            "X": 0,
-            "Y": 9,
-            "Tile": 171,
-            "Palette": 0
+            "description": "Main Deck Marker to Restricted Lab",
+            "x": 0,
+            "y": 9,
+            "tile": 171,
+            "palette": 0
         },
         {
-            "Description": "Sector 4 Marker",
-            "X": 1,
-            "Y": 3,
-            "Tile": 175,
-            "Palette": 0
+            "description": "Sector 4 Marker",
+            "x": 1,
+            "y": 3,
+            "tile": 175,
+            "palette": 0
         },
         {
-            "Description": "Sector 4 Arrow",
-            "X": 2,
-            "Y": 3,
-            "Tile": 164,
-            "Palette": 2,
-            "HFlip": "True"
+            "description": "Sector 4 Arrow",
+            "x": 2,
+            "y": 3,
+            "tile": 164,
+            "palette": 2,
+            "h_flip": "True"
         },
         {
-            "Description": "Add Xbox Boss Tile",
-            "X": 7,
-            "Y": 6,
-            "Tile": 268,
-            "Palette": 2
+            "description": "Add Xbox Boss Tile",
+            "x": 7,
+            "y": 6,
+            "tile": 268,
+            "palette": 2
         },
         {
-            "Description": "Sector 5 Arrow",
-            "X": 12,
-            "Y": 2,
-            "Tile": 164,
-            "Palette": 2
+            "description": "Sector 5 Arrow",
+            "x": 12,
+            "y": 2,
+            "tile": 164,
+            "palette": 2
         },
         {
-            "Description": "Sector 5 Marker",
-            "X": 13,
-            "Y": 2,
-            "Tile": 176,
-            "Palette": 0
+            "description": "Sector 5 Marker",
+            "x": 13,
+            "y": 2,
+            "tile": 176,
+            "palette": 0
         }
     ]
 }

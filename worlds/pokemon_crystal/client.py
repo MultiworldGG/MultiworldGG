@@ -62,7 +62,7 @@ NUM_UNOWN = len(ALL_UNOWN)
 class PokemonCrystalClient(WonderTradeMixin, BizHawkClient):
     game = data.manifest.game
     system = ("GB", "GBC")
-    patch_suffix = ".apcrystal"
+    patch_suffix = data.manifest.patch_file_ending
 
     local_checked_locations: set[int]
     goal_flags: list[int]
@@ -186,7 +186,7 @@ class PokemonCrystalClient(WonderTradeMixin, BizHawkClient):
                 patcher_version = "{0:x}".format(rom_version)
                 client_version = "{0:x}".format(required_rom_version)
                 logger.info("ERROR: The patch file used to create this ROM is not compatible with "
-                            "this client. Double check your version of pokemon_crystal.apworld "
+                            f"this client. Double check your version of {data.manifest.apworld_name}.apworld "
                             "against the version used to patch this ROM.")
                 logger.info(f"Client APWorld version: {data.manifest.world_version}, "
                             f"Patcher APWorld version: {patcher_apworld_version}")
@@ -395,7 +395,10 @@ class PokemonCrystalClient(WonderTradeMixin, BizHawkClient):
                          next_item.to_bytes(1, "little"), "WRAM")
                     )
 
-                    await bizhawk.write(ctx.bizhawk_ctx, writes)
+                    slot_guard = (data.ram_addresses["wArchipelagoItemReceived"],
+                                  [0, *num_received_items.to_bytes(2, "little")], "WRAM")
+                    if not await bizhawk.guarded_write(ctx.bizhawk_ctx, writes, [overworld_guard, slot_guard]):
+                        return
                     await send_trap_link(ctx, original_item)
                 elif self.trap_link_queue and not read_result[0][6]:
                     trap_id = self.trap_link_queue.pop(0) - FLAG_ITEM_OFFSET

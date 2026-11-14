@@ -49,17 +49,17 @@ class DataTables:
         self.bush_sprite_table = {}
 
         # enemizer conditions
-        self.uw_enemy_denials = {}
-        self.ow_enemy_denials = {}
-        self.uw_enemy_drop_denials = {}
+        self.uw_enemy_denials = defaultdict(set)
+        self.ow_enemy_denials = defaultdict(set)
+        self.uw_enemy_drop_denials = defaultdict(set)
         self.sheet_choices = []
         denial_data = load_cached_yaml(os.path.join('source', 'enemizer', 'enemy_deny.yaml'))
         for denial in denial_data['UwGeneralDeny']:
-            self.uw_enemy_denials[denial[0], denial[1]] = {sprite_translation[x] for x in denial[2]}
+            self.uw_enemy_denials[denial[0], denial[1]] |= {sprite_translation[x] for x in denial[2]}
         for denial in denial_data['OwGeneralDeny']:
-            self.ow_enemy_denials[denial[0], denial[1]] = {sprite_translation[x] for x in denial[2]}
+            self.ow_enemy_denials[denial[0], denial[1]] |= {sprite_translation[x] for x in denial[2]}
         for denial in denial_data['UwEnemyDrop']:
-            self.uw_enemy_drop_denials[denial[0], denial[1]] = {sprite_translation[x] for x in denial[2]}
+            self.uw_enemy_drop_denials[denial[0], denial[1]] |= {sprite_translation[x] for x in denial[2]}
         weights = load_cached_yaml(os.path.join('source', 'enemizer', 'enemy_weight.yaml'))
         self.uw_weights = {sprite_translation[k]: v for k, v in weights['UW'].items()}
         self.ow_weights = {sprite_translation[k]: v for k, v in weights['OW'].items()}

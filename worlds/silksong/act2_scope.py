@@ -107,7 +107,6 @@ ACT_TWO_HAND_TESTED_UNAVAILABLE_LOCATION_NAMES: frozenset[str] = frozenset(
         "Dark Mirror",
         "The Hidden Hunter - Mask Shard",
         "Dark Hearts - Mask Shard",
-        "The Cradle - Silkeater",
         "Wish: Passing of the Age",
         "Wish: Advanced Alchemy",
         "Ecstasy of the End - Pale Oil",
@@ -139,15 +138,12 @@ ACT_TWO_SHAMAN_SLOT_LOCATION_NAMES: frozenset[str] = frozenset(
 
 ACT_TWO_SILK_SOAR_LOCATION_NAMES: frozenset[str] = frozenset(location_first_name(name) for name in (
     "Grey Memento",
-    "Whispering Vaults - Mask Shard",
-    "Whispering Vaults - Shard Bundle",
     *(f"Far Fields - Rosary Cache #{number}" for number in (18, 20, 21)),
     *(f"Far Fields - Shell Shard Cache #{number}" for number in range(2, 8)),
     "Grand Gate - Shell Shard Cache",
     "Mount Fay - Shell Shard Cache #3",
     "Mount Fay - Shell Shard Cache #4",
     "Putrified Ducts - Shell Shard Cache #8",
-    *(f"Underworks - Shell Shard Cache #{number}" for number in (7, 8, 11)),
     "Far Fields (Act 3) - Memory Locket",
 ))
 
@@ -201,7 +197,7 @@ ACT_TWO_POOL_REMOVALS_BY_SOURCE_CATEGORY: Mapping[
     "OldHeart": {"Pollen Heart": 1, "Hunter's Heart": 1, "Encrusted Heart": 1, "Conjoined Heart": 1},
     "Everbloom": {"Everbloom": 1},
     "Farsight": {"Farsight": 1},
-    "Miscellaneous": {"Crawbell": 1},
+    "Bellhome": {"Crawbell": 1},
     "Materium": {"Magnetite": 1},
     "Memento": {"Sprintmaster's Memento": 1, "Guardian's Memento": 1, "Hero's Memento": 1, 'Surface Memento': 1, 'Craw Memento': 1},
     "Map": {
@@ -220,7 +216,6 @@ ACT_TWO_POOL_REMOVALS_BY_SOURCE_CATEGORY: Mapping[
     "MajorKey": {"Craw Summons": 1},
     "Resource:pale_rosary_necklace": {"Pale Rosary Necklace": 1},
     "MaskShard": {"Mask Shard": 3},
-    "Silkeater": {"Silkeater": 1},
     "NeedleUpgrade": {"Progressive Needle Upgrade": 1},
     "PaleOil": {"Pale Oil": 1},
     "Resource:rosary_cache": {"Rosaries (10)": 4, "Rosaries (8)": 1},
@@ -265,11 +260,9 @@ def trim_act_two_pool_entries(
     if skill_mode != "anywhere" or silk_soar_begone:
         for category, item_counts in {
             "Memento": {"Grey Memento": 1},
-            "MaskShard": {"Mask Shard": 1},
             "MemoryLocket": {"Memory Locket": 1},
-            "Resource:shard_bundle": {"Shard Bundle": 1},
             "Resource:rosary_cache": {"Rosaries (10)": 3},
-            "Resource:shell_shard_cache": {"Shell Shards (10)": 13},
+            "Resource:shell_shard_cache": {"Shell Shards (10)": 10},
         }.items():
             removals.setdefault(category, Counter()).update(item_counts)
     if starting_crest_item == "Crest: Shaman":

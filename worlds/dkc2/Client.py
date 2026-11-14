@@ -979,23 +979,24 @@ class DKC2SNIClient(SNIClient):
             if not hasattr(self, "instance_id"):
                 self.instance_id = time.time()
             
-            source_name = args["data"]["source"]
-            if "TrapLink" in ctx.tags and "TrapLink" in args["tags"] and source_name != ctx.player_names[ctx.slot]:
-                trap_name: str = args["data"]["trap_name"]
-                if trap_name not in trap_name_to_value:
-                    return
-                
-                trap_id: int = trap_name_to_value[trap_name]
-                if "trap_weights" not in self.slot_data:
-                    return
-                if f"{trap_id}" not in self.slot_data["trap_weights"]:
-                    return
-                if self.slot_data["trap_weights"][f"{trap_id}"] == 0:
-                    # The player disabled this trap type
-                    return
-                
-                self.received_trap_link = NetworkItem(trap_name_to_value[trap_name], None, None)
-                self.message_queue.append([False, "TrapLink", trap_name, 0x04, True])
+            if "TrapLink" in ctx.tags and "TrapLink" in args["tags"]:
+                source_name = args["data"]["source"]
+                if source_name != ctx.player_names[ctx.slot]:
+                    trap_name: str = args["data"]["trap_name"]
+                    if trap_name not in trap_name_to_value:
+                        return
+                    
+                    trap_id: int = trap_name_to_value[trap_name]
+                    if "trap_weights" not in self.slot_data:
+                        return
+                    if f"{trap_id}" not in self.slot_data["trap_weights"]:
+                        return
+                    if self.slot_data["trap_weights"][f"{trap_id}"] == 0:
+                        # The player disabled this trap type
+                        return
+                    
+                    self.received_trap_link = NetworkItem(trap_name_to_value[trap_name], None, None)
+                    self.message_queue.append([False, "TrapLink", trap_name, 0x04, True])
 
             if "SharedDamage" in ctx.tags and "SharedDamage" in args["tags"]:
                 if "uuid" in args["data"]:

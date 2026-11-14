@@ -19,7 +19,8 @@ MW_PROGRESSIVE_ITEMS_ENABLE:
 .byte 0x00
 .align 4
 
-.word 0x00000000 ; Padding where OUTGOING_KEY used to be.
+AP_DISPLAY_NAMES_PTR:
+.word AP_DISPLAY_NAMES ; AP display-name table; keeps the remaining layout fixed.
 OUTGOING_ITEM:
 .halfword 0x0000
 OUTGOING_PLAYER:

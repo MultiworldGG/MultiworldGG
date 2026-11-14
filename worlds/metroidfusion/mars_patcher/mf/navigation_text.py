@@ -1,6 +1,6 @@
 from __future__ import annotations
 
-from enum import Enum
+from enum import IntEnum, auto
 from typing import TYPE_CHECKING
 
 from .constants.game_data import navigation_text_ptrs
@@ -9,32 +9,32 @@ from ..rom import Rom
 from ..text import Language, MessageType, encode_text
 
 if TYPE_CHECKING:
-    from .auto_generated_types import Hintlocks, MarsschemamfNavstationlocksKey
+    from .auto_generated_types import HintLocks, MarsschemamfNavStationLocksKey
     from ..rom import Rom
 
 
-class NavRoom(Enum):
+class NavRoom(IntEnum):
     MAIN_DECK_WEST = 1
-    MAIN_DECK_EAST = 2
-    OPERATIONS_DECK = 3
-    SECTOR1_ENTRANCE = 4
-    SECTOR5_ENTRANCE = 5
-    SECTOR2_ENTRANCE = 6
-    SECTOR4_ENTRANCE = 7
-    SECTOR3_ENTRANCE = 8
-    SECTOR6_ENTRANCE = 9
-    AUXILIARY_POWER = 10
-    RESTRICTED_LABS = 11
+    MAIN_DECK_EAST = auto()
+    OPERATIONS_DECK = auto()
+    SECTOR_1_ENTRANCE = auto()
+    SECTOR_5_ENTRANCE = auto()
+    SECTOR_2_ENTRANCE = auto()
+    SECTOR_4_ENTRANCE = auto()
+    SECTOR_3_ENTRANCE = auto()
+    SECTOR_6_ENTRANCE = auto()
+    AUXILIARY_POWER = auto()
+    RESTRICTED_LABS = auto()
 
 
 # Later down the line, when/if Nav terminals don't have their
 # confirm text patched out, combine these two.
-class ShipText(Enum):
+class ShipText(IntEnum):
     INITIAL_TEXT = 0
-    CONFIRM_TEXT = 1
+    CONFIRM_TEXT = auto()
 
 
-class NavStationLockType(Enum):
+class NavStationLockType(IntEnum):
     OPEN = 0xFF
     LOCKED = 0x05
     GREY = 0x00
@@ -45,56 +45,26 @@ class NavStationLockType(Enum):
 
 
 class NavigationText:
-    LANG_ENUMS = {
-        "JapaneseKanji": Language.JAPANESE_KANJI,
-        "JapaneseHiragana": Language.JAPANESE_HIRAGANA,
-        "English": Language.ENGLISH,
-        "German": Language.GERMAN,
-        "French": Language.FRENCH,
-        "Italian": Language.ITALIAN,
-        "Spanish": Language.SPANISH,
-    }
-
-    NAV_ROOM_ENUMS: dict[MarsschemamfNavstationlocksKey, NavRoom] = {
-        "MainDeckWest": NavRoom.MAIN_DECK_WEST,
-        "MainDeckEast": NavRoom.MAIN_DECK_EAST,
-        "OperationsDeck": NavRoom.OPERATIONS_DECK,
-        "Sector1Entrance": NavRoom.SECTOR1_ENTRANCE,
-        "Sector2Entrance": NavRoom.SECTOR2_ENTRANCE,
-        "Sector3Entrance": NavRoom.SECTOR3_ENTRANCE,
-        "Sector4Entrance": NavRoom.SECTOR4_ENTRANCE,
-        "Sector5Entrance": NavRoom.SECTOR5_ENTRANCE,
-        "Sector6Entrance": NavRoom.SECTOR6_ENTRANCE,
-        "AuxiliaryPower": NavRoom.AUXILIARY_POWER,
-        "RestrictedLabs": NavRoom.RESTRICTED_LABS,
-    }
-
     GAME_START_CHAR = "[GAME_START]"
-    INITIAL_TEXT_KEY = "InitialText"
-    NAV_TERMINALS_KEY = "NavigationTerminals"
-    SHIP_TEXT_KEY = "ShipText"
+    NAV_TERMINALS_KEY = "navigation_terminals"
+    SHIP_TEXT_KEY = "ship_text"
 
-    INFO_TEXT_ENUMS = {
-        INITIAL_TEXT_KEY: ShipText.INITIAL_TEXT,
-        "ConfirmText": ShipText.CONFIRM_TEXT,
-    }
-
-    def __init__(self, navigation_text: dict[Language, dict[str, dict[Enum, str]]]):
+    def __init__(self, navigation_text: dict[Language, dict[str, dict[IntEnum, str]]]):
         self.navigation_text = navigation_text
 
     @classmethod
     def from_json(cls, data: dict) -> NavigationText:
-        navigation_text: dict[Language, dict[str, dict[Enum, str]]] = {}
+        navigation_text: dict[Language, dict[str, dict[IntEnum, str]]] = {}
         for lang, lang_text in data.items():
-            lang = cls.LANG_ENUMS[lang]
+            lang = Language[lang]
             navigation_text[lang] = {
                 cls.NAV_TERMINALS_KEY: {
-                    cls.NAV_ROOM_ENUMS[k]: v for k, v in lang_text[cls.NAV_TERMINALS_KEY].items()
+                    NavRoom[k]: v for k, v in lang_text[cls.NAV_TERMINALS_KEY].items()
                 },
                 cls.SHIP_TEXT_KEY: {
                     # Make sure initial text string starts with [GAME_START]
-                    cls.INFO_TEXT_ENUMS[k]: cls.GAME_START_CHAR + v
-                    if k == cls.INITIAL_TEXT_KEY and not v.startswith(cls.GAME_START_CHAR)
+                    ShipText[k]: cls.GAME_START_CHAR + v
+                    if k == ShipText.INITIAL_TEXT.name and not v.startswith(cls.GAME_START_CHAR)
                     else v
                     for k, v in lang_text[cls.SHIP_TEXT_KEY].items()
                 },
@@ -106,28 +76,29 @@ class NavigationText:
             base_text_address = rom.read_ptr(navigation_text_ptrs(rom) + lang.value * 4)
 
             # Info Text
-            for info_place, text in lang_texts["ShipText"].items():
+            for info_place, text in lang_texts["ship_text"].items():
                 encoded_text = encode_text(rom, MessageType.CONTINUOUS, text)
                 text_ptr = base_text_address + info_place.value * 4
                 rom.write_data_with_pointers(encoded_text, [text_ptr, text_ptr + 4])
 
             # Navigation Text
-            for nav_room, text in lang_texts["NavigationTerminals"].items():
+            for nav_room, text in lang_texts["navigation_terminals"].items():
                 encoded_text = encode_text(rom, MessageType.CONTINUOUS, text)
                 text_ptr = base_text_address + nav_room.value * 8
                 rom.write_data_with_pointers(encoded_text, [text_ptr, text_ptr + 4])
 
     @classmethod
     def apply_hint_security(
-        cls, rom: Rom, locks: dict[MarsschemamfNavstationlocksKey, Hintlocks]
+        cls, rom: Rom, locks: dict[MarsschemamfNavStationLocksKey, HintLocks]
     ) -> None:
         """
         Applies an optional security level requirement to use Navigation Stations
         Defaults to OPEN if not provided in patch data JSON
         """
-        default_lock_name = "OPEN"
-        for location, offset in NavigationText.NAV_ROOM_ENUMS.items():
+        locks_values = {NavRoom[k]: NavStationLockType[v] for k, v in locks.items()}
+        default_lock = NavStationLockType.OPEN
+        for location in NavRoom:
             rom.write_8(
-                rom.read_ptr(ReservedPointersMF.HINT_SECURITY_LEVELS_ADDR.value) + offset.value,
-                NavStationLockType[locks.get(location, default_lock_name)].value,
+                rom.read_ptr(ReservedPointersMF.HINT_SECURITY_LEVELS_ADDR.value) + location.value,
+                locks_values.get(location, default_lock).value,
             )

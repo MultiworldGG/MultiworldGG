@@ -1,4 +1,4 @@
-pillow
+pillow==13.0.0
 cherrypy
 jinja2
 pymongo

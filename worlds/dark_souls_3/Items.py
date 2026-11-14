@@ -112,7 +112,7 @@ class DS3ItemData:
     """How important this item is to the game progression."""
 
     ap_code: Optional[int] = None
-    """The MultiworldGG ID for this item."""
+    """The Archipelago ID for this item."""
 
     is_dlc: bool = False
     """Whether this item is only found in one of the two DLC packs."""

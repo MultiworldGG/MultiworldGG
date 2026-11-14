@@ -95,11 +95,6 @@ Root: HKCR; Subkey: "{#MyAppName}smpatch";                       ValueData: "Mul
 Root: HKCR; Subkey: "{#MyAppName}smpatch\DefaultIcon";           ValueData: "{app}\MultiworldGGSNIClient.exe,0";                           ValueType: string;  ValueName: "";
 Root: HKCR; Subkey: "{#MyAppName}smpatch\shell\open\command";    ValueData: """{app}\MultiworldGGSNIClient.exe"" ""%1""";                  ValueType: string;  ValueName: "";
 
-Root: HKCR; Subkey: ".apdkc3";                                   ValueData: "{#MyAppName}dkc3patch";        Flags: uninsdeletevalue; ValueType: string;  ValueName: "";
-Root: HKCR; Subkey: "{#MyAppName}dkc3patch";                     ValueData: "MultiworldGG Donkey Kong Country 3 Patch"; Flags: uninsdeletekey;   ValueType: string;  ValueName: "";
-Root: HKCR; Subkey: "{#MyAppName}dkc3patch\DefaultIcon";         ValueData: "{app}\MultiworldGGSNIClient.exe,0";                           ValueType: string;  ValueName: "";
-Root: HKCR; Subkey: "{#MyAppName}dkc3patch\shell\open\command";  ValueData: """{app}\MultiworldGGSNIClient.exe"" ""%1""";                  ValueType: string;  ValueName: "";
-
 Root: HKCR; Subkey: ".aptatk";                                   ValueData: "{#MyAppName}tatkpatch";        Flags: uninsdeletevalue; ValueType: string;  ValueName: "";
 Root: HKCR; Subkey: "{#MyAppName}tatkpatch";                     ValueData: "MultiworldGG Tetris Attack Patch"; Flags: uninsdeletekey;   ValueType: string;  ValueName: "";
 Root: HKCR; Subkey: "{#MyAppName}tatkpatch\DefaultIcon";         ValueData: "{app}\MultiworldGGSNIClient.exe,0";                           ValueType: string;  ValueName: "";
@@ -260,6 +255,11 @@ Root: HKCR; Subkey: "{#MyAppName}dkc2patch";                     ValueData: "Mul
 Root: HKCR; Subkey: "{#MyAppName}dkc2patch\DefaultIcon";         ValueData: "{app}\MultiworldGGSNIClient.exe,0";                           ValueType: string;  ValueName: "";
 Root: HKCR; Subkey: "{#MyAppName}dkc2patch\shell\open\command";  ValueData: """{app}\MultiworldGGSNIClient.exe"" ""%1""";                  ValueType: string;  ValueName: "";
 
+Root: HKCR; Subkey: ".apdw1";                                   ValueData: "{#MyAppName}dw1patch";        Flags: uninsdeletevalue;       ValueType: string;  ValueName: "";
+Root: HKCR; Subkey: "{#MyAppName}dw1patch";                     ValueData: "MultiworldGG Digimon World Patch"; Flags: uninsdeletekey;   ValueType: string;  ValueName: "";
+Root: HKCR; Subkey: "{#MyAppName}dw1patch\DefaultIcon";         ValueData: "{app}\MultiworldGGLauncher.exe,0";                           ValueType: string;  ValueName: "";
+Root: HKCR; Subkey: "{#MyAppName}dw1patch\shell\open\command";  ValueData: """{app}\MultiworldGGLauncher.exe"" ""%1""";                  ValueType: string;  ValueName: "";
+
 Root: HKCR; Subkey: ".apeb";                                   ValueData: "{#MyAppName}apebpatch";        Flags: uninsdeletevalue;         ValueType: string;  ValueName: "";
 Root: HKCR; Subkey: "{#MyAppName}apebpatch";                     ValueData: "MultiworldGG Earthbound Patch"; Flags: uninsdeletekey;     ValueType: string;  ValueName: "";
 Root: HKCR; Subkey: "{#MyAppName}apebpatch\DefaultIcon";         ValueData: "{app}\MultiworldGGSNIClient.exe,0";                           ValueType: string;  ValueName: "";
@@ -404,6 +404,11 @@ Root: HKCR; Subkey: ".aptmc";                                     ValueData: "{#
 Root: HKCR; Subkey: "{#MyAppName}aptmcpatch";                     ValueData: "MultiworldGG The Minish Cap Patch"; Flags: uninsdeletekey;      ValueType: string;  ValueName: "";
 Root: HKCR; Subkey: "{#MyAppName}aptmcpatch\DefaultIcon";         ValueData: "{app}\MultiworldGGBizHawkClient.exe,0";                   ValueType: string; ValueName: "";
 Root: HKCR; Subkey: "{#MyAppName}aptmcpatch\shell\open\command";  ValueData: """{app}\MultiworldGGBizHawkClient.exe"" ""%1""";          ValueType: string; ValueName: "";
+
+Root: HKCR; Subkey: ".aptoluca";                                   ValueData: "{#MyAppName}tolucapatch";        Flags: uninsdeletevalue; ValueType: string;  ValueName: "";
+Root: HKCR; Subkey: "{#MyAppName}tolucapatch";                     ValueData: "MultiworldGG Donkey Kong Country 3 Toluca Patch"; Flags: uninsdeletekey;   ValueType: string;  ValueName: "";
+Root: HKCR; Subkey: "{#MyAppName}tolucapatch\DefaultIcon";         ValueData: "{app}\MultiworldGGSNIClient.exe,0";                           ValueType: string;  ValueName: "";
+Root: HKCR; Subkey: "{#MyAppName}tolucapatch\shell\open\command";  ValueData: """{app}\MultiworldGGSNIClient.exe"" ""%1""";                  ValueType: string;  ValueName: "";
 
 Root: HKCR; Subkey: ".apttyd";                                     ValueData: "{#MyAppName}apttydpatch";    Flags: uninsdeletevalue; ValueType: string;  ValueName: "";
 Root: HKCR; Subkey: "{#MyAppName}apttydpatch";                     ValueData: "MultiworldGG TTYD Patch"; Flags: uninsdeletekey;      ValueType: string;  ValueName: "";

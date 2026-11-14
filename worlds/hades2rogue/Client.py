@@ -1,11 +1,19 @@
 import asyncio
+import json
+import os
+import re
+import zipfile
 from typing import Optional
 
 import Utils
+try:
+    from Utils import instance_name as apname
+except ImportError:
+    apname = "Archipelago"
 from NetUtils import ClientStatus
 from CommonClient import gui_enabled, logger, get_base_parser, handle_url_arg, server_loop
 
-from . import Tracker
+from . import Journal, Tracker
 from .Items import ASPECT_MAX_RANK
 
 # Universal Tracker integration: if the player has separately installed the real
@@ -33,7 +41,131 @@ BRIDGE_PORT = 43055
 
 # Compared against slot_data's version_check (set from Hades2World.mod_version) on connect.
 # KEEP IN STEP with __init__.py's mod_version and the mod's manifest.json on every release.
-MOD_VERSION = "0.10.0"
+MOD_VERSION = "0.11.0"
+
+# What the player sees when the versions don't line up, or the game checks a location this seed
+# doesn't have (Hades2Context.alert_player: an error box in the client plus a red log line; the
+# banner_* ones go to the game as ALERT). Fields: {mod} {apworld} {seed} {location} {copies}.
+ALERT_TITLE = "Hades 2 Rogue version check"
+ALERT_TEXT = {
+    # The game mod sent no version: it's older than 0.11.0.
+    "mod_unreported": "Game mod: older than 0.11.0 (reports no version). "
+                      "Client/apworld: {apworld}.",
+    # The mod's major.minor differs from this apworld's.
+    "mod_mismatch": "Game mod: {mod}. Client/apworld: {apworld}.",
+    # The mod couldn't read its own manifest.json (log line only, nothing to compare).
+    "mod_unknown": "Game mod version unknown (no manifest.json). Client/apworld: {apworld}.",
+    # The seed was generated with a different major.minor than this apworld.
+    "seed_mismatch": "Seed generated with: {seed}. Client/apworld: {apworld}.",
+    # Major.minor agree but the patch numbers differ (log line only).
+    "patch_difference": "Versions differ only in the patch number: "
+                        "mod {mod}, apworld {apworld}, seed {seed}.",
+    # In-game banner for any of the mismatches above. Keep it short; it shows for 6 seconds.
+    "banner_version": "Version mismatch: mod {mod}, apworld {apworld}, seed {seed}",
+    # The game checked a location this apworld has never heard of (mod and apworld disagree).
+    "unknown_location": "The game sent a check this apworld doesn't know: {location}. "
+                        "Game mod: {mod}. Client/apworld: {apworld}. Seed: {seed}.",
+    # The apworld knows the location but this seed doesn't have it (seed from another version).
+    "unknown_in_seed": "The game sent a check this seed doesn't have: {location}. "
+                       "Game mod: {mod}. Client/apworld: {apworld}. Seed: {seed}.",
+    "banner_unknown_location": "Check not in this seed: {location}",
+    # More than one copy of this apworld is installed. {copies} is one path per line.
+    "duplicate_apworld": "More than one Hades2Rogue apworld is installed:\n{copies}",
+}
+
+
+def _release_line(version) -> Optional[tuple]:
+    """(major, minor) of a version string, or None if it has none. Players only see an error when
+    these differ: a patch release has shipped an apworld ahead of an unchanged mod before."""
+    match = re.match(r"\s*(\d+)\.(\d+)", str(version or ""))
+    return (int(match[1]), int(match[2])) if match else None
+
+
+# A world whose __init__.py declares this game, for copies with no archipelago.json.
+_GAME_LINE = re.compile(r"""^\s*game\s*(?::\s*[\w\[\]]+\s*)?=\s*["']Hades2Rogue["']""", re.M)
+
+
+def _manifest_version(manifest_text: Optional[str], init_text: Optional[str]) -> Optional[str]:
+    """world_version of a world that is this game ("?" if it doesn't say), else None."""
+    if manifest_text is not None:
+        try:
+            manifest = json.loads(manifest_text)
+        except ValueError:
+            manifest = None
+        if isinstance(manifest, dict) and "game" in manifest:
+            return str(manifest.get("world_version", "?")) if manifest["game"] == "Hades2Rogue" else None
+    if init_text is not None and _GAME_LINE.search(init_text):
+        return "?"
+    return None
+
+
+def _installed_copy_version(path: str) -> Optional[str]:
+    """world_version of the .apworld file or world folder at path if it is a Hades2Rogue world."""
+    if os.path.isdir(path):
+        def read(name):
+            full = os.path.join(path, name)
+            if not os.path.isfile(full):
+                return None
+            with open(full, encoding="utf-8", errors="replace") as f:
+                return f.read()
+        return _manifest_version(read("archipelago.json"), read("__init__.py"))
+    with zipfile.ZipFile(path) as zf:
+        # An apworld holds one top-level folder; its archipelago.json and __init__.py sit in it.
+        names = [n.replace("\\", "/") for n in zf.namelist()]
+        raw = dict(zip(names, zf.namelist()))
+        def read(name):
+            hit = next((n for n in names if n.count("/") == 1 and n.endswith("/" + name)), None)
+            return zf.read(raw[hit]).decode("utf-8", errors="replace") if hit else None
+        return _manifest_version(read("archipelago.json"), read("__init__.py"))
+
+
+def find_installed_copies() -> list:
+    """(path, world_version) for every copy of this apworld in Archipelago's worlds/ and
+    custom_worlds/ folders. Archipelago loads only one of them, which may not be the newest."""
+    try:
+        import worlds
+        folders = [getattr(worlds, "local_folder", None), getattr(worlds, "user_folder", None)]
+    except Exception:
+        folders = []
+    seen, copies = set(), []
+    for folder in folders:
+        if not folder or not os.path.isdir(folder) or os.path.realpath(folder) in seen:
+            continue
+        seen.add(os.path.realpath(folder))
+        for entry in sorted(os.scandir(folder), key=lambda e: e.name):
+            # Archipelago itself skips these, and only loads files ending in .apworld.
+            if entry.name.startswith(("_", ".")):
+                continue
+            if not (entry.is_dir() or entry.name.lower().endswith(".apworld")):
+                continue
+            try:
+                version = _installed_copy_version(entry.path)
+            except Exception:
+                continue
+            if version is not None:
+                copies.append((entry.path, version))
+    return copies
+
+
+def _loaded_world_file() -> str:
+    """Where the Hades2Rogue world Archipelago actually loaded lives ("" if unknown)."""
+    try:
+        import sys
+        from worlds.AutoWorld import AutoWorldRegister
+        world = AutoWorldRegister.world_types[Hades2Context.game]
+        return str(getattr(world, "__file__", None) or sys.modules[world.__module__].__file__ or "")
+    except Exception:
+        return ""
+
+
+def _apworld_location_names() -> set:
+    """Every location name this apworld knows, for telling "the seed lacks it" from "this apworld
+    has never heard of it"."""
+    try:
+        from worlds.AutoWorld import AutoWorldRegister
+        return set(AutoWorldRegister.world_types[Hades2Context.game].location_name_to_id)
+    except Exception:
+        return set()
 
 
 def _wire_text(text) -> str:
@@ -139,6 +271,25 @@ class Hades2Context(CommonContext):
         self.tracker_locations: dict = {}
         self.tracker_keys: dict = {}
 
+        # In-game tracker (the mod's "Archipelago" Codex chapter): whether the connected mod
+        # asked for it (HELLO:journal -- an older mod doesn't, and gets nothing), the payload it
+        # last got, and the inputs that payload was built from. See journal_loop.
+        self.mod_journal = False
+        self.journal_sent: Optional[str] = None
+        self.journal_inputs: Optional[tuple] = None
+        self.journal_error: Optional[str] = None
+
+        # Version check (check_versions). Per bridge connection: whether its HELLO has arrived, the
+        # version it reported (None = it reported none, so the mod is older than 0.11.0), whether
+        # it shows ALERT banners, and which problems it has already been bannered about. Per
+        # session: the problems already shown in the client (key -> text), and log-only notes.
+        self.mod_said_hello = False
+        self.mod_reported_version: Optional[str] = None
+        self.mod_alerts = False
+        self.mod_bannered: set = set()
+        self.player_alerts: dict = {}
+        self.version_notes: set = set()
+
         # The single active connection from the Lua mod, if any.
         self.bridge_server: Optional[asyncio.AbstractServer] = None
         self.bridge_writer: Optional[asyncio.StreamWriter] = None
@@ -173,11 +324,7 @@ class Hades2Context(CommonContext):
 
         if cmd == "Connected":
             self.slot_data = args["slot_data"]
-            version = self.slot_data.get("version_check", "?")
-            if version != self.mod_version:
-                logger.warning(
-                    f"Seed generated with mod version {version}, client expects {self.mod_version}. "
-                    "These may be incompatible.")
+            self.check_versions()
             self.location_name_to_id = self.get_location_name_to_id()
             self.tracker_locations = {loc_id: name for name, loc_id in self.location_name_to_id.items()}
             self.tracker_keys = Tracker.classify_locations(self.slot_data, self.tracker_locations)
@@ -203,6 +350,12 @@ class Hades2Context(CommonContext):
                 self.deathlink_enabled = True
                 Utils.async_start(self.update_death_link(True))
             Utils.async_start(self.scout_locations())
+            # Hints for the in-game tracker's Hints page. The stock client keeps this key in
+            # stored_data and follows its changes once asked to.
+            try:
+                self.set_notify(self.hints_key())
+            except Exception:
+                logger.exception("Couldn't subscribe to this slot's hints")
             Utils.async_start(self.sync_mod())
 
         elif cmd == "ReceivedItems":
@@ -255,6 +408,7 @@ class Hades2Context(CommonContext):
             loc_id = self.location_name_to_id.get(payload)
             if loc_id is None:
                 logger.warning(f"Unknown location checked by game (buffered pre-connect): {payload!r}")
+                self.report_unknown_location(payload)
                 continue
             loc_ids.append(loc_id)
             if loc_id not in self.checked_locations:
@@ -274,6 +428,90 @@ class Hades2Context(CommonContext):
             "locations": list(self.server_locations),
             "create_as_hint": 0,
         }])
+
+    # ---------------- Version check ------------------------------------------
+    # Nearly every "items arrive but my checks don't send" report was a mod, apworld and seed from
+    # different releases: the mod names its checks in a way the seed doesn't. Each is compared
+    # with this apworld's MOD_VERSION as soon as it's known (the mod's at HELLO, the seed's at
+    # Connected). Nothing is blocked; the player is told, once, in a way they can't miss.
+
+    def version_fields(self) -> dict:
+        if not self.mod_said_hello:
+            mod = "?"
+        else:
+            mod = self.mod_reported_version or "<0.11.0"
+        seed = self.slot_data.get("version_check", "?") if self.slot_data is not None else "?"
+        return {"mod": mod, "apworld": self.mod_version, "seed": str(seed)}
+
+    def check_versions(self) -> None:
+        fields = self.version_fields()
+        apworld_line = _release_line(self.mod_version)
+        # (kind, the version it's about): a reconnect with a different mod or seed is reported again.
+        problems = []
+        if self.mod_said_hello:
+            if self.mod_reported_version is None:
+                problems.append(("mod_unreported", fields["mod"]))
+            elif self.mod_reported_version == "unknown":
+                self.note_version("mod_unknown", fields)
+            elif _release_line(self.mod_reported_version) != apworld_line:
+                problems.append(("mod_mismatch", fields["mod"]))
+        if self.slot_data is not None and _release_line(fields["seed"]) != apworld_line:
+            problems.append(("seed_mismatch", fields["seed"]))
+        for kind, version in problems:
+            self.alert_player(f"{kind}:{version}", ALERT_TEXT[kind].format(**fields))
+        known = {fields["mod"], fields["apworld"], fields["seed"]} - {"?", "unknown"}
+        if not problems and len(known) > 1:
+            self.note_version("patch_difference", fields)
+        if problems and self.bridge_writer is not None and self.mod_alerts:
+            new = {f"{kind}:{version}" for kind, version in problems} - self.mod_bannered
+            if new:
+                self.mod_bannered |= new
+                self.send_to_mod("ALERT:" + _wire_text(ALERT_TEXT["banner_version"].format(**fields)))
+
+    def note_version(self, key: str, fields: dict) -> None:
+        """A version oddity worth one log line but not an error box."""
+        text = ALERT_TEXT[key].format(**fields)
+        if text not in self.version_notes:
+            self.version_notes.add(text)
+            logger.warning(text)
+
+    def alert_player(self, key: str, text: str) -> None:
+        """Show a problem the player must fix outside the game: a red log line, and an error box
+        listing every such problem this session (the stock client keeps one box open at a time)."""
+        if key in self.player_alerts:
+            return
+        self.player_alerts[key] = text
+        logger.error(text)
+        try:
+            self.gui_error(ALERT_TITLE, "\n\n".join(self.player_alerts.values()))
+        except Exception:
+            logger.exception("Couldn't open the version-check error box")
+
+    def report_unknown_location(self, name: str) -> None:
+        """The game checked a location this seed doesn't have. Said loudly once per session (the
+        per-name warning is the caller's): it almost always means mismatched versions."""
+        if any(key.startswith("unknown_") for key in self.player_alerts):
+            return
+        key = "unknown_in_seed" if name in _apworld_location_names() else "unknown_location"
+        fields = dict(self.version_fields(), location=name)
+        self.alert_player(key, ALERT_TEXT[key].format(**fields))
+        if self.bridge_writer is not None and self.mod_alerts:
+            self.send_to_mod("ALERT:" + _wire_text(ALERT_TEXT["banner_unknown_location"].format(**fields)))
+
+    async def check_installed_copies(self) -> None:
+        """Archipelago loads one Hades2Rogue apworld even when worlds/ and custom_worlds/ hold
+        several, so a stale copy can quietly win. Tell the player which copies exist."""
+        # Give the window time to open: the error box needs it.
+        await asyncio.sleep(3)
+        copies = await asyncio.get_running_loop().run_in_executor(None, find_installed_copies)
+        if len(copies) < 2:
+            return
+        loaded = os.path.normcase(_loaded_world_file())
+        lines = []
+        for path, version in copies:
+            mark = "  <- loaded" if loaded and loaded.startswith(os.path.normcase(path) + os.sep) else ""
+            lines.append(f"{path}  (world_version {version}){mark}")
+        self.alert_player("duplicate_apworld", ALERT_TEXT["duplicate_apworld"].format(copies="\n".join(lines)))
 
     # ---------------- DeathLink ----------------------------------------------
 
@@ -348,6 +586,9 @@ class Hades2Context(CommonContext):
             except Exception:
                 pass
         self.bridge_writer = writer
+        self.mod_journal = False     # until this connection's HELLO says otherwise
+        self.mod_said_hello, self.mod_reported_version, self.mod_alerts = False, None, False
+        self.mod_bannered = set()
         logger.info("Game connected to bridge.")
         try:
             while not reader.at_eof():
@@ -381,6 +622,16 @@ class Hades2Context(CommonContext):
         command, _, payload = message.partition(":")
 
         if command == "HELLO":
+            # The payload lists what this mod build understands ("journal"); an older one sends none.
+            capabilities = payload.split(",")
+            self.mod_journal = "journal" in capabilities
+            # "alert" and "version=<x>" are new in 0.11.0; a mod without them is older.
+            self.mod_alerts = "alert" in capabilities
+            self.mod_reported_version = next(
+                (c[len("version="):] for c in capabilities if c.startswith("version=")), None)
+            self.mod_said_hello = True
+            # Ahead of the sync: mismatched versions are a likely reason for it to fail.
+            self.check_versions()
             await self.sync_mod()
             # Flush a DeathLink that arrived while the game was disconnected (see
             # _forward_death_to_mod). The mod's own pending-death queue only applies it once the
@@ -409,6 +660,7 @@ class Hades2Context(CommonContext):
                 logger.info(f"Buffered a check until connected: {payload!r}")
             else:
                 logger.warning(f"Unknown location checked by game: {payload!r}")
+                self.report_unknown_location(payload)
 
         elif command == "VICTORY":
             self.evaluate_goal(payload)
@@ -433,6 +685,7 @@ class Hades2Context(CommonContext):
             # gets the current set; also resent on RoomUpdate when checked_locations changes.
             self.send_to_mod(self.compute_checked_score())
         await self.send_items_to_mod()
+        self.send_journal(force=True)
 
     def compute_checked_score(self) -> str:
         # point_based only: tell the mod which score checks the server ALREADY has (a finished
@@ -509,6 +762,74 @@ class Hades2Context(CommonContext):
                                    set(self.checked_locations), self.tracker_in_logic(), stats,
                                    bool(self.finished_game))
 
+    # ---------------- In-game tracker (Codex chapter) -------------------------
+
+    def hints_key(self) -> str:
+        return f"_read_hints_{self.team}_{self.slot}"
+
+    def journal_hints(self) -> tuple:
+        """This slot's unfound hints, as names: ([(location, item, receiving player)] for hinted
+        locations in this world, [(item, location, finding player)] for this slot's items hinted
+        in other worlds)."""
+        def name_of(names, code, slot, kind: str) -> str:
+            try:
+                return names.lookup_in_slot(code, slot)
+            except Exception:       # a slot or game this client has no data package for
+                return f"{kind} {code}"
+
+        here, away = [], []
+        for hint in (getattr(self, "stored_data", None) or {}).get(self.hints_key()) or []:
+            try:
+                if hint.get("found"):
+                    continue
+                finder, receiver = hint["finding_player"], hint["receiving_player"]
+                item = name_of(self.item_names, hint["item"], receiver, "Item")
+                location = name_of(self.location_names, hint["location"], finder, "Location")
+                if finder == self.slot:
+                    if hint["location"] not in self.checked_locations:
+                        here.append((location, item, self.player_names.get(receiver, f"Player {receiver}")))
+                elif receiver == self.slot:
+                    away.append((item, location, self.player_names.get(finder, f"Player {finder}")))
+            except Exception:
+                continue    # a hint in a shape this client doesn't know; skip it
+        return sorted(here), sorted(away)
+
+    def journal_inputs_key(self) -> tuple:
+        hints = (getattr(self, "stored_data", None) or {}).get(self.hints_key()) or []
+        return (self.tracker_inputs_key(), len(hints),
+                sum(1 for hint in hints if isinstance(hint, dict) and hint.get("found")))
+
+    def send_journal(self, force: bool = False) -> None:
+        """Send the tracker pages to the mod when they changed (or always, with force: the mod
+        just connected or asked for a resync). No-op for a mod that didn't ask for them."""
+        if self.bridge_writer is None or not self.mod_journal or self.slot_data is None:
+            return
+        try:
+            inputs = self.journal_inputs_key()
+            if not force and inputs == self.journal_inputs:
+                return
+            self.journal_inputs = inputs
+            hints_here, hints_away = self.journal_hints()
+            payload = Journal.encode(Journal.build_pages(
+                self.slot_data, self.build_tracker_model(), hints_here, hints_away))
+            if force or payload != self.journal_sent:
+                self.journal_sent = payload
+                self.send_to_mod("JOURNAL:" + payload)
+        except Exception as exc:
+            # The tracker is a display; it must never take the bridge down. Log each distinct
+            # failure once.
+            if repr(exc) != self.journal_error:
+                self.journal_error = repr(exc)
+                logger.exception("In-game tracker pages failed to build")
+
+    async def journal_loop(self) -> None:
+        """Keep the in-game tracker current. Checks, items, hints, goal progress and Universal
+        Tracker's in-logic set all change it and arrive by different routes, so this compares one
+        cheap fingerprint of all of them once a second instead of hooking each."""
+        while not self.exit_event.is_set():
+            await asyncio.sleep(1)
+            self.send_journal()
+
     def goal_stats_key(self) -> str:
         """Server data-storage key holding this slot's latest VICTORY payload (see evaluate_goal)."""
         return f"Hades2Rogue_goal_stats_{self.team}_{self.slot}"
@@ -529,11 +850,12 @@ class Hades2Context(CommonContext):
             "npc_locations",
             "grasp_intervals", "arcanasanity",
             "aspectsanity", "starting_aspect_index",
-            "keepsakesanity", "enemysanity", "include_minibosses", "enemysanity_shuffle_map",
+            "keepsakesanity", "keepsake_items_only",
+            "enemysanity", "include_minibosses", "enemysanity_shuffle_map",
             "miniboss_room_map",
             "petsanity", "helper_room_sanity", "combat_helper_sanity", "godsanity",
-            "godsanity_chaos",
-            "reverse_vow", "reverse_rivals",
+            "godsanity_chaos", "unlimited_gods",
+            "reverse_vow", "reverse_rivals", "minimum_fear",
             "vow_pain", "vow_grit", "vow_wards", "vow_frenzy", "vow_hordes",
             "vow_menace", "vow_return", "vow_fangs", "vow_scars", "vow_debt",
             "vow_shadow", "vow_forfeit", "vow_time", "vow_void", "vow_hubris",
@@ -771,7 +1093,7 @@ class Hades2Context(CommonContext):
                                           row_force_default=True, spacing=(dp(12), 0)))
 
         class Hades2Manager(ui):
-            base_title = "Archipelago Hades 2 Rogue Client"
+            base_title = f"{apname} Hades 2 Rogue Client"
             ctx: "Hades2Context"
 
             def build(self):
@@ -1023,6 +1345,8 @@ def launch(*launch_args):
         # Background task (retries on a stuck port) so the UI always opens.
         Utils.async_start(ctx.start_bridge_server(), name="bridge server")
         Utils.async_start(ctx.watch_bridge_connection(), name="bridge watchdog")
+        Utils.async_start(ctx.journal_loop(), name="in-game tracker")
+        Utils.async_start(ctx.check_installed_copies(), name="apworld copies")
         if UNIVERSAL_TRACKER_LOADED:
             ctx.run_generator()
         if gui_enabled:

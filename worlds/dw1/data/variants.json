@@ -1,0 +1,173 @@
+{
+  "vanilla_md5": "8520edac0f7f1454f8a008ac5e599c1a",
+  "base": "dw1_base.bsdiff4",
+  "image_size": 407255856,
+  "variants": {
+    "new_chart": {
+      "file": "dw1_new_chart.bsdiff4",
+      "on_top_of": "base",
+      "patches": {
+        "chart_tabs": true
+      },
+      "changed_bytes": 5072
+    },
+    "mega_tab": {
+      "file": "dw1_mega_tab.bsdiff4",
+      "on_top_of": "new_chart",
+      "patches": {
+        "chart_tabs": true,
+        "chart_megas": true
+      },
+      "changed_bytes": 225
+    },
+    "souls_always_on": {
+      "file": "dw1_souls_always_on.bsdiff4",
+      "on_top_of": "base",
+      "patches": {
+        "souls_always_on": true
+      },
+      "changed_bytes": 256
+    }
+  },
+  "digimon_table": {
+    "sector_file": "dw1_extinit_sector.bin",
+    "lba": 172939,
+    "image_offset": 406752528,
+    "table_offset": 536,
+    "variant_sector_bytes": {
+      "new_chart": {
+        "520": 1
+      }
+    }
+  },
+  "digimon": {
+    "snowagumon": {
+      "id": 180,
+      "name": "SnowAgumon"
+    },
+    "panjyamon": {
+      "id": 181,
+      "name": "Panjyamon"
+    },
+    "blackagumon": {
+      "id": 182,
+      "name": "BlackAgumon"
+    },
+    "metalgreymon_orange": {
+      "id": 183,
+      "name": "MetalGreymon"
+    },
+    "blackgreymon": {
+      "id": 184,
+      "name": "BlackGreymon"
+    },
+    "icedevimon": {
+      "id": 185,
+      "name": "IceDevimon"
+    },
+    "hyogamon": {
+      "id": 186,
+      "name": "Hyogamon"
+    },
+    "dokunemon": {
+      "id": 187,
+      "name": "Dokunemon"
+    },
+    "metaletemon": {
+      "id": 188,
+      "name": "MetalEtemon"
+    },
+    "myotismon": {
+      "id": 189,
+      "name": "Myotismon"
+    },
+    "warumonzaemon": {
+      "id": 190,
+      "name": "WaruMonzaemon"
+    },
+    "goburimon": {
+      "id": 191,
+      "name": "Goburimon"
+    },
+    "gotsumon": {
+      "id": 192,
+      "name": "Gotsumon"
+    },
+    "flarerizamon": {
+      "id": 193,
+      "name": "Flarerizamon"
+    },
+    "darkrizamon": {
+      "id": 194,
+      "name": "Darkrizamon"
+    },
+    "otamamon": {
+      "id": 195,
+      "name": "Otamamon"
+    },
+    "tentomon": {
+      "id": 196,
+      "name": "Tentomon"
+    },
+    "gekomon": {
+      "id": 197,
+      "name": "Gekomon"
+    },
+    "guardromon": {
+      "id": 198,
+      "name": "Guardromon"
+    },
+    "tankmon": {
+      "id": 199,
+      "name": "Tankmon"
+    },
+    "mastertyrannomon": {
+      "id": 200,
+      "name": "MasterTyrannomon"
+    },
+    "demimeramon": {
+      "id": 201,
+      "name": "DemiMeramon"
+    },
+    "machinedramon": {
+      "id": 206,
+      "name": "Machinedramon"
+    }
+  },
+  "shop_text": {
+    "sector_file": "dw1_shop_text_sectors.bin",
+    "lba": 172999,
+    "image_offset": 406893648,
+    "sectors": 2,
+    "slot_size": 64,
+    "slots": {
+      "Item Shop: Monochromon 1000 Bits": 0,
+      "Item Shop: Monochromon 2000 Bits": 1,
+      "Item Shop: Patamon 1000 Bits": 2,
+      "Item Shop: Patamon 2000 Bits": 3,
+      "Item Shop: Biyomon 1000 Bits": 4,
+      "Item Shop: Biyomon 2000 Bits": 5,
+      "Item Shop: Unimon 1000 Bits": 6,
+      "Item Shop: Unimon 2000 Bits": 7,
+      "Secret Item Shop: Numemon 1500 Bits": 8,
+      "Secret Item Shop: Numemon 3000 Bits": 9,
+      "Secret Item Shop: Mojyamon 1500 Bits": 10,
+      "Secret Item Shop: Mojyamon 3000 Bits": 11,
+      "Secret Item Shop: Mamemon 1500 Bits": 12,
+      "Secret Item Shop: Mamemon 3000 Bits": 13,
+      "Secret Item Shop: Devimon 1500 Bits": 14,
+      "Secret Item Shop: Devimon 3000 Bits": 15,
+      "Market: Betamon 500 Bits": 16,
+      "Market: Betamon 1000 Bits": 17,
+      "Market: Coelamon 500 Bits": 18,
+      "Market: Coelamon 1000 Bits": 19,
+      "Recycled Goods Shop: 2000 Bits": 20,
+      "Recycled Goods Shop: 4000 Bits": 21,
+      "Merit Shop: 15 Merit": 22,
+      "Merit Shop: 40 Merit": 23,
+      "Merit Shop: 100 Merit": 24,
+      "Merit Shop: 250 Merit": 25,
+      "Merit Shop: 500 Merit": 26
+    }
+  }
+}

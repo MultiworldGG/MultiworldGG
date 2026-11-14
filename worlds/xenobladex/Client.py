@@ -225,6 +225,8 @@ class XenobladeXHttpServer(HTTPServer):
         self.messages += [self._generate_message(heading, body)]
 
     def _sanitize_message(self, message: str) -> str:
+        message = re.sub(r"\[", "(", message)
+        message = re.sub(r"\]", ")", message)
         return re.sub(r"[\r\n]", "", message)
 
     def _generate_message(self, heading: str, body: str) -> str:

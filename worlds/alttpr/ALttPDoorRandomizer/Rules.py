@@ -85,6 +85,15 @@ def set_rules(world, player):
                 add_rule(world.get_location('Ganon', player), Primitive('has_crystals', world.crystals_needed_for_ganon[player], player))
         elif world.goal[player] == 'ganonhunt':
             add_rule(world.get_location('Ganon', player), lambda state: state.item_count('Triforce Piece', player) + state.item_count('Power Star', player) >= int(state.world.treasure_hunt_count[player]))
+        elif world.goal[player] == 'bosshunt':
+            if world.bosshunt_include_agas[player]:
+                add_rule(world.get_location('Ganon', player), lambda state: 
+                         state.item_count('Beat Agahnim 1', player) +
+                         state.item_count('Beat Agahnim 2', player) +
+                         state.item_count('Beat Boss', player) >= int(world.bosses_ganon[player]))
+            else:
+                add_rule(world.get_location('Ganon', player), lambda state: 
+                         state.item_count('Beat Boss', player) >= int(world.bosses_ganon[player]))
         elif world.goal[player] == 'completionist':
             add_rule(world.get_location('Ganon', player), Primitive('everything', player))
 
@@ -97,7 +106,7 @@ def set_rules(world, player):
                 add_rule(location, lambda state: state.item_count('Triforce Piece', player) + state.item_count('Power Star', player) >= int(state.world.treasure_hunt_count[player]))
             break
 
-    if (world.flute_mode[player] != 'active' and not world.is_tile_swapped(0x18, player)
+    if (world.flute_mode[player] not in ['active', 'pseudo'] and not world.is_tile_swapped(0x18, player)
             and 'Ocarina (Activated)' not in list(map(str, [i for i in world.precollected_items if i.player == player]))):
         # Commented out below, this would be needed for rando implementations where Inverted requires flute activation in bunny territory
         # kak_region = self.world.get_region('Kakariko Village', player)
@@ -468,7 +477,7 @@ def global_rules(world, player):
     set_rule(world.get_entrance('Skull Woods Rock (West)', player), Primitive('can_lift_rocks', player))
     set_rule(world.get_entrance('Skull Woods Rock (East)', player), Primitive('can_lift_rocks', player))
     # this more like an ohko rule - dependent on bird being present too - so enemizer could turn this off?
-    set_rule(world.get_entrance('Bumper Cave Ledge Drop', player), or_rule(lambda state: world.can_take_damage, Has('Cape', player), Has('Cane of Byrna', player), Primitive('has_sword', player)))
+    set_rule(world.get_entrance('Bumper Cave Ledge Drop', player), or_rule(Has('Cape', player), Has('Cane of Byrna', player), Primitive('has_sword', player)))
     set_rule(world.get_entrance('Bumper Cave Rock (Outer)', player), Primitive('can_lift_rocks', player))
     set_rule(world.get_entrance('Bumper Cave Rock (Inner)', player), Primitive('can_lift_rocks', player))
     set_rule(world.get_entrance('Skull Woods Pass Rock (North)', player), Primitive('can_lift_heavy_rocks', player))
@@ -985,7 +994,9 @@ def global_rules(world, player):
             add_mc_rule('Agahnim 1')
         add_mc_rule('Agahnim 2')
 
-    set_rule(world.get_location('Ganon', player), and_rule(Primitive('has_beam_sword', player), Primitive('has_fire_source', player), Has('Silver Arrows', player), Primitive('can_shoot_arrows', player)))
+    set_rule(
+        world.get_location('Ganon', player), and_rule(Primitive('has_beam_sword', player), Primitive('has_fire_source', player), Primitive('can_hit_stunned_ganon', player)))
+
     set_rule(world.get_entrance('Ganon Drop', player), Primitive('has_beam_sword', player))  # need to damage ganon to get tiles to drop
 
 
@@ -1368,8 +1379,7 @@ def ow_bunny_rules(world, player):
     add_bunny_rule(world.get_entrance('Skull Woods Forgotten Bush (East)', player), player)
     add_bunny_rule(world.get_entrance('Skull Woods Second Section Hole', player), player)
     add_bunny_rule(world.get_entrance('East Dark Death Mountain Bushes', player), player)
-    if not world.can_take_damage:
-        add_bunny_rule(world.get_entrance('Bumper Cave Ledge Drop', player), player)
+    add_bunny_rule(world.get_entrance('Bumper Cave Ledge Drop', player), player)
     add_bunny_rule(world.get_entrance('Bumper Cave Rock (Outer)', player), player)
     add_bunny_rule(world.get_entrance('Bumper Cave Rock (Inner)', player), player)
     add_bunny_rule(world.get_entrance('Skull Woods Pass Bush Row (West)', player), player)

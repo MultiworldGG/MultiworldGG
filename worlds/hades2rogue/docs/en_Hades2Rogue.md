@@ -11,6 +11,8 @@ Hades 2 Rogue is an implementation of Hades 2 for MultiworldGG that aims to stri
 
 This means that, based on configuration, every form of meaningful progression can be randomized. Your core locations will be making progress in routes; and you can configure defeating new enemies, meeting new NPCs, and gaining new Keepsakes to be locations as well.
 
+The miniboss room shuffle is fixed per seed (e.g. Olympus always has the same two minibosses). That's by design.
+
 Items are configurable, but can include: Max Grasp, Arcanas, Weapons, Aspects, Pets, Progressive Region Unlocks, unlocking helpers, and even unlocking gods themselves. Your goal is to defeat bosses, configurable in the YAML.
 
 Additionally, this mod has support for Zagreus' Journey, a mod by NikkelM that allows Melinoë to fight through Zagreus' path from the first game; this only works if you have Zagreus' Journey downloaded and Hades 1 installed, do not enable those settings otherwise.

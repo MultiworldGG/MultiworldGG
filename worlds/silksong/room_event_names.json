@@ -229,14 +229,6 @@
     ],
     "mapper_kind": "collectible"
   },
-  "event:mapper/be54a1e3-cef2-4c8c-947f-6fc357ea4dd5": {
-    "name": "Bone Bottom - Shell Shard Cache",
-    "kind": "collectible",
-    "locations": [
-      "Bone Bottom - Shell Shard Cache"
-    ],
-    "mapper_kind": "collectible"
-  },
   "event:mapper/f09ff4af-eadc-4167-ac83-aa27cf52e966": {
     "name": "Boss: Skull Tyrant (Bone Bottom)",
     "kind": "boss",
@@ -1502,13 +1494,13 @@
     "mapper_kind": "enemy"
   },
   "event:mapper/5f791110-649f-4e71-a4dd-da083b2fd4ac": {
-    "name": "Deep Docks Bellshrine - Bellshrine switch",
+    "name": "Deep Dock bellshrine switch",
     "kind": "switch",
     "locations": [],
     "mapper_kind": "switch"
   },
   "event:mapper/380c7758-c74d-4a45-b59f-5c05e527b92c": {
-    "name": "Deep Docks Bellshrine - bench",
+    "name": "bellshrine bench",
     "kind": "bench",
     "locations": [],
     "mapper_kind": "bench"
@@ -1556,7 +1548,7 @@
     "mapper_kind": "switch"
   },
   "event:mapper/d449f577-6716-4453-a161-4a019c34f1d7": {
-    "name": "Deep Docks Forge - Shard Bundle Wall",
+    "name": "Forge Wall",
     "kind": "blockade",
     "locations": [],
     "mapper_kind": "blockade"
@@ -1890,32 +1882,32 @@
     "mapper_kind": "collectible"
   },
   "event:mapper/840b10ca-cb4a-435b-bfdf-0b3125606cf9": {
-    "name": "Far Fields - Rosary Cache #14",
+    "name": "Far Fields - Fort Upper Passage - Rosaries Niche Stash 1",
     "kind": "collectible",
     "locations": [
-      "Far Fields - Rosary Cache #14"
+      "Far Fields - Fort Upper Passage - Rosaries Niche Stash 1"
     ],
     "mapper_kind": "collectible"
   },
   "event:mapper/4417fce6-0ee3-4c8f-87a4-62e735bc2c39": {
-    "name": "Far Fields - Rosary Cache #15",
+    "name": "Far Fields - Fort Upper Passage - Rosaries Niche Stash 2",
     "kind": "collectible",
     "locations": [
-      "Far Fields - Rosary Cache #15"
+      "Far Fields - Fort Upper Passage - Rosaries Niche Stash 2"
     ],
     "mapper_kind": "collectible"
   },
   "event:mapper/4697571c-90c1-4849-8be1-290e521b2c70": {
-    "name": "Far Fields Fort Upper Passage - Lower platform switch",
+    "name": "Far Fields - Fort Upper Passage - Stair Release Switch",
     "kind": "switch",
     "locations": [],
     "mapper_kind": "switch"
   },
   "event:mapper/f4d9e0ae-6c1b-4d81-96e3-d3fa53a6d607": {
-    "name": "Far Fields - Rosary Chest #1",
+    "name": "Far Fields - Fort Upper Passage - Skarr Rosaries Hoard Chest",
     "kind": "collectible",
     "locations": [
-      "Far Fields - Rosary Chest #1"
+      "Far Fields - Fort Upper Passage - Skarr Rosaries Hoard Chest"
     ],
     "mapper_kind": "collectible"
   },
@@ -2030,10 +2022,10 @@
     "mapper_kind": "boss"
   },
   "event:mapper/1af926c3-181a-45a8-a94b-9591ea8f3214": {
-    "name": "Choir's Final Rites Beads",
+    "name": "Far Fields Chorus - Choir's Final Rites Beads",
     "kind": "collectible",
     "locations": [
-      "Choir's Final Rites Beads"
+      "Far Fields Chorus - Choir's Final Rites Beads"
     ],
     "mapper_kind": "collectible"
   },
@@ -2044,10 +2036,10 @@
     "mapper_kind": "boss"
   },
   "event:mapper/e54c64bb-2486-4a2c-81f0-9af465fd3865": {
-    "name": "Horn Fragment",
+    "name": "Far Fields Chorus - Horn Fragment",
     "kind": "collectible",
     "locations": [
-      "Horn Fragment"
+      "Far Fields Chorus - Horn Fragment"
     ],
     "mapper_kind": "collectible"
   },
@@ -2564,9 +2556,11 @@
     "mapper_kind": "event"
   },
   "event:mapper/89aab9a5-1d44-4533-ac71-1c6d82d82b82": {
-    "name": "Sprintmaster Cave - Rosary beads",
+    "name": "Swift rosary necklace",
     "kind": "collectible",
-    "locations": [],
+    "locations": [
+      "Swift rosary necklace"
+    ],
     "mapper_kind": "collectible"
   },
   "event:mapper/4e7d7773-67a3-4862-9861-349cdb0ed746": {
@@ -2599,7 +2593,7 @@
     "locations": [],
     "mapper_kind": "switch"
   },
-  "event:mapper/2d005e67-8f66-4a7d-ad7e-55bf8e697953": {
+  "event:mapper/95c9171c-2553-48ef-8966-b568167eaf2d": {
     "name": "Chapel of the Beast - savage beastfly boss fight",
     "kind": "boss",
     "locations": [],
@@ -2643,8 +2637,8 @@
     ],
     "mapper_kind": "collectible"
   },
-  "event:mapper/86bf015f-47b6-4294-8fc6-19935ed55164": {
-    "name": "Hunter's March Entrance - Grunt fight",
+  "event:mapper/2c134add-ea37-4906-9fb0-c0b92d6970dc": {
+    "name": "Skarrgard the March Gatekeeper",
     "kind": "miniboss",
     "locations": [],
     "mapper_kind": "miniboss"
@@ -3666,12 +3660,6 @@
     "locations": [],
     "mapper_kind": "event"
   },
-  "event:mapper/reviewed:vendor-region-visit:greymoor/greymoor-craw-lake#flea-room": {
-    "name": "Greymoor Craw Lake - Visited Greymoor (flea room)",
-    "kind": "event",
-    "locations": [],
-    "mapper_kind": "event"
-  },
   "event:mapper/reviewed:vendor-region-visit:greymoor/greymoor-craw-lake#middle-craw-nest-left": {
     "name": "Greymoor Craw Lake - Visited Greymoor (middle craw nest left)",
     "kind": "event",
@@ -3728,12 +3716,6 @@
   },
   "event:mapper/reviewed:visit-greymoor:greymoor/greymoor-craw-lake#spiked-room": {
     "name": "Greymoor Craw Lake - Visit Greymoor:Greymoor/Greymoor Craw Lake#Spiked Room",
-    "kind": "event",
-    "locations": [],
-    "mapper_kind": "event"
-  },
-  "event:mapper/reviewed:visit-greymoor:greymoor/greymoor-craw-lake#flea-room": {
-    "name": "Greymoor Craw Lake - Visit Greymoor:Greymoor/Greymoor Craw Lake#Flea Room",
     "kind": "event",
     "locations": [],
     "mapper_kind": "event"
@@ -4195,12 +4177,6 @@
     "kind": "switch",
     "locations": [],
     "mapper_kind": "switch"
-  },
-  "event:mapper/b11e8483-b487-47c7-bb64-11d838043979": {
-    "name": "Greymoor Halfway Home Exterior - Hidden right wall",
-    "kind": "blockade",
-    "locations": [],
-    "mapper_kind": "blockade"
   },
   "event:mapper/reviewed:vendor-region-visit:greymoor/greymoor-halfway-home-exterior#lower-left-section": {
     "name": "Greymoor Halfway Home Exterior - Visited Greymoor (lower left section)",
@@ -5109,10 +5085,10 @@
     "mapper_kind": "collectible"
   },
   "event:mapper/cd3ea9f7-9c81-4f17-ab6a-f934d827e893": {
-    "name": "Rosaries Looking Over The Sinner's Bench",
+    "name": "Sinner's Road - Rosaries Looking Over The Sinner's Bench",
     "kind": "collectible",
     "locations": [
-      "Rosaries Looking Over The Sinner's Bench"
+      "Sinner's Road - Rosaries Looking Over The Sinner's Bench"
     ],
     "mapper_kind": "collectible"
   },
@@ -5163,18 +5139,18 @@
     "mapper_kind": "event"
   },
   "event:mapper/c244998e-45ab-4fda-a19f-bee26bc4f451": {
-    "name": "Caged Rosaries In the Sinner's Entryway",
+    "name": "Sinner's Road - Caged Rosaries In the Entryway",
     "kind": "collectible",
     "locations": [
-      "Caged Rosaries In the Sinner's Entryway"
+      "Sinner's Road - Caged Rosaries In the Entryway"
     ],
     "mapper_kind": "collectible"
   },
   "event:mapper/c78d1856-fabb-4e42-9989-ab5c5a9dd965": {
-    "name": "Sinner's Flea",
+    "name": "Sinner's Road - Sinner's Flea",
     "kind": "collectible",
     "locations": [
-      "Sinner's Flea"
+      "Sinner's Road - Sinner's Flea"
     ],
     "mapper_kind": "collectible"
   },
@@ -5187,18 +5163,18 @@
     "mapper_kind": "event"
   },
   "event:mapper/b60aef63-d800-4533-b5da-2f92e49fd03d": {
-    "name": "Shell Shards Lugoli Probably Threw Out: The First",
+    "name": "Sinner's Road - Shell Shards Lugoli Probably Threw Out: The First",
     "kind": "collectible",
     "locations": [
-      "Shell Shards Lugoli Probably Threw Out: The First"
+      "Sinner's Road - Shell Shards Lugoli Probably Threw Out: The First"
     ],
     "mapper_kind": "collectible"
   },
   "event:mapper/1308d6f0-ec57-461f-864e-90b5ec0e262f": {
-    "name": "Shell Shards Lugoli Probably Threw Out: The Second",
+    "name": "Sinner's Road - Shell Shards Lugoli Probably Threw Out: The Second",
     "kind": "collectible",
     "locations": [
-      "Shell Shards Lugoli Probably Threw Out: The Second"
+      "Sinner's Road - Shell Shards Lugoli Probably Threw Out: The Second"
     ],
     "mapper_kind": "collectible"
   },
@@ -5209,34 +5185,34 @@
     "mapper_kind": "switch"
   },
   "event:mapper/187bb7ea-5661-4d8c-8d62-387908c6c1ed": {
-    "name": "A Few Spare Shards In The Muckroach Kennel Attic",
+    "name": "Sinner's Road - A Few Spare Shards In The Muckroach Kennel Attic",
     "kind": "collectible",
     "locations": [
-      "A Few Spare Shards In The Muckroach Kennel Attic"
+      "Sinner's Road - A Few Spare Shards In The Muckroach Kennel Attic"
     ],
     "mapper_kind": "collectible"
   },
   "event:mapper/a67ed585-6e59-474b-b95e-0213e2b6da17": {
-    "name": "A Few More Spare Shards In The Muckroach Kennel Attic",
+    "name": "Sinner's Road - A Few More Spare Shards In The Muckroach Kennel Attic",
     "kind": "collectible",
     "locations": [
-      "A Few More Spare Shards In The Muckroach Kennel Attic"
+      "Sinner's Road - A Few More Spare Shards In The Muckroach Kennel Attic"
     ],
     "mapper_kind": "collectible"
   },
   "event:mapper/b23a4fc4-ff1c-43f2-ab7b-9b6c23b5221e": {
-    "name": "Last Few Spare Shards In The Muckroach Kennel Attic",
+    "name": "Sinner's Road - Last Few Spare Shards In The Muckroach Kennel Attic",
     "kind": "collectible",
     "locations": [
-      "Last Few Spare Shards In The Muckroach Kennel Attic"
+      "Sinner's Road - Last Few Spare Shards In The Muckroach Kennel Attic"
     ],
     "mapper_kind": "collectible"
   },
   "event:mapper/898e5e64-3ce0-49b3-8194-b6d14ac2fa7d": {
-    "name": "Sinner's Road - Rosary Cache #4",
+    "name": "Sinner's Road - Rosary Cache: Sinner’s Road #4",
     "kind": "collectible",
     "locations": [
-      "Sinner's Road - Rosary Cache #4"
+      "Sinner's Road - Rosary Cache: Sinner’s Road #4"
     ],
     "mapper_kind": "collectible"
   },
@@ -5247,18 +5223,18 @@
     "mapper_kind": "event"
   },
   "event:mapper/2aefa858-0b94-4d5d-af26-e3b6737a9a52": {
-    "name": "Left Shards In the Hall of the Spike Swingers",
+    "name": "Sinner's Road - Left Shards In the Hall of the Spike Swingers",
     "kind": "collectible",
     "locations": [
-      "Left Shards In the Hall of the Spike Swingers"
+      "Sinner's Road - Left Shards In the Hall of the Spike Swingers"
     ],
     "mapper_kind": "collectible"
   },
   "event:mapper/0a762857-5444-4a97-aaec-38b634caa605": {
-    "name": "Right Shards In the Hall of the Spike Swingers",
+    "name": "Sinner's Road - Right Shards In the Hall of the Spike Swingers",
     "kind": "collectible",
     "locations": [
-      "Right Shards In the Hall of the Spike Swingers"
+      "Sinner's Road - Right Shards In the Hall of the Spike Swingers"
     ],
     "mapper_kind": "collectible"
   },
@@ -5355,42 +5331,42 @@
     "mapper_kind": "event"
   },
   "event:mapper/f272a0fc-a61c-4fd8-a1e6-73a2efce1084": {
-    "name": "Eastern Sinner's Cage Rosary Primus",
+    "name": "Sinner's Road - Eastern Sinner's Cage Rosary Primus",
     "kind": "collectible",
     "locations": [
-      "Eastern Sinner's Cage Rosary Primus"
+      "Sinner's Road - Eastern Sinner's Cage Rosary Primus"
     ],
     "mapper_kind": "collectible"
   },
   "event:mapper/74ffa4f1-4974-40dc-8fd3-46cd84dd5486": {
-    "name": "Eastern Sinner's Cage Rosary Secundus",
+    "name": "Sinner's Road - Eastern Sinner's Cage Rosary Secundus",
     "kind": "collectible",
     "locations": [
-      "Eastern Sinner's Cage Rosary Secundus"
+      "Sinner's Road - Eastern Sinner's Cage Rosary Secundus"
     ],
     "mapper_kind": "collectible"
   },
   "event:mapper/c75eb85b-c102-4610-8c3c-68ffde71cddd": {
-    "name": "Eastern Sinner's Cage Rosary Tertius",
+    "name": "Sinner's Road - Eastern Sinner's Cage Rosary Tertius",
     "kind": "collectible",
     "locations": [
-      "Eastern Sinner's Cage Rosary Tertius"
+      "Sinner's Road - Eastern Sinner's Cage Rosary Tertius"
     ],
     "mapper_kind": "collectible"
   },
   "event:mapper/890f63bb-e718-4415-a3e2-85ecaf6ac7f5": {
-    "name": "Shards on Bilewater's Doorstep",
+    "name": "Sinner's Road - Shards on Bilewater's Doorstep",
     "kind": "collectible",
     "locations": [
-      "Shards on Bilewater's Doorstep"
+      "Sinner's Road - Shards on Bilewater's Doorstep"
     ],
     "mapper_kind": "collectible"
   },
   "event:mapper/b08ca6ef-95fe-4e21-8813-7cfe691aa778": {
-    "name": "Key Hoarding Roachkeeper In the Attic",
+    "name": "Sinner's Road - Key Hoarding Roachkeeper In the Attic",
     "kind": "collectible",
     "locations": [
-      "Key Hoarding Roachkeeper In the Attic"
+      "Sinner's Road - Key Hoarding Roachkeeper In the Attic"
     ],
     "mapper_kind": "collectible"
   },
@@ -5437,26 +5413,26 @@
     "mapper_kind": "event"
   },
   "event:mapper/c365d492-1522-49b8-9bae-8232cce1bf87": {
-    "name": "Gross Rosaries In the Sinner's Basement",
+    "name": "Sinner's Road - Gross Rosaries In the Sinner's Basement",
     "kind": "collectible",
     "locations": [
-      "Gross Rosaries In the Sinner's Basement"
+      "Sinner's Road - Gross Rosaries In the Sinner's Basement"
     ],
     "mapper_kind": "collectible"
   },
   "event:mapper/18fa3c25-7b0c-4626-a24a-e3a6a3bdfe9e": {
-    "name": "First Half of the Rosaries They Took From the Gay Frog When They Put Him In Prison",
+    "name": "Sinner's Road - First Half of the Rosaries They Took From the Gay Frog When They Put Him In Prison",
     "kind": "collectible",
     "locations": [
-      "First Half of the Rosaries They Took From the Gay Frog When They Put Him In Prison"
+      "Sinner's Road - First Half of the Rosaries They Took From the Gay Frog When They Put Him In Prison"
     ],
     "mapper_kind": "collectible"
   },
   "event:mapper/66ddda0c-35c8-40bb-8d9a-ab76185aee1f": {
-    "name": "Second Half of the Rosaries They Took From the Gay Frog When They Put Him In Prison",
+    "name": "Sinner's Road - Second Half of the Rosaries They Took From the Gay Frog When They Put Him In Prison",
     "kind": "collectible",
     "locations": [
-      "Second Half of the Rosaries They Took From the Gay Frog When They Put Him In Prison"
+      "Sinner's Road - Second Half of the Rosaries They Took From the Gay Frog When They Put Him In Prison"
     ],
     "mapper_kind": "collectible"
   },
@@ -6380,7 +6356,7 @@
     "mapper_kind": "collectible"
   },
   "event:mapper/c582554a-6412-4bcc-a5f5-7da7e5d1d37d": {
-    "name": "Whiteward Entrance - Whiteward Bench",
+    "name": "Whiteward - Bench",
     "kind": "bench",
     "locations": [],
     "mapper_kind": "bench"
@@ -7638,9 +7614,11 @@
     "mapper_kind": "event"
   },
   "event:mapper/a1838a7e-7c0f-4825-a448-ce81d9838b4a": {
-    "name": "Bone Bottom Wish Wall - garb of the pilgrims wish granted",
+    "name": "Wish: Garb of the Pilgrims",
     "kind": "event",
-    "locations": [],
+    "locations": [
+      "Wish: Garb of the Pilgrims"
+    ],
     "mapper_kind": "event"
   },
   "event:mapper/7c3615cb-a431-4cd0-8047-47aaffa9e9b7": {
@@ -7840,9 +7818,11 @@
     "mapper_kind": "event"
   },
   "event:mapper/47215edc-8aab-4470-bbe6-8032d03027ef": {
-    "name": "Bellhart Wish Wall - Dark Hearts - Mask Shard",
+    "name": "Dark Hearts - Mask Shard",
     "kind": "collectible",
-    "locations": [],
+    "locations": [
+      "Dark Hearts - Mask Shard"
+    ],
     "mapper_kind": "collectible"
   },
   "event:mapper/d6a03aad-9f4d-44a8-8a9d-eeb1cfdd535a": {
@@ -8189,9 +8169,9 @@
   },
   "event:mapper/13643ba4-bb66-4c29-be9c-9109379f8ac7": {
     "name": "Baby Room Interior Secret - Breakable Ceiling",
-    "kind": "switch",
+    "kind": "blockade",
     "locations": [],
-    "mapper_kind": "switch"
+    "mapper_kind": "blockade"
   },
   "event:mapper/22ff55f7-43ef-4403-a546-0da5c3266b7f": {
     "name": "High Halls Rosary Bank - Rosary Cannon Wall",
@@ -8590,10 +8570,10 @@
     "mapper_kind": "switch"
   },
   "event:mapper/e54aed5d-25ca-4209-b377-8c877e377a7f": {
-    "name": "Reed's personal chest",
+    "name": "Corridor to High Halls - Reed's personal chest",
     "kind": "collectible",
     "locations": [
-      "Reed's personal chest"
+      "Corridor to High Halls - Reed's personal chest"
     ],
     "mapper_kind": "collectible"
   },
@@ -8616,34 +8596,34 @@
     "mapper_kind": "switch"
   },
   "event:mapper/e56c43f4-f833-4b65-bdf1-2f9383ea42a6": {
-    "name": "Choral Chambers - Rosary Necklace #1",
+    "name": "Choral Chambers - Merchant's prized necklace",
     "kind": "collectible",
     "locations": [
-      "Choral Chambers - Rosary Necklace #1"
+      "Choral Chambers - Merchant's prized necklace"
     ],
     "mapper_kind": "collectible"
   },
   "event:mapper/936ce385-67b7-432c-b258-22445485f9d6": {
-    "name": "Choristor's precious belongings",
+    "name": "Choral Chambers - Ventrica Attic hidden chest",
     "kind": "collectible",
     "locations": [
-      "Choristor's precious belongings"
+      "Choral Chambers - Ventrica Attic hidden chest"
     ],
     "mapper_kind": "collectible"
   },
   "event:mapper/932fba53-6a79-47ce-a4ef-d0456a986508": {
-    "name": "Old Ventrica gains",
+    "name": "Choral Chambers - Ventrica Attic old gains",
     "kind": "collectible",
     "locations": [
-      "Old Ventrica gains"
+      "Choral Chambers - Ventrica Attic old gains"
     ],
     "mapper_kind": "collectible"
   },
   "event:mapper/c0c57e6d-2417-46c7-8b6f-d1ec15b1a193": {
-    "name": "Old Ventrica treasury",
+    "name": "Choral Chambers - Ventrica Attic treasury",
     "kind": "collectible",
     "locations": [
-      "Old Ventrica treasury"
+      "Choral Chambers - Ventrica Attic treasury"
     ],
     "mapper_kind": "collectible"
   },
@@ -8816,13 +8796,13 @@
     "mapper_kind": "lock"
   },
   "event:mapper/f5340693-d3db-4c9d-925f-90bbf31a75d2": {
-    "name": "Whiteward Entrance - Switch Entrance Left",
+    "name": "Whiteward - Switch Entrance Left",
     "kind": "switch",
     "locations": [],
     "mapper_kind": "switch"
   },
   "event:mapper/ce23c303-3602-4ac1-af9e-7f730bc0c4d9": {
-    "name": "Whiteward Entrance - Switch Entrance Right",
+    "name": "Whiteward - Switch Entrance Right",
     "kind": "switch",
     "locations": [],
     "mapper_kind": "switch"
@@ -8995,12 +8975,6 @@
     "locations": [],
     "mapper_kind": "logic-point"
   },
-  "event:mapper/5a19c041-5480-4be5-99a0-b9780feb598c": {
-    "name": "Is this still Deep Docks East Blast Rock",
-    "kind": "blockade",
-    "locations": [],
-    "mapper_kind": "blockade"
-  },
   "event:mapper/1eada053-a82d-49ce-b63e-70fc77f58d15": {
     "name": "Rosary Wall",
     "kind": "blockade",
@@ -9117,12 +9091,6 @@
   },
   "event:mapper/690ea7cf-1241-4838-8cb7-401ce1c8eb0f": {
     "name": "stone wall",
-    "kind": "blockade",
-    "locations": [],
-    "mapper_kind": "blockade"
-  },
-  "event:mapper/75317c0b-e51c-4c57-8c35-d919503025b6": {
-    "name": "very hidden plank wall",
     "kind": "blockade",
     "locations": [],
     "mapper_kind": "blockade"
@@ -9296,5 +9264,421 @@
     "kind": "lock",
     "locations": [],
     "mapper_kind": "lock"
+  },
+  "event:mapper/22453501-0620-4ea8-ac21-f11c95afbc32": {
+    "name": "Bone Bottom Icon of Hope Statue",
+    "kind": "collectible",
+    "locations": [
+      "Bone Bottom Icon of Hope Statue"
+    ],
+    "mapper_kind": "collectible"
+  },
+  "event:mapper/a9cdfb65-8fc1-4501-8f40-cb405f33f028": {
+    "name": "Bone Bottom Town Bench",
+    "kind": "bench",
+    "mapper_kind": "bench",
+    "locations": []
+  },
+  "event:mapper/reviewed:advanced-alchemy-upper-west-west-samples": {
+    "name": "Wormways Upper West - Advanced Alchemy Lower West Samples",
+    "kind": "event",
+    "mapper_kind": "event",
+    "locations": []
+  },
+  "event:mapper/reviewed:advanced-alchemy-upper-west-spike-samples": {
+    "name": "Wormways Upper West - Advanced Alchemy Spike Climb Samples",
+    "kind": "event",
+    "mapper_kind": "event",
+    "locations": []
+  },
+  "event:mapper/reviewed:vendor-region-visit:wormways/wormways-upper-west#right-exit-area": {
+    "name": "Wormways Upper West - Visited Wormways (right exit area)",
+    "kind": "event",
+    "mapper_kind": "event",
+    "locations": []
+  },
+  "event:mapper/reviewed:vendor-region-visit:wormways/wormways-upper-west#worm-drop": {
+    "name": "Wormways Upper West - Visited Wormways (worm drop)",
+    "kind": "event",
+    "mapper_kind": "event",
+    "locations": []
+  },
+  "event:mapper/reviewed:vendor-region-visit:wormways/wormways-upper-west#main-tunnel-spike-climb": {
+    "name": "Wormways Upper West - Visited Wormways (main tunnel spike climb)",
+    "kind": "event",
+    "mapper_kind": "event",
+    "locations": []
+  },
+  "event:mapper/083595cb-2985-4cdc-a1be-ce818477e245": {
+    "name": "High Halls Ventrica - bench",
+    "kind": "bench",
+    "mapper_kind": "bench",
+    "locations": []
+  },
+  "event:mapper/df44f4f5-b2a2-4ba9-abc6-49fd170316cf": {
+    "name": "Abyss Drop Down Wall",
+    "kind": "blockade",
+    "mapper_kind": "blockade",
+    "locations": []
+  },
+  "event:mapper/38bfefff-b858-42bb-9eab-e04b68ffa7c0": {
+    "name": "Abyss escape wall right side",
+    "kind": "blockade",
+    "mapper_kind": "blockade",
+    "locations": []
+  },
+  "event:mapper/acb09484-c9c5-4b09-a387-57efb925cad9": {
+    "name": "Abyss escape wall Left side",
+    "kind": "blockade",
+    "mapper_kind": "blockade",
+    "locations": []
+  },
+  "event:mapper/a5bd0574-eeef-4a22-bd48-ee2104200010": {
+    "name": "Abyss Landing Wall Left side",
+    "kind": "blockade",
+    "mapper_kind": "blockade",
+    "locations": []
+  },
+  "event:mapper/3998fdaa-0b5e-483a-bf1e-6ff5dd7f3e20": {
+    "name": "Abyss Landing Wall Right side",
+    "kind": "blockade",
+    "mapper_kind": "blockade",
+    "locations": []
+  },
+  "event:mapper/0983f8c5-bc7a-4f08-8b57-48b6312af6ab": {
+    "name": "Seth joins Festival of the Flea",
+    "kind": "logic-point",
+    "locations": [],
+    "mapper_kind": "logic-point"
+  },
+  "event:mapper/reviewed:void-mass:507d5e66-ae9f-4629-a19f-8fd1a4b23ffa": {
+    "name": "Void Mass destroyed: Mosshome Upper",
+    "kind": "event",
+    "locations": [],
+    "mapper_kind": "event"
+  },
+  "event:mapper/reviewed:void-mass:4db4d550-91a9-4a74-99d0-a1d6eb54984a": {
+    "name": "Void Mass destroyed: The Marrow Lava Intro",
+    "kind": "event",
+    "locations": [],
+    "mapper_kind": "event"
+  },
+  "event:mapper/reviewed:void-mass:89b73653-cb21-4cbd-929a-c190d726be64": {
+    "name": "Void Mass destroyed: The Marrow Map Shop",
+    "kind": "event",
+    "locations": [],
+    "mapper_kind": "event"
+  },
+  "event:mapper/reviewed:void-mass:fdaf1a31-b6a3-43b6-b409-1da48b39b953": {
+    "name": "Void Mass destroyed: The Marrow Lower Pogo",
+    "kind": "event",
+    "locations": [],
+    "mapper_kind": "event"
+  },
+  "event:mapper/reviewed:void-mass:b17f8426-6a70-404f-8f6b-c1677c75a559": {
+    "name": "Void Mass destroyed: The Marrow Lava Docks",
+    "kind": "event",
+    "locations": [],
+    "mapper_kind": "event"
+  },
+  "event:mapper/reviewed:void-mass:aa0b8065-ac65-4784-85c0-80d8de556e0a": {
+    "name": "Void Mass destroyed: Weavenest Atla Grotto",
+    "kind": "event",
+    "locations": [],
+    "mapper_kind": "event"
+  },
+  "event:mapper/reviewed:void-mass:57368a41-32c8-4dc8-8d06-1e026e7929bb": {
+    "name": "Void Mass destroyed: Deep Docks Spire Lower",
+    "kind": "event",
+    "locations": [],
+    "mapper_kind": "event"
+  },
+  "event:mapper/reviewed:void-mass:c6809501-d30e-481a-8013-a71d7eefacb3": {
+    "name": "Void Mass destroyed: Deep Docks Upper Spire",
+    "kind": "event",
+    "locations": [],
+    "mapper_kind": "event"
+  },
+  "event:mapper/reviewed:void-mass:d10d2f7e-6d14-49d8-98fb-0f7fb6dd5272": {
+    "name": "Void Mass destroyed: Far Fields Entrance West",
+    "kind": "event",
+    "locations": [],
+    "mapper_kind": "event"
+  },
+  "event:mapper/reviewed:void-mass:a446c9f7-b88b-4486-af67-f9d40834b825": {
+    "name": "Void Mass destroyed: Far Fields Deep Fort Passage",
+    "kind": "event",
+    "locations": [],
+    "mapper_kind": "event"
+  },
+  "event:mapper/reviewed:void-mass:852d3f79-a567-4c5f-a89c-67c8debb7c84": {
+    "name": "Void Mass destroyed: Hunter's March Early Pathway West",
+    "kind": "event",
+    "locations": [],
+    "mapper_kind": "event"
+  },
+  "event:mapper/reviewed:void-mass:cb2625c1-f1af-48b7-a7ab-57b1816c4921": {
+    "name": "Void Mass destroyed: Shellwood Big Room Left",
+    "kind": "event",
+    "locations": [],
+    "mapper_kind": "event"
+  },
+  "event:mapper/reviewed:void-mass:7e4f55f0-40d5-45a8-bf15-4937c653e53a": {
+    "name": "Void Mass destroyed: Shellwood Hidden Bellhart Connection",
+    "kind": "event",
+    "locations": [],
+    "mapper_kind": "event"
+  },
+  "event:mapper/reviewed:void-mass:71883a9a-c9ce-42b6-a2de-e9ca1851b6de": {
+    "name": "Void Mass destroyed: Shellwood Left Side Long Pond Room",
+    "kind": "event",
+    "locations": [],
+    "mapper_kind": "event"
+  },
+  "event:mapper/reviewed:void-mass:9d7c375d-10e8-4d8a-9803-42e3d4907a04": {
+    "name": "Void Mass destroyed: Shellwood Sister Splinter Bench",
+    "kind": "event",
+    "locations": [],
+    "mapper_kind": "event"
+  },
+  "event:mapper/reviewed:void-mass:ccac9eff-e026-4016-9156-5f1dac7c3fbe": {
+    "name": "Void Mass destroyed: Shellwood Top Room",
+    "kind": "event",
+    "locations": [],
+    "mapper_kind": "event"
+  },
+  "event:mapper/reviewed:void-mass:e3e45f13-7010-4dc8-811f-2cd6ccf56b9f": {
+    "name": "Void Mass destroyed: Greymoor East Bellshrine Room",
+    "kind": "event",
+    "locations": [],
+    "mapper_kind": "event"
+  },
+  "event:mapper/reviewed:void-mass:4c5dc080-62c1-46ad-b056-9d3b4072895e": {
+    "name": "Void Mass destroyed: Greymoor Rat Tunnel",
+    "kind": "event",
+    "locations": [],
+    "mapper_kind": "event"
+  },
+  "event:mapper/reviewed:void-mass:d1f70829-e2f1-435c-b816-42524caf9c05": {
+    "name": "Void Mass destroyed: Greymoor Upper Halfway Home Path",
+    "kind": "event",
+    "locations": [],
+    "mapper_kind": "event"
+  },
+  "event:mapper/reviewed:void-mass:e57d4115-c0bf-40a3-8c74-92871c4820c8": {
+    "name": "Void Mass destroyed: Greymoor Upper Towers Path",
+    "kind": "event",
+    "locations": [],
+    "mapper_kind": "event"
+  },
+  "event:mapper/reviewed:void-mass:aca5e621-2937-4ad4-aa4b-484f7af691b8": {
+    "name": "Void Mass destroyed: Greymoor Western Room",
+    "kind": "event",
+    "locations": [],
+    "mapper_kind": "event"
+  },
+  "event:mapper/reviewed:void-mass:b2599083-40b9-4fdf-b53f-3cabb4814e10": {
+    "name": "Void Mass destroyed: Blasted Steps Shakra Room",
+    "kind": "event",
+    "locations": [],
+    "mapper_kind": "event"
+  },
+  "event:mapper/reviewed:void-mass:63dc4073-069d-4c3d-84ca-ae9aa034270c": {
+    "name": "Void Mass destroyed: Great Conchflies",
+    "kind": "event",
+    "locations": [],
+    "mapper_kind": "event"
+  },
+  "event:mapper/reviewed:void-mass:4b1d4242-5e95-4788-9552-64a98eef9b8c": {
+    "name": "Void Mass destroyed: Pre Last Judge Room",
+    "kind": "event",
+    "locations": [],
+    "mapper_kind": "event"
+  },
+  "event:mapper/reviewed:void-mass:01951d9c-3287-4b6c-a8f4-aa96fce277da": {
+    "name": "Void Mass destroyed: Sinner's Road Muckroach Cages",
+    "kind": "event",
+    "locations": [],
+    "mapper_kind": "event"
+  },
+  "event:mapper/reviewed:void-mass:e7dbd3f7-c77c-4036-9cf9-ad77f05d2915": {
+    "name": "Void Mass destroyed: Sinner's Road Styx Room 1",
+    "kind": "event",
+    "locations": [],
+    "mapper_kind": "event"
+  },
+  "event:mapper/reviewed:void-mass:bfc9f155-af84-4304-adaa-440a41e9dd22": {
+    "name": "Void Mass destroyed: Sinner's Road Styx Room 2",
+    "kind": "event",
+    "locations": [],
+    "mapper_kind": "event"
+  },
+  "event:mapper/reviewed:void-mass:affe6b01-49f9-4469-b3bb-9d9622181fcf": {
+    "name": "Void Mass destroyed: Choral Chambers Outside Spa",
+    "kind": "event",
+    "locations": [],
+    "mapper_kind": "event"
+  },
+  "event:mapper/reviewed:void-mass:cc13c85a-d34a-43a7-9568-59f526b9a942": {
+    "name": "Void Mass destroyed: Choral Chambers Maintenance Tunnel",
+    "kind": "event",
+    "locations": [],
+    "mapper_kind": "event"
+  },
+  "event:mapper/reviewed:void-mass:667ce86f-7868-4955-b015-dea044d54469": {
+    "name": "Void Mass destroyed: Corridor to High Halls",
+    "kind": "event",
+    "locations": [],
+    "mapper_kind": "event"
+  },
+  "event:mapper/reviewed:void-mass:c0896d26-9e41-4cde-b893-8b3835be204e": {
+    "name": "Void Mass destroyed: Choral Chambers Eastern Shaft",
+    "kind": "event",
+    "locations": [],
+    "mapper_kind": "event"
+  },
+  "event:mapper/reviewed:void-mass:de14175f-0b97-4400-a73e-69dedd8210ba": {
+    "name": "Void Mass destroyed: Choral Chambers Below Ventrica",
+    "kind": "event",
+    "locations": [],
+    "mapper_kind": "event"
+  },
+  "event:mapper/reviewed:void-mass:21ab18e4-2b9a-4368-af3f-587e8b669296": {
+    "name": "Void Mass destroyed: Choral Chambers East to West",
+    "kind": "event",
+    "locations": [],
+    "mapper_kind": "event"
+  },
+  "event:mapper/reviewed:void-mass:52b2cd60-9308-480b-80ed-a1f7b1b4e2ce": {
+    "name": "Void Mass destroyed: High Halls Shaft Bottom",
+    "kind": "event",
+    "locations": [],
+    "mapper_kind": "event"
+  },
+  "event:mapper/reviewed:void-mass:3f7d0341-4087-46e4-99ab-9c59f4a0f331": {
+    "name": "Void Mass destroyed: High Halls Big Slide",
+    "kind": "event",
+    "locations": [],
+    "mapper_kind": "event"
+  },
+  "event:mapper/reviewed:void-mass:00bdf80d-3a7c-4506-9d28-9895e0ae468c": {
+    "name": "Void Mass destroyed: Bilewater Sinner's Entrance",
+    "kind": "event",
+    "locations": [],
+    "mapper_kind": "event"
+  },
+  "event:mapper/reviewed:vendor-region-visit:greymoor/greymoor-craw-lake#flea-room-middle": {
+    "name": "Greymoor Craw Lake - Visited Greymoor (flea room middle)",
+    "kind": "event",
+    "mapper_kind": "event",
+    "locations": []
+  },
+  "event:mapper/reviewed:visit-greymoor:greymoor/greymoor-craw-lake#flea-room-middle": {
+    "name": "Visit Greymoor:Greymoor/Greymoor Craw Lake#Flea Room Middle",
+    "kind": "event",
+    "mapper_kind": "event",
+    "locations": []
+  },
+  "event:mapper/reviewed:vendor-region-visit:greymoor/greymoor-craw-lake#flea-room-upper": {
+    "name": "Greymoor Craw Lake - Visited Greymoor (flea room upper)",
+    "kind": "event",
+    "mapper_kind": "event",
+    "locations": []
+  },
+  "event:mapper/reviewed:visit-greymoor:greymoor/greymoor-craw-lake#flea-room-upper": {
+    "name": "Visit Greymoor:Greymoor/Greymoor Craw Lake#Flea Room Upper",
+    "kind": "event",
+    "mapper_kind": "event",
+    "locations": []
+  },
+  "event:mapper/reviewed:vendor-region-visit:greymoor/greymoor-halfway-home-exterior#hidden-passage": {
+    "name": "Greymoor Halfway Home Exterior - Visited Greymoor (hidden passage)",
+    "kind": "event",
+    "mapper_kind": "event",
+    "locations": []
+  },
+  "event:mapper/reviewed:visit-greymoor:greymoor/greymoor-halfway-home-exterior#hidden-passage": {
+    "name": "Visit Greymoor:Greymoor/Greymoor Halfway Home Exterior#Hidden Passage",
+    "kind": "event",
+    "mapper_kind": "event",
+    "locations": []
+  },
+  "event:mapper/245de44f-3f13-4442-8dac-46df3d0f05aa": {
+    "name": "vent boulder 3",
+    "kind": "blockade",
+    "mapper_kind": "blockade",
+    "locations": []
+  },
+  "event:mapper/6d91d0c7-fc8e-4a69-bfeb-1bf8dc9d232a": {
+    "name": "Spear Skarr 1",
+    "kind": "miniboss",
+    "mapper_kind": "miniboss",
+    "locations": []
+  },
+  "event:mapper/d41e34a5-4b29-4e06-8e6e-2b322fdec496": {
+    "name": "Skarrgard 1",
+    "kind": "miniboss",
+    "mapper_kind": "miniboss",
+    "locations": []
+  },
+  "event:mapper/reviewed:void-mass:b8306dd1-8fc6-4eaf-93c9-c3d0f678bba7": {
+    "name": "Void Mass destroyed: Far Fields Fort Upper Passage",
+    "kind": "event",
+    "mapper_kind": "event",
+    "locations": []
+  },
+  "event:mapper/reviewed:void-mass:9f1b4c00-284f-45e5-835c-34d75c94e57a": {
+    "name": "Void Mass destroyed: Hunters March Deep Docks Passage",
+    "kind": "event",
+    "mapper_kind": "event",
+    "locations": []
+  },
+  "event:mapper/reviewed:vendor-region-visit:greymoor/greymoor-craw-lake#spike-room-lower-entrance": {
+    "name": "Visited Greymoor",
+    "kind": "event",
+    "mapper_kind": "event",
+    "locations": []
+  },
+  "event:mapper/reviewed:visit-greymoor:greymoor/greymoor-craw-lake#spike-room-lower-entrance": {
+    "name": "Visit Greymoor:Greymoor/Greymoor Craw Lake#Spike Room Lower Entrance",
+    "kind": "event",
+    "mapper_kind": "event",
+    "locations": []
+  },
+  "event:mapper/86ac6d0c-7b51-4fc7-a786-677f73ea1e79": {
+    "name": "Whiteward Entrance Wall",
+    "kind": "blockade",
+    "mapper_kind": "blockade",
+    "locations": []
+  },
+  "event:mapper/612a8f39-ef0b-4e0d-8815-40f5e26bb893": {
+    "name": "Sherma Gauntlet Wall",
+    "kind": "blockade",
+    "mapper_kind": "blockade",
+    "locations": []
+  },
+  "event:mapper/f624d27e-79eb-4bf9-8891-d137bac50110": {
+    "name": "Whiteward Tunnel Room - Wall 1",
+    "kind": "blockade",
+    "mapper_kind": "blockade",
+    "locations": []
+  },
+  "event:mapper/7243c395-ccee-4baf-989a-2137ebf54b89": {
+    "name": "Whiteward Tunnel Room - Wall 2",
+    "kind": "blockade",
+    "mapper_kind": "blockade",
+    "locations": []
+  },
+  "event:mapper/97f41a0f-3a33-414d-905a-3f2726a3e356": {
+    "name": "Whiteward Tunnel Room - Wall 3",
+    "kind": "blockade",
+    "mapper_kind": "blockade",
+    "locations": []
+  },
+  "event:mapper/f41d28f3-15c9-4df1-b095-21f526501532": {
+    "name": "Whiteward Tunnel Room - Wall 4",
+    "kind": "blockade",
+    "mapper_kind": "blockade",
+    "locations": []
   }
 }

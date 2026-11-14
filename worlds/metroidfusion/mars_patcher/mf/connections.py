@@ -1,12 +1,13 @@
 import pkgutil
+
 from collections.abc import Sequence
 
 from ..constants import game_data as gd
 from .auto_generated_types import (
-    MarsschemamfElevatorconnections,
-    MarsschemamfSectorshortcuts,
-    Validelevatorbottoms,
-    Validelevatortops,
+    MarsschemamfElevatorConnections,
+    MarsschemamfSectorShortcuts,
+    ValidElevatorBottoms,
+    ValidElevatorTops,
 )
 from .constants.main_hub_numbers import (
     MAIN_HUB_CENTER_ROOM,
@@ -22,35 +23,35 @@ from .constants.main_hub_numbers import (
     MAIN_HUB_TILEMAP_ADDR,
 )
 from .data import get_relative_data_path
-from ..minimap import Minimap
 from ..rom import Game, Rom
 from ..room_entry import BlockLayer, RoomEntry
+from ..tilemap import Tilemap
 
 # Area ID, Room ID, Is area connection
 ELEVATOR_TOPS = {
-    "OperationsDeckTop": (0, 0x1A, False),
-    "MainHubToSector1": (0, 0x43, True),
-    "MainHubToSector2": (0, 0x44, True),
-    "MainHubToSector3": (0, 0x45, True),
-    "MainHubToSector4": (0, 0x46, True),
-    "MainHubToSector5": (0, 0x47, True),
-    "MainHubToSector6": (0, 0x48, True),
-    "MainHubTop": (0, 0x5E, False),
-    "HabitationDeckTop": (0, 0xB2, False),
-    "Sector1ToRestrictedLab": (1, 0x41, True),
+    "OPERATIONS_DECK_TOP": (0, 0x1A, False),
+    "MAIN_HUB_TO_SECTOR_1": (0, 0x43, True),
+    "MAIN_HUB_TO_SECTOR_2": (0, 0x44, True),
+    "MAIN_HUB_TO_SECTOR_3": (0, 0x45, True),
+    "MAIN_HUB_TO_SECTOR_4": (0, 0x46, True),
+    "MAIN_HUB_TO_SECTOR_5": (0, 0x47, True),
+    "MAIN_HUB_TO_SECTOR_6": (0, 0x48, True),
+    "MAIN_HUB_TOP": (0, 0x5E, False),
+    "HABITATION_DECK_TOP": (0, 0xB2, False),
+    "SECTOR_1_TO_RESTRICTED_LAB": (1, 0x41, True),
 }
 
 ELEVATOR_BOTTOMS = {
-    "OperationsDeckBottom": (0, 0x19, False),
-    "MainHubBottom": (0, 0x32, False),
-    "RestrictedLabToSector1": (0, 0x9A, True),
-    "HabitationDeckBottom": (0, 0xB1, False),
-    "Sector1ToMainHub": (1, 0x00, True),
-    "Sector2ToMainHub": (2, 0x00, True),
-    "Sector3ToMainHub": (3, 0x00, True),
-    "Sector4ToMainHub": (4, 0x00, True),
-    "Sector5ToMainHub": (5, 0x00, True),
-    "Sector6ToMainHub": (6, 0x00, True),
+    "OPERATIONS_DECK_BOTTOM": (0, 0x19, False),
+    "MAIN_HUB_BOTTOM": (0, 0x32, False),
+    "RESTRICTED_LAB_TO_SECTOR_1": (0, 0x9A, True),
+    "HABITATION_DECK_BOTTOM": (0, 0xB1, False),
+    "SECTOR_1_TO_MAIN_HUB": (1, 0x00, True),
+    "SECTOR_2_TO_MAIN_HUB": (2, 0x00, True),
+    "SECTOR_3_TO_MAIN_HUB": (3, 0x00, True),
+    "SECTOR_4_TO_MAIN_HUB": (4, 0x00, True),
+    "SECTOR_5_TO_MAIN_HUB": (5, 0x00, True),
+    "SECTOR_6_TO_MAIN_HUB": (6, 0x00, True),
 }
 
 # (Area ID, Dest area): Door ID
@@ -75,7 +76,7 @@ class Connections:
         self.area_conns_addr = gd.area_connections(rom)
         self.area_conns_count = gd.area_connections_count(rom)
 
-    def set_elevator_connections(self, data: MarsschemamfElevatorconnections) -> None:
+    def set_elevator_connections(self, data: MarsschemamfElevatorConnections) -> None:
         # Reserve space for 8 more area connections and repoint
         size = self.area_conns_count * 3
         ac_data = self.rom.read_bytes(self.area_conns_addr, size)
@@ -86,10 +87,10 @@ class Connections:
         )
 
         # Connect tops to bottoms
-        pairs_top = data["ElevatorTops"]
+        pairs_top = data["elevator_tops"]
         self.connect_elevators(ELEVATOR_TOPS, ELEVATOR_BOTTOMS, pairs_top)
         # Connect bottoms to tops
-        pairs_bottom = data["ElevatorBottoms"]
+        pairs_bottom = data["elevator_bottoms"]
         self.connect_elevators(ELEVATOR_BOTTOMS, ELEVATOR_TOPS, pairs_bottom)
         if self.rom.game == Game.MF:
             # Update area number tiles in main hub rooms
@@ -97,10 +98,10 @@ class Connections:
             # Remove area numbers from Main Deck minimap
             self.remove_main_deck_minimap_area_nums()
 
-    def set_shortcut_connections(self, data: MarsschemamfSectorshortcuts) -> None:
-        for i, dst_area in enumerate(data["LeftAreas"]):
+    def set_shortcut_connections(self, data: MarsschemamfSectorShortcuts) -> None:
+        for i, dst_area in enumerate(data["left_areas"]):
             self.connect_shortcuts(i + 1, dst_area, True)
-        for i, dst_area in enumerate(data["RightAreas"]):
+        for i, dst_area in enumerate(data["right_areas"]):
             self.connect_shortcuts(i + 1, dst_area, False)
 
     def connect_shortcuts(self, area: int, dst_area: int, left: bool) -> None:
@@ -137,8 +138,8 @@ class Connections:
         self,
         src_dict: dict,
         dst_dict: dict,
-        pairs: dict[Validelevatortops, Validelevatorbottoms]
-        | dict[Validelevatorbottoms, Validelevatortops],
+        pairs: dict[ValidElevatorTops, ValidElevatorBottoms]
+        | dict[ValidElevatorBottoms, ValidElevatorTops],
     ) -> None:
         for src_name, dst_name in pairs.items():
             src_area, src_door, in_list = src_dict[src_name]
@@ -234,7 +235,7 @@ class Connections:
             bg2.set_block_value(x + 1, y, block + 1)
 
     def remove_main_deck_minimap_area_nums(self) -> None:
-        with Minimap(self.rom, 0) as minimap:
+        with Tilemap.from_minimap(self.rom, 0) as minimap:
             minimap.set_tile_value(0x2, 0x11, 0xA0, 0)  # 5
             minimap.set_tile_value(0x3, 0x10, 0xA0, 0)  # 3
             minimap.set_tile_value(0x4, 0x0F, 0xA0, 0)  # 1

@@ -1,7 +1,7 @@
 from ..constants.game_data import area_doors_ptrs, spriteset_ptrs
 from .auto_generated_types import (
-    MarsschemamfStartingitems,
-    MarsschemamfStartinglocation,
+    MarsschemamfStartingItems,
+    MarsschemamfStartingLocation,
 )
 from .constants.game_data import starting_equipment
 from .constants.items import BEAM_FLAGS, MISSILE_BOMB_FLAGS, SUIT_MISC_FLAGS
@@ -13,9 +13,9 @@ from ..room_entry import RoomEntry
 STARTING_LOC_ADDR = ReservedPointersMF.STARTING_LOCATION_ADDR.value
 
 
-def set_starting_location(rom: Rom, data: MarsschemamfStartinglocation) -> None:
-    area = data["Area"]
-    room = data["Room"]
+def set_starting_location(rom: Rom, data: MarsschemamfStartingLocation) -> None:
+    area = data["area"]
+    room = data["room"]
     # Don't do anything for area 0 room 0
     if area == 0 and room == 0:
         return
@@ -27,8 +27,8 @@ def set_starting_location(rom: Rom, data: MarsschemamfStartinglocation) -> None:
         x_pos, y_pos = pos
     else:
         # Convert block coordinates to actual position
-        x_pos = data["BlockX"] * 64 + 31
-        y_pos = data["BlockY"] * 64 + 63
+        x_pos = data["block_x"] * 64 + 31
+        y_pos = data["block_y"] * 64 + 63
     # Write to rom
     starting_location = rom.read_ptr(STARTING_LOC_ADDR)
     rom.write_8(starting_location, area)
@@ -86,7 +86,7 @@ def find_save_pad_position(rom: Rom, area: int, room: int) -> tuple[int, int] | 
     return None
 
 
-def set_starting_items(rom: Rom, data: MarsschemamfStartingitems) -> None:
+def set_starting_items(rom: Rom, data: MarsschemamfStartingItems) -> None:
     def get_ability_flags(ability_flags: dict[str, int]) -> int:
         status = 0
         for ability, flag in ability_flags.items():
@@ -95,21 +95,21 @@ def set_starting_items(rom: Rom, data: MarsschemamfStartingitems) -> None:
         return status
 
     # Get health/ammo amounts
-    energy = data.get("Energy", 99)
-    missiles = data.get("Missiles", 10)
-    power_bombs = data.get("PowerBombs", 10)
+    energy = data.get("energy", 99)
+    missiles = data.get("missiles", 10)
+    power_bombs = data.get("power_bombs", 10)
     # Get ability status flags
-    abilities = data.get("Abilities", [])
+    abilities = data.get("abilities", [])
     beam_status = get_ability_flags(BEAM_FLAGS)
     missile_bomb_status = get_ability_flags(MISSILE_BOMB_FLAGS)
     suit_misc_status = get_ability_flags(SUIT_MISC_FLAGS)
     # Get security level flags
-    levels = data.get("SecurityLevels", [0])
+    levels = data.get("security_levels", [0])
     level_status = 0
     for level in levels:
         level_status |= 1 << level
     # Get downloaded map flags
-    maps = data.get("DownloadedMaps", range(7))
+    maps = data.get("downloaded_maps", range(7))
     map_status = 0
     for map in maps:
         map_status |= 1 << map

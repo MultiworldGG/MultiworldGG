@@ -5,5 +5,7 @@
 // with more than 255 slots can route items to the correct Archipelago player.
 #define AP_MAX_PLAYER_ID 1024
 #define AP_PLAYER_TABLE_SIZE (AP_MAX_PLAYER_ID + 1)
+#define AP_DISPLAY_NAME_LENGTH 16
+#define AP_DISPLAY_NAME_SIZE 20
 
 #endif

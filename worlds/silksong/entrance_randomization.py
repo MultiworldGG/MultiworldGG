@@ -297,22 +297,26 @@ def _has_early_item_space(world):
     if len(reachable) != 1 or world.multiworld.players != 1:
         return bool(reachable)
     # One spare check isn't enough if the next route needs two new items.
-    target = reachable[0]
-    seen = set()
-    for item in pending:
-        if item.name in seen or not target.can_fill(state, item, check_access=False):
-            continue
-        seen.add(item.name)
-        trial = state.copy()
-        trial.collect(item, True)
-        trial.sweep_for_advancements(_early_sweep_locations(world))
-        if (world.multiworld.completion_condition[world.player](trial)
-                or any(location is not target and location.can_reach(trial)
-                       and any(location.can_fill(trial, next_item, check_access=False)
-                               for next_item in pending if next_item is not item)
-                       for location in remaining)):
-            return True
-    return False
+    def opens_route(state, target, pending, remaining):
+        seen = set()
+        for item in pending:
+            if item.name in seen or not target.can_fill(state, item, check_access=False):
+                continue
+            seen.add(item.name)
+            trial = state.copy()
+            trial.collect(item, True)
+            trial.sweep_for_advancements(_early_sweep_locations(world))
+            if world.multiworld.completion_condition[world.player](trial):
+                return True
+            next_items = [candidate for candidate in pending if candidate is not item]
+            next_locations = [location for location in remaining if location is not target]
+            reached = [location for location in next_locations if location.can_reach(trial)
+                       and any(location.can_fill(trial, candidate, check_access=False)
+                               for candidate in next_items)]
+            if len(reached) > 1 or (reached and opens_route(trial, reached[0], next_items, next_locations)):
+                return True
+        return False
+    return opens_route(state, reachable[0], pending, remaining)
 
 
 def _has_possible_category_progression(world):

@@ -314,7 +314,8 @@
         "scene": "Lost Woods",
         "hint": "LOST_WOODS",
         "events": {
-            "Odd Mushroom Access": "is_adult and (('Cojiro Access' and not adult_trade_shuffle) or Cojiro)",
+            "Odd Mushroom Access": "is_adult and (('Cojiro Access' and not adult_trade_shuffle) or Cojiro or
+                (Odd_Mushroom and not disable_trade_revert))",
             "Poachers Saw Access": "is_adult and (('Odd Potion Access' and not adult_trade_shuffle) or Odd_Potion)"
         },
         "locations": {
@@ -1825,10 +1826,7 @@
         "region_name": "Kak Carpenter Boss House",
         "scene": "Kak Carpenter Boss House",
         "events": {
-            # AP full accessibility requires every AP location to be reachable after fill.
-            # Unlike upstream, allow mid-chain non-shuffled adult trade starts to logically
-            # skip waking Talon, matching the save-context trade flags written by Patches.py.
-            "Wake Up Adult Talon": "is_adult and (Pocket_Egg or Pocket_Cucco or ((selected_adult_trade_item == 'Cojiro' or selected_adult_trade_item == 'Odd Mushroom' or selected_adult_trade_item == 'Odd Potion' or selected_adult_trade_item == 'Poachers Saw' or selected_adult_trade_item == 'Broken Sword' or selected_adult_trade_item == 'Prescription' or selected_adult_trade_item == 'Eyeball Frog' or selected_adult_trade_item == 'Eyedrops' or selected_adult_trade_item == 'Claim Check') and not adult_trade_shuffle))"
+            "Wake Up Adult Talon": "is_adult and (Pocket_Egg or Pocket_Cucco)"
         },
         "exits": {
             "Kakariko Village": "True"

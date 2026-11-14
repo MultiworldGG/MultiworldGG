@@ -1,6 +1,8 @@
 from enum import Enum
 from zlib import crc32
 
+from .common_types import BytesLike
+
 
 class BpsDecodeError(Enum):
     INVALID_BPS = 0
@@ -18,7 +20,9 @@ class BpsDecoder:
             msg = "File already patched"
         raise ValueError(msg)
 
-    def apply_patch(self, patch: bytes, source: bytes, ignore_checksum: bool = False) -> bytearray:
+    def apply_patch(
+        self, patch: bytes, source: BytesLike, ignore_checksum: bool = False
+    ) -> bytearray:
         self.patch = patch
         self.source = source
 

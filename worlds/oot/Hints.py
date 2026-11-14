@@ -196,6 +196,10 @@ def is_restricted_dungeon_item(item: Item, world: Optional['OOTWorld'] = None) -
 def attach_name(text, hinted_object, world):
     if hinted_object.player == world.player:
         return text
+    # A possessive replaces the article: "TreZ's Blue Rupee", not "TreZ's a Blue Rupee".
+    article, separator, remainder = text.partition(' ')
+    if separator and article.lower() in ('a', 'an', 'the'):
+        text = remainder
     return rom_safe_text(f"{world.multiworld.get_player_name(hinted_object.player)}'s {text}")
 
 

@@ -38,7 +38,7 @@ LABELS = {
     "weapons_title": "Weapons",
     "rank": "Rank",
     "keepsakes_title": "Keepsakes",
-    "npcs_title": "NPCs",
+    "npcs_title": "NPCs Met",
     "enemies_title": "Enemies",
     "other_title": "Other",
     "gods_title": "Gods",
@@ -319,10 +319,11 @@ def goal_model(slot_data: dict, stats: Optional[dict], finished: bool) -> Option
         have = stats["zagreus"] if stats else None
         rows.append({"kind": "boss", "name": "Zagreus", "label": LABELS["goal_clears"], "have": have,
                      "need": need, "done": have is not None and have >= need})
-    if required:
+    need = _int(slot_data, "weapons_clears_needed", 1)
+    if required and need > 1:
         # One shared count: the mod unions the weapons used across every route's clears and sends
         # the same number in each boss's slot (LocationManager.distinct_weapons_combined).
-        need = _int(slot_data, "weapons_clears_needed", 1)
+        # Needing one weapon is no requirement at all (any clear uses one), so it gets no row.
         have = max(stats["weapons"].values(), default=0) if stats else None
         rows.append({"kind": "weapons", "name": LABELS["goal_weapons"], "label": "", "have": have,
                      "need": need, "done": have is not None and have >= need})

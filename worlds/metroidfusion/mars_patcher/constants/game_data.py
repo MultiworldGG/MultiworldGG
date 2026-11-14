@@ -1,3 +1,4 @@
+from ..mf.constants.reserved_space import ReservedPointersMF
 from ..rom import Game, Region, Rom
 from ..zm.constants.reserved_space import ReservedPointersZM
 
@@ -45,6 +46,25 @@ def tileset_count(rom: Rom) -> int:
     raise ValueError(rom.game)
 
 
+def anim_tileset_entries(rom: Rom) -> int:
+    """Returns the address of the animated tileset entries."""
+    if rom.game == Game.MF:
+        raise NotImplementedError()
+    elif rom.game == Game.ZM:
+        return rom.read_ptr(ReservedPointersZM.ANIM_TILESET_ENTRIES_PTR.value)
+
+    raise ValueError("Rom has unknown game loaded.")
+
+
+def anim_tileset_count(rom: Rom) -> int:
+    """Returns the number of animated tilesets in the game."""
+    if rom.game == Game.MF:
+        return 0xE
+    elif rom.game == Game.ZM:
+        return 0x8
+    raise ValueError(rom.game)
+
+
 def area_doors_ptrs(rom: Rom) -> int:
     """Returns the address of the area doors pointers."""
     if rom.game == Game.MF:
@@ -87,6 +107,15 @@ def area_connections_count(rom: Rom) -> int:
         return 0x19
 
     raise ValueError("Rom has unknown game loaded.")
+
+
+def anim_graphics_count(rom: Rom) -> int:
+    """Returns the number of animated graphics in the game."""
+    if rom.game == Game.MF:
+        return 0x47
+    elif rom.game == Game.ZM:
+        return 0x26
+    raise ValueError(rom.game, rom.region)
 
 
 def anim_palette_entries(rom: Rom) -> int:
@@ -196,7 +225,7 @@ def samus_palettes(rom: Rom) -> list[tuple[int, int]]:
         elif rom.region == Region.C:
             return [(0x2900C8, 0x5E), (0x290E48, 0x70), (0x56CC68, 3)]
     elif rom.game == Game.ZM:
-        addr = rom.read_ptr(ReservedPointersZM.AREA_DOORS_PTR.value)
+        addr = rom.read_ptr(ReservedPointersZM.SAMUS_PALETTES_PTR.value)
         return [(addr, 0xA3)]
     raise ValueError(rom.game, rom.region)
 
@@ -316,3 +345,25 @@ def minimap_graphics(rom: Rom) -> int:
         elif rom.region == Region.C:
             return 0x561FA8
     raise ValueError(rom.game, rom.region)
+
+
+def room_names_addr(rom: Rom) -> int:
+    """Returns the address of the room names table."""
+    if rom.game == Game.MF:
+        addr = ReservedPointersMF.ROOM_NAMES_TABLE_ADDR.value
+    elif rom.game == Game.ZM:
+        addr = ReservedPointersZM.ROOM_NAMES_PTR.value
+    else:
+        raise ValueError(rom.game)
+    return rom.read_ptr(addr)
+
+
+def title_text_addr(rom: Rom) -> int:
+    """Returns the address of the title screen text line pointers."""
+    if rom.game == Game.MF:
+        addr = ReservedPointersMF.TITLE_SCREEN_TEXT_POINTERS_POINTER_ADDR.value
+    elif rom.game == Game.ZM:
+        addr = ReservedPointersZM.TITLE_TEXT_LINES_PTR.value
+    else:
+        raise ValueError(rom.game)
+    return rom.read_ptr(addr)

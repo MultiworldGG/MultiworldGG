@@ -1,0 +1,322 @@
+{
+ "cards_per_pack": 3,
+ "note": "Source of truth for the booster card shop. tools/patch_booster_shop.py bakes it into the EXE, build_variants.py copies it to the apworld and client. 'flag' is the bit index in BOOSTER_PACK_BITS (save tail +0x1A20) and the AP item is dw_code 1200+flag; never renumber. The 'random' entry has no flag, is always for sale, draws one uniform card from ids 1-64 and is outside logic. Tier weights are normalised by their sum. 'card_ids' is the game's CARD_DATA index per card name (validated against the EXE by the patch tool); the apworld uses it to map packs to '<X> Card' locations (69002000 + id).",
+ "packs": [
+  {
+   "name": "Random Card",
+   "price": 100,
+   "random": true,
+   "draws": 1
+  },
+  {
+   "name": "The Poop squad",
+   "flag": 0,
+   "price": 100,
+   "tiers": [
+    {
+     "weight": 80,
+     "cards": [
+      "Nanimon",
+      "Sukamon",
+      "Numemon"
+     ]
+    },
+    {
+     "weight": 15,
+     "cards": [
+      "Goburimon",
+      "Tankmon",
+      "DemiMeramon",
+      "Flarerizamon",
+      "Gotsumon",
+      "ToyAgumon"
+     ]
+    },
+    {
+     "weight": 1,
+     "cards": [
+      "King of Sukamon"
+     ]
+    },
+    {
+     "weight": 4,
+     "cards": [
+      "Etemon"
+     ]
+    }
+   ]
+  },
+  {
+   "name": "Unlucky Dip",
+   "flag": 1,
+   "price": 250,
+   "tiers": [
+    {
+     "weight": 60,
+     "cards": [
+      "Vegiemon",
+      "Sukamon",
+      "Numemon"
+     ]
+    },
+    {
+     "weight": 25,
+     "cards": [
+      "Monochromon",
+      "Kokatorimon",
+      "Kuwagamon",
+      "Kabuterimon",
+      "Goburimon",
+      "Tentomon",
+      "Yanmamon",
+      "Ninjamon",
+      "Andromon",
+      "Cherrymon",
+      "Brachiomon",
+      "Angemon",
+      "Unimon",
+      "Centarumon",
+      "Drimogemon",
+      "Leomon"
+     ]
+    },
+    {
+     "weight": 13,
+     "cards": [
+      "Gekomon",
+      "Jijimon",
+      "Piximon"
+     ]
+    },
+    {
+     "weight": 2,
+     "cards": [
+      "Phoenixmon",
+      "H-Kabuterimon",
+      "Myotismon",
+      "ShogunGekomon",
+      "MetalGreymon",
+      "MegaSeadramon",
+      "MetalMamemon",
+      "Monzaemon",
+      "SkullGreymon"
+     ]
+    }
+   ]
+  },
+  {
+   "name": "Vile Virus",
+   "flag": 2,
+   "price": 500,
+   "tiers": [
+    {
+     "weight": 40,
+     "cards": [
+      "Nanimon",
+      "Vegiemon",
+      "Numemon"
+     ]
+    },
+    {
+     "weight": 40,
+     "cards": [
+      "Ogremon",
+      "Bakemon",
+      "Devimon"
+     ]
+    },
+    {
+     "weight": 15,
+     "cards": [
+      "Giromon",
+      "Etemon",
+      "Megadramon",
+      "Digitamamon",
+      "WaruMonzaemon"
+     ]
+    },
+    {
+     "weight": 5,
+     "cards": [
+      "Vademon",
+      "MetalGreymon",
+      "Myotismon"
+     ]
+    }
+   ]
+  },
+  {
+   "name": "Frosty Friends",
+   "flag": 3,
+   "price": 800,
+   "tiers": [
+    {
+     "weight": 30,
+     "cards": [
+      "Nanimon",
+      "Vegiemon",
+      "Sukamon"
+     ]
+    },
+    {
+     "weight": 30,
+     "cards": [
+      "Penguinmon",
+      "Otamamon",
+      "Mojyamon",
+      "Coelamon",
+      "Shellmon"
+     ]
+    },
+    {
+     "weight": 30,
+     "cards": [
+      "Seadramon",
+      "Garurumon",
+      "Frigimon",
+      "Whamon"
+     ]
+    },
+    {
+     "weight": 10,
+     "cards": [
+      "MegaSeadramon"
+     ]
+    }
+   ]
+  },
+  {
+   "name": "Blazing Heat",
+   "flag": 4,
+   "price": 1000,
+   "tiers": [
+    {
+     "weight": 50,
+     "cards": [
+      "Tankmon",
+      "ToyAgumon",
+      "Airdramon"
+     ]
+    },
+    {
+     "weight": 40,
+     "cards": [
+      "DemiMeramon",
+      "Flarerizamon",
+      "Birdramon",
+      "Meramon",
+      "Greymon",
+      "Tyrannomon"
+     ]
+    },
+    {
+     "weight": 10,
+     "cards": [
+      "SkullGreymon",
+      "Phoenixmon",
+      "MetalGreymon",
+      "Megadramon"
+     ]
+    }
+   ]
+  },
+  {
+   "name": "Tech Town",
+   "flag": 5,
+   "price": 1500,
+   "tiers": [
+    {
+     "weight": 50,
+     "cards": [
+      "Gotsumon",
+      "Tankmon",
+      "Tentomon",
+      "Hagurumon"
+     ]
+    },
+    {
+     "weight": 40,
+     "cards": [
+      "Guardromon",
+      "Giromon",
+      "Mamemon",
+      "Andromon"
+     ]
+    },
+    {
+     "weight": 10,
+     "cards": [
+      "MetalGreymon",
+      "MetalMamemon"
+     ]
+    }
+   ]
+  }
+ ],
+ "card_ids": {
+  "Phoenixmon": 1,
+  "H-Kabuterimon": 2,
+  "MegaSeadramon": 3,
+  "ShogunGekomon": 4,
+  "Myotismon": 5,
+  "MetalGreymon": 6,
+  "Mamemon": 7,
+  "Monzaemon": 8,
+  "SkullGreymon": 9,
+  "MetalMamemon": 10,
+  "Vademon": 11,
+  "Andromon": 12,
+  "Giromon": 13,
+  "Etemon": 14,
+  "Megadramon": 15,
+  "Piximon": 16,
+  "Digitamamon": 17,
+  "Gekomon": 18,
+  "WaruMonzaemon": 19,
+  "Jijimon": 20,
+  "King of Sukamon": 21,
+  "Cherrymon": 22,
+  "Guardromon": 23,
+  "Hagurumon": 24,
+  "Brachiomon": 25,
+  "Greymon": 26,
+  "Devimon": 27,
+  "Airdramon": 28,
+  "Tyrannomon": 29,
+  "Meramon": 30,
+  "Seadramon": 31,
+  "Kabuterimon": 32,
+  "Angemon": 33,
+  "Birdramon": 34,
+  "Garurumon": 35,
+  "Frigimon": 36,
+  "Whamon": 37,
+  "Unimon": 38,
+  "Ogremon": 39,
+  "Shellmon": 40,
+  "Centarumon": 41,
+  "Bakemon": 42,
+  "Drimogemon": 43,
+  "Monochromon": 44,
+  "Leomon": 45,
+  "Coelamon": 46,
+  "Kokatorimon": 47,
+  "Kuwagamon": 48,
+  "Mojyamon": 49,
+  "Ninjamon": 50,
+  "Penguinmon": 51,
+  "Otamamon": 52,
+  "Tentomon": 53,
+  "Yanmamon": 54,
+  "Gotsumon": 55,
+  "Flarerizamon": 56,
+  "ToyAgumon": 57,
+  "DemiMeramon": 58,
+  "Tankmon": 59,
+  "Goburimon": 60,
+  "Numemon": 61,
+  "Vegiemon": 62,
+  "Sukamon": 63,
+  "Nanimon": 64
+ }
+}

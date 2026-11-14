@@ -8,6 +8,7 @@ import jinja2.exceptions
 from flask import request, redirect, url_for, render_template, Response, session, abort, send_from_directory
 from pony.orm import count, commit, db_session
 from werkzeug.utils import secure_filename
+from MultiServer import Context
 from Utils import __version__
 
 
@@ -372,7 +373,9 @@ def host_room(room: UUID):
         except FileNotFoundError:
             return "", 0
 
-    return render_template("hostRoom.html", room=room, should_refresh=should_refresh, get_log=get_log)
+    world_versions = Context.decompress(room.seed.multidata).get("world_versions", {}) if room.seed.slots else {}
+    return render_template("hostRoom.html", room=room, should_refresh=should_refresh, get_log=get_log,
+                           world_versions=world_versions)
 
 
 @app.route('/favicon.ico')

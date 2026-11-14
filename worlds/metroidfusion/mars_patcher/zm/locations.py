@@ -10,6 +10,7 @@ from .auto_generated_types import (
     MarsschemazmLocationsMinorLocationsItem,
 )
 from .constants.items import (
+    ITEM_TO_SPRITE,
     HintLocation,
     ItemJingle,
     ItemSprite,
@@ -50,6 +51,12 @@ class Location:
         item_str = self.orig_item.name
         item_str += "/" + self.new_item.name
         return f"{self.area},0x{self.room:02X}: {item_str}"
+
+    @property
+    def actual_item_sprite(self) -> ItemSprite:
+        if self.item_sprite == ItemSprite.DEFAULT:
+            return ITEM_TO_SPRITE[self.new_item]
+        return self.item_sprite
 
     @property
     def hint_value(self) -> int:
@@ -180,15 +187,19 @@ class LocationSettings:
         """Sets item, item sprite, custom message (if any), jingle, and hint
         on a major or minor location."""
         loc_obj.new_item = ItemType[loc_entry["item"]]
+
         if "item_sprite" in loc_entry:
             loc_obj.item_sprite = ItemSprite[loc_entry["item_sprite"]]
-        # if "ItemMessages" in loc_entry:
-        #     loc_obj.item_messages = ItemMessages.from_json(loc_entry["ItemMessages"])
+
         if "jingle" in loc_entry:
             loc_obj.item_jingle = ItemJingle[loc_entry["jingle"]]
         else:
             loc_obj.item_jingle = ItemJingle.DEFAULT
+
         if "hinted_by" in loc_entry:
             loc_obj.hinted_by = HintLocation[loc_entry["hinted_by"]]
         else:
             loc_obj.hinted_by = HintLocation.NONE
+
+        if "item_messages" in loc_entry:
+            loc_obj.item_messages = ItemMessages.from_json(loc_entry["item_messages"])

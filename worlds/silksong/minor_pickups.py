@@ -5,14 +5,10 @@ from collections import Counter
 from .location_display_names import location_first_name
 
 
-# Native CollectableItemPickup identities. Alternate Flea Festival state
-# copies share the same scene, asset and position and therefore represent one
-# physical source apiece.
+# Native CollectableItemPickup identities.
 MINOR_PICKUP_SOURCE: tuple[tuple[str, str, str, float, float], ...] = (
     ("Hunter's March - Rosary Necklace", 'ant_04_left', 'Rosary_Set_Medium', 85.02, 26.99),
     ('Putrified Ducts - Frayed Rosary String', 'aqueduct_01', 'Rosary_Set_Frayed', 256.19, 14.67),
-    ('Fleatopia - Rosary Necklace', 'aqueduct_05_festival', 'Rosary_Set_Medium', 152.783, 16.2396),
-    ('Fleatopia - Rosary String', 'aqueduct_05_festival', 'Rosary_Set_Small', 154.043, 15.9796),
     ('Memorium - Shard Bundle', 'arborium_11', 'Shard Pouch', 211.22, 10.27),
     ('The Marrow (Flea Caravan Passage) - Frayed Rosary String', 'bone_10', 'Rosary_Set_Frayed', 98.9849, 41.3206),
     ('Deep Docks - Frayed Rosary String', 'bone_east_04b', 'Rosary_Set_Frayed', 6.462, 87.1857),
@@ -84,6 +80,7 @@ WISH_CURRENCY_REWARDS: dict[str, str] = {
 SCRIPTED_MINOR_REWARDS: dict[str, str] = {
     **WISH_CURRENCY_REWARDS,
     'Loddie - Heavy Rosary Necklace': 'Heavy Rosary Necklace',
+    'Swift rosary necklace': 'Rosary Necklace',
 }
 
 

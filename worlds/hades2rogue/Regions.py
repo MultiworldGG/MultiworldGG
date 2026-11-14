@@ -3,7 +3,7 @@ from .Routes import ROUTES, DREAM, active_routes, boss_event
 
 def create_regions(ctx, location_database: dict) -> None:
     from . import create_region
-    from .Locations import zone_tables, keepsake_locations_for, ENEMY_BY_ZONE, \
+    from .Locations import zone_tables, keepsake_locations_for, keepsake_has_locations, ENEMY_BY_ZONE, \
         NPC_BOSS_BY_ZONE, npc_intro_locations_for, npc_meet_locations_for, \
         ALWAYS_MET_BOSS_LOCATIONS, combine_active, combined_room_table, \
         combined_score_table, ROOM_BASED, PER_WEAPON_ROOM_BASED, PER_ASPECT_ROOM_BASED, \
@@ -74,8 +74,10 @@ def create_regions(ctx, location_database: dict) -> None:
 
     # The Crossroads hub holds the keepsake unlock checks (when keepsakesanity isn't
     # "normal"). Aspects and pets are items-only; incantations were removed.
-    crossroads_locs = [boss_event("Zagreus")]
-    if ctx.options.keepsakesanity.value != 0:
+    crossroads_locs = []
+    if boss_event("Zagreus") in location_database:      # absent on a Dream-only seed
+        crossroads_locs.append(boss_event("Zagreus"))
+    if keepsake_has_locations(ctx.options):
         crossroads_locs += [loc for loc in keepsake_locations_for(ctx.options)]
     if ctx.options.npc_locations:
         crossroads_locs += [loc for loc in npc_intro_locations_for(ctx.options)]

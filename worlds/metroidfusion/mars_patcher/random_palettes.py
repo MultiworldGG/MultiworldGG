@@ -1,5 +1,5 @@
 import random
-from enum import Enum
+from enum import Enum, auto
 from typing import TypeAlias
 
 from typing_extensions import Self
@@ -7,7 +7,7 @@ from typing_extensions import Self
 from .constants import game_data as gd
 from .mf.auto_generated_types import (
     MarsschemamfPalettes,
-    MarsschemamfPalettesColorspace,
+    MarsschemamfPalettesColorSpace,
     MarsschemamfPalettesRandomize,
 )
 from .mf.constants.game_data import sax_palettes, sprite_vram_sizes
@@ -19,62 +19,68 @@ from .mf.constants.palettes import (
     TILESET_ANIM_PALS,
 )
 from .mf.constants.sprites import SpriteIdMF
-from .palette import ColorChange, Palette, SineWave
-from .rom import Game, Rom
-from .zm.constants.game_data import statues_cutscene_palette_addr
+from .palette import PAL_ROW_SIZE, ColorChange, Palette, SineWave
+from .rom import Rom
+from .tileset import Tileset
+from .zm.auto_generated_types import (
+    MarsschemazmPalettes,
+    MarsschemazmPalettesColorSpace,
+    MarsschemazmPalettesRandomize,
+)
+from .zm.constants.game_data import (
+    gunship_flashing_palette_addr,
+    statues_cutscene_palette_addr,
+)
 from .zm.constants.palettes import ENEMY_GROUPS_ZM, EXCLUDED_ENEMIES_ZM
 from .zm.constants.sprites import SpriteIdZM
+
+SchemaPalettes = MarsschemamfPalettes | MarsschemazmPalettes
+SchemaPalettesColorSpace = MarsschemamfPalettesColorSpace | MarsschemazmPalettesColorSpace
+SchemaPalettesRandomize = MarsschemamfPalettesRandomize | MarsschemazmPalettesRandomize
 
 HueRange: TypeAlias = tuple[int, int]
 
 
 class PaletteType(Enum):
-    TILESETS = 1
-    ENEMIES = 2
-    SAMUS = 3
-    BEAMS = 4
+    TILESETS = auto()
+    ENEMIES = auto()
+    SAMUS = auto()
+    BEAMS = auto()
 
 
 class PaletteSettings:
-    PAL_TYPE_ENUMS = {
-        "Tilesets": PaletteType.TILESETS,
-        "Enemies": PaletteType.ENEMIES,
-        "Samus": PaletteType.SAMUS,
-        "Beams": PaletteType.BEAMS,
-    }
-
     def __init__(
         self,
         seed: int,
         pal_types: dict[PaletteType, HueRange],
-        color_space: MarsschemamfPalettesColorspace,
+        color_space: SchemaPalettesColorSpace,
         symmetric: bool,
         extra_variation: bool,
     ):
         self.seed = seed
         self.pal_types = pal_types
-        self.color_space: MarsschemamfPalettesColorspace = color_space
+        self.color_space: SchemaPalettesColorSpace = color_space
         self.symmetric = symmetric
         self.extra_variation = extra_variation
 
     @classmethod
-    def from_json(cls, data: MarsschemamfPalettes) -> Self:
-        seed = data.get("Seed", random.randint(0, 2**31 - 1))
+    def from_json(cls, data: SchemaPalettes) -> Self:
+        seed = data.get("seed", random.randint(0, 2**31 - 1))
         random.seed(seed)
         pal_types = {}
-        for type_name, hue_data in data["Randomize"].items():
-            pal_type = cls.PAL_TYPE_ENUMS[type_name]
+        for type_name, hue_data in data["randomize"].items():
+            pal_type = PaletteType[type_name]
             hue_range = cls.get_hue_range(hue_data)
             pal_types[pal_type] = hue_range
-        color_space = data.get("ColorSpace", "Oklab")
-        symmetric = data.get("Symmetric", True)
+        color_space = data.get("color_space", "OKLAB")
+        symmetric = data.get("symmetric", True)
         # Extra variation is always enabled. This could be passed via JSON instead.
         return cls(seed, pal_types, color_space, symmetric, True)
 
     @classmethod
-    def get_hue_range(cls, data: MarsschemamfPalettesRandomize) -> HueRange:
-        hue_min = data.get("HueMin")
-        hue_max = data.get("HueMax")
+    def get_hue_range(cls, data: SchemaPalettesRandomize) -> HueRange:
+        hue_min = data.get("hue_min")
+        hue_max = data.get("hue_max")
         if hue_min is None or hue_max is None:
             if hue_max is not None:
                 hue_min = random.randint(0, hue_max)
@@ -96,7 +102,7 @@ class PaletteRandomizer:
         self.settings = settings
         if settings.color_space == "HSV":
             self.change_func = self.change_palette_hsv
-        elif settings.color_space == "Oklab":
+        elif settings.color_space == "OKLAB":
             self.change_func = self.change_palette_oklab
         else:
             raise ValueError(f"Invalid color space '{settings.color_space}' for color space!")
@@ -141,8 +147,8 @@ class PaletteRandomizer:
         if PaletteType.BEAMS in pal_types:
             self.randomize_beams(pal_types[PaletteType.BEAMS])
         # Fix any sprite/tileset palettes that should be the same
-        # if self.rom.is_zm():
-        #     self.fix_zm_palettes()
+        if self.rom.is_zm():
+            self.fix_zm_palettes()
 
     def change_palettes(self, pals: list[tuple[int, int]], change: ColorChange) -> None:
         for addr, rows in pals:
@@ -157,7 +163,8 @@ class PaletteRandomizer:
         change = self.generate_palette_change(hue_range)
         self.change_palettes(gd.samus_palettes(self.rom), change)
         self.change_palettes(gd.helmet_cursor_palettes(self.rom), change)
-        self.change_palettes(sax_palettes(self.rom), change)
+        if self.rom.is_mf():
+            self.change_palettes(sax_palettes(self.rom), change)
 
     def randomize_beams(self, hue_range: HueRange) -> None:
         change = self.generate_palette_change(hue_range)
@@ -179,7 +186,7 @@ class PaletteRandomizer:
                 continue
             # Get excluded palette rows
             excluded_rows = set()
-            if rom.game == Game.MF:
+            if rom.is_mf():
                 row = MF_TILESET_ALT_PAL_ROWS.get(pal_addr)
                 if row is not None:
                     excluded_rows = {row}
@@ -223,6 +230,7 @@ class PaletteRandomizer:
             raise ValueError(rom.game)
         excluded = {en_id.value for en_id in _excluded}
         sp_count = gd.sprite_count(rom)
+        # The first 0x10 sprites have no graphics
         to_randomize = set(range(0x10, sp_count))
         to_randomize -= excluded
 
@@ -276,20 +284,25 @@ class PaletteRandomizer:
         self.change_func(pal, change)
         pal.write(rom, pal_addr)
         self.randomized_pals.add(pal_addr)
-        if rom.is_mf() and sprite_id in {
-            SpriteIdMF.SAMUS_EATER_BUD,
-            SpriteIdMF.SAMUS_EATER,
-            SpriteIdMF.NETTORI,
-        }:
-            self.fix_nettori(change)
+        # Handle sprites with extra palettes
+        if rom.is_mf():
+            if sprite_id in {
+                SpriteIdMF.SAMUS_EATER_BUD,
+                SpriteIdMF.SAMUS_EATER,
+                SpriteIdMF.NETTORI,
+            }:
+                self.fix_nettori(change)
+        elif rom.is_zm():
+            if sprite_id == SpriteIdZM.GUNSHIP:
+                self.fix_zm_gunship(change)
 
     def get_sprite_addr(self, sprite_id: int) -> int:
         addr = gd.sprite_palette_ptrs(self.rom) + (sprite_id - 0x10) * 4
         return self.rom.read_ptr(addr)
 
-    def get_tileset_addr(self, sprite_id: int) -> int:
-        addr = gd.tileset_entries(self.rom) + sprite_id * 0x14 + 4
-        return self.rom.read_ptr(addr)
+    def get_tileset_addr(self, tileset_id: int) -> int:
+        tileset = Tileset(self.rom, tileset_id)
+        return tileset.palette_addr()
 
     def fix_nettori(self, change: ColorChange) -> None:
         """Nettori has extra palettes stored separately, so they require the same color change."""
@@ -298,30 +311,38 @@ class PaletteRandomizer:
             self.change_func(pal, change)
             pal.write(self.rom, addr)
 
+    def fix_zm_gunship(self, change: ColorChange) -> None:
+        """The gunship has an extra palette stored separately, so it requires
+        the same color change."""
+        addr = gunship_flashing_palette_addr(self.rom)
+        pal = Palette(8, self.rom, addr)
+        self.change_func(pal, change)
+        pal.write(self.rom, addr)
+
     def fix_zm_palettes(self) -> None:
         if (
             PaletteType.ENEMIES in self.settings.pal_types
             or PaletteType.TILESETS in self.settings.pal_types
         ):
-            # Fix kraid's body
+            # Fix kraid's body (copy row from sprite to tileset)
             sp_addr = self.get_sprite_addr(SpriteIdZM.KRAID)
             ts_addr = self.get_tileset_addr(9)
-            self.rom.copy_bytes(sp_addr, ts_addr + 0x100, 0x20)
+            self.rom.copy_bytes(sp_addr, ts_addr + (8 * PAL_ROW_SIZE), PAL_ROW_SIZE)
 
         if PaletteType.TILESETS in self.settings.pal_types:
             # Fix kraid elevator statue
             sp_addr = self.get_sprite_addr(SpriteIdZM.KRAID_ELEVATOR_STATUE)
             ts_addr = self.get_tileset_addr(0x35)
-            self.rom.copy_bytes(ts_addr + 0x20, sp_addr, 0x20)
+            self.rom.copy_bytes(ts_addr + PAL_ROW_SIZE, sp_addr, PAL_ROW_SIZE)
 
             # Fix ridley elevator statue
             ts_addr = self.get_tileset_addr(7)
-            self.rom.copy_bytes(ts_addr + 0x20, sp_addr + 0x20, 0x20)
+            self.rom.copy_bytes(ts_addr + PAL_ROW_SIZE, sp_addr + PAL_ROW_SIZE, PAL_ROW_SIZE)
 
             # Fix tourian statues
             sp_addr = self.get_sprite_addr(SpriteIdZM.KRAID_STATUE)
             ts_addr = self.get_tileset_addr(0x41)
-            self.rom.copy_bytes(ts_addr + 0x60, sp_addr, 0x20)
+            self.rom.copy_bytes(ts_addr + (3 * PAL_ROW_SIZE), sp_addr, PAL_ROW_SIZE)
             # Fix cutscene
             sp_addr = statues_cutscene_palette_addr(self.rom)
-            self.rom.copy_bytes(ts_addr, sp_addr, 0xC0)
+            self.rom.copy_bytes(ts_addr, sp_addr, 6 * PAL_ROW_SIZE)

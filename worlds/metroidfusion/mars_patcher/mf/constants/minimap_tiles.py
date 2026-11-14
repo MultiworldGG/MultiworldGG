@@ -193,6 +193,7 @@ COLORED_DOOR_TILES = {
     0x1AC: MapTile.from_str("WYYW_xxxx_I"),
     0x1AD: MapTile.from_str("WYYW_xxxx_O"),
     # New Tiles
+    0x108: MapTile.from_str("xxGW_Cxxx_B-TL-B"),
     0x16C: MapTile.from_str("xWBW_xxxx_K"),
     0x16D: MapTile.from_str("WWGW_xxxx_K"),
     0x16E: MapTile.from_str("WWRW_xxxx_K"),
@@ -314,7 +315,6 @@ NORMAL_DOOR_TILES = {
     0x1AB: MapTile.from_str("DDWW_xxxx_O"),
     # New Tiles
     0x0A4: MapTile.from_str("WDSW_xxxx_T"),
-    0x108: MapTile.from_str("xxDW_Cxxx_B-TL-B"),
     0x10A: MapTile.from_str("WxDx_xxxx_B-BL-B"),
     0x10C: MapTile.from_str("xDxW_xCxx_B-TR-B"),
     0x170: MapTile.from_str("WWDx_xxxx_w"),

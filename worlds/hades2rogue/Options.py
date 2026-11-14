@@ -3,6 +3,8 @@ from typing import Dict, Any
 from Options import Range, DeathLink, Choice, StartInventoryPool, PerGameCommonOptions, \
     OptionGroup, DefaultOnToggle, Toggle, OptionSet
 
+from .Items import item_table_traps
+
 
 # ----------------------- Gameplay decisions -----------------------------------
 
@@ -181,6 +183,14 @@ class KeepsakeSanity(Choice):
     default = 1
 
 
+class KeepsakeItemsOnly(Toggle):
+    """
+    Turns off keepsake locations, but keeps keepsake items. This means you can still receive
+    keepsakes, but you don't need to give nectar to each npc.
+    """
+    display_name = "Keepsake Items Only"
+
+
 class EnemySanity(Choice):
     """
     How do you want enemies handled? There are a few different options that may seem kind of
@@ -293,6 +303,14 @@ class GodSanity(Choice):
     option_no_waste_less_odds = 2
     option_no_waste_same_odds = 3
     default = 0
+
+
+class UnlimitedGods(Toggle):
+    """
+    Removes the base game's rules around how many gods you can get in a given run. So each
+    time you get a boon it could be any god, regardless of who else you've seen.
+    """
+    display_name = "Unlimited Gods"
 
 
 class Hades2DeathLink(DeathLink):
@@ -454,6 +472,17 @@ class ReverseRivals(DefaultOnToggle):
     display_name = "Reverse Rivals"
 
 
+class MinimumFear(Range):
+    """
+    The lowest fear you can have, regardless of vow removal. This can work independently of
+    reverse vow. If you set this above 0, you will have to keep some vows on.
+    """
+    display_name = "Minimum Fear"
+    range_start = 0
+    range_end = 67
+    default = 0
+
+
 # -------------------- Routes & Endgame settings -------------------------------
 
 
@@ -496,18 +525,21 @@ class ZagreusEncounterMode(Choice):
     empowered. Progressive Zagreus Weaken items are added to the multiworld that weaken him
     back down to, and eventually below, his normal strength.
     Final Challenge: Defeating any route's final boss spawns a contract to go fight Zagreus
-    instead of ending the run."""
+    instead of ending the run.
+    Empowered Final Challenge: Contract after a route's final boss only, and Zagreus is
+    empowered (Weakened by items you get from the multiworld)"""
     display_name = "Zagreus Encounter Mode"
     option_vanilla = 0
     option_empowered = 1
     option_final_challenge = 2
-    default = 1
+    option_empowered_final_challenge = 3
+    default = 3
 
 
 class ZagreusWeakenTiers(Range):
     """
-    If Zagreus Encounter Mode is set to Empowered, how many "Progressive Zagreus Weaken"
-    items exist to weaken him. Setting more will not make him weaker, just weaken him in smaller
+    If Zagreus Encounter Mode is set to Empowered or Empowered Final Challenge, how many
+    "Progressive Zagreus Weaken" items exist to weaken him. Setting more will not make him weaker, just weaken him in smaller
     chunks
     """
     display_name = "Zagreus Weaken Tiers"
@@ -544,7 +576,7 @@ class IncludeRegions(OptionSet):
 class DreamRegionCount(Range):
     """
     How many regions each Dream Dive run has. Normally a Dream Dive is 4 regions, but using
-    zerp's DreamDiveTweaks we can go up to 8, or up to 12 if Nightmare is included. If you
+    zerp's DreamDiveTweaks we can go up to 8, or up to 12 if Zagreus' Journey is included. If you
     set it higher than what's available, it will just be lowered to the max.
     Keep in mind that logic assumes you need half your resources to make it halfway. If you
     set it to 12, you better be able to defeat the boss in region 6 with half your items.
@@ -674,7 +706,7 @@ class StartingHealthValue(Range):
     display_name = "Starting Health Value"
     range_start = 0
     range_end = 50
-    default = 20
+    default = 15
 
 
 class StartingHealthPercentage(Range):
@@ -754,6 +786,35 @@ class MajorFindsPercentage(Range):
     range_start = 0
     range_end = 100
     default = 10
+
+
+# Share of the filler slots that hold traps instead, taken off the top before the percentages
+# above split what's left (build_filler_pool). 0 = no traps, and the pool is what it was before
+# traps existed. The roster is Items.item_table_traps, less any that can't fire on the seed
+# (Hades2World.trap_roster).
+class TrapPercentage(Range):
+    """(EXPERIMENTAL) Percentage of your filler checks that become traps"""
+    display_name = "Trap Percentage"
+    range_start = 0
+    range_end = 100
+    default = 0
+
+
+# Which traps the share above is dealt from (Hades2World.trap_roster). The keys are the trap
+# item names themselves, so a new trap in Items.item_table_traps is offered by itself.
+# Every trap by default (user ruling 11/11): trap_percentage, which defaults to 0, is the one
+# switch, and raising it deals from all of them unless the YAML trims this list.
+class EnabledTraps(OptionSet):
+    """
+    (EXPERIMENTAL) Traps that can be in your run, the options are: Sheep Trap, Chronos Trap,
+    Invisible Trap, Pause Trap, Asphodel Trap, Aspect Trap, Onion Trap, Keepsake Trap,
+    Rarity Decrease, Starting Max Health Loss, Starting Armor Loss, Starting Mana Loss,
+    Eagle Trap, Typhon Trap, Spawn Trap, Shield Trap, Music Trap, Boulder Trap,
+    Chaos Curse Trap
+    """
+    display_name = "Enabled Traps"
+    valid_keys = frozenset(item_table_traps)
+    default = frozenset(item_table_traps)
 
 
 # REMOVED: Increased Help Odds filler did not pan out as a meaningful mechanic.
@@ -901,12 +962,14 @@ class Hades2Options(PerGameCommonOptions):
     grasp_intervals: GraspIntervals
     arcanasanity: ArcanaSanity
     keepsakesanity: KeepsakeSanity
+    keepsake_items_only: KeepsakeItemsOnly
     enemysanity: EnemySanity
     include_minibosses: IncludeMinibosses
     petsanity: PetSanity
     helper_room_sanity: HelperRoomSanity
     combat_helper_sanity: CombatHelperSanity
     godsanity: GodSanity
+    unlimited_gods: UnlimitedGods
     # Deathlink
     deathlink: Hades2DeathLink
     deathlink_percent: DeathLinkPercent
@@ -931,6 +994,7 @@ class Hades2Options(PerGameCommonOptions):
     vow_denial: VowDenial
     vow_rivals: VowRivals
     reverse_rivals: ReverseRivals
+    minimum_fear: MinimumFear
     # Goal & Route Options
     goals_required: GoalsRequired
     goal_requires_zagreus: GoalRequiresZagreus
@@ -966,6 +1030,8 @@ class Hades2Options(PerGameCommonOptions):
     starting_armor_percentage: StartingArmorPercentage
     rarity_increase_percentage: RarityIncreasePercentage
     major_finds_percentage: MajorFindsPercentage
+    trap_percentage: TrapPercentage
+    enabled_traps: EnabledTraps
     # help_odds_percentage: HelpOddsPercentage  # REMOVED: Increased Help Odds stubbed out
     # ashes_pack_value / ashes_pack_percentage: REMOVED, see Options.py comment above
     # psyche_pack_value / psyche_pack_percentage: REMOVED, see Options.py comment above
@@ -997,12 +1063,14 @@ hades2_option_groups = [
         GraspIntervals,
         ArcanaSanity,
         KeepsakeSanity,
+        KeepsakeItemsOnly,
         EnemySanity,
         IncludeMinibosses,
         PetSanity,
         HelperRoomSanity,
         CombatHelperSanity,
         GodSanity,
+        UnlimitedGods,
     ]),
     OptionGroup("Deathlink", [
         Hades2DeathLink,
@@ -1015,6 +1083,7 @@ hades2_option_groups = [
         VowFangs, VowScars, VowDebt, VowShadow, VowForfeit, VowTime, VowVoid,
         VowHubris, VowDenial, VowRivals,
         ReverseRivals,
+        MinimumFear,
     ]),
     OptionGroup("Goal & Route Options", [
         GoalsRequired,
@@ -1053,6 +1122,8 @@ hades2_option_groups = [
         StartingArmorPercentage,
         RarityIncreasePercentage,
         MajorFindsPercentage,
+        TrapPercentage,
+        EnabledTraps,
         # HelpOddsPercentage,  # REMOVED: Increased Help Odds stubbed out
         # AshesPackValue, AshesPackPercentage,  # REMOVED: Ashes filler stubbed out
         # PsychePackValue, PsychePackPercentage,  # REMOVED: Psyche filler stubbed out

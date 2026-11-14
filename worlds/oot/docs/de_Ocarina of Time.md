@@ -42,4 +42,4 @@ Die folgenden Befehle stehen nur im OoTClient, um mit Archipelago zu spielen, zu
 
 ## Universal Tracker
 
-Seeds unterstützen YAML-freies Tracking mit den exakten Entrances. Entrance Information wird angezeigt, nachdem ein Raum betreten wurde.
+Seeds unterstützen YAML-freies Tracking mit den exakten Entrances. Unentdeckte Eingänge in der Entranceliste angezeigt.

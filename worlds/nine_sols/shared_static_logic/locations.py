@@ -872,7 +872,7 @@ locations_data = [
                 { "anyOf": [
                     [
                         { "item": "Trick - Bow Hover"}, # to reach the climbable wall after the first piston
-                        { "item": "Trick - Long Jump With Swift Runner" } # to pass the 4 pistons as well as reach the last climbable wall
+                        { "item": "Trick - Long Jump with Swift Runner" } # to pass the 4 pistons as well as reach the last climbable wall
                     ],
                     { "item": "Charged Strike" } # CS Dash can replace what Bow Hover and SR do here
                 ] },
@@ -1372,6 +1372,8 @@ locations_data = [
                     { "item": "Ledge Grab" },
                     { "item": "Trick - Long Jump with Swift Runner" }
                 ],
+                { "item": "Trick - Bow Hover"}, # bow hover to middle platform and t-dash to leftmost platform
+                { "item": "Charged Strike"}, # CS-dash and T-dash over the two gaps, in either order
                 { "item": "Tai-Chi Kick" } # or get a 2nd qi / 2nd T-dash from the worm on this platform
             ] }
         ]
@@ -1398,7 +1400,7 @@ locations_data = [
     },
     {
         "address": 3110, "name": "GoS (East): Upper Right of Room Above Yin Jifu's Tomb",
-        "region": "GoS (East) - Yin Jifu's Tomb", "requires": [ { "anyOf": [
+        "region": "GoS (East) - Outside Yin Jifu's Tomb", "requires": [ { "anyOf": [
             [ { "item": "Air Dash" }, { "item": "Ledge Grab" } ],
             { "item": "Cloud Leap" }
         ] } ]

@@ -16,3 +16,4 @@
 .definelabel AP_PLAYER_NAME,               0x80402045
 
 .include "ap/entrances.asm"
+.include "ap/messages.asm"

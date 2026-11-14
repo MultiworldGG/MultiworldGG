@@ -1,5 +1,5 @@
 {
-  "mapper_source": "05f08e133f4eb142a2635c0dddbfacf7367f3b3061837afb7dc2880c2938ab16",
+  "mapper_source": "54492a49c0825cd67a54518c179d39269a8738cc2e7b725f16b538d3bd6ddddd",
   "scenes": {
     "moss-grotto/moss-grotto-center": "tut_01",
     "moss-grotto/moss-grotto-west": "tut_02",
@@ -1411,7 +1411,7 @@
     },
     "3165ce02-12aa-4f94-9147-0d12d9d9a870": {
       "name": "Caranid 3",
-      "node": "bone-bottom/the-big-fall#upper-right-ledge",
+      "node": "bone-bottom/the-big-fall#shellwood-platform",
       "drops": "shell_shards",
       "reset": "scene",
       "species": "Caranid",
@@ -1430,7 +1430,7 @@
     },
     "83f61c4e-72b8-4e2d-9a18-39e707060992": {
       "name": "Caranid 4",
-      "node": "bone-bottom/the-big-fall#upper-right-ledge",
+      "node": "bone-bottom/the-big-fall#upper-chain-passage",
       "drops": "shell_shards",
       "reset": "scene",
       "species": "Caranid",
@@ -1449,7 +1449,7 @@
     },
     "0930cf9c-069c-469c-a23b-ee408071aa9e": {
       "name": "Caranid 5",
-      "node": "bone-bottom/the-big-fall#upper-right-ledge",
+      "node": "bone-bottom/the-big-fall#shellwood-platform",
       "drops": "shell_shards",
       "reset": "scene",
       "species": "Caranid",
@@ -1506,7 +1506,7 @@
     },
     "a7d0e89a-2aa7-4543-9750-4cdce42b060b": {
       "name": "Aknid 3",
-      "node": "bone-bottom/the-big-fall#lower-left-area",
+      "node": "bone-bottom/the-big-fall#wormways-lower-platform",
       "drops": "shell_shards",
       "reset": "scene",
       "species": "Aknid",
@@ -1546,7 +1546,7 @@
     },
     "50baa302-48a6-4cfa-bbce-04e423423fbe": {
       "name": "Aknid 5",
-      "node": "bone-bottom/the-big-fall#lower-left-area",
+      "node": "bone-bottom/the-big-fall#wormways-lower-platform",
       "drops": "shell_shards",
       "reset": "scene",
       "species": "Aknid",
@@ -4564,7 +4564,7 @@
     },
     "91d29e75-2c0a-4d9a-9d2d-e68e96f71466": {
       "name": "Skull Scuttler 1",
-      "node": "deep-docks/deep-docks-spire-lower#top-left-entrance-path",
+      "node": "deep-docks/deep-docks-spire-lower#floor",
       "drops": "shell_shards",
       "reset": "scene",
       "species": "Skull Scuttler",
@@ -4716,7 +4716,7 @@
     },
     "533a5fe6-6427-404d-a292-10f17ac6fd3e": {
       "name": "Beastfly 1",
-      "node": "deep-docks/deep-docks-spire-lower#top-right-entrance-path",
+      "node": "deep-docks/deep-docks-spire-lower#floor",
       "drops": "shell_shards",
       "reset": "scene",
       "species": "Beastfly",
@@ -5046,55 +5046,55 @@
     },
     "51c6b7fd-2fd6-4636-90de-5ed99385b9f3": {
       "name": "Smokerock Sifter 1",
-      "node": "deep-docks/deep-docks-forge#unassigned",
+      "node": "deep-docks/deep-docks-forge#gauntlet",
       "drops": "unknown",
       "reset": "unverified"
     },
     "93b4cc66-f6b2-424f-a59f-3420513db923": {
       "name": "Flintstone Flyer 1",
-      "node": "deep-docks/deep-docks-forge#unassigned",
+      "node": "deep-docks/deep-docks-forge#gauntlet",
       "drops": "unknown",
       "reset": "unverified"
     },
     "662346b4-64cd-484d-8a9c-de3d0392366f": {
       "name": "Flintstone Flyer 2",
-      "node": "deep-docks/deep-docks-forge#unassigned",
+      "node": "deep-docks/deep-docks-forge#gauntlet",
       "drops": "unknown",
       "reset": "unverified"
     },
     "53d5db66-a548-4a7e-94a7-a2ff7c5e610e": {
       "name": "Flintstone Flyer 3",
-      "node": "deep-docks/deep-docks-forge#unassigned",
+      "node": "deep-docks/deep-docks-forge#gauntlet",
       "drops": "unknown",
       "reset": "unverified"
     },
     "9bca851e-3b90-4073-bde6-f86e96a13c56": {
       "name": "Smokerock Sifter 2",
-      "node": "deep-docks/deep-docks-forge#unassigned",
+      "node": "deep-docks/deep-docks-forge#gauntlet",
       "drops": "unknown",
       "reset": "unverified"
     },
     "ccf8eee5-5c16-47f0-a8d0-e6c1c20665a8": {
       "name": "Flintstone Flyer 4",
-      "node": "deep-docks/deep-docks-forge#unassigned",
+      "node": "deep-docks/deep-docks-forge#gauntlet",
       "drops": "unknown",
       "reset": "unverified"
     },
     "fba906ac-f5db-40c0-897f-1a814d7e58c7": {
       "name": "Smelt Shoveller 1",
-      "node": "deep-docks/deep-docks-forge#unassigned",
+      "node": "deep-docks/deep-docks-forge#gauntlet",
       "drops": "unknown",
       "reset": "unverified"
     },
     "9a3641fd-f1bc-468c-afb3-18d86c8b745f": {
       "name": "Smokerock Sifter 3",
-      "node": "deep-docks/deep-docks-forge#unassigned",
+      "node": "deep-docks/deep-docks-forge#gauntlet",
       "drops": "unknown",
       "reset": "unverified"
     },
     "a110e168-4cdb-4122-a58e-53855af96f32": {
       "name": "Smelt Shoveller 2",
-      "node": "deep-docks/deep-docks-forge#unassigned",
+      "node": "deep-docks/deep-docks-forge#gauntlet",
       "drops": "unknown",
       "reset": "unverified"
     },
@@ -5703,125 +5703,228 @@
       ],
       "farm": false
     },
-    "f8262c8f-3438-40df-a886-7d616ee8682a": {
-      "name": "Brushflit 1",
-      "node": "far-fields/far-fields-fort-upper-passage#unassigned",
-      "drops": "unknown",
-      "reset": "unverified"
-    },
-    "950b85ed-2ac1-4c4c-9c8d-106242822e01": {
-      "name": "Brushflit 2",
-      "node": "far-fields/far-fields-fort-upper-passage#unassigned",
-      "drops": "unknown",
-      "reset": "unverified"
-    },
-    "dde82d6f-ad9d-4734-ade7-2e960470ee4d": {
-      "name": "Brushflit 3",
-      "node": "far-fields/far-fields-fort-upper-passage#unassigned",
-      "drops": "unknown",
-      "reset": "unverified"
-    },
     "ed4fb990-ff30-43dd-809d-3842147fd654": {
       "name": "Fertid 1",
-      "node": "far-fields/far-fields-fort-upper-passage#unassigned",
-      "drops": "unknown",
-      "reset": "unverified"
+      "node": "far-fields/far-fields-fort-upper-passage#main-area",
+      "drops": "shell_shards",
+      "reset": "scene",
+      "species": "Fertid",
+      "native_source": "scenes_scenes_scenes/bone_east_17.bundle:8033",
+      "routes": [
+        {
+          "act": 1,
+          "events": [],
+          "souls": [],
+          "dnf": [
+            []
+          ]
+        }
+      ],
+      "farm": false
     },
     "bcb4e537-528f-44f1-8cbf-c7d5e83eb55e": {
       "name": "Flapping Fertid 1",
-      "node": "far-fields/far-fields-fort-upper-passage#unassigned",
-      "drops": "unknown",
-      "reset": "unverified"
+      "node": "far-fields/far-fields-fort-upper-passage#central-rise",
+      "drops": "shell_shards",
+      "reset": "scene",
+      "species": "Flapping Fertid",
+      "native_source": "scenes_scenes_scenes/bone_east_17.bundle:7957",
+      "routes": [
+        {
+          "act": 1,
+          "events": [],
+          "souls": [],
+          "dnf": [
+            []
+          ]
+        }
+      ],
+      "farm": false
     },
     "4ff0c2b0-cd15-44b4-98fa-b2f8ba3fc9b4": {
       "name": "Flapping Fertid 2",
-      "node": "far-fields/far-fields-fort-upper-passage#unassigned",
-      "drops": "unknown",
-      "reset": "unverified"
-    },
-    "d01ea78d-bdd9-42e0-9bb6-7844f7d9c973": {
-      "name": "Brushflit 4",
-      "node": "far-fields/far-fields-fort-upper-passage#unassigned",
-      "drops": "unknown",
-      "reset": "unverified"
-    },
-    "965490b0-2419-4727-86bf-54e3a60f5e3d": {
-      "name": "Brushflit 5",
-      "node": "far-fields/far-fields-fort-upper-passage#unassigned",
-      "drops": "unknown",
-      "reset": "unverified"
-    },
-    "527a3898-60a5-42ec-88a6-b4275a0bfc91": {
-      "name": "Brushflit 6",
-      "node": "far-fields/far-fields-fort-upper-passage#unassigned",
-      "drops": "unknown",
-      "reset": "unverified"
-    },
-    "8ce489df-1d49-4def-88d3-3673c35799b1": {
-      "name": "Brushflit 7",
-      "node": "far-fields/far-fields-fort-upper-passage#unassigned",
-      "drops": "unknown",
-      "reset": "unverified"
+      "node": "far-fields/far-fields-fort-upper-passage#central-rise",
+      "drops": "shell_shards",
+      "reset": "scene",
+      "species": "Flapping Fertid",
+      "native_source": "scenes_scenes_scenes/bone_east_17.bundle:7954",
+      "routes": [
+        {
+          "act": 1,
+          "events": [],
+          "souls": [],
+          "dnf": [
+            []
+          ]
+        }
+      ],
+      "farm": false
     },
     "ab20eb84-b6d1-423f-8e87-28ad5aeb1b83": {
       "name": "Skarr Stalker 1",
-      "node": "far-fields/far-fields-fort-upper-passage#unassigned",
-      "drops": "unknown",
-      "reset": "unverified"
+      "node": "far-fields/far-fields-fort-upper-passage#main-area",
+      "drops": "both",
+      "reset": "rest",
+      "species": "Skarr Stalker",
+      "native_source": "scenes_scenes_scenes/bone_east_17.bundle:8062",
+      "routes": [
+        {
+          "act": 1,
+          "events": [],
+          "souls": [],
+          "dnf": [
+            []
+          ]
+        }
+      ],
+      "farm": true
     },
     "3726ae8e-d073-4cc2-bf5a-1e2d19ef9e77": {
       "name": "Skarr Scout 1",
-      "node": "far-fields/far-fields-fort-upper-passage#unassigned",
-      "drops": "unknown",
-      "reset": "unverified"
+      "node": "far-fields/far-fields-fort-upper-passage#right-exit-ledge",
+      "drops": "both",
+      "reset": "rest",
+      "species": "Skarr Scout",
+      "native_source": "scenes_scenes_scenes/bone_east_17.bundle:7949",
+      "routes": [
+        {
+          "act": 1,
+          "events": [],
+          "souls": [],
+          "dnf": [
+            []
+          ]
+        }
+      ],
+      "farm": true
     },
     "828fd533-b33b-4d69-acc1-387c12f1bdf0": {
       "name": "Flapping Fertid 3",
-      "node": "far-fields/far-fields-fort-upper-passage#unassigned",
-      "drops": "unknown",
-      "reset": "unverified"
+      "node": "far-fields/far-fields-fort-upper-passage#right-exit-ledge",
+      "drops": "shell_shards",
+      "reset": "scene",
+      "species": "Flapping Fertid",
+      "native_source": "scenes_scenes_scenes/bone_east_17.bundle:7956",
+      "routes": [
+        {
+          "act": 1,
+          "events": [],
+          "souls": [],
+          "dnf": [
+            []
+          ]
+        }
+      ],
+      "farm": false
     },
     "79b15093-cd1e-4c6b-8782-03b23a184378": {
       "name": "Flapping Fertid 4",
-      "node": "far-fields/far-fields-fort-upper-passage#unassigned",
-      "drops": "unknown",
-      "reset": "unverified"
-    },
-    "f2523294-b23f-484a-9eea-19da7d279c7b": {
-      "name": "Brushflit 8",
-      "node": "far-fields/far-fields-fort-upper-passage#unassigned",
-      "drops": "unknown",
-      "reset": "unverified"
+      "node": "far-fields/far-fields-fort-upper-passage#right-exit-ledge",
+      "drops": "shell_shards",
+      "reset": "scene",
+      "species": "Flapping Fertid",
+      "native_source": "scenes_scenes_scenes/bone_east_17.bundle:7955",
+      "routes": [
+        {
+          "act": 1,
+          "events": [],
+          "souls": [],
+          "dnf": [
+            []
+          ]
+        }
+      ],
+      "farm": false
     },
     "b8306dd1-8fc6-4eaf-93c9-c3d0f678bba7": {
       "name": "Void Mass 1",
-      "node": "far-fields/far-fields-fort-upper-passage#unassigned",
+      "node": "far-fields/far-fields-fort-upper-passage#check-niche",
       "drops": "unknown",
       "reset": "unverified"
     },
     "c39d25a5-d888-4d09-8243-25eec0b8a1a6": {
       "name": "Spear Skarr 1",
-      "node": "far-fields/far-fields-fort-upper-passage#unassigned",
-      "drops": "unknown",
-      "reset": "unverified"
+      "node": "far-fields/far-fields-fort-upper-passage#check-niche",
+      "drops": "both",
+      "reset": "one-time",
+      "species": "Spear Skarr",
+      "native_source": "scenes_scenes_scenes/bone_east_17.bundle:8023",
+      "routes": [
+        {
+          "act": 3,
+          "events": [],
+          "souls": [],
+          "dnf": [
+            [
+              "state:act-3"
+            ]
+          ]
+        }
+      ],
+      "farm": false
     },
     "40b94eaa-bbe0-4efc-a08e-87a1cb5a83d0": {
       "name": "Skarr Stalker 2",
-      "node": "far-fields/far-fields-fort-upper-passage#unassigned",
-      "drops": "unknown",
-      "reset": "unverified"
+      "node": "far-fields/far-fields-fort-upper-passage#main-area",
+      "drops": "both",
+      "reset": "rest",
+      "species": "Skarr Stalker",
+      "native_source": "scenes_scenes_scenes/bone_east_17.bundle:8062",
+      "routes": [
+        {
+          "act": 3,
+          "events": [],
+          "souls": [],
+          "dnf": [
+            [
+              "state:act-3"
+            ]
+          ]
+        }
+      ],
+      "farm": true
     },
     "00b72309-3cb4-4e72-9082-9f0d3b416a38": {
       "name": "Skarr Scout 2",
-      "node": "far-fields/far-fields-fort-upper-passage#unassigned",
-      "drops": "unknown",
-      "reset": "unverified"
+      "node": "far-fields/far-fields-fort-upper-passage#right-exit-ledge",
+      "drops": "both",
+      "reset": "rest",
+      "species": "Skarr Scout",
+      "native_source": "scenes_scenes_scenes/bone_east_17.bundle:7949",
+      "routes": [
+        {
+          "act": 3,
+          "events": [],
+          "souls": [],
+          "dnf": [
+            [
+              "state:act-3"
+            ]
+          ]
+        }
+      ],
+      "farm": true
     },
     "825c64d5-35bd-4283-ba45-c1baf0a178c8": {
       "name": "Spear Skarr 2",
-      "node": "far-fields/far-fields-fort-upper-passage#unassigned",
-      "drops": "unknown",
-      "reset": "unverified"
+      "node": "far-fields/far-fields-fort-upper-passage#right-exit-ledge",
+      "drops": "both",
+      "reset": "rest",
+      "species": "Spear Skarr",
+      "native_source": "scenes_scenes_scenes/bone_east_17.bundle:8022",
+      "routes": [
+        {
+          "act": 3,
+          "events": [],
+          "souls": [],
+          "dnf": [
+            [
+              "state:act-3"
+            ]
+          ]
+        }
+      ],
+      "farm": true
     },
     "4b455727-3b8b-40c0-801a-d627bd48ba2d": {
       "name": "Fertid 1",
@@ -7240,39 +7343,106 @@
     },
     "2c134add-ea37-4906-9fb0-c0b92d6970dc": {
       "name": "Skarrgard 1",
-      "node": "hunter-s-march/hunters-march-entrance#unassigned",
+      "node": "hunter-s-march/hunters-march-entrance#before-door",
       "drops": "unknown",
       "reset": "unverified"
     },
     "366e6cc4-1b09-421a-a9c8-52073dd4b41c": {
       "name": "Skarrwing 1",
-      "node": "hunter-s-march/hunters-march-pogo-intro#unassigned",
-      "drops": "unknown",
-      "reset": "unverified"
+      "node": "hunter-s-march/hunters-march-pogo-intro#main-area",
+      "drops": "shell_shards",
+      "reset": "scene",
+      "species": "Skarrwing",
+      "native_source": "scenes_scenes_scenes/ant_03.bundle:5056",
+      "routes": [
+        {
+          "act": 1,
+          "events": [],
+          "souls": [],
+          "dnf": [
+            []
+          ]
+        }
+      ],
+      "farm": false
     },
     "849c1345-3802-41a6-8f2a-b1ce3ca3f815": {
       "name": "Skarrlid 1",
-      "node": "hunter-s-march/hunters-march-pogo-intro#unassigned",
-      "drops": "unknown",
-      "reset": "unverified"
+      "node": "hunter-s-march/hunters-march-pogo-intro#main-area",
+      "drops": "shell_shards",
+      "reset": "scene",
+      "species": "Skarrlid",
+      "native_source": "scenes_scenes_scenes/ant_03.bundle:4826",
+      "routes": [
+        {
+          "act": 1,
+          "events": [],
+          "souls": [],
+          "dnf": [
+            []
+          ]
+        }
+      ],
+      "farm": false
     },
     "b9ad2068-0007-44a8-986d-7132a3c92a38": {
       "name": "Skarrlid 2",
-      "node": "hunter-s-march/hunters-march-pogo-intro#unassigned",
-      "drops": "unknown",
-      "reset": "unverified"
+      "node": "hunter-s-march/hunters-march-pogo-intro#main-area",
+      "drops": "shell_shards",
+      "reset": "scene",
+      "species": "Skarrlid",
+      "native_source": "scenes_scenes_scenes/ant_03.bundle:4825",
+      "routes": [
+        {
+          "act": 1,
+          "events": [],
+          "souls": [],
+          "dnf": [
+            []
+          ]
+        }
+      ],
+      "farm": false
     },
     "52dadd4b-c2aa-4954-8493-b28b6b2c9c04": {
       "name": "Skarrwing 2",
-      "node": "hunter-s-march/hunters-march-pogo-intro#unassigned",
-      "drops": "unknown",
-      "reset": "unverified"
+      "node": "hunter-s-march/hunters-march-pogo-intro#main-area",
+      "drops": "shell_shards",
+      "reset": "scene",
+      "species": "Skarrwing",
+      "native_source": "scenes_scenes_scenes/ant_03.bundle:5058",
+      "routes": [
+        {
+          "act": 1,
+          "events": [],
+          "souls": [],
+          "dnf": [
+            []
+          ]
+        }
+      ],
+      "farm": false
     },
     "35ae5c89-d987-4d56-adee-2c1625f7f4d8": {
       "name": "Skarrwing 3",
-      "node": "hunter-s-march/hunters-march-pogo-intro#unassigned",
-      "drops": "unknown",
-      "reset": "unverified"
+      "node": "hunter-s-march/hunters-march-pogo-intro#main-area",
+      "drops": "shell_shards",
+      "reset": "scene",
+      "species": "Skarrwing",
+      "native_source": "scenes_scenes_scenes/ant_03.bundle:5057",
+      "routes": [
+        {
+          "act": 1,
+          "events": [],
+          "souls": [],
+          "dnf": [
+            [
+              "state:act-3"
+            ]
+          ]
+        }
+      ],
+      "farm": false
     },
     "0d86b433-a59c-4e47-bd5d-060236cd79f9": {
       "name": "Skarr Stalker 1",
@@ -7707,79 +7877,79 @@
     },
     "27e2051d-a971-4ac2-baf8-ef0d5e300898": {
       "name": "Pilgrim Bellbearer 1",
-      "node": "shellwood/shellgrave#room",
+      "node": "shellwood/shellgrave#upper",
       "drops": "unknown",
       "reset": "unverified"
     },
     "f4cd9b23-0b7b-4388-9414-c57215b271dc": {
       "name": "Pilgrim Guide 1",
-      "node": "shellwood/shellgrave#room",
+      "node": "shellwood/shellgrave#upper",
       "drops": "unknown",
       "reset": "unverified"
     },
     "32dd54bd-2bc4-49f6-8213-2628acbf3390": {
       "name": "Covetous Pilgrim 1",
-      "node": "shellwood/shellgrave#room",
+      "node": "shellwood/shellgrave#upper",
       "drops": "unknown",
       "reset": "unverified"
     },
     "c9a7482b-2253-4c16-83fe-42cb8af174b3": {
       "name": "Pilgrim Groveller 1",
-      "node": "shellwood/shellgrave#room",
+      "node": "shellwood/shellgrave#upper",
       "drops": "unknown",
       "reset": "unverified"
     },
     "44a0ab99-8261-4539-abaf-ef6a6a6027dc": {
       "name": "Pilgrim Pouncer 1",
-      "node": "shellwood/shellgrave#room",
+      "node": "shellwood/shellgrave#upper",
       "drops": "unknown",
       "reset": "unverified"
     },
     "41acc160-0548-4a56-a8c9-99cc079bb214": {
       "name": "Pilgrim Pouncer 2",
-      "node": "shellwood/shellgrave#room",
+      "node": "shellwood/shellgrave#upper",
       "drops": "unknown",
       "reset": "unverified"
     },
     "ab1ac313-dabc-4e13-9fd3-f131c883e449": {
       "name": "Pilgrim Bellbearer 2",
-      "node": "shellwood/shellgrave#room",
+      "node": "shellwood/shellgrave#upper",
       "drops": "unknown",
       "reset": "unverified"
     },
     "e80a077c-13c5-4e15-be08-d68e791526a0": {
       "name": "Pilgrim Hulk 1",
-      "node": "shellwood/shellgrave#room",
+      "node": "shellwood/shellgrave#upper",
       "drops": "unknown",
       "reset": "unverified"
     },
     "b27fe057-7db4-4184-a5ee-68dae7023e7d": {
       "name": "Pilgrim Groveller 2",
-      "node": "shellwood/shellgrave#room",
+      "node": "shellwood/shellgrave#upper",
       "drops": "unknown",
       "reset": "unverified"
     },
     "bc3a5e05-b85e-4d49-aa43-7991d5de755e": {
       "name": "Pilgrim Hulk 2",
-      "node": "shellwood/shellgrave#room",
+      "node": "shellwood/shellgrave#upper",
       "drops": "unknown",
       "reset": "unverified"
     },
     "33cca83b-8b08-4921-8bab-5b9611aa858a": {
       "name": "Pilgrim Guide 2",
-      "node": "shellwood/shellgrave#room",
+      "node": "shellwood/shellgrave#upper",
       "drops": "unknown",
       "reset": "unverified"
     },
     "e0119ff5-545e-4c8e-9a59-31077c628476": {
       "name": "Pilgrim Hulk 3",
-      "node": "shellwood/shellgrave#room",
+      "node": "shellwood/shellgrave#upper",
       "drops": "unknown",
       "reset": "unverified"
     },
     "0ea0f715-40e1-4a51-a72f-7aa142219a19": {
       "name": "Rosary Pilgrim 1",
-      "node": "shellwood/shellgrave#room",
+      "node": "shellwood/shellgrave#upper",
       "drops": "unknown",
       "reset": "unverified"
     },
@@ -9452,7 +9622,7 @@
     },
     "3c712b0e-8d6f-4e46-9858-3f0db6b76964": {
       "name": "Tallcraw 1",
-      "node": "greymoor/greymoor-craw-lake#flea-room",
+      "node": "greymoor/greymoor-craw-lake#flea-room-upper",
       "drops": "unknown",
       "reset": "unverified"
     },
@@ -9482,7 +9652,7 @@
     },
     "4207ad3a-bbe9-4294-9500-fce12958f8dc": {
       "name": "Mite 1",
-      "node": "greymoor/greymoor-craw-lake#flea-room",
+      "node": "greymoor/greymoor-craw-lake#flea-room-middle",
       "drops": "shell_shards",
       "reset": "scene",
       "species": "Mite",
@@ -16498,44 +16668,149 @@
     "674b3463-c323-4d9d-b0de-5e20af674b54": {
       "name": "Surgeon 1",
       "node": "whiteward/whiteward-sherma-gauntlet#room",
-      "drops": "unknown",
-      "reset": "unverified"
+      "drops": "both",
+      "reset": "scene",
+      "species": "Surgeon",
+      "native_source": "scenes_scenes_scenes/ward_09.bundle:3606",
+      "routes": [
+        {
+          "act": 3,
+          "events": [],
+          "souls": [],
+          "dnf": [
+            [
+              "state:act-3"
+            ]
+          ]
+        }
+      ],
+      "farm": true
     },
     "d6da7a1d-e416-4df3-ac77-f85a58788838": {
       "name": "Surgeon 2",
       "node": "whiteward/whiteward-sherma-gauntlet#room",
-      "drops": "unknown",
-      "reset": "unverified"
+      "drops": "both",
+      "reset": "scene",
+      "species": "Surgeon",
+      "native_source": "scenes_scenes_scenes/ward_09.bundle:3603",
+      "routes": [
+        {
+          "act": 3,
+          "events": [],
+          "souls": [],
+          "dnf": [
+            [
+              "state:act-3"
+            ]
+          ]
+        }
+      ],
+      "farm": true
     },
     "46b4471f-8e7b-4eaa-8064-c9fde8827feb": {
       "name": "Surgeon 3",
       "node": "whiteward/whiteward-sherma-gauntlet#room",
-      "drops": "unknown",
-      "reset": "unverified"
+      "drops": "both",
+      "reset": "encounter",
+      "species": "Surgeon",
+      "native_source": "scenes_scenes_scenes/ward_09.bundle:3607",
+      "routes": [
+        {
+          "act": 3,
+          "events": [],
+          "souls": [
+            "Mortician"
+          ],
+          "dnf": [
+            []
+          ]
+        }
+      ],
+      "farm": false
     },
     "8e35b119-45dd-4168-8bb4-8109653d46fc": {
       "name": "Mortician 1",
       "node": "whiteward/whiteward-sherma-gauntlet#room",
-      "drops": "unknown",
-      "reset": "unverified"
+      "drops": "both",
+      "reset": "encounter",
+      "species": "Mortician",
+      "native_source": "scenes_scenes_scenes/ward_09.bundle:3804",
+      "routes": [
+        {
+          "act": 2,
+          "events": [],
+          "souls": [
+            "Surgeon"
+          ],
+          "dnf": [
+            []
+          ]
+        }
+      ],
+      "farm": false
     },
     "1aa0feea-daec-44da-aa5a-878688d76b93": {
       "name": "Mortician 2",
       "node": "whiteward/whiteward-sherma-gauntlet#room",
-      "drops": "unknown",
-      "reset": "unverified"
+      "drops": "both",
+      "reset": "encounter",
+      "species": "Mortician",
+      "native_source": "scenes_scenes_scenes/ward_09.bundle:3805",
+      "routes": [
+        {
+          "act": 2,
+          "events": [],
+          "souls": [
+            "Surgeon"
+          ],
+          "dnf": [
+            []
+          ]
+        }
+      ],
+      "farm": false
     },
     "284e7db2-aedd-4bf2-98f7-65666c12cfaa": {
       "name": "Surgeon 4",
       "node": "whiteward/whiteward-sherma-gauntlet#room",
-      "drops": "unknown",
-      "reset": "unverified"
+      "drops": "both",
+      "reset": "encounter",
+      "species": "Surgeon",
+      "native_source": "scenes_scenes_scenes/ward_09.bundle:3604",
+      "routes": [
+        {
+          "act": 3,
+          "events": [],
+          "souls": [
+            "Mortician"
+          ],
+          "dnf": [
+            []
+          ]
+        }
+      ],
+      "farm": false
     },
     "bfe64d07-2984-4d7c-bf0a-7aeda3641dbf": {
       "name": "Surgeon 5",
       "node": "whiteward/whiteward-sherma-gauntlet#room",
-      "drops": "unknown",
-      "reset": "unverified"
+      "drops": "both",
+      "reset": "encounter",
+      "species": "Surgeon",
+      "native_source": "scenes_scenes_scenes/ward_09.bundle:3605",
+      "routes": [
+        {
+          "act": 3,
+          "events": [],
+          "souls": [
+            "Mortician"
+          ],
+          "dnf": [
+            []
+          ]
+        }
+      ],
+      "farm": false
     },
     "0e75cc11-e0d5-450a-a919-706759730497": {
       "name": "Surgeon 6",
@@ -16611,7 +16886,7 @@
     },
     "b0c13c58-e2f2-4de6-9a76-a2d6b58d9b53": {
       "name": "Drapefly 1",
-      "node": "whiteward/whiteward-tunnel-room#top-horizontal",
+      "node": "whiteward/whiteward-tunnel-room#top-horizontal-right",
       "drops": "shell_shards",
       "reset": "scene",
       "species": "Drapefly",
@@ -17069,7 +17344,7 @@
     },
     "29f146f4-ea8a-4fec-bbaa-a9c83ac3c2fc": {
       "name": "Giant Drapemite 1",
-      "node": "high-halls/high-halls-rosary-bank#side-vents",
+      "node": "high-halls/high-halls-rosary-bank#lower-vents",
       "drops": "shell_shards",
       "reset": "scene",
       "species": "Giant Drapemite",
@@ -17666,7 +17941,7 @@
     },
     "d5bcde21-d85c-47ad-8414-57f8499124fc": {
       "name": "Miremite 3",
-      "node": "bilewater/bilewater-lower-bloatroach-tower#low-left",
+      "node": "bilewater/bilewater-lower-bloatroach-tower#first-plat-up",
       "drops": "shell_shards",
       "reset": "scene",
       "species": "Miremite",
@@ -17677,42 +17952,7 @@
           "events": [],
           "souls": [],
           "dnf": [
-            [
-              "item:faydown-cloak",
-              "item:cling-grip",
-              "item:clawline"
-            ],
-            [
-              "item:faydown-cloak",
-              "item:cling-grip",
-              "mapper:sharpdart:1"
-            ],
-            [
-              "item:faydown-cloak",
-              "item:cling-grip",
-              "item:drifters-cloak"
-            ],
-            [
-              "item:faydown-cloak",
-              "item:cling-grip",
-              "item:faydown-cloak"
-            ],
-            [
-              "item:silk-soar",
-              "item:clawline"
-            ],
-            [
-              "item:silk-soar",
-              "mapper:sharpdart:1"
-            ],
-            [
-              "item:silk-soar",
-              "item:drifters-cloak"
-            ],
-            [
-              "item:silk-soar",
-              "item:faydown-cloak"
-            ]
+            []
           ]
         }
       ],
@@ -24702,283 +24942,243 @@
     },
     "28f95e45-05e6-4c06-82d3-9e4141d29b6e": {
       "name": "Skullwing 1",
-      "node": "the-abyss/abyss-escape#unassigned",
+      "node": "the-abyss/abyss-escape#end",
       "drops": "unknown",
       "reset": "unverified"
     },
     "51cbd820-df01-452d-90cc-432c56e0dfd5": {
       "name": "Skullwing 2",
-      "node": "the-abyss/abyss-escape#unassigned",
+      "node": "the-abyss/abyss-escape#end",
       "drops": "unknown",
       "reset": "unverified"
     },
     "3bab8749-c6f2-4623-aa75-ccc21d5907a3": {
       "name": "Skull Scuttler 1",
-      "node": "the-abyss/abyss-escape#unassigned",
+      "node": "the-abyss/abyss-escape#end",
       "drops": "unknown",
       "reset": "unverified"
     },
     "a7243cb0-ce73-443b-b2da-fb58016e8fcc": {
       "name": "Skullwing 3",
-      "node": "the-abyss/abyss-escape#unassigned",
+      "node": "the-abyss/abyss-escape#start",
       "drops": "unknown",
       "reset": "unverified"
     },
     "6264852b-3c39-4abb-bae0-8b4c1bfced9b": {
       "name": "Skullwing 4",
-      "node": "the-abyss/abyss-escape#unassigned",
+      "node": "the-abyss/abyss-escape#start",
       "drops": "unknown",
       "reset": "unverified"
     },
     "20b097fe-c8bb-40db-9280-64c534e5d414": {
       "name": "Skullwing 5",
-      "node": "the-abyss/abyss-escape#unassigned",
+      "node": "the-abyss/abyss-escape#start",
       "drops": "unknown",
       "reset": "unverified"
     },
     "5883bd0e-c3a9-441c-b219-5e6e9fad8cee": {
       "name": "Skullwing 6",
-      "node": "the-abyss/abyss-escape#unassigned",
+      "node": "the-abyss/abyss-escape#start",
       "drops": "unknown",
       "reset": "unverified"
     },
     "ab5687ae-cc02-43d9-9845-1527bed0a2f5": {
       "name": "Skullwing 7",
-      "node": "the-abyss/abyss-escape#unassigned",
+      "node": "the-abyss/abyss-escape#start",
       "drops": "unknown",
       "reset": "unverified"
     },
     "099a70b8-bd56-41c2-a7ac-9f6fb8bdd254": {
       "name": "Skullwing 8",
-      "node": "the-abyss/abyss-escape#unassigned",
+      "node": "the-abyss/abyss-escape#start",
       "drops": "unknown",
       "reset": "unverified"
     },
     "fabfa1ac-f01c-43f7-82fa-86434acf51f4": {
       "name": "Skullwing 9",
-      "node": "the-abyss/abyss-escape#unassigned",
+      "node": "the-abyss/abyss-escape#start",
       "drops": "unknown",
       "reset": "unverified"
     },
     "37761261-e10b-4734-8f0e-ba7561aba612": {
       "name": "Skullwing 10",
-      "node": "the-abyss/abyss-escape#unassigned",
+      "node": "the-abyss/abyss-escape#start",
       "drops": "unknown",
       "reset": "unverified"
     },
     "6142ddb8-1edb-4ac9-bfb6-843c39bf0013": {
       "name": "Skullwing 11",
-      "node": "the-abyss/abyss-escape#unassigned",
+      "node": "the-abyss/abyss-escape#start",
       "drops": "unknown",
       "reset": "unverified"
     },
     "e846e297-3330-4aca-8ae6-5ab420264afa": {
       "name": "Skullwing 12",
-      "node": "the-abyss/abyss-escape#unassigned",
+      "node": "the-abyss/abyss-escape#start",
       "drops": "unknown",
       "reset": "unverified"
     },
     "71bcd0db-61ab-452a-9800-3cc57358162e": {
       "name": "Shadow Creeper 1",
-      "node": "the-abyss/abyss-escape-hallway#unassigned",
+      "node": "the-abyss/abyss-escape-hallway#tunnel-left",
       "drops": "unknown",
       "reset": "unverified"
     },
     "8be8fff6-f21c-41b8-89bc-32a4b35d4176": {
       "name": "Gloomsac 1",
-      "node": "the-abyss/abyss-escape-hallway#unassigned",
+      "node": "the-abyss/abyss-escape-hallway#tunnel-left",
       "drops": "unknown",
       "reset": "unverified"
     },
     "b18399ab-93df-4554-bb6a-c35781d65231": {
       "name": "Gloomsac 2",
-      "node": "the-abyss/abyss-escape-hallway#unassigned",
+      "node": "the-abyss/abyss-escape-hallway#tunnel-left",
       "drops": "unknown",
       "reset": "unverified"
     },
     "3fc28889-f123-4fed-a698-f729f17593b2": {
       "name": "Shadow Creeper 1",
-      "node": "the-abyss/abyss-hallway-to-upper-big-room#unassigned",
+      "node": "the-abyss/abyss-hallway-to-upper-big-room#centre-platform",
       "drops": "unknown",
       "reset": "unverified"
     },
     "ac7fecb6-c78c-4ebe-9156-91d24631a0ae": {
       "name": "Gloomsac 1",
-      "node": "the-abyss/abyss-hallway-to-upper-big-room#unassigned",
+      "node": "the-abyss/abyss-hallway-to-upper-big-room#left-exit",
       "drops": "unknown",
       "reset": "unverified"
     },
     "20d9a8f0-170a-4836-be48-055920edacd2": {
       "name": "Gloomsac 2",
-      "node": "the-abyss/abyss-hallway-to-upper-big-room#unassigned",
+      "node": "the-abyss/abyss-hallway-to-upper-big-room#right-exit",
       "drops": "unknown",
       "reset": "unverified"
     },
     "b3ebf8ae-f33d-4bbe-ade5-78ec334b23c1": {
       "name": "Gloomsac 3",
-      "node": "the-abyss/abyss-hallway-to-upper-big-room#unassigned",
+      "node": "the-abyss/abyss-hallway-to-upper-big-room#centre-platform",
       "drops": "unknown",
       "reset": "unverified"
     },
     "72b7f3ae-3f95-4d1f-8078-a9239268a21d": {
       "name": "Gloomsac 4",
-      "node": "the-abyss/abyss-hallway-to-upper-big-room#unassigned",
+      "node": "the-abyss/abyss-hallway-to-upper-big-room#centre-platform",
       "drops": "unknown",
       "reset": "unverified"
     },
     "6c9fbd9e-979d-4d93-b8aa-a22ccbef3d1f": {
       "name": "Shadow Creeper 1",
-      "node": "the-abyss/abyss-landing-zone#unassigned",
+      "node": "the-abyss/abyss-landing-zone#lower-exit",
       "drops": "unknown",
       "reset": "unverified"
     },
     "260a02fd-e1dd-4741-bf43-280402927010": {
       "name": "Shadow Creeper 1",
-      "node": "the-abyss/abyss-lower-big-room#unassigned",
+      "node": "the-abyss/abyss-lower-big-room#hidden-shellshards",
       "drops": "unknown",
       "reset": "unverified"
     },
     "ba912c42-6a4d-463f-8041-5829f954afe2": {
       "name": "Shadow Creeper 2",
-      "node": "the-abyss/abyss-lower-big-room#unassigned",
+      "node": "the-abyss/abyss-lower-big-room#right-void-coast",
       "drops": "unknown",
       "reset": "unverified"
     },
     "1ab593e4-7197-47e8-b7cc-988d9659e4e1": {
       "name": "Shadow Charger 1",
-      "node": "the-abyss/abyss-lower-big-room#unassigned",
+      "node": "the-abyss/abyss-lower-big-room#centre-platform",
       "drops": "unknown",
       "reset": "unverified"
     },
     "eb1f1c1c-3c92-47e0-baf1-e3cb04e1fe76": {
       "name": "Shadow Creeper 1",
-      "node": "the-abyss/abyss-tall-room#unassigned",
+      "node": "the-abyss/abyss-tall-room#spike-platform",
       "drops": "unknown",
       "reset": "unverified"
     },
     "4b2d7aaa-1f3d-4c3e-b56c-7dd16aa4aebc": {
       "name": "Shadow Creeper 1",
-      "node": "the-abyss/abyss-upper-big-room#unassigned",
+      "node": "the-abyss/abyss-upper-big-room#shadow-creedper-platform",
       "drops": "unknown",
       "reset": "unverified"
     },
     "1312168f-27c9-4874-8121-98ae9d3ded73": {
       "name": "Gargant Gloom 1",
-      "node": "the-abyss/abyss-upper-big-room#unassigned",
+      "node": "the-abyss/abyss-upper-big-room#centre-left-platform",
       "drops": "unknown",
       "reset": "unverified"
     },
     "9e626b55-2674-4d71-ab1f-4dec3160cdf4": {
       "name": "Gargant Gloom 2",
-      "node": "the-abyss/abyss-upper-big-room#unassigned",
+      "node": "the-abyss/abyss-upper-big-room#centre-right-platform",
       "drops": "unknown",
       "reset": "unverified"
     },
     "63a74b4b-9a7c-4f7e-9681-34c5b7b6d5da": {
       "name": "Gloomsac 1",
-      "node": "the-abyss/abyss-upper-big-room#unassigned",
+      "node": "the-abyss/abyss-upper-big-room#centre-right-platform",
       "drops": "unknown",
       "reset": "unverified"
     },
     "bc7cbdd7-7787-457b-a66f-1d27fcc48523": {
       "name": "Gloomsac 2",
-      "node": "the-abyss/abyss-upper-big-room#unassigned",
+      "node": "the-abyss/abyss-upper-big-room#centre-right-platform",
       "drops": "unknown",
       "reset": "unverified"
     },
     "9546a93f-28b7-4030-97d5-47b2863f5b2c": {
       "name": "Gloomsac 3",
-      "node": "the-abyss/abyss-upper-big-room#unassigned",
+      "node": "the-abyss/abyss-upper-big-room#centre-right-platform",
       "drops": "unknown",
       "reset": "unverified"
     },
     "a9a5b8e0-de3e-47bb-a8ef-d0208f6e5462": {
       "name": "Gloomsac 4",
-      "node": "the-abyss/abyss-upper-big-room#unassigned",
+      "node": "the-abyss/abyss-upper-big-room#centre-right-platform",
       "drops": "unknown",
       "reset": "unverified"
     },
     "902fa15f-8b58-48c5-bddc-af266bfa0ef5": {
       "name": "Gloomsac 5",
-      "node": "the-abyss/abyss-upper-big-room#unassigned",
+      "node": "the-abyss/abyss-upper-big-room#centre-left-platform",
       "drops": "unknown",
       "reset": "unverified"
     },
     "55a1fffe-ec3c-46d0-8168-9656b2fde74e": {
       "name": "Gloomsac 6",
-      "node": "the-abyss/abyss-upper-big-room#unassigned",
+      "node": "the-abyss/abyss-upper-big-room#centre-left-platform",
       "drops": "unknown",
       "reset": "unverified"
     },
     "7fc48586-8775-4b7c-8b67-fb8dae4346fc": {
       "name": "Gloomsac 7",
-      "node": "the-abyss/abyss-upper-big-room#unassigned",
+      "node": "the-abyss/abyss-upper-big-room#centre-left-platform",
       "drops": "unknown",
       "reset": "unverified"
     },
     "17b71d02-b212-4cc0-9667-7450ddd0de80": {
       "name": "Gloomsac 8",
-      "node": "the-abyss/abyss-upper-big-room#unassigned",
+      "node": "the-abyss/abyss-upper-big-room#centre-left-platform",
       "drops": "unknown",
       "reset": "unverified"
     },
     "55e5e8b5-94b5-4bbf-aab1-eaae86a262ef": {
       "name": "Gloomsac 9",
-      "node": "the-abyss/abyss-upper-big-room#unassigned",
+      "node": "the-abyss/abyss-upper-big-room#centre-right-platform",
       "drops": "unknown",
       "reset": "unverified"
     },
     "c6156e18-4b17-4cba-86cd-b9c085e3a551": {
       "name": "Shadow Charger 1",
-      "node": "the-abyss/arcane-egg-room#unassigned",
+      "node": "the-abyss/arcane-egg-room#start",
       "drops": "unknown",
       "reset": "unverified"
     },
     "69ff1a21-1ea2-4520-95ef-c7468d1e3187": {
       "name": "Weaver Servitor Broken 1",
-      "node": "the-abyss/weavenest-absolom#unassigned",
+      "node": "the-abyss/weavenest-absolom#farsight",
       "drops": "unknown",
       "reset": "unverified"
-    },
-    "7b28fa42-3700-4250-8c68-7811d16feed0": {
-      "drops": "none",
-      "reset": "unknown",
-      "name": "plasmid lower",
-      "node": "wormways/wormways-upper-west#main-tunnel-lower",
-      "species": "Plasmid",
-      "routes": [
-        {
-          "act": 3,
-          "events": [],
-          "souls": [],
-          "dnf": [
-            [
-              "state:act-3"
-            ]
-          ]
-        }
-      ],
-      "farm": false
-    },
-    "dca41c87-5f86-4ec5-b67d-dc77775c9244": {
-      "drops": "none",
-      "reset": "unknown",
-      "name": "plasmid upper",
-      "node": "wormways/wormways-upper-west#main-area-upper",
-      "species": "Plasmid",
-      "routes": [
-        {
-          "act": 3,
-          "events": [],
-          "souls": [],
-          "dnf": [
-            [
-              "state:act-3"
-            ]
-          ]
-        }
-      ],
-      "farm": false
     },
     "8d028d01-3e02-4240-a295-e70985331e83": {
       "drops": "none",
@@ -26020,6 +26220,1238 @@
           "act": 1,
           "events": [],
           "souls": [],
+          "dnf": [
+            []
+          ]
+        }
+      ],
+      "farm": false
+    },
+    "9f1b4c00-284f-45e5-835c-34d75c94e57a": {
+      "name": "Void Mass 1",
+      "node": "hunter-s-march/hunters-march-deep-docks-passage#gauntlet",
+      "drops": "unknown",
+      "reset": "unverified"
+    },
+    "c08d9725-a716-419c-9ea1-8eed909b567b": {
+      "name": "Skarrwing 2",
+      "node": "hunter-s-march/hunters-march-deep-docks-passage#gauntlet",
+      "drops": "shell_shards",
+      "reset": "encounter",
+      "species": "Skarrwing",
+      "native_source": "scenes_scenes_scenes/ant_05b.bundle:4836",
+      "routes": [
+        {
+          "act": 1,
+          "events": [],
+          "souls": [
+            "Skarr Scout",
+            "Skarrlid"
+          ],
+          "dnf": [
+            []
+          ]
+        }
+      ],
+      "farm": false
+    },
+    "15068965-d02b-4f15-b60b-7af304acae92": {
+      "name": "Skarr Scout 1",
+      "node": "hunter-s-march/hunters-march-deep-docks-passage#gauntlet",
+      "drops": "none",
+      "reset": "encounter",
+      "species": "Skarr Scout",
+      "native_source": "scenes_scenes_scenes/ant_05b.bundle:4660",
+      "routes": [
+        {
+          "act": 1,
+          "events": [],
+          "souls": [
+            "Skarrlid",
+            "Skarrwing"
+          ],
+          "dnf": [
+            []
+          ]
+        }
+      ],
+      "farm": false
+    },
+    "2b92a1b1-2f3b-4383-98f1-6fb67e9ae9ca": {
+      "name": "Beastfly 3",
+      "node": "hunter-s-march/chapel-of-the-beast#zoo",
+      "drops": "unknown",
+      "reset": "unverified"
+    },
+    "2af9b811-f348-43e6-9717-97c11099d856": {
+      "name": "Vicious Caranid 2",
+      "node": "hunter-s-march/chapel-of-the-beast#boss-arena",
+      "drops": "unknown",
+      "reset": "unverified"
+    },
+    "0a6f07fc-8d6e-4c77-8557-10ca21fb11ce": {
+      "name": "Spear Skarr 2",
+      "node": "hunter-s-march/hunters-march-treasure-vault#right-of-door",
+      "drops": "unknown",
+      "reset": "unverified"
+    },
+    "13ab5059-76e3-4390-9a39-451628487aef": {
+      "name": "Skarr Scout 2",
+      "node": "hunter-s-march/hunters-march-map-shop#gauntlet",
+      "drops": "both",
+      "reset": "encounter",
+      "species": "Skarr Scout",
+      "native_source": "scenes_scenes_scenes/ant_04_mid.bundle:7089",
+      "routes": [
+        {
+          "act": 1,
+          "events": [],
+          "souls": [
+            "Skarr Stalker",
+            "Skarrwing",
+            "Spear Skarr"
+          ],
+          "dnf": [
+            []
+          ]
+        }
+      ],
+      "farm": false
+    },
+    "e368cdde-8981-4467-a555-9a10289e6a18": {
+      "name": "Spear Skarr 4",
+      "node": "hunter-s-march/hunters-march-map-shop#gauntlet",
+      "drops": "both",
+      "reset": "encounter",
+      "species": "Spear Skarr",
+      "native_source": "scenes_scenes_scenes/ant_04_mid.bundle:7253",
+      "routes": [
+        {
+          "act": 3,
+          "events": [],
+          "souls": [
+            "Skarr Scout",
+            "Skarr Stalker"
+          ],
+          "dnf": [
+            [
+              "state:act-3"
+            ]
+          ]
+        }
+      ],
+      "farm": false
+    },
+    "5c02eed2-9aae-4175-8636-c15079b91c4e": {
+      "name": "Skarrwing 1",
+      "node": "hunter-s-march/hunters-march-map-shop#gauntlet",
+      "drops": "shell_shards",
+      "reset": "encounter",
+      "species": "Skarrwing",
+      "native_source": "scenes_scenes_scenes/ant_04_mid.bundle:7503",
+      "routes": [
+        {
+          "act": 1,
+          "events": [],
+          "souls": [
+            "Skarr Scout",
+            "Skarr Stalker",
+            "Spear Skarr"
+          ],
+          "dnf": [
+            []
+          ]
+        }
+      ],
+      "farm": false
+    },
+    "7e1a3f8c-8ed5-4576-987e-fe9ccea34751": {
+      "name": "Skarr Stalker 4",
+      "node": "hunter-s-march/hunters-march-map-shop#gauntlet",
+      "drops": "both",
+      "reset": "encounter",
+      "species": "Skarr Stalker",
+      "native_source": "scenes_scenes_scenes/ant_04_mid.bundle:7302",
+      "routes": [
+        {
+          "act": 3,
+          "events": [],
+          "souls": [
+            "Skarr Scout",
+            "Spear Skarr"
+          ],
+          "dnf": [
+            [
+              "state:act-3"
+            ]
+          ]
+        }
+      ],
+      "farm": false
+    },
+    "1db9ebec-8b18-41bd-8e28-2c049390a9cc": {
+      "name": "Skarr Scout 2",
+      "node": "hunter-s-march/hunters-march-early-pathway-east#main-area",
+      "drops": "both",
+      "reset": "rest",
+      "species": "Skarr Scout",
+      "native_source": "scenes_scenes_scenes/ant_04.bundle:7901",
+      "routes": [
+        {
+          "act": 1,
+          "events": [],
+          "souls": [],
+          "dnf": [
+            []
+          ]
+        }
+      ],
+      "farm": true
+    },
+    "d6518bc0-596e-42b0-ac12-f1911b88b58a": {
+      "name": "Skarrlid 1",
+      "node": "hunter-s-march/hunters-march-early-pathway-east#main-area",
+      "drops": "shell_shards",
+      "reset": "scene",
+      "species": "Skarrlid",
+      "native_source": "scenes_scenes_scenes/ant_04.bundle:7830",
+      "routes": [
+        {
+          "act": 1,
+          "events": [],
+          "souls": [],
+          "dnf": [
+            []
+          ]
+        }
+      ],
+      "farm": false
+    },
+    "75ad8bdb-368f-4aad-8254-33fe2e2d7270": {
+      "name": "Skarrwing 4",
+      "node": "hunter-s-march/hunters-march-shaft#lower-skarwings",
+      "drops": "shell_shards",
+      "reset": "scene",
+      "species": "Skarrwing",
+      "native_source": "scenes_scenes_scenes/ant_14.bundle:5809",
+      "routes": [
+        {
+          "act": 3,
+          "events": [],
+          "souls": [],
+          "dnf": [
+            [
+              "state:act-3"
+            ]
+          ]
+        }
+      ],
+      "farm": false
+    },
+    "63abb0f2-48c3-459a-81c1-b8b50538b1de": {
+      "name": "Skarr Stalker 5",
+      "node": "hunter-s-march/hunters-march-map-shop#gauntlet",
+      "drops": "both",
+      "reset": "encounter",
+      "species": "Skarr Stalker",
+      "native_source": "scenes_scenes_scenes/ant_04_mid.bundle:7298",
+      "routes": [
+        {
+          "act": 3,
+          "events": [],
+          "souls": [
+            "Skarr Scout",
+            "Spear Skarr"
+          ],
+          "dnf": [
+            [
+              "state:act-3"
+            ]
+          ]
+        }
+      ],
+      "farm": false
+    },
+    "cdd3f8c0-8842-4b2d-aeec-89197c28533d": {
+      "name": "Beastfly 2",
+      "node": "hunter-s-march/chapel-of-the-beast#boss-arena",
+      "drops": "unknown",
+      "reset": "unverified"
+    },
+    "5e4456df-582b-4d15-841e-cde452f5e78d": {
+      "name": "Spear Skarr 1",
+      "node": "hunter-s-march/hunters-march-early-pathway-east#main-area",
+      "drops": "unknown",
+      "reset": "unverified"
+    },
+    "4a669a78-baa3-48f5-8875-9e2ae05ec199": {
+      "name": "Kilik 3",
+      "node": "hunter-s-march/chapel-of-the-beast#zoo",
+      "drops": "shell_shards",
+      "reset": "scene",
+      "species": "Kilik",
+      "native_source": "scenes_scenes_scenes/ant_19.bundle:15841",
+      "routes": [
+        {
+          "act": 1,
+          "events": [],
+          "souls": [],
+          "dnf": [
+            []
+          ]
+        }
+      ],
+      "farm": false
+    },
+    "6854184d-ba2d-4e22-a171-10179d112382": {
+      "name": "Vicious Caranid 6",
+      "node": "hunter-s-march/chapel-of-the-beast#zoo",
+      "drops": "unknown",
+      "reset": "unverified"
+    },
+    "9678e899-0890-4d00-927c-4b3f03f48b6e": {
+      "name": "Skarr Scout 6",
+      "node": "hunter-s-march/hunters-march-deep-docks-passage#gauntlet",
+      "drops": "both",
+      "reset": "rest",
+      "species": "Skarr Scout",
+      "native_source": "scenes_scenes_scenes/ant_05b.bundle:4656",
+      "routes": [
+        {
+          "act": 3,
+          "events": [],
+          "souls": [],
+          "dnf": [
+            [
+              "state:act-3"
+            ]
+          ]
+        }
+      ],
+      "farm": true
+    },
+    "8cfe69ff-d513-4450-a76e-53efded80155": {
+      "name": "Spear Skarr 1",
+      "node": "hunter-s-march/hunters-march-deep-docks-passage#gauntlet",
+      "drops": "both",
+      "reset": "one-time",
+      "species": "Spear Skarr",
+      "native_source": "scenes_scenes_scenes/ant_05b.bundle:4703",
+      "routes": [
+        {
+          "act": 3,
+          "events": [],
+          "souls": [],
+          "dnf": [
+            [
+              "state:act-3"
+            ]
+          ]
+        }
+      ],
+      "farm": false
+    },
+    "068980e3-16d9-4721-b3a9-e7f34b153185": {
+      "name": "Kilik 2",
+      "node": "hunter-s-march/chapel-of-the-beast#boss-arena",
+      "drops": "unknown",
+      "reset": "unverified"
+    },
+    "18a79396-74e5-4d61-b16e-d5b78bf0260f": {
+      "name": "Skarr Scout 3",
+      "node": "hunter-s-march/hunters-march-map-shop#gauntlet",
+      "drops": "both",
+      "reset": "encounter",
+      "species": "Skarr Scout",
+      "native_source": "scenes_scenes_scenes/ant_04_mid.bundle:7092",
+      "routes": [
+        {
+          "act": 1,
+          "events": [],
+          "souls": [
+            "Skarr Stalker",
+            "Skarrwing",
+            "Spear Skarr"
+          ],
+          "dnf": [
+            []
+          ]
+        }
+      ],
+      "farm": false
+    },
+    "33b6e650-bd63-4e32-889c-fb75312a1fe3": {
+      "name": "Skarrlid 1",
+      "node": "hunter-s-march/hunters-march-shaft#below-l3",
+      "drops": "shell_shards",
+      "reset": "scene",
+      "species": "Skarrlid",
+      "native_source": "scenes_scenes_scenes/ant_14.bundle:5588",
+      "routes": [
+        {
+          "act": 1,
+          "events": [],
+          "souls": [],
+          "dnf": [
+            []
+          ]
+        }
+      ],
+      "farm": false
+    },
+    "e16f97d9-8ebc-46c8-bd31-69379ae68de5": {
+      "name": "Skarr Scout 5",
+      "node": "hunter-s-march/hunters-march-deep-docks-passage#gauntlet",
+      "drops": "both",
+      "reset": "rest",
+      "species": "Skarr Scout",
+      "native_source": "scenes_scenes_scenes/ant_05b.bundle:4659",
+      "routes": [
+        {
+          "act": 3,
+          "events": [],
+          "souls": [],
+          "dnf": [
+            [
+              "state:act-3"
+            ]
+          ]
+        }
+      ],
+      "farm": true
+    },
+    "efb42a5f-98bc-4529-a502-2d874069abe1": {
+      "name": "Caranid 1",
+      "node": "hunter-s-march/chapel-of-the-beast#chapel-entrance",
+      "drops": "shell_shards",
+      "reset": "scene",
+      "species": "Caranid",
+      "native_source": "scenes_scenes_scenes/ant_19.bundle:15259",
+      "routes": [
+        {
+          "act": 1,
+          "events": [],
+          "souls": [],
+          "dnf": [
+            [
+              "event:mapper/95c9171c-2553-48ef-8966-b568167eaf2d"
+            ]
+          ]
+        }
+      ],
+      "farm": false
+    },
+    "62a4d01e-5cc5-48b6-9f86-d648916bba7f": {
+      "name": "Skarrlid 2",
+      "node": "hunter-s-march/hunters-march-deep-docks-passage#gauntlet",
+      "drops": "shell_shards",
+      "reset": "encounter",
+      "species": "Skarrlid",
+      "native_source": "scenes_scenes_scenes/ant_05b.bundle:4598",
+      "routes": [
+        {
+          "act": 1,
+          "events": [],
+          "souls": [
+            "Skarr Scout",
+            "Skarrwing"
+          ],
+          "dnf": [
+            []
+          ]
+        }
+      ],
+      "farm": false
+    },
+    "931fbb0c-91bb-45f7-bdc5-6cf12118fb52": {
+      "name": "Spear Skarr 6",
+      "node": "hunter-s-march/hunters-march-map-shop#gauntlet",
+      "drops": "both",
+      "reset": "encounter",
+      "species": "Spear Skarr",
+      "native_source": "scenes_scenes_scenes/ant_04_mid.bundle:7250",
+      "routes": [
+        {
+          "act": 3,
+          "events": [],
+          "souls": [
+            "Skarr Scout",
+            "Skarr Stalker"
+          ],
+          "dnf": [
+            [
+              "state:act-3"
+            ]
+          ]
+        }
+      ],
+      "farm": false
+    },
+    "e8726904-818d-4266-8b6d-aace52245338": {
+      "name": "Skarr Scout 4",
+      "node": "hunter-s-march/hunters-march-deep-docks-passage#gauntlet",
+      "drops": "both",
+      "reset": "encounter",
+      "species": "Skarr Scout",
+      "native_source": "scenes_scenes_scenes/ant_05b.bundle:4655",
+      "routes": [
+        {
+          "act": 1,
+          "events": [],
+          "souls": [
+            "Skarrlid",
+            "Skarrwing"
+          ],
+          "dnf": [
+            []
+          ]
+        }
+      ],
+      "farm": false
+    },
+    "097e3c75-1162-4993-8819-f29166f418e4": {
+      "name": "Skarrgard 3",
+      "node": "hunter-s-march/hunters-march-treasure-vault#right-of-door",
+      "drops": "unknown",
+      "reset": "unverified"
+    },
+    "7517070f-1edb-442e-80d6-276524030142": {
+      "name": "Skarr Scout 6",
+      "node": "hunter-s-march/hunters-march-map-shop#gauntlet",
+      "drops": "both",
+      "reset": "encounter",
+      "species": "Skarr Scout",
+      "native_source": "scenes_scenes_scenes/ant_04_mid.bundle:7090",
+      "routes": [
+        {
+          "act": 3,
+          "events": [],
+          "souls": [
+            "Skarr Stalker",
+            "Spear Skarr"
+          ],
+          "dnf": [
+            [
+              "state:act-3"
+            ]
+          ]
+        }
+      ],
+      "farm": false
+    },
+    "f752059c-94bb-4853-949b-a1af5e40a6fe": {
+      "name": "Skarr Scout 4",
+      "node": "hunter-s-march/hunters-march-map-shop#gauntlet",
+      "drops": "both",
+      "reset": "encounter",
+      "species": "Skarr Scout",
+      "native_source": "scenes_scenes_scenes/ant_04_mid.bundle:7087",
+      "routes": [
+        {
+          "act": 1,
+          "events": [],
+          "souls": [
+            "Skarr Stalker",
+            "Skarrwing",
+            "Spear Skarr"
+          ],
+          "dnf": [
+            []
+          ]
+        }
+      ],
+      "farm": false
+    },
+    "1544c705-1e6f-43ba-b430-9adce0c7e2f3": {
+      "name": "Vicious Caranid 4",
+      "node": "hunter-s-march/chapel-of-the-beast#zoo",
+      "drops": "unknown",
+      "reset": "unverified"
+    },
+    "8f89eda1-e489-4783-9240-13090967a06a": {
+      "name": "Skarrwing 1",
+      "node": "hunter-s-march/hunters-march-deep-docks-passage#gauntlet",
+      "drops": "shell_shards",
+      "reset": "encounter",
+      "species": "Skarrwing",
+      "native_source": "scenes_scenes_scenes/ant_05b.bundle:4835",
+      "routes": [
+        {
+          "act": 1,
+          "events": [],
+          "souls": [
+            "Skarr Scout",
+            "Skarrlid"
+          ],
+          "dnf": [
+            []
+          ]
+        }
+      ],
+      "farm": false
+    },
+    "85332aed-70ef-4412-be8b-b98e57fb71aa": {
+      "name": "Skarrwing 3",
+      "node": "hunter-s-march/hunters-march-deep-docks-passage#gauntlet",
+      "drops": "shell_shards",
+      "reset": "encounter",
+      "species": "Skarrwing",
+      "native_source": "scenes_scenes_scenes/ant_05b.bundle:4837",
+      "routes": [
+        {
+          "act": 1,
+          "events": [],
+          "souls": [
+            "Skarr Scout",
+            "Skarrlid"
+          ],
+          "dnf": [
+            []
+          ]
+        }
+      ],
+      "farm": false
+    },
+    "1a669ea1-24d6-435b-94f7-0091525cef50": {
+      "name": "Beastfly 4",
+      "node": "hunter-s-march/chapel-of-the-beast#chapel-entrance",
+      "drops": "unknown",
+      "reset": "unverified"
+    },
+    "48536049-81c3-46d3-97fb-9a27809297fe": {
+      "name": "Kilik 1",
+      "node": "hunter-s-march/chapel-of-the-beast#boss-arena",
+      "drops": "unknown",
+      "reset": "unverified"
+    },
+    "1e25d2f7-b14e-49ef-957c-d83fa00c643e": {
+      "name": "Skarr Scout 1",
+      "node": "hunter-s-march/hunters-march-map-shop#gauntlet",
+      "drops": "both",
+      "reset": "encounter",
+      "species": "Skarr Scout",
+      "native_source": "scenes_scenes_scenes/ant_04_mid.bundle:7091",
+      "routes": [
+        {
+          "act": 1,
+          "events": [],
+          "souls": [
+            "Skarr Stalker",
+            "Skarrwing",
+            "Spear Skarr"
+          ],
+          "dnf": [
+            []
+          ]
+        }
+      ],
+      "farm": false
+    },
+    "96298068-4d04-4731-8cfc-8c9ee7ebb249": {
+      "name": "Spear Skarr 5",
+      "node": "hunter-s-march/hunters-march-treasure-vault#right-of-door",
+      "drops": "unknown",
+      "reset": "unverified"
+    },
+    "15b32d57-e9cc-4d0b-bd34-7b4266fc3a0e": {
+      "name": "Skarr Stalker 1",
+      "node": "hunter-s-march/hunters-march-chapel-passage#crossing-platform",
+      "drops": "both",
+      "reset": "rest",
+      "species": "Skarr Stalker",
+      "native_source": "scenes_scenes_scenes/ant_20.bundle:9157",
+      "routes": [
+        {
+          "act": 1,
+          "events": [],
+          "souls": [],
+          "dnf": [
+            []
+          ]
+        }
+      ],
+      "farm": true
+    },
+    "adfd4570-c528-498b-b89a-3a670fc7bf01": {
+      "name": "Vicious Caranid 5",
+      "node": "hunter-s-march/chapel-of-the-beast#zoo",
+      "drops": "unknown",
+      "reset": "unverified"
+    },
+    "b9d80fec-f155-496a-b888-f98235fd365d": {
+      "name": "Spear Skarr 3",
+      "node": "hunter-s-march/hunters-march-map-shop#gauntlet",
+      "drops": "both",
+      "reset": "encounter",
+      "species": "Spear Skarr",
+      "native_source": "scenes_scenes_scenes/ant_04_mid.bundle:7251",
+      "routes": [
+        {
+          "act": 2,
+          "events": [],
+          "souls": [
+            "Skarr Scout",
+            "Skarr Stalker",
+            "Skarrwing"
+          ],
+          "dnf": [
+            []
+          ]
+        }
+      ],
+      "farm": false
+    },
+    "f0289679-79b4-471d-9d0c-8062a622b4f2": {
+      "name": "Skarrwing 3",
+      "node": "hunter-s-march/hunters-march-shaft#upper-skarrwing",
+      "drops": "shell_shards",
+      "reset": "scene",
+      "species": "Skarrwing",
+      "native_source": "scenes_scenes_scenes/ant_14.bundle:5811",
+      "routes": [
+        {
+          "act": 1,
+          "events": [],
+          "souls": [],
+          "dnf": [
+            []
+          ]
+        }
+      ],
+      "farm": false
+    },
+    "8589024d-d005-4980-8e09-c87e8a972a30": {
+      "name": "Skarrwing 2",
+      "node": "hunter-s-march/hunters-march-early-pathway-east#main-area",
+      "drops": "shell_shards",
+      "reset": "scene",
+      "species": "Skarrwing",
+      "native_source": "scenes_scenes_scenes/ant_04.bundle:8125",
+      "routes": [
+        {
+          "act": 3,
+          "events": [],
+          "souls": [],
+          "dnf": [
+            [
+              "state:act-3"
+            ]
+          ]
+        }
+      ],
+      "farm": false
+    },
+    "5468d48c-9f84-459b-9c56-bc35a4119317": {
+      "name": "Skarrwing 2",
+      "node": "hunter-s-march/hunters-march-map-shop#gauntlet",
+      "drops": "shell_shards",
+      "reset": "encounter",
+      "species": "Skarrwing",
+      "native_source": "scenes_scenes_scenes/ant_04_mid.bundle:7504",
+      "routes": [
+        {
+          "act": 1,
+          "events": [],
+          "souls": [
+            "Skarr Scout",
+            "Skarr Stalker",
+            "Spear Skarr"
+          ],
+          "dnf": [
+            []
+          ]
+        }
+      ],
+      "farm": false
+    },
+    "c66c5def-da45-4409-a08d-2cdb93b8a6d1": {
+      "name": "Skarr Stalker 3",
+      "node": "hunter-s-march/hunters-march-map-shop#gauntlet",
+      "drops": "both",
+      "reset": "encounter",
+      "species": "Skarr Stalker",
+      "native_source": "scenes_scenes_scenes/ant_04_mid.bundle:7299",
+      "routes": [
+        {
+          "act": 1,
+          "events": [],
+          "souls": [
+            "Skarr Scout",
+            "Skarrwing",
+            "Spear Skarr"
+          ],
+          "dnf": [
+            []
+          ]
+        }
+      ],
+      "farm": false
+    },
+    "b639c3e1-44c7-4836-b309-4bb77c580318": {
+      "name": "Skarr Scout 1",
+      "node": "hunter-s-march/hunters-march-early-pathway-east#main-area",
+      "drops": "both",
+      "reset": "rest",
+      "species": "Skarr Scout",
+      "native_source": "scenes_scenes_scenes/ant_04.bundle:7902",
+      "routes": [
+        {
+          "act": 1,
+          "events": [],
+          "souls": [],
+          "dnf": [
+            []
+          ]
+        }
+      ],
+      "farm": true
+    },
+    "7c33c96d-bc11-4627-9f95-3686942c02de": {
+      "name": "Skarrwing 1",
+      "node": "hunter-s-march/hunters-march-shaft#lower-skarwings",
+      "drops": "shell_shards",
+      "reset": "scene",
+      "species": "Skarrwing",
+      "native_source": "scenes_scenes_scenes/ant_14.bundle:5808",
+      "routes": [
+        {
+          "act": 1,
+          "events": [],
+          "souls": [],
+          "dnf": [
+            []
+          ]
+        }
+      ],
+      "farm": false
+    },
+    "4a676019-25fe-49f5-98fa-60a45f3b0eac": {
+      "name": "Beastfly 5",
+      "node": "hunter-s-march/chapel-of-the-beast#zoo",
+      "drops": "unknown",
+      "reset": "unverified"
+    },
+    "455ddd7d-3dd0-48e0-be88-902dc23185ae": {
+      "name": "Skarrlid 1",
+      "node": "hunter-s-march/hunters-march-deep-docks-passage#gauntlet",
+      "drops": "shell_shards",
+      "reset": "encounter",
+      "species": "Skarrlid",
+      "native_source": "scenes_scenes_scenes/ant_05b.bundle:4597",
+      "routes": [
+        {
+          "act": 1,
+          "events": [],
+          "souls": [
+            "Skarr Scout",
+            "Skarrwing"
+          ],
+          "dnf": [
+            []
+          ]
+        }
+      ],
+      "farm": false
+    },
+    "df39709a-b9b4-4aa2-8afe-d9b3f0b10ca1": {
+      "name": "Spear Skarr 2",
+      "node": "hunter-s-march/hunters-march-map-shop#gauntlet",
+      "drops": "both",
+      "reset": "encounter",
+      "species": "Spear Skarr",
+      "native_source": "scenes_scenes_scenes/ant_04_mid.bundle:7249",
+      "routes": [
+        {
+          "act": 2,
+          "events": [],
+          "souls": [
+            "Skarr Scout",
+            "Skarr Stalker",
+            "Skarrwing"
+          ],
+          "dnf": [
+            []
+          ]
+        }
+      ],
+      "farm": false
+    },
+    "be315dd4-a639-4ab0-bd7c-11e3bf4bd7b5": {
+      "name": "Skarr Stalker 2",
+      "node": "hunter-s-march/hunters-march-early-pathway-east#main-area",
+      "drops": "both",
+      "reset": "rest",
+      "species": "Skarr Stalker",
+      "native_source": "scenes_scenes_scenes/ant_04.bundle:7980",
+      "routes": [
+        {
+          "act": 3,
+          "events": [],
+          "souls": [],
+          "dnf": [
+            [
+              "state:act-3"
+            ]
+          ]
+        }
+      ],
+      "farm": true
+    },
+    "5538d0fb-0db7-4583-9155-466081b3c2d7": {
+      "name": "Skarr Stalker 1",
+      "node": "hunter-s-march/hunters-march-early-pathway-east#main-area",
+      "drops": "both",
+      "reset": "rest",
+      "species": "Skarr Stalker",
+      "native_source": "scenes_scenes_scenes/ant_04.bundle:7979",
+      "routes": [
+        {
+          "act": 1,
+          "events": [],
+          "souls": [],
+          "dnf": [
+            []
+          ]
+        }
+      ],
+      "farm": true
+    },
+    "e7e49a9b-9101-4c01-8458-8e83d6be102e": {
+      "name": "Vicious Caranid 1",
+      "node": "hunter-s-march/chapel-of-the-beast#chapel-entrance",
+      "drops": "shell_shards",
+      "reset": "rest",
+      "species": "Vicious Caranid",
+      "native_source": "scenes_scenes_scenes/ant_19.bundle:15260",
+      "routes": [
+        {
+          "act": 1,
+          "events": [],
+          "souls": [],
+          "dnf": [
+            [
+              "event:mapper/95c9171c-2553-48ef-8966-b568167eaf2d"
+            ]
+          ]
+        }
+      ],
+      "farm": false
+    },
+    "731236af-73b6-4011-ae15-00a95f6cad89": {
+      "name": "Skarrlid 2",
+      "node": "hunter-s-march/hunters-march-early-pathway-east#ceiling-alcove",
+      "drops": "shell_shards",
+      "reset": "scene",
+      "species": "Skarrlid",
+      "native_source": "scenes_scenes_scenes/ant_04.bundle:7829",
+      "routes": [
+        {
+          "act": 1,
+          "events": [],
+          "souls": [],
+          "dnf": [
+            []
+          ]
+        }
+      ],
+      "farm": false
+    },
+    "6b9d72b8-2e47-43ae-b4f7-f3fca14705e9": {
+      "name": "Skarrwing 2",
+      "node": "hunter-s-march/hunters-march-shaft#l2-platform",
+      "drops": "shell_shards",
+      "reset": "scene",
+      "species": "Skarrwing",
+      "native_source": "scenes_scenes_scenes/ant_14.bundle:5807",
+      "routes": [
+        {
+          "act": 1,
+          "events": [],
+          "souls": [],
+          "dnf": [
+            []
+          ]
+        }
+      ],
+      "farm": false
+    },
+    "db54df03-1b9a-4402-b401-9c520c70c93d": {
+      "name": "Skarrgard 2",
+      "node": "hunter-s-march/hunters-march-treasure-vault#right-of-door",
+      "drops": "unknown",
+      "reset": "unverified"
+    },
+    "a719e6e1-3e75-4448-965b-40e54fa777fb": {
+      "name": "Spear Skarr 3",
+      "node": "hunter-s-march/hunters-march-treasure-vault#right-of-door",
+      "drops": "unknown",
+      "reset": "unverified"
+    },
+    "46bb1df8-cd43-4e92-ad30-647d433d3fee": {
+      "name": "Skarrwing 4",
+      "node": "hunter-s-march/hunters-march-deep-docks-passage#gauntlet",
+      "drops": "shell_shards",
+      "reset": "encounter",
+      "species": "Skarrwing",
+      "native_source": "scenes_scenes_scenes/ant_05b.bundle:4834",
+      "routes": [
+        {
+          "act": 1,
+          "events": [],
+          "souls": [
+            "Skarr Scout",
+            "Skarrlid"
+          ],
+          "dnf": [
+            []
+          ]
+        }
+      ],
+      "farm": false
+    },
+    "57a8e690-4cea-46e6-8a38-8a4bc46f1207": {
+      "name": "Spear Skarr 4",
+      "node": "hunter-s-march/hunters-march-treasure-vault#right-of-door",
+      "drops": "unknown",
+      "reset": "unverified"
+    },
+    "0dfaf510-bb07-4aea-8156-ac01100eb475": {
+      "name": "Skarr Stalker 1",
+      "node": "hunter-s-march/hunters-march-map-shop#gauntlet",
+      "drops": "both",
+      "reset": "encounter",
+      "species": "Skarr Stalker",
+      "native_source": "scenes_scenes_scenes/ant_04_mid.bundle:7301",
+      "routes": [
+        {
+          "act": 1,
+          "events": [],
+          "souls": [
+            "Skarr Scout",
+            "Skarrwing",
+            "Spear Skarr"
+          ],
+          "dnf": [
+            []
+          ]
+        }
+      ],
+      "farm": false
+    },
+    "02bf6339-1195-4951-9dae-d353d472bc2c": {
+      "name": "Spear Skarr 1",
+      "node": "hunter-s-march/hunters-march-map-shop#gauntlet",
+      "drops": "both",
+      "reset": "encounter",
+      "species": "Spear Skarr",
+      "native_source": "scenes_scenes_scenes/ant_04_mid.bundle:7248",
+      "routes": [
+        {
+          "act": 2,
+          "events": [],
+          "souls": [
+            "Skarr Scout",
+            "Skarr Stalker",
+            "Skarrwing"
+          ],
+          "dnf": [
+            []
+          ]
+        }
+      ],
+      "farm": false
+    },
+    "16a9da90-b968-4363-b4f1-89193e372b3d": {
+      "name": "Skarr Scout 3",
+      "node": "hunter-s-march/hunters-march-deep-docks-passage#gauntlet",
+      "drops": "both",
+      "reset": "encounter",
+      "species": "Skarr Scout",
+      "native_source": "scenes_scenes_scenes/ant_05b.bundle:4657",
+      "routes": [
+        {
+          "act": 1,
+          "events": [],
+          "souls": [
+            "Skarrlid",
+            "Skarrwing"
+          ],
+          "dnf": [
+            []
+          ]
+        }
+      ],
+      "farm": false
+    },
+    "2102c7fa-88a2-49bd-96b1-b9782f41d239": {
+      "name": "Skarrwing 1",
+      "node": "hunter-s-march/hunters-march-early-pathway-east#main-area",
+      "drops": "shell_shards",
+      "reset": "scene",
+      "species": "Skarrwing",
+      "native_source": "scenes_scenes_scenes/ant_04.bundle:8126",
+      "routes": [
+        {
+          "act": 1,
+          "events": [],
+          "souls": [],
+          "dnf": [
+            []
+          ]
+        }
+      ],
+      "farm": false
+    },
+    "dfdf566d-152e-4e1e-83ce-7f624b33ef57": {
+      "name": "Skarr Scout 5",
+      "node": "hunter-s-march/hunters-march-map-shop#gauntlet",
+      "drops": "both",
+      "reset": "encounter",
+      "species": "Skarr Scout",
+      "native_source": "scenes_scenes_scenes/ant_04_mid.bundle:7088",
+      "routes": [
+        {
+          "act": 1,
+          "events": [],
+          "souls": [
+            "Skarr Stalker",
+            "Skarrwing",
+            "Spear Skarr"
+          ],
+          "dnf": [
+            []
+          ]
+        }
+      ],
+      "farm": false
+    },
+    "a5a90a3d-0e20-4c57-ac34-e13dd0eed25f": {
+      "name": "Vicious Caranid 3",
+      "node": "hunter-s-march/chapel-of-the-beast#zoo",
+      "drops": "shell_shards",
+      "reset": "rest",
+      "species": "Vicious Caranid",
+      "native_source": "scenes_scenes_scenes/ant_19.bundle:15263",
+      "routes": [
+        {
+          "act": 1,
+          "events": [],
+          "souls": [],
+          "dnf": [
+            []
+          ]
+        }
+      ],
+      "farm": false
+    },
+    "e5b9b373-a26b-4b92-ac05-67b549fe629e": {
+      "name": "Beastfly 1",
+      "node": "hunter-s-march/chapel-of-the-beast#boss-arena",
+      "drops": "unknown",
+      "reset": "unverified"
+    },
+    "acc4b5e6-762e-474d-a506-6ca2a1791a79": {
+      "name": "Spear Skarr 1",
+      "node": "hunter-s-march/hunters-march-deep-entrance#center-platform",
+      "drops": "both",
+      "reset": "encounter",
+      "species": "Spear Skarr",
+      "native_source": "scenes_scenes_scenes/ant_09.bundle:6544",
+      "routes": [
+        {
+          "act": 2,
+          "events": [],
+          "souls": [],
+          "dnf": [
+            []
+          ]
+        }
+      ],
+      "farm": false
+    },
+    "0ec3b66d-1267-46d8-b472-e5f74ceec2b7": {
+      "name": "Spear Skarr 5",
+      "node": "hunter-s-march/hunters-march-map-shop#gauntlet",
+      "drops": "both",
+      "reset": "encounter",
+      "species": "Spear Skarr",
+      "native_source": "scenes_scenes_scenes/ant_04_mid.bundle:7252",
+      "routes": [
+        {
+          "act": 3,
+          "events": [],
+          "souls": [
+            "Skarr Scout",
+            "Skarr Stalker"
+          ],
+          "dnf": [
+            [
+              "state:act-3"
+            ]
+          ]
+        }
+      ],
+      "farm": false
+    },
+    "e953cd3d-738d-42c9-845f-ad116eb4a93c": {
+      "name": "Skarrwing 5",
+      "node": "hunter-s-march/hunters-march-shaft#l1-platform",
+      "drops": "shell_shards",
+      "reset": "scene",
+      "species": "Skarrwing",
+      "native_source": "scenes_scenes_scenes/ant_14.bundle:5810",
+      "routes": [
+        {
+          "act": 3,
+          "events": [],
+          "souls": [],
+          "dnf": [
+            [
+              "state:act-3"
+            ]
+          ]
+        }
+      ],
+      "farm": false
+    },
+    "70ecc2ac-6b1d-46d6-a0e2-458023b54d80": {
+      "name": "Skarr Stalker 2",
+      "node": "hunter-s-march/hunters-march-map-shop#gauntlet",
+      "drops": "both",
+      "reset": "encounter",
+      "species": "Skarr Stalker",
+      "native_source": "scenes_scenes_scenes/ant_04_mid.bundle:7300",
+      "routes": [
+        {
+          "act": 1,
+          "events": [],
+          "souls": [
+            "Skarr Scout",
+            "Skarrwing",
+            "Spear Skarr"
+          ],
+          "dnf": [
+            []
+          ]
+        }
+      ],
+      "farm": false
+    },
+    "793aba6b-da6b-472c-9962-9fd905d31f50": {
+      "name": "Skarr Scout 2",
+      "node": "hunter-s-march/hunters-march-deep-docks-passage#gauntlet",
+      "drops": "both",
+      "reset": "encounter",
+      "species": "Skarr Scout",
+      "native_source": "scenes_scenes_scenes/ant_05b.bundle:4658",
+      "routes": [
+        {
+          "act": 1,
+          "events": [],
+          "souls": [
+            "Skarrlid",
+            "Skarrwing"
+          ],
           "dnf": [
             []
           ]

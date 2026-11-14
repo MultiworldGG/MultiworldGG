@@ -76,6 +76,10 @@ def location_name(name):
     return 'First Kill: ' + name
 
 
+def encounter_name(name):
+    return 'Enemy encounter: ' + name
+
+
 def enabled_enemies(world):
     if not world.options.enemy_souls:
         return ()
@@ -192,16 +196,22 @@ def add_souls_to_pool(world, entries):
 
 def create_locations(world, region):
     from .locations import SilksongLocation
+    from .room_graph_logic import native_region_name
     for name in enabled_enemies(world):
-        region.locations.append(SilksongLocation(world.player, location_name(name), BY_NAME[name]['location_id'], region))
+        parent = (world.get_region(native_region_name(encounter_name(name)))
+                  if encounter_name(name) in world._silksong_native_compiled_requirements else region)
+        parent.locations.append(SilksongLocation(world.player, location_name(name), BY_NAME[name]['location_id'], parent))
 
 
 def set_rules(world):
     from .native_regions import native_rule_options
     from .requirement_rules import build_requirements_rule
+    from .requirements import req
     for name in enabled_enemies(world):
         location = world.multiworld.get_location(location_name(name), world.player)
-        world.set_rule(location, build_requirements_rule(check_requirements(name, enabled_enemies(world)),
+        rules = ((req(encounter_name(name)),) if encounter_name(name) in world._silksong_native_abstract_names
+                 else check_requirements(name, enabled_enemies(world)))
+        world.set_rule(location, build_requirements_rule(rules,
             extra_abstract_requirement_names=world._silksong_native_abstract_names, **native_rule_options(world)))
 
 
@@ -236,10 +246,10 @@ def pogo_graph(names):
                     needed = (*needed, 'received:' + item_name('Skullwing'))
                 dnf.append(tuple(dict.fromkeys((*branch, *needed))))
             dnf = tuple(dnf)
-            return replace(row, requirement=replace(spec, dnf=dnf))
-        rooms.append(replace(room, connections=tuple(map(update, room.connections)),
-                             transitions=tuple(map(update, room.transitions)),
-                             checks=tuple(map(update, room.checks)), events=tuple(map(update, room.events))))
+            return replace(row, requirement=replace(spec, dnf=dnf)) if dnf != spec.dnf else row
+        rows = {field: tuple(map(update, getattr(room, field)))
+                for field in ('connections', 'transitions', 'checks', 'events')}
+        rooms.append(replace(room, **rows) if any(rows[field] != getattr(room, field) for field in rows) else room)
     return replace(graph, rooms=tuple(rooms))
 
 
@@ -314,9 +324,27 @@ def gate_graph(world, graph):
     for owner, rules in tuple(result.items()):
         if owner != ACT_3_INTRO_EVENT:
             result[owner] = tuple(_combat_gate(rule, names) for rule in rules)
+    from .requirements import req
+    def collection(species, crest=True):
+        sources = []
+        for name in species:
+            rules = tuple(dict.fromkeys(replace(rule, require_any_crest=False)
+                                        for rule in _collection_sources((name,), names)))
+            if not rules:
+                continue
+            encounters = check_requirements(name, names)
+            shared = (name in names and all(rule.require_any_crest for rule in encounters)
+                      and rules == tuple(dict.fromkeys(replace(rule, require_any_crest=False) for rule in encounters)))
+            owner = encounter_name(name) if shared else 'Enemy farming: ' + name
+            result[owner] = rules
+            sources.append(req(owner, crest=crest))
+        return tuple(sources)
+
+    result['Pilgrim Shawls: 12'] = collection(PILGRIM_RAG_SOURCES, crest=False)
     for event, species in COLLECTION_SOURCES.items():
         if event in result and set(species).intersection(names):
-            result[event] = _collection_gate(result[event], species, names, replace_source=True)
+            result[event] = _collection_gate(result[event], species, names, replace_source=True,
+                                             sources=collection(species))
     return result
 
 
@@ -335,12 +363,18 @@ def _collection_sources(species, names):
     return tuple(dict.fromkeys(result))
 
 
-def _collection_gate(rules, species, names, *, replace_source=False):
+def pilgrim_shawl_requirements(names=()):
+    return tuple(replace(rule, require_any_crest=False)
+                 for rule in _collection_sources(PILGRIM_RAG_SOURCES, names))
+
+
+def _collection_gate(rules, species, names, *, replace_source=False, sources=None):
     from .requirements import _combine_room_graph_gate
     gates = tuple(replace(rule, all_of=tuple(n for n in rule.all_of if not n.startswith('Room Node: ')))
                   if replace_source else rule for rule in rules)
     return tuple(dict.fromkeys(_combine_room_graph_gate(source, gate)
-                               for source in _collection_sources(species, names) for gate in gates))
+                               for source in (_collection_sources(species, names) if sources is None else sources)
+                               for gate in gates))
 
 
 @lru_cache(maxsize=8)
@@ -432,8 +466,6 @@ def gate_location(world, name, rules):
         rules = tuple(replace(rule, all_of=tuple(dict.fromkeys((*rule.all_of, *souls)))) for rule in rules)
     if name == 'Marrowmaw - Beast Shard' and 'Marrowmaw' in names:
         rules = tuple(replace(rule, all_of=tuple(dict.fromkeys((*rule.all_of, item_name('Marrowmaw'))))) for rule in rules)
-    if name == 'Wish: Garb of the Pilgrims' and set(PILGRIM_RAG_SOURCES).intersection(names):
-        rules = _collection_gate(rules, PILGRIM_RAG_SOURCES, names)
     return tuple(_combat_gate(rule, names) for rule in rules)
 
 
@@ -451,14 +483,16 @@ def location_overrides(world, rules):
 
 
 def export_world(world, slot_data):
-    from .requirements import _export_requirement_group
+    from .requirements import _export_requirement_group, req
     names = enabled_enemies(world)
     slot_data['enemy_souls'] = bool(world.options.enemy_souls)
     slot_data['enemy_soul_species'] = list(names)
     if not names:
         return
     for name in names:
-        slot_data['requirements'][location_name(name)] = _export_requirement_group(check_requirements(name, names))
+        rules = ((req(encounter_name(name)),) if encounter_name(name) in world._silksong_native_abstract_names
+                 else check_requirements(name, names))
+        slot_data['requirements'][location_name(name)] = _export_requirement_group(rules)
     from .entrance_randomization import node_overrides as entrance_nodes
     connected_nodes = entrance_nodes(world, connected=True) or {}
     for name, rules in world._silksong_native_abstract_requirements.items():

@@ -1,3 +1,4 @@
+import copy
 import hashlib
 import json
 import logging
@@ -193,7 +194,7 @@ class PokemonCrystalAPPatchExtension(APPatchExtension):
                                  world_data["battle_tower_trainer_permutation"],
                                  world_data["battle_tower_mon_seed"])
 
-        option_overrides = get_settings().pokemon_crystal_settings.option_overrides
+        option_overrides = copy.deepcopy(getattr(get_settings(), data.manifest.settings_key).option_overrides)
 
         if "skip_elite_four" in option_overrides:
             for trainer_name in ("WILL", "KOGA", "BRUNO", "KAREN"):
@@ -268,7 +269,7 @@ class PokemonCrystalAPPatchExtension(APPatchExtension):
 class PokemonCrystalProcedurePatch(APProcedurePatch, APTokenMixin):
     game = data.manifest.game
     hash = [CRYSTAL_1_0_HASH, CRYSTAL_1_1_HASH]
-    patch_file_ending = ".apcrystal"
+    patch_file_ending = data.manifest.patch_file_ending
     result_file_ending = ".gbc"
     world_version: Version | None = None
     minimum_world_version: Version | None = None
@@ -2180,7 +2181,7 @@ def generate_output(world: "PokemonCrystalWorld", output_directory: str, patch: 
 
 
 def get_base_rom_as_bytes() -> bytes:
-    with open(get_settings().pokemon_crystal_settings.rom_file, "rb") as infile:
+    with open(getattr(get_settings(), data.manifest.settings_key).rom_file, "rb") as infile:
         base_rom_bytes = bytes(infile.read())
 
     return base_rom_bytes

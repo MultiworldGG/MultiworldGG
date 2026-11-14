@@ -137,7 +137,8 @@ def _simplify(graph, mutable=frozenset()):
 
 def _external_roots(world):
     from .rosary_economy import FARM
-    economy_roots = {FARM} & world._silksong_native_abstract_names
+    from .enemy_souls import enabled_enemies, encounter_name
+    economy_roots = ({FARM} | {encounter_name(name) for name in enabled_enemies(world)}) & world._silksong_native_abstract_names
     if getattr(world, "_silk_node_rules", None):
         prefixes = ('Silk (', 'Silk route: ', 'Silk capacity: ',
                     'Silk regeneration: ', 'Silk refill: ', 'Silk restock (')
@@ -197,7 +198,8 @@ def compact_requirements(world, original, additional_roots=(), *, silk_supply=Fa
                 ).resolve(world)
                 predicate_id = 0
                 if not resolved.always_true and not resolved.always_false:
-                    predicate = replace(condition, all_of=(), any_of=())
+                    predicate = replace(condition, all_of=(),
+                                        any_of=condition.any_of if condition.minimum_any_of != 1 else ())
                     predicate_id = predicates.setdefault(predicate, len(predicates))
                 constants[condition] = (resolved.always_true, resolved.always_false, predicate_id)
             always_true, always_false, predicate_id = constants[condition]
@@ -206,7 +208,8 @@ def compact_requirements(world, original, additional_roots=(), *, silk_supply=Fa
             if always_true:
                 retained.add((frozenset(refs), frozenset(), 0))
             else:
-                retained.add((frozenset(rule.all_of), frozenset(rule.any_of), predicate_id))
+                retained.add((frozenset(rule.all_of),
+                              frozenset(rule.any_of) if rule.minimum_any_of == 1 else frozenset(), predicate_id))
         graph[owner] = retained
     boundaries = set()
     if entrances_enabled(world) and not silk_supply:
@@ -261,7 +264,7 @@ def compact_requirements(world, original, additional_roots=(), *, silk_supply=Fa
             result[name] = tuple(sorted((
                 replace(predicates[predicate],
                         all_of=tuple(sorted(all_of, key=anchor_order)),
-                        any_of=tuple(sorted(any_of)))
+                        any_of=predicates[predicate].any_of or tuple(sorted(any_of)))
                 for all_of, any_of, predicate in graph[name]
             ), key=repr))
     roots = _external_roots(world) & result.keys()

@@ -190,7 +190,7 @@
                         "NORMAL",
                         "FULLY_POWERED"
                     ],
-                    "default": "normal"
+                    "default": "NORMAL"
                 },
                 "ziplines_activated": {
                     "type": "boolean",
@@ -229,6 +229,27 @@
                     "type": "integer",
                     "description": "How much ammo power bomb tanks provide when collected.",
                     "minimum": -100,
+                    "maximum": 100,
+                    "default": 2
+                },
+                "main_missiles": {
+                    "type": "integer",
+                    "description": "How much ammo the main missiles item provides when collected.",
+                    "minimum": 0,
+                    "maximum": 1000,
+                    "default": 5
+                },
+                "main_super_missiles": {
+                    "type": "integer",
+                    "description": "How much ammo the main super missiles item provides when collected.",
+                    "minimum": 0,
+                    "maximum": 100,
+                    "default": 2
+                },
+                "main_power_bombs": {
+                    "type": "integer",
+                    "description": "How much ammo the main power bombs item provides when collected.",
+                    "minimum": 0,
                     "maximum": 100,
                     "default": 2
                 }
@@ -322,10 +343,10 @@
                     "propertyNames": {
                         "type": "string",
                         "enum": [
-                            "tilesets",
-                            "enemies",
-                            "samus",
-                            "beams"
+                            "TILESETS",
+                            "ENEMIES",
+                            "SAMUS",
+                            "BEAMS"
                         ]
                     },
                     "additionalProperties": {
@@ -367,6 +388,10 @@
             ],
             "default": null
         },
+        "music_replacement": {
+            "description": "Shuffles the in-game music.",
+            "$ref": "#/$defs/music_mapping"
+        },
         "intro_text": {
             "type": "object",
             "description": "Specifies what text should appear during the new game intro.",
@@ -375,13 +400,60 @@
             },
             "additionalProperties": {
                 "type": "string",
-                "description": "The language specific text used for the intro"
+                "description": "The language specific text used for the intro."
+            },
+            "default": null
+        },
+        "hint_text": {
+            "type": "object",
+            "description": "Specifies text to be displayed at the hint statues.",
+            "propertyNames": {
+                "$ref": "#/$defs/valid_languages"
+            },
+            "additionalProperties": {
+                "type": "object",
+                "description": "Assigns each hint statue a specific text.",
+                "properties": {
+                    "LONG_BEAM": {
+                        "type": "string",
+                        "description": "Specifies what text should appear at the long beam hint statue in Brinstar."
+                    },
+                    "ICE_BEAM": {
+                        "type": "string",
+                        "description": "Specifies what text should appear at the ice beam hint statue in Brinstar."
+                    },
+                    "WAVE_BEAM": {
+                        "type": "string",
+                        "description": "Specifies what text should appear at the wave beam hint statue in Brinstar."
+                    },
+                    "BOMBS": {
+                        "type": "string",
+                        "description": "Specifies what text should appear at the bombs hint statue in Brinstar."
+                    },
+                    "SPEED_BOOSTER": {
+                        "type": "string",
+                        "description": "Specifies what text should appear at the speed booster hint statue in Norfair."
+                    },
+                    "HI_JUMP": {
+                        "type": "string",
+                        "description": "Specifies what text should appear at the hi-jump hint statue in Brinstar."
+                    },
+                    "SCREW_ATTACK": {
+                        "type": "string",
+                        "description": "Specifies what text should appear at the screw attack hint statue in Norfair."
+                    },
+                    "VARIA_SUIT": {
+                        "type": "string",
+                        "description": "Specifies what text should appear at the varia suit hint statue in Norfair."
+                    }
+                },
+                "additionalProperties": false
             },
             "default": null
         },
         "title_text": {
             "type": "array",
-            "description": "Lines of ascii text to write to the title screen.",
+            "description": "Lines of ASCII text to write to the title screen.",
             "items": {
                 "type": "object",
                 "properties": {
@@ -393,7 +465,7 @@
                     "line_num": {
                         "type": "integer",
                         "minimum": 0,
-                        "maximum": 14
+                        "maximum": 20
                     }
                 }
             },
@@ -412,8 +484,8 @@
                             "BLANK",
                             "BLUE",
                             "RED",
-                            "WHITE1",
-                            "WHITE2"
+                            "WHITE",
+                            "WHITE_BIG"
                         ]
                     },
                     "text": {
@@ -460,6 +532,16 @@
         "disable_sound_effects": {
             "type": "boolean",
             "description": "Disables all sound effects when true.",
+            "default": false
+        },
+        "remove_cutscenes": {
+            "type": "boolean",
+            "description": "Removes most cutscenes from the game.",
+            "default": false
+        },
+        "fast_item_grab": {
+            "type": "boolean",
+            "description": "Skips opening the status screen when an item is obtained.",
             "default": false
         },
         "unexplored_map": {
@@ -568,11 +650,15 @@
                     },
                     "name": {
                         "type": "string",
-                        "description": "Specifies what text should appear for this room. Two lines are available, with an absolute maximum of 56 characters per line, if all characters used are small. Text will auto-wrap if the next word doesn't fit on the line. If the text is too long, it will be truncated.  Use \n to force a line break. If not provided, will display 'Unknown Room'.",
-                        "maxLength": 112
+                        "description": "Specifies what text should appear for this room. Two lines are available, with an absolute maximum of 112 characters per line, if all characters used are small. Text will auto-wrap if the next word doesn't fit on the line. If the text is too long, it will be truncated. Use \n to force a line break. If not provided, will display 'Room name not provided'.",
+                        "maxLength": 224
                     }
                 },
-                "required": ["area", "room", "name"]
+                "required": [
+                    "area",
+                    "room",
+                    "name"
+                ]
             }
         },
         "reveal_hidden_tiles": {
@@ -680,6 +766,9 @@
                 "MISSILE_TANK",
                 "SUPER_MISSILE_TANK",
                 "POWER_BOMB_TANK",
+                "MAIN_MISSILES",
+                "MAIN_SUPER_MISSILES",
+                "MAIN_POWER_BOMBS",
                 "LONG_BEAM",
                 "CHARGE_BEAM",
                 "ICE_BEAM",
@@ -694,6 +783,11 @@
                 "SCREW_ATTACK",
                 "SPACE_JUMP",
                 "POWER_GRIP",
+                "SPRING_BALL",
+                "WALL_JUMP",
+                "INFINITE_BOMB_JUMP",
+                "PROGRESSIVE_JUMP",
+                "PROGRESSIVE_BOMB",
                 "FULLY_POWERED",
                 "ZIPLINES",
                 "ICE_TRAP"
@@ -709,6 +803,9 @@
                 "MISSILE_TANK",
                 "SUPER_MISSILE_TANK",
                 "POWER_BOMB_TANK",
+                "MAIN_MISSILES",
+                "MAIN_SUPER_MISSILES",
+                "MAIN_POWER_BOMBS",
                 "LONG_BEAM",
                 "CHARGE_BEAM",
                 "ICE_BEAM",
@@ -723,10 +820,14 @@
                 "SCREW_ATTACK",
                 "SPACE_JUMP",
                 "POWER_GRIP",
+                "SPRING_BALL",
+                "WALL_JUMP",
+                "INFINITE_BOMB_JUMP",
                 "FULLY_POWERED",
                 "ZIPLINES",
                 "ANONYMOUS",
                 "SHINY_MISSILE_TANK",
+                "SHINY_SUPER_MISSILE_TANK",
                 "SHINY_POWER_BOMB_TANK"
             ]
         },
@@ -734,6 +835,9 @@
             "type": "string",
             "description": "Valid abilities to start with.",
             "enum": [
+                "MAIN_MISSILES",
+                "MAIN_SUPER_MISSILES",
+                "MAIN_POWER_BOMBS",
                 "LONG_BEAM",
                 "CHARGE_BEAM",
                 "ICE_BEAM",
@@ -747,7 +851,10 @@
                 "HI_JUMP",
                 "SCREW_ATTACK",
                 "SPACE_JUMP",
-                "POWER_GRIP"
+                "POWER_GRIP",
+                "SPRING_BALL",
+                "WALL_JUMP",
+                "INFINITE_BOMB_JUMP"
             ]
         },
         "valid_elevator_tops": {
@@ -785,12 +892,92 @@
                 "SPANISH"
             ]
         },
+        "valid_music_tracks": {
+            "type": "string",
+            "description": "Valid music tracks supported by the game.",
+            "enum": [
+                "BRINSTAR",
+                "TITLE_SCREEN",
+                "SAVE_ELEVATOR_ROOM",
+                "INTRO",
+                "CHOZO_STATUE_HINT",
+                "NORFAIR",
+                "KRAID",
+                "ESCAPE",
+                "FILE_SELECT",
+                "STATUE_ROOM",
+                "BOSS_KILLED",
+                "MAP_ROOM",
+                "CHOZO_RUINS_DEPTH",
+                "CHOZO_RUINS",
+                "CHOZO_RUINS_LIGHT",
+                "RIDLEY_IN_SPACE",
+                "RIDLEY_LANDING",
+                "CHOZO_STATUE_HINT_DELAY",
+                "GETTING_FULLY_POWERED_SUIT_CUTSCENE",
+                "ESCAPING_ZEBES_CUTSCENE",
+                "CHOZO_VOICE_1",
+                "CHOZO_VOICE_2",
+                "BEFORE_RUINS_TEST_UNUSED",
+                "ELEVATOR_ROOM",
+                "BRINSTAR_REMIX",
+                "ESCAPE_SUCCESFUL",
+                "CREDITS",
+                "STATUE_ROOM_OPENED",
+                "RIDLEY",
+                "KRAID_BATTLE_WITH_INTRO",
+                "RIDLEY_BATTLE",
+                "LOADING_JINGLE",
+                "GETTING_ITEM_JINGLE",
+                "INTRO_MOTHER_BRAIN",
+                "GETTING_TANK_JINGLE",
+                "TOURIAN",
+                "WORMS_BATTLE",
+                "MOTHER_BRAIN_BATTLE",
+                "CATTERPILLARS_BATTLE",
+                "IMAGO_COCOON_BATTLE",
+                "IMAGO_BATTLE",
+                "MECHA_RIDLEY_BATTLE",
+                "GETTING_UNKNOWN_ITEM_JINGLE",
+                "RUINS_TEST_BATTLE_WITH_INTRO",
+                "ENTERING_TOURIAN_CUTSCENE",
+                "ALARM_ACTIVATED",
+                "STEALTH",
+                "ENTERING_NORFAIR_CUTSCENE",
+                "CHOZODIA_DETECTED",
+                "GETTING_FULLY_POWERED_SUIT_JINGLE",
+                "KRAID_BATTLE",
+                "RIDLEY_BATTLE_2",
+                "MECHA_RIDLEY_BATTLE_2",
+                "RUINS_TEST_BATTLE",
+                "CATTERPILLARS_BATTLE_2",
+                "CRATERIA",
+                "GAME_OVER",
+                "CHOZODIA_SURFACE",
+                "MAP_ROOM_2",
+                "SAVE_ELEVATOR_ROOM_2",
+                "BEFORE_RUINS_TEST_ROOM",
+                "STEALTH_2"
+            ]
+        },
+        "music_mapping": {
+            "description": "Maps music tracks to each other",
+            "type": "object",
+            "propertyNames": {
+                "$ref": "#/$defs/valid_music_tracks"
+            },
+            "additionalProperties": {
+                "$ref": "#/$defs/valid_music_tracks"
+            }
+        },
         "message_languages": {
             "type": "object",
             "propertyNames": {
                 "$ref": "#/$defs/valid_languages"
             },
-            "required": ["ENGLISH"],
+            "required": [
+                "ENGLISH"
+            ],
             "additionalProperties": {
                 "type": "string",
                 "description": "Specifies what text should appear for a 2 line message. Text will auto-wrap if the next word doesn't fit on the line. If the text is too long, it will be truncated. Use \n to force a line break. If not provided, a message based on the Item will be shown. If a language is not provided, it will use the provided English message."
@@ -803,10 +990,14 @@
                     "$ref": "#/$defs/item_messages_kind"
                 }
             },
-            "required": ["kind"],
+            "required": [
+                "kind"
+            ],
             "if": {
                 "properties": {
-                    "kind": {"const": "CUSTOM_MESSAGE" }
+                    "kind": {
+                        "const": "CUSTOM_MESSAGE"
+                    }
                 }
             },
             "then": {
@@ -822,7 +1013,9 @@
                         "default": true
                     }
                 },
-                "required": ["languages"],
+                "required": [
+                    "languages"
+                ],
                 "additionalProperties": false
             },
             "else": {
@@ -837,18 +1030,29 @@
                         "description": "The Message ID, will display one of the predefined messages in the ROM"
                     }
                 },
-                "required": ["message_id"],
+                "required": [
+                    "message_id"
+                ],
                 "additionalProperties": false
             }
         },
         "item_messages_kind": {
             "type": "string",
-            "enum": ["CUSTOM_MESSAGE", "MESSAGE_ID"]
+            "enum": [
+                "CUSTOM_MESSAGE",
+                "MESSAGE_ID"
+            ]
         },
         "jingle": {
             "type": "string",
             "description": "The sound that plays when an item is collected",
-            "enum": ["DEFAULT", "MINOR", "MAJOR", "UNKNOWN", "FULLY_POWERED"]
+            "enum": [
+                "DEFAULT",
+                "MINOR",
+                "MAJOR",
+                "UNKNOWN",
+                "FULLY_POWERED"
+            ]
         },
         "hint_locations": {
             "type": "string",

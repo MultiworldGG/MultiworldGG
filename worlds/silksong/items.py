@@ -439,18 +439,19 @@ from .boss_journal import ITEM_BY_LOCATION as JOURNAL_ITEMS, JOURNAL
 ITEM_TABLE_SOURCE += tuple((name, "Journal") for name in JOURNAL_ITEMS.values())
 ITEM_TABLE_SOURCE += tuple((source.item_name, LORE_TABLET_CATEGORY) for source in ADDITIONAL_LORE_TABLET_SOURCES[:1])
 ITEM_TABLE_SOURCE += (("Boss Credit: Lace (Deep Docks)", "Boss"),)
-ITEM_TABLE_SOURCE += tuple((source.item_name, LORE_TABLET_CATEGORY) for source in ADDITIONAL_LORE_TABLET_SOURCES[1:])
+ITEM_TABLE_SOURCE += tuple((source.item_name, LORE_TABLET_CATEGORY) for source in ADDITIONAL_LORE_TABLET_SOURCES[1:2])
 ITEM_TABLE_SOURCE += (("Boss Credit: Palestag", "Boss"),)
 ITEM_TABLE_SOURCE += tuple((name, "InnateAbility" if name.startswith("Ledge Grab") else "Skill") for name in DIRECTIONAL_ITEMS)
 ITEM_TABLE_SOURCE += (("Sprint", "Skill"), ("Conjoined Heart", "OldHeart"))
 ITEM_TABLE_SOURCE += (("Materium", "Materium"), ("Flintstone", "Materium"), ("Magnetite", "Materium"), ("Farsight", "Farsight"))
-ITEM_TABLE_SOURCE += (("Crawbell", "Miscellaneous"),)
+ITEM_TABLE_SOURCE += (("Crawbell", "Bellhome"),)
 ITEM_TABLE_SOURCE += (("Bind", "InnateAbility"),)
 CREST_BIND_ITEMS = tuple(f'{crest} Bind' for crest in ('Hunter', 'Wanderer', 'Reaper', 'Beast', 'Architect', 'Witch', 'Shaman'))
 ITEM_TABLE_SOURCE += tuple((name, 'InnateAbility') for name in CREST_BIND_ITEMS)
 ITEM_TABLE_SOURCE += tuple((name, 'Bellhome') for name in ('Desk', 'Gleamlights', 'Bell Lacquer', 'Personal Spa', 'Gramophone'))
 ITEM_TABLE_SOURCE += (("Voltstone", "Materium"), ("Cogheart Piece", "Cogheart"))
 ITEM_TABLE_SOURCE += tuple((name, "QuestCollectible") for name in ('Grass Doll', 'Horn Fragment', 'Crown Fragment', "Broodmother's Eye"))
+ITEM_TABLE_SOURCE += tuple((source.item_name, LORE_TABLET_CATEGORY) for source in ADDITIONAL_LORE_TABLET_SOURCES[2:])
 
 # Rename in place so every established numeric item ID remains unchanged.
 NATIVE_ITEM_NAME_TO_TABLE_NAME: Mapping[str, str] = {
@@ -679,7 +680,6 @@ USEFUL_ITEMS: FrozenSet[str] = frozenset(
         "BellShrine",
         "Boss",
         "Farsight",
-        "Miscellaneous",
         "Bellhome",
     }
 ) | frozenset(POOL_ONLY_USEFUL_ITEM_NAMES)
@@ -689,7 +689,10 @@ item_table: Dict[str, int] = {
     for index, (name, _category) in enumerate(ITEM_TABLE_SOURCE)
 }
 
-ITEM_TABLE_SOURCE = tuple(dict.fromkeys(ITEM_TABLE_SOURCE))
+ITEM_TABLE_SOURCE = tuple(
+    row for row in dict.fromkeys(ITEM_TABLE_SOURCE)
+    if row[1] != LORE_TABLET_CATEGORY or row[0] in LORE_TABLET_ITEM_NAMES
+)
 
 from .enemy_souls import CATALOGUE as ENEMY_SOUL_CATALOGUE, item_name as enemy_soul_name
 from .boss_souls import CATALOGUE as BOSS_SOUL_CATALOGUE, SETH_SOUL
@@ -927,7 +930,7 @@ class ItemPoolEntry:
 
 def _is_replaceable_filler(item_name: str) -> bool:
     data = item_data_table[item_name]
-    return data.classification == ItemClassification.filler and data.category not in {'Memento', 'Materium', 'Farsight', 'Miscellaneous', 'Bellhome', 'Journal'}
+    return data.classification == ItemClassification.filler and data.category not in {'Memento', 'Materium', 'Farsight', 'Bellhome', 'Journal'}
 
 
 def add_pool_only_useful_items(
@@ -1039,7 +1042,6 @@ PAIRED_ITEM_CATEGORIES: tuple[str, ...] = (
     'Memento',
     'Materium',
     'Farsight',
-    'Miscellaneous',
     'Bellhome',
     'Cogheart',
     'QuestCollectible',
@@ -1202,12 +1204,13 @@ def get_vanilla_reward_name(
         return clean_item_display_name(source_location_name)
     if category in REPEATED_CATEGORY_ITEM_COUNTS:
         return next(iter(REPEATED_CATEGORY_ITEM_COUNTS[category]))
-    if category == 'Miscellaneous':
-        return {'Crow bell': 'Crawbell'}[location_name]
     if category == 'QuestCollectible':
-        return {'crown fragment': 'Crown Fragment'}.get(location_name, location_name)
+        return {
+            'crown fragment': 'Crown Fragment',
+            'Far Fields Chorus - Horn Fragment': 'Horn Fragment',
+        }.get(location_name, location_name)
     if category == 'Bellhome':
-        return location_name
+        return 'Crawbell' if location_name == 'Crow bell' else location_name
     if category == 'Materium':
         return {'Materium': 'Materium', 'Flintstone': 'Flintstone', 'Magnetite Outcrop': 'Magnetite', 'Voltstone': 'Voltstone'}[location_name]
     if category == 'MajorKey':
@@ -1540,7 +1543,7 @@ def can_include_later_act_item(name, category, category_modes, *, act_one_only, 
     return (
         category_modes.get(category, 'anywhere') == 'anywhere'
         and not (silk_soar_begone and name == SILK_SOAR_ITEM)
-        and category not in {'OldHeart', 'Everbloom', 'Memento', 'Materium', 'Farsight', 'Miscellaneous', 'Bellhome', 'QuestCollectible'}
+        and category not in {'OldHeart', 'Everbloom', 'Memento', 'Materium', 'Farsight', 'Bellhome', 'QuestCollectible'}
         and not (act_one_only and category in {'Soul', 'TwistedBud', 'Cogheart'})
         and not (act_one_only and (
             'Cylinder' in name or name in {'Bellway: Grand Bellway', 'Ventrica: Grand Bellway'}))
@@ -1877,7 +1880,7 @@ def build_item_pool_entries(
         indices = [index for index, entry in enumerate(entries)
                    if entry.placement_category is None
                    and item_data_table[entry.name].classification == ItemClassification.filler
-                   and entry.source_category not in {'Memento', 'Materium', 'Farsight', 'Miscellaneous', 'Bellhome', 'MemoryLocket', 'Journal'}]
+                   and entry.source_category not in {'Memento', 'Materium', 'Farsight', 'Bellhome', 'MemoryLocket', 'Journal'}]
         if len(indices) < len(soul_pool_entries):
             raise OptionError(
                 f"Boss and NPC Souls need {len(soul_pool_entries)} anywhere filler slots; "

@@ -11,7 +11,7 @@ There are currently no options for Isles of Trials, but a YAML is still required
 
 ### What is a YAML file and why do I need one?
 
-See the guide on setting up a basic YAML at the Archipelago setup
+See the guide on setting up a basic YAML at the MultiworldGG setup
 guide: [Basic Multiworld Setup Guide](/tutorial/Archipelago/setup/en)
 
 ### Where do I get a YAML file?

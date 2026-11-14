@@ -439,7 +439,7 @@ LORE_TABLET_SOURCES: tuple[LoreTabletSource, ...] = (
     ),
     LoreTabletSource(
         "Bellhart - Outer Sign",
-        "Belltown_07", 57.874252, 5.059642, 70.0, 34.0,
+        "Belltown_07", 57.56095, 8.37, 70.0, 34.0,
         1, "Bellhart - Bellhart",
         (_identity(
             "belltown_07",
@@ -464,8 +464,59 @@ ADDITIONAL_LORE_TABLET_SOURCES = (
         1, "Bellhart - Bellhart",
         (_identity("belltown_06", "Inspect Region", "Inspect", "BELLTOWN_OUTER_SIGN"),),
     ),
+    LoreTabletSource(
+        "Pilgrim's Rest Board",
+        "Bone_East_10", 33.370002, 5.859993, 126.0, 38.0,
+        1, "Far Fields - Bellway",
+        (_identity(
+            "bone_east_10",
+            "Black Thread States Thread Only Variant/Normal World/Group/Inspect Region",
+            "Inspect", "PILGRIM_REST_SIGN",
+        ),),
+    ),
+    LoreTabletSource(
+        "Shaman Crest Ritual Recipe",
+        "Tut_05", 239.38, 97.36, 320.0, 150.0,
+        3, "Mosslands - Moss Grotto",
+        (_identity("tut_05", "Inspect Region (1)", "Inspect", "SHAMAN_STONE_CHAPEL"),),
+    ),
+    LoreTabletSource(
+        "Underworks: Needolin Lore",
+        "Under_20", 63.22, 15.26, 71.0, 28.0,
+        2, "Underworks - Whiteward",
+        (_identity("under_20", "thread_memory", "Song", "THREAD_MEMORY_ARCHITECT"),),
+        requires_needolin=True,
+    ),
+    LoreTabletSource(
+        "Underworks: Needolin Lore #1",
+        "Library_12b", 192.49, 35.28, 202.0, 100.0,
+        2, "Underworks - Whiteward",
+        (_identity("library_12b", "thread_memory", "Song", "THREAD_MEMORY_UNDERSTORE_ORGAN_TOP"),),
+        requires_needolin=True,
+    ),
+    LoreTabletSource(
+        "Putrified Ducts - thread memory Map Room",
+        "Aqueduct_07", 24.71, 28.53, 41.0, 40.0,
+        2, "Putrified Ducts - Bellway",
+        (_identity("aqueduct_07", "thread_memory", "Song", "THREAD_MEMORY_AQUEDUCT"),),
+        requires_needolin=True,
+    ),
+    LoreTabletSource(
+        "Putrified Ducts - Camp Thread Memory",
+        "Aqueduct_06", 127.07, 9.06, 150.0, 120.0,
+        2, "Putrified Ducts - Bellway",
+        (_identity("aqueduct_06", "thread_memory", "Song", "THREAD_MEMORY_SWAMP_UMBRELLA"),),
+        requires_needolin=True,
+    ),
 )
-LORE_TABLET_SOURCES += ADDITIONAL_LORE_TABLET_SOURCES
+THREAD_MEMORY_LOCATION_NAMES = frozenset(
+    source.location_name for source in ADDITIONAL_LORE_TABLET_SOURCES
+    if any(identity.hierarchy_path == "thread_memory" for identity in source.identities)
+)
+LORE_TABLET_SOURCES += tuple(
+    source for source in ADDITIONAL_LORE_TABLET_SOURCES
+    if source.location_name not in THREAD_MEMORY_LOCATION_NAMES
+)
 
 LORE_TABLET_LOCATION_NAMES: tuple[str, ...] = tuple(
     source.location_name for source in LORE_TABLET_SOURCES
@@ -486,6 +537,8 @@ LORE_TABLET_ACT_THREE_LOCATION_NAMES: frozenset[str] = frozenset(
 LORE_TABLET_COMMUNITY_BACKED_LOCATION_NAMES: frozenset[str] = frozenset((
     "Bellhart - Outer Sign",
     "Bellhart - East Sign",
+    "Pilgrim's Rest Board",
+    "Shaman Crest Ritual Recipe",
     "Grand Gate - Nyleth Shrine Inscription",
     "The Marrow - Entrance Inscription",
     "The Marrow - Pilgrim Diary",

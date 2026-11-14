@@ -4,7 +4,7 @@ import json
 import pkgutil
 
 from dataclasses import dataclass, replace
-from functools import lru_cache
+from functools import cached_property, lru_cache
 from itertools import combinations, product
 from types import MappingProxyType
 from typing import Iterable, Mapping
@@ -34,6 +34,10 @@ class CompiledRoomClause:
     minimum_skip_tier: int = 0
     silk_cost: int = 0
     rosary_prices: tuple[str, ...] = ()
+
+    @cached_property
+    def _all_of_set(self):
+        return frozenset(self.all_of)
 
 
 @dataclass(frozen=True)
@@ -1306,7 +1310,7 @@ _EXISTING_LOCATION_NODE_BINDINGS: Mapping[str, str] = {
     "Pin Purchase: Vendor Pins": "wormways/wormways-upper-east#upper-area",
     "Bellway: Deep Docks": "deep-docks/deep-docks-bellway#room",
     "Bellshrine: Deep Docks": "deep-docks/deep-docks-bellshrine#room",
-    "Shellwood - Shellgrave Inscription": "shellwood/shellgrave#room",
+    "Shellwood - Shellgrave Inscription": "shellwood/shellgrave#lower",
     "Shellwood - Weaver Harp Inscription": (
         "shellwood/shellwood-10#ground-level"
     ),
@@ -1534,8 +1538,14 @@ def _atom_alternatives(atom: str) -> tuple[CompiledRoomClause, ...]:
         if kind in {"heal-stall", "hazard-respawn"}:
             name = {"heal-stall": "Heal Stall", "hazard-respawn": "Hazard Respawn"}[kind]
             return (_part(f"Technique: {name} {max(1, tier)}"),)
+        if kind.endswith('-crest-heal-stall'):
+            crest = kind.removesuffix('-crest-heal-stall').title()
+            return () if crest == 'Shaman' else (_part('Crest: ' + crest, f'Technique: Heal Stall {max(1, tier)}'),)
         if kind == "scuttlebrace":
             return (_part("Usable Scuttlebrace", "Swift Step", f"Technique: Scuttlebrace {max(1, tier)}"),)
+        if kind == "shaman-scuttler":
+            return (_part("Crest: Shaman", "Usable Scuttlebrace", "Swift Step", "Yellow Vesticrest",
+                          f"Technique: Scuttlebrace {max(1, tier)}"),)
         if kind == "spike-pogo-skip":
             return tuple(_merge(crest, _part(f"Technique: Crest Pogo {max(1, tier)}"))
                          for crest in _ATOM_ALTERNATIVES["macro:spike-pogo"])
@@ -1565,6 +1575,10 @@ def _atom_alternatives(atom: str) -> tuple[CompiledRoomClause, ...]:
     if atom == "count:bellhome-items:2":
         return tuple(_part(item_counts=tuple((name, 1) for name in pair))
                      for pair in combinations(("Desk", "Gleamlights", "Bell Lacquer", "Gramophone"), 2))
+    if atom == "count:destroy-void-masses:12":
+        return (_part("Void Masses: 12"),)
+    if atom == "count:pilgrim-shawls:12":
+        return (_part("Pilgrim Shawls: 12"),)
     if atom.startswith("count:verdania-shards:"):
         minimum = int(atom.rsplit(":", 1)[1])
         if not 1 <= minimum <= 17:
@@ -1651,6 +1665,7 @@ def _atom_alternatives(atom: str) -> tuple[CompiledRoomClause, ...]:
     raise ValueError(f"unsupported room-graph atom: {atom!r}")
 
 
+@lru_cache(maxsize=16384)
 def _compile_spec(
     requirement: RequirementSpec,
     *prefix: str,
@@ -1710,17 +1725,19 @@ def _clause_subsumes(
 ) -> bool:
     """Return whether satisfying ``stronger`` always satisfies ``weaker``."""
 
-    if not set(weaker.all_of).issubset(stronger.all_of):
+    if not weaker._all_of_set.issubset(stronger._all_of_set):
         return False
     if weaker.require_silk_spear and not stronger.require_silk_spear:
         return False
     if weaker.silk_cost > stronger.silk_cost:
         return False
-    if not set(weaker.rosary_prices).issubset(stronger.rosary_prices):
+    if weaker.rosary_prices and not set(weaker.rosary_prices).issubset(stronger.rosary_prices):
         return False
     if weaker.minimum_skip_tier > stronger.minimum_skip_tier:
         return False
 
+    if not weaker.item_counts:
+        return True
     weaker_counts = dict(weaker.item_counts)
     stronger_counts = dict(stronger.item_counts)
     return all(

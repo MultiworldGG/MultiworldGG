@@ -397,7 +397,7 @@ ADDITIONAL_MINOR_CACHE_SOURCE = (
     ('Ruined Chapel - Rosary Cache', 'Rosaries (8)', 'Tut_04', 'churchkeeper_rosary', 'Breakable', 14.75, 9.63, 87, 36, 'Tut', 'Moss Grotto'),
 )
 MINOR_CACHE_SOURCE += ADDITIONAL_MINOR_CACHE_SOURCE
-ADDITIONAL_MINOR_CACHE_LOCATION_NAMES = frozenset(row[0] for row in ADDITIONAL_MINOR_CACHE_SOURCE)
+ADDITIONAL_MINOR_CACHE_LOCATION_NAMES = frozenset(location_first_name(row[0]) for row in ADDITIONAL_MINOR_CACHE_SOURCE)
 
 NAMED_PICKUP_SOURCE_LOCATION_NAMES: frozenset[str] = frozenset(location_first_name(name) for name in (
     "Far Fields - Pale Rosary Necklace",

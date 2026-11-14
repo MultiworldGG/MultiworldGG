@@ -66,6 +66,9 @@ def get_multi(name: str) -> Multi:
 def get_hint_group(group: str, world: World) -> list[Hint]:
     ret = []
     for name in hintTable:
+        # APWorld Change: Excluded multi-location hints may refer to checks not in this world.
+        if name in hint_exclusions(world):
+            continue
 
         hint = get_hint(name, True)  # clearer_hints is always True in AP
 
@@ -114,7 +117,7 @@ def get_hint_group(group: str, world: World) -> list[Hint]:
                         if location.item.name in world.item_hint_type_overrides[group]:
                             type_override = True
 
-        if group in hint.type and (name not in hint_exclusions(world)) and not type_override and (conditional_keep or type_append):
+        if group in hint.type and not type_override and (conditional_keep or type_append):
             ret.append(hint)
     return ret
 

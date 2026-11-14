@@ -1,0 +1,373 @@
+{
+ "note": "Shop check locations. Each entry becomes item id 128+flag ('AP Item' in the lists, description from the text slot the apworld fills per seed) and bit `flag` of SHOP_FLAGS (save tail +0x1A21, 4 bytes, RAM 0x8013334D). kind by shop: item_shop/secret_item_shop/market -> appended to the buy list when the map matches and the keeper's town-presence trigger (200+id) is set, whichever keeper you talk to; market_manager -> the Gear Savanna Market Manager's regular item list (its recycled-goods list is untouched); merit -> listed by the merit shop itself (meritValue != 0). Never renumber flags; AP location id = 69007000 + flag. Approved 2026-11-11.",
+ "id_base": 128,
+ "name": "AP Item",
+ "default_text": "Archipelago item",
+ "text_slot_size": 64,
+ "icons": [
+  {
+   "name": "ap_item",
+   "file": "tools/icons/ap_item.png",
+   "copy_item": 124
+  }
+ ],
+ "icon": "ap_item",
+ "exttim_icon_sector_base": 9000,
+ "exttim_digimon_sectors": 9000,
+ "vram": {
+  "pixels": [
+   656,
+   256
+  ],
+  "cluts": [
+   656,
+   272
+  ]
+ },
+ "items": [
+  {
+   "flag": 0,
+   "location": "Item Shop: Monochromon 1000 Bits",
+   "shop": "item_shop",
+   "keeper": "Monochromon",
+   "price": 1000,
+   "merit": 0,
+   "map": [
+    216,
+    216
+   ],
+   "trigger": 247
+  },
+  {
+   "flag": 1,
+   "location": "Item Shop: Monochromon 2000 Bits",
+   "shop": "item_shop",
+   "keeper": "Monochromon",
+   "price": 2000,
+   "merit": 0,
+   "map": [
+    216,
+    216
+   ],
+   "trigger": 247
+  },
+  {
+   "flag": 2,
+   "location": "Item Shop: Patamon 1000 Bits",
+   "shop": "item_shop",
+   "keeper": "Patamon",
+   "price": 1000,
+   "merit": 0,
+   "map": [
+    216,
+    216
+   ],
+   "trigger": 231
+  },
+  {
+   "flag": 3,
+   "location": "Item Shop: Patamon 2000 Bits",
+   "shop": "item_shop",
+   "keeper": "Patamon",
+   "price": 2000,
+   "merit": 0,
+   "map": [
+    216,
+    216
+   ],
+   "trigger": 231
+  },
+  {
+   "flag": 4,
+   "location": "Item Shop: Biyomon 1000 Bits",
+   "shop": "item_shop",
+   "keeper": "Biyomon",
+   "price": 1000,
+   "merit": 0,
+   "map": [
+    216,
+    216
+   ],
+   "trigger": 245
+  },
+  {
+   "flag": 5,
+   "location": "Item Shop: Biyomon 2000 Bits",
+   "shop": "item_shop",
+   "keeper": "Biyomon",
+   "price": 2000,
+   "merit": 0,
+   "map": [
+    216,
+    216
+   ],
+   "trigger": 245
+  },
+  {
+   "flag": 6,
+   "location": "Item Shop: Unimon 1000 Bits",
+   "shop": "item_shop",
+   "keeper": "Unimon",
+   "price": 1000,
+   "merit": 0,
+   "map": [
+    216,
+    216
+   ],
+   "trigger": 233
+  },
+  {
+   "flag": 7,
+   "location": "Item Shop: Unimon 2000 Bits",
+   "shop": "item_shop",
+   "keeper": "Unimon",
+   "price": 2000,
+   "merit": 0,
+   "map": [
+    216,
+    216
+   ],
+   "trigger": 233
+  },
+  {
+   "flag": 8,
+   "location": "Secret Item Shop: Numemon 1500 Bits",
+   "shop": "secret_item_shop",
+   "keeper": "Numemon",
+   "price": 1500,
+   "merit": 0,
+   "map": [
+    217,
+    217
+   ],
+   "trigger": 211
+  },
+  {
+   "flag": 9,
+   "location": "Secret Item Shop: Numemon 3000 Bits",
+   "shop": "secret_item_shop",
+   "keeper": "Numemon",
+   "price": 3000,
+   "merit": 0,
+   "map": [
+    217,
+    217
+   ],
+   "trigger": 211
+  },
+  {
+   "flag": 10,
+   "location": "Secret Item Shop: Mojyamon 1500 Bits",
+   "shop": "secret_item_shop",
+   "keeper": "Mojyamon",
+   "price": 1500,
+   "merit": 0,
+   "map": [
+    217,
+    217
+   ],
+   "trigger": 252
+  },
+  {
+   "flag": 11,
+   "location": "Secret Item Shop: Mojyamon 3000 Bits",
+   "shop": "secret_item_shop",
+   "keeper": "Mojyamon",
+   "price": 3000,
+   "merit": 0,
+   "map": [
+    217,
+    217
+   ],
+   "trigger": 252
+  },
+  {
+   "flag": 12,
+   "location": "Secret Item Shop: Mamemon 1500 Bits",
+   "shop": "secret_item_shop",
+   "keeper": "Mamemon",
+   "price": 1500,
+   "merit": 0,
+   "map": [
+    217,
+    217
+   ],
+   "trigger": 213
+  },
+  {
+   "flag": 13,
+   "location": "Secret Item Shop: Mamemon 3000 Bits",
+   "shop": "secret_item_shop",
+   "keeper": "Mamemon",
+   "price": 3000,
+   "merit": 0,
+   "map": [
+    217,
+    217
+   ],
+   "trigger": 213
+  },
+  {
+   "flag": 14,
+   "location": "Secret Item Shop: Devimon 1500 Bits",
+   "shop": "secret_item_shop",
+   "keeper": "Devimon",
+   "price": 1500,
+   "merit": 0,
+   "map": [
+    217,
+    217
+   ],
+   "trigger": 206
+  },
+  {
+   "flag": 15,
+   "location": "Secret Item Shop: Devimon 3000 Bits",
+   "shop": "secret_item_shop",
+   "keeper": "Devimon",
+   "price": 3000,
+   "merit": 0,
+   "map": [
+    217,
+    217
+   ],
+   "trigger": 206
+  },
+  {
+   "flag": 16,
+   "location": "Market: Betamon 500 Bits",
+   "shop": "market",
+   "keeper": "Betamon",
+   "price": 500,
+   "merit": 0,
+   "map": [
+    180,
+    203
+   ],
+   "trigger": 204
+  },
+  {
+   "flag": 17,
+   "location": "Market: Betamon 1000 Bits",
+   "shop": "market",
+   "keeper": "Betamon",
+   "price": 1000,
+   "merit": 0,
+   "map": [
+    180,
+    203
+   ],
+   "trigger": 204
+  },
+  {
+   "flag": 18,
+   "location": "Market: Coelamon 500 Bits",
+   "shop": "market",
+   "keeper": "Coelamon",
+   "price": 500,
+   "merit": 0,
+   "map": [
+    180,
+    203
+   ],
+   "trigger": 249
+  },
+  {
+   "flag": 19,
+   "location": "Market: Coelamon 1000 Bits",
+   "shop": "market",
+   "keeper": "Coelamon",
+   "price": 1000,
+   "merit": 0,
+   "map": [
+    180,
+    203
+   ],
+   "trigger": 249
+  },
+  {
+   "flag": 20,
+   "location": "Recycled Goods Shop: 2000 Bits",
+   "shop": "market_manager",
+   "keeper": "Market Manager",
+   "price": 2000,
+   "merit": 0,
+   "map": [
+    131,
+    131
+   ]
+  },
+  {
+   "flag": 21,
+   "location": "Recycled Goods Shop: 4000 Bits",
+   "shop": "market_manager",
+   "keeper": "Market Manager",
+   "price": 4000,
+   "merit": 0,
+   "map": [
+    131,
+    131
+   ]
+  },
+  {
+   "flag": 22,
+   "location": "Merit Shop: 15 Merit",
+   "shop": "merit",
+   "keeper": "ShogunGekomon",
+   "price": 0,
+   "merit": 15,
+   "map": [
+    141,
+    141
+   ]
+  },
+  {
+   "flag": 23,
+   "location": "Merit Shop: 40 Merit",
+   "shop": "merit",
+   "keeper": "ShogunGekomon",
+   "price": 0,
+   "merit": 40,
+   "map": [
+    141,
+    141
+   ]
+  },
+  {
+   "flag": 24,
+   "location": "Merit Shop: 100 Merit",
+   "shop": "merit",
+   "keeper": "ShogunGekomon",
+   "price": 0,
+   "merit": 100,
+   "map": [
+    141,
+    141
+   ]
+  },
+  {
+   "flag": 25,
+   "location": "Merit Shop: 250 Merit",
+   "shop": "merit",
+   "keeper": "ShogunGekomon",
+   "price": 0,
+   "merit": 250,
+   "map": [
+    141,
+    141
+   ]
+  },
+  {
+   "flag": 26,
+   "location": "Merit Shop: 500 Merit",
+   "shop": "merit",
+   "keeper": "ShogunGekomon",
+   "price": 0,
+   "merit": 500,
+   "map": [
+    141,
+    141
+   ]
+  }
+ ]
+}

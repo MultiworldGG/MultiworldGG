@@ -9,8 +9,8 @@ connections_data = [
     { "from": "AF (Monitoring) - Exit", "to": "AF (Monitoring) - Root Node", "requires": [] },
     # since upper AFM is inaccessible otherwise, the mod will unlock AFM's root node when you walk into AFM
 
-    { "from": "AF (Monitoring) - Exit", "to": "AF (Elevator) - Upper Root Node", "requires": [] },
-    { "from": "AF (Elevator) - Upper Root Node", "to": "AF (Monitoring) - Exit", "requires": [] },
+    { "from": "AF (Monitoring) - Exit", "to": "AF (Elevator) - Upper Root Node", "requires": [], "portal_name": "AFM_RIGHT_PORTAL" },
+    { "from": "AF (Elevator) - Upper Root Node", "to": "AF (Monitoring) - Exit", "requires": [], "portal_name": "AFE_UPPER_LEFT_PORTAL" },
 
     # Apeman Facility (Elevator)
     {
@@ -143,7 +143,7 @@ connections_data = [
         ] } ],
         "medium_requires": [ { "anyOf": [
             { "item": "Trick - Bow Hover" },
-            { "anyOf": [ { "item": "Air Dash" }, { "item": "Cloud Leap" } ] } # and T-dash
+            { "anyOf": [ { "item": "Air Dash" }, { "item": "Cloud Leap" }, { "item": "Tai-Chi Kick" } ] } # and T-dash
         ] } ],
         "ls_requires": [ { "item": "Ledge Grab" } ] # T-Dash setup at moving boxes, then parry hover
     }, # with precise jumps, TCK alone is enough
@@ -155,17 +155,22 @@ connections_data = [
         ] } ],
         "medium_requires": [ { "anyOf": [
             { "item": "Trick - Bow Hover" },
-            { "anyOf": [ { "item": "Air Dash" }, { "item": "Cloud Leap" } ] } # and T-dash
+            [
+                { "item": "Cloud Leap" },
+                { "anyOf": [ { "item": "Air Dash" }, { "item": "Trick - Long Jump with Swift Runner" }, { "item": "Charged Strike"} ] }
+            ],
+            [ { "item": "Air Dash" }, { "item": "Charged Strike" } ]
         ] } ]
     }, # no access to LS from this side
 
     { "from": "AF (Elevator) - Baichang Arena", "to": "Central Hall - Center", "requires": [] }, # elevator
 
-    { "from": "AF (Elevator) - Right Exit", "to": "CTH - Lower Exits", "requires": [] }, # CTH's lower *left* exit
-    { "from": "CTH - Lower Exits", "to": "AF (Elevator) - Right Exit", "requires": [] },
+    # CTH's lower *left* exit
+    { "from": "AF (Elevator) - Right Exit", "to": "CTH - Lower Exits", "requires": [], "portal_name": "AFE_RIGHT_PORTAL" },
+    { "from": "CTH - Lower Exits", "to": "AF (Elevator) - Right Exit", "requires": [], "portal_name": "CTH_LOWER_LEFT_PORTAL" },
 
-    { "from": "AF (Elevator) - Lower Left Exit", "to": "AF (Depths) - Right Exit", "requires": [] },
-    { "from": "AF (Depths) - Right Exit", "to": "AF (Elevator) - Lower Left Exit", "requires": [] },
+    { "from": "AF (Elevator) - Lower Left Exit", "to": "AF (Depths) - Right Exit", "requires": [], "portal_name": "AFE_LOWER_LEFT_PORTAL" },
+    { "from": "AF (Depths) - Right Exit", "to": "AF (Elevator) - Lower Left Exit", "requires": [], "portal_name": "AFD_RIGHT_PORTAL" },
 
     # Apeman Facility (Depths)
     {
@@ -296,11 +301,11 @@ connections_data = [
         { "anyOf": [ { "item": "Wall Climb" }, { "item": "Cloud Leap" } ] } # to get on top of the left box
     ] },
 
-    { "from": "AF (Depths) - Upper Left Exit", "to": "Factory (U) - Lower Right Exit", "requires": [] },
-    { "from": "Factory (U) - Lower Right Exit", "to": "AF (Depths) - Upper Left Exit", "requires": [] },
+    { "from": "AF (Depths) - Upper Left Exit", "to": "Factory (U) - Lower Right Exit", "requires": [], "portal_name": "AFD_UPPER_LEFT_CRATES" },
+    { "from": "Factory (U) - Lower Right Exit", "to": "AF (Depths) - Upper Left Exit", "requires": [], "portal_name": "FU_LOWER_RIGHT_CRATES" },
 
-    { "from": "AF (Depths) - Lower Left Exit", "to": "PR (West) - Root Node", "requires": [] },
-    { "from": "PR (West) - Root Node", "to": "AF (Depths) - Lower Left Exit", "requires": [] },
+    { "from": "AF (Depths) - Lower Left Exit", "to": "PR (West) - Root Node", "requires": [], "portal_name": "AFD_LOWER_LEFT_TRANSPORTER" },
+    { "from": "PR (West) - Root Node", "to": "AF (Depths) - Lower Left Exit", "requires": [], "portal_name": "PRW_LEFT_TRANSPORTER" },
 
     # Central Hall
     { "from": "Central Hall - Center", "to": "Central Hall - Left", "requires": [
@@ -330,16 +335,17 @@ connections_data = [
     },
     { "from": "Central Hall - Center", "to": "FSP - Root Node", "requires": [] }, # rando will make this a one-way door
 
-    { "from": "Central Hall - Right Vents", "to": "CTH - Above Elevator", "requires": [] }, # one-way fall
+    { "from": "Central Hall - Right Vents", "to": "CTH - Above Elevator", "requires": [],
+      "portal_name": "CH_BOTTOM_VENT_SHAFT", "one_way_target_name": "CTH_UPPER_LEFT_VENT_SHAFT" }, # one-way fall
 
-    { "from": "Central Hall - Upper Right Exit", "to": "LYR - Left Exit", "requires": [] },
-    { "from": "LYR - Left Exit", "to": "Central Hall - Upper Right Exit", "requires": [] },
+    { "from": "Central Hall - Upper Right Exit", "to": "LYR - Left Exit", "requires": [], "portal_name": "CH_UPPER_RIGHT_PORTAL" },
+    { "from": "LYR - Left Exit", "to": "Central Hall - Upper Right Exit", "requires": [], "portal_name": "LYR_LEFT_PORTAL" },
 
-    { "from": "Central Hall - Lower Right Exit", "to": "CTH - Upper Left Exit", "requires": [] },
-    { "from": "CTH - Upper Left Exit", "to": "Central Hall - Lower Right Exit", "requires": [] },
+    { "from": "Central Hall - Lower Right Exit", "to": "CTH - Upper Left Exit", "requires": [], "portal_name": "CH_LOWER_RIGHT_PORTAL" },
+    { "from": "CTH - Upper Left Exit", "to": "Central Hall - Lower Right Exit", "requires": [], "portal_name": "CTH_UPPER_LEFT_PORTAL" },
 
-    { "from": "Central Hall - Left", "to": "Cortex Center - Right Exit", "requires": [] },
-    { "from": "Cortex Center - Right Exit", "to": "Central Hall - Left", "requires": [] },
+    { "from": "Central Hall - Left", "to": "Cortex Center - Right Exit", "requires": [], "portal_name": "CH_UPPER_LEFT_PORTAL" },
+    { "from": "Cortex Center - Right Exit", "to": "Central Hall - Left", "requires": [], "portal_name": "CC_RIGHT_PORTAL" },
 
     # Four Seasons Pavilion
     {
@@ -483,8 +489,8 @@ connections_data = [
     { "from": "Cortex Center - Caves Lower Left", "to": "Cortex Center - Left Exit", "requires": [] },
     { "from": "Cortex Center - Left Exit", "to": "Cortex Center - Caves Lower Left", "requires": [ { "item": "Grapple" } ] },
 
-    { "from": "Cortex Center - Left Exit", "to": "Factory (GH) - Right Exit", "requires": [] },
-    { "from": "Factory (GH) - Right Exit", "to": "Cortex Center - Left Exit", "requires": [] },
+    { "from": "Cortex Center - Left Exit", "to": "Factory (GH) - Right Exit", "requires": [], "portal_name": "CC_LEFT_PORTAL" },
+    { "from": "Factory (GH) - Right Exit", "to": "Cortex Center - Left Exit", "requires": [], "portal_name": "FGH_RIGHT_PORTAL" },
 
     # Central Transport Hub
     { "from": "CTH - Upper Left Exit", "to": "CTH - Bottom of Large Shaft", "requires": [] }, # elevator combat gauntlet
@@ -623,14 +629,15 @@ connections_data = [
 
     { "from": "CTH - Middle Left Exit & Elevator", "to": "Central Hall - Center", "requires": [] }, # elevator
 
-    { "from": "CTH - Middle Left Exit & Elevator", "to": "Galactic Dock - Root Node & Right Exit", "requires": [] },
-    { "from": "Galactic Dock - Root Node & Right Exit", "to": "CTH - Middle Left Exit & Elevator", "requires": [] },
+    { "from": "CTH - Middle Left Exit & Elevator", "to": "Galactic Dock - Root Node & Right Exit", "requires": [], "portal_name": "CTH_MIDDLE_LEFT_PORTAL" },
+    { "from": "Galactic Dock - Root Node & Right Exit", "to": "CTH - Middle Left Exit & Elevator", "requires": [], "portal_name": "GD_RIGHT_PORTAL" },
 
-    { "from": "CTH - Upper Right Exit", "to": "TRC - Ground Floor & Exits", "requires": [] },
-    { "from": "TRC - Ground Floor & Exits", "to": "CTH - Upper Right Exit", "requires": [] },
+    { "from": "CTH - Upper Right Exit", "to": "TRC - Ground Floor & Exits", "requires": [], "portal_name": "CTH_RIGHT_CRATES" },
+    { "from": "TRC - Ground Floor & Exits", "to": "CTH - Upper Right Exit", "requires": [], "portal_name": "TRC_LEFT_CRATES" },
 
-    { "from": "CTH - Lower Exits", "to": "PR (East) - Right Transporter", "requires": [] }, # CTH's lower *right* exit
-    { "from": "PR (East) - Right Transporter", "to": "CTH - Lower Exits", "requires": [] },
+    # CTH's lower *right* exit
+    { "from": "CTH - Lower Exits", "to": "PR (East) - Right Transporter", "requires": [], "portal_name": "CTH_LOWER_RIGHT_TRANSPORTER" },
+    { "from": "PR (East) - Right Transporter", "to": "CTH - Lower Exits", "requires": [], "portal_name": "PRE_RIGHT_TRANSPORTER" },
 
     # Power Reservoir (East)
     { "from": "PR (East) - Right Transporter", "to": "PR (East) - Root Node", "requires": [
@@ -654,8 +661,8 @@ connections_data = [
     ] },
     { "from": "PR (East) - Jiaoduan Arena", "to": "PR (East) - Root Node", "requires": [] }, # one-way debris
 
-    { "from": "PR (East) - Left Transporter", "to": "PR (Central) - Right Transporter", "requires": [] },
-    { "from": "PR (Central) - Right Transporter", "to": "PR (East) - Left Transporter", "requires": [] },
+    { "from": "PR (East) - Left Transporter", "to": "PR (Central) - Right Transporter", "requires": [], "portal_name": "PRE_LEFT_TRANSPORTER" },
+    { "from": "PR (Central) - Right Transporter", "to": "PR (East) - Left Transporter", "requires": [], "portal_name": "PRC_RIGHT_TRANSPORTER" },
 
     # Power Reservoir (Central)
     {
@@ -726,13 +733,15 @@ connections_data = [
     }, # parry hover would work, but the only ledge close enough needs CL
     { "from": "PR (Central) - Chest Left of Light Bridge", "to": "PR (Central) - Light Bridge", "requires": [] }, # one-way door
 
-    { "from": "PR (Central) - Left Transporter", "to": "PR (West) - Right Transporter", "requires": [] },
-    { "from": "PR (West) - Right Transporter", "to": "PR (Central) - Left Transporter", "requires": [] },
+    { "from": "PR (Central) - Left Transporter", "to": "PR (West) - Right Transporter", "requires": [], "portal_name": "PRC_LEFT_TRANSPORTER" },
+    { "from": "PR (West) - Right Transporter", "to": "PR (Central) - Left Transporter", "requires": [], "portal_name": "PRW_RIGHT_TRANSPORTER" },
 
     { "from": "PR (Central) - Light Bridge", "to": "Radiant Pagoda - Root Node", "requires": [
         { "region": "PR (Central) - Backup Control Room" } # AND hacking to restore power
-    ] },
-    { "from": "Radiant Pagoda - Root Node", "to": "PR (Central) - Light Bridge", "requires": [] }, # walking out of RP just works, even without the light bridge
+    ], "portal_name": "PRC_BOSS_PORTAL" },
+
+    # walking out of RP just works, even without the light bridge
+    { "from": "Radiant Pagoda - Root Node", "to": "PR (Central) - Light Bridge", "requires": [], "portal_name": "RP_PORTAL" },
 
     # Power Reservoir (West)
     {
@@ -844,14 +853,14 @@ connections_data = [
     },
     { "from": "LYR - Root Node", "to": "TRC - Upper Exit", "requires": [ { "item": "Elevator Access Token" } ] },
 
-    { "from": "LYR - Root Node", "to": "Yinglong Canal - Upper Exit", "requires": [] },
-    { "from": "Yinglong Canal - Upper Exit", "to": "LYR - Root Node", "requires": [] },
+    { "from": "LYR - Root Node", "to": "Yinglong Canal - Upper Exit", "requires": [], "portal_name": "LYR_BOTTOM_PORTAL" },
+    { "from": "Yinglong Canal - Upper Exit", "to": "LYR - Root Node", "requires": [], "portal_name": "YC_TOP_PORTAL" },
 
-    { "from": "LYR - Right Exit", "to": "GoS (Entry) - Root Node", "requires": [] },
-    { "from": "GoS (Entry) - Root Node", "to": "LYR - Right Exit", "requires": [] },
+    { "from": "LYR - Right Exit", "to": "GoS (Entry) - Root Node", "requires": [], "portal_name": "LYR_RIGHT_PORTAL" },
+    { "from": "GoS (Entry) - Root Node", "to": "LYR - Right Exit", "requires": [], "portal_name": "GOSY_LEFT_PORTAL" },
 
-    { "from": "LYR - Upper Exit", "to": "Sky Tower - Lower Exit", "requires": [] },
-    { "from": "Sky Tower - Lower Exit", "to": "LYR - Upper Exit", "requires": [] },
+    { "from": "LYR - Upper Exit", "to": "Sky Tower - Lower Exit", "requires": [], "portal_name": "LYR_TOP_ELEVATOR" },
+    { "from": "Sky Tower - Lower Exit", "to": "LYR - Upper Exit", "requires": [], "portal_name": "ST_BOTTOM_ELEVATOR" },
 
     # Greenhouse
     {
@@ -870,7 +879,9 @@ connections_data = [
     { "from": "Greenhouse - Mutated Crops", "to": "Greenhouse - Shuigui Arena", "requires": [] }, # one-way fall
     { "from": "Greenhouse - Shuigui Arena", "to": "Greenhouse - Chiyou & 1st Waterfall Hack", "requires": [ { "item": "Mystic Nymph: Scout Mode" } ] },
 
-    { "from": "Greenhouse - 2nd Waterfall Hack", "to": "W&OS - Center", "requires": [] }, # one-way fall
+    # one-way fall
+    { "from": "Greenhouse - 2nd Waterfall Hack", "to": "W&OS - Center", "requires": [],
+      "portal_name": "GREENHOUSE_BOTTOM_PORTAL", "one_way_target_name": "WOS_TOP_PORTAL" },
 
     # Water & Oxygen Synthesis
     {
@@ -918,21 +929,21 @@ connections_data = [
     { "from": "W&OS - Root Node", "to": "W&OS - Right Exit", "requires": [ { "item": "Charged Strike" } ] }, # one-way dragon boat ride
     # Thunder Buster and Cloud Piercer S arrows do *not* work on the CS bell, it really has to be CS here
 
-    { "from": "W&OS - Left Exit", "to": "Yinglong Canal - Root Node", "requires": [] },
+    { "from": "W&OS - Left Exit", "to": "Yinglong Canal - Root Node", "requires": [], "portal_name": "WOS_LEFT_PORTAL" },
     { "from": "Yinglong Canal - Root Node", "to": "W&OS - Left Exit", "requires": [
         # YC's bottom right exit is blocked by a door until you do the 2nd GH hack to drain W&OS's yellow water
         { "region": "Greenhouse - 3rd Waterfall Hack" }
-    ] },
+    ], "portal_name": "YC_RIGHT_PORTAL" },
 
-    { "from": "W&OS - Right Exit", "to": "Agrarian Hall - Root Node", "requires": [] },
-    { "from": "Agrarian Hall - Root Node", "to": "W&OS - Right Exit", "requires": [] },
+    { "from": "W&OS - Right Exit", "to": "Agrarian Hall - Root Node", "requires": [], "portal_name": "WOS_RIGHT_PORTAL" },
+    { "from": "Agrarian Hall - Root Node", "to": "W&OS - Right Exit", "requires": [], "portal_name": "AH_RIGHT_ELEVATOR" },
 
     # Agrarian Hall
     { "from": "Agrarian Hall - Root Node", "to": "Agrarian Hall - After Goumang", "requires": [] }, # TODO: combat logic?
     { "from": "Agrarian Hall - After Goumang", "to": "Agrarian Hall - Root Node", "requires": [] },
 
-    { "from": "Agrarian Hall - After Goumang", "to": "GoS (Entry) - Lower Right Exit", "requires": [] },
-    { "from": "GoS (Entry) - Lower Right Exit", "to": "Agrarian Hall - After Goumang", "requires": [] },
+    { "from": "Agrarian Hall - After Goumang", "to": "GoS (Entry) - Lower Right Exit", "requires": [], "portal_name": "AH_LEFT_PORTAL" },
+    { "from": "GoS (Entry) - Lower Right Exit", "to": "Agrarian Hall - After Goumang", "requires": [], "portal_name": "GOSY_LOWER_RIGHT_PORTAL" },
 
     # Yinglong Canal
     {
@@ -987,8 +998,8 @@ connections_data = [
         { "anyOf": [ { "item": "Cloud Leap" }, { "item": "Wall Climb" }, { "item": "Ledge Grab" } ] }
     ] },
 
-    { "from": "Yinglong Canal - Egg Cave & Left Exit", "to": "TRC - Ground Floor & Exits", "requires": [] },
-    { "from": "TRC - Ground Floor & Exits", "to": "Yinglong Canal - Egg Cave & Left Exit", "requires": [] },
+    { "from": "Yinglong Canal - Egg Cave & Left Exit", "to": "TRC - Ground Floor & Exits", "requires": [], "portal_name": "YC_LEFT_PORTAL" },
+    { "from": "TRC - Ground Floor & Exits", "to": "Yinglong Canal - Egg Cave & Left Exit", "requires": [], "portal_name": "TRC_RIGHT_PORTAL" },
 
     # Factory (Great Hall)
     { "from": "Factory (GH) - Right Exit", "to": "Factory (GH) - Lower Levels & Root Node", "requires": [ { "anyOf": [
@@ -1049,16 +1060,26 @@ connections_data = [
         { "item": "Wall Climb" }, { "item": "Ledge Grab" }, { "item": "Cloud Leap" }
     ] } ] },
 
-    { "from": "Factory (GH) - Left Exit", "to": "OW - Root Node & Middle Exits", "requires": [] },
-    { "from": "OW - Root Node & Middle Exits", "to": "Factory (GH) - Left Exit", "requires": [] },
+    {"from": "Factory (GH) - One-Way Return from Underground", "to": "Factory (GH) - Platform Above Factory (Underground)", "requires": [] }, # one-way door
 
-    { "from": "Factory (GH) - Platform Above Factory (Underground)", "to": "Factory (U) - Upper Right Exit", "requires": [] }, # one-way fall
-    { "from": "Factory (U) - Upper Right Exit", "to": "Factory (GH) - Platform Above Factory (Underground)", "requires": [] }, # just walk to the left, then one-way door
+    { "from": "Factory (GH) - Left Exit", "to": "OW - Root Node & Middle Exits", "requires": [], "portal_name": "FGH_LEFT_PORTAL" },
+    { "from": "OW - Root Node & Middle Exits", "to": "Factory (GH) - Left Exit", "requires": [], "portal_name": "OW_MIDDLE_RIGHT_PORTAL" },
 
-    { "from": "Factory (GH) - Lower Left Elevator", "to": "Factory (U) - Upper Elevator", "requires": [] },
-    { "from": "Factory (U) - Upper Elevator", "to": "Factory (GH) - Lower Left Elevator", "requires": [] },
+    { "from": "Factory (GH) - Platform Above Factory (Underground)", "to": "Factory (U) - Upper Right Exit", "requires": [],
+      "portal_name": "FGH_BOTTOM_RIGHT_HOLE_PORTAL", "one_way_target_name": "FU_UPPER_RIGHT_HOLE_PORTAL" }, # one-way fall
 
-    { "from": "Factory (GH) - Upper Left Elevator", "to": "Factory (PA) - Lower Left Elevator", "requires": [] }, # one-way elevator
+    { "from": "Factory (U) - Upper Right Exit", "to": "Factory (GH) - One-Way Return from Underground", "requires": [], "portal_name": "FU_UPPER_RIGHT_SIDE_CAVE_PORTAL" },
+    # due to the one-way door, this connection only matters to ER layout
+    { "from": "Factory (GH) - One-Way Return from Underground", "to": "Factory (U) - Upper Right Exit", "requires": [], "portal_name": "FGH_BOTTOM_RIGHT_SIDE_CAVE_PORTAL" },
+
+    { "from": "Factory (GH) - Lower Left Elevator", "to": "Factory (U) - Upper Elevator", "requires": [], "portal_name": "FGH_BOTTOM_LEFT_ELEVATOR" },
+    { "from": "Factory (U) - Upper Elevator", "to": "Factory (GH) - Lower Left Elevator", "requires": [], "portal_name": "FU_TOP_LEFT_ELEVATOR" },
+
+    { "from": "Factory (GH) - Upper Left Elevator", "to": "Factory (PA) - Lower Left Elevator", "requires": [], "portal_name": "FGH_TOP_LEFT_ELEVATOR" },
+    # one-way elevator, so this reverse connection is logically redundant / only here to get ER'd
+    { "from": "Factory (PA) - Lower Left Elevator", "to": "Factory (GH) - Upper Left Elevator", "requires": [
+        { "region": "Factory (GH) - Upper Left Elevator" }
+    ], "portal_name": "FPA_BOTTOM_LEFT_ELEVATOR" },
 
     # Factory (Underground)
     { "from": "Factory (U) - Upper Right Exit", "to": "Factory (U) - Upper Central Platform", "requires": [] }, # fall
@@ -1222,14 +1243,14 @@ connections_data = [
     # I could not get spider leap/wall slide into CS to work ^here, and this would've been the only place
     # it affected logic anyway, so definitely not worth adding "spider CS" to the list of medium tricks.
 
-    { "from": "Factory (U) - Middle Right Exit", "to": "AM - Left Exit", "requires": [] },
-    { "from": "AM - Left Exit", "to": "Factory (U) - Middle Right Exit", "requires": [] },
+    { "from": "Factory (U) - Middle Right Exit", "to": "AM - Left Exit", "requires": [], "portal_name": "FU_MIDDLE_RIGHT_PORTAL" },
+    { "from": "AM - Left Exit", "to": "Factory (U) - Middle Right Exit", "requires": [], "portal_name": "AM_LEFT_PORTAL" },
 
-    { "from": "Factory (U) - Root Node & Lower Elevator", "to": "Factory (MR) - Right Elevator", "requires": [] },
-    { "from": "Factory (MR) - Right Elevator", "to": "Factory (U) - Root Node & Lower Elevator", "requires": [] },
+    { "from": "Factory (U) - Root Node & Lower Elevator", "to": "Factory (MR) - Right Elevator", "requires": [], "portal_name": "FU_BOTTOM_ELEVATOR" },
+    { "from": "Factory (MR) - Right Elevator", "to": "Factory (U) - Root Node & Lower Elevator", "requires": [], "portal_name": "FMR_RIGHT_ELEVATOR" },
 
-    { "from": "Factory (U) - Left Exit", "to": "OW - Lower Right Exit", "requires": [] },
-    { "from": "OW - Lower Right Exit", "to": "Factory (U) - Left Exit", "requires": [] },
+    { "from": "Factory (U) - Left Exit", "to": "OW - Lower Right Exit", "requires": [], "portal_name": "FU_LEFT_PORTAL" },
+    { "from": "OW - Lower Right Exit", "to": "Factory (U) - Left Exit", "requires": [], "portal_name": "OW_LOWER_RIGHT_PORTAL" },
 
     # Outer Warehouse
     {
@@ -1237,7 +1258,7 @@ connections_data = [
         "requires": [
             { "item": "Wall Climb" }, # climbing up to the hack point hard requires this
             { "anyOf": [
-                { "item": "Mystic Nymph Scout Mode" }, # The crushers on the way back are intended to be disabled by Nymph
+                { "item": "Mystic Nymph: Scout Mode" }, # The crushers on the way back are intended to be disabled by Nymph
                 { "item": "Cloud Leap" } # but CL and AD together let you stall a cycle to make it back without Nymph
             ] },
             # The lasers on the return trip hard require AD AND TCK, unless we expect players to figure out you can
@@ -1312,19 +1333,29 @@ connections_data = [
             { "item": "Trick - Long Jump with Swift Runner" }, # or a slight coyote jump, but we're trying to keep those OoL
             { "item": "Ledge Grab" }
         ],
-        "ls_requires": [ # replace the one WC use with CL + LS vault
-            { "item": "Grapple" },
-            { "item": "Ledge Grab" },
-            { "item": "Cloud Leap" }
+        "ls_requires": [
+            { "item": "Ledge Grab" }, { "item": "Cloud Leap" }, # triple jump, and climbing over boxes on the top floor
+            { "anyOf": [ # there are 2 ways to exploit triple jump here
+                # 1: grapple normally, skip WC with triple jump, grapple normally again
+                { "item": "Grapple" },
+                [ # 2: set up LS first, then:
+                    { "item": "Air Dash" }, # first grapple skip: from a moving boxe on the left jump + AD + CL
+                    { "item": "Wall Climb" } # normally
+                    # finally use triple jump for second grapple skip
+                ]
+                # T-dash could replace AD but again T-dash is out of logic here
+                # AD + CL over boxes can skip using LG there, but the box can be destroyed permanently, and we need LG anyway
+            ] },
         ]
     },
     { "from": "OW - Robot", "to": "OW - Upper Left Exit", "requires": [] }, # hacking, one-way robot-breakable box
 
-    { "from": "OW - Root Node & Middle Exits", "to": "Yangu Hall - Right Exit", "requires": [] }, # OW's *left* middle exit
-    { "from": "Yangu Hall - Right Exit", "to": "OW - Root Node & Middle Exits", "requires": [] },
+    # OW's *left* middle exit
+    { "from": "OW - Root Node & Middle Exits", "to": "Yangu Hall - Right Exit", "requires": [], "portal_name": "OW_MIDDLE_LEFT_PORTAL" },
+    { "from": "Yangu Hall - Right Exit", "to": "OW - Root Node & Middle Exits", "requires": [], "portal_name": "YH_RIGHT_PORTAL" },
 
-    { "from": "OW - Upper Left Exit", "to": "IW - Right Exit", "requires": [] },
-    { "from": "IW - Right Exit", "to": "OW - Upper Left Exit", "requires": [] },
+    { "from": "OW - Upper Left Exit", "to": "IW - Right Exit", "requires": [], "portal_name": "OW_UPPER_LEFT_CRATES" },
+    { "from": "IW - Right Exit", "to": "OW - Upper Left Exit", "requires": [], "portal_name": "IW_RIGHT_CRATES" },
 
     # Inner Warehouse
     {
@@ -1405,7 +1436,8 @@ connections_data = [
         # 1st terminal is near root node, reachable with only single jumps, rope and hacking
         # 1st terminal itself only requires hacking 2
         { "region": "IW - Bottom Left" } # also hacking 2
-    ] }, # one-way funicular?
+    ], "portal_name": "IW_BOTTOM_ELEVATOR" },
+    { "from": "BR - Upper Exit", "to": "IW - Root Node", "requires": [], "portal_name": "BR_TOP_ELEVATOR" },
 
     # Boundless Repository
     { "from": "BR - Upper Exit", "to": "BR - Root Node", "requires": [] }, # TODO: combat logic?
@@ -1448,7 +1480,8 @@ connections_data = [
         { "region": "Yangu Hall - After Yanlao" } # AND hacking 3
     ] },
 
-    { "from": "BR - After Gauntlet", "to": "Yangu Hall - Left Exit", "requires": [] },
+    { "from": "BR - After Gauntlet", "to": "Yangu Hall - Left Exit", "requires": [], "portal_name": "BR_RIGHT_PORTAL" },
+    { "from": "Yangu Hall - Left Exit", "to": "BR - After Gauntlet", "requires": [], "portal_name": "YH_LEFT_PORTAL" },
 
     # Yangu Hall
     { "from": "Yangu Hall - Left Exit", "to": "Yangu Hall - After Yanlao", "requires": [] }, # TODO: combat logic?
@@ -1643,7 +1676,8 @@ connections_data = [
 
     { "from": "AM - Upper Right Exit", "to": "UC - Left Exit", "requires": [
         { "item": "Abandoned Mines Access Token" }
-    ] },
+    ], "portal_name": "AM_RIGHT_PORTAL" },
+    { "from": "UC - Left Exit", "to": "AM - Upper Right Exit", "requires": [], "portal_name": "UC_LEFT_PORTAL" },
 
     # Prison
     # Because Prison has a single-use entrance in the form of the Jiequan 1 fight and cutscene,
@@ -1679,7 +1713,11 @@ connections_data = [
     },
     { "from": "Prison - Kanghui Level", "to": "Prison - After Kanghui", "requires": [] }, # TODO: combat logic?
 
-    { "from": "Prison - After Kanghui", "to": "Factory (MR) - Left Elevator", "requires": [] }, # one-way elevator
+    { "from": "Prison - After Kanghui", "to": "Factory (MR) - Left Elevator", "requires": [], "portal_name": "PRISON_ELEVATOR" },
+    # one-way elevator, so this reverse connection is logically redundant / only here to get ER'd
+    { "from": "Factory (MR) - Left Elevator", "to": "Prison - After Kanghui", "requires": [
+        { "region": "Prison - After Kanghui" }
+    ], "portal_name": "FMR_LOWER_LEFT_ELEVATOR" },
 
     # Factory (Machine Room)
     {
@@ -1823,13 +1861,20 @@ connections_data = [
         "ls_requires": [{ "item": "Ledge Grab" }, { "item": "Cloud Leap" }] # setup using ledge left of node
     },
     { "from": "Factory (PA) - Guard Production Station", "to": "Factory (PA) - Root Node", "requires": [] }, # one-way door
-    { "from": "Factory (PA) - Guard Production Station", "to": "Factory (PA) - Right Fire Zone & Wuqiang Arena", "requires": [
+    { "from": "Factory (PA) - Guard Production Station", "to": "Factory (PA) - Right Fire Zone & Wuqiang Arena", 
+        "requires": [
         { "item": "Mystic Nymph: Scout Mode" }, # to disable fire in the vents (one-way) to "sniper room"
         { "anyOf": [
             { "item": "Cloud Leap" },
             [ { "item": "Air Dash" }, { "item": "Tai-Chi Kick" }, { "item": "Grapple" } ]
-        ] } # to traverse the "sniper room" up to the one-way door back to GPS
-    ] },
+        ] } ], # to traverse the "sniper room" up to the one-way door back to GPS
+        "medium_requires": [
+            { "item": "Mystic Nymph: Scout Mode" }, # to disable fire
+            # replace air dash with t-dash using qi from TCK
+            { "item": "Tai-Chi Kick" },
+            { "item": "Grapple" }
+        ]
+      },
     { "from": "Factory (PA) - Right Fire Zone & Wuqiang Arena", "to": "Factory (PA) - Guard Production Station", "requires": [
         { "anyOf": [ { "item": "Cloud Leap" }, { "item": "Ledge Grab" } ] }, # to reach the hallway above the "sniper room"
         { "item": "Mystic Nymph: Scout Mode" } # to open the "shortcut" door to GPS
@@ -1847,9 +1892,17 @@ connections_data = [
         { "anyOf": [ { "item": "Cloud Leap" }, { "item": "Grapple" } ] }
     ] }, # one-way door
 
-    { "from": "Factory (PA) - Lower Right Exit", "to": "Factory (GH) - Above Root Node", "requires": [] }, # one-way elevator
+    { "from": "Factory (PA) - Lower Right Exit", "to": "Factory (GH) - Above Root Node", "requires": [], "portal_name": "FPA_BOTTOM_RIGHT_ELEVATOR" },
+    # one-way elevator, so this reverse connection is logically redundant / only here to get ER'd
+    { "from": "Factory (GH) - Above Root Node", "to": "Factory (PA) - Lower Right Exit", "requires": [
+        { "region": "Factory (PA) - Lower Right Exit" }
+    ], "portal_name": "FGH_TOP_RIGHT_ELEVATOR" },
 
-    { "from": "Factory (PA) - Upper Elevator", "to": "Shengwu Hall - Root Node", "requires": [] }, # one-way elevator
+    { "from": "Factory (PA) - Upper Elevator", "to": "Shengwu Hall - Root Node", "requires": [], "portal_name": "FPA_TOP_ELEVATOR" },
+    # one-way elevator, so this reverse connection is logically redundant / only here to get ER'd
+    { "from": "Shengwu Hall - Root Node", "to": "Factory (PA) - Upper Elevator", "requires": [
+        { "region": "Factory (PA) - Upper Elevator" }
+    ], "portal_name": "SH_ELEVATOR" },
 
     # Shengwu Hall
     { "from": "Shengwu Hall - Root Node", "to": "Shengwu Hall - After Jiequan", "requires": [ { "item": "Charged Strike" } ] }, # TODO: (more) combat logic?
@@ -1872,7 +1925,11 @@ connections_data = [
     ] },
     { "from": "UC - Camp", "to": "Lieguan Arena", "requires": [] },
 
-    { "from": "Lieguan Arena", "to": "Galactic Dock - Left Exit", "requires": [] }, # TODO: combat logic?
+    { "from": "Lieguan Arena", "to": "Galactic Dock - Left Exit", "requires": [], "portal_name": "PBV_EAST_RIGHT_PORTAL" }, # TODO: combat logic?
+    # one-way connection, so this reverse connection is logically redundant / only here to get ER'd
+    { "from": "Galactic Dock - Left Exit", "to": "Lieguan Arena", "requires": [
+        { "region": "Lieguan Arena" }
+    ], "portal_name": "GD_LEFT_PORTAL" },
 
     # Galactic Dock
     { "from": "Galactic Dock - Left Exit", "to": "Galactic Dock - Root Node & Right Exit", "requires": [] }, # one-way door
@@ -1953,10 +2010,11 @@ connections_data = [
     { "from": "GoS (Entry) - Elevator", "to": "GoS (Entry) - Upper Right Exit", "requires": [ { "item": "Cloud Leap" } ] },
     { "from": "GoS (Entry) - Upper Right Exit", "to": "GoS (Entry) - Elevator", "requires": [] }, # fall
 
-    { "from": "GoS (Entry) - Root Node", "to": "Greenhouse - Root Node", "requires": [] }, # one-way fall (scripted on first visit)
+    { "from": "GoS (Entry) - Root Node", "to": "Greenhouse - Root Node", "requires": [],
+      "portal_name": "GOSY_LOWER_ELEVATOR_SHAFT", "one_way_target_name": "GREENHOUSE_TOP_ELEVATOR_SHAFT" }, # one-way fall (scripted on first visit)
 
-    { "from": "GoS (Entry) - Upper Right Exit", "to": "GoS (East) - Lower Exit", "requires": [] },
-    { "from": "GoS (East) - Lower Exit", "to": "GoS (Entry) - Upper Right Exit", "requires": [] },
+    { "from": "GoS (Entry) - Upper Right Exit", "to": "GoS (East) - Lower Exit", "requires": [], "portal_name": "GOSY_UPPER_RIGHT_PORTAL" },
+    { "from": "GoS (East) - Lower Exit", "to": "GoS (Entry) - Upper Right Exit", "requires": [], "portal_name": "GOSE_LOWER_PORTAL" },
 
     # Grotto of Scriptures (East)
     { "from": "GoS (East) - Lower Exit", "to": "GoS (East) - Above Lower Exit", "requires": [ { "item": "Cloud Leap" } ] },
@@ -2027,7 +2085,18 @@ connections_data = [
     {
         "from": "GoS (East) - Stone Carvings", "to": "GoS (East) - Upper Exit",
         "requires": [ { "item": "Cloud Leap" }, { "item": "Ledge Grab" } ],
-        "ls_requires": [ { "item": "Ledge Grab" } ] # wall slide up and over the obstacle, T-dash setup is fine here
+        "ls_requires": [
+            { "item": "Ledge Grab" },  # wall slide up and over the obstacle
+            { "region": "GoS (East) - Outside Yin Jifu's Tomb" }, # the ledge used to obtain LS is in this region
+            { "anyOf": [ # there's three different ways to get LS from that ledge:
+                { "item": "Air Dash" }, # 1) simply do AD setup
+                { "item": "Grapple" }, # 2) from Stone Carvings, drop down to the enemies, then grapple back up
+                # 3) get qi from root node enemies, then cross the small gap to the portal to Outside Yin Jifu's Tomb
+                { "item": "Charged Strike" },
+                { "item": "Trick - Long Jump with Swift Runner" },
+                { "item": "Trick - Bow Hover"},
+            ] }
+        ]
     },
     { "from": "GoS (East) - Upper Exit", "to": "GoS (East) - Stone Carvings", "requires": [
         { "item": "Cloud Leap" }, { "item": "Ledge Grab" }
@@ -2038,11 +2107,11 @@ connections_data = [
         { "item": "Mystic Nymph: Scout Mode" } # to release the spike ball
     ] },
 
-    { "from": "GoS (East) - Middle Exit", "to": "GoS (West) - Lower Right Exits", "requires": [] },
-    { "from": "GoS (West) - Lower Right Exits", "to": "GoS (East) - Middle Exit", "requires": [] },
+    { "from": "GoS (East) - Middle Exit", "to": "GoS (West) - Lower Right Exits", "requires": [], "portal_name": "GOSE_MIDDLE_PORTAL" },
+    { "from": "GoS (West) - Lower Right Exits", "to": "GoS (East) - Middle Exit", "requires": [], "portal_name": "GOSW_MIDDLE_RIGHT_PORTAL" },
 
-    { "from": "GoS (East) - Upper Exit", "to": "GoS (West) - Upper Right Exit", "requires": [] },
-    { "from": "GoS (West) - Upper Right Exit", "to": "GoS (East) - Upper Exit", "requires": [] },
+    { "from": "GoS (East) - Upper Exit", "to": "GoS (West) - Upper Right Exit", "requires": [], "portal_name": "GOSE_UPPER_PORTAL" },
+    { "from": "GoS (West) - Upper Right Exit", "to": "GoS (East) - Upper Exit", "requires": [], "portal_name": "GOSW_UPPER_RIGHT_PORTAL" },
 
     # Grotto of Scriptures (West)
     # First, the regions available "early", before completing enough of East Grotto to find the upper entrance
@@ -2116,13 +2185,21 @@ connections_data = [
     ] },
     { "from": "GoS (West) - Survived Spike Ball Chase", "to": "GoS (West) - Root Node", "requires": [] },
     { "from": "GoS (West) - Upper Right Exit", "to": "GoS (West) - Lower Platform Rotation Button", "requires": [
-        # climb up rope, take portal on the right, fall down
+       { "region": "GoS (West) - Survived Spike Ball Chase" } # climb up rope after chase, take portal on the right, fall down
     ] },
-    { "from": "GoS (West) - Lower Platform Rotation Button", "to": "GoS (West) - Upper Right Exit", "requires": [
-        # rotate platforms to vertical
-        { "item": "Wall Climb" } # climb up the platform / green wall on the right
-        # go through portal, fall and walk right
-    ] },
+    { 
+        "from": "GoS (West) - Lower Platform Rotation Button", "to": "GoS (West) - Upper Right Exit", 
+        "requires": [
+            # rotate platforms to vertical
+            { "item": "Wall Climb" } # climb up the platform / green wall on the right
+            # go through portal, fall and walk right
+        ],
+        "ls_requires":[
+            # rotate platforms to vertical
+            { "item": "Ledge Grab"} # then obtain ledge storage and wall slide up the vertical platform
+            # qi can be obtained from enemies on the right before rotating
+        ]
+    },
     { "from": "GoS (West) - Root Node", "to": "GoS (West) - Lower Platform Rotation Button", "requires": [] }, # fall and hold right
     { "from": "GoS (West) - Lower Platform Rotation Button", "to": "GoS (West) - Lower Right Exits", "requires": [] }, # press button, fall, go right and open one-way door
     # This single region connection into SBR represents solving the rotating platforms puzzle
@@ -2161,21 +2238,26 @@ connections_data = [
         { "item": "Mystic Nymph: Scout Mode" } # to open the one-way door
     ] },
     { "from": "GoS (West) - Above Western Cliffs", "to": "GoS (West) - Upper Left Exit", "requires": [] }, # one-way bridge hack
-    { "from": "GoS (West) - Upper Right Exit", "to": "GoS (West) - Lower Right Exits", "requires": [] }, # rope to portal, fall, press button for vertical green platforms, fall, one-way door
     { "from": "GoS (West) - Root Node", "to": "GoS (West) - Lower Right Exits", "requires": [] }, # fall, press button for vertical green platforms, fall, one-way door
 
-    { "from": "GoS (West) - Lower Right Exits", "to": "GoS (Entry) - Elevator", "requires": [] }, # one-way elevator
+    { "from": "GoS (West) - Lower Right Exits", "to": "GoS (Entry) - Elevator", "requires": [], "portal_name": "GOSW_LOWER_RIGHT_ELEVATOR" },
+    # one-way elevator, so this reverse connection is logically redundant / only here to get ER'd
+    { "from": "GoS (Entry) - Elevator", "to": "GoS (West) - Lower Right Exits", "requires": [
+        { "region": "GoS (West) - Lower Right Exits" }
+    ], "portal_name": "GOSY_UPPER_ELEVATOR" },
 
-    { "from": "GoS (West) - Lower Left Transporter", "to": "ED (Passages) - Lower Right Transporter", "requires": [] },
-    { "from": "ED (Passages) - Lower Right Transporter", "to": "GoS (West) - Lower Left Transporter", "requires": [] },
+    { "from": "GoS (West) - Lower Left Transporter", "to": "ED (Passages) - Lower Right Transporter", "requires": [], "portal_name": "GOSW_LOWER_LEFT_TRANSPORTER" },
+    { "from": "ED (Passages) - Lower Right Transporter", "to": "GoS (West) - Lower Left Transporter", "requires": [], "portal_name": "EDP_LOWER_RIGHT_TRANSPORTER" },
 
-    { "from": "GoS (West) - Upper Left Exit", "to": "ED (Passages) - Upper Right Exit", "requires": [] },
-    { "from": "ED (Passages) - Upper Right Exit", "to": "GoS (West) - Upper Left Exit", "requires": [] },
+    { "from": "GoS (West) - Upper Left Exit", "to": "ED (Passages) - Upper Right Exit", "requires": [], "portal_name": "GOSW_UPPER_LEFT_PORTAL" },
+    { "from": "ED (Passages) - Upper Right Exit", "to": "GoS (West) - Upper Left Exit", "requires": [], "portal_name": "EDP_UPPER_RIGHT_PORTAL" },
 
     # Ancient Stone Pillar
     # No root node in here, so no need for a 2nd region.
+    { "from": "GoS (West) - Above Western Cliffs", "to": "Ancient Stone Pillar - Before Ji", "requires": [], "portal_name": "GOSW_BOSS_PORTAL" },
+    { "from": "Ancient Stone Pillar - Before Ji", "to": "GoS (West) - Above Western Cliffs", "requires": [], "portal_name": "ASP_PORTAL" },
     {
-        "from": "GoS (West) - Above Western Cliffs", "to": "Ancient Stone Pillar - After Ji",
+        "from": "Ancient Stone Pillar - Before Ji", "to": "Ancient Stone Pillar - After Ji",
         "requires": [
             { "item": "Tai-Chi Kick" }, # or else Ji's divinations are a softlock
             {
@@ -2252,8 +2334,8 @@ connections_data = [
 
     { "from": "Sky Tower - Upper Exit & Root Node", "to": "TRC - Upper Exit", "requires": [ { "item": "Elevator Access Token" } ] },
 
-    { "from": "Sky Tower - Right Exit", "to": "ED (Passages) - Left Exit", "requires": [] },
-    { "from": "ED (Passages) - Left Exit", "to": "Sky Tower - Right Exit", "requires": [] },
+    { "from": "Sky Tower - Right Exit", "to": "ED (Passages) - Left Exit", "requires": [], "portal_name": "ST_RIGHT_PORTAL" },
+    { "from": "ED (Passages) - Left Exit", "to": "Sky Tower - Right Exit", "requires": [], "portal_name": "EDP_LEFT_PORTAL" },
 
     # Empyrean Dist. (Passages)
     {
@@ -2569,7 +2651,8 @@ connections_data = [
     },
     { "from": "ED (Passages) - End Of Laser Gauntlet", "to": "ED (Passages) - Above Right Transporter", "requires": [] }, # one-way door
 
-    { "from": "ED (Passages) - Upper Elevator", "to": "ED (Living Area) - Root Node & Lower Elevator", "requires": [] }, # one-way elevator
+    { "from": "ED (Passages) - Upper Elevator", "to": "ED (Living Area) - Root Node & Lower Elevator", "requires": [], "portal_name": "EDP_TOP_ELEVATOR" },
+    { "from": "ED (Living Area) - Root Node & Lower Elevator", "to": "ED (Passages) - Upper Elevator", "requires": [], "portal_name": "EDLA_BOTTOM_ELEVATOR" },
 
     # Empyrean Dist. (Living Area)
     {
@@ -2631,8 +2714,8 @@ connections_data = [
     { "from": "ED (Living Area) - Left Exit", "to": "ED (Living Area) - Five Bells Room", "requires": [ { "item": "Cloud Leap" } ] },
     { "from": "ED (Living Area) - Left Exit", "to": "ED (Living Area) - Root Node & Lower Elevator", "requires": [] }, # one-way hacking 2 door
 
-    { "from": "ED (Living Area) - Left Exit", "to": "ED (Sanctum) - Right Exit", "requires": [] },
-    { "from": "ED (Sanctum) - Right Exit", "to": "ED (Living Area) - Left Exit", "requires": [] },
+    { "from": "ED (Living Area) - Left Exit", "to": "ED (Sanctum) - Right Exit", "requires": [], "portal_name": "EDLA_LEFT_PORTAL" },
+    { "from": "ED (Sanctum) - Right Exit", "to": "ED (Living Area) - Left Exit", "requires": [], "portal_name": "EDS_RIGHT_PORTAL" },
 
     # Empyrean Dist. (Sanctum)
     { "from": "ED (Sanctum) - Right Exit", "to": "ED (Sanctum) - Below Root Node", "requires": [ { "item": "Air Dash" } ] },
@@ -2696,7 +2779,9 @@ connections_data = [
 
     # Nobility Hall
     # No root node in here, so no need for a 2nd region.
-    { "from": "ED (Sanctum) - Outside Nobility Hall", "to": "Nobility Hall - After Fengs", "requires": [] }, # TODO: combat logic?
+    { "from": "ED (Sanctum) - Outside Nobility Hall", "to": "Nobility Hall - Before Fengs", "requires": [], "portal_name": "EDS_BOSS_PORTAL" },
+    { "from": "Nobility Hall - Before Fengs", "to": "ED (Sanctum) - Outside Nobility Hall", "requires": [], "portal_name": "NH_PORTAL" },
+    { "from": "Nobility Hall - Before Fengs", "to": "Nobility Hall - After Fengs", "requires": [] }, # TODO: combat logic?
 
     # Tiandao Research Center
     { "from": "TRC - Upper Exit", "to": "TRC - Root Node", "requires": [] }, # one-way door

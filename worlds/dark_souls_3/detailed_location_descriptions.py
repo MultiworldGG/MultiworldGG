@@ -17,8 +17,8 @@ from .Locations import location_dictionary
 location_re = re.compile(r'^([A-Z0-9]+): (.*?)(?:$| - )')
 
 if __name__ == '__main__':
-    # TODO: update this to the main branch of the main randomizer once MultiworldGG support is merged
-    url = 'https://raw.githubusercontent.com/nex3/SoulsRandomizers/archipelago-server/dist/Base/annotations.txt'
+    # TODO: update this to the main branch of the main randomizer once Archipelago support is merged
+    url = 'https://raw.githubusercontent.com/fswap/SoulsRandomizers/archipelago/dist/Base/annotations.txt'
     response = requests.get(url)
     if response.status_code != 200:
         raise Exception(f"Got {response.status_code} when downloading static randomizer locations")
@@ -71,7 +71,7 @@ if __name__ == '__main__':
         if len(candidates) == 0:
             raise Exception(
                 f'There are only {counts_by_location[key]} locations in the static randomizer ' +
-                f'matching "{match[1]}: {match[2]}", but there are more in MultiworldGG.'
+                f'matching "{match[1]}: {match[2]}", but there are more in Archipelago.'
             )
 
         location_names_to_descriptions[location.name] = candidates.pop(0)

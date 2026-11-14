@@ -157,13 +157,6 @@ class MementoRandomization(GlobalRandomization):
     default = GlobalRandomization.option_false
 
 
-class MiscellaneousItemsRandomization(GlobalRandomization):
-    """Randomizes Crawbell."""
-
-    display_name = "Miscellaneous Items Randomization"
-    default = GlobalRandomization.option_false
-
-
 class MateriumRandomization(GlobalRandomization):
     """Randomizes Materium, Flintstone, Magnetite and Voltstone."""
 
@@ -186,7 +179,7 @@ class CogheartPieceRandomization(GlobalRandomization):
 
 
 class BellhomeRandomization(GlobalRandomization):
-    """Randomizes Desk, Gleamlights, Bell Lacquer, Personal Spa and Gramophone."""
+    """Randomizes Desk, Gleamlights, Bell Lacquer, Personal Spa, Gramophone and Crawbell. Crawbell is only included for Act 3 goals."""
 
     display_name = "Bellhome Item Randomization"
     default = GlobalRandomization.option_false
@@ -382,7 +375,7 @@ class ToolPouchRandomization(GlobalRandomization):
 
 class LoreTabletRandomization(GlobalRandomization):
     """
-    Randomizes the 38 Lore Tablets in the game.
+    Randomizes the 42 Lore Tablets in the game.
 
     false: leaves them where they normally are
     true: mixes them into the global item pool
@@ -513,7 +506,7 @@ class FrayedRosaryStringRandomization(MinorFamilyRandomization):
 
 class RosaryStringRandomization(MinorFamilyRandomization):
     """
-    Randomizes the 4 Rosary Strings in the game.
+    Randomizes the 3 Rosary Strings in the game.
 
     false: leaves them where they normally are
     true: mixes them into the global item pool
@@ -741,7 +734,6 @@ CATEGORY_OPTION_BY_LOCATION_CATEGORY: dict[str, str] = {
     "Bellhome": "bellhome_randomization",
     "Cogheart": "cogheart_piece_randomization",
     "QuestCollectible": "quest_collectible_randomization",
-    "Miscellaneous": "miscellaneous_items_randomization",
     "TwistedBud": "twisted_bud_randomization",
     "Flea": "flea_randomization",
     "CrestSlot": "crest_slot_randomization",
@@ -1246,19 +1238,6 @@ class AutomaticCompass(Toggle):
     default = 1
 
 
-class CheckMapMarkers(Choice):
-    """
-    Show enabled, unchecked Archipelago checks on the in-game map.
-    """
-
-    display_name = "Location Map Markers"
-    option_off = 0
-    option_mapped_rooms = 1
-    option_owned_maps = 2
-    option_all = 3
-    default = option_all
-
-
 class RandomizedBellMarkers(Toggle):
     """
     Show map markers for your Grand Gate Bells where the randomizer placed them in your world.
@@ -1441,37 +1420,6 @@ class FasterSilkheartAnimation(Toggle):
 
     display_name = "Faster Silkheart Animation"
     default = 0
-
-
-class DeathLink(Toggle):
-    """
-    Share deaths with other death link enabled players.
-    """
-
-    display_name = "Death Link"
-    default = 0
-
-
-class DeathLinkCocoon(Choice):
-    """
-    Choose how received DeathLinks affect your death cocoon and Rosaries.
-
-    vanilla: Received DeathLinks replace an existing cocoon and move your
-    carried Rosaries into the new cocoon.
-    cocoonless: Received DeathLinks leave your carried Rosaries and any
-    existing cocoon untouched.
-    cocoon: The first received DeathLink can create a normal cocoon. Later
-    received DeathLinks leave that cocoon and your carried Rosaries untouched.
-
-    Your own deaths always use the normal game behavior.
-    This option has no effect when Death Link is disabled.
-    """
-
-    display_name = "Death Link Cocoon"
-    option_vanilla = 0
-    option_cocoonless = 1
-    option_cocoon = 2
-    default = 2
 
 
 class SilkLink(Toggle):
@@ -1715,7 +1663,6 @@ class SilksongOptions(PerGameCommonOptions):
     start_with_maps: StartWithMaps
     start_fully_mapped: StartFullyMapped
     automatic_compass: AutomaticCompass
-    location_map_markers: CheckMapMarkers
     randomized_bell_markers: RandomizedBellMarkers
     randomized_melody_markers: RandomizedMelodyMarkers
     vog_area_hints: VogAreaHints
@@ -1751,7 +1698,6 @@ class SilksongOptions(PerGameCommonOptions):
     bellhome_randomization: BellhomeRandomization
     cogheart_piece_randomization: CogheartPieceRandomization
     quest_collectible_randomization: QuestCollectibleRandomization
-    miscellaneous_items_randomization: MiscellaneousItemsRandomization
     twisted_bud_randomization: TwistedBudRandomization
     flea_randomization: FleaRandomization
     crest_slot_randomization: CrestSlotRandomization
@@ -1797,8 +1743,6 @@ class SilksongOptions(PerGameCommonOptions):
     shuffle_wish_offers: ShuffleWishOffers
     wish_plando: WishPlando
     individual_relic_turn_ins: IndividualRelicTurnIns
-    death_link: DeathLink
-    death_link_cocoon: DeathLinkCocoon
     silk_link: SilkLink
     rosary_link: RosaryLink
     shell_shard_link: ShellShardLink
@@ -1835,7 +1779,6 @@ silksong_option_groups = [
         StartWithMaps,
         StartFullyMapped,
         AutomaticCompass,
-        CheckMapMarkers,
     ], start_collapsed=False),
     OptionGroup("Proficiency/Skip Options", [
         PlatformingCapability,
@@ -1872,7 +1815,6 @@ silksong_option_groups = [
         BellhomeRandomization,
         CogheartPieceRandomization,
         QuestCollectibleRandomization,
-        MiscellaneousItemsRandomization,
         TwistedBudRandomization,
         FleaRandomization,
         CrestSlotRandomization,
@@ -1944,8 +1886,6 @@ silksong_option_groups = [
         EntranceRandomizationScope,
     ], start_collapsed=True),
     OptionGroup("Link Options", [
-        DeathLink,
-        DeathLinkCocoon,
         SilkLink,
         RosaryLink,
         ShellShardLink,

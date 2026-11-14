@@ -45,7 +45,6 @@ def restore_entrances(world, snapshot):
         entrance.shuffled = shuffled
 
     invalidate_age_reachability(world.multiworld.state, world.player)
-    world.multiworld.state.stale[world.player] = True
 
 
 def defer_entrances(world):
@@ -61,9 +60,6 @@ def defer_entrances(world):
         entrance.disconnect()
     # Generation may have cached reachability through the complete layout.
     invalidate_age_reachability(world.multiworld.state, world.player)
-    world.multiworld.state.reachable_regions[world.player].clear()
-    world.multiworld.state.blocked_connections[world.player].clear()
-    world.multiworld.state.stale[world.player] = True
 
 
 def reconnect_found_entrances(world, storage_key, discoveries):
@@ -81,4 +77,3 @@ def reconnect_found_entrances(world, storage_key, discoveries):
             if connection and connection.name in world.ut_deferred_entrances and connection.connected_region is None:
                 connection.connect(world.ut_deferred_entrances[connection.name])
     invalidate_age_reachability(world.multiworld.state, world.player)
-    world.multiworld.state.stale[world.player] = True

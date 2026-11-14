@@ -15,7 +15,7 @@ except ImportError:
 
 from .emu_loader import EmuLoaderClient
 from ..LocationList import business_scrubs, location_table
-from ..Utils import OOT_PLAYER_NAME_LENGTH, encode_oot_player_name
+from ..Utils import AP_DISPLAY_NAME_SIZE, encode_ap_display_name
 from ..ut.discovery import EntranceDiscovery
 
 SCRIPT_VERSION = 10
@@ -32,7 +32,7 @@ PLAYER_ID_ADDR          = 0x00400024   # u16
 INCOMING_PLAYER_ADDR    = 0x00400026   # u16
 INCOMING_ITEM_ADDR      = 0x00400028   # u16
 DEATH_LINK_ADDR         = 0x0040002B   # u8  (MW_PROGRESSIVE_ITEMS_ENABLE / DEATH_LINK)
-PLAYER_NAMES_ADDR       = 0x00400038   # 1025 × 8 bytes
+AP_DISPLAY_NAMES_PTR_ADDR = 0x0040002C # N64 pointer to 1025 × 20-byte name slots
 FILE_HASH_ADDR          = 0x00402040   # 5 bytes  (CFG_FILE_SELECT_HASH)
 OUTGOING_KEY_ADDR       = 0x0040304C   # 8 bytes  (override_key_t)
 DUNGEON_IS_MQ_PTR_ADDR  = 0x00400010   # N64 pointer to MQ dungeon table
@@ -82,7 +82,6 @@ GAME_MODES: Dict[int, tuple] = {
 
 SHOP_SCENES             = {0x2C, 0x2D, 0x2E, 0x2F, 0x30, 0x31, 0x32, 0x33, 0x42, 0x4B}
 KILL_LINK_EXCLUDE_SCENES = {27, 28, 29, 35, 36, 37}
-PLAYER_NAME_LENGTH      = OOT_PLAYER_NAME_LENGTH
 
 
 class OoTBridgeState:
@@ -203,14 +202,14 @@ def _check_temp_context(state: OoTBridgeState, scene: int, loc_type: int, flag: 
     return _override_key(scene, loc_type, flag) in state.temp_context_history
 
 
-def _set_player_name(emu: EmuLoaderClient, player_id: int, name: str) -> None:
+def _set_player_name(emu: EmuLoaderClient, player_id: int, name: str, names_addr: int) -> None:
     if not 0 <= player_id <= AP_MAX_PLAYER_ID:
         return
-    addr    = PLAYER_NAMES_ADDR + player_id * PLAYER_NAME_LENGTH
-    data = bytes(encode_oot_player_name(name, PLAYER_NAME_LENGTH))
-    # Player name slots are 8-byte/4-byte aligned; write as words to avoid
+    addr = names_addr + player_id * AP_DISPLAY_NAME_SIZE
+    data = encode_ap_display_name(name)
+    # Name slots are word-aligned; write as words to avoid
     # hundreds of synchronous RetroArch UDP writes on first connect.
-    for offset in (0, 4):
+    for offset in range(0, AP_DISPLAY_NAME_SIZE, 4):
         word = int.from_bytes(data[offset:offset + 4], "big")
         if emu.read_u32(addr + offset) != word:
             emu.write_u32(addr + offset, word)
@@ -220,13 +219,14 @@ def _set_player_names(emu: EmuLoaderClient, player_names) -> None:
     # Menu cycles also restore names after a ROM reset. Compare against actual
     # RAM in a fresh batch instead of rewriting unchanged names every cycle.
     with _read_batch(emu):
+        names_addr = emu.read_u32(AP_DISPLAY_NAMES_PTR_ADDR) - 0x80000000
         if isinstance(player_names, dict):
             for idx, name in player_names.items():
-                _set_player_name(emu, int(idx), name)
+                _set_player_name(emu, int(idx), name, names_addr)
         else:
             for idx, name in enumerate(player_names[:AP_MAX_PLAYER_ID], start=1):
-                _set_player_name(emu, idx, name)
-        _set_player_name(emu, 0, "a player")
+                _set_player_name(emu, idx, name, names_addr)
+        _set_player_name(emu, 0, "a player", names_addr)
 
 
 def _resolve_mq_table(emu: EmuLoaderClient, state: OoTBridgeState) -> None:

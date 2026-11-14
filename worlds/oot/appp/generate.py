@@ -15,7 +15,7 @@ from ..Patches import (AP_MAX_PLAYER_ID, AP_PLAYER_TABLE_SIZE, check_location_du
                        write_ap_item_name_table)
 from ..SceneFlags import (build_xflag_tables, build_xflags_from_world, get_alt_list_bytes,
                           get_collectible_flag_addresses)
-from ..Utils import data_path
+from ..Utils import data_path, AP_DISPLAY_NAME_SIZE
 from Utils import __version__ as ap_version
 
 try:
@@ -115,6 +115,7 @@ def build_patch_data(world):
     check_location_dupes(world)
     symbols = SymbolWrites()
     for symbol, length in (("PLAYER_ID", 2), ("PLAYER_NAMES", AP_PLAYER_TABLE_SIZE * 8),
+                           ("AP_DISPLAY_NAMES", AP_PLAYER_TABLE_SIZE * AP_DISPLAY_NAME_SIZE),
                            ("MW_PROGRESSIVE_ITEMS_STATE", AP_PLAYER_TABLE_SIZE * 4),
                            ("CFG_DUNGEON_REWARD_WORLDS", 9 * 2)):
         require_symbol_length(symbols, symbol, length)

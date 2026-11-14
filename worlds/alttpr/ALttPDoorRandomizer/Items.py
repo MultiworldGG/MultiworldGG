@@ -1,7 +1,7 @@
 from .BaseClasses import Item
 
 
-def ItemFactory(items, player):
+def ItemFactory(items, player, mw_player=0):
     ret = []
     singleton = False
     if isinstance(items, str):
@@ -10,7 +10,7 @@ def ItemFactory(items, player):
     for item in items:
         if item in item_table:
             advancement, priority, type, code, price, pedestal_hint, pedestal_credit, sickkid_credit, zora_credit, witch_credit, fluteboy_credit, hint_text = item_table[item]
-            ret.append(Item(item, advancement, priority, type, code, price, pedestal_hint, pedestal_credit, sickkid_credit, zora_credit, witch_credit, fluteboy_credit, hint_text, player))
+            ret.append(Item(item, advancement, priority, type, code, price, pedestal_hint, pedestal_credit, sickkid_credit, zora_credit, witch_credit, fluteboy_credit, hint_text, player, mw_player))
         else:
             raise RuntimeError(f'Unknown Item: {item}')
 
@@ -55,7 +55,7 @@ item_table = {'Bow': (True, False, None, 0x0B, 200, 'Bow!\nJoin the archer class
               'Master Sword': (True, False, 'Sword', 0x50, 100, 'Master Sword!\nEvil\'s bane!', 'and the master sword', 'sword-wielding kid', 'glow sword for sale', 'fungus for blue slasher', 'sword boy fights again', 'the Master Sword'),
               'Tempered Sword': (True, False, 'Sword', 0x02, 150, 'Tempered Sword!\nMore slashy!', 'the tempered sword', 'sword-wielding kid', 'flame sword for sale', 'fungus for red slasher', 'sword boy fights again', 'the Tempered Sword'),
               'Fighter Sword': (True, False, 'Sword', 0x49, 50, 'Fighter Sword!\nStarter level slashy!', 'the tiny sword', 'sword-wielding kid', 'tiny sword for sale', 'fungus for tiny slasher', 'sword boy fights again', 'the Fighter Sword'),
-              'Sword and Shield': (True, False, 'Sword', 0x00, 'Sword and Shield!\nUncle sword ahoy!', 'the sword and shield', 'sword and shield-wielding kid', 'training set for sale', 'fungus for training set', 'sword and shield boy fights again', 'the small sword and shield'),
+              'Sword and Shield': (True, False, 'Sword', 0x00, 50, 'Sword and Shield!\nUncle sword ahoy!', 'the sword and shield', 'sword and shield-wielding kid', 'training set for sale', 'fungus for training set', 'sword and shield boy fights again', 'the small sword and shield'),
               'Golden Sword': (True, False, 'Sword', 0x03, 200, 'Golden Sword!\nBest slashy!', 'and the butter sword', 'sword-wielding kid', 'butter for sale', 'cap churned to butter', 'sword boy fights again', 'the Golden Sword'),
               'Progressive Sword': (True, False, 'Sword', 0x5E, 150, 'Sword!\nA better sword for your time!', 'the unknown sword', 'sword-wielding kid', 'sword for sale', 'fungus for some slasher', 'sword boy fights again', 'a Sword'),
               'Progressive Glove': (True, False, None, 0x61, 150, 'Glove!\nLift more than you can now!', 'and the lift upgrade', 'body-building kid', 'some glove for sale', 'fungus for gloves', 'body-building boy lifts again', 'a Glove'),
@@ -100,8 +100,8 @@ item_table = {'Bow': (True, False, None, 0x0B, 200, 'Bow!\nJoin the archer class
               'Progressive Shield': (True, False, None, 0x5F, 50, 'Shield!\nA better shield for your time!', 'and the new shield', 'shield-wielding kid', 'shield for sale', 'fungus for shield', 'shield boy defends again', 'a shield'),
               'Bug Catching Net': (True, False, None, 0x21, 50, 'Bug Net!\nCatch all manner\nof things!', 'and the bee catcher', 'the bug-catching kid', 'stick web for sale', 'fungus for butterflies', 'wrong boy catches bees again', 'the Bug Net'),
               'Cane of Byrna': (True, False, None, 0x18, 50, 'Cane of Byrna!\nSwirly protection!', 'and the bad cane', 'the spark-making kid', 'spark stick for sale', 'spark-stick for trade', 'cane boy encircles again', 'the Blue Cane'),
-              'Boss Heart Container': (False, True, None, 0x3E, 40, 'Heart Container!\nHealth Increased!', 'and the full heart', 'the life-giving kid', 'love for sale', 'fungus for life', 'life boy feels love again', 'a heart'),
-              'Sanctuary Heart Container': (False, True, None, 0x3F, 50, 'Heart Container!\nHealth Increased!', 'and the full heart', 'the life-giving kid', 'love for sale', 'fungus for life', 'life boy feels love again', 'a heart'),
+              'Boss Heart Container': (False, True, None, 0x3E, 40, 'Heart Container!\nHealth Increased!', 'and the full heart', 'the life-giving kid', 'love for sale', 'fungus for life', 'life boy feels love again', 'a heart container'),
+              'Sanctuary Heart Container': (False, True, None, 0x3F, 50, 'Heart Container!\nHealth Increased!', 'and the full heart', 'the life-giving kid', 'love for sale', 'fungus for life', 'life boy feels love again', 'a heart container'),
               'Piece of Heart': (False, False, None, 0x17, 10, 'Heart Piece!\nOne step closer\nto more health!', 'and the broken heart', 'the life-giving kid', 'little love for sale', 'fungus for life', 'life boy feels some love again', 'a heart piece'),
               'Rupee (1)': (False, False, None, 0x34, 0, 'Rupees!\nJust pocket\nchange.', 'the pocket change', 'poverty-struck kid', 'life lesson for sale', 'buying cheap drugs', 'destitute boy has snack again', 'a green rupee'),
               'Rupees (5)': (False, False, None, 0x35, 2, 'Rupees!\nJust pocket\nchange.', 'the pocket change', 'poverty-struck kid', 'life lesson for sale', 'buying cheap drugs', 'destitute boy has snack again', 'a blue rupee'),
@@ -175,9 +175,10 @@ item_table = {'Bow': (True, False, None, 0x0B, 200, 'Bow!\nJoin the archer class
               'Red Potion': (False, False, None, 0x2E, 150, 'Hearty red goop!', 'and the red goo', 'the liquid kid', 'potion for sale', 'free samples', 'bottle boy has red goo again', 'a red potion'),
               'Green Potion': (False, False, None, 0x2F, 60, 'Refreshing green goop!', 'and the green goo', 'the liquid kid', 'potion for sale', 'free samples', 'bottle boy has green goo again', 'a green potion'),
               'Blue Potion': (False, False, None, 0x30, 160, 'Delicious blue goop!', 'and the blue goo', 'the liquid kid', 'potion for sale', 'free samples', 'bottle boy has blue goo again', 'a blue potion'),
+              'Orange Potion': (False, False, None, 0x66, 500, 'Energizing orange goop!', 'and the orange goo', 'the liquid kid', 'potion for sale', 'free samples', 'bottle boy has orange goo again', 'an orange potion'),
               'Bee': (False, False, None, 0x0E, 10, 'I will sting your foes a few times', 'and the sting buddy', 'the beekeeper kid', 'insect for sale', 'shroom pollenation', 'bottle boy has mad bee again', 'a bee'),
               'Good Bee': (False, False, None, 0xD6, 10, 'I will sting your foes a lot', 'and the cold buddy', 'the beekeeper kid', 'cold insect for sale', 'shroom pollenation', 'bottle boy has cold bee again', 'a good bee'),
-              'Small Heart': (False, False, None, 0x42, 10, 'Just a little\npiece of love!', 'and the heart', 'the life-giving kid', 'little love for sale', 'fungus for life', 'life boy feels some love again', 'a heart'),
+              'Small Heart': (False, False, None, 0x42, 10, 'Just a little\npiece of love!', 'and the heart', 'the life-giving kid', 'little love for sale', 'fungus for life', 'life boy feels some love again', 'a refill heart'),
               'Apples': (False, False, None, 0xD1, 30, 'Just a few pieces of fruit!', 'and the juicy fruit', 'the fruity kid', 'the fruit stand', 'expired fruit', 'bottle boy has fruit again', 'an apple hoard'),
               'Fairy': (False, False, None, 0xD2, 50, 'Just a pixie!', 'and the pixie', 'the pixie kid', 'pixie for sale', 'pixie fungus', 'bottle boy has pixie again', 'a pixie'),
               'Beat Boss': (True, False, 'Event', 999, None, None, None, None, None, None, None, None),

@@ -3,7 +3,7 @@ import typing
 from collections.abc import Callable
 from os import PathLike
 
-#from jsonschema import validate
+# from jsonschema.validators import validate
 
 from .mf import data as data_mf
 from .zm import data as data_zm
@@ -21,9 +21,9 @@ def validate_patch_data_mf(patch_data: dict) -> MarsSchemaMF:
     Raises:
         ValidationError: If the patch data does not satisfy the schema.
     """
-    #with open(data_mf.get_data_path("schema.json")) as f:
-    #    schema = json.load(f)
-    #validate(patch_data, schema)
+    # with open(data_mf.get_data_path("schema.json")) as f:
+    #     schema = json.load(f)
+    # validate(patch_data, schema)
     return typing.cast("MarsSchemaMF", patch_data)
 
 
@@ -34,9 +34,9 @@ def validate_patch_data_zm(patch_data: dict) -> MarsSchemaZM:
     Raises:
         ValidationError: If the patch data does not satisfy the schema.
     """
-    #with open(data_zm.get_data_path("schema.json")) as f:
-    #    schema = json.load(f)
-    #validate(patch_data, schema)
+    # with open(data_zm.get_data_path("schema.json")) as f:
+    #     schema = json.load(f)
+    # validate(patch_data, schema)
     return typing.cast("MarsSchemaZM", patch_data)
 
 

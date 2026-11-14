@@ -70,27 +70,27 @@ sector_hub.ponr_sphere_1 = ["Morph Ball", "Missile Data", "Screw Attack"]
 
 starting_location_data = {
     "Docking Bay": {
-        "Area": 0,
-        "Room": 0,
-        "BlockX": 25,
-        "BlockY": 10
+        "area": 0,
+        "room": 0,
+        "block_x": 25,
+        "block_y": 10
     },
     "Operations Deck": {
-        "Area": 0,
-        "Room": 44,
-        "BlockX": 8,
-        "BlockY": 10
+        "area": 0,
+        "room": 44,
+        "block_x": 8,
+        "block_y": 10
     },
     "Sector Hub": {
-        "Area": 0,
-        "Room": 24,
-        "BlockX": 24,
-        "BlockY": 18
+        "area": 0,
+        "room": 24,
+        "block_x": 24,
+        "block_y": 18
     },
     "Concourse Save Station": {
-        "Area": 0,
-        "Room": 33,
-        "BlockX": 9,
-        "BlockY": 10
+        "area": 0,
+        "room": 33,
+        "block_x": 9,
+        "block_y": 10
     }
 }

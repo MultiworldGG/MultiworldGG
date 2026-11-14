@@ -285,8 +285,9 @@ class SaveContext():
 
 
     def give_item(self, world, item, count=1):
-        if item.endswith(')'):
-            item_base, implicit_count = item[:-1].split(' (', 1)
+        if item.endswith(')') and ' (' in item:
+            # APWorld: Prevent as random starting item - some names also contain parentheses, e.g. Treasure Chest Game rupees.
+            item_base, implicit_count = item[:-1].rsplit(' (', 1)
             if implicit_count.isdigit():
                 item = item_base
                 count *= int(implicit_count)
@@ -1070,6 +1071,10 @@ class SaveContext():
 
 
     save_writes_table = {
+        # Healing drops have no effect on a full-health starting save. These
+        # empty entries also let the starting-item eligibility check accept them.
+        "Fairy Drop": {},
+        "Nothing": {},
         "Deku Stick Capacity": {
             'item_slot.stick'            : 'stick',
             'upgrades.stick_upgrade'     : [2,3],
@@ -1096,6 +1101,9 @@ class SaveContext():
         "Bomb Bag": {
             'item_slot.bomb'             : 'bomb',
             'upgrades.bomb_bag'          : None,
+        },
+        "Bomb" : {
+            'ammo.bomb'                  : None,
         },
         "Bombs" : {
             'ammo.bomb'                  : None,
@@ -1282,6 +1290,7 @@ class SaveContext():
         },
         "Rupee"                     : {'rupees' : None},
         "Rupee (Treasure Chest Game)" : {'rupees' : None},
+        "Rupees (Treasure Chest Game)": {'rupees' : None},
         "Rupees"                    : {'rupees' : None},
         "Magic Bean Pack" : {
             'item_slot.beans'       : 'beans',

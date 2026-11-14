@@ -928,7 +928,7 @@ class ExplorationState(object):
         door_list = [x for x in get_doors(world, region, player) if x.type in [DoorType.Normal, DoorType.SpiralStairs]]
         door_list.extend(get_entrance_doors(world, region, player))
         for door in door_list:
-            if self.can_traverse(door):
+            if self.can_traverse(door, world):
                 if door.dest is None and not self.in_door_list_ic(door, self.unattached_doors):
                     self.append_door_to_list(door, self.unattached_doors)
                 elif door.req_event is not None and door.req_event not in self.events and not self.in_door_list(door,
@@ -943,7 +943,7 @@ class ExplorationState(object):
 
     def add_all_doors_check_unattached(self, region, world, player):
         for door in get_doors(world, region, player):
-            if self.can_traverse(door):
+            if self.can_traverse(door, world):
                 if door.controller is not None:
                     door = door.controller
                 if door.dest is None and not self.in_door_list_ic(door, self.unattached_doors):
@@ -958,7 +958,7 @@ class ExplorationState(object):
         for door in get_doors(world, region, player):
             if door.blocked and exception(door):
                 self.pinball_used = True
-            if self.can_traverse(door, exception):
+            if self.can_traverse(door, world, exception):
                 if door.controller is not None:
                     door = door.controller
                 if door.dest is None and door not in proposed_map.keys() and door.name in valid_doors.keys():
@@ -976,7 +976,7 @@ class ExplorationState(object):
 
     def add_all_doors_check_key_region(self, region, key_region, world, player):
         for door in get_doors(world, region, player):
-            if self.can_traverse(door):
+            if self.can_traverse(door, world):
                 if door.req_event is not None and door.req_event not in self.events and not self.in_door_list(door,
                                                                                                               self.event_doors):
                     self.append_door_to_list(door, self.event_doors)
@@ -990,7 +990,7 @@ class ExplorationState(object):
 
     def add_all_doors_check_keys(self, region, key_door_proposal, world, player):
         for door in get_doors(world, region, player):
-            if self.can_traverse(door):
+            if self.can_traverse(door, world):
                 if door.controller:
                     door = door.controller
                 if door in key_door_proposal and door not in self.opened_doors:
@@ -1007,7 +1007,7 @@ class ExplorationState(object):
 
     def add_all_doors_check_big_keys(self, region, big_key_door_proposal, world, player):
         for door in get_doors(world, region, player):
-            if self.can_traverse(door):
+            if self.can_traverse(door, world):
                 if door.controller:
                     door = door.controller
                 if (door in big_key_door_proposal
@@ -1038,10 +1038,12 @@ class ExplorationState(object):
                 return True
         return False
 
-    def can_traverse(self, door, exception=None):
+    def can_traverse(self, door, world, exception=None):
         if door.blocked:
             return exception(door) if exception else False
-        if door.crystal not in [CrystalBarrier.Null, CrystalBarrier.Either]:
+
+        # Taking advantage of AP always generating with a single player to hardcode the '1' here
+        if not world.crystal_book[1] and door.crystal not in [CrystalBarrier.Null, CrystalBarrier.Either]:
             return self.crystal == CrystalBarrier.Either or door.crystal == self.crystal
         return True
 
@@ -1049,7 +1051,7 @@ class ExplorationState(object):
         return count_locations_exclude_big_chest(self.found_locations, world, player)
 
     def validate(self, door, region, world, player):
-        return self.can_traverse(door) and not self.visited(region) and valid_region_to_explore(region, self.dungeon,
+        return self.can_traverse(door, world) and not self.visited(region) and valid_region_to_explore(region, self.dungeon,
                                                                                                 world, player)
 
     def in_door_list(self, door, door_list):
@@ -4260,4 +4262,3 @@ dungeon_drops = {
     'Hyrule Castle': ['Sewers Rat Path'],
     'Skull Woods': ['Skull Pot Circle', 'Skull Pinball', 'Skull Left Drop', 'Skull Back Drop'],
 }
-

@@ -40,10 +40,14 @@ class ReservedPointersMF(IntEnum):
     MISSILE_LIMIT_ADDR = auto()
     ROOM_NAMES_TABLE_ADDR = auto()
     REVEAL_HIDDEN_TILES_ADDR = auto()
-    TITLESCREEN_TEXT_POINTERS_POINTER_ADDR = auto()
+    TITLE_SCREEN_TEXT_POINTERS_POINTER_ADDR = auto()
     DEFAULT_STEREO_FLAG_POINTER_ADDR = auto()
     INSTANT_MORPH_FLAG_POINTER_ADDR = auto()
     USE_ALTERNATIVE_HUD_DISPLAY = auto()
+    GADORA_BEAMS_TABLE_POINTER = auto()
+    ZAZABI_ADDITIONAL_DELAY_POINTER = auto()
+    YAKUZA_ROUNDS_POINTER = auto()
+    USE_TOGGLE_FOR_SECONDARY_WEAPON_SELECTION = auto()
 
     def __new__(cls, offset: int) -> Self:
         obj = int.__new__(cls)

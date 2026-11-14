@@ -10,6 +10,7 @@ from BaseClasses import CollectionState, Item
 from NetUtils import JSONMessagePart
 from rule_builder.rules import (
     And,
+    AtLeast,
     CanReachLocation,
     CanReachRegion,
     False_,
@@ -1042,9 +1043,11 @@ def _compile_requirement(
             )
         )
     rules.extend(compile_named(name) for name in requirement.all_of)
-    if requirement.any_of:
+    if requirement.any_of or requirement.minimum_any_of != 1:
         rules.append(
             _or_rules(compile_named(name) for name in requirement.any_of)
+            if requirement.minimum_any_of == 1 else
+            AtLeast(requirement.minimum_any_of, *(compile_named(name) for name in dict.fromkeys(requirement.any_of)))
         )
     rules.extend(
         _compile_item_count(count_requirement)
@@ -1065,6 +1068,31 @@ def _abstract_names(revision, *args, **kwargs):
 @lru_cache(maxsize=32)
 def _combined_names(base, extra):
     return base | extra
+
+
+def _factor_requirement_rules(requirements, compile_rule, depth=0):
+    if len(requirements) < 2 or depth == 16:
+        return _or_rules(compile_rule(rule) for rule in requirements)
+    occurrences = {}
+    for index, rule in enumerate(requirements):
+        for name in dict.fromkeys(rule.all_of):
+            occurrences.setdefault(name, []).append(index)
+    group = max(occurrences.values(), key=len, default=())
+    if len(group) < 2:
+        return _or_rules(compile_rule(rule) for rule in requirements)
+    common = set(requirements[group[0]].all_of)
+    for index in group[1:]:
+        common.intersection_update(requirements[index].all_of)
+    shared = LocationRequirement(
+        all_of=tuple(name for name in requirements[group[0]].all_of if name in common),
+        require_any_crest=False,
+    )
+    selected = set(group)
+    reduced = tuple(dataclasses.replace(requirements[index],
+        all_of=tuple(name for name in requirements[index].all_of if name not in common)) for index in group)
+    factored = _and_rules((compile_rule(shared), _factor_requirement_rules(reduced, compile_rule, depth + 1)))
+    remaining = tuple(rule for index, rule in enumerate(requirements) if index not in selected)
+    return _or_rules((factored, _factor_requirement_rules(remaining, compile_rule, depth + 1))) if remaining else factored
 
 
 @lru_cache(maxsize=8192)
@@ -1138,8 +1166,10 @@ def build_requirements_rule(
         silk_and_soul_points=silk_and_soul_points,
     )
     abstract_requirement_names = _combined_names(abstract_requirement_names, extra_abstract_requirement_names)
-    return _or_rules(
-        _compile_requirement(
+    requirements = tuple(rule for rule in requirements if rule.minimum_skip_tier <= skips_tier)
+
+    def compile_rule(requirement):
+        return _compile_requirement(
             requirement,
             abstract_requirement_names=abstract_requirement_names,
             split_dash_and_sprint=split_dash_and_sprint,
@@ -1178,8 +1208,7 @@ def build_requirements_rule(
             silk_and_soul_points=silk_and_soul_points,
             silk_heart_logic=silk_heart_logic,
         )
-        for requirement in requirements
-    )
+    return _factor_requirement_rules(requirements, compile_rule)
 
 
 def build_location_rule(

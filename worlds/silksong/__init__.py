@@ -18,7 +18,7 @@ from BaseClasses import (
 
 from Options import OptionError
 from rule_builder.rules import Has
-from worlds.AutoWorld import WebWorld, World
+from worlds.AutoWorld import WebWorld
 from rule_builder.cached_world import CachedRuleBuilderWorld
 from settings import FilePath, Group
 
@@ -261,16 +261,21 @@ class SilksongWorld(CachedRuleBuilderWorld):
 
     def collect(self, state: CollectionState, item: Item) -> bool:
         collected_name = self.collect_item(state, item)
-        changed = World.collect(self, state, item)
-        if changed and collected_name != item.name and hasattr(self, '_silk_supply'):
+        if not collected_name:
+            return False
+        state.add_item(collected_name, self.player)
+        if collected_name != item.name and hasattr(self, '_silk_supply'):
             self._silk_supply.collect(state, collected_name)
         results = state.rule_builder_cache[self.player]
-        if changed and results:
+        if results:
             for name in dict.fromkeys((item.name, collected_name, self.item_mapping.get(item.name, ""))):
-                for rule_id in results.keys() & self.rule_item_dependencies.get(name, set()):
+                dependencies = self.rule_item_dependencies.get(name)
+                if not dependencies:
+                    continue
+                for rule_id in results.keys() & dependencies:
                     if results.get(rule_id) is False:
                         del results[rule_id]
-        return changed
+        return True
 
     def reached_region(self, state: CollectionState, region: Region) -> None:
         dependencies = self.rule_region_dependencies.get(region.name)
@@ -866,14 +871,6 @@ class SilksongWorld(CachedRuleBuilderWorld):
             self.options.trails_end_requirement.current_key
         )
 
-    def get_location_map_markers_key(self) -> str:
-        key = self.options.location_map_markers.current_key
-        if key not in {"off", "mapped_rooms", "owned_maps", "all"}:
-            raise OptionError(
-                f"Unknown location map marker mode: {key!r}"
-            )
-        return key
-
     def uses_randomized_bell_markers(self) -> bool:
         return bool(self.options.randomized_bell_markers.value)
 
@@ -951,17 +948,6 @@ class SilksongWorld(CachedRuleBuilderWorld):
 
     def is_faster_dialogue_enabled(self) -> bool:
         return bool(self.options.faster_dialogue.value)
-
-    def is_death_link_enabled(self) -> bool:
-        return bool(self.options.death_link.value)
-
-    def get_death_link_cocoon_key(self) -> str:
-        key = self.options.death_link_cocoon.current_key
-        if key not in {"vanilla", "cocoonless", "cocoon"}:
-            raise OptionError(
-                f"Unknown Death Link cocoon mode: {key!r}"
-            )
-        return key
 
     def is_silk_link_enabled(self) -> bool:
         return bool(self.options.silk_link.value)
@@ -1509,7 +1495,7 @@ class SilksongWorld(CachedRuleBuilderWorld):
         from .rosary_economy import entrance_memo
         with entrance_memo(self):
             connect_exits(self)
-        if getattr(self, '_silk_supply', None) is not None:
+        if self.options.entrance_randomization and getattr(self, '_silk_supply', None) is not None:
             self.explicit_indirect_conditions = False
 
     def explain_path(self, entrance, state):
@@ -1569,7 +1555,6 @@ class SilksongWorld(CachedRuleBuilderWorld):
         )
         self.multiworld.regions += [menu, pharloom, logic_unknown]
         from .enemy_souls import create_locations as create_enemy_locations
-        create_enemy_locations(self, pharloom)
         if not self.options.diving_bell_key_randomization.value:
             vanilla_key = SilksongLocation(self.player, "Vanilla Diving Bell Key", None, menu)
             vanilla_key.show_in_spoiler = False
@@ -1577,6 +1562,7 @@ class SilksongWorld(CachedRuleBuilderWorld):
             menu.locations.append(vanilla_key)
 
         native_regions = create_native_logic_region_map(self)
+        create_enemy_locations(self, pharloom)
         abstract_names = self._silksong_native_region_names
         self._silksong_native_location_anchors = {}
         self._silksong_native_assumed_source_locations = set()
@@ -1932,6 +1918,8 @@ class SilksongWorld(CachedRuleBuilderWorld):
     def stage_generate_basic(cls, multiworld) -> None:
         for world in multiworld.get_game_worlds(cls.game):
             world._prepare_start_inventory_pool()
+        from .generation_diagnostics import validate_plando
+        validate_plando(multiworld, cls.game)
 
     def fill_hook(self, progitempool, usefulitempool, filleritempool, fill_locations):
         indices = [index for index, item in enumerate(progitempool) if item.player == self.player]
@@ -2183,27 +2171,20 @@ class SilksongWorld(CachedRuleBuilderWorld):
 
         from .craftmetal import audit_craftmetal_spending
 
-        if any(location.item is not item for location, item in placements):
-            base_state = None
-
-        audit_craftmetal_spending(multiworld, [
-            multiworld.worlds[player] for player in multiworld.player_ids
-            if multiworld.worlds[player].game == cls.game
-        ], finalized=False, base_state=base_state)
-
-        if any(location.item is not item for location, item in placements):
-            base_state = None
-
         # Freeze the resulting count before core progression balancing. The
         # slot placements are locked so that balancing cannot change it.
         for world in combined_worlds:
             finalize_crest_slot_memory_locket_logic(world)
 
+        audit_craftmetal_spending(multiworld, [
+            multiworld.worlds[player] for player in multiworld.player_ids
+            if multiworld.worlds[player].game == cls.game
+        ], finalized=False)
+
         # Move only the progression needed to keep two Lockets in reserve.
         slotless_state = cls._build_crest_slot_budget_state(
             multiworld,
             excluded_slots,
-            base_state,
         )
         for world in combined_worlds:
             progression_count = get_crest_slot_progression_item_count(
@@ -2369,7 +2350,6 @@ class SilksongWorld(CachedRuleBuilderWorld):
             "start_fully_mapped":
                 self.is_start_fully_mapped_enabled(),
             "automatic_compass": self.is_automatic_compass_enabled(),
-            "location_map_markers": self.get_location_map_markers_key(),
             "randomized_bell_markers":
                 self.uses_randomized_bell_markers(),
             "randomized_melody_markers":
@@ -2388,8 +2368,6 @@ class SilksongWorld(CachedRuleBuilderWorld):
             "faster_dialogue": self.is_faster_dialogue_enabled(),
             "faster_silkheart_animation":
                 bool(self.options.faster_silkheart_animation.value),
-            "death_link": self.is_death_link_enabled(),
-            "death_link_cocoon": self.get_death_link_cocoon_key(),
             "silk_link": self.is_silk_link_enabled(),
             "rosary_link": self.is_rosary_link_enabled(),
             "shell_shard_link": self.is_shell_shard_link_enabled(),

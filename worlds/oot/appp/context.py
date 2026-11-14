@@ -22,7 +22,11 @@ class PatchContext(SimpleNamespace):
         self.player_names = {int(player): name for player, name in data["player_names"].items()}
         self.random = Random(data["text_rng_seed"])
         self.scrub_prices = {int(key): value for key, value in self.scrub_prices.items()}
-        self.trap_appearances = {int(key): item_record(value) for key, value in data["trap_appearances"].items()}
+        # Locations without an AP address use None, encoded as a "null" JSON key.
+        self.trap_appearances = {
+            None if key in (None, "null") else int(key): item_record(value)
+            for key, value in data["trap_appearances"].items()
+        }
         self.locations = {}
         self.region_locations = {}
         for record in data["locations"]:

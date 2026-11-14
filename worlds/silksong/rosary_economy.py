@@ -32,13 +32,15 @@ def entrance_memo(world):
 def gate(world, rules, location=None, anchor=None):
     from .silk_economy import source_node
     result = []
-    prices = world.get_purchase_prices() if enabled(world) else {}
+    active = enabled(world)
+    prices = world.get_purchase_prices() if active else {}
+    payment = PAYMENTS.get(location) if active else None
+    shop = SHOPS.get(location) if active else None
     for rule in rules:
-        node = source_node(rule) or anchor
-        if enabled(world) and location in PAYMENTS:
-            rule = replace(rule, rosary_prices=tuple(PAYMENTS[location]))
-        if enabled(world) and location in SHOPS:
-            rows = [row for row in SHOPS[location] if row['node'] == node]
+        keys = rule.rosary_prices if payment is None else payment
+        node = (source_node(rule) or anchor) if shop is not None or (active and keys) else None
+        if shop is not None:
+            rows = [row for row in shop if row['node'] == node]
             if not rows:
                 from .npc_souls import CATALOGUE
                 events = {event for npc in CATALOGUE for event in npc.get('alternatives', {}).get(location, ())}
@@ -46,14 +48,15 @@ def gate(world, rules, location=None, anchor=None):
                     raise ValueError('Shop purchase position needs a currency binding: ' + location + ' / ' + str(node))
             else:
                 keys = {key for row in rows for key in row['prices']}
-                rule = replace(rule, rosary_prices=(min(keys,key=lambda k:prices[k]),) if keys else ())
-        paid = enabled(world) and any(
+                keys = (min(keys,key=lambda k:prices[k]),) if keys else ()
+        paid = active and any(
             int(key.split(':', 1)[1]) > 0 if key.startswith('fixed:') else prices[key] > 0
-            for key in rule.rosary_prices)
+            for key in keys)
         if paid and node is None:
             raise ValueError('Rosary payment has no physical source: ' + repr(rule))
-        result.append(replace(rule, rosary_prices=(),
-            all_of=tuple(dict.fromkeys((*rule.all_of, *((FARM,) if paid else ()))))))
+        all_of = tuple(dict.fromkeys((*rule.all_of, *((FARM,) if paid else ()))))
+        result.append(replace(rule, rosary_prices=(), all_of=all_of)
+                      if rule.rosary_prices or all_of != rule.all_of else rule)
     return tuple(result)
 
 
@@ -94,7 +97,7 @@ def export_world(world, slot_data):
 def farm_requirements(world, graph):
     from .room_graph import load_room_graph, RequirementSpec, RequirementMode
     from .room_graph_logic import _compile_spec
-    from .requirements import _compiled_room_clause_requirement, NON_ARCHITECT_CREST_ITEMS
+    from .requirements import _compiled_room_clause_requirement
     from .enemy_souls import enabled_enemies, _combat_gate
     from .silk_economy import gate_location
 
@@ -119,6 +122,5 @@ def farm_requirements(world, graph):
                 extra = [*route['events'], *(('Act: ' + str(route['act']),) if route['act'] > 1 else ())]
                 extra.extend('Soul of ' + n for n in (source['species'], *route['souls']) if n in names)
                 rule = replace(rule, all_of=tuple(dict.fromkeys((*rule.all_of, *extra))))
-                rules.extend(_combat_gate(replace(rule, all_of=(*rule.all_of, crest)), names)
-                             for crest in sorted(NON_ARCHITECT_CREST_ITEMS))
+                rules.append(_combat_gate(rule, names))
     return gate_location(world, tuple(dict.fromkeys(rules)))

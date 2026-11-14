@@ -1,9 +1,32 @@
 import typing
 from dataclasses import dataclass
-from Options import Toggle, DefaultOnToggle, Option, Range, Choice, ItemDict, OptionList, DeathLink, PerGameCommonOptions, OptionCounter, StartInventoryPool
+from Options import Toggle, DefaultOnToggle, Option, Range, Choice, ItemDict, OptionList, DeathLink, \
+    PerGameCommonOptions, OptionCounter, StartInventoryPool
 from Options import OptionGroup
 from .Skips import get_all_skips, SkipDifficulty
 
+
+# Game Options
+class EnableDeathlinkOption(Toggle):
+    """Includes Deathlink"""
+    display_name = "Enable Deathlink"
+
+class GoalConditionOption(Choice):
+    """Set the goal condition
+
+    - **Gwyn:** Default option -Beat Gwyn, Lord of Cinder
+    - **Bosses:** Defeat all bosses. If DLC or PW are not shuffled, their bosses will not be required for this goal.
+    - **Ornstein and Smough:** Kill Ornstein and Smough. Choosing this option also excludes all checks that would require the Lordvessel."""
+    display_name = "Goal Condition"
+    option_gwyn = 0
+    option_all_bosses = 1
+    option_ornstein_and_smough = 2
+    option_manus = 3
+    default = 0
+
+class GuaranteedItemsOption(ItemDict):
+    """Guarantees that the specified items will be in the item pool"""
+    display_name = "Guaranteed Items"
 
 # QoL
 class CanWarpWithoutLordvessel(DefaultOnToggle):
@@ -44,7 +67,7 @@ class SoulMultiplierBase(Range):
 
 class SoulMultiplierMax(Range):
     """Maximum (final) value for a multiplier applied to enemy & boss soul drops, expressed as a percentage.
-    
+
     Only takes effect if not equal to soul_multiplier_base, and soul_multiplier_steps is non-zero."""
     display_name = "Soul Multiplier - Maximum Percentage"
     range_start = 20
@@ -52,9 +75,9 @@ class SoulMultiplierMax(Range):
     default = 100
 
 class SoulMultiplierSteps(Range):
-    """Number of steps from the base to the maximum multiplier. 
+    """Number of steps from the base to the maximum multiplier.
     This is how many "Progressive Soul Multiplier" items will be added to the item pool.
-    
+
     Upon receiving one, the soul multiplier will increase (1/(this value)) * (the distance from max to base).
     As an example, if your soul_multiplier_base is 100, soul_multiplier_max is 200, and this is set to 4, then the
     first such item will set the soul drop multiplier to 125%, 2nd to 150%, and so on.
@@ -89,9 +112,9 @@ class WeightMultiplierMin(Range):
     default = 100
 
 class WeightMultiplierSteps(Range):
-    """Number of steps from the base to the minimum multiplier. 
+    """Number of steps from the base to the minimum multiplier.
     This is how many "Progressive Weight Reducer" items will be added to the item pool.
-    
+
     Upon receiving one, the weight multiplier will decrease (1/(this value)) * (the distance from base to min).
     As an example, if your weight_multiplier_base is 100, weight_multiplier_min is 20, and this is set to 4, then the
     first such item will set the weight multiplier to 80%, 2nd to 60%, and so on.
@@ -106,30 +129,13 @@ class WeightMultiplierSteps(Range):
     range_end = 10
     default = 0
 
-# Game Options
-class GuaranteedItemsOption(ItemDict):
-    """Guarantees that the specified items will be in the item pool"""
-    display_name = "Guaranteed Items"
-
-class ExcludedLocationBehaviorOption(Choice):
-    """How to choose items for excluded locations in DSR.
-
-    - **Forbid Useful:** Neither progression items nor useful items can be placed in excluded
-      locations.
-    - **Do Not Randomize:** Excluded locations always contain the same item as in vanilla
-      Dark Souls: Remastered.
-    """
-    display_name = "Excluded Locations Behavior"
-    option_forbid_useful = 2
-    option_do_not_randomize = 3
-    default = 2
-
+# Sanity
 class FogwallSanity(DefaultOnToggle):
-    """Makes area fog walls uninteractable until you receive their items from the item pool. 
+    """Makes area fog walls uninteractable until you receive their items from the item pool.
     Fog walls will also give checks when you pass through them.
     The Undead Asylum fog wall will not be locked, to avoid super-early BK.
     Recommended to turn this on."""
-    display_name = "Fogwall Sanity" 
+    display_name = "Fogwall Sanity"
 
 class BossFogwallSanity(Toggle):
     """Makes boss fog walls uninteractable until you receive their items from the item pool.
@@ -140,55 +146,164 @@ class BossFogwallSanity(Toggle):
       Sif,
       Seath (2nd encounter), and
       Kalameet."""
-    display_name = "Boss Fogwall Sanity" 
+    display_name = "Boss Fogwall Sanity"
 
-class BossSoulShuffle(DefaultOnToggle):
+class IncludeDlc(DefaultOnToggle):
+    """Whether to randomize the Artorias of the Abyss DLC expansion content.
+    With this unselected, items from the expansion will not be included, and locations within it will not be randomized.
+
+    This option is forced off if goal_condition is set to ornstein_and_smough."""
+    display_name = "Include DLC"
+
+class IncludePaintedWorld(DefaultOnToggle):
+    """Whether to randomize Painted World of Ariamis locations and items."""
+    display_name = "Include Painted World"
+
+class IncludeGreatHollow(DefaultOnToggle):
+    """Whether to randomize  the Great Hollow and Ash Lake locations and items."""
+    display_name = "Include Great Hollow And Ash Lake"
+
+class LordSoulShuffle(DefaultOnToggle):
+    """Whether to shuffle the Lord Souls into the pool"""
+    display_name = "Lord Soul Shuffle"
+
+    # option_false = 0
+    # option_true = 1
+    # option_shards = 2
+
+# class LordSoulShardsRequired(Range):
+#     """If Lord Soul Shuffle is set to "Shards", this is the number of shards required to open the Kiln Door."""
+#     display_name = "Lord Soul Shards Required"
+#     range_start = 1
+#     range_end = 10
+#     default = 4
+#
+# class LordSoulShardsExtra(Range):
+#     """If Lord Soul Shuffle is set to "Shards", this is the number of shards beyond the Required amount that will be in the pool."""
+#     display_name = "Lord Soul Shuffle"
+#     range_start = 0
+#     range_end = 10
+#     default = 0
+
+class LocalRandoChoice(Choice):
+    """Class to inherit randomizing things that can optionally be just local."""
+    option_false = 0
+    option_true = 1
+    option_local_only = 2
+    default = 1
+
+# Boss Shuffle
+class BossSoulShuffle(LocalRandoChoice):
     """Makes boss soul drops be shuffled into the multiworld item pool.
-    Does not affect the Lord Souls, which are always shuffled in."""
+    Does not affect the Lord Souls.
+
+    - **false:** do not randomize them - they will be in their vanilla locations.
+    - **true:** randomize them into the AP pool - between all games in the multiworld.
+    - **local_only:** only randomize them locally - within this game of DSR. These items will not be AP locations/checks, and will not count toward hint points or hint cost."""
     display_name = "Boss Soul Shuffle"
 
-class BossHumanityShuffle(DefaultOnToggle):
-    """Makes boss humanity and twin humanity drops be shuffled into the multiworld item pool."""
+class BossHumanityShuffle(LocalRandoChoice):
+    """Makes boss humanity and twin humanity drops be shuffled into the multiworld item pool.
+
+    See Boss Soul Shuffle description for option choice descriptions."""
     display_name = "Boss Humanity Shuffle"
 
-class BossBoneShuffle(Toggle):
-    """Makes boss homeward bone drops be shuffled into the multiworld item pool."""
+class BossBoneShuffle(LocalRandoChoice):
+    """Makes boss homeward bone drops be shuffled into the multiworld item pool.
+
+    See Boss Soul Shuffle description for option choice descriptions."""
     display_name = "Boss Bone Shuffle"
+    default = 0
 
-class BlackKnightWeaponShuffle(DefaultOnToggle):
-    """Makes Black Knight weapon drop locations guaranteed, and adds their weapons to the multiworld item pool.
+# Item Pickup Shuffle
+class CorpseFillerItemShuffle(LocalRandoChoice):
+    """Adds corpse locations with filler items to the multiworld pool, the local pool, or not at all. Up to 367 locations.
+
+    - **false:** do not randomize them - they will be in their vanilla locations.
+    - **true:** randomize them into the AP pool - between all games in the multiworld.
+    - **local_only:** only randomize them locally - within this game of DSR. These items will not be AP locations/checks, and will not count toward hint points or hint cost."""
+    display_name = "Corpse Filler Item Shuffle"
+
+class CorpseUsefulItemShuffle(LocalRandoChoice):
+    """How to randomize corpse locations with useful items. Up to 7 locations.
+    Includes Grass Crest Shield, some Firekeeper Souls, some embers, Chaos Flame Ember, and Sewer Chamber Key locations.
+
+    See Corpse Filler Item Shuffle description for option choice descriptions."""
+    display_name = "Corpse Useful Item Shuffle"
+
+class CorpseRingItemShuffle(LocalRandoChoice):
+    """How to randomize corpse locations with ring items. Up to 6 locations.
+
+    See Corpse Filler Item Shuffle description for option choice descriptions."""
+    display_name = "Corpse Ring Item Shuffle"
+
+# One-time Enemy Drop Shuffle
+class BlackKnightWeaponShuffle(LocalRandoChoice):
+    """Makes Black Knight weapon drop locations guaranteed, and adds their weapons to the multiworld item pool. Up to 7 locations.
     This only applies to the 7 non-respawning Black Knights in the game.
-    With this off, their Titanite Chunk drops are still added to the pool, and the weapon drops are left to chance.
+    With this off, the weapon drop change is left unmodified, and those locations are unrandomized.
 
-    These weapons are quite powerful, and this option adds 2 Swords, 2 Halberds, 1 Greataxe, 1 Greatsword, and 1 Shield to the pool."""
+    These weapons are quite powerful, and this option adds 2 Swords, 2 Halberds, 1 Greataxe, 1 Greatsword, and 1 Shield to the pool.
+
+    - **false:** do not randomize them - they will be in their vanilla locations.
+    - **true:** randomize them into the AP pool - between all games in the multiworld.
+    - **local_only:** only randomize them locally - within this game of DSR. These items will not be AP locations/checks, and will not count toward hint points or hint cost."""
     display_name = "Black Knight Weapon Shuffle"
 
-class CrystalLizardShuffle(Toggle):
-    """Adds Crystal Lizard drop locations to the multiworld item pool.
+class BlackKnightTitaniteShuffle(LocalRandoChoice):
+    """Adds Black Knight titanite chunks as locations and items to the multiworld and item pool. Up to 7 locations.
+    This only applies to the 7 non-respawning Black Knights in the game.
+
+    See Black Knight Weapon Shuffle description for option choice descriptions."""
+    display_name = "Black Knight Titanite Shuffle"
+
+class CrystalLizardShuffle(LocalRandoChoice):
+    """Adds Crystal Lizard drops as locations to the multiworld and item pool. Up to 50 locations total.
     This adds 2 locations per lizard: 1 for their Twinkling Titanite, and 1 for an additional drop - which is made guaranteed.
-    
+
     There are 25 total crystal lizards, 10 of which are in the Great Hollow, and 5 of which are in the DLC.
     If one escapes, you can quit out and reload to respawn it.
-    Great Hollow lizards are forced to spawn on every load instead of their vanilla 1/3 chance per load."""
+    Great Hollow lizards are forced to spawn on every load instead of their vanilla 1/3 chance per load.
+
+    See Black Knight Weapon Shuffle description for option choice descriptions."""
     display_name = "Crystal Lizard Shuffle"
 
+class MinibossDropShuffle(LocalRandoChoice):
+    """Adds the Valley of Drakes' Undead Dragon's and two Hydras' drops as locations to the multiworld and item pool. Up to 4 locations.
 
-class UnlimitedShopItemShuffle(DefaultOnToggle):
-    """Shuffles unlimited quantity consumable and arrow shop slots from unmissable shopkeepers.
+    See Black Knight Weapon Shuffle description for option choice descriptions."""
+    display_name = "Miniboss Drop Shuffle"
 
-    Shops Shuffled by this option include all those on the Limited shuffle option below, plus Ingward.
-    """
-    display_name = "Unlimited Shop Item Shuffle"
+class HostileNpcDropShuffle(LocalRandoChoice):
+    """Adds hostile NPC (not invader) drops as locations to the multiworld and item pool. Up to 4 locations.
+    Included NPCs: Oscar in 2nd asylum visit, Havel, and Grana of Izalith.
 
+    See Black Knight Weapon Shuffle description for option choice descriptions."""
+    display_name = "Hostile Npc Drop Shuffle"
+
+class MimicDropShuffle(LocalRandoChoice):
+    """Adds mimic drops as locations to the multiworld and item pool. Up to 8 locations total. Does not include the Crest Key mimic, which is considered a "chest item".
+
+    See Black Knight Weapon Shuffle description for option choice descriptions."""
+    display_name = "Mimic Drop Shuffle"
+
+class MiscDropShuffle(DefaultOnToggle):
+    """Adds uncategorized guaranteed drops as locations to the multiworld and item pool. Up to 7 locations.
+    Includes Broken Pendant, Sunlight Maggot, Sif Rescue (Cleansing Greatshield), the 2 Pisaca drops, a PW pyromancy engorged zombie, and the Oolacile "I'm Sorry" Carving sorceress.
+
+    If disabled, these drops will be as vanilla - Broken Pendant will be post-Dawn rescue in the Duke's Archives, Sunlight maggot at the Lost Izalith shortcut, etc."""
+    display_name = "Miscellaneous Drop Shuffle"
+
+# Shop Shuffle
 class LimitedShopItemShuffle(DefaultOnToggle):
     """Adds limited quantity shop slots from unmissable shopkeepers as locations, and shuffles their items into the multiworld.
     This treats Weapon and Armor slots as limited quantity slots, adding 1 of each to the pool.
     Missable shopkeepers, who can be made unavailable based on progression or dialogue options, will not have their shops shuffled into the multiworld.
     Shuffled Shops' keepers will be made immune to player attacks to make them unmissable, and their drops added as shuffled locations to their shop.
-    
+
     Shops Shuffled by this option:
     Andre of Astora
-    Big Hat Logan
+    Big Hat Logan (considered in-logic once you can make his shop available at Duke's Archives)
     Crestfallen Merchant
     Domhnall of Zena (including post-boss equipment)
     Female Undead Merchant
@@ -205,6 +320,14 @@ class LimitedShopItemShuffle(DefaultOnToggle):
     """
     display_name = "Limited Shop Item Shuffle"
 
+class UnlimitedShopItemShuffle(DefaultOnToggle):
+    """Shuffles unlimited quantity consumable and arrow shop slots from unmissable shopkeepers.
+
+    Shops Shuffled by this option include all those on the Limited shuffle option below, plus Ingward.
+    """
+    display_name = "Unlimited Shop Item Shuffle"
+
+
 class ShopHints(Choice):
     """When Shop items are shuffled, this options control what types of Archipelago Hints will be created upon talking to the relevant merchant (with the shop slots unlocked)."""
     display_name = "Shop Hints"
@@ -214,7 +337,7 @@ class ShopHints(Choice):
     option_all = 3
     default = 1
 
-def skip_logic_helper(difficulty: SkipDifficulty): 
+def skip_logic_helper(difficulty: SkipDifficulty):
     available_skips = get_all_skips()
     valid_keys = {skip.name for skip in available_skips if skip.difficulty == difficulty}
     default = {skip.name: 0 for skip in available_skips if skip.difficulty == difficulty}
@@ -222,9 +345,9 @@ def skip_logic_helper(difficulty: SkipDifficulty):
     return valid_keys, default
 
 class SkipLogicEasy(OptionCounter):
-    """ In the following section you can enable specific skips to perform. The skips are losely categorized by their difficulty. 
+    """ In the following section you can enable specific skips to perform. The skips are losely categorized by their difficulty.
         Numbers other than 0 put the skip into logic.
-        Recommended to edit in the yaml, due to problems in Options Creator. 
+        Recommended to edit in the yaml, due to problems in Options Creator.
 
         For more detailed description of each individual skip visit https://docs.google.com/spreadsheets/d/1X7CHM0lT8vMiZmlGNtzdr3UXz71onuuRC2FyrNRw-UQ/edit?gid=840526629#gid=840526629
     """
@@ -236,19 +359,21 @@ class SkipLogicEasy(OptionCounter):
 
 class SkipLogicMedium(OptionCounter):
     display_name = "Enabled Medium Skips"
-    difficulty=SkipDifficulty.MEDIUM
+    difficulty = SkipDifficulty.MEDIUM
     valid_keys, default = skip_logic_helper(difficulty)
 
 
 class SkipLogicHard(OptionCounter):
     display_name = "Enabled Hard Skips"
-    difficulty=SkipDifficulty.HARD
+    difficulty = SkipDifficulty.HARD
     valid_keys, default = skip_logic_helper(difficulty)
+
 
 class SkipLogicVeryHard(OptionCounter):
     display_name = "Enabled Very Hard Skips"
-    difficulty=SkipDifficulty.VERY_HARD
+    difficulty = SkipDifficulty.VERY_HARD
     valid_keys, default = skip_logic_helper(difficulty)
+
 
 class LogicToAccessFirelinkAltar(Choice):
     """Firelink Altar logical Access requirement.
@@ -270,14 +395,15 @@ class LogicToAccessFirelinkAltar(Choice):
     default = 2
 
 class LogicToAccessCatacombs(Choice):
-    """Artificial logic for The Catacombs access. 
+    """Artificial logic for The Catacombs access.
      Before the chosen condition, The Catacombs will be considered "out of logic"
 
     - **no_logic:** (not recommended) Catacombs is in-logic as soon as you get to Firelink Shrine.
     - **undead_merchant:** Access to Undead Merchant in the Upper Undead Burg puts Catacombs in-logic.
     - **andre:** Access to Andre puts Catacombs in-logic.
     - **andre_or_undead_merchant:** Access to either Andre or Undead Merchant puts Catacombs in-logic.
-    - **ornstein_and_smough:** (Default) Access to Ornstein and Smough puts Catcombs in-logic."""
+    - **ornstein_and_smough:** (Default) Access to Ornstein and Smough puts Catcombs in-logic.
+      If both this option and goal_condition are set to ornstein_and_smough, The Catacombs and Tomb of the Giants are instead not randomized at all."""
     display_name = "Logic Requirement to Access Catacombs"
     option_no_logic = 0
     option_undead_merchant = 1
@@ -306,7 +432,7 @@ class RandomizeStartingLoadouts(DefaultOnToggle):
     Shields will always be 1-handed-wieldable with starting stats.
     Weapons will always be at least 2-handed-wieldable with starting stats.
     You can see what weapons/shield/item each class starts with in their description.
-    Starting spells are randomized separately.""" 
+    Starting spells are randomized separately."""
     display_name = "Randomize Starting Loadout"
 
 class RandomizeStartingGifts(DefaultOnToggle):
@@ -324,7 +450,7 @@ class RequireOneHandedStartingWeapons(DefaultOnToggle):
 class ExtraStartingWeaponForMeleeClasses(Toggle):
     """If randomize_starting_loadouts is on, this option determines if melee classes will get a second melee weapon."""
     display_name = "Extra Starting Weapon For Melee Classes"
-    
+
 class ExtraStartingShieldForAllClasses(Toggle):
     """If randomize_starting_loadouts is on, this option determines if all classes will get a second starting shield."""
     display_name = "Extra Starting Shield For All Classes"
@@ -379,70 +505,65 @@ class NoMiracleCovenantRequirements(DefaultOnToggle):
     """Removes covenant requirements for casting certain miracles."""
     display_name = "No Miracle Covenant Requirements"
 
-class UpgradedWeaponsPercentage(Range):
-    """Percentage of weapons (including shields) in the pool that will be replaced with upgraded versions, if possible.
-    Does not affect starting equipment.
-    Choose a higher value for an easier time."""
-    display_name = "Upgraded Weapons Percentage"
-    range_start = 0
-    range_end = 100
-    default = 0
-
-class UpgradedWeaponsAllowedInfusions(OptionList):
-    """Which infusions are allowed if UpgradedWeapons.
-    Available infusion types are Normal, Raw, Magic, Fire, Divine, Chaos, Enchanted, Occult, Crystal, and Lightning.
-    If "Normal" is removed, all upgraded weapons will have a different, available infusion."""
-    display_name = "Upgraded Weapons - Allowed Infusions"
-    default = {"Normal", "Raw", "Magic", "Fire", "Divine", "Chaos", "Enchanted", "Occult", "Crystal", "Lightning"}
-    valid_keys = ["Normal", "Raw", "Magic", "Fire", "Divine", "Chaos", "Enchanted", "Occult", "Crystal", "Lightning"]
-
-class UpgradedWeaponsAdjustedLevels(DefaultOnToggle):
-    """For upgraded weapons added to the pool, Whether to 'adjust' weapon levels for applying the ranges.
-    When true, the min/max levels will apply to an calculated "level" of an infused weapon adjusted by:
-     +5 for Raw/Magic/Fire/Divine
-     +10 for Chaos/Enchanted/Occult/Crystal/Lightning 
-    When false, the min/max levels will not be adjusted."""
-    display_name = "Upgraded Weapons - Adjust Ranges"
-
-class UpgradedWeaponsMinLevel(Range):
-    """Minimum upgrade value on upgraded weapons in the pool.
-    This can exclude certain infusions if their calculated level cannot be at the minimum level. """
-    display_name = "Upgraded Weapons - Minimum Level"
+class IncomingWeaponUpgradeBaseLevel(Range):
+    """Base value for an upgrade amount applied to weapons and shields, expressed as a percentage.
+    0 is no upgrades.
+    15 is max upgrades."""
+    display_name = "Incoming Weapon Upgrade - Base Level"
     range_start = 0
     range_end = 15
     default = 0
 
+class IncomingWeaponUpgradeMaxLevel(Range):
+    """Maximum (final) value for an upgrade amount applied to weapons and shields, expressed as a percentage.
 
-class UpgradedWeaponsMaxLevel(Range):
-    """Maximum upgrade plus value on upgraded weapons in the pool."""
-    display_name = "Upgraded Weapons - Maximum Level"
+    Only takes effect if not equal to incoming_weapon_upgrade_base, and incoming_weapon_upgrade_steps is non-zero."""
+    display_name = "Incoming Weapon Upgrade - Max Level"
     range_start = 0
     range_end = 15
     default = 15
 
-class EnableDeathlinkOption(Toggle):
-    """Includes Deathlink"""
-    display_name = "Enable Deathlink"
+class IncomingWeaponUpgradeSteps(Range):
+    """Number of steps from the BASE to the max weapon upgrade level.
+    This is how many "Progressive Weapon Upgrade" items will be added to the item pool.
 
-class GoalConditionOption(Choice):
-    """Set the goal condition
-    
-    - **Gwyn:** Default option -Beat Gwyn, Lord of Cinder
-    - **Bosses:** Defeat all bosses
-    - **Ornstein and Smough:** Kill Ornstein and Smough"""
-    display_name = "Goal Condition"
-    option_gwyn = 0
-    option_all_bosses = 1
-    option_ornstein_and_smough = 2
-    option_manus = 3
-    default = 0
-    
+    Upon receiving one, incoming weapons and shields will be upgraded by ((the distance from base to min)/(this value)) levels.
+    As an example, if your minimum is 0 and max is 15, and this is set to 5 steps,
+    the first such item will make your next weapons come in with +3, 2nd to +6, and so on.
+    Unique weapons and shields will be scaled down by 1/3, as their max upgrade is 5 levels instead of 15.
+    If the resulting value is not a whole number, it will be rounded down.
+
+    Setting this to 15 steps will result in 15 items, receiving each of which will increase incoming weapon upgrade level by 1.
+
+    Has no effect if the incoming_weapon_upgrade_base and incoming_weapon_upgrade_max are equal.
+    Has no effect (will be set to 0) if very few weapons are expected to be in the pool (e.g. if corpse filler is not in pool & shops are not in pool).
+
+    If zero, incoming_weapon_upgrade_base is applied to all weapons."""
+    display_name = "Incoming Weapon Upgrade Steps"
+    range_start = 0
+    range_end = 15
+    default = 5
+
+class IncomingWeaponUpgradeInfusionPaths(OptionList):
+    """Which infusions "final paths" are allowed if IncomingWeaponUpgradeSteps is non-zero.
+    Available infusion types are Normal, Raw, Magic, Fire, Divine, Chaos, Enchanted, Occult, Crystal, and Lightning.
+    Choosing just "Occult", for example, will result in weapon upgraded "normally" from +0 to +4, divine 0-4 from +5 to +9, and occult 0-5 from +10 to +15.
+    """
+    display_name = "Incoming Weapon Upgrade - Allowed Infusion Paths"
+    default = {"Normal", "Raw", "Magic", "Fire", "Divine", "Chaos", "Enchanted", "Occult", "Crystal", "Lightning"}
+    valid_keys = ["Normal", "Raw", "Magic", "Fire", "Divine", "Chaos", "Enchanted", "Occult", "Crystal", "Lightning"]
+
+
 # Group relevant options
 option_groups = [
     OptionGroup("Quality of Life", [
         CanWarpWithoutLordvessel,
         WarpToAllBonfires,
-        ]),
+    ]),
+    OptionGroup("Sanity", [
+        FogwallSanity,
+        BossFogwallSanity,
+    ]),
     OptionGroup("Difficulty", [
         GhostDifficulty,
         SoulMultiplierBase,
@@ -451,28 +572,47 @@ option_groups = [
         WeightMultiplierBase,
         WeightMultiplierMin,
         WeightMultiplierSteps,
-        ]),
-    OptionGroup("Sanity", [
-        FogwallSanity,
-        BossFogwallSanity,
-        ]),
-    OptionGroup("Shuffling", [
+    ]),
+    OptionGroup("Optional Region Selection", [
+        IncludeDlc,
+        IncludePaintedWorld,
+        IncludeGreatHollow,
+    ]),
+    OptionGroup("Lord Souls", [
+        LordSoulShuffle,
+        #     LordSoulShardsRequired,
+        #     LordSoulShardsExtra,
+    ]),
+    OptionGroup("Boss Drop Shuffling", [
+        # BossMiscDropShuffle,
         BossSoulShuffle,
         BossHumanityShuffle,
         BossBoneShuffle,
+    ]),
+    OptionGroup("Item Pickup Shuffling", [
+        CorpseFillerItemShuffle,
+        CorpseUsefulItemShuffle,
+        CorpseRingItemShuffle
+    ]),
+    OptionGroup("One-Time Drop Shuffling", [
         BlackKnightWeaponShuffle,
+        BlackKnightTitaniteShuffle,
+        MinibossDropShuffle,
+        HostileNpcDropShuffle,
         CrystalLizardShuffle,
-        ]),
+        MimicDropShuffle,
+        MiscDropShuffle,
+    ]),
     OptionGroup("Shops", [
-        UnlimitedShopItemShuffle,
         LimitedShopItemShuffle,
+        UnlimitedShopItemShuffle,
         ShopHints,
-        ]),
+    ]),
     OptionGroup("Logic", [
         LogicToAccessFirelinkAltar,
         LogicToAccessCatacombs,
         LogicToAccessTotG,
-        ]),
+    ]),
     # OptionGroup("Skip Logic - Warning!", [
     #     SkipLogicEasy,
     #     SkipLogicMedium,
@@ -490,33 +630,33 @@ option_groups = [
         StartingPyromancy,
         NoWeaponRequirements,
         NoSpellStatRequirements,
-        NoMiracleCovenantRequirements
-        ]),
-    OptionGroup("Upgraded Weapons", [
-        UpgradedWeaponsPercentage,
-        UpgradedWeaponsAllowedInfusions,
-        UpgradedWeaponsAdjustedLevels,
-        UpgradedWeaponsMinLevel,
-        UpgradedWeaponsMaxLevel,
-        ])
-    ]
+        NoMiracleCovenantRequirements,
+    ]),
+    OptionGroup("Incoming Weapon Upgrades", [
+        IncomingWeaponUpgradeBaseLevel,
+        IncomingWeaponUpgradeMaxLevel,
+        IncomingWeaponUpgradeSteps,
+        IncomingWeaponUpgradeInfusionPaths,
+    ]),
+]
 
 
 @dataclass
 class DSROption(PerGameCommonOptions):
-
     # Game Options
     enable_deathlink: EnableDeathlinkOption
     goal_condition: GoalConditionOption
     guaranteed_items: GuaranteedItemsOption
-    excluded_location_behavior: ExcludedLocationBehaviorOption
     start_inventory_from_pool: StartInventoryPool
 
     # QoL
     can_warp_without_lordvessel: CanWarpWithoutLordvessel
     warp_to_all_bonfires: WarpToAllBonfires
-  
-  
+
+    # Sanity
+    fogwall_sanity: FogwallSanity
+    boss_fogwall_sanity: BossFogwallSanity
+
     # Difficulty
     ghost_difficulty: GhostDifficulty
     soul_multiplier_base: SoulMultiplierBase
@@ -526,16 +666,38 @@ class DSROption(PerGameCommonOptions):
     weight_multiplier_min: WeightMultiplierMin
     weight_multiplier_steps: WeightMultiplierSteps
 
-    # Sanity
-    fogwall_sanity: FogwallSanity
-    boss_fogwall_sanity: BossFogwallSanity
+    # Incoming Weapon Upgrades
+    incoming_weapon_upgrade_infusion_paths: IncomingWeaponUpgradeInfusionPaths
+    incoming_weapon_upgrade_base: IncomingWeaponUpgradeBaseLevel
+    incoming_weapon_upgrade_max: IncomingWeaponUpgradeMaxLevel
+    incoming_weapon_upgrade_steps: IncomingWeaponUpgradeSteps
+
+    # Optional Region Selection
+    include_dlc: IncludeDlc
+    include_pw: IncludePaintedWorld
+    include_gh: IncludeGreatHollow
 
     # Shuffling
+    lord_soul_shuffle: LordSoulShuffle
+
+    # Boss shuffling
     boss_soul_shuffle: BossSoulShuffle
     boss_humanity_shuffle: BossHumanityShuffle
     boss_bone_shuffle: BossBoneShuffle
+
+    # One-Time Drop Shuffling
     bk_weapon_shuffle: BlackKnightWeaponShuffle
+    bk_titanite_shuffle: BlackKnightTitaniteShuffle
     lizard_shuffle: CrystalLizardShuffle
+    miniboss_drop_shuffle: MinibossDropShuffle
+    hostile_npc_drop_shuffle: HostileNpcDropShuffle
+    mimic_drop_shuffle: MimicDropShuffle
+    misc_drop_shuffle: MiscDropShuffle
+
+    # Item Pickup Shuffling
+    corpse_filler_item_shuffle: CorpseFillerItemShuffle
+    corpse_useful_item_shuffle: CorpseUsefulItemShuffle
+    corpse_ring_item_shuffle: CorpseRingItemShuffle
 
     # Shops
     unlimited_shop_item_shuffle: UnlimitedShopItemShuffle
@@ -565,10 +727,3 @@ class DSROption(PerGameCommonOptions):
     no_weapon_requirements: NoWeaponRequirements
     no_spell_stat_requirements: NoSpellStatRequirements
     no_miracle_covenant_requirements: NoMiracleCovenantRequirements
-
-    # Upgraded Weapons
-    upgraded_weapons_percentage: UpgradedWeaponsPercentage
-    upgraded_weapons_allowed_infusions: UpgradedWeaponsAllowedInfusions
-    upgraded_weapons_adjusted_levels : UpgradedWeaponsAdjustedLevels
-    upgraded_weapons_min_level: UpgradedWeaponsMinLevel
-    upgraded_weapons_max_level: UpgradedWeaponsMaxLevel

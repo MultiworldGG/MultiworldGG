@@ -80,9 +80,7 @@ For example, the following configuration will not require you to do the DLC, The
 ```yaml
   # Exclude DLC and out-of-the-way regions
   exclude_locations:
-    - "All DLC regions"
-    - "The Great Hollow"
-    - "Ash Lake"
+    ["All DLC regions", "Ash Lake", "The Great Hollow"]
 ```
 
 ## Artificial Logic Without Fogwall Locking
@@ -129,74 +127,99 @@ CotA - Chasm of the Abyss
 
 
 ## Location Groups
-All Boss Fog Walls  
-All DLC regions  
-All Doors  
-All Fog Walls  
-All Item Lots  
-After O+S      (intended for use with ornstein_and_smough goal condition)  
-Anor Londo  
-Ash Lake  
-Chasm of the Abyss  
-Crystal Cave  
-Darkroot Basin  
-Darkroot Garden  
-Demon Ruins  
-Depths  
-Firelink Shrine  
-Kiln of the First Flame  
-Lost Izalith  
-Lower Blighttown  
-Lower New Londo Ruins  
-Lower Undead Burg  
-Northern Undead Asylum  
-Northern Undead Asylum Second Visit  
-Oolacile Sanctuary  
-Oolacile Township  
-Painted World of Ariamis  
-Royal Wood  
-Sanctuary Garden  
-Sen's Fortress  
-The Abyss  
-The Catacombs  
-The Duke's Archives  
-The Great Hollow  
-Tomb of the Giants  
-Undead Asylum Cell  
-Undead Parish  
-Upper Blighttown Depths Side  
-Upper Blighttown VotD Side  
-Upper New Londo Ruins  
-Upper Undead Burg  
-Valley of the Drakes  
-Watchtower Basement  
+By Category of check:
+Fog Walls (17)
+Boss Fog Walls (22)
+Shop Basic Items (96)
+Shop Extended Items (64)
+Boss Souls (11)
+Boss Humanity (20)
+Boss Bones (10)
+Boss Drops (10)
+Lord Souls (4)
+Mimic Drops (8)
+Black Knight Titanites (7)
+Black Knight Weapons (7)
+Crystal Lizards (50)
+Chest Items (75)
+Corpse Filler Items (365)
+Corpse Prog Items (7)
+Corpse Useful Items (7)
+Hostile Npc Drops (4)
+Miniboss Drops (4)
+Misc Drops (7)
+Frozen Blacksmiths (5)
+Corpse Ring Items (7)
+Npc Prog Items (2)
+
+By region:
+2 Merchants - Bottomless Box (1)
+3 Blacksmiths - Smithboxen (2)
+4 Merchants - Repairbox (1)
+Anor Londo (60)
+Ash Lake (6)
+Chasm of the Abyss (13)
+Crystal Cave (12)
+Darkroot Basin (26)
+Darkroot Garden (36)
+Demon Ruins (27)
+Depths (27)
+Firelink Shrine (93)
+Kiln of the First Flame (6)
+Lost Izalith (26)
+Lower Blighttown (40)
+Lower New Londo Ruins (11)
+Lower Undead Burg (22)
+Northern Undead Asylum (7)
+Northern Undead Asylum Second Visit (11)
+Oolacile Sanctuary (2)
+Oolacile Township (17)
+Painted World of Ariamis (49)
+Royal Wood (41)
+Sanctuary Garden (3)
+Sen's Fortress (55)
+The Abyss (3)
+The Catacombs (35)
+The Duke's Archives (54)
+The Great Hollow (31)
+Tomb of the Giants (35)
+Undead Asylum Cell (1)
+Undead Parish (37)
+Upper Blighttown Depths Side (16)
+Upper Blighttown VotD Side (9)
+Upper New Londo Ruins (24)
+Upper Undead Burg (53)
+Valley of the Drakes (17)
+Watchtower Basement (3)
 
 ## Item Groups
-Ammunition  
-Armor  
-Boss Fog Wall Keys  
-Boss Souls  
-Carvings  
-Catalysts  
-Consumables  
-Covenant Items  
-Embers  
-Fire Keeper Souls  
-Fog Wall Keys  
-Junk  
-Key items  
-Lord Souls  
-Melee Weapons  
-Multiplayer Items  
-Progression Items  
-Ranged Weapons  
-Rings  
-Shields  
-Souls  
-Spell Tools  
-Spells  
-Talismans  
-Traps  
-Upgrade Materials  
-Weapons  
+Ammunition (21)
+Armor (235)
+Boss Fog Wall Keys (22)
+Boss Souls (12)
+Bows (7)
+Carvings (5)
+Catalysts (11)
+Consumables (71)
+Covenant Items (4)
+Embers (10)
+Fire Keeper Souls (7)
+Fog Wall Keys (17)
+Junk (33)
+Key items (32)
+Lord Souls (4)
+Medium Shields (23)
+Melee Weapons (111)
+Multiplayer Items (20)
+Progression Items (27)
+Ranged Weapons (11)
+Rings (41)
+Shields (46)
+Souls (10)
+Spell Tools (20)
+Spells (72)
+Talismans (7)
+Traps (1)
+Upgrade Materials (23)
+Weapons (163)
 

@@ -1168,5 +1168,37 @@
       "node": "Room Node: blasted-steps/lumble-the-lucky#room",
       "prices": []
     }
+  ],
+  "Grand Gate - Map Purchase": [
+    {
+      "node": "Room Node: grand-gate/grand-gate-courtroom#lower-section",
+      "prices": [
+        "map-machine:song_19_entrance:Map Machine (1)"
+      ]
+    }
+  ],
+  "Whispering Vaults - Map Purchase": [
+    {
+      "node": "Room Node: whispering-vaults/whispering-vaults-hub-area#map-room",
+      "prices": [
+        "map-machine:library_04:Map Machine (1)"
+      ]
+    }
+  ],
+  "Memorium - Map Purchase": [
+    {
+      "node": "Room Node: memorium/shopkeeper-hides#entrance",
+      "prices": [
+        "map-machine:arborium_11:Map Machine"
+      ]
+    }
+  ],
+  "The Cradle - Map Purchase": [
+    {
+      "node": "Room Node: the-cradle/act2-cradle-left-shaft#map-ledge",
+      "prices": [
+        "map-machine:cradle_02:Map Machine (1)"
+      ]
+    }
   ]
 }
