@@ -10,12 +10,15 @@ import subprocess
 import sys
 import tempfile
 import time
+import webbrowser
 import weakref
 import zipimport
 from enum import Enum
+from shutil import which
 from typing import Any, Optional, Callable, Iterable, Tuple
 
-from Utils import local_path, open_filename, is_frozen, is_kivy_running, open_file, user_path, read_apignore
+from Utils import (env_cleared_lib_path, is_frozen, is_kivy_running, is_linux, is_macos, local_path, open_file,
+                   open_filename, read_apignore, user_path)
 
 try:
     from Utils import instance_name as apname
@@ -338,6 +341,23 @@ def export_datapackage() -> None:
         json.dump(network_data_package, f, indent=4)
 
     open_file(path)
+
+
+def open_folder(folder_path):
+    if is_linux:
+        exe = which('xdg-open') or which('gnome-open') or which('kde-open')
+    elif is_macos:
+        exe = which("open")
+    else:
+        webbrowser.open(folder_path)
+        return
+
+    if exe:
+        env = env_cleared_lib_path()
+        subprocess.Popen([exe, folder_path], env=env)
+    else:
+        logging.warning(f"No file browser available to open {folder_path}")
+
 
 components: ComponentList = ComponentList([
     # Launcher

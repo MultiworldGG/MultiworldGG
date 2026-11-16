@@ -41,7 +41,7 @@ from Updater import ReleaseInfo, get_latest_release_info, download_and_install_u
 if __name__ == "__main__":
     init_logging('Launcher')
 
-from worlds.LauncherComponents import Component, components, has_world_components, icon_paths, resolve_icon_path, SuffixIdentifier, Type
+from worlds.LauncherComponents import Component, components, has_world_components, icon_paths, open_folder, resolve_icon_path, SuffixIdentifier, Type
 from worlds import failed_world_loads
 
 apname = "Archipelago" if not Utils.instance_name else Utils.instance_name
@@ -111,22 +111,6 @@ def generate_yamls(*args):
 
 def browse_files():
     open_folder(user_path())
-
-
-def open_folder(folder_path):
-    if is_linux:
-        exe = which('xdg-open') or which('gnome-open') or which('kde-open')
-    elif is_macos:
-        exe = which("open")
-    else:
-        webbrowser.open(folder_path)
-        return
-
-    if exe:
-        env = env_cleared_lib_path()
-        subprocess.Popen([exe, folder_path], env=env)
-    else:
-        logging.warning(f"No file browser available to open {folder_path}")
 
 
 def update_settings(skip_cache: bool = False):
