@@ -18,6 +18,7 @@ from kivymd.uix.snackbar import MDSnackbar, MDSnackbarText
 from kivymd.uix.menu import MDDropdownMenu
 from kivymd.uix.button import MDButton, MDButtonIcon, MDButtonText, MDIconButton
 from kivymd.uix.dialog import MDDialog
+from kivymd.uix.textfield import MDTextField
 from kivy.core.text.markup import MarkupLabel
 from kivy.utils import escape_markup
 from kivy.lang.builder import Builder
@@ -153,7 +154,7 @@ class VisualNamedRange(MDBoxLayout):
         self.add_widget(self.range)
 
 
-class VisualFreeText(ResizableTextField):
+class VisualFreeText(MDTextField):
     option: typing.Type[FreeText] | typing.Type[TextChoice]
     name: str
 
@@ -191,7 +192,7 @@ class VisualToggle(MDBoxLayout):
         super().__init__(*args, **kwargs)
 
 
-class CounterItemValue(ResizableTextField):
+class CounterItemValue(MDTextField):
     pat = re.compile('[^0-9]')
 
     def insert_text(self, substring, from_undo=False):
@@ -204,7 +205,7 @@ class VisualListSetCounter(MDDialog):
     scrollbox: ScrollBox = ObjectProperty(None)
     add: MDIconButton = ObjectProperty(None)
     save: MDButton = ObjectProperty(None)
-    input: ResizableTextField = ObjectProperty(None)
+    input: MDTextField = ObjectProperty(None)
     dropdown: MDDropdownMenu
     valid_keys: typing.Iterable[str]
 
@@ -301,7 +302,7 @@ class OptionsCreator(ThemedApp):
     main_panel: MainLayout
     player_options: MainLayout
     option_layout: MainLayout
-    name_input: ResizableTextField
+    name_input: MDTextField
     game_label: MDLabel
     current_game: str
     options: typing.Dict[str, typing.Any]
