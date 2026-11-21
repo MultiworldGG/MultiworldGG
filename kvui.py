@@ -102,7 +102,7 @@ from kivy.core.image import ImageLoader, ImageLoaderBase, ImageData
 from kivy.base import ExceptionHandler, ExceptionManager
 from kivy.clock import Clock, ClockEvent
 from kivy.factory import Factory
-from kivy.properties import BooleanProperty, ObjectProperty, NumericProperty, StringProperty
+from kivy.properties import AliasProperty, BooleanProperty, ObjectProperty, NumericProperty, StringProperty
 from kivy.metrics import dp, sp
 from kivy.uix.widget import Widget
 from kivy.uix.layout import Layout
@@ -322,6 +322,8 @@ class ResizableTextField(MDTextField):
 class HoverBehavior(MDHoverBehavior):
     """Preserve the hover interface used by game clients on top of KivyMD."""
     hovered = BooleanProperty(False)
+    # TODO: Remove this property alias after UT fixed the behavior
+    border_point = AliasProperty(lambda self: self.enter_point, bind=("enter_point",), cache=True)
 
     def __init__(self, **kwargs):
         self.bind(hover_visible=lambda instance, value: setattr(self, 'hovered', value))
@@ -329,6 +331,10 @@ class HoverBehavior(MDHoverBehavior):
 
     def on_mouse_pos(self, *args):
         self.on_mouse_update(*args)
+
+    def is_mouse_inside_widget(self, pos):
+        # Tracker markers use to_widget for map hit testing and to_window for tooltip placement.
+        return self.collide_point(*self.to_parent(*self.to_widget(*pos)))
 
 
 Factory.register("HoverBehavior", HoverBehavior)
