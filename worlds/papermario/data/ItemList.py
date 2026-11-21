@@ -761,7 +761,7 @@ item_table = {
     "Sushie":                   ("PARTNER",        Ic.progression,                756,    50,     False,  False,  False),
     "Lakilester":               ("PARTNER",        Ic.progression,                757,    50,     False,  False,  False),
     "Bow":                      ("PARTNER",        Ic.progression,                758,    50,     False,  False,  False),
-    "Damage Trap":              ("ITEM",           Ic.trap,                       8320,   4,      False,  False,  False)
+    "Damage Trap":              ("OTHER",          Ic.trap,                       8320,   4,      False,  False,  False)
 }
 
 item_groups = {

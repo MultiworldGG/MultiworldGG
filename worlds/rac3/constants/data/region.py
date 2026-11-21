@@ -3,8 +3,7 @@ from dataclasses import dataclass
 
 from worlds.rac3.constants.items import RAC3ITEM
 from worlds.rac3.constants.region import (PLANET_LOAD_OFFSET, PLANET_MENU_OFFSET, PLANET_NAME_FROM_ID,
-                                          PLANET_SPECIAL_OFFSET, PLANET_VENDOR_OFFSET, RAC3REGION,
-                                          RESPAWN_COORDS_OFFSET)
+                                          PLANET_SPECIAL_OFFSET, PLANET_VENDOR_OFFSET, RAC3REGION)
 from worlds.rac3.constants.status import RAC3STATUS
 
 
@@ -15,7 +14,6 @@ class RAC3REGIONDATA:
     PLANET_TO_LOAD: int
     PAUSE_ADDRESS: int
     PLANET_SPECIAL_OFFSET: int
-    RESPAWN_COORDS_ADDRESS: int | None
     VENDOR_OFFSET: int | None
     VISIT_ADDRESS: int
     ACCESS_ADDRESS: int
@@ -25,14 +23,12 @@ class RAC3REGIONDATA:
                  planet_to_load_address: int = 0,
                  pause_address: int = 0,
                  planet_special_offset: int = 0,
-                 respawn_coords_address: int | None = None,
                  vendor_offset: int | None = 0):
         """
         :param idx: Plant's ID
         :param planet_to_load_address: Address of the planet to be loaded into
         :param pause_address: Address of the pause menu data for the current planet
         :param planet_special_offset: Special offset used for specific planets
-        :param respawn_coords_address: Address of the respawn coordinate data for the current planet
         :param vendor_offset: Address of the vendor data for the current planet
         :rtype: RAC3REGIONDATA
         """
@@ -40,7 +36,6 @@ class RAC3REGIONDATA:
         self.PLANET_TO_LOAD: int = planet_to_load_address
         self.PAUSE_ADDRESS: int = pause_address
         self.PLANET_SPECIAL_OFFSET: int = planet_special_offset
-        self.RESPAWN_COORDS_ADDRESS: int | None = respawn_coords_address
         self.VENDOR_OFFSET: int | None = vendor_offset
         self.VISIT_ADDRESS: int = RAC3STATUS.VISITED_BASE + idx
         self.ACCESS_ADDRESS: int = RAC3STATUS.INFOBOT_BASE + idx
@@ -54,13 +49,10 @@ class RAC3REGIONDATA:
         pause = PLANET_MENU_OFFSET[name] + RAC3STATUS.PAUSE_BASE
         load = PLANET_LOAD_OFFSET[name] + RAC3STATUS.PLANET_LOAD_BASE
         offset = PLANET_SPECIAL_OFFSET.get(name, 0)
-        respawn_coords_address = RESPAWN_COORDS_OFFSET.get(name, None)
-        if respawn_coords_address is not None:  # Not all planets should have respawn coords changed
-            respawn_coords_address += RAC3STATUS.RESPAWN_BASE
         vendor_offset = PLANET_VENDOR_OFFSET.get(name, None)
         if vendor_offset is not None:
             vendor_offset += RAC3STATUS.VENDOR_BASE
-        return RAC3REGIONDATA(idx, load, pause, offset, respawn_coords_address, vendor_offset)
+        return RAC3REGIONDATA(idx, load, pause, offset, vendor_offset)
 
 
 RAC3_REGION_DATA_TABLE: dict[str, RAC3REGIONDATA] = {

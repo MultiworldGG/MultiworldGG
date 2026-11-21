@@ -1,15 +1,16 @@
 import logging
 import random  # For picking whether P1 or P2 gets remainder studs after halving.
-from typing import Mapping
+from typing import Mapping, cast
 
 
 from ..common import UintField
 from ..common_addresses import player_character_entity_iter, is_in_chapter_free_play, CHARACTER_POWER_UP_TIMER
 from ..type_aliases import TCSContext
-from ...items import GENERIC_BY_NAME
+
+from ...data.items.generic_items import GENERIC_DATA_BY_NAME, NonDataItemName
 
 
-logger = logging.getLogger("Client")
+_LOGGER = logging.getLogger("Client")
 
 
 # TODO: We should add to the in-level studs instead, additionally adding to the True Jedi meter. If the player exits
@@ -17,19 +18,19 @@ logger = logging.getLogger("Client")
 #  without saving re-giving them the studs, which would have otherwise allowed for entering another level and getting
 #  the True Jedi progress there.
 # Note, this is not the in-level stud count. We don't add to that, because it is not saved.
-STUD_COUNT_ADDRESS = 0x86e4fc
-MAX_STUD_COUNT = 4_000_000_000
+_STUD_COUNT_ADDRESS = 0x86e4fc
+_MAX_STUD_COUNT = 4_000_000_000
 
 
-STUDS_AP_ID_TO_VALUE: Mapping[int, int] = {
-    GENERIC_BY_NAME["Silver Stud"].code: 10,
-    GENERIC_BY_NAME["Gold Stud"].code: 100,
-    GENERIC_BY_NAME["Blue Stud"].code: 1000,
-    GENERIC_BY_NAME["Purple Stud"].code: 10000,
-}
+STUDS_AP_ID_TO_VALUE: Mapping[int, int] = cast(dict[int, int], {
+    GENERIC_DATA_BY_NAME[NonDataItemName.SILVER_STUD].code: 10,
+    GENERIC_DATA_BY_NAME[NonDataItemName.GOLD_STUD].code: 100,
+    GENERIC_DATA_BY_NAME[NonDataItemName.BLUE_STUD].code: 1000,
+    GENERIC_DATA_BY_NAME[NonDataItemName.PURPLE_STUD].code: 10000,
+})
 
 
-CHARACTER_STUD_COUNTER_POINTER = UintField(0x7fc)
+_CHARACTER_STUD_COUNTER_POINTER = UintField(0x7fc)
 
 
 # todo?: The stud counts for each player appear to be static addresses, which begs the question of why each player
@@ -46,7 +47,7 @@ def give_studs_item(ctx: TCSContext, ap_item_id: int) -> None:
     """
     studs_to_add = STUDS_AP_ID_TO_VALUE.get(ap_item_id)
     if studs_to_add is None:
-        logger.warning("Tried to receive unknown Studs item with item ID %i", ap_item_id)
+        _LOGGER.warning("Tried to receive unknown Studs item with item ID %i", ap_item_id)
         return
 
     # Multiply by the player's current maximum score multiplier.
@@ -57,7 +58,7 @@ def give_studs_item(ctx: TCSContext, ap_item_id: int) -> None:
     give_studs(ctx, studs_to_add)
 
 
-def drop_remainder_towards_zero(value: int, divisor: int) -> tuple[int, int]:
+def _drop_remainder_towards_zero(value: int, divisor: int) -> tuple[int, int]:
     """Drop the remainder of division by `divisor`, so that the returned value is divisible by `divisor`."""
     if divisor < 1:
         raise ValueError(f"Invalid divisor {divisor}. Divisor must be positive.")
@@ -91,10 +92,10 @@ def give_studs(ctx: TCSContext,
 
     # Keep studs to increments of 10 (1x Silver Stud)
     # Combined studs are kept separately in-case there is a better remainder when all values are combined.
-    combined, _remainder = drop_remainder_towards_zero(shared_studs_to_add + p1_studs_to_add + p2_studs_to_add, 10)
-    shared_studs_to_add, _remainder = drop_remainder_towards_zero(shared_studs_to_add, 10)
-    p1_studs_to_add, _remainder = drop_remainder_towards_zero(p1_studs_to_add, 10)
-    p2_studs_to_add, _remainder = drop_remainder_towards_zero(p2_studs_to_add, 10)
+    combined, _remainder = _drop_remainder_towards_zero(shared_studs_to_add + p1_studs_to_add + p2_studs_to_add, 10)
+    shared_studs_to_add, _remainder = _drop_remainder_towards_zero(shared_studs_to_add, 10)
+    p1_studs_to_add, _remainder = _drop_remainder_towards_zero(p1_studs_to_add, 10)
+    p2_studs_to_add, _remainder = _drop_remainder_towards_zero(p2_studs_to_add, 10)
 
     if not shared_studs_to_add and not p1_studs_to_add and not p2_studs_to_add:
         # Nothing to do.
@@ -104,7 +105,7 @@ def give_studs(ctx: TCSContext,
     if is_in_chapter_free_play(ctx):
         player_studs = (p1_studs_to_add, p2_studs_to_add)
         for player_number, character_address in player_character_entity_iter(ctx):
-            studs_address = CHARACTER_STUD_COUNTER_POINTER.get(ctx, character_address)
+            studs_address = _CHARACTER_STUD_COUNTER_POINTER.get(ctx, character_address)
             if studs_address != 0:
                 # Power Up doubles received studs.
                 # todo: Add support for further doubling received studs when in a Double Score Zone.
@@ -123,14 +124,14 @@ def give_studs(ctx: TCSContext,
             if combined:
                 in_level_studs_address, multiplier = in_level_studs_addresses[0]
                 current_stud_count = ctx.read_uint(in_level_studs_address, raw=True)
-                # Never go below zero, or above MAX_STUD_COUNT.
-                new_stud_count = max(0, min(current_stud_count + combined * multiplier, MAX_STUD_COUNT))
+                # Never go below zero, or above _MAX_STUD_COUNT.
+                new_stud_count = max(0, min(current_stud_count + combined * multiplier, _MAX_STUD_COUNT))
                 ctx.write_uint(in_level_studs_address, new_stud_count, raw=True)
         else:
             if shared_studs_to_add:
                 # Always keep granted studs to increments of 10. The amount will be halved to give half to each player,
                 # so check the remainder for 20 which will become 10 after halving.
-                studs_to_add, remainder_after_halving = drop_remainder_towards_zero(shared_studs_to_add, 20)
+                studs_to_add, remainder_after_halving = _drop_remainder_towards_zero(shared_studs_to_add, 20)
                 p1_studs = studs_to_add // 2
                 p2_studs = p1_studs
                 if remainder_after_halving:
@@ -152,13 +153,13 @@ def give_studs(ctx: TCSContext,
                 if player_studs_to_add == 0:
                     continue
                 current_stud_count = ctx.read_uint(in_level_studs_address, raw=True)
-                # Never go below zero, or above MAX_STUD_COUNT.
-                new_stud_count = max(0, min(current_stud_count + player_studs_to_add * multiplier, MAX_STUD_COUNT))
+                # Never go below zero, or above _MAX_STUD_COUNT.
+                new_stud_count = max(0, min(current_stud_count + player_studs_to_add * multiplier, _MAX_STUD_COUNT))
                 ctx.write_uint(in_level_studs_address, new_stud_count, raw=True)
     elif not only_give_if_in_level:
         # Add the studs directly to the save data's stud counter.
         if combined:
-            current_stud_count = ctx.read_uint(STUD_COUNT_ADDRESS)
-            # Never go below zero, or above MAX_STUD_COUNT.
-            new_stud_count = max(0, min(current_stud_count + combined, MAX_STUD_COUNT))
-            ctx.write_uint(STUD_COUNT_ADDRESS, new_stud_count)
+            current_stud_count = ctx.read_uint(_STUD_COUNT_ADDRESS)
+            # Never go below zero, or above _MAX_STUD_COUNT.
+            new_stud_count = max(0, min(current_stud_count + combined, _MAX_STUD_COUNT))
+            ctx.write_uint(_STUD_COUNT_ADDRESS, new_stud_count)

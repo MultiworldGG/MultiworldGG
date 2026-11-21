@@ -147,6 +147,8 @@
 
 11//impaInTarm: |
     /ifdef tarm_start
+    db $f1
+    db $71,$00 ; Ricky leaving companion script
     db $f2
     db $9d,$00,$28,$18
     db $ff

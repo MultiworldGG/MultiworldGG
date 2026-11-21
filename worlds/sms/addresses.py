@@ -6,10 +6,16 @@ SHINE_LOC_OFFSET =      0x00
 BLUECOIN_LOC_OFFSET =   0x0F
 NOZZLE_BOXES_OFFSET =   0x6C
 DELFINO_YOSHI_OFFSET =  0x71
+RECEIVED_ITEM_OFFSET = 0x48 # Uses some useless blue coin addresses for now. May need to change in future.
+
+# Global pointer to mario. If this is null, then probably in some menu, cutscene, etc.
+# Also used to help call kill mario functions.
+GP_MARIO = 0x8040E178
 
 SMS_SHINE_BYTE_COUNT = 15
 SMS_BLUECOIN_BYTE_COUNT = 55 # Should be 30 bytes, but the RAM takes up space for useless Blue Coins in memory
 NOZZLE_BOXES_BYTE_COUNT = 3
+TOTAL_FLAG_BYTE_COUNT = 111
 
 SMS_UNKNOWN_THING = 0x81006D57
 
@@ -46,3 +52,15 @@ SMS_NEXT_EPISODE = 0x803e9713
 ARB_NOZZLES_ENABLER = 0x80417A01
 ARB_FLUDD_ENABLER = 0x80417A00
 ARB_VERSION_CHECKER = 0x80578AA4
+YOSHI_ADDRESS = 0x80417A03
+
+ORIG_MARIO_PTR = 0x8040E0E8
+MARIO_FLAG_OFFSET = 0x118
+MARIO_FLAG_HAS_FLUDD = 0x8000
+ARB_FLUDD_APPLIED = 0x80417A02 # Mario has fludd flag, cleared on title screen.
+
+# Game state
+GAME_STATE = 0x80902AA4
+
+# Slot name offset
+SLOT_NAME_OFF = 0x80418000

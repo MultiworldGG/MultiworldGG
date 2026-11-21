@@ -18,6 +18,8 @@ class CharCategory(ctypes.Structure):
 
 VANILLA_CATEGORIES = [
     "Jedi",  # CharacterDataFlag3.JEDI
+    # todo?: In normal+ logic, when Dark Side has been unlocked, the BADDIE flag could be removed from this category to
+    #  make P2's AI able to complete the 2-2 Dark Side force 'puzzle' without having a Sith character unlocked.
     "JediBaddie",  # CharacterDataFlag3.JEDI | CharacterDataFlag3.BADDIE
     "BountyHunter",  # CharacterDataFlag3.BOUNTY_HUNTER | CharacterDataFlag3.BLASTER | CharacterDataFlag3.ZIPUP
     "Teleport",  # CharacterDataFlag3.TELEPORT (shortie)
@@ -69,14 +71,13 @@ _CUSTOM_CHAR_CATEGORIES = [
         0,
         CharacterEntryFlag2.TIGHTROPE_TILT,
     ),
-    # Custom category to pick a Yoda character. This flag is for some reason used by a number of Extra Toggle characters
-    # in vanilla, but these are not selectable for Free Play. Yoda and Yoda (Ghost) are being given this flag.
+    # Custom category to pick a Yoda character. Yoda and Yoda (Ghost) are being given this flag.
     # This is deliberately picked after Droideka, to try to get Droideka and Yoda next to each other in the Free Play
     # character list, due to their relevant speedrunning tricks.
     CharCategory(
-        0x00762818,  # "wall_jump"
+        0x00751f24,  # "SuperStrength"
         0,
-        CharacterEntryFlag2.WALL_JUMP,
+        CharacterEntryFlag2.HAS_SUPER_STRENGTH,
     ),
     # Custom category to pick a character that can zap. This flag is unused in vanilla, but characters that can zap are
     # being set to have this flag.

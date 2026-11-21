@@ -550,6 +550,13 @@ def fixD7exit(rom):
     re.objects.append(Object(5, 3, 0x4A))
     re.store(rom)
 
+
+def fixHealthFullCheck(rom):
+    # Setup a different table for max health, override some DMG specific data.
+    rom.patch(0x14, 0x0EA8, 0x0EA8 + 15, "000810182028303840485058606870")
+    rom.patch(0x14, 0x0B11, ASM("ld hl, $4AAD"), ASM("ld hl, $4EA8"))
+
+
 def addBootsControls(rom, bootscontrols):
     if bootscontrols == 'vanilla':
         return

@@ -1,5 +1,8 @@
 0BD7:Farcall
 0C05:GetEntityTransitionCountdown
+2373:OpenDialogInTable1
+237C:OpenDialogInTable2
+2385:OpenDialogInTable0
 280D:GetRandomByte
 3B12:IncrementEntityState
 3BC0:RenderActiveEntitySpritesPair

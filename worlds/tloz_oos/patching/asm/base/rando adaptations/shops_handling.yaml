@@ -1,7 +1,7 @@
 # Change shopItemReplacementTable so that each item can only be bought once
 08/4cf6/shopItemReplacementTable: |
   db $3f,$01,locations.memberShop1.shopByte,$00   ; Member shop 1
-  db $40,$80,locations.horonShop1.shopByte,$00   ; Horon shop 3
+  db $40,$80,locations.horonShop3.shopByte,$00   ; Horon shop 3
   db $3f,$02,locations.memberShop2.shopByte,$00   ; Member shop 2
   db $40,$40,locations.horonShop2.shopByte,$00   ; Horon shop 2
   db $40,$20,locations.horonShop1.shopByte,$00   ; Horon shop 1
@@ -21,14 +21,14 @@
   db $00,$00,$00,$00
   db $00,$00,$00,$00
 
-# Make shop items only disappear if they're not renewable ($b0 isn't, $80 is)
+# Make shop items only disappear if they're not repeatable ($b0 isn't, $80 is)
 08/4b3c/: |
-  call isRenewable
+  call isRepeatable
   jr z,$0b ; @itemOK
   nop
   db $30 ; jr nc
 
-08//isRenewable: |
+08//isRepeatable: |
   ret z ; item not gotten once
 
   inc hl
@@ -232,12 +232,9 @@
 08/4c9d/: db shopPrices.syrupShop2
 08/4c9e/: db shopPrices.syrupShop3
 
-08/4ca1/: |
-  /ifdef advanceShop
-  db shopPrices.advanceShop1
-  db shopPrices.advanceShop2
-  db shopPrices.advanceShop3
-  /endif
+08/4ca1/: db shopPrices.advanceShop1
+08/4ca2/: db shopPrices.advanceShop2
+08/4ca3/: db shopPrices.advanceShop3
 
 09/77b1/: db shopPrices.subrosianMarket2
 09/77c9/: db shopPrices.subrosianMarket3

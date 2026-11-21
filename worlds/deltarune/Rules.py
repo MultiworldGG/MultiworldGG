@@ -36,7 +36,27 @@ have_actions = Has(items[ItemIDs.s_r_n_actions]) | OptionFilter(UnlockFunGangAct
 speedrun_glitch_logic = Has(glitched_item_name) | [
     OptionFilter(SpeedrunGlitchesAsLogic, SpeedrunGlitchesAsLogic.option_true)
 ]
-nohit_logic = Has(glitched_item_name) | [OptionFilter(NoHitAsLogic, NoHitAsLogic.option_true)]
+nohit_easy_logic = Has(glitched_item_name) | [
+    OptionFilter(
+        NoHitAsLogic,
+        NoHitAsLogic.option_easy,
+        operator="ge",
+    )
+]
+nohit_hard_logic = Has(glitched_item_name) | [
+    OptionFilter(
+        NoHitAsLogic,
+        NoHitAsLogic.option_hard,
+        operator="ge",
+    )
+]
+nohit_extreme_logic = Has(glitched_item_name) | [
+    OptionFilter(
+        NoHitAsLogic,
+        NoHitAsLogic.option_extreme,
+        operator="ge",
+    )
+]
 annoying_farming_logic = Has(glitched_item_name) | [
     OptionFilter(AnnoyingFarmingAsLogic, AnnoyingFarmingAsLogic.option_true)
 ]
@@ -119,7 +139,7 @@ can_recruit_tasque_manager = (
         have_kris_susie_or_ralsei
         & OptionFilter(
             ChosenRoute,
-            [ChosenRoute.option_all_recruits, ChosenRoute.option_both_all_recruits_and_weird_route],
+            [ChosenRoute.option_all_recruits, ChosenRoute.option_both_all_recruits_and_side_b],
             operator="in",
         )
     )

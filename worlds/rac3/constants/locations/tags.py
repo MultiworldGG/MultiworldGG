@@ -14,7 +14,7 @@ class RAC3TAG:
     RANGERS = "Rangers"
     ARENA = "Arena"
     NANOTECH = "Nanotech"
-    UNSTABLE = "Unstable"
+    # UNSTABLE = "Unstable"
     WEAPONS = "Weapons"
     GADGETS = "Gadgets"
     INFOBOT = "Infobot"
@@ -39,7 +39,7 @@ all_tags: list[str] = [
     RAC3TAG.RANGERS,
     RAC3TAG.ARENA,
     RAC3TAG.NANOTECH,
-    RAC3TAG.UNSTABLE,
+    # RAC3TAG.UNSTABLE,
     RAC3TAG.WEAPONS,
     RAC3TAG.GADGETS,
     RAC3TAG.INFOBOT,

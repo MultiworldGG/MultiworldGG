@@ -1,25 +1,31 @@
 from typing import Mapping, Sequence
 
 from .constants import CharacterAbility
-from .items import (
-    CHARACTERS_AND_VEHICLES_BY_NAME,
-    GenericCharacterData,
-    EXTRAS_BY_NAME,
-    MINIKITS_BY_COUNT,
-    CHAPTER_UNLOCKS,
+from .data.areas import Area
+from .data.items import GenericCharacterData
+from .data.items.all_character_items import SENDABLE_CHARACTER_TO_ITEM_DATA
+from .data.areas import ALL_CHAPTER_AREAS
+from .data.items.extra_items import EXTRA_DATA
+from .data.items.generic_items import (
+    NonDataItemName,
+    EPISODE_UNLOCKS,
+    CHAPTER_TO_CHAPTER_UNLOCK_ITEM,
+    MINIKITS_BY_BUNDLE_SIZE,
 )
-from .levels import CHAPTER_AREA_STORY_CHARACTERS, CHAPTER_AREAS
+
+_SORTED_CHAPTER_AREAS: list[Area] = sorted(ALL_CHAPTER_AREAS)
 
 
-def _ability_to_character() -> Mapping[CharacterAbility, Sequence[GenericCharacterData]]:
+def _ability_to_sendable_character() -> Mapping[CharacterAbility, Sequence[GenericCharacterData]]:
     ability_to_character: dict[CharacterAbility, list[GenericCharacterData]] = {}
-    for char in CHARACTERS_AND_VEHICLES_BY_NAME.values():
+    for char in SENDABLE_CHARACTER_TO_ITEM_DATA.values():
         for ability in char.abilities:
             ability_to_character.setdefault(ability, []).append(char)
     return {k: tuple(v) for k, v in ability_to_character.items()}
 
 
-ABILITY_TO_CHARACTERS: Mapping[CharacterAbility, Sequence[GenericCharacterData]] = _ability_to_character()
+ABILITY_TO_SENDABLE_CHARACTERS: Mapping[CharacterAbility, Sequence[GenericCharacterData]]
+ABILITY_TO_SENDABLE_CHARACTERS = _ability_to_sendable_character()
 # ABILITY_TO_CHARACTER_NAMES: Mapping[CharacterAbility, Sequence[str]] = {
 #     ability: tuple(char.name for char in characters) for ability, characters in ABILITY_TO_CHARACTERS.items()
 # }
@@ -34,31 +40,32 @@ REVERSE_READABLE_ABILITY_TO_ABILITY = {ability_to_readable_group(ability): abili
 
 ITEM_GROUPS: dict[str, set[str]] = {
     **{ability_to_readable_group(ability): {c.name for c in characters if c.is_sendable}
-       for ability, characters in ABILITY_TO_CHARACTERS.items()},
-    "No Abilities Characters": {name for name, c in CHARACTERS_AND_VEHICLES_BY_NAME.items()
-                                if c.is_sendable and c.abilities is CharacterAbility.NONE},
-    "Non-Vehicle Characters": {c.name for c in CHARACTERS_AND_VEHICLES_BY_NAME.values()
-                               if c.item_type == "Character" and c.is_sendable},
-    "Vehicle Characters": {v.name for v in CHARACTERS_AND_VEHICLES_BY_NAME.values()
-                           if v.item_type == "Vehicle" and v.is_sendable},
+       for ability, characters in ABILITY_TO_SENDABLE_CHARACTERS.items()},
+    "Non-Vehicle Characters": {c.name for c in SENDABLE_CHARACTER_TO_ITEM_DATA.values()
+                               if c.item_type == "Character"},
+    "Vehicle Characters": {v.name for v in SENDABLE_CHARACTER_TO_ITEM_DATA.values()
+                           if v.item_type == "Vehicle"},
     **{
-        f"{chapter.short_name} Story Unlock Characters": set(chapter.character_requirements)
-        for chapter in CHAPTER_AREAS
+        f"{chapter.get_short_name()} Story Unlock Characters": {c.readable_name for c in chapter.get_story_characters()}
+        for chapter in _SORTED_CHAPTER_AREAS
     },
     **{
-        f"{chapter.short_name} Purchase Unlock Characters": set(chapter.alt_character_requirements)
-        for chapter in CHAPTER_AREAS if chapter.alt_character_requirements
+        f"{chapter.get_short_name()} Purchase Unlock Characters": {
+            c.readable_name for c in chapter.get_purchase_characters()
+        } for chapter in _SORTED_CHAPTER_AREAS if chapter.get_purchase_characters()
     },
-    "Characters": {c.name for c in CHARACTERS_AND_VEHICLES_BY_NAME.values() if c.is_sendable},
-    "Extras": {e.name for e in EXTRAS_BY_NAME.values() if e.is_sendable} | {"Progressive Score Multiplier"},
-    "Minikits": {m.name for m in MINIKITS_BY_COUNT.values() if m.is_sendable},
-    "Episode Unlocks": {f"Episode {i} Unlock" for i in "123456"},
-    "Chapter Unlocks": {data.name for data in CHAPTER_UNLOCKS},
+    "Characters": {c.name for c in SENDABLE_CHARACTER_TO_ITEM_DATA.values()},
+    "Extras": {e.name for e in EXTRA_DATA if e.is_sendable} | {NonDataItemName.PROGRESSIVE_SCORE_MULTIPLIER.value},
+    "Minikits": {m.name for m in MINIKITS_BY_BUNDLE_SIZE.values()},
+    "Episode Unlocks": {name.value for name in EPISODE_UNLOCKS.values()},
+    "Chapter Unlocks": set(CHAPTER_TO_CHAPTER_UNLOCK_ITEM.values()),
     "Junk": {
-        "Silver Stud",
-        "Gold Stud",
-        "Blue Stud",
-        "Purple Stud",
-        "Power Up",
-    },
+        name.value for name in (
+            NonDataItemName.SILVER_STUD,
+            NonDataItemName.GOLD_STUD,
+            NonDataItemName.BLUE_STUD,
+            NonDataItemName.PURPLE_STUD,
+            NonDataItemName.POWER_UP,
+        )
+    }
 }

@@ -24,12 +24,14 @@
 #include "debug.h"
 #include "inputviewer.h"
 #include "message.h"
+#include "ap_items.h"
 
 void Gameplay_InitSkybox(z64_game_t* globalCtx, int16_t skyboxId);
 
 void c_init() {
     heap_init();
     gfx_init();
+    ap_items_init();
     item_overrides_init();
     override_flags_init();
     models_init();

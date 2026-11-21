@@ -186,10 +186,10 @@ def reduceMessageLengths(rom, rnd):
     rom.texts[0x01] = formatText(rnd.choice(lines).strip().decode("unicode_escape"), skip_names=True)
 
     # Reduce length of a bunch of common texts
-    rom.texts[0xEA] = formatText("You've got a Guardian Acorn!")
+    rom.texts[0xEA] = formatText("You've got a {GUARDIAN_ACORN}!")
     rom.texts[0xEB] = rom.texts[0xEA]
     rom.texts[0xEC] = rom.texts[0xEA]
-    rom.texts[0x08] = formatText("You got a Piece of Power!")
+    rom.texts[0x08] = formatText("You got a {PIECE_OF_POWER}!")
     rom.texts[0xEF] = formatText("You found a {SEASHELL}!")
     rom.texts[0xA7] = formatText("You've got the {COMPASS}!")
 
@@ -198,6 +198,7 @@ def reduceMessageLengths(rom, rnd):
 
     rom.texts[0x09] = formatText("Ahhh... It has  the Sleepy {TOADSTOOL}, it does! We'll mix it up something in a jiffy, we will!")
     rom.texts[0x0A] = formatText("The last thing I kin remember was bitin' into a big juicy {TOADSTOOL}... Then, I had the darndest dream... I was a raccoon! Yeah, sounds strange, but it sure was fun!")
+    rom.texts[0x0E] = formatText("{TOADSTOOL}!")
     rom.texts[0x0F] = formatText("You pick the {TOADSTOOL}... As you hold it over your head, a mellow aroma flows into your nostrils.")
     rom.texts[0x13] = formatText("You've learned the ^{SONG1}!^ This song will always remain in your heart!")
     rom.texts[0x18] = formatText("Will you give me 28 {RUPEES} for my secret?", ask="Give Don't")
@@ -240,11 +241,29 @@ def reduceMessageLengths(rom, rnd):
     rom.texts[0xac] = formatText("You got 50 {RUPEES}! Very Nice!", center=True)
     rom.texts[0xad] = formatText("You got 100 {RUPEES}! You're Happy!", center=True)
     rom.texts[0xae] = formatText("You got 200 {RUPEES}! You're Ecstatic!", center=True)
+    rom.texts[0xcf] = formatText("Hoot!")
+    rom.texts[0xd0] = formatText("... ... ... ...\n COME, #####...\nLET US AWAKEN...\n   TOGETHER!!")
     rom.texts[0xdc] = formatText("Ribbit! Ribbit! I'm Mamu, on vocals! But I don't need to tell you that, do I? Everybody knows me! Want to hang out and listen to us jam? For 300 Rupees, we'll let you listen to a previously unreleased cut! What do you do?", ask="Pay Leave")
     rom.texts[0xe8] = formatText("You've found a {GOLD_LEAF}! Press START to see how many you've collected!")
     rom.texts[0xed] = formatText("You've got the Mirror Shield! You can now turnback the beams you couldn't block before!")
     rom.texts[0xee] = formatText("You've got a more Powerful {POWER_BRACELET}! Now you can almost lift a whale!")
     rom.texts[0xf0] = formatText("Want to go on a raft ride for a hundred {RUPEES}?", ask="Yes No Way")
+
+
+def removeDungeonTexts(rom):
+    # remove dungeon name dialogs
+    rom.patch(0x01, 0x21FB, ASM("""
+        ldh a, [$FFF7]
+        add LOW($056)
+        call OpenDialogInTable0
+    """), "", fill_nop=True)
+
+    # remove hint for where to go next after clearing dungeon
+    rom.patch(0x07, 0x25A1, ASM("""
+        ldh  a, [$FFF7]
+        add  LOW($150)
+        call OpenDialogInTable1
+    """), "", fill_nop=True)
 
 
 def allowColorDungeonSpritesEverywhere(rom):
@@ -421,6 +440,12 @@ noChange:
             rom.room_sprite_data_overworld[room_nr] = data
         else:
             rom.room_sprite_data_indoor[room_nr - 0x100] = data
+
+
+def add_ap_icons(rom):
+    # write over bingo board, same place upstream puts alttp hammer
+    ap_icons = bytearray(pkgutil.get_data(__name__, "apicon.bin"))
+    rom.banks[0x3F][0x2800+0x520:0x2800+0x520+0x20] = ap_icons
 
 
 def bin_to_rgb(word):

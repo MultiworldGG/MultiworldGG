@@ -29,26 +29,24 @@ class Logic:
         else:
             world = overworld.World(configuration_options, world_setup, r)
 
-        if configuration_options.overworld == "nodungeons":
-            world.updateIndoorLocation("d1", dungeon1.NoDungeon1(configuration_options, world_setup, r).entrance)
-            world.updateIndoorLocation("d2", dungeon2.NoDungeon2(configuration_options, world_setup, r).entrance)
-            world.updateIndoorLocation("d3", dungeon3.NoDungeon3(configuration_options, world_setup, r).entrance)
-            world.updateIndoorLocation("d4", dungeon4.NoDungeon4(configuration_options, world_setup, r).entrance)
-            world.updateIndoorLocation("d5", dungeon5.NoDungeon5(configuration_options, world_setup, r).entrance)
-            world.updateIndoorLocation("d6", dungeon6.NoDungeon6(configuration_options, world_setup, r).entrance)
-            world.updateIndoorLocation("d7", dungeon7.NoDungeon7(configuration_options, world_setup, r).entrance)
-            world.updateIndoorLocation("d8", dungeon8.NoDungeon8(configuration_options, world_setup, r).entrance)
-            world.updateIndoorLocation("d0", dungeonColor.NoDungeonColor(configuration_options, world_setup, r).entrance)
-        elif configuration_options.overworld != "random":
-            world.updateIndoorLocation("d1", dungeon1.Dungeon1(configuration_options, world_setup, r).entrance)
-            world.updateIndoorLocation("d2", dungeon2.Dungeon2(configuration_options, world_setup, r).entrance)
-            world.updateIndoorLocation("d3", dungeon3.Dungeon3(configuration_options, world_setup, r).entrance)
-            world.updateIndoorLocation("d4", dungeon4.Dungeon4(configuration_options, world_setup, r).entrance)
-            world.updateIndoorLocation("d5", dungeon5.Dungeon5(configuration_options, world_setup, r).entrance)
-            world.updateIndoorLocation("d6", dungeon6.Dungeon6(configuration_options, world_setup, r).entrance)
-            world.updateIndoorLocation("d7", dungeon7.Dungeon7(configuration_options, world_setup, r).entrance)
-            world.updateIndoorLocation("d8", dungeon8.Dungeon8(configuration_options, world_setup, r).entrance)
-            world.updateIndoorLocation("d0", dungeonColor.DungeonColor(configuration_options, world_setup, r).entrance)
+        no_dungeon_logics = (
+            (dungeonColor.DungeonColor, dungeonColor.NoDungeonColor),
+            (dungeon1.Dungeon1, dungeon1.NoDungeon1),
+            (dungeon2.Dungeon2, dungeon2.NoDungeon2),
+            (dungeon3.Dungeon3, dungeon3.NoDungeon3),
+            (dungeon4.Dungeon4, dungeon4.NoDungeon4),
+            (dungeon5.Dungeon5, dungeon5.NoDungeon5),
+            (dungeon6.Dungeon6, dungeon6.NoDungeon6),
+            (dungeon7.Dungeon7, dungeon7.NoDungeon7),
+            (dungeon8.Dungeon8, dungeon8.NoDungeon8),
+        )
+        for i, (standard, nodungeon) in enumerate(no_dungeon_logics):
+            if i == 0:
+                n = 9
+            else:
+                n = i
+            logic = nodungeon if n in world_setup.condensed_dungeons else standard
+            world.updateIndoorLocation(f"d{i}", logic(configuration_options, world_setup, r).entrance)
 
         if configuration_options.overworld != "random":
             if not world_setup.is_partial:
@@ -81,9 +79,11 @@ class Logic:
                     else:
                         se.location.connect(te.location, te.requirement, one_way=True)
                     if se.enterIsSet():
-                        se.location.connect(te.location, se.one_way_enter_requirement, one_way=True)
+                        exitRequirement = te.one_way_exit_requirement if te.exitIsSet() else te.requirement
+                        se.location.connect(te.location, AND(exitRequirement, se.one_way_enter_requirement), one_way=True)
                     if te.exitIsSet():
-                        se.location.connect(te.location, te.one_way_exit_requirement, one_way=True)
+                        entranceRequirement = se.one_way_enter_requirement if se.enterIsSet() else se.requirement
+                        se.location.connect(te.location, AND(entranceRequirement, te.one_way_exit_requirement), one_way=True)
 
         egg_trigger = AND(OCARINA, SONG1)
         if configuration_options.logic == 'glitched' or configuration_options.logic == 'hell':

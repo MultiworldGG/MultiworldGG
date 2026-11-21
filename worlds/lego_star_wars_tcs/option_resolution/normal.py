@@ -3,15 +3,11 @@ from typing import TYPE_CHECKING, Generic, TypeVar, Any, Mapping, Iterable
 
 from Options import Option, OptionError
 
-from ..items import MINIKITS_BY_COUNT
-from ..levels import (
-    BOSS_UNIQUE_NAME_TO_CHAPTER,
-    VEHICLE_CHAPTER_SHORTNAMES,
-    SHORT_NAME_TO_CHAPTER_AREA,
-    BonusArea,
-    BONUS_AREAS,
-    BONUS_NAME_TO_BONUS_AREA,
-)
+from ..data.areas import Area, VEHICLE_CHAPTERS
+from ..data.bosses import Boss
+from ..data.items.generic_items import MINIKITS_BY_BUNDLE_SIZE
+from ..data.logic.gold_brick_bonuses import GOLD_BRICK_BONUSES, AREA_TO_GOLD_BRICK_BONUS
+from ..data.logic.types import GoldBrickBonus
 from ..options import (
     LegoStarWarsTCSOptions,
     StartingChapter,
@@ -23,6 +19,7 @@ from ..options import (
     GoalChapterLocationsMode,
     ChapterUnlockRequirement,
     ChapterUnlockCharactersRequiredCountDistribution,
+    GoalChapter,
 )
 
 
@@ -36,7 +33,7 @@ _T = TypeVar("_T")
 
 
 class _OptionAdjustment(Generic[_T]):
-    warning: str
+    warning: str | None
     option: Option[_T]
     value: _T
     warning_args: tuple[Any, ...]
@@ -71,7 +68,7 @@ class _NormalOptionsResolver:
     _minikits_required_for_goal: bool = field(init=False)
     _no_vehicle_chapters_allowed: bool = field(init=False)
     _explicitly_allowed_chapters: AllowedChapters = field(init=False)
-    _allowed_bosses: set[str] = field(init=False)
+    _allowed_bosses: set[Area] = field(init=False)
     _starting_chapter: StartingChapter = field(init=False)
     _allowed_chapter_types: AllowedChapterTypes = field(init=False)
     _enabled_chapters_count: int = field(init=False)
@@ -82,7 +79,7 @@ class _NormalOptionsResolver:
     _defeat_bosses_goal_amount: int = field(init=False)
     _enabled_bosses_count: int = field(init=False)
     _prefer_entire_episodes: bool = field(init=False)
-    _preferred_chapters: frozenset[str] = field(init=False)
+    _preferred_chapters: frozenset[Area] = field(init=False)
     _all_episodes_character_purchase_requirements: int = field(init=False)
     _enable_all_episodes_purchases: bool = field(init=False)
     _episode_unlock_requirement: int = field(init=False)
@@ -92,8 +89,12 @@ class _NormalOptionsResolver:
     _enable_true_jedi_locations: bool = field(init=False)
     _kyber_bricks_required_for_goal: bool = field(init=False)
     _level_completions_required_for_goal: bool = field(init=False)
-    _goal_chapter: str | None = field(init=False)
+    _goal_chapter: Area | None | GoalChapter.ToBeDetermined = field(init=False)
     _goal_chapter_locations_mode: GoalChapterLocationsMode = field(init=False)
+
+    # A new attribute is used so that it is always possible to tell if the goal chapter was originally ToBeDetermined.
+    # This also provides clearer type hints that remove the possibility of being ToBeDetermined.
+    _resolved_goal_chapter: Area | None = None
 
     def _deferred_adjust(self, option: Option[_T], value: _T, warning: str | None = None, *warning_args):
         self.option_adjustments.append(_OptionAdjustment(option, value, warning, *warning_args))
@@ -115,7 +116,7 @@ class _NormalOptionsResolver:
         # "explicitly" prefix added to make it clearer that the allowed chapters for a world may be modified to include
         # allowed bosses.
         self._explicitly_allowed_chapters = AllowedChapters(options.allowed_chapters.value)
-        self._allowed_bosses = options.allowed_bosses.value.copy()
+        self._allowed_bosses = options.allowed_bosses.to_areas()
         self._starting_chapter = StartingChapter(options.starting_chapter.value)
         self._allowed_chapter_types = AllowedChapterTypes(options.allowed_chapter_types.value)
         self._enabled_chapters_count = options.enabled_chapters_count.value
@@ -138,7 +139,7 @@ class _NormalOptionsResolver:
         self._enable_true_jedi_locations = bool(options.enable_true_jedi_locations)
         self._kyber_bricks_required_for_goal = bool(options.goal_requires_kyber_bricks)
         self._level_completions_required_for_goal = bool(options.complete_levels_goal_amount_percentage)
-        self._goal_chapter = options.goal_chapter.to_short_name()
+        self._goal_chapter = options.goal_chapter.to_area()
         self._goal_chapter_locations_mode = GoalChapterLocationsMode(options.goal_chapter_locations_mode.value)
 
     def _validate_goal_choice(self):
@@ -147,50 +148,83 @@ class _NormalOptionsResolver:
                 and not self._minikits_required_for_goal
                 and not self._kyber_bricks_required_for_goal
                 and not self._level_completions_required_for_goal
-                and not self._goal_chapter
+                and self._goal_chapter is None
         ):
             self.world.option_error("At least one goal must be enabled.")
 
-    def _resolve_allowed_chapters(self) -> tuple[set[str], set[str]]:
+    def _resolve_allowed_chapters_and_goal_chapter(self) -> tuple[set[Area], set[Area], set[Area]]:
 
         # Determine all available chapters to pick from.
         allowed_chapters = self._explicitly_allowed_chapters.value_ungrouped
-        allowed_boss_chapters: set[str]
+        allowed_boss_chapters: set[Area]
         if self._bosses_required_for_goal:
             # Update allowed chapters with allowed bosses.
-            allowed_boss_chapters = {BOSS_UNIQUE_NAME_TO_CHAPTER[unique_boss].short_name
-                                     for unique_boss in self._allowed_bosses}
+            allowed_boss_chapters = self._allowed_bosses.copy()
             allowed_chapters.update(allowed_boss_chapters)
         else:
             allowed_boss_chapters = set()
 
         # Remove vehicle chapters if vehicle chapters are not allowed.
         if self._no_vehicle_chapters_allowed:
-            allowed_chapters.difference_update(VEHICLE_CHAPTER_SHORTNAMES)
-            allowed_boss_chapters.difference_update(VEHICLE_CHAPTER_SHORTNAMES)
+            allowed_chapters.difference_update(VEHICLE_CHAPTERS)
+            allowed_boss_chapters.difference_update(VEHICLE_CHAPTERS)
         # `allowed_boss_chapters` might no longer refer to the same chapters as self._allowed_bosses.
+        original_allowed_boss_chapters = self._allowed_bosses
         del self._allowed_bosses
 
-        if self._goal_chapter:
+        if self._goal_chapter is not None:
+            # Players can pick to have the Goal Chapter be random from their enabled chapters.
+            resolved_goal_chapter: Area
+            if isinstance(self._goal_chapter, GoalChapter.ToBeDetermined):
+                # Pick a chapter from those that are enabled.
+                if self._goal_chapter is GoalChapter.ToBeDetermined.RANDOM_ENABLED_TO_BE_DETERMINED:
+                    pick_from = allowed_chapters.copy()
+                    option_error_extra_msg = ("At least one chapter, excluding than the starting chapter, must be "
+                                              "allowed to be enabled.")
+                elif self._goal_chapter is GoalChapter.ToBeDetermined.RANDOM_ENABLED_NON_BOSS_TO_BE_DETERMINED:
+                    # Disallow chapters that are a potentially enabled boss
+                    pick_from = allowed_chapters - allowed_boss_chapters
+                    option_error_extra_msg = ("At least one chapter, excluding than the starting chapter, that is not "
+                                              "an allowed boss chapter, must be allowed to be enabled.")
+                else:
+                    raise Exception(f"Goal Chapter {self._goal_chapter} is not implemented.")
+
+                # Don't pick the starting chapter if it is a specific chapter.
+                if self._starting_chapter.is_singular_chapter():
+                    pick_from.difference_update(self._starting_chapter.to_area_set())
+                if not pick_from:
+                    self.world.option_error(
+                        "There are no enabled chapters that are valid to be picked as the Goal Chapter. %s",
+                        option_error_extra_msg,
+                    )
+
+                picked_chapter = self.world.random.choice(sorted(pick_from))
+                self._deferred_adjust(self.options.goal_chapter, GoalChapter.from_area(picked_chapter))
+                resolved_goal_chapter = picked_chapter
+            else:
+                # The goal chapter must be a specifically chosen Area.
+                resolved_goal_chapter = self._goal_chapter
             # The goal chapter is special and is always picked, when enabled, and does not count towards the enabled
             # chapter count.
-            allowed_chapters.discard(self._goal_chapter)
+            allowed_chapters.discard(resolved_goal_chapter)
             # The goal chapter can never be a boss chapter because access to the goal chapter requires completing all
             # other goals.
-            allowed_boss_chapters.discard(self._goal_chapter)
+            allowed_boss_chapters.discard(resolved_goal_chapter)
+            self._resolved_goal_chapter = resolved_goal_chapter
 
-        return allowed_chapters, allowed_boss_chapters
+        return allowed_chapters, allowed_boss_chapters, original_allowed_boss_chapters
 
     def _resolve_allowed_starting_chapters(self,
-                                           allowed_chapters: set[str],
-                                           allowed_boss_chapters: set[str],
-                                           ) -> set[str]:
+                                           allowed_chapters: set[Area],
+                                           allowed_boss_chapters: set[Area],
+                                           original_allowed_boss_chapters: set[Area],
+                                           ) -> set[Area]:
         world = self.world
 
         # Determine starting chapters to pick from.
-        starting_chapters: set[str]
+        starting_chapters: set[Area]
         starting_chapter_option = self._starting_chapter
-        starting_chapters = starting_chapter_option.to_short_name_set()
+        starting_chapters = starting_chapter_option.to_area_set()
 
         # Filter to only the chapters that are allowed to be enabled.
         allowed_starting_chapters = starting_chapters.intersection(allowed_chapters)
@@ -209,24 +243,32 @@ class _NormalOptionsResolver:
                 starting_chapter = next(iter(starting_chapters))
 
                 # The starting chapter is not allowed to be the goal chapter.
-                if starting_chapter == self._goal_chapter:
+                if starting_chapter is self._resolved_goal_chapter:
                     world.option_error("The individually chosen starting chapter '%s' is not allowed to be the same as"
-                                       " the Goal Chapter.", starting_chapter)
+                                       " the Goal Chapter.", starting_chapter.get_long_name())
 
                 allowed_starting_chapters = starting_chapters.copy()
                 allowed_chapters.update(allowed_starting_chapters)
 
                 world.log_warning("The individually chosen starting chapter '%s' was not in the set of allowed"
                                   " chapters %s. '%s' has been forcefully allowed to prevent generation failure.",
-                                  starting_chapter,
-                                  sorted(allowed_chapters),
-                                  starting_chapter)
+                                  starting_chapter.get_long_name(),
+                                  Area.to_human_readable_list(allowed_chapters),
+                                  starting_chapter.get_long_name())
                 # Add the forced starting chapter to allowed_bosses if it was an allowed boss originally.
-                if self._bosses_required_for_goal:
-                    unique_boss_name = SHORT_NAME_TO_CHAPTER_AREA[starting_chapter].unique_boss_name
-                    if unique_boss_name in allowed_boss_chapters:
+                if (
+                        self._bosses_required_for_goal
+                        and starting_chapter in original_allowed_boss_chapters
+                        and starting_chapter not in allowed_boss_chapters
+                ):
                         allowed_boss_chapters.add(starting_chapter)
             else:
+                goal_chapter_str: str
+                goal_chapter = self._resolved_goal_chapter
+                if goal_chapter is None:
+                    goal_chapter_str = "No Goal Chapter"
+                else:
+                    goal_chapter_str = goal_chapter.get_long_name()
                 world.option_error("None of the chosen possible starting chapters were chosen to be possible to be"
                                    " enabled."
                                    " At least one starting chapter must be allowed to be enabled."
@@ -237,24 +279,24 @@ class _NormalOptionsResolver:
                                    "\nGoal chapter (not allowed as the starting chapter):"
                                    "\n\t%s",
                                    starting_chapter_option.current_key,
-                                   sorted(starting_chapters),
+                                   Area.to_human_readable_list(starting_chapters),
                                    sorted(self._explicitly_allowed_chapters.value),
-                                   sorted(allowed_boss_chapters),
-                                   sorted(allowed_chapters),
-                                   self._goal_chapter)
+                                   Area.to_human_readable_list(allowed_boss_chapters),
+                                   Area.to_human_readable_list(allowed_chapters),
+                                   goal_chapter_str)
 
         return allowed_starting_chapters
 
     @staticmethod
-    def _assert_allowed_chapters(allowed_chapters: set[str]) -> None:
+    def _assert_allowed_chapters(allowed_chapters: set[Area]) -> None:
         assert len(allowed_chapters) >= 1
 
-    def _validate_allowed_boss_chapters(self, allowed_boss_chapters: set[str]) -> None:
+    def _validate_allowed_boss_chapters(self, allowed_boss_chapters: set[Area]) -> None:
         if self._bosses_required_for_goal and not allowed_boss_chapters:
             self.world.option_error("Defeating bosses is required for the goal, but no boss chapters were allowed to"
                                     " be enabled.")
 
-    def _adjust_enabled_non_goal_chapters_count(self, allowed_chapters: set[str]) -> int:
+    def _adjust_enabled_non_goal_chapters_count(self, allowed_chapters: set[Area]) -> int:
         """
         Adjust the count of non-goal enabled chapters and warn if it was higher than the number of allowed chapters.
 
@@ -269,7 +311,7 @@ class _NormalOptionsResolver:
                                   len(allowed_chapters),
                                   len(allowed_chapters))
             enabled_non_goal_chapters_count = len(allowed_chapters)
-        elif enabled_non_goal_chapters_count == 36 and self._goal_chapter:
+        elif enabled_non_goal_chapters_count == 36 and self._resolved_goal_chapter is not None:
             # The Goal Chapter is enabled separately. There isn't really a need to warn for this.
             self._deferred_adjust(self.options.enabled_chapters_count, 35)
         del self._enabled_chapters_count
@@ -297,35 +339,33 @@ class _NormalOptionsResolver:
         return bundle_size
 
     def _resolve_unique_allowed_boss_characters(self,
-                                                allowed_starting_chapters: set[str],
-                                                allowed_boss_chapters: set[str],
+                                                allowed_starting_chapters: set[Area],
+                                                allowed_boss_chapters: set[Area],
                                                 enabled_chapters_count: int,
-                                                ) -> tuple[int, int, dict[str, str]]:
+                                                ) -> tuple[int, int, dict[Area, Boss]]:
         """
         Determine unique allowed boss characters.
         """
         maximum_boss_chapters = len(allowed_boss_chapters)
-        unique_allowed_boss_characters: set[str] = set()
+        unique_allowed_boss_names: set[str] = set()
         unique_bosses_anakin_as_darth_vader = (
                 self._only_unique_bosses_count
                 == OnlyUniqueBossesCountTowardsGoal.option_enabled_and_count_anakin_as_vader
         )
+        allowed_boss_area_to_boss: dict[Area, Boss] = {}
         if self._unique_bosses_only:
-            short_name_to_boss_character: dict[str, str] = {}
             for chapter in allowed_boss_chapters:
-                boss_character = SHORT_NAME_TO_CHAPTER_AREA[chapter].boss
-                if unique_bosses_anakin_as_darth_vader and boss_character == "Anakin Skywalker":
-                    boss_character = "Darth Vader"
-                assert boss_character is not None
-                unique_allowed_boss_characters.add(boss_character)
-                short_name_to_boss_character[chapter] = boss_character
-            maximum_unique_boss_characters = len(unique_allowed_boss_characters)
+                boss = Boss.from_area(chapter)
+                if unique_bosses_anakin_as_darth_vader and boss is Boss.ANAKIN:
+                    boss = Boss.VADER_VADER
+                unique_allowed_boss_names.add(boss.unique_name)
+                allowed_boss_area_to_boss[chapter] = boss
+            maximum_unique_boss_characters = len(unique_allowed_boss_names)
             # The number of unique allowed boss characters is always less than or equal to the number of allowed
             # boss chapters because there can be chapters that have the same boss character.
             assert maximum_unique_boss_characters <= maximum_boss_chapters
         else:
             maximum_unique_boss_characters = -1
-            short_name_to_boss_character = {}
 
         # If the starting chapter cannot be a boss chapter, then the maximum possible number of bosses is 1 fewer.
         starting_chapter_cannot_be_a_boss = allowed_starting_chapters.isdisjoint(allowed_boss_chapters)
@@ -342,7 +382,7 @@ class _NormalOptionsResolver:
         else:
             maximum_bosses_for_goal = maximum_boss_chapters
 
-        return maximum_bosses_for_goal, maximum_boss_chapters, short_name_to_boss_character
+        return maximum_bosses_for_goal, maximum_boss_chapters, allowed_boss_area_to_boss
 
     def _adjust_boss_goal_count(self,
                                 maximum_bosses_for_goal: int,
@@ -398,8 +438,8 @@ class _NormalOptionsResolver:
         return goal_boss_count, enabled_bosses_count
 
     @staticmethod
-    def _adjust_starting_chapters_for_boss_chapters(allowed_starting_chapters: set[str],
-                                                    allowed_boss_chapters: set[str],
+    def _adjust_starting_chapters_for_boss_chapters(allowed_starting_chapters: set[Area],
+                                                    allowed_boss_chapters: set[Area],
                                                     enabled_chapters_count: int,
                                                     enabled_boss_count: int):
         """In-place adjust `allowed_starting_chapters` when all chapters must be boss chapters. """
@@ -408,34 +448,33 @@ class _NormalOptionsResolver:
             assert not allowed_starting_chapters.isdisjoint(allowed_boss_chapters)
             allowed_starting_chapters.intersection_update(allowed_boss_chapters)
 
-    def _pick_starting_chapter(self, allowed_starting_chapters: set[str]) -> tuple[str, int]:
+    def _pick_starting_chapter(self, allowed_starting_chapters: set[Area]) -> Area:
         """Pick the starting chapter."""
         starting_chapter = self.world.random.choice(sorted(allowed_starting_chapters))
-        starting_episode = SHORT_NAME_TO_CHAPTER_AREA[starting_chapter].episode
-        return starting_chapter, starting_episode
+        return starting_chapter
 
     def _generate_early_pick_unique_enabled_bosses(self,
                                                    required_unique_boss_count: int,
                                                    required_boss_chapter_count: int,
-                                                   allowed_boss_chapters: set[str],
-                                                   tentative_enabled_chapters: list[str],
-                                                   short_name_to_boss_character: dict[str, str],
-                                                   ) -> set[str]:
+                                                   allowed_boss_chapters: set[Area],
+                                                   tentative_enabled_chapters: list[Area],
+                                                   allowed_boss_area_to_boss: dict[Area, Boss],
+                                                   ) -> set[Area]:
         world = self.world
 
         # Find the currently picked boss chapters and their indices. These will be updated in-place.
         picked_boss_indices: list[int] = [i for i, chapter in enumerate(tentative_enabled_chapters)
                                           if chapter in allowed_boss_chapters]
-        picked_boss_chapters: set[str] = {tentative_enabled_chapters[i] for i in picked_boss_indices}
+        picked_boss_chapters: set[Area] = {tentative_enabled_chapters[i] for i in picked_boss_indices}
         # Additionally find the indices for each boss character in the currently picked boss chapters.
-        picked_boss_characters_to_indices: dict[str, list[int]] = {}
+        picked_boss_names_to_indices: dict[str, list[int]] = {}
         for i in picked_boss_indices:
             boss_chapter = tentative_enabled_chapters[i]
-            boss_character = short_name_to_boss_character[boss_chapter]
-            picked_boss_characters_to_indices.setdefault(boss_character, []).append(i)
+            boss = allowed_boss_area_to_boss[boss_chapter]
+            picked_boss_names_to_indices.setdefault(boss.unique_name, []).append(i)
 
         def need_more_unique_bosses() -> bool:
-            return len(picked_boss_characters_to_indices) < required_unique_boss_count
+            return len(picked_boss_names_to_indices) < required_unique_boss_count
 
         def need_more_boss_chapters() -> bool:
             return len(picked_boss_chapters) < required_boss_chapter_count
@@ -451,7 +490,7 @@ class _NormalOptionsResolver:
             unpicked_boss_chapters = sorted(allowed_boss_chapters.difference(tentative_enabled_chapters))
             world.random.shuffle(unpicked_boss_chapters)
 
-            def replace_chapter_at(i: int, boss_chapter_replacement: str):
+            def replace_chapter_at(i: int, boss_chapter_replacement: Area):
                 # Replace the chapter at index `i`.
                 replaced_chapter = tentative_enabled_chapters[i]
                 tentative_enabled_chapters[i] = boss_chapter_replacement
@@ -464,12 +503,13 @@ class _NormalOptionsResolver:
                 unpicked_boss_chapters.remove(replacement_boss_chapter)
 
                 # Add the index to the chapter indices of the boss of the replacement chapter.
-                boss_character_replacement = short_name_to_boss_character[boss_chapter_replacement]
-                boss_character_indices = picked_boss_characters_to_indices.setdefault(boss_character_replacement, [])
+                boss_character_replacement = allowed_boss_area_to_boss[boss_chapter_replacement]
+                boss_character_indices = picked_boss_names_to_indices.setdefault(
+                    boss_character_replacement.unique_name, [])
                 assert i not in boss_character_indices
                 boss_character_indices.append(i)
 
-                if replaced_chapter in short_name_to_boss_character:
+                if replaced_chapter in allowed_boss_area_to_boss:
                     # The replaced chapter was a boss, so update the sets of enabled boss chapters and unpicked boss
                     # chapters.
                     picked_boss_chapters.remove(replaced_chapter)
@@ -477,8 +517,8 @@ class _NormalOptionsResolver:
                     unpicked_boss_chapters.append(replaced_chapter)
 
                     # Remove the index from the chapter indices of the boss of the replaced chapter.
-                    replaced_boss_character = short_name_to_boss_character[replaced_chapter]
-                    boss_characters_indices = picked_boss_characters_to_indices[replaced_boss_character]
+                    replaced_boss_character = allowed_boss_area_to_boss[replaced_chapter]
+                    boss_characters_indices = picked_boss_names_to_indices[replaced_boss_character.unique_name]
                     boss_characters_indices.remove(i)
                 else:
                     # The replaced chapter was not a boss, but has been replaced by a boss, so add the current index to
@@ -487,14 +527,14 @@ class _NormalOptionsResolver:
 
             # Find unique bosses to pick from. The order of this dict is deterministically random because it is created
             # based on the order of `unpicked_boss_chapters`.
-            unpicked_boss_characters_to_pick_from: dict[str, list[str]] = {}
+            unpicked_boss_characters_to_pick_from: dict[str, list[Area]] = {}
             for boss_chapter in unpicked_boss_chapters:
-                boss_character = short_name_to_boss_character[boss_chapter]
-                assert boss_character is not None
-                if boss_character not in picked_boss_characters_to_indices:
+                boss = allowed_boss_area_to_boss[boss_chapter]
+                boss_unique_name = boss.unique_name
+                if boss_unique_name not in picked_boss_names_to_indices:
                     unpicked_boss_characters_to_pick_from.setdefault(
-                        boss_character, []).append(boss_chapter)
-            assert ((len(unpicked_boss_characters_to_pick_from) + len(picked_boss_characters_to_indices))
+                        boss_unique_name, []).append(boss_chapter)
+            assert ((len(unpicked_boss_characters_to_pick_from) + len(picked_boss_names_to_indices))
                     >= required_unique_boss_count), (
                 "There are fewer unique bosses available than the number of required unique bosses."
                 " This should not happen.")
@@ -506,35 +546,35 @@ class _NormalOptionsResolver:
             reversed_indices = reversed(range(len(tentative_enabled_chapters)))
             for i in reversed_indices:
                 chapter_to_replace = tentative_enabled_chapters[i]
-                chapter_at_index_is_a_boss = chapter_to_replace in short_name_to_boss_character
-                boss_character_to_replace = short_name_to_boss_character.get(chapter_to_replace, None)
+                chapter_at_index_is_a_boss = chapter_to_replace in allowed_boss_area_to_boss
+                boss_to_replace = allowed_boss_area_to_boss.get(chapter_to_replace, None)
                 chapter_at_index_is_a_duplicated_boss = (
-                        boss_character_to_replace is not None
-                        and len(picked_boss_characters_to_indices[boss_character_to_replace]) > 1
+                        boss_to_replace is not None
+                        and len(picked_boss_names_to_indices[boss_to_replace.unique_name]) > 1
                 )
 
                 if self._prefer_entire_episodes:
                     # Try to replace chapters with boss chapters from the same episode where possible when the option to
                     # prefer entire episodes is enabled.
-                    preferred_episode_number_str = chapter_to_replace[0]
+                    preferred_episode_number = chapter_to_replace.get_chapter_episode()
                 else:
-                    preferred_episode_number_str = None
+                    preferred_episode_number = None
 
                 # Replace the removed chapter with a unique boss.
-                replacement_boss_chapter: str
-                replacement_boss_character: str
+                replacement_boss_chapter: Area
+                replacement_boss_unique_name: str
                 if need_more_unique_bosses():
                     if chapter_at_index_is_a_boss and not chapter_at_index_is_a_duplicated_boss:
                         # The chapter at `i` is already a unique boss, so replacing the chapter cannot increase the
                         # number of unique bosses.
                         continue
                     # Iterate through all remaining enabled unique bosses to try to find one in the same episode.
-                    for replacement_boss_character, boss_chapters in (
+                    for replacement_boss_unique_name, boss_chapters in (
                             unpicked_boss_characters_to_pick_from.items()
                     ):
                         for replacement_boss_chapter in boss_chapters:
-                            if (preferred_episode_number_str is None
-                                    or replacement_boss_chapter[0] == preferred_episode_number_str):
+                            if (preferred_episode_number is None
+                                    or replacement_boss_chapter.get_chapter_episode() == preferred_episode_number):
                                 # Suitable replacement found, so break the inner loop.
                                 break
                         else:
@@ -546,20 +586,20 @@ class _NormalOptionsResolver:
                         # No unique boss in the same episode was found, so pick the first boss in the dict to replace
                         # it.
                         it = iter(unpicked_boss_characters_to_pick_from.items())
-                        replacement_boss_character, boss_chapters = next(it)
+                        replacement_boss_unique_name, boss_chapters = next(it)
                         replacement_boss_chapter = boss_chapters[0]
                     # Remove the replacement boss character from the dict of extra, unique boss characters to pick from.
                     # There could be additional chapters that feature this boss, but now that the boss has been picked,
                     # those additional chapters would no longer feature a unique boss.
-                    del unpicked_boss_characters_to_pick_from[replacement_boss_character]
+                    del unpicked_boss_characters_to_pick_from[replacement_boss_unique_name]
                 else:
                     if chapter_at_index_is_a_boss:
                         # The chapter at `i` is already a boss chapter, so replacing the chapter cannot increase the
                         # number of bosses.
                         continue
                     for replacement_boss_chapter in unpicked_boss_chapters:
-                        if (preferred_episode_number_str is None
-                                or replacement_boss_chapter[0] == preferred_episode_number_str):
+                        if (preferred_episode_number is None
+                                or replacement_boss_chapter.get_chapter_episode() == preferred_episode_number):
                             # Suitable replacement found, so break.
                             break
                     else:
@@ -579,7 +619,7 @@ class _NormalOptionsResolver:
         if len(picked_boss_chapters) > required_boss_chapter_count:
             # There are too many bosses enabled, so disable some bosses while ensuring that we don't go
             # under `required_unique_boss_count`
-            remaining_unique_picks = list(picked_boss_characters_to_indices.values())
+            remaining_unique_picks = list(picked_boss_names_to_indices.values())
             # Pick unique bosses in the order they were initially picked.
             enabled_boss_indices = {indices.pop(0) for indices
                                     in remaining_unique_picks[:required_unique_boss_count]}
@@ -595,12 +635,12 @@ class _NormalOptionsResolver:
 
     def _generate_early_pick_enabled_bosses(self,
                                             enabled_bosses_count: int,
-                                            allowed_boss_chapters: set[str],
-                                            tentative_enabled_chapters: list[str],
-                                            ) -> set[str]:
+                                            allowed_boss_chapters: set[Area],
+                                            tentative_enabled_chapters: list[Area],
+                                            ) -> set[Area]:
         world = self.world
 
-        picked_bosses: set[str]
+        picked_bosses: set[Area]
         picked_boss_indices: list[int] = [i for i, chapter in enumerate(tentative_enabled_chapters)
                                           if chapter in allowed_boss_chapters]
 
@@ -634,18 +674,18 @@ class _NormalOptionsResolver:
                     # The chapter is not a boss, so replace it.
                     chapter_to_replace = tentative_enabled_chapters[i]
                     # Replace the removed chapter with a boss in the same episode if possible.
-                    preferred_episode_number_str = chapter_to_replace[0]
-                    for j, boss in enumerate(reversed(extra_bosses_to_pick_from), start=1):
-                        if boss[0] == preferred_episode_number_str:
+                    preferred_episode_number = chapter_to_replace.get_chapter_episode()
+                    for j, boss_chapter in enumerate(reversed(extra_bosses_to_pick_from), start=1):
+                        if boss_chapter.get_chapter_episode() == preferred_episode_number:
                             del extra_bosses_to_pick_from[-j]
-                            picked_bosses.add(boss)
-                            tentative_enabled_chapters[i] = boss
+                            picked_bosses.add(boss_chapter)
+                            tentative_enabled_chapters[i] = boss_chapter
                             break
                     else:
                         # No suitable boss was found. Pick the last one in the list to replace it.
-                        boss = extra_bosses_to_pick_from.pop()
-                        tentative_enabled_chapters[i] = boss
-                        picked_bosses.add(boss)
+                        boss_chapter = extra_bosses_to_pick_from.pop()
+                        tentative_enabled_chapters[i] = boss_chapter
+                        picked_bosses.add(boss_chapter)
                     replaced_chapters.append(chapter_to_replace)
                     if len(replaced_chapters) == missing_boss_chapter_count:
                         # All needed replacements have been made.
@@ -655,14 +695,14 @@ class _NormalOptionsResolver:
         return picked_bosses
 
     def _pick_enabled_chapters(self,
-                               allowed_chapters: set[str],
-                               allowed_boss_chapters: set[str],
+                               allowed_chapters: set[Area],
+                               allowed_boss_chapters: set[Area],
                                goal_boss_count: int,
                                enabled_boss_count: int,
-                               short_name_to_boss_character: dict[str, str],
-                               starting_chapter: str,
+                               allowed_boss_area_to_boss: dict[Area, Boss],
+                               starting_chapter: Area,
                                enabled_chapters_count: int,
-                               ) -> tuple[set[str], set[str], set[int]]:
+                               ) -> tuple[set[Area], set[Area], set[int]]:
         """Pick enabled chapters, and therefore, enabled episodes."""
         # Sort once to ensure deterministic generation.
         non_starting_allowed_chapters = sorted(allowed_chapters - {starting_chapter})
@@ -676,14 +716,14 @@ class _NormalOptionsResolver:
             # The starting chapter is considered the first picked chapter.
             initial_pick_order = [starting_chapter, *non_starting_allowed_chapters]
             seen_episodes = 0
-            episode_pick_order: dict[str, int] = {}
+            episode_pick_order: dict[int, int] = {}
             for chapter in initial_pick_order:
-                episode_str = chapter[0]
-                if episode_str in episode_pick_order:
+                episode_num = chapter.get_chapter_episode()
+                if episode_num in episode_pick_order:
                     continue
-                episode_pick_order[episode_str] = seen_episodes
+                episode_pick_order[episode_num] = seen_episodes
                 seen_episodes += 1
-            non_starting_allowed_chapters.sort(key=lambda s: episode_pick_order[s[0]])
+            non_starting_allowed_chapters.sort(key=lambda s: episode_pick_order[s.get_chapter_episode()])
         # Ensure there are enough bosses enabled and randomly disable any extra bosses if there are too many.
         tentative_enabled_chapters = [
             starting_chapter,
@@ -694,8 +734,8 @@ class _NormalOptionsResolver:
                 # The number of bosses is counted by the number of unique boss characters.
                 enabled_bosses = self._generate_early_pick_unique_enabled_bosses(
                     goal_boss_count, enabled_boss_count, allowed_boss_chapters, tentative_enabled_chapters,
-                    short_name_to_boss_character)
-                enabled_unique_bosses = {short_name_to_boss_character[chapter] for chapter in enabled_bosses}
+                    allowed_boss_area_to_boss)
+                enabled_unique_bosses = {Boss.from_area(chapter).unique_name for chapter in enabled_bosses}
                 assert len(enabled_unique_bosses) >= goal_boss_count
             else:
                 # Each boss counts separately, even if some bosses use the same boss character.
@@ -709,16 +749,18 @@ class _NormalOptionsResolver:
         # Finally set the enabled chapters.
         enabled_chapters_with_locations = set(tentative_enabled_chapters)
 
-        if self._goal_chapter and self._goal_chapter_locations_mode != GoalChapterLocationsMode.option_removed:
+        if (self._resolved_goal_chapter is not None
+                and self._goal_chapter_locations_mode != GoalChapterLocationsMode.option_removed):
             # The goal chapter contains locations in addition to being the goal.
-            enabled_chapters_with_locations.add(self._goal_chapter)
+            enabled_chapters_with_locations.add(self._resolved_goal_chapter)
 
-        enabled_episodes = {SHORT_NAME_TO_CHAPTER_AREA[s].episode for s in enabled_chapters_with_locations}
+        enabled_episodes = {area.get_chapter_episode() for area in enabled_chapters_with_locations}
 
-        if self._goal_chapter and self._goal_chapter_locations_mode == GoalChapterLocationsMode.option_removed:
+        if (self._resolved_goal_chapter is not None
+                and self._goal_chapter_locations_mode == GoalChapterLocationsMode.option_removed):
             # It is possible that the Goal Chapter could be the only chapter in its episode, so there are no locations
             # in an episode, just the goal. The episode should still be considered enabled in this case.
-            enabled_episodes.add(SHORT_NAME_TO_CHAPTER_AREA[self._goal_chapter].episode)
+            enabled_episodes.add(self._resolved_goal_chapter.get_chapter_episode())
 
         return enabled_bosses, enabled_chapters_with_locations, enabled_episodes
 
@@ -751,10 +793,8 @@ class _NormalOptionsResolver:
         return self._all_episodes_character_purchase_requirements
 
     def _resolve_minikit_options(self, enabled_non_goal_chapter_count: int, bundle_size: int) -> tuple[str, int, int]:
-        minikit_bundle_name = MINIKITS_BY_COUNT[bundle_size].name
-        # todo?: Set self.available_minikits = 0 when self.options.minikit_goal_amount.value == 0 to remove minikits
-        #  from the item pool?
-        if self._minikit_goal_amount != 0 or self._enable_minikit_locations:
+        minikit_bundle_name = MINIKITS_BY_BUNDLE_SIZE[bundle_size].name
+        if self._minikit_goal_amount != 0:
             available_minikits = enabled_non_goal_chapter_count * 10  # 10 Minikits per chapter.
             minikit_bundle_count = available_minikits // bundle_size + (available_minikits % bundle_size != 0)
         else:
@@ -796,13 +836,14 @@ class _NormalOptionsResolver:
 
     def _resolve_available_bonuses_and_expected_gold_brick_counts(self,
                                                                   enabled_chapter_count: int,
-                                                                  ) -> tuple[set[str], int]:
+                                                                  ) -> tuple[set[Area], int]:
         """Calculate available Bonuses based on logically available Gold Brick counts."""
-        enabled_bonuses: set[str] = set()
+        enabled_bonuses: set[Area] = set()
         expected_gold_brick_event_count: int
         if self._enable_bonus_locations:
             total_chapters_with_gold_bricks = enabled_chapter_count
-            if self._goal_chapter and self._goal_chapter_locations_mode == GoalChapterLocationsMode.option_normal:
+            if (self._resolved_goal_chapter is not None
+                    and self._goal_chapter_locations_mode == GoalChapterLocationsMode.option_normal):
                 # The Goal Chapter contributes Gold Bricks if it has non-excluded locations.
                 total_chapters_with_gold_bricks += 1
             # Start with the Gold Bricks available from enabled Chapters.
@@ -816,18 +857,18 @@ class _NormalOptionsResolver:
             # Enable Bonuses that do not require more Gold Bricks than are logically available.
             # Enabled Bonuses can also reward a Gold Brick, so those will also add +1 available Gold Brick.
             available_gold_bricks = available_gold_bricks_from_chapters
-            bonuses_by_gold_brick_cost: dict[int, list[BonusArea]] = {}
-            for area in BONUS_AREAS:
-                bonuses_by_gold_brick_cost.setdefault(area.gold_bricks_required, []).append(area)
+            bonuses_by_gold_brick_cost: dict[int, list[GoldBrickBonus]] = {}
+            for bonus in GOLD_BRICK_BONUSES:
+                bonuses_by_gold_brick_cost.setdefault(bonus.gold_brick_requirement, []).append(bonus)
             # Sort by lowest cost first, and then iterate.
-            for gold_brick_cost, areas in sorted(bonuses_by_gold_brick_cost.items(), key=lambda t: t[0]):
+            for gold_brick_cost, bonuses in sorted(bonuses_by_gold_brick_cost.items(), key=lambda t: t[0]):
                 if gold_brick_cost > available_gold_bricks:
                     # The Bonuses have been sorted by lowest Gold Brick cost first, so all remaining Bonuses will
                     # have even higher requirements that cannot be met.
                     break
-                for area in areas:
-                    enabled_bonuses.add(area.name)
-                    if area.gold_brick:
+                for bonus in bonuses:
+                    enabled_bonuses.add(bonus.area)
+                    if bonus.rewards_gold_brick:
                         available_gold_bricks += 1
             # An assertion checks that the expected count matches the count created.
             expected_gold_brick_event_count = available_gold_bricks
@@ -838,8 +879,8 @@ class _NormalOptionsResolver:
         return enabled_bonuses, expected_gold_brick_event_count
 
     def _resolve_goal_area_completion_count(self,
-                                            enabled_non_goal_chapters: set[str],
-                                            enabled_bonuses: set[str],
+                                            enabled_non_goal_chapters: set[Area],
+                                            enabled_bonuses: set[Area],
                                             ) -> int:
         # Calculate goal_area_completion_count when set to a non-zero percentage of available areas (chapters +
         # bonuses).
@@ -850,7 +891,7 @@ class _NormalOptionsResolver:
             # requirement.
             chapter_areas_count = len(enabled_non_goal_chapters)
             # Only bonuses that award a Gold Brick on completion count towards the goal count.
-            bonus_areas_count = sum(BONUS_NAME_TO_BONUS_AREA[name].gold_brick for name in enabled_bonuses)
+            bonus_areas_count = sum(AREA_TO_GOLD_BRICK_BONUS[area].rewards_gold_brick for area in enabled_bonuses)
             available_areas_count = chapter_areas_count + bonus_areas_count
             goal_area_completion_count = max(1,
                                              round(available_areas_count * complete_areas_goal_amount_percentage / 100))
@@ -858,7 +899,7 @@ class _NormalOptionsResolver:
             # If the Goal Chapter is enabled and has normal locations, so has Gold Bricks, then the Gold Bricks in the
             # Goal Chapter will not be usable to access Bonus Levels that can contribute level completion towards the
             # goal.
-            if (self._goal_chapter
+            if (self._resolved_goal_chapter is not None
                     and self._goal_chapter_locations_mode == GoalChapterLocationsMode.option_normal
                     and enabled_bonuses):
                 gold_bricks_per_chapter = (
@@ -867,14 +908,14 @@ class _NormalOptionsResolver:
                         + bool(self._enable_true_jedi_locations)
                 )
                 chapter_gold_bricks = chapter_areas_count * gold_bricks_per_chapter
-                gold_brick_bonuses = [BONUS_NAME_TO_BONUS_AREA[name] for name in enabled_bonuses
-                                      if BONUS_NAME_TO_BONUS_AREA[name].gold_brick]
+                gold_brick_bonuses = [AREA_TO_GOLD_BRICK_BONUS[area] for area in enabled_bonuses
+                                      if AREA_TO_GOLD_BRICK_BONUS[area].rewards_gold_brick]
                 # Sort lower requirement bonuses first.
-                gold_brick_bonuses.sort(key=lambda bonus_area: bonus_area.gold_bricks_required)
+                gold_brick_bonuses.sort(key=lambda bonus_area: bonus_area.gold_brick_requirement)
                 pre_goal_gold_bricks = chapter_gold_bricks
                 pre_goal_completable_bonuses = 0
                 for area in gold_brick_bonuses:
-                    if area.gold_bricks_required > pre_goal_gold_bricks:
+                    if area.gold_brick_requirement > pre_goal_gold_bricks:
                         # The bonuses were sorted on order of ascending gold brick requirements, so no other bonuses are
                         # reachable before the goal.
                         break
@@ -899,14 +940,15 @@ class _NormalOptionsResolver:
         else:
             return 0
 
-    def _resolve_vanilla_character_unlocked_chapters_requiring_alt_characters(self, enabled_chapters: set[str]):
+    def _resolve_vanilla_character_unlocked_chapters_requiring_alt_characters(self, enabled_chapters: set[Area]):
         if self.options.chapter_unlock_requirement == ChapterUnlockRequirement.option_vanilla_characters:
-            alt_character_chapters = set()
-            allowed_alt_character_chapters = {chapter for chapter in enabled_chapters
-                                              if chapter in self.options.chapters_that_can_require_purchase_characters}
+            alt_character_chapters: set[Area] = set()
+            allowed_alt_character_chapters = enabled_chapters.intersection(
+                self.options.chapters_that_can_require_purchase_characters.to_area_set())
             alt_chance = self.options.require_purchase_characters_chance.value
+            alt_chances: dict[Area, int]
             if alt_chance == -1:
-                alt_chances = self.options.require_purchase_characters_custom_chances.value
+                alt_chances = self.options.require_purchase_characters_custom_chances.to_area_counter()
             else:
                 alt_chances = dict.fromkeys(allowed_alt_character_chapters, alt_chance)
             # Sort before iterating to get deterministic iteration order.
@@ -942,7 +984,7 @@ class _NormalOptionsResolver:
             partial_picks = self.world.random.sample(full_range, k=length - len(initial_picks), counts=base_counts)
             return sorted(initial_picks + partial_picks, reverse=True)
 
-    def _resolve_chapter_required_character_counts(self, starting_chapter: str, enabled_chapters: set[str]):
+    def _resolve_chapter_required_character_counts(self, starting_chapter: Area, enabled_chapters: set[Area]):
         options = self.options
         min_required_count = options.chapter_unlock_characters_min_count.value
         max_required_count = options.chapter_unlock_characters_max_count.value
@@ -962,10 +1004,7 @@ class _NormalOptionsResolver:
             # Swap the min and max.
             min_required_count, max_required_count = max_required_count, min_required_count
             # Swap the options too, so that the spoiler will match.
-            self._deferred_adjust(
-                options.chapter_unlock_characters_min_count, min_required_count,
-                "The minimum chapter_unlock_characters count was greater than the maximum, the minimum and the"
-                " maximum have been swapped.")
+            self._deferred_adjust(options.chapter_unlock_characters_min_count, min_required_count)
             self._deferred_adjust(
                 options.chapter_unlock_characters_max_count, max_required_count,
                 "The maximum chapter_unlock_characters count was less than the minimum, the maximum and the"
@@ -980,10 +1019,7 @@ class _NormalOptionsResolver:
                 # Swap the min and max.
                 min_extra_random_count, max_extra_random_count = max_extra_random_count, min_extra_random_count
                 # Swap the options too, so that the spoiler will match.
-                self._deferred_adjust(
-                    options.chapter_unlock_random_characters_extra_min_count, min_extra_random_count,
-                    "The minimum chapter_unlock_random_characters_extra count was greater than the maximum, the"
-                    " minimum and the maximum have been swapped.")
+                self._deferred_adjust(options.chapter_unlock_random_characters_extra_min_count, min_extra_random_count)
                 self._deferred_adjust(
                     options.chapter_unlock_random_characters_extra_max_count, max_extra_random_count,
                     "The maximum chapter_unlock_random_characters_extra count was less than the minimum, the"
@@ -998,9 +1034,9 @@ class _NormalOptionsResolver:
             self.world.chapter_extra_random_character_counts = extra_dict
 
         # Roll for the required count of characters per chapter.
-        goal_chapter = self._goal_chapter
+        goal_chapter = self._resolved_goal_chapter
         non_special_chapters = sorted(c for c in enabled_chapters
-                                      if c != starting_chapter and c != goal_chapter)
+                                      if c is not starting_chapter and c is not goal_chapter)
         if min_required_count == max_required_count:
             # All requirement counts are the same, so picking is trivial.
             per_chapter_counts = [min_required_count] * len(non_special_chapters)
@@ -1035,24 +1071,23 @@ class _NormalOptionsResolver:
 
         if chapter_unlock_requirement == ChapterUnlockRequirement.option_random_characters:
             # Pair each chapter with a count.
-            counts_dict = dict(zip(non_special_chapters, per_chapter_counts))
+            counts_dict: dict[Area, int] = dict(zip(non_special_chapters, per_chapter_counts))
 
             # The starting chapter always uses the smallest possible required count.
             counts_dict[starting_chapter] = min_required_count
-            if goal_chapter:
+            if goal_chapter is not None:
                 # The goal chapter always uses the largest possible required count.
                 counts_dict[goal_chapter] = max_required_count
 
             self.world.chapter_required_character_counts = counts_dict
         elif chapter_unlock_requirement == ChapterUnlockRequirement.option_vanilla_characters:
-            not_required = self.world.options.chapter_unlock_story_characters_not_required.value
+            not_required = self.world.options.chapter_unlock_story_characters_not_required.to_character_set()
             max_chapter_required_counts = {}
             for chapter in enabled_chapters:
-                chapter_obj = SHORT_NAME_TO_CHAPTER_AREA[chapter]
                 if chapter in self.world.chapters_requiring_alt_characters:
-                    max_chapter_required_counts[chapter] = len(chapter_obj.alt_character_requirements)
+                    max_chapter_required_counts[chapter] = len(chapter.get_purchase_characters())
                 else:
-                    not_required_removed = chapter_obj.character_requirements.difference(not_required)
+                    not_required_removed = chapter.get_story_characters().difference(not_required)
                     max_chapter_required_counts[chapter] = len(not_required_removed)
             # Some chapters can only have 1 or 2 possible required characters, which could be lower than the lowest
             # picked counts in `per_chapter_counts`.
@@ -1062,13 +1097,13 @@ class _NormalOptionsResolver:
             # Sort lower maximum counts first, so that if a chapter can only be locked by 1 character, it uses up
             # a suitable character count instead of using up one of the larger character counts.
             # To allow for some randomness, this is only done most of the time.
-            chapters_by_max_possible_required_counts: dict[int, list[str]] = {}
+            chapters_by_max_possible_required_counts: dict[int, list[Area]] = {}
             for chapter in sorted(non_special_chapters, key=max_chapter_required_counts.__getitem__):
                 max_possible = max_chapter_required_counts[chapter]
                 chapters_by_max_possible_required_counts.setdefault(max_possible, []).append(chapter)
             counts_dict = {}
 
-            def get_next_lowest() -> tuple[int, list[str]]:
+            def get_next_lowest() -> tuple[int, list[Area]]:
                 return next(iter(chapters_by_max_possible_required_counts.items()))
 
             self.world.log_debug("Rolled chapter requirement counts:\n\t%s", list(reversed(per_chapter_counts)))
@@ -1116,7 +1151,7 @@ class _NormalOptionsResolver:
 
             # The starting chapter always uses the smallest possible required count.
             counts_dict[starting_chapter] = min(min_required_count, max_chapter_required_counts[starting_chapter])
-            if goal_chapter:
+            if goal_chapter is not None:
                 # The goal chapter always uses the largest possible required count.
                 counts_dict[goal_chapter] = min(max_required_count, max_chapter_required_counts[goal_chapter])
 
@@ -1126,8 +1161,13 @@ class _NormalOptionsResolver:
     def _resolve_normal_options(self):
         self._validate_goal_choice()
 
-        allowed_chapters, allowed_boss_chapters = self._resolve_allowed_chapters()
-        allowed_starting_chapters = self._resolve_allowed_starting_chapters(allowed_chapters, allowed_boss_chapters)
+        (
+            allowed_chapters,
+            allowed_boss_chapters,
+            original_allowed_boss_chapters
+        ) = self._resolve_allowed_chapters_and_goal_chapter()
+        allowed_starting_chapters = self._resolve_allowed_starting_chapters(
+            allowed_chapters, allowed_boss_chapters, original_allowed_boss_chapters)
 
         self._assert_allowed_chapters(allowed_chapters)
         self._validate_allowed_boss_chapters(allowed_boss_chapters)
@@ -1139,7 +1179,7 @@ class _NormalOptionsResolver:
         (
             maximum_bosses_for_goal,
             maximum_boss_chapters,
-            short_name_to_boss_character,
+            allowed_boss_area_to_boss,
         ) = self._resolve_unique_allowed_boss_characters(
             allowed_starting_chapters, allowed_boss_chapters, enabled_non_goal_chapter_count)
 
@@ -1148,22 +1188,22 @@ class _NormalOptionsResolver:
         self._adjust_starting_chapters_for_boss_chapters(
             allowed_starting_chapters, allowed_boss_chapters, enabled_non_goal_chapter_count, enabled_boss_count)
 
-        starting_chapter, _starting_episode = self._pick_starting_chapter(allowed_starting_chapters)
+        starting_chapter = self._pick_starting_chapter(allowed_starting_chapters)
         enabled_bosses, enabled_chapters_with_locations, enabled_episodes = self._pick_enabled_chapters(
             allowed_chapters,
             allowed_boss_chapters,
             goal_boss_count,
             enabled_boss_count,
-            short_name_to_boss_character,
+            allowed_boss_area_to_boss,
             starting_chapter,
             enabled_non_goal_chapter_count,
         )
 
         enabled_chapters = enabled_chapters_with_locations
         enabled_chapters_with_locations_count = enabled_non_goal_chapter_count
-        if self._goal_chapter:
+        if self._resolved_goal_chapter is not None:
             if self._goal_chapter_locations_mode == GoalChapterLocationsMode.option_removed:
-                enabled_chapters = enabled_chapters_with_locations | {self._goal_chapter}
+                enabled_chapters = enabled_chapters_with_locations | {self._resolved_goal_chapter}
             else:
                 enabled_chapters_with_locations_count += 1
 
@@ -1187,13 +1227,13 @@ class _NormalOptionsResolver:
             expected_gold_brick_event_count
         ) = self._resolve_available_bonuses_and_expected_gold_brick_counts(enabled_non_goal_chapter_count)
 
-        enabled_non_goal_chapters = enabled_chapters - {self._goal_chapter}
+        enabled_non_goal_chapters = enabled_chapters - {self._resolved_goal_chapter}
         goal_area_completion_count = self._resolve_goal_area_completion_count(
             enabled_non_goal_chapters, enabled_bonuses)
 
         world = self.world
-        world.short_name_to_boss_character = short_name_to_boss_character
-        world.starting_chapter = SHORT_NAME_TO_CHAPTER_AREA[starting_chapter]
+        world.boss_area_to_boss = allowed_boss_area_to_boss
+        world.starting_chapter = starting_chapter
         world.enabled_bosses = enabled_bosses
         world.enabled_chapters = enabled_chapters
         world.enabled_episodes = enabled_episodes
@@ -1204,7 +1244,7 @@ class _NormalOptionsResolver:
         world.minikit_bundle_count = minikit_bundle_count
         world.enabled_bonuses = enabled_bonuses
         world.expected_gold_brick_event_count = expected_gold_brick_event_count
-        world.goal_chapter = self._goal_chapter
+        world.goal_chapter = self._resolved_goal_chapter
         world.goal_area_completion_count = goal_area_completion_count
 
     def resolve_normal_options(self):

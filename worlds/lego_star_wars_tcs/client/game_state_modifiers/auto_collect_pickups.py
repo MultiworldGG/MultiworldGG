@@ -1,36 +1,39 @@
 from enum import IntFlag
 
 from ..common import ClientComponent, StaticPointer, UintField
-from ..common_addresses import CustomSaveFlags1
+from ..custom_save_data import CustomSaveFlags1
 from ..events import subscribe_event, OnReceiveSlotDataEvent
 from ..type_aliases import TCSContext
-from ...levels import CHAPTER_AREAS, BONUS_AREAS, VEHICLE_CHAPTER_SHORTNAMES, VEHICLE_BONUS_AREA_NAMES
 from ...options import AutoCollectSpawnedPickups
+
+from ...data.areas import Area, BONUS_ROOM_BONUSES
+from ...data.levels import Level
 
 
 # Levels within these areas already auto-collect spawned pickups, though through a different means than setting the flag
 # that this component sets on level data.
 _EXCLUDED_CHAPTER_AREAS = {
-    "Mos Espa Pod Race",
-    "Battle Over Coruscant",
+    Area.PODSPRINT,
+    Area.DOGFIGHT,
 }
 _EXCLUDED_BONUS_AREAS = {
-    "Mos Espa Pod Race (Original)",
-    "Gunship Cavalry (Original)",
-    "LEGO City",
-    "New Town",
+    Area.PODRACE,
+    Area.BONUS_GUNSHIP,
+    Area.BONUS,
+    Area.BONUS2,
 }
 
-CANTINA_LEVEL_ID = 325
-MAIN_LEVEL_IDS = {CANTINA_LEVEL_ID}.union(
-    *(area.playable_level_ids for area in CHAPTER_AREAS if area.name not in _EXCLUDED_CHAPTER_AREAS),
-    *(area.playable_level_ids for area in BONUS_AREAS if area.name not in _EXCLUDED_BONUS_AREAS),
+_MAIN_AREAS: set[Area] = {
+    Area.MAP,
+    *[area for area in Area if area not in _EXCLUDED_CHAPTER_AREAS and area.is_chapter()],
+    *[area for area in BONUS_ROOM_BONUSES if area not in _EXCLUDED_BONUS_AREAS],
+}
+
+_MAIN_LEVELS: set[Level] = set().union(
+    *[area.get_playable_levels() for area in _MAIN_AREAS],
 )
-VEHICLE_LEVEL_IDS = set().union(
-    *(area.playable_level_ids for area in CHAPTER_AREAS
-      if area.name not in _EXCLUDED_CHAPTER_AREAS and area.short_name in VEHICLE_CHAPTER_SHORTNAMES),
-    *(area.playable_level_ids for area in BONUS_AREAS
-      if area.name not in _EXCLUDED_BONUS_AREAS and area.name in VEHICLE_BONUS_AREA_NAMES),
+_VEHICLE_LEVELS: set[Level] = set().union(
+    *[area.get_playable_levels() for area in _MAIN_AREAS if area.is_vehicle_area()],
 )
 
 
@@ -71,12 +74,9 @@ class AutoCollectPickups(ClientComponent):
         ctx = event.context
         if event.first_time_setup:
             # Read the value from slot data and write it into the save data.
-            if event.generator_version < (1, 4, 2):
-                value = AutoCollectSpawnedPickups.option_disabled
-            else:
-                value = event.slot_data["auto_collect_spawned_pickups"]
-            enabled = bool(value)
-            vehicles_only = value == AutoCollectSpawnedPickups.option_vehicle_levels_only
+            option = event.slot_data.auto_collect_spawned_pickups
+            enabled = bool(option)
+            vehicles_only = option == AutoCollectSpawnedPickups.option_vehicle_levels_only
             CustomSaveFlags1.AUTO_COLLECT_PICKUPS_ENABLED.set_bool(ctx, enabled)
             CustomSaveFlags1.AUTO_COLLECT_PICKUPS_VEHICLES_ONLY.set_bool(ctx, vehicles_only)
         else:
@@ -92,26 +92,26 @@ class AutoCollectPickups(ClientComponent):
     def update(self, ctx: TCSContext, enabled: bool, vehicles_only: bool, update_save_data: bool = True):
         if enabled:
             if vehicles_only:
-                to_set = VEHICLE_LEVEL_IDS
-                to_unset = MAIN_LEVEL_IDS - VEHICLE_LEVEL_IDS
+                to_set = _VEHICLE_LEVELS
+                to_unset = _MAIN_LEVELS - _VEHICLE_LEVELS
             else:
-                to_set = MAIN_LEVEL_IDS
+                to_set = _MAIN_LEVELS
                 to_unset = ()
         else:
             to_set = ()
-            to_unset = MAIN_LEVEL_IDS
+            to_unset = _MAIN_LEVELS
 
         bit_value: int = LevelDataFlag.PICKUPS_TO_PANEL.value
         l_data = P_L_DATA_LIST.to_array(ctx, L_DATA_SIZE)
 
-        for level_id in to_set:
-            flag_address = l_data[level_id]
+        for level in to_set:
+            flag_address = l_data[level]
             flag = L_DATA_FLAG.get(ctx, flag_address)
             updated_flag = flag | bit_value
             L_DATA_FLAG.set(ctx, flag_address, updated_flag)
 
-        for level_id in to_unset:
-            flag_address = l_data[level_id]
+        for level in to_unset:
+            flag_address = l_data[level]
             flag = L_DATA_FLAG.get(ctx, flag_address)
             updated_flag = flag & ~bit_value
             L_DATA_FLAG.set(ctx, flag_address, updated_flag)

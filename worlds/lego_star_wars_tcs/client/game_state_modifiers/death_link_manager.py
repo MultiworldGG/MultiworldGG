@@ -2,13 +2,20 @@ import asyncio
 import logging
 import time
 from enum import IntEnum
+from random import Random
 
 from Utils import async_start
 
 from . import ClientComponent
 from .studs import give_studs
 from ..common import StaticUint, FloatField
-from ..common_addresses import CURRENT_AREA_ADDRESS, player_character_entity_iter, CustomSaveFlags1
+from ..common_addresses import (
+    CURRENT_AREA_ADDRESS,
+    player_character_entity_iter,
+    CHARACTER_CHARACTER_DATA_POINTER,
+    CHARACTER_DATA_ID,
+)
+from ..custom_save_data import CustomSaveFlags1
 from ..events import (
     subscribe_event,
     OnReceiveSlotDataEvent,
@@ -17,55 +24,51 @@ from ..events import (
     OnPlayerCharacterIdChangeEvent,
 )
 from ..type_aliases import TCSContext
-from ...levels import (
-    AREA_ID_TO_CHAPTER_AREA,
-    VEHICLE_CHAPTER_SHORTNAMES,
-    AREA_ID_TO_BONUS_AREA,
-    VEHICLE_BONUS_AREA_NAMES,
-    SHORT_NAME_TO_CHAPTER_AREA,
-    BONUS_NAME_TO_BONUS_AREA,
-)
 
-logger = logging.getLogger("Client")
-debug_logger = logging.getLogger("TCS Debug")
+from ...data.areas import Area
+from ...data.characters import Character, UnlockMethod
+from ...data.items.all_character_items import CHARACTER_TO_ITEM_DATA
+from ...slot_data import EnabledFeature
+
+_DEBUG_LOGGER = logging.getLogger("TCS Debug")
 
 # Currently, all characters are allowed to be killed because the client sets the respawn timer before killing the
 # character.
-DISALLOWED_DEATH_CHARACTER_IDS = frozenset()
+_DISALLOWED_DEATH_CHARACTER_IDS = frozenset()
 
 
 # Player death count in the current area. Resets to zero upon area change.
-PLAYER_DEATH_COUNT_IN_CURRENT_AREA = StaticUint(0x951244)
+_PLAYER_DEATH_COUNT_IN_CURRENT_AREA = StaticUint(0x951244)
 # Player death count in the current level. Resets to zero upon level change.
-# PLAYER_DEATH_COUNTER_IN_CURRENT_LEVEL = StaticUint(0x87b2f0)
+# _PLAYER_DEATH_COUNTER_IN_CURRENT_LEVEL = StaticUint(0x87b2f0)
 
 
 # Flags for the currently active 'cheats' (Extras).
-CHEAT_FLAGS = StaticUint(0x950dac)
+_CHEAT_FLAGS = StaticUint(0x950dac)
 # For some reason, if the in-area death count is 0, but flag cheat 0x2000 is active, then the in-area death count is
 # increased to 1.
-CHEAT_FLAGS_STARTING_DEATH_COUNT = 0x2000
+_CHEAT_FLAGS_STARTING_DEATH_COUNT = 0x2000
 
 
 # There are a maximum of 8 playable characters in a level, pointers to their 'character entity' objects are in an
 # entity*[8] array at this address.
-PLAYER_CHARACTER_POINTERS_ARRAY_ADDRESS = 0x93d810
+_PLAYER_CHARACTER_POINTERS_ARRAY_ADDRESS = 0x93d810
 
 
-VEHICLE_AMNESTY_AREA_IDS = frozenset({
-    SHORT_NAME_TO_CHAPTER_AREA["2-1"].area_id,
-    SHORT_NAME_TO_CHAPTER_AREA["2-5"].area_id,
-    SHORT_NAME_TO_CHAPTER_AREA["4-6"].area_id,
-    SHORT_NAME_TO_CHAPTER_AREA["5-1"].area_id,
-    SHORT_NAME_TO_CHAPTER_AREA["5-3"].area_id,
-    SHORT_NAME_TO_CHAPTER_AREA["6-6"].area_id,
-    BONUS_NAME_TO_BONUS_AREA["Mos Espa Pod Race (Original)"].area_id,
-    BONUS_NAME_TO_BONUS_AREA["Anakin's Flight"].area_id,
-    BONUS_NAME_TO_BONUS_AREA["Gunship Cavalry (Original)"].area_id,
+_VEHICLE_AMNESTY_AREAS = frozenset({
+    Area.PURSUIT,
+    Area.GUNSHIP,
+    Area.DEATHSTARBATTLE,
+    Area.HOTHBATTLE,
+    Area.ASTEROIDCHASE,
+    Area.DEATHSTAR2BATTLE,
+    Area.PODRACE,
+    Area.ANAKINSFLIGHT,
+    Area.BONUS_GUNSHIP,
 })
 
 
-DEATH_COOLDOWN = 2.25
+_DEATH_COOLDOWN = 2.25
 """
 Respawn is typically 2.0s, so ignore any deaths to send or receive within just above this time.
 If something goes horrendously wrong with this Death Link implementation, this has the added benefit of
@@ -73,7 +76,7 @@ limiting death spam.
 """
 
 
-class CharacterActionState(IntEnum):
+class _CharacterActionState(IntEnum):
     """The current action a character is undergoing. The real name of the type itself is unknown."""
     # # Original name "NoContext" is converted to NO_CONTEXT for enum names. Other names follow the same pattern.
     # JUMP = 0x0
@@ -206,7 +209,7 @@ class CharacterActionState(IntEnum):
         return self._get(ctx, character_address) == self.value
 
 
-class CharacterDeathState(IntEnum):
+class _CharacterDeathState(IntEnum):
     ALIVE = 0
     UNKNOWN_BUT_ALSO_DEAD = 1
     DEAD = 2
@@ -219,11 +222,150 @@ class CharacterDeathState(IntEnum):
         ctx.write_byte(character_address + 0x28b, self.value, raw=True)
 
 
-CHARACTER_RESPAWN_TIMER = FloatField(0x1010)
+_CHARACTER_RESPAWN_TIMER = FloatField(0x1010)
 """
 Usually set by the game when a player dies, but can be set manually before killing a player, to make them wait a
 different amount of time before they respawn, so long as it is set greater than 0.0
 """
+
+_PLAYER_SPECIFIC_VEHICLE_DEATH_MESSAGES: tuple[str, ...] = (
+    "{alias}'s P{player} crashed their {character}",
+    "{alias}'s P{player}'s {character} crashed",
+    "{alias}'s P{player}'s {character} exploded",
+)
+_VEHICLE_DEATH_MESSAGES: tuple[str, ...] = (
+    "{alias} crashed their {character}",
+    "{alias}'s {character} crashed",
+    "{alias}'s {character} exploded",
+)
+_PLAYER_SPECIFIC_NON_VEHICLE_DEATH_MESSAGES: tuple[str, ...] = (
+    "{alias}'s P{player} broke their {character} minifigure",
+    "{alias}'s P{player}'s {character} minifigure broke",
+)
+_NON_VEHICLE_DEATH_MESSAGES: tuple[str, ...] = (
+    "{alias} broke their {character} minifigure",
+    "{alias}'s {character} minifigure broke",
+)
+_PLAYER_SPECIFIC_STATIONARY_RIDABLE_DEATH_MESSAGES: tuple[str, ...] = (
+    "{alias}'s P{players}'s {character} exploded",
+)
+_STATIONARY_RIDABLE_DEATH_MESSAGES: tuple[str, ...] = (
+    "{alias}'s {character} exploded",
+)
+_PLAYER_SPECIFIC_FALLBACK_DEATH_MESSAGES: tuple[str, ...] = (
+    "{alias}'s P{player} lost their studs",
+)
+_PLAYER_SPECIFIC_ANIMAL_RIDABLE_DEATH_MESSAGES: tuple[str, ...] = (
+    "{alias}'s P{player} broke their {character} minifigure",
+    "{alias}'s P{player}'s {character} minifigure broke",
+    "{alias}'s P{player}'s {character} died",
+)
+_ANIMAL_RIDABLE_DEATH_MESSAGES: tuple[str, ...] = (
+    "{alias} broke their {character} minifigure",
+    "{alias}'s {character} minifigure broke",
+    "{alias}'s {character} died",
+)
+_FALLBACK_DEATH_MESSAGES: tuple[str, ...] = (
+    "{alias} lost their studs",
+)
+_ANIMAL_RIDABLES: frozenset[Character] = frozenset({
+    Character.BANTHA,
+    Character.BOMARRMONK,  # I guess a brain in a jar still counts as an animal.
+    Character.DEWBACK,
+    Character.TAUNTAUN,
+    # Controllable as an Extra Toggle character in minikit bonuses rather than ridable.
+    Character.WAMPA,
+    Character.RANCOR,
+})
+# Many of these are probably impossible to kill, since damaging a vehicle usually just ejects the player.
+_VEHICLE_RIDABLES: frozenset[Character] = frozenset({
+    Character.ATAT,
+    Character.ATST,
+    Character.MAPCAR,
+    Character.CLONEWALKER,
+    Character.CLOUDCAR,
+    Character.FIRETRUCK,
+    Character.FLASHSPEEDER,
+    Character.SPEEDER_LAND,
+    Character.LIFEBOAT,
+    Character.MOONCAR,
+    Character.SERVICE_CAR,
+    Character.SPEEDERBIKE,
+    Character.SNOWMOB,
+    Character.STAP,
+    Character.TOWNCAR,
+    Character.TRACTOR,
+    Character.WOOKIEFLYER,
+    # Controllable in minikit bonuses rather than ridable.
+    *[c for c in Character if c.unlock_method is UnlockMethod.MINIKIT]
+})
+# I don't think any of these can be killed because they are stationary. The player is just ejected instead.
+_STATIONARY_RIDABLES: frozenset[Character] = frozenset({
+    Character.BASKETCANNON,
+    Character.BIGGUN,
+    Character.GRABBERCONTROL,
+    Character.CATAPULT,
+    Character.MOSCANNON,
+    Character.CANNON,
+    Character.TROOPERCANNON,
+})
+
+def _make_character_to_death_link_messages() -> dict[Character, tuple[tuple[str, ...], tuple[str, ...]]]:
+    vehicle = (_PLAYER_SPECIFIC_VEHICLE_DEATH_MESSAGES, _VEHICLE_DEATH_MESSAGES)
+    non_vehicle = (_PLAYER_SPECIFIC_NON_VEHICLE_DEATH_MESSAGES, _NON_VEHICLE_DEATH_MESSAGES)
+    stationary_ridable = (_PLAYER_SPECIFIC_STATIONARY_RIDABLE_DEATH_MESSAGES, _STATIONARY_RIDABLE_DEATH_MESSAGES)
+    animal_ridable = (_PLAYER_SPECIFIC_ANIMAL_RIDABLE_DEATH_MESSAGES, _ANIMAL_RIDABLE_DEATH_MESSAGES)
+    fallback = (_FALLBACK_DEATH_MESSAGES, _FALLBACK_DEATH_MESSAGES)
+    d: dict[Character, tuple[tuple[str, ...], tuple[str, ...]]] = {}
+    for character in Character:
+        if character in CHARACTER_TO_ITEM_DATA:
+            item_data = CHARACTER_TO_ITEM_DATA[character]
+            if item_data.item_type == "Vehicle":
+                d[character] = vehicle
+            else:
+                d[character] = non_vehicle
+        else:
+            if character in _STATIONARY_RIDABLES:
+                d[character] = stationary_ridable
+            elif character in _ANIMAL_RIDABLES:
+                d[character] = animal_ridable
+            else:
+                d[character] = fallback
+    return d
+_CHARACTER_TO_DEATH_LINK_MESSAGES: dict[Character, tuple[tuple[str, ...], tuple[str, ...]]]
+_CHARACTER_TO_DEATH_LINK_MESSAGES = _make_character_to_death_link_messages()
+
+
+_RANDOM: Random = Random()
+def _get_death_message_for_character(ctx: TCSContext, character_id: int, player_number: int | None) -> str | None:
+    # Get the current player's name.
+    slot = ctx.slot
+    if slot is None:
+        return None
+    player_name = ctx.player_names.get(slot)
+    if player_name is None:
+        return None
+
+    if character_id not in Character:
+        # This branch may be hit deliberately if it is not possible to determine which player has died.
+        return _RANDOM.choice(_FALLBACK_DEATH_MESSAGES).format(alias=player_name, player=player_number)
+
+    c = Character(character_id)
+    character_name = c.readable_name
+    if character_name == "?":
+        # Probably shouldn't happen, but fall back to automatically getting a name from the enum constant name.
+        character_name = c.name.replace("_", " ").title()
+    if c in _CHARACTER_TO_DEATH_LINK_MESSAGES:
+        messages_tuple = _CHARACTER_TO_DEATH_LINK_MESSAGES[c]
+        if player_number is not None:
+            # Player-specific.
+            format_messages = messages_tuple[0]
+        else:
+            # Not player-specific.
+            format_messages = messages_tuple[1]
+    else:
+        format_messages = _FALLBACK_DEATH_MESSAGES
+    return _RANDOM.choice(format_messages).format(alias=player_name, player=player_number, character=character_name)
 
 
 class DeathLinkManager(ClientComponent):
@@ -254,22 +396,15 @@ class DeathLinkManager(ClientComponent):
 
     @subscribe_event
     def init_from_slot_data(self, event: OnReceiveSlotDataEvent) -> None:
-        slot_data = event.slot_data
         ctx = event.context
 
-        # Death Link did not exist as an option in older apworld versions.
-        if event.generator_version < (1, 2, 0):
-            self.death_link_enabled = False
-            self.normal_death_link_amnesty = 0
-            self.vehicle_death_link_amnesty = 0
-            self.death_link_stud_loss = 0
-            self.death_link_stud_loss_scaling = False
-        else:
-            self.death_link_enabled = bool(slot_data["death_link"])
-            self.normal_death_link_amnesty = slot_data["death_link_amnesty"]
-            self.vehicle_death_link_amnesty = slot_data["vehicle_death_link_amnesty"]
-            self.death_link_stud_loss = slot_data["death_link_studs_loss"]
-            self.death_link_stud_loss_scaling = bool(slot_data["death_link_studs_loss_scaling"])
+        slot_data = event.slot_data
+
+        self.death_link_enabled = EnabledFeature.DEATH_LINK.is_enabled(slot_data)
+        self.normal_death_link_amnesty = slot_data.death_link_amnesty.value
+        self.vehicle_death_link_amnesty = slot_data.vehicle_death_link_amnesty.value
+        self.death_link_stud_loss = slot_data.death_link_studs_loss.value
+        self.death_link_stud_loss_scaling = EnabledFeature.DEATH_LINK_STUD_LOSS_SCALING.is_enabled(slot_data)
 
         if event.first_time_setup:
             # Write whether Death Link is enabled into slot data.
@@ -285,7 +420,7 @@ class DeathLinkManager(ClientComponent):
         self.vehicle_death_amnesty_remaining = self.vehicle_death_link_amnesty
 
         # Set the last known death count to its current value.
-        self._last_area_death_count = PLAYER_DEATH_COUNT_IN_CURRENT_AREA.get(ctx)
+        self._last_area_death_count = _PLAYER_DEATH_COUNT_IN_CURRENT_AREA.get(ctx)
 
     def _update_client_tags(self, ctx: TCSContext):
         """Update the client's tags to add/remove the DeathLink tag."""
@@ -296,7 +431,7 @@ class DeathLinkManager(ClientComponent):
             # The game's death counter increments even with Death Link is disabled, so update the current expected death
             # count to whatever the game's death counter is set to, to prevent sending a death as soon as Death Link is
             # enabled.
-            self._last_area_death_count = PLAYER_DEATH_COUNT_IN_CURRENT_AREA.get(ctx)
+            self._last_area_death_count = _PLAYER_DEATH_COUNT_IN_CURRENT_AREA.get(ctx)
             CustomSaveFlags1.DEATH_LINK_ENABLED.set(ctx)
         else:
             CustomSaveFlags1.DEATH_LINK_ENABLED.unset(ctx)
@@ -308,36 +443,39 @@ class DeathLinkManager(ClientComponent):
         self._update_death_link(ctx, not self.death_link_enabled)
 
     @staticmethod
-    def _get_kill_state_to_set(ctx: TCSContext) -> CharacterActionState:
+    def _get_kill_state_to_set(ctx: TCSContext) -> _CharacterActionState:
         area_id = CURRENT_AREA_ADDRESS.get(ctx)
-        area = AREA_ID_TO_CHAPTER_AREA.get(area_id)
-        is_vehicle_or_unknown: bool
+        area = Area(area_id) if area_id in Area else None
+
         if area is None:
-            bonus_area = AREA_ID_TO_BONUS_AREA.get(area_id)
-            # if `bonus_area` is also None, then the player is somewhere that the apworld does not have information
-            # about currently, e.g. an Episode's Minikit Bonus or 2-player Arcade.
-            is_vehicle_or_unknown = bonus_area is None or bonus_area.name in VEHICLE_BONUS_AREA_NAMES
-        else:
-            is_vehicle_or_unknown = area.short_name in VEHICLE_CHAPTER_SHORTNAMES
-        if is_vehicle_or_unknown:
-            # Many of the vehicle levels ignore THROWN_BY_FORCE_LIGHTNING_OR_CHOKE_.
-            return CharacterActionState.DOOMED
-        else:
+            # This should mean there is currently no Area. I am not sure if this can happen.
+            if area_id != -1:
+                # This should not happen unless the memory read is garbage for some reason.
+                _DEBUG_LOGGER.warning("Got unknown Area ID %i when trying to determine kill state to set.", area_id)
+            return _CharacterActionState.DOOMED
+
+        if area.is_vehicle_area():
+            # Many of the vehicle levels ignore DIE_AIR.
+            return _CharacterActionState.DOOMED
+        elif area is Area.MAP or area.is_chapter():
             # It is more pleasing for the character's parts to have physics instead of disappearing through the floor.
-            return CharacterActionState.DIE_AIR
+            return _CharacterActionState.DIE_AIR
+        else:
+            # If the current Area is anywhere else, just use DOOMED because most other areas have not been tested.
+            return _CharacterActionState.DOOMED
 
     async def _kill_player_controlled_characters(self, ctx: TCSContext) -> bool:
         kill_state = DeathLinkManager._get_kill_state_to_set(ctx)
         expecting_death = []
         for player_number, character_address in player_character_entity_iter(ctx):
-            if CharacterDeathState.get(ctx, character_address) == CharacterDeathState.ALIVE:
+            if _CharacterDeathState.get(ctx, character_address) == _CharacterDeathState.ALIVE:
                 if player_number == 1 and not self.p1_is_allowed_to_be_killed:
                     continue
                 if player_number == 2 and not self.p2_is_allowed_to_be_killed:
                     continue
                 # Do not kill players in the middle of crawling through a vent, they tend to get stuck and break the
                 # vent's interaction.
-                if CharacterActionState.TELEPORT.is_set(ctx, character_address):
+                if _CharacterActionState.TELEPORT.is_set(ctx, character_address):
                     continue
                 expecting_death.append((player_number, character_address))
                 # WORKAROUND: Some characters, notably set-pieces such as Cranes, do not respawn when killed.
@@ -348,32 +486,32 @@ class DeathLinkManager(ClientComponent):
                 # For turrets that break into bricks when destroyed, this does not cause issues. The 5-5 turret actually
                 # respawns by default because it can be observed to be setting the respawn timer, which updates for a
                 # frame before the turret breaks into bricks.
-                CHARACTER_RESPAWN_TIMER.set(ctx, character_address, 2.0)
+                _CHARACTER_RESPAWN_TIMER.set(ctx, character_address, 2.0)
                 kill_state.set(ctx, character_address)
 
         killed_at_least_one = len(expecting_death) > 0
 
-        if kill_state != CharacterActionState.DOOMED:
+        if kill_state != _CharacterActionState.DOOMED:
             # The DIE_AIR state can take some time before it actually kills, especially for Player 2 who sometimes
             # ignores the state entirely for some reason. Some characters, notably turrets and other set-pieces, also
             # ignore DIE_AIR.
             await asyncio.sleep(0.05)
             for player_number, character_address in expecting_death:
-                if CharacterDeathState.get(ctx, character_address) == CharacterDeathState.ALIVE:
+                if _CharacterDeathState.get(ctx, character_address) == _CharacterDeathState.ALIVE:
                     # Set the respawn timer to ensure this character does actually respawn, even if it would not
                     # normally do so.
-                    CHARACTER_RESPAWN_TIMER.set(ctx, character_address, 2.0)
+                    _CHARACTER_RESPAWN_TIMER.set(ctx, character_address, 2.0)
                     # Use the more forceful DOOMED death state because it is better at interrupting current actions,
                     # especially for Player 2.
-                    CharacterActionState.DOOMED.set(ctx, character_address)
-                    debug_logger.info("Retrying killing player %i with DOOMED", player_number)
+                    _CharacterActionState.DOOMED.set(ctx, character_address)
+                    _DEBUG_LOGGER.info("Retrying killing player %i with DOOMED", player_number)
 
             # Force kill implementation if needed.
             # if expecting_death:
             #     # Force kill characters that were still alive even after the check attempts.
             #     for player_number, character_address in expecting_death:
-            #         debug_logger.info("Force killing player %i", player_number)
-            #         CharacterDeathState.DEAD.set(ctx, character_address)
+            #         _DEBUG_LOGGER.info("Force killing player %i", player_number)
+            #         _CharacterDeathState.DEAD.set(ctx, character_address)
 
         return killed_at_least_one
 
@@ -384,7 +522,7 @@ class DeathLinkManager(ClientComponent):
     @staticmethod
     def _find_dead_player_controlled_character(ctx: TCSContext) -> tuple[bool, int]:
         for player_number, character_address in player_character_entity_iter(ctx):
-            if CharacterDeathState.get(ctx, character_address) != CharacterDeathState.ALIVE:
+            if _CharacterDeathState.get(ctx, character_address) != _CharacterDeathState.ALIVE:
                 return True, player_number
         return False, -1
 
@@ -399,6 +537,7 @@ class DeathLinkManager(ClientComponent):
         #  Ideas:
         #  f"{alias name} crashed their {vehicle name}"
         #  f"{alias name} lost their studs"
+        #  f"{alias name} broke their {character name} minifigure"
         #  f"Caused by {alias name}'s {character name}"
         #  Special messages for when both P1 and P2 are player controlled?
         #  f"{alias name}'s P{player number} crashed their {vehicle name}"
@@ -406,7 +545,7 @@ class DeathLinkManager(ClientComponent):
         #  Special messages only when both P1 and P2 are player controlled and are the same character?
         #  f"Caused by {alias name}'s {character name} (P{player number})"
 
-        if time.time() < self.last_death_amnesty + DEATH_COOLDOWN:
+        if time.time() < self.last_death_amnesty + _DEATH_COOLDOWN:
             # Do not send another death if sending a death through Death Link was recently prevented due to amnesty.
             return
 
@@ -431,9 +570,42 @@ class DeathLinkManager(ClientComponent):
                 amnesty_remaining = self.normal_death_amnesty_remaining
 
         if send_death:
+            player_character_ids = {}
+            dead_players: dict[int, float] = {}
+
+            for player_number, character_address in player_character_entity_iter(ctx):
+                c_data = CHARACTER_CHARACTER_DATA_POINTER.get(ctx, character_address)
+                if not c_data:
+                    # Somehow NULL.
+                    continue
+                player_character_ids[player_number] = CHARACTER_DATA_ID.get(ctx, c_data)
+                if _CharacterDeathState.get(ctx, character_address) is not _CharacterDeathState.ALIVE:
+                    respawn_timer = _CHARACTER_RESPAWN_TIMER.get(ctx, character_address)
+                    dead_players[player_number] = respawn_timer
+
+            custom_death_message = None
+            if dead_players:
+                # If both players happen to be dead, prefer the one with the most recent death (largest respawn timer).
+                for dead_player, _ in sorted(dead_players.items(), key=lambda x: x[1], reverse=True):
+                    specific_player_number = dead_player if len(player_character_ids) > 1 else None
+                    death_message = _get_death_message_for_character(
+                        ctx, player_character_ids.get(dead_player, -1), specific_player_number)
+                    if death_message is not None:
+                        custom_death_message = death_message
+                        break
+            elif len(player_character_ids) == 1:
+                # If there is only one player character, assume it was them that died.
+                character_id = next(iter(player_character_ids.values()))
+                custom_death_message = _get_death_message_for_character(ctx, character_id, None)
+            else:
+                # No players are dead and both players are active, so there is no way to make a reasonable guess at who
+                # died, e.g. both players are active and one of them died in 3-1 or 3-6, where dying instantly reloads a
+                # checkpoint. By providing an invalid Character ID, the fallback messages will be used.
+                custom_death_message = _get_death_message_for_character(ctx, -1, None)
+
             ctx.text_display.priority_message("DeathLink: Death Sent")
             # todo: This could probably be a fire-and-forget task.
-            await ctx.send_death()
+            await ctx.send_death(custom_death_message if custom_death_message else "")
             # Ideally, we would kill any other player characters too, just like when receiving a death, but in levels
             # where death instantly respawns the player at an earlier checkpoint, this would result in the player, that
             # died, dying a second time after respawning at the checkpoint.
@@ -454,7 +626,7 @@ class DeathLinkManager(ClientComponent):
         now = time.time()
 
         # Check if players have died by comparing the expected death count to the actual death count.
-        player_death_count = PLAYER_DEATH_COUNT_IN_CURRENT_AREA.get(ctx)
+        player_death_count = _PLAYER_DEATH_COUNT_IN_CURRENT_AREA.get(ctx)
         expected_death_count = self._last_area_death_count
         if player_death_count == expected_death_count:
             # No death to send.
@@ -464,7 +636,7 @@ class DeathLinkManager(ClientComponent):
             # changes and when the game's death counter gets updated.
             self._last_area_death_count = player_death_count
             return
-        elif player_death_count == 1 and (CHEAT_FLAGS_STARTING_DEATH_COUNT & CHEAT_FLAGS.get(ctx)):
+        elif player_death_count == 1 and (_CHEAT_FLAGS_STARTING_DEATH_COUNT & _CHEAT_FLAGS.get(ctx)):
             # The game's level update function sets the in-area death count to at least 1 when an Extra with this flag
             # is active. I have no idea why.
             # This means the player has not actually died.
@@ -485,18 +657,18 @@ class DeathLinkManager(ClientComponent):
                 # Still dead, so don't send any more deaths or receive any more deaths.
                 return
             else:
-                debug_logger.info("Players have respawned.")
+                _DEBUG_LOGGER.info("Players have respawned.")
                 self.waiting_for_respawn = False
                 # If it took a long time for the death to actually be processed, e.g. the game was paused, act as if the
                 # death was actually recently processed.
-                pretend_last_processed_death = now - DEATH_COOLDOWN
+                pretend_last_processed_death = now - _DEATH_COOLDOWN
                 if pretend_last_processed_death > self._last_processed_received_death:
-                    debug_logger.info("Waiting for respawn took a while, so the last processed death time has been"
+                    _DEBUG_LOGGER.info("Waiting for respawn took a while, so the last processed death time has been"
                                       " increased.")
                     self._last_processed_received_death = pretend_last_processed_death
                 # Update the expected death count to match however many player controlled characters were killed by the
                 # received death.
-                self._last_area_death_count = PLAYER_DEATH_COUNT_IN_CURRENT_AREA.get(ctx)
+                self._last_area_death_count = _PLAYER_DEATH_COUNT_IN_CURRENT_AREA.get(ctx)
         # Receive death.
         elif self.pending_received_death:
             self.pending_received_death = False
@@ -507,7 +679,7 @@ class DeathLinkManager(ClientComponent):
                 # The client could have paused the current coroutine for a while when hitting the await, so re-get the
                 # current time instead of using `now`.
                 self._last_processed_received_death = time.time()
-                debug_logger.info("Killing player characters from received death")
+                _DEBUG_LOGGER.info("Killing player characters from received death")
                 # At least one character was alive and should now be dead or dying, so the death has been received.
                 ctx.text_display.priority_message(message)
                 # Remove studs from the player.
@@ -519,20 +691,20 @@ class DeathLinkManager(ClientComponent):
             else:
                 # There were no living players to kill, or the living players are not currently allowed to be killed, so
                 # skip the received death.
-                debug_logger.info("There were no living players allowed to be killed.")
+                _DEBUG_LOGGER.info("There were no living players allowed to be killed.")
                 pass
         # Send death.
         elif player_death_count > expected_death_count:
             # The player has died since the last time the in-area death count was checked.
-            x = now - DEATH_COOLDOWN
+            x = now - _DEATH_COOLDOWN
             if x < self._last_processed_received_death:
                 # The player only recently received a death, don't send another death just yet.
                 # This generally should not happen because the player has to wait to respawn to be able to die again.
-                debug_logger.info("Skipping sending a death because the player too recently received a death.")
+                _DEBUG_LOGGER.info("Skipping sending a death because the player too recently received a death.")
                 return
             if x < ctx.last_death_link:
                 # The player only recently sent/received a death, don't send another death just yet.
-                debug_logger.info("Skipping sending a death because the player too recently sent/received a death.")
+                _DEBUG_LOGGER.info("Skipping sending a death because the player too recently sent/received a death.")
                 return
             await self.attempt_to_send_death(ctx)
 
@@ -551,10 +723,10 @@ class DeathLinkManager(ClientComponent):
         # from this very large dummy value to the proper value.
         self._last_area_death_count = 999_999_999
         self.waiting_for_respawn = False
-        debug_logger.info("Reset expected death count to 0 upon area change.")
-        self.current_area_uses_vehicle_amnesty = event.new_area_data_id in VEHICLE_AMNESTY_AREA_IDS
+        _DEBUG_LOGGER.info("Reset expected death count to 0 upon area change.")
+        self.current_area_uses_vehicle_amnesty = event.new_area_data_id in _VEHICLE_AMNESTY_AREAS
 
     @subscribe_event
     def on_character_id_change(self, event: OnPlayerCharacterIdChangeEvent):
-        self.p1_is_allowed_to_be_killed = event.new_p1_character_id not in DISALLOWED_DEATH_CHARACTER_IDS
-        self.p2_is_allowed_to_be_killed = event.new_p2_character_id not in DISALLOWED_DEATH_CHARACTER_IDS
+        self.p1_is_allowed_to_be_killed = event.new_p1_character_id not in _DISALLOWED_DEATH_CHARACTER_IDS
+        self.p2_is_allowed_to_be_killed = event.new_p2_character_id not in _DISALLOWED_DEATH_CHARACTER_IDS

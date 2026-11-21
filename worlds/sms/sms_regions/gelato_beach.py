@@ -4,9 +4,9 @@ from .sms_region_helper import SPRAY_OR_HOVER
 GELATO_BEACH_ENTRANCE: SmsRegion = SmsRegion(
     SmsRegionName.GELATO_ENTRANCE,
     requirements=[Requirements(SPRAY_OR_HOVER, shines=5)],
-    hard=[],
-    advanced=[],
-    tears=[],
+    hard=[Requirements(SPRAY_OR_HOVER, shines=5)],
+    advanced=[Requirements(SPRAY_OR_HOVER_OR_TURBO, shines=5)],
+    tears=[Requirements(SPRAY_OR_HOVER_OR_TURBO, shines=5)],
     ticketed="Gelato Beach Ticket",
     parent_region=SmsRegionName.PLAZA,
 )
@@ -345,26 +345,26 @@ GELATO_BEACH_FOUR: SmsRegion = SmsRegion(
     blue_coins=[
         BlueCoin(
             "Sand Bird A",
-            [Requirements([[NozzleType.hover]])],
-            [Requirements(manual_none=True)],
+            requirements=[Requirements([[NozzleType.hover]])],
+            hard=[Requirements(manual_none=True)],
             in_game_bit=296,
         ),
         BlueCoin(
             "Sand Bird B",
-            [Requirements([[NozzleType.hover]])],
-            [Requirements(manual_none=True)],
+            requirements=[Requirements([[NozzleType.hover]])],
+            hard=[Requirements(manual_none=True)],
             in_game_bit=297,
         ),
         BlueCoin(
             "Sand Bird C",
-            [Requirements([[NozzleType.hover]])],
-            [Requirements(manual_none=True)],
+            requirements=[Requirements([[NozzleType.hover]])],
+            hard=[Requirements(manual_none=True)],
             in_game_bit=298,
         ),
         BlueCoin(
             "Sand Bird D",
-            [Requirements([[NozzleType.hover]])],
-            [Requirements(manual_none=True)],
+            requirements=[Requirements([[NozzleType.hover]])],
+            hard=[Requirements(manual_none=True)],
             in_game_bit=299,
         ),
     ],
@@ -388,14 +388,14 @@ GELATO_BEACH_FIVE: SmsRegion = SmsRegion(
     blue_coins=[
         BlueCoin(
             "Blue Cataquack",
-            [
+            requirements=[
                 Requirements(SPRAY_OR_HOVER_OR_TURBO),
                 Requirements(
                     [[NozzleType.yoshi]],
                     location=f"{SmsRegionName.GELATO_SIX} - Red Coins in the Coral Reef",
                 ),
             ],
-            [Requirements(manual_none=True)],
+            hard=[Requirements(manual_none=True)],
             in_game_bit=273,
         )
     ],

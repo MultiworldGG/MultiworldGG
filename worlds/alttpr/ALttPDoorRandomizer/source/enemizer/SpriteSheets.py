@@ -659,7 +659,7 @@ def combine_req(sub_groups, requirement):
                 sub_groups[i].intersection_update(requirement.sub_groups[i])
 
 
-def setup_custom_enemy_sheets(custom_enemies, sheets, data_tables, sheet_range, uw=True, force_enemy=None):
+def setup_custom_enemy_sheets(custom_enemies, sheets, data_tables, sheet_range, uw=True, force_enemy=None, custom_sprite_sheets=None):
     requirements = data_tables.sprite_requirements
     for room_id, enemy_map in custom_enemies.items():
         if any(room_id in sheets[num].room_set for num in sheet_range if num in sheets):
@@ -719,10 +719,15 @@ def setup_custom_enemy_sheets(custom_enemies, sheets, data_tables, sheet_range, 
         find_matching_sheet(sheet_req, sheets, sheet_range, [room_id], True)
 
 
-def randomize_underworld_sprite_sheets(sheets, data_tables, custom_enemies, limited_run=None, force_enemy=None):
+def randomize_underworld_sprite_sheets(sheets, data_tables, custom_enemies, limited_run=None, force_enemy=None, custom_sprite_sheets=None):
     setup_required_dungeon_groups(sheets, data_tables, limited_run)
 
-    setup_custom_enemy_sheets(custom_enemies, sheets, data_tables, range(65, 124), True, force_enemy)
+    if custom_sprite_sheets:
+        for i, sub_group in custom_sprite_sheets.items():
+            sheets[int(i)].sub_groups = sub_group
+            sheets[int(i)].locked = [True] * 4
+    else:
+        setup_custom_enemy_sheets(custom_enemies, sheets, data_tables, range(65, 124), True, force_enemy, custom_sprite_sheets)
 
     for num in range(65, 124):  # sheets 0x41 to 0x7B inclusive
         sheet = sheets[num]

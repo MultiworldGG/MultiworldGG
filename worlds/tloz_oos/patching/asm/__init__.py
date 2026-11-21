@@ -11,6 +11,7 @@ asm_files = {
         "asm/base/features/impa_refill.yaml",
         "asm/base/features/samasa_combination.yaml",
         "asm/base/features/tarm_gate_requirement.yaml",
+        "asm/base/features/unlocks.yaml",
         "asm/base/features/warp_to_start.yaml",
         "asm/base/graphic changes/cutscenes.yaml",
         "asm/base/graphic changes/file_select_custom_string.yaml",

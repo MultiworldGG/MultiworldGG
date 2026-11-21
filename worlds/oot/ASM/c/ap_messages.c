@@ -76,6 +76,14 @@ static uint32_t expand_message(const uint8_t* raw, uint32_t length) {
             out = append_string(out, (uint8_t*)ap_item_names_get_active_name(), AP_ACTIVE_ITEM_NAME_SIZE - 1);
         } else if (c == 0xF0 && raw[i + 1] == 0xFE) {
             out = append_string(out, (uint8_t*)ap_item_names_get_active_article(), 2);
+        } else if (c == 0xF0 && raw[i + 1] == 0xFD) {
+            // Trap subject: keep the local joke, name the remote recipient.
+            if (PLAYER_NAME_ID == PLAYER_ID) {
+                out = append_string(out, (uint8_t*)"You are", 7);
+            } else {
+                out = append_owner(out);
+                out = append_string(out, (uint8_t*)" is", 3);
+            }
         } else {
             for (uint32_t j = 0; j < size; j++) expanded[out++] = raw[i + j];
         }
@@ -223,7 +231,7 @@ void ap_format_item_message(z64_game_t* play) {
         uint32_t size = code_size(c);
         if (c == 0x02 || i + size > length) break;
         if (c == 0xF2 || c == 0xF7
-                || (c == 0xF0 && (raw[i + 1] == 0xFE || raw[i + 1] == 0xFF))) {
+                || (c == 0xF0 && (raw[i + 1] == 0xFD || raw[i + 1] == 0xFE || raw[i + 1] == 0xFF))) {
             has_ap_text = 1;
             break;
         }

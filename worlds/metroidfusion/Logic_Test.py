@@ -64,9 +64,23 @@ class FusionLogicTest(WorldTestBase):
         start = perf_counter()
         reqs: list[Requirement] = [
             # Copy or write a Requirement in this area to test
-            HasKeycard2("Enter BOX's Zone", [
-                CanDamageMediumGeron(),
-                CanDamageAnyGeron()
+            HasKeycard3("Can Obtain E-Tank Mimic Den", [
+                HasVaria()
+            ], [
+                # Climb Frozen Tower to Mimic Den Door
+                HasSpaceJump(),
+                CanFreezeEnemies(missile_ammo_needed=2)
+            ], [
+                # Deal with the Mimic
+                CanDo10MissileDamage(),
+                CanDoAdvancedCombat()
+            ], [
+                # Break the bomb block
+                CanDestroyBombBlocks()
+            ], [
+                # Enter and Leave the hole
+                CanBallJump(),
+                PONRRequirement("PONR - E-Tank Mimic Den Item", [HasMorph()])
             ])
         ]
         expected_results: list[tuple[set[str], int, int, int]] = [

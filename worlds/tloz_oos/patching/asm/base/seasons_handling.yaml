@@ -26,7 +26,7 @@
     db $00,$25,$22,defaultSeason.TEMPLE_REMAINS    ; Landing on lower Temple Remains portal
     db $00,$b0,$35,defaultSeason.SPOOL_SWAMP       ; Landing on Spool Swamp portal
     db $85,$12,$00,defaultSeason.WOODS_OF_WINTER   ; Diving into Woods of Winter waterfall cave from Sunken City
-    db $80,$a7,$00,defaultSeason.EYEGLASS_LAKE     ; Warping to start
+    db option.warpingGroup|$80,option.warpingRoom,option.warpingPos,option.warpingSeason     ; Warping to start
     db $ff
 
 # This function aims to fix season handling for Subrosia -> interior map warps
@@ -57,7 +57,10 @@
     @noPosCheck:
     ld a,(hl)
     cp $04    ; if season is >= 4, it's an invalid placeholder season -> don't change anything
-    jr nc,@done
+    jr c,@randomSeason
+    call getRandomNumber
+    and $03
+    @randomSeason:
     ld (wRoomStateModifier),a
 
     @done:

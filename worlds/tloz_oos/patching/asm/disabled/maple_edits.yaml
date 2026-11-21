@@ -119,23 +119,23 @@
   jp $3eba ; partDelete
   @itemBitMasks:
 
-  /ifdef locations.mapleItem4.renewable
+  /ifdef locations.mapleItem4.repeatable
   db $00
   /else
   db $80
   /endif
-  /ifdef locations.mapleItem3.renewable
+  /ifdef locations.mapleItem3.repeatable
   db $00
   /else
   db $40
   /endif
-  /ifdef locations.mapleItem2.renewable
+  /ifdef locations.mapleItem2.repeatable
   db $00
   /else
   db $20
   /endif
   db $00 ; dupe of ring drop
-  /ifdef locations.mapleItem1.renewable
+  /ifdef locations.mapleItem1.repeatable
   db $00
   /else
   db $10

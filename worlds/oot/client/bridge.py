@@ -16,7 +16,7 @@ except ImportError:
 from .emu_loader import EmuLoaderClient
 from ..LocationList import business_scrubs, location_table
 from ..Utils import AP_DISPLAY_NAME_SIZE, encode_ap_display_name
-from ..ut.discovery import EntranceDiscovery
+from .entrances import EntranceDiscovery
 
 SCRIPT_VERSION = 10
 AP_MAX_PLAYER_ID = 1024

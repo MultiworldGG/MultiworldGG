@@ -6,7 +6,8 @@ from settings import get_settings
 from ... import patching
 from ...common.patching.RomData import RomData
 from ...common.patching.rooms.decoding import decompress_rooms
-from ...options import OracleOfSeasonsLinkedHerosCave
+from ...options import OracleOfSeasonsLinkedHerosCave, OracleOfSeasonsStartingPosition
+
 
 ### How rooms work:
 # Room number 0xYZZ = group Y, room ZZ
@@ -26,7 +27,7 @@ def apply_room_edits(rom_data: RomData, patch_data: dict[str, Any]) -> list[byte
     apply_d2_alt_entrance_edits(room_data, patch_data)
     apply_samasa_dungeon_edits(room_data, patch_data)
     apply_anti_softlock_edits(room_data)
-    apply_misc_edits(room_data)
+    apply_misc_edits(room_data, patch_data)
 
     return room_data
 
@@ -151,7 +152,7 @@ def apply_anti_softlock_edits(room_data: list[bytearray]) -> None:
         room_data[room_id][34] = 0x4B
 
 
-def apply_misc_edits(room_data: list[bytearray]) -> None:
+def apply_misc_edits(room_data: list[bytearray], patch_data: dict[str, Any]) -> None:
     # Reveal hidden subrosia digging spots if required
     if get_settings()["tloz_oos_options"]["reveal_hidden_subrosia_digging_spots"]:
         room_data[0x406][18] = 0x2F
@@ -161,3 +162,8 @@ def apply_misc_edits(room_data: list[bytearray]) -> None:
         room_data[0x407][13] = 0x2F
         room_data[0x420][68] = 0x2F
         room_data[0x442][14] = 0x2F
+
+    if patch_data["options"]["start_position"] == OracleOfSeasonsStartingPosition.option_tarm_entrance:
+        # Make room for Impa
+        room_data[0x083][21] = 0x04
+        room_data[0x383][21] = 0x04

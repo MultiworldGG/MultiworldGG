@@ -19,7 +19,7 @@ class LookDirection:
     RightLeftUpDown = 0x6a13
     LeftRightUpDown = 0x6a20
 
-
+# For screens > 1, always wait a second / 60 frames to allow for the screen transition to be over first
 hide_and_seek_data = [
     [  # First screen
         {
@@ -209,6 +209,7 @@ hide_and_seek_data = [
             "start": 0x55,
             "start_angle": Direction.Up,
             "moves": [
+                (MoveDirection.Wait, 60),
                 LookDirection.UpDownRightLeft,
                 (MoveDirection.Left, 0x10),
                 (MoveDirection.Up, 0x50),
@@ -230,6 +231,7 @@ hide_and_seek_data = [
             "start": 0x44,
             "start_angle": Direction.Left,
             "moves": [
+                (MoveDirection.Wait, 60),
                 LookDirection.LeftRightUpDown,
                 (MoveDirection.Up, 0x60),
                 (MoveDirection.Wait, 30),
@@ -325,7 +327,7 @@ hide_and_seek_data = [
             "start": 0x52,
             "start_angle": Direction.Down,
             "moves": [
-                (MoveDirection.Wait, 600),
+                (MoveDirection.Wait, 660),
                 (MoveDirection.Left, 0x40),
             ]
         },
@@ -334,6 +336,7 @@ hide_and_seek_data = [
             "start": 0x41,
             "start_angle": Direction.Left,
             "moves": [
+                (MoveDirection.Wait, 60),
                 LookDirection.LeftRightUpDown,
                 (MoveDirection.Up, 0x10),
                 (MoveDirection.Right, 0x40),
@@ -418,7 +421,7 @@ hide_and_seek_data = [
             "start": 0x57,
             "start_angle": Direction.Down,
             "moves": [
-                (MoveDirection.Wait, 300),
+                (MoveDirection.Wait, 360),
                 (MoveDirection.Right, 0x40),
                 (MoveDirection.Wait, 180),
                 (MoveDirection.Left, 0x80),
@@ -433,6 +436,7 @@ hide_and_seek_data = [
             "start": 0x15,
             "start_angle": Direction.Up,
             "moves": [
+                (MoveDirection.Wait, 60),
                 LookDirection.UpDownRightLeft,
                 (MoveDirection.Left, 0x10),
                 (MoveDirection.Down, 0x30),

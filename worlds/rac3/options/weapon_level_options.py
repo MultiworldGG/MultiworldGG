@@ -15,5 +15,5 @@ class WeaponLevels(OptionSet):
     Note: If progressive weapons are enabled, leveling will be forced to manual leveling instead of automatic leveling.
     """
     display_name = RAC3OPTION.WEAPON_LEVEL_LOCATIONS
-    valid_keys = frozenset({"V2", "V3", "V4", "V5", "V6", "V7", "V8"})
-    default = frozenset({"V2", "V3", "V4", "V5", "V6", "V7", "V8"})
+    valid_keys = ["V2", "V3", "V4", "V5", "V6", "V7", "V8"]
+    default = ["V2", "V3", "V4", "V5", "V6", "V7", "V8"]

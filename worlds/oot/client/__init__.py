@@ -17,7 +17,7 @@ from worlds import network_data_package
 from .. import OOTWorld, launch_rom
 from Patch import create_rom_file
 from ..Utils import __version__ as oot_version
-from ..ut.discovery import publish_discoveries
+from .entrances import entrance_discovery_names, publish_discoveries
 
 # Use UT's context and UI when installed, as other embedded game clients do.
 try:
@@ -155,10 +155,7 @@ class OoTContext(ClientContext):
                 self.shop_flag_offsets = slot_data.get('shop_flag_offsets', {})
                 results = slot_data["generation_results"]
                 self.entrance_rom = results["connect_name"]
-                self.entrance_names = sorted(
-                    name for name, record in results["entrances"].items()
-                    if record["replaces"] is not None
-                )
+                self.entrance_names = entrance_discovery_names(slot_data)
                 self.reported_entrances.clear()
         elif cmd == 'PrintJSON':
             if args.get('type') == 'ItemSend':

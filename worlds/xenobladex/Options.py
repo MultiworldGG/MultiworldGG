@@ -275,6 +275,7 @@ class FrontierNavMiraniumFrequency(CemuChoice):
     option_10_minutes = 4
     option_15_minutes = 5
     option_20_minutes = 6
+    default = option_5_minutes
     cemu_pack = "FrontierNavProbeMiraniumFrequency"
     cemu_option = "Active preset"
     cemu_selection_names = [
@@ -316,6 +317,7 @@ class FrontierNavMoneyFrequency(CemuChoice):
     option_5_minutes = 3
     option_7_minutes = 4
     option_10_minutes = 5
+    default = option_5_minutes
     cemu_pack = "FrontierNavProbeMoneyFrequency"
     cemu_option = "Active preset"
     cemu_selection_names = [
@@ -705,8 +707,7 @@ class IncludeShopBlueprintLocations(CemuChoice):
 
 
 class IncludeShopArmorLocations(CemuChoice):
-    """Allows you to receive items from the shop armor and adds those locations to the pool.
-    Logic is not fleshed out right now"""
+    """Allows you to receive items from the shop armor and adds those locations to the pool"""
     display_name = "Include Shop Armor Locations"
     default = 0
     option_off = 0
@@ -720,8 +721,7 @@ class IncludeShopArmorLocations(CemuChoice):
 
 
 class IncludeShopWeaponLocations(CemuChoice):
-    """Allows you to receive items from the shop weapons and adds those locations to the pool.
-    Logic is not fleshed out right now"""
+    """Allows you to receive items from the shop weapons and adds those locations to the pool"""
     display_name = "Include Shop Weapon Locations"
     default = 0
     option_off = 0
@@ -750,8 +750,7 @@ class IncludeShopAugmentLocations(CemuChoice):
 
 
 class IncludeShopSkellArmorLocations(CemuChoice):
-    """Allows you to receive items from the shop skell armor and adds those locations to the pool.
-    Logic is not fleshed out right now"""
+    """Allows you to receive items from the shop skell armor and adds those locations to the pool"""
     display_name = "Include Shop Skell Armor Locations"
     default = 0
     option_off = 0
@@ -765,8 +764,7 @@ class IncludeShopSkellArmorLocations(CemuChoice):
 
 
 class IncludeShopSkellWeaponLocations(CemuChoice):
-    """Allows you to receive items from the shop skell weapon and adds those locations to the pool.
-    Logic is not fleshed out right now"""
+    """Allows you to receive items from the shop skell weapon and adds those locations to the pool"""
     display_name = "Include Shop Skell Weapon Locations"
     default = 0
     option_off = 0
@@ -795,8 +793,7 @@ class IncludeShopSkellAugmentLocations(CemuChoice):
 
 
 class IncludeShopSkellFrameLocations(CemuChoice):
-    """Allows you to receive items from the shop skell frames and adds those locations to the pool.
-    Logic is not fleshed out right now"""
+    """Allows you to receive items from the shop skell frames and adds those locations to the pool"""
     display_name = "Include Shop Skell Frame Locations"
     default = 0
     option_off = 0

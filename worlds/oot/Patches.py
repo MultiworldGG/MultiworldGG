@@ -28,11 +28,12 @@ from .TextBox import character_table, NORMAL_LINE_WIDTH, rom_safe_text, line_wra
 from .texture_util import ci4_rgba16patch_to_ci8, rgba16_patch
 from .ntype import BigStream
 from .Cutscenes import patch_cutscenes, patch_wondertalk2
-from .ut.rom import tag_entrance
+from .EntranceShuffle import entrance_shuffle_table
 
 
 AP_PROGRESSION = 0x11B
 AP_JUNK = 0x11C
+AP_FILLER = 0x11D
 AP_PROGRESSION_OBJECT = 0x1B6
 AP_JUNK_OBJECT = 0x1B7
 AP_PROGRESSION_MODEL_GRAPHIC = 0x00A5
@@ -50,6 +51,18 @@ AP_TRIFORCE_RAINBOW_PATCHES = (
 AP_TRIFORCE_GREY_PATCHES = (
     (0x0AD0, [0xE7, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00]),
 )
+
+# APWorld Change: The client and trackers reuse the IDs written into the ROM.
+ENTRANCE_IDS = {
+    name: index for index, name in enumerate(sorted({
+        entrance[0]
+        for row in entrance_shuffle_table
+        for entrance in row[1:]
+    }))
+}
+# Must match ASM/src/ap/entrances.asm.
+ENTRANCE_TAG_BASE = 0x2000
+ENTRANCE_CAPACITY = 512
 
 
 def require_symbol_length(rom, symbol, min_length):
@@ -836,8 +849,9 @@ def patch_rom(context: "PatchContext", rom: Rom):
         rom.write_int32(0xB06318, 0x00000000)
 
     # Blue warps also change when their connected overworld/dungeon exits are shuffled.
-    patch_blue_warps = (context.shuffle_overworld_entrances or context.shuffle_dungeon_entrances
-                        or context.shuffle_bosses != 'off')
+    patch_blue_warps = blue_warps_are_tracked(
+        context.shuffle_overworld_entrances, context.shuffle_dungeon_entrances, context.shuffle_bosses,
+    )
     set_entrance_updates(
         entrance for entrance in context.entrances
         if entrance.type != 'Grotto' and (entrance.shuffled or (patch_blue_warps and entrance.type == 'BlueWarp'))
@@ -2528,6 +2542,8 @@ def get_override_entry(ootworld, location):
         # This is an AP sendable. It's guaranteed to not be None. 
         if location.item.advancement:
             item_id = AP_PROGRESSION
+        elif location.item.filler:
+            item_id = AP_FILLER
         else:
             item_id = AP_JUNK
         ap_item_name_id = get_ap_item_name_id(ootworld, location.item.name)
@@ -2725,6 +2741,27 @@ def set_cow_id_data(rom, context):
     cow_count = 1
 
     get_actor_list(rom, set_cow_id)
+
+
+# APWorld change: Blue Warp tracking for UT
+def blue_warps_are_tracked(shuffle_overworld_entrances, shuffle_dungeon_entrances, shuffle_bosses):
+    """Match ROM tagging, accepting world settings or integer slot options."""
+    return any(value not in (0, "off") for value in (
+        shuffle_overworld_entrances, shuffle_dungeon_entrances, shuffle_bosses,
+    ))
+
+
+def tag_entrance(rom, name, destination, variant=0):
+    """Preserve the source identity until the ROM resolves the real destination."""
+    entrance_id = ENTRANCE_IDS[name]
+    if entrance_id >= ENTRANCE_CAPACITY:
+        raise ValueError("Entrance discovery table exceeds the ROM's capacity")
+    address = rom.sym('AP_UT_ENTRANCE_DESTINATIONS') + entrance_id * 8
+    if variant == 0:
+        rom.write_int16s(address, [destination] * 4)
+    else:
+        rom.write_int16(address + variant * 2, destination)
+    return ENTRANCE_TAG_BASE + entrance_id * 4 + variant
 
 
 def set_grotto_shuffle_data(rom, context):

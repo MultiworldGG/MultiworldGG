@@ -232,8 +232,8 @@ crystal_palace_regions: list[Dict[str, str | Dict[str, Rule | None]]] = [
         "map_id": "11",
         "map_name": "Blue Mirror Hall 2",
         "locations": {
-            "CP Blue Mirror Hall 2 In MultiCoinBlock Front": CanSeeHiddenBlocks(),
-            "CP Blue Mirror Hall 2 In MultiCoinBlock Back": CanSeeHiddenBlocks(),
+            "CP Blue Mirror Hall 2 In MultiCoinBlock Front": CanHitFloatingBlocks(),
+            "CP Blue Mirror Hall 2 In MultiCoinBlock Back": CanHitFloatingBlocks(),
         },
         "exits": {
             "CP Blue Mirror Hall 1 North": CanUseAbilityBombette(),
@@ -259,7 +259,7 @@ crystal_palace_regions: list[Dict[str, str | Dict[str, Rule | None]]] = [
         "map_name": "Red Mirror Hall",
         "exits": {
             "CP Entry Hall North": None,
-            "CP Bridge Mirror Hall North": None,
+            "CP Bridge Mirror Hall North Left": None,
             "CP Bridge Mirror Hall South": None,
             "CP Entry Hall South": None,
         }
@@ -277,13 +277,23 @@ crystal_palace_regions: list[Dict[str, str | Dict[str, Rule | None]]] = [
         }
     },
     {
-        "region_name": "CP Bridge Mirror Hall North",
+        "region_name": "CP Bridge Mirror Hall North Left",
         "area_id": "21",
         "map_id": "14",
         "map_name": "Bridge Mirror Hall",
         "exits": {
-            "CP Turnstyle Room North": Has("MF_PRA_18_DefeatedClubbas"),
+            "CP Bridge Mirror Hall North Right": Has("MF_PRA_18_DefeatedClubbas"),
             "CP Red Mirror Hall": None
+        }
+    },
+    {
+        "region_name": "CP Bridge Mirror Hall North Right",
+        "area_id": "21",
+        "map_id": "14",
+        "map_name": "Bridge Mirror Hall",
+        "exits": {
+            "CP Bridge Mirror Hall North Left": Has("MF_PRA_18_DefeatedClubbas"),
+            "CP Turnstyle Room North": Has("MF_PRA_18_DefeatedClubbas"),
         }
     },
     {
@@ -473,6 +483,7 @@ crystal_palace_regions: list[Dict[str, str | Dict[str, Rule | None]]] = [
         "map_id": "24",
         "map_name": "Turnstyle Room",
         "exits": {
+            "CP Bridge Mirror Hall North Right": None,
             "CP Triple Dip Room North": CanUseAbilityBombette(),
             "CP Turnstyle Room South": CanUseAbilityBombette(),
         }
@@ -483,7 +494,7 @@ crystal_palace_regions: list[Dict[str, str | Dict[str, Rule | None]]] = [
         "map_id": "24",
         "map_name": "Turnstyle Room",
         "exits": {
-            "CP Triple Dip Room South": CanUseAbilityBombette(),
+            "CP Triple Dip Room South": None,
             "CP Turnstyle Room North": CanUseAbilityBombette(),
         }
     },

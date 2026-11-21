@@ -13,7 +13,6 @@ from worlds.deltarune.Items import items, ItemIDs
 if TYPE_CHECKING:
     from .. import DeltaruneWorld
 
-
 def create_regions(world: "DeltaruneWorld"):
     chapter_select = Region(Regions.chapter_select, world.player, world.multiworld)
     fusion = Region(Regions.fusion, world.player, world.multiworld)
@@ -78,7 +77,7 @@ def create_regions(world: "DeltaruneWorld"):
             Has(items[ItemIDs.chapter_5_unlock])
             | OptionFilter(RandomizeChapters, RandomizeChapters.option_all_unlocked),
         )
-        if world.options.chosen_route.value != ChosenRoute.option_weird_route:
+        if world.options.chosen_route.value != ChosenRoute.option_side_b:
             chapter_5.connect(fusion)
             chapter_5.connect(ch5_fusion)
             chapter_5.connect(rock_video)

@@ -3,7 +3,8 @@ from unittest import TestCase
 
 from Options import Option, PerGameCommonOptions, VerifyKeys
 
-from ..items import CHARACTERS_AND_VEHICLES_BY_NAME, EXTRAS_BY_NAME
+from ..data.extras import Extra
+from ..items import CHARACTERS_AND_VEHICLES_BY_NAME
 from ..options import (
     LegoStarWarsTCSOptions,
     ChapterStoryUnlockCharactersNotRequired,
@@ -45,4 +46,5 @@ class TestOptions(TestCase):
         )
 
     def test_extra_valid_keys(self):
-        self._test_valid_keys(EXTRAS_BY_NAME.keys(), PreferredExtras)
+        purchasable_extra_names = {extra.readable_name for extra in Extra if extra.is_purchasable()}
+        self._test_valid_keys(purchasable_extra_names, PreferredExtras)

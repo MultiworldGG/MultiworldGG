@@ -2,7 +2,8 @@ from typing import cast
 
 from BaseClasses import Item, MultiWorld
 
-from ..data.Constants import SEASON_WINTER
+from ..data.constants import SEASON_WINTER
+from ..data.items import ItemName
 from ..options import OracleOfSeasonsStartingPosition
 from ..world import OracleOfSeasonsWorld
 
@@ -32,7 +33,7 @@ def order_pool(multiworld: MultiWorld, progitempool: list[Item]):
                     bush_breakers.append(["Seed Shooter"])
 
         if world.options.cross_items:
-            bush_breakers.append(["Switch Hook"])
+            bush_breakers.append([ItemName.switch_hook])
 
         bad_portals = {"spool swamp portal", "horon village portal", "eyeglass lake portal", "temple remains lower portal", "d8 entrance portal"}
 

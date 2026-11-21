@@ -515,8 +515,8 @@ dry_dry_desert_regions: list[Dict[str, str | Dict[str, Rule | None]]] = [
         "map_name": "S1E2 Small Bluffs",
         "locations": {
             "DDD S1E2 Small Bluffs On Brick Block": (
-                (CanUseAbilityKooper() | HasUltraBoots())
-                & (CanClimbSteps() | HasUltraBoots())
+                HasUltraBoots()
+                | (CanClimbSteps() & CanUseAbilityKooper())
             ),
         },
         "exits": {

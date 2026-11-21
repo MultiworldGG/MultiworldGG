@@ -79,6 +79,14 @@ BLOCKED_ASSOCIATIONS: list[str] = [
     "POWER",    # POWER_BRACELET, PIECE_OF_POWER
     "SINGLE",   # SINGLE_ARROW
     "STONE",    # STONE_BEAK
+
+    # Trap items that dont have original icons
+    "DEATH",
+    "SLIME",
+    "DROP",
+    "PARTY",
+
+    "ARCHIPELAGO",
 ]
 
 # Generic single word synonyms for Link's Awakening items. This is used for
@@ -943,6 +951,13 @@ GAME_SPECIFIC_PHRASES: dict[str, dict[str, str]] = {
 
     "VVVVVV": {
         "Trinket": PIECE_OF_POWER,
+    },
+
+    "Yacht Dice": {
+        "Story Chapter": MAP,
+        "Fun Fact": MAP,
+        "Encouragement": HEART_CONTAINER,
+        "Point": RUPEES_20,
     },
 
     "Zelda II: The Adventure of Link": {

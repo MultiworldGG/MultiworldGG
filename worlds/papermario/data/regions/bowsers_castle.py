@@ -57,7 +57,7 @@ bowsers_castle_regions: list[Dict[str, str | Dict[str, Rule | None]]] = [
         "map_id": "0",
         "map_name": "Dark Cave 1",
         "exits": {
-            "BC Lava Channel 3 East Exit": CanUseAbilityWatt(),
+            "BC Lava Channel 3 East Exit": None,
             "BC Dark Cave 1 Upper": CanUseAbilityWatt() & CanUseAbilityParakarry(),
         }
     },
@@ -67,10 +67,10 @@ bowsers_castle_regions: list[Dict[str, str | Dict[str, Rule | None]]] = [
         "map_id": "0",
         "map_name": "Dark Cave 1",
         "locations": {
-            "BC Dark Cave 1 Yellow Block": CanHitFloatingBlocks(),
+            "BC Dark Cave 1 Yellow Block": CanHitFloatingBlocks() & CanUseAbilityWatt(),
         },
         "exits": {
-            "BC Dark Cave 2 Lower": CanUseAbilityWatt(),
+            "BC Dark Cave 2 Lower": None,
             "BC Dark Cave 1 Lower": CanUseAbilityWatt(),
         }
     },
@@ -80,10 +80,10 @@ bowsers_castle_regions: list[Dict[str, str | Dict[str, Rule | None]]] = [
         "map_id": "1",
         "map_name": "Dark Cave 2",
         "locations": {
-            "BC Dark Cave 2 Yellow Block": CanHitFloatingBlocks(),
+            "BC Dark Cave 2 Yellow Block": CanHitFloatingBlocks() & CanUseAbilityWatt(),
         },
         "exits": {
-            "BC Dark Cave 1 Upper": CanUseAbilityWatt(),
+            "BC Dark Cave 1 Upper": None,
             "BC Dark Cave 2 Upper": CanUseAbilityWatt() & CanUseAbilityParakarry(),
         }
     },
@@ -93,7 +93,7 @@ bowsers_castle_regions: list[Dict[str, str | Dict[str, Rule | None]]] = [
         "map_id": "1",
         "map_name": "Dark Cave 2",
         "exits": {
-            "BC Cave Exit": CanUseAbilityWatt(),
+            "BC Cave Exit": None,
             "BC Dark Cave 2 Lower": CanUseAbilityWatt() & CanClimbSteps(),
         }
     },
@@ -266,12 +266,12 @@ bowsers_castle_regions: list[Dict[str, str | Dict[str, Rule | None]]] = [
             "BC Lava Channel 3 On Island 1": (
                 (
                     CanUseAbilityLakilester()
-                    & CanClimbSteps()
-                    & (CanUseAbilityParakarry() | CanUseAbilityKooper())
+                    & (CanUseAbilityKooper() | CanUseAbilityParakarry())
+                    & HasBoots()
                 )
                 | (CanClimbSteps() & Has("GF_KPA16_ShutOffLava"))
             ),
-            "BC Lava Channel 3 On Island 2": HasBoots() & Has("GF_KPA16_ShutOffLava"),
+            "BC Lava Channel 3 On Island 2": CanClimbSteps() & Has("GF_KPA16_ShutOffLava"),
         },
         "exits": {
             "BC Lava Channel 2 East": None,
@@ -297,6 +297,7 @@ bowsers_castle_regions: list[Dict[str, str | Dict[str, Rule | None]]] = [
         "exits": {
             "BC Dark Cave 1 Lower": Has("Bowser Castle Key",count=2),
             "BC Lava Channel 3 West": CanUseAbilityLakilester() | Has("GF_KPA16_ShutOffLava"),
+            "BC Lava Channel 3 Central Exit": CanUseAbilityLakilester() | Has("GF_KPA16_ShutOffLava"),
         }
     },
     {
@@ -608,6 +609,7 @@ bowsers_castle_regions: list[Dict[str, str | Dict[str, Rule | None]]] = [
                 & CanUseAbilityLakilester()
                 & CanUseAbilityParakarry()
                 & CanUseAbilityBow()
+                & CanUseAbilityWatt()
             ),
             "BC Lower Grand Hall Lower": Has("RF_Ch8_FirstGuardDoor"),
             "BC Guard Door 1 North Exit": Has("RF_Ch8_FirstGuardDoor"),
@@ -912,8 +914,7 @@ bowsers_castle_regions: list[Dict[str, str | Dict[str, Rule | None]]] = [
             "BC Left Water Puzzle 1F": None,
             "BC Bill Blaster Hall Lower": Has("Bowser Castle Key",count=3),
             "BC Right Water Puzzle 2F": (
-                CanUseAbilitySushie()
-                & CanClimbSteps()
+                CanClimbSteps()
                 & CanHitFloatingBlocks()
             ),
         }
@@ -925,7 +926,7 @@ bowsers_castle_regions: list[Dict[str, str | Dict[str, Rule | None]]] = [
         "map_name": "Right Water Puzzle",
         "exits": {
             "BC Left Water Puzzle 2F": CanUseAbilitySushie(),
-            "BC Right Water Puzzle 1F": CanUseAbilitySushie() & CanHitFloatingBlocks(),
+            "BC Right Water Puzzle 1F": CanHitFloatingBlocks(),
         }
     },
     {
@@ -936,7 +937,6 @@ bowsers_castle_regions: list[Dict[str, str | Dict[str, Rule | None]]] = [
         "exits": {
             "BC Left Water Puzzle 3F": (
                 CanUseAbilitySushie()
-                & CanUseAbilityBombette()
                 & CanClimbSteps()
             ),
             "BC Right Water Puzzle 2F": CanUseAbilitySushie(),
@@ -951,7 +951,7 @@ bowsers_castle_regions: list[Dict[str, str | Dict[str, Rule | None]]] = [
             "BC Left Water Puzzle Top Left Ledge": CanUseAbilitySushie() & Has("RF_WaterLevel2"),
         },
         "exits": {
-            "BC Right Water Puzzle 3F": None,
+            "BC Right Water Puzzle 3F": CanUseAbilityBombette(),
         }
     },
     {
@@ -966,8 +966,7 @@ bowsers_castle_regions: list[Dict[str, str | Dict[str, Rule | None]]] = [
             "BC Right Water Puzzle Hidden Block": CanSeeHiddenBlocks() & HasUltraBoots(),
         },
         "exits": {
-            "BC Right Water Puzzle 3F": CanUseAbilityBombette(),
-            "BC Right Water Puzzle 2F": CanHitFloatingBlocks(),
+            "BC Left Water Puzzle 3F": CanUseAbilityBombette(),
         }
     },
     {

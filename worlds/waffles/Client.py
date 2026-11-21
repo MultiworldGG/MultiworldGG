@@ -856,29 +856,29 @@ class WaffleSNIClient(SNIClient):
             if "data" not in args:
                 return
 
-            source_name = args["data"]["source"]
+            if "TrapLink" in ctx.tags and "TrapLink" in args["tags"]:
+                source_name = args["data"]["source"]
+                if source_name != ctx.player_names[ctx.slot]:
+                    trap_name: str = args["data"]["trap_name"]
+                    if trap_name not in trap_name_to_value:
+                        # We don't know how to handle this trap, ignore it
+                        return
 
-            if "TrapLink" in ctx.tags and "TrapLink" in args["tags"] and source_name != ctx.player_names[ctx.slot]:
-                trap_name: str = args["data"]["trap_name"]
-                if trap_name not in trap_name_to_value:
-                    # We don't know how to handle this trap, ignore it
-                    return
+                    trap_id: int = trap_name_to_value[trap_name]
 
-                trap_id: int = trap_name_to_value[trap_name]
+                    if "trap_weights" not in self.slot_data.keys():
+                        return
 
-                if "trap_weights" not in self.slot_data.keys():
-                    return
+                    if f"{trap_id}" not in self.slot_data["trap_weights"]:
+                        return
 
-                if f"{trap_id}" not in self.slot_data["trap_weights"]:
-                    return
+                    if self.slot_data["trap_weights"][f"{trap_id}"] == 0:
+                        # The player disabled this trap type
+                        return
 
-                if self.slot_data["trap_weights"][f"{trap_id}"] == 0:
-                    # The player disabled this trap type
-                    return
-
-                self.priority_trap = NetworkItem(trap_id, 0, 0)
-                self.priority_trap_message = generate_received_trap_link_text(trap_name, source_name)
-                self.priority_trap_message_str = f"Received linked {trap_name} from {source_name}"
+                    self.priority_trap = NetworkItem(trap_id, 0, 0)
+                    self.priority_trap_message = generate_received_trap_link_text(trap_name, source_name)
+                    self.priority_trap_message_str = f"Received linked {trap_name} from {source_name}"
 
             if "SharedDamage" in ctx.tags and "SharedDamage" in args["tags"]:
                 if "uuid" in args["data"]:

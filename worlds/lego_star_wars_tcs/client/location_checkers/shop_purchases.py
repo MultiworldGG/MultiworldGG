@@ -2,11 +2,13 @@ import abc
 
 from ..common_addresses import CHARACTERS_SHOP_START, EXTRAS_SHOP_START
 from ..type_aliases import MemoryAddress, MemoryOffset, BitMask, ApLocationId, TCSContext
-from ...items import CHARACTERS_AND_VEHICLES_BY_NAME, EXTRAS_BY_NAME
-from ...locations import LOCATION_NAME_TO_ID
+
+from ...data.extras import Extra
+from ...data.locations import LOCATION_NAME_TO_ID
+from ...data.shop import CHARACTER_SHOP_SLOTS
 
 
-class BasePurchasesChecker(abc.ABC):
+class _BasePurchasesChecker(abc.ABC):
     remaining_purchases: dict[MemoryOffset, dict[BitMask, ApLocationId]]
     starting_min_byte: int
     starting_max_byte: int
@@ -86,17 +88,11 @@ class BasePurchasesChecker(abc.ABC):
 
 def _characters_to_shop_address() -> dict[MemoryOffset, dict[BitMask, ApLocationId]]:
     per_byte: dict[MemoryOffset, dict[BitMask, ApLocationId]] = {}
-    for character in CHARACTERS_AND_VEHICLES_BY_NAME.values():
-        if character.shop_slot == -1:
-            # Not present in the shop.
-            continue
-        if character.code == -1:
-            # Not implemented yet.
-            continue
-        byte_offset = character.shop_slot // 8
-        bit_mask = 1 << (character.shop_slot % 8)
-        location_name = character.purchase_location_name
-        assert location_name in LOCATION_NAME_TO_ID, f"ERROR: {location_name} is not a location name"
+    
+    for i, character in enumerate(CHARACTER_SHOP_SLOTS):
+        byte_offset = i // 8
+        bit_mask = 1 << (i % 8)
+        location_name = character.get_purchase_location_name()
         location_id = LOCATION_NAME_TO_ID[location_name]
         per_byte.setdefault(byte_offset, {})[bit_mask] = location_id
     return per_byte
@@ -105,42 +101,28 @@ def _characters_to_shop_address() -> dict[MemoryOffset, dict[BitMask, ApLocation
 def _extras_to_shop_address() -> dict[MemoryOffset, dict[BitMask, ApLocationId]]:
     """Purchase <extra> shop ID -> AP Location ID"""
     per_byte: dict[MemoryOffset, dict[BitMask, ApLocationId]] = {}
-    # The score modifiers are not Archipelago items currently, but there are still locations for purchasing them from
-    # the shop.
-    score_modifiers = {
-        EXTRAS_BY_NAME["Score x2"],
-        EXTRAS_BY_NAME["Score x4"],
-        EXTRAS_BY_NAME["Score x6"],
-        EXTRAS_BY_NAME["Score x8"],
-        EXTRAS_BY_NAME["Score x10"],
-    }
-    for extra_data in EXTRAS_BY_NAME.values():
-        if extra_data.name == "Adaptive Difficulty":
-            # Not present in the shop because it is always unlocked. It is also fortunately found in memory after all
-            # the purchasable Extras, so there is no awkward skipping of memory to skip over Adaptive Difficulty.
+
+    for extra in Extra:
+        cost = extra.purchase_cost
+        if cost is None:
             continue
-        if extra_data.code == -1 and extra_data not in score_modifiers:
-            # Not implemented yet.
-            continue
-        byte_offset = extra_data.extra_number // 8
-        bit_mask = 1 << (extra_data.extra_number % 8)
-        if extra_data.level_shortname is not None:
-            location_name = f"Purchase {extra_data.name} ({extra_data.level_shortname})"
-        else:
-            # Not relevant currently because only the Extras unlocked through Power Bricks are implemented as
-            # Archipelago items currently.
-            location_name = f"Purchase {extra_data.name}"
-        assert location_name in LOCATION_NAME_TO_ID, f"ERROR: {location_name} is not a location name"
+        byte_offset = extra.get_shop_slot_byte()
+        bit_mask = extra.get_shop_slot_mask()
+        location_name = extra.get_purchase_location_name()
         location_id = LOCATION_NAME_TO_ID[location_name]
         per_byte.setdefault(byte_offset, {})[bit_mask] = location_id
     return per_byte
 
 
-class PurchasedCharactersChecker(BasePurchasesChecker):
+class PurchasedCharactersChecker(_BasePurchasesChecker):
     shop_offsets_to_ap_location_ids = _characters_to_shop_address()
     shop_address = CHARACTERS_SHOP_START
 
 
-class PurchasedExtrasChecker(BasePurchasesChecker):
+# todo: Read from slot_data whether the non-power-brick Extras are enabled as checks, and only include them in
+#  `shop_offsets_to_ap_location_ids` when they are. This would also require ..game_state_modifiers.extras to read the
+#  same information, and not remove the non-power-bricks from the player's unlocked items (the generator would also need
+#  to be modified to turn the non-power-brick Extras and their vanilla locations into events.
+class PurchasedExtrasChecker(_BasePurchasesChecker):
     shop_offsets_to_ap_location_ids = _extras_to_shop_address()
     shop_address = EXTRAS_SHOP_START

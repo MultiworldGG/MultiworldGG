@@ -1,6 +1,6 @@
 import orjson
 import pkgutil
-from typing import Any, TextIO
+from typing import TextIO
 
 from BaseClasses import Tutorial
 from Options import OptionError, OptionGroup
@@ -185,24 +185,35 @@ class OuterWildsWorld(World):
             if self.options.split_translator:
                 if self.options.spawn == Spawn.option_hourglass_twins:
                     relevant_translator = "Translator (Hourglass Twins)"
-                if self.options.spawn == Spawn.option_timber_hearth:
+                elif self.options.spawn == Spawn.option_timber_hearth:
                     relevant_translator = "Translator (Timber Hearth)"
-                if self.options.spawn == Spawn.option_brittle_hollow:
+                elif self.options.spawn == Spawn.option_brittle_hollow:
                     relevant_translator = "Translator (Brittle Hollow)"
-                if self.options.spawn == Spawn.option_giants_deep:
+                elif self.options.spawn == Spawn.option_giants_deep:
                     relevant_translator = "Translator (Giant's Deep)"
-                if self.options.spawn == Spawn.option_deep_bramble:
+                elif self.options.spawn == Spawn.option_deep_bramble:
                     relevant_translator = "Translator (Deep Bramble)"
+                else:
+                    relevant_translator = None
                 # ignore stranger spawn since it won't offer a Translator at all
 
             key_item = None
             if self.options.early_key_item == EarlyKeyItem.option_any:
+                relevant_items = [
+                    "Launch Codes",
+                    "Interstellar Warp Drive",
+                ]
+                if relevant_translator is not None:
+                    relevant_items.append(relevant_translator)
+
                 if self.options.spawn == Spawn.option_stranger:
-                    key_item = self.random.choice(["Launch Codes", "Stranger Light Modulator"])
+                    relevant_items.append("Stranger Light Modulator")
                 elif self.options.spawn == Spawn.option_deep_bramble:
-                    key_item = self.random.choice([relevant_translator, "Signalscope", "Launch Codes"])
+                    relevant_items.append("Signalscope")
                 else:
-                    key_item = self.random.choice([relevant_translator, "Nomai Warp Codes", "Launch Codes"])
+                    relevant_items.append("Nomai Warp Codes")
+
+                key_item = self.random.choice(relevant_items)
             elif self.options.early_key_item == EarlyKeyItem.option_translator:
                 key_item = relevant_translator
             elif self.options.early_key_item == EarlyKeyItem.option_nomai_warp_codes:
@@ -211,6 +222,8 @@ class OuterWildsWorld(World):
                 key_item = "Launch Codes"
             elif self.options.early_key_item == EarlyKeyItem.option_stranger_light_modulator:
                 key_item = "Stranger Light Modulator"
+            elif self.options.early_key_item == EarlyKeyItem.option_interstellar_warp_drive:
+                key_item = "Interstellar Warp Drive"
             assert key_item is not None
             self.multiworld.local_early_items[self.player][key_item] = 1
 

@@ -1,18 +1,58 @@
 # Changelog
 
+## 0.6.10
+
+### Bugfixes/Corrections
+
+* `Open Forever Forest` option
+  * Fix broken seed generation when this option was turned on.
+  * Fix this option being off by default.
+* `Damage Trap` items counting as being part of the `Consumables` item group
+  * This caused issues when plando'ing consumables into shop locations, as shops cannot hold item traps. So `Damage Trap`s now have no associated item group at all.
+
+## 0.6.9
+
+### Bugfixes/Corrections (0.6.9)
+
+* Logic
+  * Toad Town
+    * Fix `Open Blue House: True` not actually doing anything logically, and still expecting finding the `OddKey` to open the house from the outside.
+  * Toad Town Tunnels
+    * Fix logic erroneously requiring `SuperBoots` for building the chapter 7 block bridge if `Chapter 7 bridge visible` was turned on. This fix will now put chapter 7 in logic much earlier if the bridge is always visible.
+  * Shooting Star Summit
+    * Fix reaching the top of the summit being in logic while jumpless with Parakarry. Logic now expects the `Boots`.
+  * Mt. Rugged
+    * Fix the train station bushes logically requiring `Boots` to reach.
+  * Bowser's Castle
+    * Fix the basement jail / lava channels area being logically reachable without `Watt`.
+    * Fix `BC Lava Channel 3 On Island 1` being considered reachable without the boots while the lava is still active.
+    * Fix `BC Lava Channel 3 On Island 2` only being considered reachable with the boots, even though Parakarry suffices.
+  * Misc
+    * Minor fixes and adjustments to logic all over the place. These include removing redundant progress checks (which may speed up seed generation), and proper fixes that will only matter once glitch options or entrance shuffle are available.
+* Automated AP Tests
+  * Fix several test fails this apworld caused during the `general` set of automated AP tests.
+
+### Other (0.6.9)
+
+* Map Names
+  * Fix typo: Rename `Koopa Bros.' Fortress` map `Right Starway` to `Right Stairway`.
+* YAML options
+  * `Cutscene Mode` now defaults to `Minimal`.
+  * `Chet Rippo Available` now defaults to `True`.
+
 ## 0.6.8
 
-### Changes to existing features
+### Changes to existing features (0.6.8)
 
 * Death Link
   * Since the option is not actually implemented yet, it has now been removed from the options list. This should no longer show the option in generated YAML files.
 
-### Bugfixes/Corrections
+### Bugfixes/Corrections (0.6.8)
 
 * Fix consumable items in the Dry Dry Outpost shop not being considered logical progression, even if they are required for beating the seed. This only manifested in seeds failing to generate when setting `RandomPuzzles` to `True` and `ConsumableItemPool` to `mystery_only`.
 * Fix logic sometimes considering some Rowf, Koopa Koot, and Dojo locations as excluded, even if 5 or more star spirits were required to beat the seed. This would happen if the number of spirits needed to open Star Way was below 5, but the number of spirits required for the Star Beam item location was 5 or higher.
 
-### Other
+### Other (0.6.8)
 
 * Migrate logic to AP's RuleBuilder system
   * This change aims to make maintaining and understanding the logic easier.

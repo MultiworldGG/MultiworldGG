@@ -308,9 +308,9 @@ Sector5SecurityZone.locations = [
             # Break the bomb block
             CanDestroyBombBlocks()
         ], [
-            # Leave the hole
+            # Enter and Leave the hole
             CanBallJump(),
-            PONRRequirement("PONR - E-Tank Mimic Den Item")
+            PONRRequirement("PONR - E-Tank Mimic Den Item", [HasMorph()])
         ])
     ]),
     FusionLocation("Sector 5 (ARC) -- Level 3 Security Room", True, [

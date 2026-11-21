@@ -6,7 +6,9 @@ import unicodedata
 
 from BaseClasses import ItemClassification
 from NetUtils import NetworkItem
+from worlds.rac3.constants.galactic_map import RAC3GALACTICMAP
 from worlds.rac3.constants.items import RAC3ITEM
+from worlds.rac3.constants.messages.text_format import RAC3TEXTFORMATBYTE
 from worlds.rac3.constants.messages.text_strings import RAC3TEXTFORMATSTRING
 
 if TYPE_CHECKING:
@@ -44,6 +46,37 @@ def remove_accents(input_str):
     return nfkd_form.encode("ascii", "ignore").decode("ascii")
 
 
+def format_planet_location_counts(checked: int, total: int, groups: list[tuple[str, int, int]]) -> tuple[str, float]:
+    """Format counts on up to two lines and calculate the font scale needed to fit."""
+    normal = chr(RAC3TEXTFORMATBYTE.NORMAL)
+    green = chr(RAC3TEXTFORMATBYTE.GREEN)
+    white = chr(RAC3TEXTFORMATBYTE.WHITE)
+    parts = [f"{normal}Total: {green if checked == total else white}{checked}/{total}"]
+    for name, collected, available in groups:
+        if available:
+            color = green if collected == available else white
+            parts.append(f"{normal}{name}: {color}{collected}/{available}")
+    widths = [sum(TEXT_BYTE_TO_EXPECTED_WIDTH[ord(char)] for char in part) for part in parts]
+    space_width = TEXT_BYTE_TO_EXPECTED_WIDTH[ord(" ")]
+    line_width = RAC3GALACTICMAP.TEXT_LINE_WIDTH
+    total_width = sum(widths) + space_width * (len(parts) - 1)
+    if total_width <= line_width or len(parts) == 1:
+        return " ".join(parts), min(1.0, line_width / total_width)
+
+    # The in-game wrapper can split a count at '/'. Wrap only between complete categories.
+    split = len(parts)
+    widest_line = total_width
+    first_width = widths[0]
+    for index, next_width in enumerate(widths[1:], 1):
+        widest = max(first_width, total_width - first_width - space_width)
+        if widest < widest_line:
+            widest_line = widest
+            split = index
+        first_width += space_width + next_width
+    return "\x01".join((" ".join(parts[:split]), " ".join(parts[split:]))), min(1.0, line_width / widest_line)
+
+
+# Font 1 base glyph advances at scale 1.0. Use NTSC-U/PAL values where NTSC-J differs.
 TEXT_BYTE_TO_EXPECTED_WIDTH = {
     0x00: 0,  # Null terminator
     0x01: 0,  # Newline
@@ -61,10 +94,10 @@ TEXT_BYTE_TO_EXPECTED_WIDTH = {
     0x0D: 0,  # Black Color Byte
     0x0E: 0,  # Unused Color Byte 1
     0x0F: 0,  # Unused Color Byte 2
-    0x10: 32,  # Cross
-    0x11: 32,  # Circle
-    0x12: 32,  # Triangle
-    0x13: 32,  # Square
+    0x10: 16,  # Cross
+    0x11: 16,  # Circle
+    0x12: 16,  # Triangle
+    0x13: 16,  # Square
     0x14: 32,  # L1
     0x15: 32,  # R1
     0x16: 32,  # L2
@@ -80,19 +113,19 @@ TEXT_BYTE_TO_EXPECTED_WIDTH = {
     0x20: 4,  # Space
     0x21: 3,  # ! (thin)
     0x22: 6,  # "
-    0x23: 8,  # #
-    0x24: 8,  # $
-    0x25: 9,  # %
-    0x26: 9,  # &
-    0x27: 4,  # ' (thin)
-    0x28: 6,  # (
-    0x29: 6,  # )
+    0x23: 9,  # #
+    0x24: 10,  # $
+    0x25: 13,  # %
+    0x26: 11,  # &
+    0x27: 3,  # ' (thin)
+    0x28: 4,  # (
+    0x29: 4,  # )
     0x2A: 7,  # *
     0x2B: 8,  # +
     0x2C: 3,  # , (thin)
-    0x2D: 4,  # -
+    0x2D: 5,  # -
     0x2E: 3,  # . (thin)
-    0x2F: 6,  # /
+    0x2F: 10,  # /
     0x30: 10,  # 0 (monospace)
     0x31: 10,  # 1 (monospace)
     0x32: 10,  # 2 (monospace)
@@ -109,7 +142,7 @@ TEXT_BYTE_TO_EXPECTED_WIDTH = {
     0x3D: 8,  # =
     0x3E: 8,  # >
     0x3F: 8,  # ?
-    0x40: 11,  # @ (wide)
+    0x40: 12,  # @ (wide)
     0x41: 11,  # A
     0x42: 9,  # B
     0x43: 9,  # C
@@ -122,7 +155,7 @@ TEXT_BYTE_TO_EXPECTED_WIDTH = {
     0x4A: 8,  # J
     0x4B: 10,  # K
     0x4C: 8,  # L
-    0x4D: 12,  # M (wide)
+    0x4D: 13,  # M (wide)
     0x4E: 10,  # N
     0x4F: 10,  # O (wide)
     0x50: 9,  # P
@@ -132,7 +165,7 @@ TEXT_BYTE_TO_EXPECTED_WIDTH = {
     0x54: 9,  # T
     0x55: 9,  # U
     0x56: 11,  # V
-    0x57: 14,  # W (wide)
+    0x57: 16,  # W (wide)
     0x58: 11,  # X
     0x59: 11,  # Y
     0x5A: 9,  # Z
@@ -141,7 +174,7 @@ TEXT_BYTE_TO_EXPECTED_WIDTH = {
     0x5D: 4,  # ]
     0x5E: 8,  # ^
     0x5F: 8,  # _
-    0x60: 5,  # ` (thin)
+    0x60: 4,  # ` (thin)
     0x61: 8,  # a
     0x62: 8,  # b
     0x63: 8,  # c
@@ -151,7 +184,7 @@ TEXT_BYTE_TO_EXPECTED_WIDTH = {
     0x67: 8,  # g
     0x68: 8,  # h
     0x69: 3,  # i (thin)
-    0x6A: 3,  # j (thin)
+    0x6A: 4,  # j (thin)
     0x6B: 8,  # k
     0x6C: 3,  # l (thin)
     0x6D: 12,  # m (wide)
@@ -167,64 +200,37 @@ TEXT_BYTE_TO_EXPECTED_WIDTH = {
     0x77: 12,  # w (wide)
     0x78: 8,  # x
     0x79: 8,  # y
-    0x7A: 8,  # z
-    0x7B: 4,  # {
+    0x7A: 7,  # z
+    0x7B: 5,  # {
     0x7C: 3,  # | (thin)
-    0x7D: 4,  # }
+    0x7D: 5,  # }
     0x7E: 8,  # ~
     0x7F: 0,  # DEL
 }
 
-ITEM_TO_STRING_TABLE_INDEX_OFFSET: dict[str, int] = {
-    RAC3ITEM.SHOCK_BLASTER: 0x0910,
-    RAC3ITEM.NITRO_LAUNCHER: 0x0570,
-    RAC3ITEM.PLASMA_WHIP: 0x09B0,
-    RAC3ITEM.N60_STORM: 0x0520,
-    RAC3ITEM.INFECTOR: 0x0960,
-    RAC3ITEM.SUCK_CANNON: 0x08C0,
-    RAC3ITEM.SPITTING_HYDRA: 0x0820,
-    RAC3ITEM.AGENTS_OF_DOOM: 0x0870,
-    RAC3ITEM.FLUX_RIFLE: 0x0A50,
-    RAC3ITEM.LAVA_GUN: 0x02D0,
-    RAC3ITEM.MINI_TURRET: 0x0330,
-    RAC3ITEM.ANNIHILATOR: 0x0AA0,
-    RAC3ITEM.HOLO_SHIELD: 0x07D0,
-    RAC3ITEM.DISC_BLADE: 0x05C0,
-    RAC3ITEM.RIFT_INDUCER: 0x0A00,
-    RAC3ITEM.QWACK_O_RAY: 0x0730,
-    RAC3ITEM.BOUNCER: 0x04C0,
-    RAC3ITEM.PLASMA_COIL: 0x0390,
-    RAC3ITEM.SHIELD_CHARGER: 0x03F0,
-    RAC3ITEM.RY3N0: 0x0780,
-    RAC3ITEM.MAGNAPLATE: 0x12B0,
-    RAC3ITEM.ADAMANTINE: 0x12C0,
-    RAC3ITEM.AEGIS: 0x12D0,
-    RAC3ITEM.INFERNOX: 0x12E0,
-}
-
-ITEM_TO_ORIGINAL_STRING_POINTER_OFFSET: dict[str, int] = {
-    RAC3ITEM.SHOCK_BLASTER: 0x07E0,
-    RAC3ITEM.NITRO_LAUNCHER: 0x0442,
-    RAC3ITEM.PLASMA_WHIP: 0x0868,
-    RAC3ITEM.N60_STORM: 0x0403,
-    RAC3ITEM.INFECTOR: 0x082E,
-    RAC3ITEM.SUCK_CANNON: 0x0799,
-    RAC3ITEM.SPITTING_HYDRA: 0x06F7,
-    RAC3ITEM.AGENTS_OF_DOOM: 0x0744,
-    RAC3ITEM.FLUX_RIFLE: 0x08F7,
-    RAC3ITEM.ANNIHILATOR: 0x093B,
-    RAC3ITEM.HOLO_SHIELD: 0x0691,
-    RAC3ITEM.DISC_BLADE: 0x0495,
-    RAC3ITEM.RIFT_INDUCER: 0x08AE,
-    RAC3ITEM.QWACK_O_RAY: 0x061B,
-    RAC3ITEM.LAVA_GUN: 0x01F8,
-    RAC3ITEM.MINI_TURRET: 0x097E,
-    RAC3ITEM.BOUNCER: 0x03BE,
-    RAC3ITEM.PLASMA_COIL: 0x02BC,
-    RAC3ITEM.SHIELD_CHARGER: 0x030F,
-    RAC3ITEM.RY3N0: 0x0664,
-    RAC3ITEM.MAGNAPLATE: 0x11DE,
-    RAC3ITEM.ADAMANTINE: 0x11EF,
-    RAC3ITEM.AEGIS: 0x1200,
-    RAC3ITEM.INFERNOX: 0x1213,
+VENDOR_ITEM_NAME_TEXT_IDS: dict[str, int] = {
+    RAC3ITEM.SHOCK_BLASTER: 0x0AA0,
+    RAC3ITEM.NITRO_LAUNCHER: 0x00B9,
+    RAC3ITEM.PLASMA_WHIP: 0x0AA2,
+    RAC3ITEM.N60_STORM: 0x00B8,
+    RAC3ITEM.INFECTOR: 0x0AA1,
+    RAC3ITEM.SUCK_CANNON: 0x00C7,
+    RAC3ITEM.SPITTING_HYDRA: 0x00C4,
+    RAC3ITEM.AGENTS_OF_DOOM: 0x00C6,
+    RAC3ITEM.FLUX_RIFLE: 0x0AA3,
+    RAC3ITEM.LAVA_GUN: 0x0038,
+    RAC3ITEM.MINI_TURRET: 0x003A,
+    RAC3ITEM.ANNIHILATOR: 0x0AA8,
+    RAC3ITEM.HOLO_SHIELD: 0x00C3,
+    RAC3ITEM.DISC_BLADE: 0x00BA,
+    RAC3ITEM.RIFT_INDUCER: 0x00C1,
+    RAC3ITEM.QWACK_O_RAY: 0x00BF,
+    RAC3ITEM.BOUNCER: 0x0060,
+    RAC3ITEM.PLASMA_COIL: 0x0045,
+    RAC3ITEM.SHIELD_CHARGER: 0x0049,
+    RAC3ITEM.RY3N0: 0x00C0,
+    RAC3ITEM.MAGNAPLATE: 0x13ED,
+    RAC3ITEM.ADAMANTINE: 0x13EE,
+    RAC3ITEM.AEGIS: 0x13EF,
+    RAC3ITEM.INFERNOX: 0x13F0,
 }

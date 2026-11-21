@@ -74,6 +74,8 @@ class World:
         self._addEntranceRequirementExit("boomerang_cave", None) # if exiting, you do not need bombs
 
         sword_beach_to_ghost_hut = Location("Sword Beach to Ghost House").add(Chest(0x0E5)).connect(sword_beach, POWER_BRACELET)
+        if options.overworld == "openbeach":
+            sword_beach_to_ghost_hut.connect(sword_beach, r.bush)
         ghost_hut_outside = Location("Outside Ghost House").connect(sword_beach_to_ghost_hut, POWER_BRACELET)
         ghost_hut_inside = Location("Ghost House").connect(Location().add(Seashell(0x1E3)), POWER_BRACELET)
         self._addEntrance("ghost_house", ghost_hut_outside, ghost_hut_inside, None)
@@ -215,6 +217,8 @@ class World:
 
         seashell_mansion = Location()
         if options.goal != "seashells":
+            Location().add(SeashellMansionBonus(0)).connect(seashell_mansion, COUNT(SEASHELL, 5))
+            Location().add(SeashellMansionBonus(1)).connect(seashell_mansion, COUNT(SEASHELL, 10))
             Location().add(SeashellMansion(0x2E9)).connect(seashell_mansion, COUNT(SEASHELL, 20))
         else:
             seashell_mansion.add(DroppedKey(0x2E9))

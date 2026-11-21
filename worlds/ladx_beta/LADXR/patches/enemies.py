@@ -2,6 +2,7 @@ from ..roomEditor import RoomEditor, Object, ObjectWarp, ObjectHorizontal
 from ..assembler import ASM
 from ..locations import constants
 from typing import List
+from .. import entityData
 
 
 # Room containing the boss
@@ -16,30 +17,41 @@ BOSS_ROOMS = [
     0x234,
     0x300,
 ]
-BOSS_ENTITIES = [
-    (3, 2, 0x59),
-    (4, 2, 0x5C),
-    (4, 3, 0x5B),
-    None,
-    (4, 3, 0x5D),
-    (4, 3, 0x5A),
-    None,
-    (4, 3, 0x62),
-    (5, 2, 0xF9),
-]
+BOSS_ENTITIES = {
+    0: (3, 2, 0x59),
+    1: (4, 2, 0x5C),
+    2: (4, 3, 0x5B),
+    3: None,
+    4: (4, 3, 0x5D),
+    5: (4, 3, 0x5A),
+    6: None,
+    7: (4, 3, 0x62),
+    8: (5, 2, 0xF9),
+    "NIGHTMARE_GEL":     (4, 3, 0x13),
+    "NIGHTMARE_AGAHNIM": (4, 3, 0x13),
+    "NIGHTMARE_MOLDORM": (4, 3, 0x13),
+    "NIGHTMARE_GANON":   (4, 3, 0x13),
+    "NIGHTMARE_LANMOLA": (4, 3, 0x13),
+}
 MINIBOSS_ENTITIES = {
-    "ROLLING_BONES":    [(8, 3, 0x81), (6, 3, 0x82)],
-    "HINOX":            [(5, 2, 0x89)],
-    "DODONGO":          [(3, 2, 0x60), (5, 2, 0x60)],
-    "CUE_BALL":         [(1, 1, 0x8e)],
-    "GHOMA":            [(2, 1, 0x5e), (2, 4, 0x5e)],
-    "SMASHER":          [(5, 2, 0x92)],
-    "GRIM_CREEPER":     [(4, 0, 0xbc)],
-    "BLAINO":           [(5, 3, 0xbe)],
-    "AVALAUNCH":        [(5, 1, 0xf4)],
-    "GIANT_BUZZ_BLOB":  [(4, 2, 0xf8)],
-    "MOBLIN_KING":      [(5, 5, 0xe4)],
-    "ARMOS_KNIGHT":     [(4, 3, 0x88)],
+    "ROLLING_BONES":     [(8, 3, 0x81), (6, 3, 0x82)],
+    "HINOX":             [(5, 2, 0x89)],
+    "DODONGO":           [(3, 2, 0x60), (5, 2, 0x60)],
+    "CUE_BALL":          [(1, 1, 0x8e)],
+    "GHOMA":             [(2, 1, 0x5e), (2, 4, 0x5e)],
+    "SMASHER":           [(5, 2, 0x92)],
+    "GRIM_CREEPER":      [(4, 0, 0xbc)],
+    "BLAINO":            [(5, 3, 0xbe)],
+    "AVALAUNCH":         [(5, 1, 0xf4)],
+    "GIANT_BUZZ_BLOB":   [(4, 2, 0xf8)],
+    "MOBLIN_KING":       [(5, 5, 0xe4)],
+    "ARMOS_KNIGHT":      [(4, 3, 0x88)],
+    "NIGHTMARE_GEL":     [(4, 3, 0x13)],
+    "NIGHTMARE_AGAHNIM": [(4, 3, 0x13)],
+    "NIGHTMARE_MOLDORM": [(4, 3, 0x13)],
+    "NIGHTMARE_GANON":   [(4, 3, 0x13)],
+    "NIGHTMARE_LANMOLA": [(4, 3, 0x13)],
+
 }
 MINIBOSS_ROOMS = {
     "0": 0x111, "1": 0x128, "2": 0x145, "3": 0x164, "4": 0x193, "5": 0x1C5, "6": 0x228, "7": 0x23F,
@@ -206,8 +218,17 @@ def changeBosses(rom, mapping: List[int]):
 
             # Add the staircase to the boss, and fix the warp back.
             re = getCleanBossRoom(rom, dungeon_nr)
-            re.objects += [Object(4, 4, 0xBE), ObjectWarp(2, 6, 0x2F8, 72, 80)]
+            re.objects += [
+                Object(3, 3, 0x2C),
+                ObjectHorizontal(4, 3, 0x22, 2),
+                Object(6, 3, 0x2B),
+                Object(3, 4, 0x2A),
+                Object(4, 4, 0xA2),
+                Object(5, 4, 0x21),
+                Object(6, 4, 0x29),
+                ObjectWarp(2, 6, 0x2F8, 72, 80)]
             re.store(rom)
+            rom.banks[0x20][0x2EB3 + re.room - 0x100] = 0  # Change the room tileset to include the stairs
             re = RoomEditor(rom, 0x2F8)
             re.objects[-1] = ObjectWarp(1, dungeon_nr if dungeon_nr < 8 else 0xff, BOSS_ROOMS[dungeon_nr], 72, 80)
             re.store(rom)
@@ -223,6 +244,12 @@ def changeBosses(rom, mapping: List[int]):
             if target == 4:
                 # For slime eel, we need to setup the right wall tiles.
                 rom.banks[0x20][0x2EB3 + BOSS_ROOMS[dungeon_nr] - 0x100] = 0x06
+                if dungeon_nr == 1:
+                    re.removeObject(3, 3)
+                    re.removeObject(6, 3)
+                    for n in range(10):
+                        re.removeObject(n, 0)
+                        re.removeObject(n, 1)
             if target == 5:
                 # Patch facade so he doesn't use the spinning tiles, which is a problem for the sprites.
                 rom.patch(0x04, 0x121D, ASM("cp $14"), ASM("cp $00"))
@@ -241,13 +268,24 @@ def changeBosses(rom, mapping: List[int]):
 
             re.store(rom)
 
+        if target == "NIGHTMARE_GEL":
+            setNightmareBoss(rom, BOSS_ROOMS[dungeon_nr], 0x80)
+        if target == "NIGHTMARE_AGAHNIM":
+            setNightmareBoss(rom, BOSS_ROOMS[dungeon_nr], 0x81)
+        if target == "NIGHTMARE_MOLDORM":
+            setNightmareBoss(rom, BOSS_ROOMS[dungeon_nr], 0x82)
+        if target == "NIGHTMARE_GANON":
+            setNightmareBoss(rom, BOSS_ROOMS[dungeon_nr], 0x83)
+        if target == "NIGHTMARE_LANMOLA":  # NOTE this one is broken, as lanmola code expects to run in sprite slot 0
+            setNightmareBoss(rom, BOSS_ROOMS[dungeon_nr], 0x84)
+
 
 def readBossMapping(rom):
     mapping = []
     for dungeon_nr in range(9):
         r = RoomEditor(rom, BOSS_ROOMS[dungeon_nr])
         if r.entities:
-            mapping.append(BOSS_ENTITIES.index(r.entities[0]))
+            mapping.append(list(BOSS_ENTITIES.keys())[list(BOSS_ENTITIES.values()).index(r.entities[0])])
         elif isinstance(r.objects[-1], ObjectWarp) and r.objects[-1].room == 0x1ef:
             mapping.append(3)
         elif isinstance(r.objects[-1], ObjectWarp) and r.objects[-1].room == 0x2f8:
@@ -289,7 +327,7 @@ def changeMiniBosses(rom, mapping):
         ld  hl, $C17B
         or  [hl]
         ret nz
-        ldh a, [$FFF6] ; room
+        ldh a, [hMapRoom] ; room
         cp  $45 ; check for D3 dodogo room
         ret z
         cp  $7F ; check for armos temple room
@@ -309,6 +347,10 @@ def changeMiniBosses(rom, mapping):
             for x in range(3, 7):
                 for y in range(0, 3):
                     re.removeObject(x, y)
+
+        if name == "GHOMA" and target != 4:
+            # Ghoma gets stuck on just about everything, so remove collision for him
+            rom.banks[0x03][0x034F] = 0xD5
 
         if name == "CUE_BALL":
             re.objects += [
@@ -351,9 +393,28 @@ def changeMiniBosses(rom, mapping):
             # Remove breaking floor tiles from the room.
             re.objects = [obj for obj in re.objects if obj.type_id != 0xDF]
         if name == "ROLLING_BONES" and target == 2:
-            # Make rolling bones pass trough walls so it does not get stuck here.
+            # Make rolling bones pass through walls so it does not get stuck here.
             rom.patch(0x03, 0x02F1 + 0x81, "84", "95")
+        if name == "NIGHTMARE_GEL":
+            setNightmareBoss(rom, MINIBOSS_ROOMS[target], 0)
+        if name == "NIGHTMARE_AGAHNIM":
+            setNightmareBoss(rom, MINIBOSS_ROOMS[target], 1)
+        if name == "NIGHTMARE_MOLDORM":
+            setNightmareBoss(rom, MINIBOSS_ROOMS[target], 2)
+        if name == "NIGHTMARE_GANON":
+            setNightmareBoss(rom, MINIBOSS_ROOMS[target], 3)
+        if name == "NIGHTMARE_LANMOLA":  # NOTE this one is broken, as lanmola code expects to run in sprite slot 0
+            setNightmareBoss(rom, MINIBOSS_ROOMS[target], 4)
+
         re.store(rom)
+
+
+def setNightmareBoss(rom, room, value):
+    count = rom.banks[0x3E][0x3E33]
+    rom.banks[0x3E][0x3E33] = count + 1
+    rom.banks[0x3E][0x3E34 + count * 3 + 0] = (room >> 8) & 0xFF
+    rom.banks[0x3E][0x3E34 + count * 3 + 1] = (room & 0xFF)
+    rom.banks[0x3E][0x3E34 + count * 3 + 2] = value
 
 
 def readMiniBossMapping(rom):
@@ -403,11 +464,11 @@ def doubleTrouble(rom):
         #     re.entities += [(3, 4, 0x63), (2, 4, 0x63)]
         #     re.store(rom)
         #     # Remove that links movement is blocked
-        #     rom.patch(0x05, 0x2258, ASM("ldh [$FFA1], a"), "0000")
-        #     rom.patch(0x05, 0x1AE3, ASM("ldh [$FFA1], a"), "0000")
-        #     rom.patch(0x05, 0x1C5D, ASM("ldh [$FFA1], a"), "0000")
-        #     rom.patch(0x05, 0x1C8D, ASM("ldh [$FFA1], a"), "0000")
-        #     rom.patch(0x05, 0x1CAF, ASM("ldh [$FFA1], a"), "0000")
+        #     rom.patch(0x05, 0x2258, ASM("ldh [hLinkInteractiveMotionBlocked], a"), "0000")
+        #     rom.patch(0x05, 0x1AE3, ASM("ldh [hLinkInteractiveMotionBlocked], a"), "0000")
+        #     rom.patch(0x05, 0x1C5D, ASM("ldh [hLinkInteractiveMotionBlocked], a"), "0000")
+        #     rom.patch(0x05, 0x1C8D, ASM("ldh [hLinkInteractiveMotionBlocked], a"), "0000")
+        #     rom.patch(0x05, 0x1CAF, ASM("ldh [hLinkInteractiveMotionBlocked], a"), "0000")
         if re.hasEntity(0x62):  # hot head (TODO: Drops thwo hearts)
             re.removeEntities(0x62)
             re.entities += [(2, 2, 0x62), (4, 4, 0x62)]
@@ -460,3 +521,132 @@ def doubleTrouble(rom):
             re.removeEntities(0x87)
             re.entities += [(2, 2, 0x87), (1, 1, 0x87)]
             re.store(rom)
+
+
+def randomizeEnemies(rom, rnd):
+    LOGIC_IMPORTANT_ROOMS = [0x24, 0xE2, 0xF2, 0x5A, 0x58]
+    ENEMY_TYPES = {
+        0x09,  # ENTITY_OCTOROK                       equ $09
+        0x0B,  # ENTITY_MOBLIN                        equ $0B
+        0x0D,  # ENTITY_TEKTITE                       equ $0D
+        0x0E,  # ENTITY_LEEVER                        equ $0E
+        0x0F,  # ENTITY_ARMOS_STATUE                  equ $0F
+        0x12,  # ENTITY_GHINI                         equ $12
+        0x14,  # ENTITY_MOBLIN_SWORD                  equ $14
+        0x15,  # ENTITY_ANTI_FAIRY                    equ $15
+        0x16,  # ENTITY_POLS_VOICE                    equ $18
+        0x17,  # ENTITY_KEESE                         equ $19
+        0x1A,  # ENTITY_STALFOS_AGGRESSIVE            equ $1A
+        0x1B,  # ENTITY_ZOL                           equ $1B
+        0x1C,  # ENTITY_GEL                           equ $1C
+        0x1E,  # ENTITY_STALFOS_EVASIVE               equ $1E
+        0x1F,  # ENTITY_GIBDO                         equ $1F
+        0x21,  # ENTITY_WIZROBE                       equ $21
+        0x23,  # ENTITY_LIKE_LIKE                     equ $23
+        0x24,  # ENTITY_IRON_MASK                     equ $24
+        0x28,  # ENTITY_MIMIC                         equ $28
+        0x29,  # ENTITY_MINI_MOLDORM                  equ $29
+        0x55,  # ENTITY_BOUNCING_BOMBITE              equ $55
+        0x56,  # ENTITY_TIMER_BOMBITE                 equ $56
+        0x57,  # ENTITY_PAIRODD                       equ $57
+        0x91,  # ENTITY_ANTI_KIRBY                    equ $91
+        0x99,  # ENTITY_WATER_TEKTITE                 equ $99
+        0x9B,  # ENTITY_HIDING_ZOL                    equ $9B
+        0x9C,  # ENTITY_STAR                          equ $9C
+        0x9F,  # ENTITY_GOOMBA                        equ $9F
+        0xA0,  # ENTITY_PEAHAT                        equ $A0
+        0xA1,  # ENTITY_SNAKE                         equ $A1
+        0xAE,  # ENTITY_WINGED_OCTOROK                equ $AE
+        0xB9,  # ENTITY_BUZZ_BLOB                     equ $B9
+        0xBA,  # ENTITY_BOMBER                        equ $BA
+        0xBB,  # ENTITY_BUSH_CRAWLER                  equ $BB
+        0xBD,  # ENTITY_VIRE                          equ $BD
+        0xC6,  # ENTITY_SAND_CRAB                     equ $C6
+        0xCC,  # ENTITY_FISH                          equ $CC
+        0xE3,  # ENTITY_POKEY                         equ $E3
+        0xF2,  # ENTITY_FLYING_HOPPER_BOMBS           equ $F2
+        0xF3,  # ENTITY_HOPPER                        equ $F3
+        0xEC,  # ENTITY_COLOR_GHOUL_RED               equ $EC
+        0xED,  # ENTITY_COLOR_GHOUL_GREEN             equ $ED
+        0xEE,  # ENTITY_COLOR_GHOUL_BLUE              equ $EE
+    }
+
+    enemy_types_list = list(ENEMY_TYPES)
+    enemy_types_list.sort()
+    for n in range(0x100):
+        if n in LOGIC_IMPORTANT_ROOMS:
+            continue
+        re = RoomEditor(rom, n)
+        replacements = {}
+        sprite_data = [None, None, None, None]
+        for x, y, e in re.entities:
+            if e in ENEMY_TYPES:
+                replacements[e] = None
+            elif e in entityData.SPRITE_DATA:
+                data = entityData.SPRITE_DATA[e]
+                if callable(data):
+                    data = data(re)
+                if data is not None:
+                    for m in range(0, len(data), 2):
+                        idx, value = data[m:m + 2]
+                        if isinstance(value, int):
+                            value = {value}
+                        if sprite_data[idx] is None:
+                            sprite_data[idx] = value
+                        else:
+                            sprite_data[idx] = sprite_data[idx].intersection(value)
+        if not replacements:
+            continue
+        for obj in re.objects:
+            if obj.type_id == 0xC5 and n < 0x100: # Pushable Gravestone
+                sprite_data[3] = {0x82}
+        for e in sorted(replacements.keys()):
+            while True:
+                pick = rnd.choice(enemy_types_list)
+                data = entityData.SPRITE_DATA[pick]
+                if callable(data):
+                    data = data(re)
+                if data is not None:
+                    valid = True
+                    for m in range(0, len(data), 2):
+                        idx, value = data[m:m + 2]
+                        if isinstance(value, int):
+                            value = {value}
+                        if sprite_data[idx] is not None and not sprite_data[idx].intersection(value):
+                            valid = False
+                            break
+                    if not valid:
+                        continue
+                    for m in range(0, len(data), 2):
+                        idx, value = data[m:m + 2]
+                        if isinstance(value, int):
+                            value = {value}
+                        if sprite_data[idx] is not None:
+                            sprite_data[idx] = sprite_data[idx].intersection(value)
+                        else:
+                            sprite_data[idx] = value
+                replacements[e] = pick
+                break
+        re.entities = [(x, y, replacements.get(e, e)) for x, y, e in re.entities]
+        re.store(rom)
+
+    # For the ghouls, they check if the doors in the dungeon are locked. But we want to check if that event is valid as well.
+    rom.patch(0x36, 0x23DD, ASM("ld a, [$C190]"), ASM("call $7F00"))
+    rom.patch(0x36, 0x3F00, "00" * 16, ASM("""
+        ld a, [$C18E] ;wRoomEvent
+        and $E0
+        cp  $20 ; open locked doors
+        ld  a, $01
+        ret nz
+        ld a, [$C190]
+        ret
+    """), fill_nop=True)
+
+
+def enemyQoL(rom):
+    # Remove D0 boss dialogs
+    rom.patch(0x36, 0x0DC6, ASM("ld a, $6D\ncall OpenDialogInTable2"), "", fill_nop=True)
+    rom.patch(0x36, 0x0E4B, ASM("ld a, $6E\ncall OpenDialogInTable2"), "", fill_nop=True)
+    rom.patch(0x36, 0x0D32, ASM("ld a, $6F\ncall OpenDialogInTable2"), "", fill_nop=True)
+    # Remove D2 boss "can't hurt me" dialog
+    rom.patch(0x04, 0x035E, ASM("jr nz, $0D"), ASM("ret nz"), fill_nop=True)

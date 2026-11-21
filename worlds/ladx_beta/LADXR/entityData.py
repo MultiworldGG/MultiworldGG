@@ -292,6 +292,7 @@ SPRITE_DATA = {
     0x10: (1, 0x42), # HIDING_GHINI
     0x11: (2, 0x8A), # GIANT_GHINI
     0x12: (1, 0x42), # GHINI
+    0x13: (0, 0xe8, 1, 0xe9, 2, 0xea, 3, 0xeb),  # BROKEN_HEART_CONTAINER (used for nightmare minibosses)
     0x14: _moblinSpriteData, # MOBLIN_SWORD
     0x15: (1, 0x91), # ANTI_FAIRY
     0x16: (1, {0x91, 0x65}), # SPARK_COUNTER_CLOCKWISE
@@ -366,7 +367,7 @@ SPRITE_DATA = {
     0x6A: lambda room: (1, 0x87, 2, 0x84) if room.room >= 0x100 else (1, 0x87), # RAFT_RAFT_OWNER
     0x6C: None,      # CUCCU
     0x6D: (3, 0xA4), # BOW_WOW
-    0x6E: (1, {0xE5, 0xC4}), # BUTTERFLY
+    0x6E: lambda room: (1, 0xE5) if room.room & 0x0F < 8 else (1, 0xC4), # BUTTERFLY
     0x6F: (1, 0xE5), # DOG
     0x70: (3, 0xE7), # KID_70
     0x71: (3, 0xE7), # KID_71
@@ -491,8 +492,8 @@ SPRITE_DATA = {
     0xF2: (3, 0x07), # FLYING_HOPPER_BOMBS
     0xF3: (3, 0x07), # HOPPER
     0xF4: (0, 0x08, 1, 0x09, 2, 0x0A), # AVALAUNCH
-    0xF6: (0, 0x0E), # COLOR_GUARDIAN_BLUE
-    0xF7: (0, 0x0E), # COLOR_GUARDIAN_BLUE
+    0xF6: (0, 0x0E, 1, 0x1A), # COLOR_GUARDIAN_BLUE
+    0xF7: (0, 0x0E, 1, 0x1A), # COLOR_GUARDIAN_RED
     0xF8: (0, 0x0B, 1, 0x0C, 3, 0x0D), # GIANT_BUZZ_BLOB
     0xF9: (0, 0x11, 2, 0x10), # HARDHIT_BEETLE
     0xFA: lambda room: (0, 0x44) if room.room == 0x2F5 else None, # PHOTOGRAPHER
@@ -555,7 +556,7 @@ class EntityData:
 if __name__ == "__main__":
     from rom import ROM
     import sys
-    rom = ROM(sys.argv[1])
+    rom = ROM(open(sys.argv[1], 'rb'))
     ed = EntityData(rom)
     for e in ed.entities:
         print(NAME[e.index], e.bowwow_eat_flag)

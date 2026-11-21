@@ -1,8 +1,8 @@
 """This module provides handling of location objects"""
 
-from typing import TYPE_CHECKING
+from typing import Iterable, TYPE_CHECKING
 
-from worlds.rac3.constants.data.location import RAC3_LOCATION_DATA_TABLE
+from worlds.rac3.constants.data.location import RAC3_LOCATION_DATA_TABLE, RAC3LOCATIONDATA
 from worlds.rac3.constants.locations.general import RAC3LOCATION
 from worlds.rac3.constants.locations.tags import RAC3TAG
 from worlds.rac3.constants.locations.trophies import RAC3TROPHY
@@ -11,6 +11,25 @@ from worlds.rac3.constants.region import RAC3REGION
 
 if TYPE_CHECKING:
     from worlds.rac3.world import RaC3World
+
+
+CHALLENGE_REGIONS = {
+    RAC3REGION.TYHRRANOSIS_RANGERS: RAC3REGION.TYHRRANOSIS,
+    RAC3REGION.METROPOLIS_RANGERS: RAC3REGION.METROPOLIS,
+    RAC3REGION.COMMAND_CENTER_2: RAC3REGION.COMMAND_CENTER,
+}
+CHALLENGE_LOCATIONS: dict[str, list[RAC3LOCATIONDATA]] = {}
+for location in RAC3_LOCATION_DATA_TABLE.values():
+    if location.DESCRIPTION_TEXT_IDS:
+        CHALLENGE_LOCATIONS.setdefault(location.REGION, []).append(location)
+
+
+def get_challenge_locations(region: str | None = None) -> Iterable[RAC3LOCATIONDATA]:
+    """Get locations that have challenge descriptions."""
+    if region is None:
+        return (location for locations in CHALLENGE_LOCATIONS.values() for location in locations)
+    region = CHALLENGE_REGIONS.get(region, region)
+    return CHALLENGE_LOCATIONS.get(region, ())
 
 
 def get_total_locations(world: "RaC3World") -> int:
@@ -31,8 +50,13 @@ def get_from_tag(tag) -> set[str]:
 
 def get_end_locations(world: "RaC3World") -> set[str]:
     """Returns a set of location names that must be after the goal is reachable"""
+    return get_end_location_names(bool(world.options.lock_command_center.value))
+
+
+def get_end_location_names(lock_command_center: bool) -> set[str]:
+    """Return post-goal location names for generator and client options."""
     locations: set[str] = {RAC3LOCATION.COMMAND_CENTER_INFOBOT}
-    if world.options.lock_command_center.value > 0:
+    if lock_command_center:
         locations.update({RAC3VENDORLOCATION.PHOENIX_SKIN_31, RAC3VENDORLOCATION.PHOENIX_SKIN_32,
                           RAC3TROPHY.PHOENIX_TITANIUM_COLLECTOR, RAC3TROPHY.PHOENIX_SKILL_MASTER,
                           RAC3VENDORLOCATION.AQUATOS_SHIELD_CHARGER})
@@ -40,6 +64,11 @@ def get_end_locations(world: "RaC3World") -> set[str]:
             if data.REGION == RAC3REGION.COMMAND_CENTER:
                 locations.add(location)
     return locations
+
+
+def get_completion_location_names(location_names: Iterable[str], lock_command_center: bool) -> set[str]:
+    """Select eligible checks from the current slot's network location names."""
+    return set(location_names) - get_end_location_names(lock_command_center)
 
 
 # class EventData(NamedTuple):
@@ -88,7 +117,7 @@ location_groups: dict[str, set[str]] = {
     RAC3TAG.RANGERS: get_from_tag(RAC3TAG.RANGERS),
     RAC3TAG.ARENA: get_from_tag(RAC3TAG.ARENA),
     RAC3TAG.NANOTECH: get_from_tag(RAC3TAG.NANOTECH),
-    RAC3TAG.UNSTABLE: get_from_tag(RAC3TAG.UNSTABLE),
+    # RAC3TAG.UNSTABLE: get_from_tag(RAC3TAG.UNSTABLE),
     RAC3TAG.WEAPONS: get_from_tag(RAC3TAG.WEAPONS),
     RAC3TAG.ARMOR: get_from_tag(RAC3TAG.ARMOR),
     RAC3TAG.SHIP: get_from_tag(RAC3TAG.SHIP),

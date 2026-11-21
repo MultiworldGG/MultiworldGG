@@ -372,11 +372,11 @@ shy_guys_toybox_regions: list[Dict[str, str | Dict[str, Rule | None]]] = [
         "map_id": "10",
         "map_name": "RED Moving Platforms",
         "locations": {
-            "SGT RED Moving Platforms Yellow Block 1": CanHitFloatingBlocks(),
-            "SGT RED Moving Platforms Yellow Block 2": CanHitFloatingBlocks(),
-            "SGT RED Moving Platforms Hidden Block Center": CanSeeHiddenBlocks(),
-            "SGT RED Moving Platforms In SuperBlock": CanSeeHiddenBlocks(),
-            "SGT RED Moving Platforms In MultiCoinBlock": CanSeeHiddenBlocks(),
+            "SGT RED Moving Platforms Yellow Block 1": HasBoots(),
+            "SGT RED Moving Platforms Yellow Block 2": HasBoots(),
+            "SGT RED Moving Platforms Hidden Block Center": HasBoots() & CanSeeHiddenBlocks(),
+            "SGT RED Moving Platforms In SuperBlock": HasBoots(),
+            "SGT RED Moving Platforms In MultiCoinBlock": HasBoots(),
         },
         "exits": {
             "SGT RED Moving Platforms West Exit": HasBoots(),

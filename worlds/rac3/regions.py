@@ -416,7 +416,7 @@ def should_skip_location(data: RAC3LOCATIONDATA, options: type[RaC3Options]) -> 
         RAC3LOCATION.NATION_SLEEP_INDUCER,
         RAC3LOCATION.NATION_THE_OTHER_WHITE_MEAT,
         RAC3LOCATION.NATION_CHAMPIONSHIP_BOUT_II,
-        RAC3LOCATION.NATION_QWARKTASTIC_BATTLE,
+        # RAC3LOCATION.NATION_QWARKTASTIC_BATTLE,
         RAC3LOCATION.NATION_BBQ_BOULEVARD,
         RAC3LOCATION.NATION_MAZE_OF_BLAZE,
         RAC3TBOLT.NATION_PLATFORM,
@@ -555,6 +555,8 @@ def should_skip_location(data: RAC3LOCATIONDATA, options: type[RaC3Options]) -> 
                     return SkipLocation.EVENT  # Skips AN2 challenge locations if arena option is set to first_only
                 if options.arena.value == 2 and data.NAME not in annihilation_nation_2:
                     return SkipLocation.EVENT  # Skips AN1 challenge locations if arena option is set to second_only
+                if options.goal_qwark == 0 and data.NAME == RAC3LOCATION.NATION_QWARKTASTIC_BATTLE:
+                    return SkipLocation.EVENT  # Skip Qwarktastic Battle if Qwarktastic is not a goal condition
             case RAC3TAG.VR:
                 if options.vr_challenges.value == 0:
                     return SkipLocation.EVENT  # Skips vr challenges locations if vr_challenges option is disabled

@@ -786,20 +786,39 @@ def fill_prizes(world, attempts=15):
     for player in range(1, world.players + 1):
         if world.prizeshuffle[player] != 'none':
             continue
+
         crystals = ItemFactory(list(prize_item_table.keys()), player)
-        crystal_locations = [world.get_location('Turtle Rock - Prize', player), world.get_location('Eastern Palace - Prize', player), world.get_location('Desert Palace - Prize', player), world.get_location('Tower of Hera - Prize', player), world.get_location('Palace of Darkness - Prize', player),
-                             world.get_location('Thieves\' Town - Prize', player), world.get_location('Skull Woods - Prize', player), world.get_location('Swamp Palace - Prize', player), world.get_location('Ice Palace - Prize', player),
+        crystal_locations = [world.get_location('Turtle Rock - Prize', player),
+                             world.get_location('Eastern Palace - Prize', player),
+                             world.get_location('Desert Palace - Prize', player),
+                             world.get_location('Tower of Hera - Prize', player),
+                             world.get_location('Palace of Darkness - Prize', player),
+                             world.get_location('Thieves\' Town - Prize', player),
+                             world.get_location('Skull Woods - Prize', player),
+                             world.get_location('Swamp Palace - Prize', player),
+                             world.get_location('Ice Palace - Prize', player),
                              world.get_location('Misery Mire - Prize', player)]
+
         placed_prizes = [loc.item.name for loc in crystal_locations if loc.item is not None]
         unplaced_prizes = [crystal for crystal in crystals if crystal.name not in placed_prizes]
         empty_crystal_locations = [loc for loc in crystal_locations if loc.item is None]
 
         for attempt in range(attempts):
             try:
-                prizepool = list(unplaced_prizes)
-                prize_locs = list(empty_crystal_locations)
-                random.shuffle(prizepool)
-                random.shuffle(prize_locs)
+                if world.customizer and world.customizer.get_prizes():
+                    custom_prizes = world.customizer.get_prizes()
+                    prizepool = []
+                    prize_locs = []
+                    for prize_name in custom_prizes.values():
+                        prizepool.append(next(prize for prize in unplaced_prizes if prize.name == prize_name))
+                    prizepool.reverse()  # fill_restrictive() below takes items from the list in reverse order
+                    for dungeon_name in custom_prizes.keys():
+                        prize_locs.append(next(location for location in empty_crystal_locations if location.parent_region.dungeon.name == dungeon_name))
+                else:
+                    prizepool = sorted(list(unplaced_prizes), key=lambda item: item.name)
+                    prize_locs = sorted(list(empty_crystal_locations), key=lambda item: item.name)
+                    random.shuffle(prizepool)
+                    random.shuffle(prize_locs)
                 fill_restrictive(world, all_state, prize_locs, prizepool, single_player_placement=True)
                 for prize_loc in crystal_locations:
                     prize_loc.parent_region.dungeon.prize = prize_loc.item

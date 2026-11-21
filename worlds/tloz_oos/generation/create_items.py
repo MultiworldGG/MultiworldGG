@@ -2,23 +2,24 @@ import logging
 
 from BaseClasses import Item, ItemClassification
 
-from ..data.Constants import (
+from ..data.constants import (
     DUNGEON_NAMES,
     ESSENCES,
     ITEM_GROUPS,
     MARKET_LOCATIONS,
     SEED_ITEMS,
+    UNLOCK_ITEMS,
     VALID_ORE_ITEM_VALUES,
     VALID_RUPEE_ITEM_VALUES,
 )
-from ..data.items import ITEMS_DATA
+from ..data.items import ITEMS_DATA, ItemName
 from ..data.locations import LOCATIONS_DATA
-from ..generation.create_regions import location_is_active
+from ..generation.locations import location_is_active
 from ..options import (
+    OracleOfSeasonsDungeonKeyType,
     OracleOfSeasonsDuplicateSeedTree,
     OracleOfSeasonsFoolsOre,
     OracleOfSeasonsLogicDifficulty,
-    OracleOfSeasonsMasterKeys,
     OracleOfSeasonsShopPrices,
     OracleOfSeasonsStartingPosition,
 )
@@ -46,21 +47,28 @@ def create_item(world: OracleOfSeasonsWorld, name: str) -> Item:
     ap_code = world.item_name_to_id[name]
 
     # A few items become progression only in hard logic
-    progression_items_in_medium_logic = [
-        "Expert's Ring",
-        "Fist Ring",
-        "Swimmer's Ring",
-        "Energy Ring",
-        "Heart Ring L-2",
+    good_progression_items_in_medium_logic = [
+        ItemName.swimmers_ring,
+        ItemName.heart_ring_l_2,
     ]
+    meh_progression_items_in_medium_logic = [ItemName.fist_ring, ItemName.energy_ring]
     progression_items_in_hard_logic = [
-        "Heart Ring L-1",
-        "Toss Ring",
+        ItemName.heart_ring_l_1,
+        ItemName.toss_ring,
     ]
-    if (
+    if world.options.logic_difficulty >= OracleOfSeasonsLogicDifficulty.option_medium and name == ItemName.experts_ring:
+        classification = ItemClassification.progression
+    elif (
         world.options.logic_difficulty >= OracleOfSeasonsLogicDifficulty.option_medium
-        and name in progression_items_in_medium_logic
+        and name in good_progression_items_in_medium_logic
     ):
+        classification = ItemClassification.progression_skip_balancing
+    elif (
+        world.options.logic_difficulty >= OracleOfSeasonsLogicDifficulty.option_medium
+        and name in meh_progression_items_in_medium_logic
+    ):
+        classification = ItemClassification.progression_deprioritized_skip_balancing
+    elif world.options.logic_difficulty == OracleOfSeasonsLogicDifficulty.option_medium and name == ItemName.rocs_ring:
         classification = ItemClassification.progression_deprioritized_skip_balancing
     elif (
         world.options.logic_difficulty >= OracleOfSeasonsLogicDifficulty.option_hard
@@ -154,11 +162,14 @@ def build_item_pool_dict(world: OracleOfSeasonsWorld) -> dict[str, int]:
             else:
                 ore_item_count += 1
             continue
-        if world.options.master_keys != OracleOfSeasonsMasterKeys.option_disabled and "Small Key" in item_name:
+        if world.options.dungeon_key_type != OracleOfSeasonsDungeonKeyType.option_vanilla and "Small Key" in item_name:
             # Small Keys don't exist if Master Keys are set to replace them
             filler_item_count += 1
             continue
-        if world.options.master_keys == OracleOfSeasonsMasterKeys.option_all_dungeon_keys and "Boss Key" in item_name:
+        if (
+            world.options.dungeon_key_type == OracleOfSeasonsDungeonKeyType.option_master_key_all_dungeon_keys
+            and "Boss Key" in item_name
+        ):
             # Boss keys don't exist if Master Keys are set to replace them
             filler_item_count += 1
             continue
@@ -206,16 +217,31 @@ def build_item_pool_dict(world: OracleOfSeasonsWorld) -> dict[str, int]:
         item_pool_dict[item_name] = item_pool_dict.get(item_name, 0) + 1
 
     item_pool_dict["Bomb Upgrade"] = 3
-    item_pool_dict["Bombchu Upgrade"] = 3
-    extra_items = 6
+    extra_items = 3
     if world.options.cross_items:
         item_pool_dict["Cane of Somaria"] = 1
-        item_pool_dict["Switch Hook"] = 2
+        item_pool_dict[ItemName.switch_hook] = 2
         item_pool_dict["Seed Shooter"] = 1
         extra_items += 4
+    if world.options.linked_items:
+        item_pool_dict["Bombchu Upgrade"] = 3
+        # Add the 3rd sword to the pool
+        item_pool_dict["Progressive Sword"] += 1
+        extra_items += 4
+    else:
+        item_pool_dict[ItemName.progressive_shield] -= 1
+        item_pool_dict[ItemName.biggorons_sword] -= 1
+        filler_item_count += 2
 
-    # If Master Keys are enabled, put one for every dungeon
-    if world.options.master_keys != OracleOfSeasonsMasterKeys.option_disabled:
+    if world.options.dungeon_key_type == OracleOfSeasonsDungeonKeyType.option_unlocks:
+        for dungeon_name, unlocks in UNLOCK_ITEMS.items():
+            if dungeon_name == DUNGEON_NAMES[11] and not world.options.linked_heros_cave.is_enabled:
+                continue
+            for unlock in unlocks:
+                item_pool_dict[unlock] = 1
+                extra_items += 1
+    elif world.options.dungeon_key_type >= OracleOfSeasonsDungeonKeyType.option_master_key_all_small_keys:
+        # If Master Keys are enabled, put one for every dungeon
         for small_key_name in sorted(ITEM_GROUPS["Master Keys"]):
             if world.options.linked_heros_cave or small_key_name != "Master Key (Linked Hero's Cave)":
                 item_pool_dict[small_key_name] = 1
@@ -237,10 +263,6 @@ def build_item_pool_dict(world: OracleOfSeasonsWorld) -> dict[str, int]:
             jewel_name = jewel
         item_pool_dict[jewel_name] = 1
     extra_items += 4
-
-    # Add the 3rd sword to the pool
-    item_pool_dict["Progressive Sword"] += 1
-    extra_items += 1
 
     if rupee_item_count > 0:
         rupee_item_pool, filler_item_count = build_rupee_item_dict(world, rupee_item_count, filler_item_count)
@@ -358,7 +380,7 @@ def build_currency_item_dict(
 
 
 def filter_confined_dungeon_items_from_pool(world: OracleOfSeasonsWorld, items: list[Item]) -> None:
-    confined_dungeon_items = []
+    confined_dungeon_items: list[Item] = []
     excluded_dungeons = []
     if world.options.exclude_dungeons_without_essence and not world.options.shuffle_essences:
         for i, essence_name in enumerate(ESSENCES):
@@ -366,17 +388,24 @@ def filter_confined_dungeon_items_from_pool(world: OracleOfSeasonsWorld, items: 
                 excluded_dungeons.append(i + 1)
 
     # Put Small Keys / Master Keys unless keysanity is enabled for those
-    if world.options.master_keys != OracleOfSeasonsMasterKeys.option_disabled:
-        small_keys_name = "Master Key"
+    if world.options.dungeon_key_type == OracleOfSeasonsDungeonKeyType.option_unlocks:
+        restricted_unlocks = set()
+        for dungeon_name, unlock_names in UNLOCK_ITEMS.items():
+            if DUNGEON_NAMES.index(dungeon_name) in excluded_dungeons or not world.options.keysanity_small_keys:
+                restricted_unlocks.update(unlock_names)
+        confined_dungeon_items.extend([item for item in items if item.name in restricted_unlocks])
     else:
-        small_keys_name = "Small Key"
-    if not world.options.keysanity_small_keys:
-        confined_dungeon_items.extend([item for item in items if item.name.startswith(small_keys_name)])
-    else:
-        for i in excluded_dungeons:
-            confined_dungeon_items.extend(
-                [item for item in items if item.name == f"{small_keys_name} ({DUNGEON_NAMES[i]})"]
-            )
+        if world.options.dungeon_key_type >= OracleOfSeasonsDungeonKeyType.option_master_key_all_small_keys:
+            small_keys_name = "Master Key"
+        else:
+            small_keys_name = "Small Key"
+        if not world.options.keysanity_small_keys:
+            confined_dungeon_items.extend([item for item in items if item.name.startswith(small_keys_name)])
+        else:
+            for i in excluded_dungeons:
+                confined_dungeon_items.extend(
+                    [item for item in items if item.name == f"{small_keys_name} ({DUNGEON_NAMES[i]})"]
+                )
 
     # Put Boss Keys unless keysanity is enabled for those
     if not world.options.keysanity_boss_keys:

@@ -41,7 +41,7 @@ app.config["MAX_CONTENT_LENGTH"] = 64 * 1024 * 1024  # 64 megabyte limit
 app.config["SECRET_KEY"] = bytes(socket.gethostname(), encoding="utf-8")
 app.config["SESSION_PERMANENT"] = True
 app.config["MAX_FORM_MEMORY_SIZE"] = 2 * 1024 * 1024  # 2 MB, needed for large option pages such as SC2
-app.config["MAX_FORM_PARTS"] = 10_000  # Werkzeug 3.x default is 1000; games with many items can exceed this
+app.config["MAX_FORM_PARTS"] = 15_000  # Werkzeug 3.x default is 1000; games with many items can exceed this
 
 # custom config
 app.config["SELFHOST"] = True  # application process is in charge of running the websites

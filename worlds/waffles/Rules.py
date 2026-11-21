@@ -115,6 +115,7 @@ HasBSP: Rule = Has(Items.blue_switch_palace)
 HasMidway: Rule = Has(Items.midway_point)
 HasItemBox: Rule = Has(Items.item_box)
 HasExtraDefense: Rule = Has(Items.extra_defense)
+HasSpecialEffects: Rule = Has(Items.special_world_clear)
 
 CanBreakTurnBlocks: Macro = Macro(
     HasAll(Items.progressive_powerup, Items.spin_jump),
@@ -208,16 +209,22 @@ CanCarryOrYoshiTongue: Macro = Macro(
     "Can carry objects with Mario's hands or Yoshi's tongue"
 )
 
-CanYoshiFly: Macro = Macro(
+CanBlueYoshiFly: Macro = Macro(
     CanYoshiCarry & CanGetBlueYoshi,
-    "Can Yoshi fly",
-    "Can fly with Yoshi",
+    "Can fly with Blue Yoshi",
+    "Can obtain a Blue Yoshi and fly using any shell",
 )
 
-CanFly: Macro = Macro(
-    CanCapeFly | CanYoshiFly,
-    "Can fly",
-    "Can fly with either Yoshi or Cape",
+CanAnyYoshiFlyRedShell: Macro = Macro(
+    CanYoshiCarry & (HasSpecialEffects | CanGetBlueYoshi),
+    "Can Yoshi fly with red shell",
+    "Can obtain a Yoshi and fly using a red shell that has turned blue after completing Special World",
+)
+
+CanAnyYoshiFlyBlueShell: Macro = Macro(
+    CanYoshiCarry,
+    "Can Yoshi fly with blue shell",
+    "Can obtain a Yoshi and fly using a blue or disco shell",
 )
 
 CanCapeSpinFly: Macro = Macro(
@@ -356,6 +363,8 @@ class WaffleRules:
                 rule = rule & HasGSP
             elif " - Yellow Switch Palace Block" in loc.name:
                 rule = rule & HasYSP
+            elif " - P-Switch Coin Block" in loc.name:
+                rule = rule & HasPSwitch
 
             self.world.set_rule(loc, rule)
 
@@ -388,11 +397,12 @@ class WaffleBasicRules(WaffleRules):
             f"{Regions.donut_plains_1_region} -> {Locations.donut_plains_1_exit_1}": 
                 True_(),
             f"{Regions.donut_plains_1_region} -> {Locations.donut_plains_1_exit_2}": 
-                CanYoshiFly | (CanCarry & (HasGSP | CanCapeFly)),
+               (CanAnyYoshiFlyBlueShell & True_(options=[OptionFilter(EnemyShuffle, 0)])) | 
+               CanBlueYoshiFly | (CanCarry & (HasGSP | CanCapeFly)),
             f"{Regions.donut_plains_2_region} -> {Locations.donut_plains_2_exit_1}": 
                 True_(),
             f"{Regions.donut_plains_2_region} -> {Locations.donut_plains_2_exit_2}": 
-                CanYoshiCarry | (CanCarry & (HasYoshi | (CanClimb & CanBreakTurnBlocks))),
+                CanAnyYoshiFlyBlueShell | (CanCarry & (HasYoshi | (CanClimb & CanBreakTurnBlocks))),
             f"{Regions.donut_plains_3_region} -> {Locations.donut_plains_3_exit_1}": 
                 True_(),
             f"{Regions.donut_plains_4_region} -> {Locations.donut_plains_4_exit_1}": 
@@ -419,9 +429,8 @@ class WaffleBasicRules(WaffleRules):
             f"{Regions.vanilla_dome_1_region} -> {Locations.vanilla_dome_1_exit_1}": 
                 CanRun & (HasSuperStar | HasMushroom),
             f"{Regions.vanilla_dome_1_region} -> {Locations.vanilla_dome_1_exit_2}": 
-                CanClimb & CanCarry & (
-                    HasYoshi | HasRSP
-                ),
+                CanClimb & CanCarry & (HasYoshi | HasRSP) | 
+                (CanAnyYoshiFlyBlueShell & True_(options=[OptionFilter(EnemyShuffle, 0)])),
             f"{Regions.vanilla_dome_2_region} -> {Locations.vanilla_dome_2_exit_1}": 
                 CanSwim & (
                     CanClimb | HasYoshi
@@ -435,9 +444,10 @@ class WaffleBasicRules(WaffleRules):
             f"{Regions.vanilla_dome_4_region} -> {Locations.vanilla_dome_4_exit_1}": 
                 True_(),
             f"{Regions.vanilla_secret_1_region} -> {Locations.vanilla_secret_1_exit_1}": 
-                CanClimb,
+                CanClimb | (CanAnyYoshiFlyRedShell & True_(options=[OptionFilter(EnemyShuffle, 0)])),
             f"{Regions.vanilla_secret_1_region} -> {Locations.vanilla_secret_1_exit_2}": 
-                CanClimb & CanCarry & HasBSP,
+                (CanClimb & CanCarry & HasBSP) | 
+                (CanAnyYoshiFlyRedShell & True_(options=[OptionFilter(EnemyShuffle, 0)])),
             f"{Regions.vanilla_secret_2_region} -> {Locations.vanilla_secret_2_exit_1}": 
                 True_(),
             f"{Regions.vanilla_secret_3_region} -> {Locations.vanilla_secret_3_exit_1}": 
@@ -455,7 +465,7 @@ class WaffleBasicRules(WaffleRules):
             f"{Regions.butter_bridge_2_region} -> {Locations.butter_bridge_2_exit_1}": 
                 True_(),
             f"{Regions.cheese_bridge_region} -> {Locations.cheese_bridge_exit_1}": 
-                CanClimb | HasYoshi,
+                CanClimb | HasYoshi | CanCapeFly,
             f"{Regions.cheese_bridge_region} -> {Locations.cheese_bridge_exit_2}": 
                 CanCapeFly,
             f"{Regions.soda_lake_region} -> {Locations.soda_lake_exit_1}": 
@@ -468,7 +478,8 @@ class WaffleBasicRules(WaffleRules):
             f"{Regions.forest_of_illusion_1_region} -> {Locations.forest_of_illusion_1_exit_1}": 
                 True_(),
             f"{Regions.forest_of_illusion_1_region} -> {Locations.forest_of_illusion_1_exit_2}": 
-                CanCarry & HasPBalloon,
+                (CanCarry & HasPBalloon) | 
+                (CanAnyYoshiFlyRedShell & True_(options=[OptionFilter(EnemyShuffle, 0)])),
             f"{Regions.forest_of_illusion_2_region} -> {Locations.forest_of_illusion_2_exit_1}": 
                 CanSwim & 
                 Has(Items.super_star_active, 3, options=[OptionFilter(EnemyShuffle, 1)], filtered_resolution=True),
@@ -476,9 +487,9 @@ class WaffleBasicRules(WaffleRules):
                 CanCarryOrYoshiTongue & CanSwim & 
                 Has(Items.super_star_active, 3, options=[OptionFilter(EnemyShuffle, 1)], filtered_resolution=True),
             f"{Regions.forest_of_illusion_3_region} -> {Locations.forest_of_illusion_3_exit_1}": 
-                CanCarry | HasYoshi,
+                CanCarry | HasYoshi | CanCapeFly,
             f"{Regions.forest_of_illusion_3_region} -> {Locations.forest_of_illusion_3_exit_2}": 
-                (CanCarry | HasYoshi) & CanCarryOrYoshiTongue & CanBreakTurnBlocks,
+                CanCarryOrYoshiTongue & CanBreakTurnBlocks,
             f"{Regions.forest_of_illusion_4_region} -> {Locations.forest_of_illusion_4_exit_1}": 
                 True_(),
             f"{Regions.forest_of_illusion_4_region} -> {Locations.forest_of_illusion_4_exit_2}":
@@ -495,15 +506,15 @@ class WaffleBasicRules(WaffleRules):
                 True_(),
 
             f"{Regions.chocolate_island_1_region} -> {Locations.chocolate_island_1_exit_1}": 
-                HasPSwitch | HasYoshi,
+                HasPSwitch | HasYoshi | CanCarry | HasFeather,
             f"{Regions.chocolate_island_2_region} -> {Locations.chocolate_island_2_exit_1}": 
                 True_(),
             f"{Regions.chocolate_island_2_region} -> {Locations.chocolate_island_2_exit_2}": 
                 CanCarryOrYoshiTongue,
             f"{Regions.chocolate_island_3_region} -> {Locations.chocolate_island_3_exit_1}": 
-                CanClimb | HasYoshi,
+                CanClimb | HasYoshi | CanCapeFly,
             f"{Regions.chocolate_island_3_region} -> {Locations.chocolate_island_3_exit_2}": 
-                CanFly,
+                CanCapeFly | CanAnyYoshiFlyBlueShell,
             f"{Regions.chocolate_island_4_region} -> {Locations.chocolate_island_4_exit_1}": 
                 True_(),
             f"{Regions.chocolate_island_5_region} -> {Locations.chocolate_island_5_exit_1}": 
@@ -559,15 +570,18 @@ class WaffleBasicRules(WaffleRules):
             f"{Regions.star_road_4_region} -> {Locations.star_road_4_exit_1}": 
                 True_(),
             f"{Regions.star_road_4_region} -> {Locations.star_road_4_exit_2}": 
-                CanYoshiFly | (CanCarry & (HasFeather | (HasGSP & HasRSP))),
+                CanAnyYoshiFlyBlueShell | (CanCarry & (HasFeather | (HasGSP & HasRSP))),
             f"{Regions.star_road_5_region} -> {Locations.star_road_5_exit_1}": 
-                HasPSwitch | CanFly,
+                HasPSwitch | CanCapeFly | CanBlueYoshiFly,
             f"{Regions.star_road_5_region} -> {Locations.star_road_5_exit_2}": 
-                CanYoshiFly | (
+                CanBlueYoshiFly | (
+                    (HasPSwitch | CanCapeFly) & 
+                    CanAnyYoshiFlyRedShell & True_(options=[OptionFilter(EnemyShuffle, 0)])
+                ) | (
                     CanCarry & CanClimb & HasPSwitch & 
                     HasYSP & HasGSP & HasRSP & HasBSP
                 ) | (
-                    CanFly & CanCarry
+                    CanCapeFly & CanCarry
                 ),
             f"{Regions.special_zone_1_region} -> {Locations.special_zone_1_exit_1}": 
                 CanClimb & (
@@ -584,7 +598,7 @@ class WaffleBasicRules(WaffleRules):
             f"{Regions.special_zone_6_region} -> {Locations.special_zone_6_exit_1}": 
                 CanSwim,
             f"{Regions.special_zone_7_region} -> {Locations.special_zone_7_exit_1}": 
-                CanCarryOrYoshiTongue,
+                CanCarryOrYoshiTongue | CanCapeFly,
             f"{Regions.special_zone_8_region} -> {Locations.special_zone_8_exit_1}": 
                 CanBreakTurnBlocks | HasFeather | HasYoshi | CanCarry,
         }
@@ -592,28 +606,29 @@ class WaffleBasicRules(WaffleRules):
     
         self.carryless_exit_rules = {
             f"{Regions.donut_plains_1_region} -> {Locations.donut_plains_1_exit_2}": 
-                HasGSP | CanCapeFly | CanYoshiFly,
+                HasGSP | CanCapeFly | CanBlueYoshiFly | 
+                (CanAnyYoshiFlyBlueShell & True_(options=[OptionFilter(EnemyShuffle, 1)])),
             f"{Regions.donut_plains_2_region} -> {Locations.donut_plains_2_exit_2}": 
                 HasYoshi | (CanClimb & CanCarry & CanBreakTurnBlocks),
             f"{Regions.donut_secret_1_region} -> {Locations.donut_secret_1_exit_2}": 
                 CanSwim,
 
             f"{Regions.vanilla_dome_1_region} -> {Locations.vanilla_dome_1_exit_2}": 
-                CanClimb & (
-                    HasYoshi | HasRSP
-                ),
+                (CanClimb & (HasYoshi | HasRSP)) | 
+                (CanAnyYoshiFlyBlueShell & True_(options=[OptionFilter(EnemyShuffle, 0)])),
             f"{Regions.vanilla_dome_2_region} -> {Locations.vanilla_dome_2_exit_2}": 
                 CanSwim & CanCarry & HasPSwitch & (
                     CanClimb | HasYoshi
                 ),
 
             f"{Regions.forest_of_illusion_1_region} -> {Locations.forest_of_illusion_1_exit_2}": 
-                HasPBalloon,
+                HasPBalloon |
+                (CanAnyYoshiFlyRedShell & True_(options=[OptionFilter(EnemyShuffle, 0)])),
             f"{Regions.forest_of_illusion_2_region} -> {Locations.forest_of_illusion_2_exit_2}": 
                 CanSwim & 
                 Has(Items.super_star_active, 3, options=[OptionFilter(EnemyShuffle, 1)], filtered_resolution=True),
             f"{Regions.forest_of_illusion_3_region} -> {Locations.forest_of_illusion_3_exit_2}": 
-                (CanCarry | HasYoshi) & CanCarryOrYoshiTongue & CanBreakTurnBlocks,
+                (CanCarry | HasYoshi) & CanBreakTurnBlocks,
             f"{Regions.forest_of_illusion_4_region} -> {Locations.forest_of_illusion_4_exit_2}":
                 True_(),
 
@@ -634,13 +649,16 @@ class WaffleBasicRules(WaffleRules):
             f"{Regions.star_road_3_region} -> {Locations.star_road_3_exit_2}": 
                 CanCarry | HasFireFlower,
             f"{Regions.star_road_4_region} -> {Locations.star_road_4_exit_2}": 
-                CanYoshiFly | HasFeather | (HasGSP & HasRSP),
+                CanAnyYoshiFlyBlueShell | HasFeather | (HasGSP & HasRSP),
             f"{Regions.star_road_5_region} -> {Locations.star_road_5_exit_2}": 
-                CanYoshiFly | (
+                CanBlueYoshiFly | CanCapeSpinFly | (
+                    (HasPSwitch | CanCapeFly) & 
+                    CanAnyYoshiFlyRedShell & True_(options=[OptionFilter(EnemyShuffle, 0)])
+                ) | (
                     CanClimb & HasPSwitch & 
                     HasYSP & HasGSP & HasRSP & HasBSP
                 ) | (
-                    CanFly & CanSpinJump
+                    CanCapeFly & CanCarry
                 ),
         }
     
@@ -648,7 +666,7 @@ class WaffleBasicRules(WaffleRules):
             Locations.yoshis_island_1_dragon:
                 CanBreakTurnBlocks,
             Locations.yoshis_island_1_moon:
-                CanCapeFly,
+                CanCapeFly | (CanAnyYoshiFlyRedShell & True_(options=[OptionFilter(EnemyShuffle, 0)])),
             Locations.yoshis_island_1_midway:
                 True_(),
             Locations.yoshis_island_1_flying_block_1:
@@ -663,21 +681,21 @@ class WaffleBasicRules(WaffleRules):
                 CanBreakTurnBlocks,
 
             Locations.yoshis_island_2_dragon:
-                HasYoshi | CanClimb,
+                HasYoshi | CanClimb | CanCapeFly,
             Locations.yoshis_island_2_midway:
                 True_(),
             Locations.yoshis_island_2_flying_block_1:
-                CanCarry | HasYoshi,
+                CanCarry | HasYoshi | CanCapeFly,
             Locations.yoshis_island_2_flying_block_2:
-                CanCarry | HasYoshi,
+                CanCarry | HasYoshi | CanCapeFly,
             Locations.yoshis_island_2_flying_block_3:
-                CanCarry | HasYoshi,
+                CanCarry | HasYoshi | CanCapeFly,
             Locations.yoshis_island_2_flying_block_4:
-                CanCarry | HasYoshi,
+                CanCarry | HasYoshi | CanCapeFly,
             Locations.yoshis_island_2_flying_block_5:
-                CanCarry | HasYoshi,
+                CanCarry | HasYoshi | CanCapeFly,
             Locations.yoshis_island_2_flying_block_6:
-                CanCarry | HasYoshi,
+                CanCarry | HasYoshi | CanCapeFly,
             Locations.yoshis_island_2_coin_block_1:
                 True_(),
             Locations.yoshis_island_2_yellow_block_1:
@@ -700,191 +718,265 @@ class WaffleBasicRules(WaffleRules):
                 True_(),
 
             Locations.yoshis_island_3_dragon:
-                HasPSwitch,
+                HasPSwitch | HasYoshi | HasFeather,
             Locations.yoshis_island_3_prize:
                 True_(),
             Locations.yoshis_island_3_midway:
                 True_(),
             Locations.yoshis_island_3_yellow_block_1:
-                CanYoshiFly,
+                CanAnyYoshiFlyRedShell | CanCarry | 
+                (CanAnyYoshiFlyBlueShell & True_(options=[OptionFilter(EnemyShuffle, 1)])),
             Locations.yoshis_island_3_yellow_block_2:
-                CanYoshiFly,
+                CanAnyYoshiFlyRedShell | 
+                (CanAnyYoshiFlyBlueShell & True_(options=[OptionFilter(EnemyShuffle, 1)])),
             Locations.yoshis_island_3_yellow_block_3:
-                CanYoshiFly,
+                CanAnyYoshiFlyRedShell | 
+                (CanAnyYoshiFlyBlueShell & True_(options=[OptionFilter(EnemyShuffle, 1)])),
             Locations.yoshis_island_3_yellow_block_4:
-                CanYoshiFly,
+                CanAnyYoshiFlyRedShell | 
+                (CanAnyYoshiFlyBlueShell & True_(options=[OptionFilter(EnemyShuffle, 1)])),
             Locations.yoshis_island_3_yellow_block_5:
-                CanYoshiFly,
+                CanAnyYoshiFlyRedShell | 
+                (CanAnyYoshiFlyBlueShell & True_(options=[OptionFilter(EnemyShuffle, 1)])),
             Locations.yoshis_island_3_yellow_block_6:
-                CanYoshiFly,
+                CanAnyYoshiFlyRedShell | 
+                (CanAnyYoshiFlyBlueShell & True_(options=[OptionFilter(EnemyShuffle, 1)])),
             Locations.yoshis_island_3_yellow_block_7:
-                CanYoshiFly,
+                CanAnyYoshiFlyRedShell | 
+                (CanAnyYoshiFlyBlueShell & True_(options=[OptionFilter(EnemyShuffle, 1)])),
             Locations.yoshis_island_3_yellow_block_8:
-                CanYoshiFly,
+                CanAnyYoshiFlyRedShell | 
+                (CanAnyYoshiFlyBlueShell & True_(options=[OptionFilter(EnemyShuffle, 1)])),
             Locations.yoshis_island_3_yellow_block_9:
-                CanYoshiFly,
+                CanAnyYoshiFlyRedShell | 
+                (CanAnyYoshiFlyBlueShell & True_(options=[OptionFilter(EnemyShuffle, 1)])),
             Locations.yoshis_island_3_yellow_block_10:
-                CanYoshiFly,
+                CanAnyYoshiFlyRedShell | 
+                (CanAnyYoshiFlyBlueShell & True_(options=[OptionFilter(EnemyShuffle, 1)])),
             Locations.yoshis_island_3_yellow_block_11:
-                CanYoshiFly,
+                CanAnyYoshiFlyRedShell | 
+                (CanAnyYoshiFlyBlueShell & True_(options=[OptionFilter(EnemyShuffle, 1)])),
             Locations.yoshis_island_3_yellow_block_12:
                 True_(),
             Locations.yoshis_island_3_yellow_block_13:
                 True_(),
             Locations.yoshis_island_3_yellow_block_14:
-                CanCarry | HasYoshi,
+                CanCarry | HasYoshi | CanCapeFly,
             Locations.yoshis_island_3_yellow_block_15:
-                CanCarry | HasYoshi,
+                CanCarry | HasYoshi | CanCapeFly,
             Locations.yoshis_island_3_yellow_block_16:
-                CanCarry | HasYoshi,
+                CanCarry | HasYoshi | CanCapeFly,
             Locations.yoshis_island_3_yellow_block_17:
-                CanCarry | HasYoshi,
+                CanCarry | HasYoshi | CanCapeFly,
             Locations.yoshis_island_3_yellow_block_18:
-                CanCarry | HasYoshi,
+                CanCarry | HasYoshi | CanCapeFly,
             Locations.yoshis_island_3_yellow_block_19:
-                CanCarry | HasYoshi,
+                CanCarry | HasYoshi | CanCapeFly,
             Locations.yoshis_island_3_yellow_block_20:
-                CanCarry | HasYoshi,
+                CanCarry | HasYoshi | CanCapeFly,
             Locations.yoshis_island_3_yellow_block_21:
-                CanYoshiFly,
+                CanAnyYoshiFlyRedShell | CanCarry | 
+                (CanAnyYoshiFlyBlueShell & True_(options=[OptionFilter(EnemyShuffle, 1)])),
             Locations.yoshis_island_3_yellow_block_22:
-                CanYoshiFly,
+                CanAnyYoshiFlyRedShell | 
+                (CanAnyYoshiFlyBlueShell & True_(options=[OptionFilter(EnemyShuffle, 1)])),
             Locations.yoshis_island_3_yellow_block_23:
-                CanYoshiFly,
+                CanAnyYoshiFlyRedShell | 
+                (CanAnyYoshiFlyBlueShell & True_(options=[OptionFilter(EnemyShuffle, 1)])),
             Locations.yoshis_island_3_yellow_block_24:
-                CanYoshiFly,
+                CanAnyYoshiFlyRedShell | 
+                (CanAnyYoshiFlyBlueShell & True_(options=[OptionFilter(EnemyShuffle, 1)])),
             Locations.yoshis_island_3_yellow_block_25:
-                CanYoshiFly,
+                CanAnyYoshiFlyRedShell | 
+                (CanAnyYoshiFlyBlueShell & True_(options=[OptionFilter(EnemyShuffle, 1)])),
             Locations.yoshis_island_3_yellow_block_26:
-                CanYoshiFly,
+                CanAnyYoshiFlyRedShell | 
+                (CanAnyYoshiFlyBlueShell & True_(options=[OptionFilter(EnemyShuffle, 1)])),
             Locations.yoshis_island_3_yellow_block_27:
-                CanYoshiFly,
+                CanAnyYoshiFlyRedShell | 
+                (CanAnyYoshiFlyBlueShell & True_(options=[OptionFilter(EnemyShuffle, 1)])),
             Locations.yoshis_island_3_yellow_block_28:
-                CanYoshiFly,
+                CanAnyYoshiFlyRedShell | 
+                (CanAnyYoshiFlyBlueShell & True_(options=[OptionFilter(EnemyShuffle, 1)])),
             Locations.yoshis_island_3_yellow_block_29:
-                CanYoshiFly,
+                CanAnyYoshiFlyRedShell | 
+                (CanAnyYoshiFlyBlueShell & True_(options=[OptionFilter(EnemyShuffle, 1)])),
             Locations.yoshis_island_3_coin_block_1:
                 True_(),
             Locations.yoshis_island_3_yoshi_block_1:
                 True_(),
             Locations.yoshis_island_3_yellow_block_30:
-                CanYoshiFly,
+                CanAnyYoshiFlyRedShell | 
+                (CanAnyYoshiFlyBlueShell & True_(options=[OptionFilter(EnemyShuffle, 1)])),
             Locations.yoshis_island_3_yellow_block_31:
-                CanYoshiFly,
+                CanAnyYoshiFlyRedShell | 
+                (CanAnyYoshiFlyBlueShell & True_(options=[OptionFilter(EnemyShuffle, 1)])),
             Locations.yoshis_island_3_yellow_block_32:
-                CanYoshiFly,
+                CanAnyYoshiFlyRedShell | 
+                (CanAnyYoshiFlyBlueShell & True_(options=[OptionFilter(EnemyShuffle, 1)])),
             Locations.yoshis_island_3_yellow_block_33:
-                CanYoshiFly,
+                CanAnyYoshiFlyRedShell | 
+                (CanAnyYoshiFlyBlueShell & True_(options=[OptionFilter(EnemyShuffle, 1)])),
             Locations.yoshis_island_3_yellow_block_34:
-                CanYoshiFly,
+                CanAnyYoshiFlyRedShell | 
+                (CanAnyYoshiFlyBlueShell & True_(options=[OptionFilter(EnemyShuffle, 1)])),
             Locations.yoshis_island_3_yellow_block_35:
-                CanYoshiFly,
+                CanAnyYoshiFlyRedShell | 
+                (CanAnyYoshiFlyBlueShell & True_(options=[OptionFilter(EnemyShuffle, 1)])),
             Locations.yoshis_island_3_yellow_block_36:
-                CanYoshiFly,
+                CanAnyYoshiFlyRedShell | 
+                (CanAnyYoshiFlyBlueShell & True_(options=[OptionFilter(EnemyShuffle, 1)])),
             Locations.yoshis_island_3_yellow_block_37:
-                CanYoshiFly,
+                CanAnyYoshiFlyRedShell | 
+                (CanAnyYoshiFlyBlueShell & True_(options=[OptionFilter(EnemyShuffle, 1)])),
             Locations.yoshis_island_3_yellow_block_38:
-                CanYoshiFly,
+                CanAnyYoshiFlyRedShell | 
+                (CanAnyYoshiFlyBlueShell & True_(options=[OptionFilter(EnemyShuffle, 1)])),
             Locations.yoshis_island_3_yellow_block_39:
-                CanYoshiFly,
+                CanAnyYoshiFlyRedShell | 
+                (CanAnyYoshiFlyBlueShell & True_(options=[OptionFilter(EnemyShuffle, 1)])),
             Locations.yoshis_island_3_yellow_block_40:
-                CanYoshiFly,
+                CanAnyYoshiFlyRedShell | 
+                (CanAnyYoshiFlyBlueShell & True_(options=[OptionFilter(EnemyShuffle, 1)])),
             Locations.yoshis_island_3_yellow_block_41:
-                CanYoshiFly,
+                CanAnyYoshiFlyRedShell | 
+                (CanAnyYoshiFlyBlueShell & True_(options=[OptionFilter(EnemyShuffle, 1)])),
             Locations.yoshis_island_3_yellow_block_42:
-                CanYoshiFly,
+                CanAnyYoshiFlyRedShell | 
+                (CanAnyYoshiFlyBlueShell & True_(options=[OptionFilter(EnemyShuffle, 1)])),
             Locations.yoshis_island_3_yellow_block_43:
-                CanYoshiFly,
+                CanAnyYoshiFlyRedShell | 
+                (CanAnyYoshiFlyBlueShell & True_(options=[OptionFilter(EnemyShuffle, 1)])),
             Locations.yoshis_island_3_yellow_block_44:
-                CanYoshiFly,
+                CanAnyYoshiFlyRedShell | 
+                (CanAnyYoshiFlyBlueShell & True_(options=[OptionFilter(EnemyShuffle, 1)])),
             Locations.yoshis_island_3_yellow_block_45:
-                CanYoshiFly,
+                CanAnyYoshiFlyRedShell | 
+                (CanAnyYoshiFlyBlueShell & True_(options=[OptionFilter(EnemyShuffle, 1)])),
             Locations.yoshis_island_3_yellow_block_46:
-                CanYoshiFly,
+                CanAnyYoshiFlyRedShell | 
+                (CanAnyYoshiFlyBlueShell & True_(options=[OptionFilter(EnemyShuffle, 1)])),
             Locations.yoshis_island_3_yellow_block_47:
-                CanYoshiFly,
+                CanAnyYoshiFlyRedShell | 
+                (CanAnyYoshiFlyBlueShell & True_(options=[OptionFilter(EnemyShuffle, 1)])),
             Locations.yoshis_island_3_yellow_block_48:
-                CanYoshiFly,
+                CanAnyYoshiFlyRedShell | 
+                (CanAnyYoshiFlyBlueShell & True_(options=[OptionFilter(EnemyShuffle, 1)])),
             Locations.yoshis_island_3_yellow_block_49:
-                CanYoshiFly,
+                CanAnyYoshiFlyRedShell | 
+                (CanAnyYoshiFlyBlueShell & True_(options=[OptionFilter(EnemyShuffle, 1)])),
             Locations.yoshis_island_3_yellow_block_50:
-                CanYoshiFly,
+                CanAnyYoshiFlyRedShell | 
+                (CanAnyYoshiFlyBlueShell & True_(options=[OptionFilter(EnemyShuffle, 1)])),
             Locations.yoshis_island_3_yellow_block_51:
-                CanYoshiFly,
+                CanAnyYoshiFlyRedShell | 
+                (CanAnyYoshiFlyBlueShell & True_(options=[OptionFilter(EnemyShuffle, 1)])),
             Locations.yoshis_island_3_coin_block_2:
                 True_(),
             Locations.yoshis_island_3_powerup_block_1:
                 True_(),
             Locations.yoshis_island_3_yellow_block_52:
-                CanYoshiFly,
+                CanAnyYoshiFlyRedShell | 
+                (CanAnyYoshiFlyBlueShell & True_(options=[OptionFilter(EnemyShuffle, 1)])),
             Locations.yoshis_island_3_yellow_block_53:
-                CanYoshiFly,
+                CanAnyYoshiFlyRedShell | 
+                (CanAnyYoshiFlyBlueShell & True_(options=[OptionFilter(EnemyShuffle, 1)])),
             Locations.yoshis_island_3_yellow_block_54:
-                CanYoshiFly,
+                CanAnyYoshiFlyRedShell | 
+                (CanAnyYoshiFlyBlueShell & True_(options=[OptionFilter(EnemyShuffle, 1)])),
             Locations.yoshis_island_3_yellow_block_55:
-                CanYoshiFly,
+                CanAnyYoshiFlyRedShell | 
+                (CanAnyYoshiFlyBlueShell & True_(options=[OptionFilter(EnemyShuffle, 1)])),
             Locations.yoshis_island_3_yellow_block_56:
-                CanYoshiFly,
+                CanAnyYoshiFlyRedShell | 
+                (CanAnyYoshiFlyBlueShell & True_(options=[OptionFilter(EnemyShuffle, 1)])),
             Locations.yoshis_island_3_yellow_block_57:
                 True_(),
             Locations.yoshis_island_3_yellow_block_58:
                 True_(),
             Locations.yoshis_island_3_yellow_block_59:
-                CanYoshiFly,
+                CanAnyYoshiFlyRedShell | 
+                (CanAnyYoshiFlyBlueShell & True_(options=[OptionFilter(EnemyShuffle, 1)])),
             Locations.yoshis_island_3_yellow_block_60:
-                CanYoshiFly,
+                CanAnyYoshiFlyRedShell | 
+                (CanAnyYoshiFlyBlueShell & True_(options=[OptionFilter(EnemyShuffle, 1)])),
             Locations.yoshis_island_3_yellow_block_61:
-                CanYoshiFly,
+                CanAnyYoshiFlyRedShell | 
+                (CanAnyYoshiFlyBlueShell & True_(options=[OptionFilter(EnemyShuffle, 1)])),
             Locations.yoshis_island_3_yellow_block_62:
-                CanYoshiFly,
+                CanAnyYoshiFlyRedShell | 
+                (CanAnyYoshiFlyBlueShell & True_(options=[OptionFilter(EnemyShuffle, 1)])),
             Locations.yoshis_island_3_yellow_block_63:
-                CanYoshiFly,
+                CanAnyYoshiFlyRedShell | 
+                (CanAnyYoshiFlyBlueShell & True_(options=[OptionFilter(EnemyShuffle, 1)])),
             Locations.yoshis_island_3_yellow_block_64:
-                CanYoshiFly,
+                CanAnyYoshiFlyRedShell | 
+                (CanAnyYoshiFlyBlueShell & True_(options=[OptionFilter(EnemyShuffle, 1)])),
             Locations.yoshis_island_3_yellow_block_65:
-                CanYoshiFly,
+                CanAnyYoshiFlyRedShell | 
+                (CanAnyYoshiFlyBlueShell & True_(options=[OptionFilter(EnemyShuffle, 1)])),
             Locations.yoshis_island_3_yellow_block_66:
-                CanYoshiFly,
+                CanAnyYoshiFlyRedShell | 
+                (CanAnyYoshiFlyBlueShell & True_(options=[OptionFilter(EnemyShuffle, 1)])),
             Locations.yoshis_island_3_yellow_block_67:
-                CanYoshiFly,
+                CanAnyYoshiFlyRedShell | 
+                (CanAnyYoshiFlyBlueShell & True_(options=[OptionFilter(EnemyShuffle, 1)])),
             Locations.yoshis_island_3_yellow_block_68:
-                CanYoshiFly,
+                CanAnyYoshiFlyRedShell | 
+                (CanAnyYoshiFlyBlueShell & True_(options=[OptionFilter(EnemyShuffle, 1)])),
             Locations.yoshis_island_3_yellow_block_69:
-                CanYoshiFly,
+                CanAnyYoshiFlyRedShell | 
+                (CanAnyYoshiFlyBlueShell & True_(options=[OptionFilter(EnemyShuffle, 1)])),
             Locations.yoshis_island_3_yellow_block_70:
                 True_(),
             Locations.yoshis_island_3_yellow_block_71:
-                CanYoshiFly,
+                CanAnyYoshiFlyRedShell | 
+                (CanAnyYoshiFlyBlueShell & True_(options=[OptionFilter(EnemyShuffle, 1)])),
             Locations.yoshis_island_3_yellow_block_72:
-                CanYoshiFly,
+                CanAnyYoshiFlyRedShell | 
+                (CanAnyYoshiFlyBlueShell & True_(options=[OptionFilter(EnemyShuffle, 1)])),
             Locations.yoshis_island_3_yellow_block_73:
-                CanYoshiFly,
+                CanAnyYoshiFlyRedShell | 
+                (CanAnyYoshiFlyBlueShell & True_(options=[OptionFilter(EnemyShuffle, 1)])),
             Locations.yoshis_island_3_yellow_block_74:
-                CanYoshiFly,
+                CanAnyYoshiFlyRedShell | 
+                (CanAnyYoshiFlyBlueShell & True_(options=[OptionFilter(EnemyShuffle, 1)])),
             Locations.yoshis_island_3_yellow_block_75:
-                CanYoshiFly,
+                CanAnyYoshiFlyRedShell | 
+                (CanAnyYoshiFlyBlueShell & True_(options=[OptionFilter(EnemyShuffle, 1)])),
             Locations.yoshis_island_3_yellow_block_76:
-                CanYoshiFly,
+                CanAnyYoshiFlyRedShell | 
+                (CanAnyYoshiFlyBlueShell & True_(options=[OptionFilter(EnemyShuffle, 1)])),
             Locations.yoshis_island_3_yellow_block_77:
-                CanYoshiFly,
+                CanAnyYoshiFlyRedShell | 
+                (CanAnyYoshiFlyBlueShell & True_(options=[OptionFilter(EnemyShuffle, 1)])),
             Locations.yoshis_island_3_yellow_block_78:
-                CanYoshiFly,
+                CanAnyYoshiFlyRedShell | 
+                (CanAnyYoshiFlyBlueShell & True_(options=[OptionFilter(EnemyShuffle, 1)])),
             Locations.yoshis_island_3_yellow_block_79:
-                CanYoshiFly,
+                CanAnyYoshiFlyRedShell | 
+                (CanAnyYoshiFlyBlueShell & True_(options=[OptionFilter(EnemyShuffle, 1)])),
             Locations.yoshis_island_3_yellow_block_80:
-                CanYoshiFly,
+                CanAnyYoshiFlyRedShell | 
+                (CanAnyYoshiFlyBlueShell & True_(options=[OptionFilter(EnemyShuffle, 1)])),
             Locations.yoshis_island_3_yellow_block_81:
-                CanYoshiFly,
+                CanAnyYoshiFlyRedShell | 
+                (CanAnyYoshiFlyBlueShell & True_(options=[OptionFilter(EnemyShuffle, 1)])),
             Locations.yoshis_island_3_yellow_block_82:
-                CanYoshiFly,
+                CanAnyYoshiFlyRedShell | 
+                (CanAnyYoshiFlyBlueShell & True_(options=[OptionFilter(EnemyShuffle, 1)])),
             Locations.yoshis_island_3_yellow_block_83:
-                CanYoshiFly,
+                CanAnyYoshiFlyRedShell | 
+                (CanAnyYoshiFlyBlueShell & True_(options=[OptionFilter(EnemyShuffle, 1)])),
             Locations.yoshis_island_3_yellow_block_84:
-                CanYoshiFly,
+                CanAnyYoshiFlyRedShell | CanCarry | 
+                (CanAnyYoshiFlyBlueShell & True_(options=[OptionFilter(EnemyShuffle, 1)])),
             Locations.yoshis_island_3_yellow_block_85:
-                CanYoshiFly,
+                CanAnyYoshiFlyRedShell | 
+                (CanAnyYoshiFlyBlueShell & True_(options=[OptionFilter(EnemyShuffle, 1)])),
             Locations.yoshis_island_3_yellow_block_86:
-                CanYoshiFly,
+                CanAnyYoshiFlyRedShell | 
+                (CanAnyYoshiFlyBlueShell & True_(options=[OptionFilter(EnemyShuffle, 1)])),
 
             Locations.yoshis_island_4_dragon:
                 HasYoshi | CanSwim | HasPSwitch,
@@ -946,25 +1038,25 @@ class WaffleBasicRules(WaffleRules):
             Locations.donut_plains_1_green_block_6:
                 HasFeather,
             Locations.donut_plains_1_green_block_7:
-                HasFeather,
+                HasFeather | CanCarry,
             Locations.donut_plains_1_green_block_8:
-                HasFeather,
+                HasFeather | CanCarry,
             Locations.donut_plains_1_green_block_9:
-                HasFeather,
+                HasFeather | CanCarry,
             Locations.donut_plains_1_green_block_10:
-                HasFeather,
+                HasFeather | CanCarry,
             Locations.donut_plains_1_green_block_11:
-                HasFeather,
+                HasFeather | CanCarry,
             Locations.donut_plains_1_green_block_12:
-                HasFeather,
+                HasFeather | CanCarry,
             Locations.donut_plains_1_green_block_13:
-                HasFeather,
+                HasFeather | CanCarry,
             Locations.donut_plains_1_green_block_14:
-                HasFeather,
+                HasFeather | CanCarry,
             Locations.donut_plains_1_green_block_15:
-                HasFeather,
+                HasFeather | CanCarry,
             Locations.donut_plains_1_green_block_16:
-                HasFeather,
+                HasFeather | CanCarry,
             Locations.donut_plains_1_yellow_block_1:
                 True_(),
             Locations.donut_plains_1_yellow_block_2:
@@ -998,10 +1090,10 @@ class WaffleBasicRules(WaffleRules):
                 (CanBreakTurnBlocks & CanCarry) | HasYoshi,
 
             Locations.donut_plains_3_dragon:
-                (CanBreakTurnBlocks & CanClimb) | HasYoshi |
+                ((CanBreakTurnBlocks | HasFeather) & CanClimb) | HasYoshi |
                     CanCapeFly,
             Locations.donut_plains_3_prize:
-                (CanBreakTurnBlocks & CanClimb) | HasYoshi |
+                ((CanBreakTurnBlocks | HasFeather) & CanClimb) | HasYoshi |
                     CanCapeFly,
             Locations.donut_plains_3_midway:
                 True_(),
@@ -1012,16 +1104,16 @@ class WaffleBasicRules(WaffleRules):
             Locations.donut_plains_3_coin_block_2:
                 True_(),
             Locations.donut_plains_3_vine_block_1:
-                CanBreakTurnBlocks,
+                CanBreakTurnBlocks | HasFeather,
             Locations.donut_plains_3_powerup_block_1:
                 True_(),
 
             Locations.donut_plains_4_dragon:
                 True_(),
             Locations.donut_plains_4_moon:
-                CanCapeFly,
+                CanCapeFly | (CanAnyYoshiFlyBlueShell & True_(options=[OptionFilter(EnemyShuffle, 0)])),
             Locations.donut_plains_4_hidden_1up:
-                CanCapeFly,
+                CanCapeFly | (CanAnyYoshiFlyBlueShell & True_(options=[OptionFilter(EnemyShuffle, 0)])),
             Locations.donut_plains_4_midway:
                 True_(),
             Locations.donut_plains_4_coin_block_1:
@@ -1059,13 +1151,13 @@ class WaffleBasicRules(WaffleRules):
                 CanSwim,
 
             Locations.donut_secret_2_dragon:
-                CanClimb | HasYoshi,
+                CanClimb | HasYoshi | CanCapeFly,
             Locations.donut_secret_2_directional_coin_block_1:
                 True_(),
             Locations.donut_secret_2_vine_block_1:
                 True_(),
             Locations.donut_secret_2_star_block_1:
-                CanClimb | HasYoshi,
+                CanClimb | HasYoshi | CanCapeFly,
             Locations.donut_secret_2_powerup_block_1:
                 True_(),
             Locations.donut_secret_2_star_block_2:
@@ -1088,7 +1180,7 @@ class WaffleBasicRules(WaffleRules):
             Locations.donut_ghost_house_room_5:
                 HasPSwitch,
             Locations.donut_ghost_house_room_6:
-                CanClimb,
+                CanClimb | CanCapeFly,
 
             Locations.donut_secret_house_powerup_block_1:
                 True_(),
@@ -1250,17 +1342,17 @@ class WaffleBasicRules(WaffleRules):
             Locations.vanilla_dome_3_powerup_block_4:
                 True_(),
             Locations.vanilla_dome_3_pswitch_coin_block_1:
-                CanCapeFly & HasPSwitch,
+                CanCapeFly,
             Locations.vanilla_dome_3_pswitch_coin_block_2:
-                CanCapeFly & HasPSwitch,
+                CanCapeFly,
             Locations.vanilla_dome_3_pswitch_coin_block_3:
-                CanCapeFly & HasPSwitch,
+                CanCapeFly,
             Locations.vanilla_dome_3_pswitch_coin_block_4:
-                CanCapeFly & HasPSwitch,
+                CanCapeFly,
             Locations.vanilla_dome_3_pswitch_coin_block_5:
-                CanCapeFly & HasPSwitch,
+                CanCapeFly,
             Locations.vanilla_dome_3_pswitch_coin_block_6:
-                CanCapeFly & HasPSwitch,
+                CanCapeFly,
             Locations.vanilla_dome_3_room_2:
                 CanCapeFly,
 
@@ -1289,10 +1381,11 @@ class WaffleBasicRules(WaffleRules):
             Locations.vanilla_dome_4_coin_block_7:
                 True_(),
             Locations.vanilla_dome_4_coin_block_8:
-                CanCarry,
+                CanCarry | (CanAnyYoshiFlyRedShell & True_(options=[OptionFilter(EnemyShuffle, 0)])),
 
             Locations.vanilla_secret_1_dragon:
-                CanClimb & CanCarry,
+                (CanClimb & CanCarry) | 
+                (CanAnyYoshiFlyRedShell & True_(options=[OptionFilter(EnemyShuffle, 0)])),
             Locations.vanilla_secret_1_coin_block_1:
                 True_(),
             Locations.vanilla_secret_1_powerup_block_1:
@@ -1302,20 +1395,21 @@ class WaffleBasicRules(WaffleRules):
             Locations.vanilla_secret_1_vine_block_1:
                 True_(),
             Locations.vanilla_secret_1_vine_block_2:
-                CanClimb,
+                CanClimb | (CanAnyYoshiFlyRedShell & True_(options=[OptionFilter(EnemyShuffle, 0)])),
             Locations.vanilla_secret_1_coin_block_2:
-                CanClimb,
+                CanClimb | (CanAnyYoshiFlyRedShell & True_(options=[OptionFilter(EnemyShuffle, 0)])),
             Locations.vanilla_secret_1_coin_block_3:
-                CanClimb,
+                CanClimb | (CanAnyYoshiFlyRedShell & True_(options=[OptionFilter(EnemyShuffle, 0)])),
             Locations.vanilla_secret_1_powerup_block_2:
-                CanClimb,
+                CanClimb | (CanAnyYoshiFlyRedShell & True_(options=[OptionFilter(EnemyShuffle, 0)])),
             Locations.vanilla_secret_1_room_2:
-                CanClimb,
+                CanClimb | (CanAnyYoshiFlyRedShell & True_(options=[OptionFilter(EnemyShuffle, 0)])),
             Locations.vanilla_secret_1_room_3:
-                CanClimb & CanCarry & HasBSP,
+                (CanClimb & CanCarry & HasBSP) | 
+                (CanAnyYoshiFlyRedShell & True_(options=[OptionFilter(EnemyShuffle, 0)])),
 
             Locations.vanilla_secret_2_dragon:
-                CanCapeFly,
+                CanCapeFly | HasYoshi,
             Locations.vanilla_secret_2_yoshi_block_1:
                 True_(),
             Locations.vanilla_secret_2_green_block_1:
@@ -1353,7 +1447,7 @@ class WaffleBasicRules(WaffleRules):
                 CanSwim,
 
             Locations.vanilla_ghost_house_dragon:
-                CanClimb,
+                CanClimb | CanCapeFly,
             Locations.vanilla_ghost_house_hidden_1up:
                 True_(),
             Locations.vanilla_ghost_house_powerup_block_1:
@@ -1422,13 +1516,14 @@ class WaffleBasicRules(WaffleRules):
                 Has(Items.red_switch_palace, options=[OptionFilter(EnemyShuffle, 1)]),
 
             Locations.butter_bridge_2_dragon:
-                CanFly,
+                CanCapeFly | (CanAnyYoshiFlyBlueShell & True_(options=[OptionFilter(EnemyShuffle, 0)])),
             Locations.butter_bridge_2_powerup_block_1:
-                CanCarry,
+                CanCarry | HasYoshi | CanCapeFly,
             Locations.butter_bridge_2_green_block_1:
                 True_(),
             Locations.butter_bridge_2_yoshi_block_1:
-                CanCarry,
+                CanCarry | HasFeather | 
+                (CanAnyYoshiFlyBlueShell & True_(options=[OptionFilter(EnemyShuffle, 0)])),
 
             Locations.cheese_bridge_dragon:
                 CanClimb | HasYoshi,
@@ -1446,9 +1541,9 @@ class WaffleBasicRules(WaffleRules):
                 HasYoshi,
 
             Locations.cookie_mountain_dragon:
-                CanClimb | HasYoshi,
+                CanClimb | HasYoshi | CanCapeFly,
             Locations.cookie_mountain_hidden_1up:
-                CanSwim | CanWallRun,
+                CanSwim | CanWallRun | HasYoshi | CanCapeFly,
             Locations.cookie_mountain_coin_block_1:
                 True_(),
             Locations.cookie_mountain_coin_block_2:
@@ -1470,11 +1565,12 @@ class WaffleBasicRules(WaffleRules):
             Locations.cookie_mountain_powerup_block_1:
                 True_(),
             Locations.cookie_mountain_life_block_1:
-                CanClimb,
+                CanClimb | CanCapeFly | 
+                (CanAnyYoshiFlyRedShell & True_(options=[OptionFilter(EnemyShuffle, 0)])),
             Locations.cookie_mountain_vine_block_1:
                 True_(),
             Locations.cookie_mountain_yoshi_block_1:
-                HasRSP,
+                HasRSP | (CanAnyYoshiFlyRedShell & True_(options=[OptionFilter(EnemyShuffle, 0)])),
             Locations.cookie_mountain_coin_block_10:
                 True_(),
             Locations.cookie_mountain_coin_block_11:
@@ -1539,7 +1635,7 @@ class WaffleBasicRules(WaffleRules):
             Locations.forest_of_illusion_1_powerup_block_2:
                 True_(),
             Locations.forest_of_illusion_1_key_block_1:
-                HasPBalloon,
+                HasPBalloon | (CanAnyYoshiFlyRedShell & True_(options=[OptionFilter(EnemyShuffle, 0)])),
             Locations.forest_of_illusion_1_life_block_1:
                 True_(),
 
@@ -1569,9 +1665,9 @@ class WaffleBasicRules(WaffleRules):
                 Has(Items.super_star_active, 3, options=[OptionFilter(EnemyShuffle, 1)], filtered_resolution=True),
 
             Locations.forest_of_illusion_3_dragon:
-                CanCarry | HasYoshi,
+                CanCarry | HasYoshi | CanCapeFly,
             Locations.forest_of_illusion_3_hidden_1up:
-                CanCarry | HasYoshi,
+                CanCarry | HasYoshi | CanCapeFly,
             Locations.forest_of_illusion_3_yoshi_block_1:
                 True_(),
             Locations.forest_of_illusion_3_coin_block_1:
@@ -1579,61 +1675,61 @@ class WaffleBasicRules(WaffleRules):
             Locations.forest_of_illusion_3_multi_coin_block_1:
                 True_(),
             Locations.forest_of_illusion_3_coin_block_2:
-                CanCarry | HasYoshi,
+                CanCarry | HasYoshi | CanCapeFly,
             Locations.forest_of_illusion_3_multi_coin_block_2:
-                CanCarry | HasYoshi,
+                CanCarry | HasYoshi | CanCapeFly,
             Locations.forest_of_illusion_3_coin_block_3:
-                CanCarry | HasYoshi,
+                CanCarry | HasYoshi | CanCapeFly,
             Locations.forest_of_illusion_3_coin_block_4:
-                CanCarry | HasYoshi,
+                CanCarry | HasYoshi | CanCapeFly,
             Locations.forest_of_illusion_3_coin_block_5:
-                CanCarry | HasYoshi,
+                CanCarry | HasYoshi | CanCapeFly,
             Locations.forest_of_illusion_3_coin_block_6:
-                CanCarry | HasYoshi,
+                CanCarry | HasYoshi | CanCapeFly,
             Locations.forest_of_illusion_3_coin_block_7:
-                CanCarry | HasYoshi,
+                CanCarry | HasYoshi | CanCapeFly,
             Locations.forest_of_illusion_3_coin_block_8:
-                CanCarry | HasYoshi,
+                CanCarry | HasYoshi | CanCapeFly,
             Locations.forest_of_illusion_3_coin_block_9:
-                CanCarry | HasYoshi,
+                CanCarry | HasYoshi | CanCapeFly,
             Locations.forest_of_illusion_3_coin_block_10:
-                CanCarry | HasYoshi,
+                CanCarry | HasYoshi | CanCapeFly,
             Locations.forest_of_illusion_3_coin_block_11:
-                CanCarry | HasYoshi,
+                CanCarry | HasYoshi | CanCapeFly,
             Locations.forest_of_illusion_3_coin_block_12:
-                CanCarry | HasYoshi,
+                CanCarry | HasYoshi | CanCapeFly,
             Locations.forest_of_illusion_3_coin_block_13:
-                CanCarry | HasYoshi,
+                CanCarry | HasYoshi | CanCapeFly,
             Locations.forest_of_illusion_3_coin_block_14:
-                CanCarry | HasYoshi,
+                CanCarry | HasYoshi | CanCapeFly,
             Locations.forest_of_illusion_3_coin_block_15:
-                CanCarry | HasYoshi,
+                CanCarry | HasYoshi | CanCapeFly,
             Locations.forest_of_illusion_3_coin_block_16:
-                CanCarry | HasYoshi,
+                CanCarry | HasYoshi | CanCapeFly,
             Locations.forest_of_illusion_3_coin_block_17:
-                CanCarry | HasYoshi,
+                CanCarry | HasYoshi | CanCapeFly,
             Locations.forest_of_illusion_3_coin_block_18:
-                CanCarry | HasYoshi,
+                CanCarry | HasYoshi | CanCapeFly,
             Locations.forest_of_illusion_3_coin_block_19:
-                CanCarry | HasYoshi,
+                CanCarry | HasYoshi | CanCapeFly,
             Locations.forest_of_illusion_3_coin_block_20:
-                CanCarry | HasYoshi,
+                CanCarry | HasYoshi | CanCapeFly,
             Locations.forest_of_illusion_3_coin_block_21:
-                CanCarry | HasYoshi,
+                CanCarry | HasYoshi | CanCapeFly,
             Locations.forest_of_illusion_3_coin_block_22:
-                CanCarry | HasYoshi,
+                CanCarry | HasYoshi | CanCapeFly,
             Locations.forest_of_illusion_3_coin_block_23:
-                CanCarry | HasYoshi,
+                CanCarry | HasYoshi | CanCapeFly,
             Locations.forest_of_illusion_3_coin_block_24:
-                CanCarry | HasYoshi,
+                CanCarry | HasYoshi | CanCapeFly,
             Locations.forest_of_illusion_3_midway:
-                CanCarry | HasYoshi,
+                CanCarry | HasYoshi | CanCapeFly,
             Locations.forest_of_illusion_3_room_1:
                 True_(),
             Locations.forest_of_illusion_3_room_2:
                 True_(),
             Locations.forest_of_illusion_3_room_3:
-                CanCarry | HasYoshi,
+                CanCarry | HasYoshi | CanCapeFly,
 
             Locations.forest_of_illusion_4_dragon:
                 HasYoshi | CanCarry | HasPSwitch | HasFireFlower,
@@ -1726,24 +1822,23 @@ class WaffleBasicRules(WaffleRules):
                 True_(),
 
             Locations.chocolate_island_1_dragon:
-                HasPSwitch | HasYoshi,
+                HasPSwitch | HasYoshi | CanCarry | HasFeather,
             Locations.chocolate_island_1_moon:
-                CanCapeFly,
+                CanCapeFly | HasYoshi,
             Locations.chocolate_island_1_flying_block_1:
                 True_(),
             Locations.chocolate_island_1_flying_block_2:
-                HasPSwitch | HasYoshi,
+                HasPSwitch | HasYoshi | CanCarry | HasFeather,
             Locations.chocolate_island_1_yoshi_block_1:
-                HasPSwitch | HasYoshi,
+                HasPSwitch | HasYoshi | CanCarry | HasFeather,
             Locations.chocolate_island_1_green_block_1:
-                (HasPSwitch | HasYoshi) & (
-                    (HasGSP & HasBSP) |
-                    (HasYSP & HasBSP)
-                ),
+                (HasPSwitch | HasYoshi | CanCarry | HasFeather) & 
+                (HasBSP | HasFeather) & 
+                (HasGSP | HasYSP),
             Locations.chocolate_island_1_life_block_1:
-                HasPSwitch | HasYoshi,
+                HasPSwitch | HasYoshi | CanCarry | HasFeather,
             Locations.chocolate_island_1_room_2:
-                HasPSwitch | HasYoshi,
+                HasPSwitch | HasYoshi | CanCarry | HasFeather,
                 
             Locations.chocolate_island_2_dragon:
                 HasBSP & (
@@ -1800,16 +1895,16 @@ class WaffleBasicRules(WaffleRules):
             Locations.chocolate_island_3_vine_block_1:
                 True_(),
             Locations.chocolate_island_3_life_block_1:
-                CanFly,
+                CanCapeFly | CanAnyYoshiFlyBlueShell,
             Locations.chocolate_island_3_life_block_2:
-                CanFly,
+                CanCapeFly | CanAnyYoshiFlyBlueShell,
             Locations.chocolate_island_3_life_block_3:
-                CanFly,
+                CanCapeFly | CanAnyYoshiFlyBlueShell,
 
             Locations.chocolate_island_4_dragon:
-                HasPSwitch & HasFeather,
+                HasPSwitch & (HasFeather | HasYoshi),
             Locations.chocolate_island_4_yellow_block_1:
-                HasBSP,
+                True_(),
             Locations.chocolate_island_4_blue_pow_block_1:
                 True_(),
             Locations.chocolate_island_4_powerup_block_1:
@@ -1822,9 +1917,9 @@ class WaffleBasicRules(WaffleRules):
             Locations.chocolate_island_5_yoshi_block_1:
                 True_(),
             Locations.chocolate_island_5_powerup_block_1:
-                HasPSwitch,
+                True_(),
             Locations.chocolate_island_5_life_block_1:
-                HasPSwitch & (CanCarry | HasFeather),
+                (HasPSwitch & CanCarry) | HasFeather,
             Locations.chocolate_island_5_yellow_block_1:
                 HasPSwitch,
             Locations.chocolate_island_5_room_2:
@@ -1865,7 +1960,7 @@ class WaffleBasicRules(WaffleRules):
                 True_(),
 
             Locations.sunken_ghost_ship_dragon:
-                CanSwim,
+                CanSwim & HasFeather,
             Locations.sunken_ghost_ship_powerup_block_1:
                 CanSwim,
             Locations.sunken_ghost_ship_star_block_1:
@@ -1929,16 +2024,16 @@ class WaffleBasicRules(WaffleRules):
             Locations.valley_of_bowser_4_yoshi_block_1:
                 CanClimb,
             Locations.valley_of_bowser_4_life_block_1:
-                CanClimb & CanBreakTurnBlocks,
+                CanClimb & (CanBreakTurnBlocks | HasYoshi),
             Locations.valley_of_bowser_4_powerup_block_2:
-                CanClimb & HasYSP,
+                CanClimb & (HasYSP | HasFeather),
             Locations.valley_of_bowser_4_midway:
                 CanClimb,
 
             Locations.valley_ghost_house_dragon:
                 HasPSwitch,
             Locations.valley_ghost_house_pswitch_coin_block_1:
-                HasPSwitch,
+                True_(),
             Locations.valley_ghost_house_multi_coin_block_1:
                 HasPSwitch,
             Locations.valley_ghost_house_powerup_block_1:
@@ -1982,108 +2077,185 @@ class WaffleBasicRules(WaffleRules):
             Locations.star_road_4_powerup_block_1:
                 True_(),
             Locations.star_road_4_green_block_1:
-                CanYoshiFly | CanCapeSpinFly,
+                CanAnyYoshiFlyBlueShell | (CanCapeSpinFly & HasRSP),
             Locations.star_road_4_green_block_2:
-                CanYoshiFly | CanCapeSpinFly,
+                CanAnyYoshiFlyBlueShell | (CanCapeSpinFly & HasRSP),
             Locations.star_road_4_green_block_3:
-                CanYoshiFly | CanCapeSpinFly,
+                CanAnyYoshiFlyBlueShell | (CanCapeSpinFly & HasRSP),
             Locations.star_road_4_green_block_4:
-                CanYoshiFly | CanCapeSpinFly,
+                CanAnyYoshiFlyBlueShell | (CanCapeSpinFly & HasRSP),
             Locations.star_road_4_green_block_5:
-                CanYoshiFly | CanCapeSpinFly,
+                CanAnyYoshiFlyBlueShell | (CanCapeSpinFly & HasRSP),
             Locations.star_road_4_green_block_6:
-                CanYoshiFly | CanCapeSpinFly,
+                CanAnyYoshiFlyBlueShell | (CanCapeSpinFly & HasRSP),
             Locations.star_road_4_green_block_7:
-                CanYoshiFly | CanCapeSpinFly,
+                CanAnyYoshiFlyBlueShell | HasRSP,
             Locations.star_road_4_key_block_1:
-                CanYoshiFly | HasFeather | (CanCarry & HasGSP & HasRSP),
+                CanAnyYoshiFlyBlueShell | HasFeather | (CanCarry & HasGSP & HasRSP),
 
             Locations.star_road_5_directional_coin_block_1:
                 True_(),
             Locations.star_road_5_life_block_1:
-                HasPSwitch,
+                HasPSwitch | CanCapeFly | CanBlueYoshiFly,
             Locations.star_road_5_vine_block_1:
-                CanFly,
+                HasPSwitch | CanCapeFly | CanBlueYoshiFly,
             Locations.star_road_5_yellow_block_1:
-                CanYoshiFly,
+                CanBlueYoshiFly | CanCapeFly | (HasPSwitch & (CanClimb | 
+                    (CanAnyYoshiFlyRedShell & True_(options=[OptionFilter(EnemyShuffle, 0)])))),
             Locations.star_road_5_yellow_block_2:
-                CanYoshiFly,
+                CanBlueYoshiFly | 
+                    ((HasPSwitch | CanCapeFly) & CanAnyYoshiFlyRedShell & 
+                    True_(options=[OptionFilter(EnemyShuffle, 0)])),
             Locations.star_road_5_yellow_block_3:
-                CanYoshiFly,
+                CanBlueYoshiFly | 
+                    ((HasPSwitch | CanCapeFly) & CanAnyYoshiFlyRedShell & 
+                    True_(options=[OptionFilter(EnemyShuffle, 0)])),
             Locations.star_road_5_yellow_block_4:
-                CanYoshiFly,
+                CanBlueYoshiFly | 
+                    ((HasPSwitch | CanCapeFly) & CanAnyYoshiFlyRedShell & 
+                    True_(options=[OptionFilter(EnemyShuffle, 0)])),
             Locations.star_road_5_yellow_block_5:
-                CanYoshiFly,
+                CanBlueYoshiFly | 
+                    ((HasPSwitch | CanCapeFly) & CanAnyYoshiFlyRedShell & 
+                    True_(options=[OptionFilter(EnemyShuffle, 0)])),
             Locations.star_road_5_yellow_block_6:
-                CanYoshiFly,
+                CanBlueYoshiFly | 
+                    ((HasPSwitch | CanCapeFly) & CanAnyYoshiFlyRedShell & 
+                    True_(options=[OptionFilter(EnemyShuffle, 0)])),
             Locations.star_road_5_yellow_block_7:
-                CanYoshiFly,
+                CanBlueYoshiFly | 
+                    ((HasPSwitch | CanCapeFly) & CanAnyYoshiFlyRedShell & 
+                    True_(options=[OptionFilter(EnemyShuffle, 0)])),
             Locations.star_road_5_yellow_block_8:
-                CanYoshiFly,
+                CanBlueYoshiFly | 
+                    ((HasPSwitch | CanCapeFly) & CanAnyYoshiFlyRedShell & 
+                    True_(options=[OptionFilter(EnemyShuffle, 0)])),
             Locations.star_road_5_yellow_block_9:
-                CanYoshiFly,
+                CanBlueYoshiFly | 
+                    ((HasPSwitch | CanCapeFly) & CanAnyYoshiFlyRedShell & 
+                    True_(options=[OptionFilter(EnemyShuffle, 0)])),
             Locations.star_road_5_yellow_block_10:
-                CanYoshiFly,
+                CanBlueYoshiFly | 
+                    ((HasPSwitch | CanCapeFly) & CanAnyYoshiFlyRedShell & 
+                    True_(options=[OptionFilter(EnemyShuffle, 0)])),
             Locations.star_road_5_yellow_block_11:
-                CanYoshiFly,
+                CanBlueYoshiFly | 
+                    ((HasPSwitch | CanCapeFly) & CanAnyYoshiFlyRedShell & 
+                    True_(options=[OptionFilter(EnemyShuffle, 0)])),
             Locations.star_road_5_yellow_block_12:
-                CanYoshiFly,
+                CanBlueYoshiFly | 
+                    ((HasPSwitch | CanCapeFly) & CanAnyYoshiFlyRedShell & 
+                    True_(options=[OptionFilter(EnemyShuffle, 0)])),
             Locations.star_road_5_yellow_block_13:
-                CanYoshiFly,
+                CanBlueYoshiFly | 
+                    ((HasPSwitch | CanCapeFly) & CanAnyYoshiFlyRedShell & 
+                    True_(options=[OptionFilter(EnemyShuffle, 0)])),
             Locations.star_road_5_yellow_block_14:
-                CanYoshiFly,
+                CanBlueYoshiFly | 
+                    ((HasPSwitch | CanCapeFly) & CanAnyYoshiFlyRedShell & 
+                    True_(options=[OptionFilter(EnemyShuffle, 0)])),
             Locations.star_road_5_yellow_block_15:
-                CanYoshiFly,
+                CanBlueYoshiFly | 
+                    ((HasPSwitch | CanCapeFly) & CanAnyYoshiFlyRedShell & 
+                    True_(options=[OptionFilter(EnemyShuffle, 0)])),
             Locations.star_road_5_yellow_block_16:
-                CanYoshiFly,
+                CanBlueYoshiFly | 
+                    ((HasPSwitch | CanCapeFly) & CanAnyYoshiFlyRedShell & 
+                    True_(options=[OptionFilter(EnemyShuffle, 0)])),
             Locations.star_road_5_yellow_block_17:
-                CanYoshiFly,
+                CanBlueYoshiFly | 
+                    ((HasPSwitch | CanCapeFly) & CanAnyYoshiFlyRedShell & 
+                    True_(options=[OptionFilter(EnemyShuffle, 0)])),
             Locations.star_road_5_yellow_block_18:
-                CanYoshiFly,
+                CanBlueYoshiFly | 
+                    ((HasPSwitch | CanCapeFly) & CanAnyYoshiFlyRedShell & 
+                    True_(options=[OptionFilter(EnemyShuffle, 0)])),
             Locations.star_road_5_yellow_block_19:
-                CanYoshiFly & HasGSP,
+                CanBlueYoshiFly | CanCapeFly | (HasPSwitch & ((CanClimb & HasFeather) | 
+                    (CanAnyYoshiFlyRedShell & True_(options=[OptionFilter(EnemyShuffle, 0)])))),
             Locations.star_road_5_yellow_block_20:
-                CanYoshiFly & HasGSP,
+                CanBlueYoshiFly | CanCapeFly | (HasPSwitch & ((CanClimb & HasFeather) | 
+                    (CanAnyYoshiFlyRedShell & True_(options=[OptionFilter(EnemyShuffle, 0)])))),
             Locations.star_road_5_green_block_1:
-                CanYoshiFly,
+                CanBlueYoshiFly | 
+                    ((HasPSwitch | CanCapeFly) & CanAnyYoshiFlyRedShell & 
+                    True_(options=[OptionFilter(EnemyShuffle, 0)])),
             Locations.star_road_5_green_block_2:
-                CanYoshiFly,
+                CanBlueYoshiFly | 
+                    ((HasPSwitch | CanCapeFly) & CanAnyYoshiFlyRedShell & 
+                    True_(options=[OptionFilter(EnemyShuffle, 0)])),
             Locations.star_road_5_green_block_3:
-                CanYoshiFly,
+                CanBlueYoshiFly | 
+                    ((HasPSwitch | CanCapeFly) & CanAnyYoshiFlyRedShell & 
+                    True_(options=[OptionFilter(EnemyShuffle, 0)])),
             Locations.star_road_5_green_block_4:
-                CanYoshiFly,
+                CanBlueYoshiFly | 
+                    ((HasPSwitch | CanCapeFly) & CanAnyYoshiFlyRedShell & 
+                    True_(options=[OptionFilter(EnemyShuffle, 0)])),
             Locations.star_road_5_green_block_5:
-                CanYoshiFly,
+                CanBlueYoshiFly | 
+                    ((HasPSwitch | CanCapeFly) & CanAnyYoshiFlyRedShell & 
+                    True_(options=[OptionFilter(EnemyShuffle, 0)])),
             Locations.star_road_5_green_block_6:
-                CanYoshiFly,
+                CanBlueYoshiFly | 
+                    ((HasPSwitch | CanCapeFly) & CanAnyYoshiFlyRedShell & 
+                    True_(options=[OptionFilter(EnemyShuffle, 0)])),
             Locations.star_road_5_green_block_7:
-                CanYoshiFly,
+                CanBlueYoshiFly | 
+                    ((HasPSwitch | CanCapeFly) & CanAnyYoshiFlyRedShell & 
+                    True_(options=[OptionFilter(EnemyShuffle, 0)])),
             Locations.star_road_5_green_block_8:
-                CanYoshiFly,
+                CanBlueYoshiFly | 
+                    ((HasPSwitch | CanCapeFly) & CanAnyYoshiFlyRedShell & 
+                    True_(options=[OptionFilter(EnemyShuffle, 0)])),
             Locations.star_road_5_green_block_9:
-                CanYoshiFly,
+                CanBlueYoshiFly | 
+                    ((HasPSwitch | CanCapeFly) & CanAnyYoshiFlyRedShell & 
+                    True_(options=[OptionFilter(EnemyShuffle, 0)])),
             Locations.star_road_5_green_block_10:
-                CanYoshiFly,
+                CanBlueYoshiFly | 
+                    ((HasPSwitch | CanCapeFly) & CanAnyYoshiFlyRedShell & 
+                    True_(options=[OptionFilter(EnemyShuffle, 0)])),
             Locations.star_road_5_green_block_11:
-                CanYoshiFly,
+                CanBlueYoshiFly | 
+                    ((HasPSwitch | CanCapeFly) & CanAnyYoshiFlyRedShell & 
+                    True_(options=[OptionFilter(EnemyShuffle, 0)])),
             Locations.star_road_5_green_block_12:
-                CanYoshiFly,
+                CanBlueYoshiFly | 
+                    ((HasPSwitch | CanCapeFly) & CanAnyYoshiFlyRedShell & 
+                    True_(options=[OptionFilter(EnemyShuffle, 0)])),
             Locations.star_road_5_green_block_13:
-                CanYoshiFly,
+                CanBlueYoshiFly | 
+                    ((HasPSwitch | CanCapeFly) & CanAnyYoshiFlyRedShell & 
+                    True_(options=[OptionFilter(EnemyShuffle, 0)])),
             Locations.star_road_5_green_block_14:
-                CanYoshiFly,
+                CanBlueYoshiFly | 
+                    ((HasPSwitch | CanCapeFly) & CanAnyYoshiFlyRedShell & 
+                    True_(options=[OptionFilter(EnemyShuffle, 0)])),
             Locations.star_road_5_green_block_15:
-                CanYoshiFly,
+                CanBlueYoshiFly | 
+                    ((HasPSwitch | CanCapeFly) & CanAnyYoshiFlyRedShell & 
+                    True_(options=[OptionFilter(EnemyShuffle, 0)])),
             Locations.star_road_5_green_block_16:
-                CanYoshiFly,
+                CanBlueYoshiFly | 
+                    ((HasPSwitch | CanCapeFly) & CanAnyYoshiFlyRedShell & 
+                    True_(options=[OptionFilter(EnemyShuffle, 0)])),
             Locations.star_road_5_green_block_17:
-                CanYoshiFly,
+                CanBlueYoshiFly | 
+                    ((HasPSwitch | CanCapeFly) & CanAnyYoshiFlyRedShell & 
+                    True_(options=[OptionFilter(EnemyShuffle, 0)])),
             Locations.star_road_5_green_block_18:
-                CanYoshiFly,
+                CanBlueYoshiFly | 
+                    ((HasPSwitch | CanCapeFly) & CanAnyYoshiFlyRedShell & 
+                    True_(options=[OptionFilter(EnemyShuffle, 0)])),
             Locations.star_road_5_green_block_19:
-                CanYoshiFly,
+                CanBlueYoshiFly | 
+                    ((HasPSwitch | CanCapeFly) & CanAnyYoshiFlyRedShell & 
+                    True_(options=[OptionFilter(EnemyShuffle, 0)])),
             Locations.star_road_5_green_block_20:
-                CanYoshiFly,
+                CanBlueYoshiFly | 
+                    ((HasPSwitch | CanCapeFly) & CanAnyYoshiFlyRedShell & 
+                    True_(options=[OptionFilter(EnemyShuffle, 0)])),
 
 
             Locations.special_zone_1_dragon:
@@ -2109,31 +2281,31 @@ class WaffleBasicRules(WaffleRules):
             Locations.special_zone_1_powerup_block_1:
                 CanClimb,
             Locations.special_zone_1_pswitch_coin_block_1:
-                CanClimb & HasPSwitch & HasFeather,
+                CanClimb & HasFeather,
             Locations.special_zone_1_pswitch_coin_block_2:
-                CanClimb & HasPSwitch & HasFeather,
+                CanClimb & HasFeather,
             Locations.special_zone_1_pswitch_coin_block_3:
-                CanClimb & HasPSwitch & HasFeather,
+                CanClimb & HasFeather,
             Locations.special_zone_1_pswitch_coin_block_4:
-                CanClimb & HasPSwitch & HasFeather,
+                CanClimb & HasFeather,
             Locations.special_zone_1_pswitch_coin_block_5:
-                CanClimb & HasPSwitch & HasFeather,
+                CanClimb & HasFeather,
             Locations.special_zone_1_pswitch_coin_block_6:
-                CanClimb & HasPSwitch & HasFeather,
+                CanClimb & HasFeather,
             Locations.special_zone_1_pswitch_coin_block_7:
-                CanClimb & HasPSwitch & HasFeather,
+                CanClimb & HasFeather,
             Locations.special_zone_1_pswitch_coin_block_8:
-                CanClimb & HasPSwitch & HasFeather,
+                CanClimb & HasFeather,
             Locations.special_zone_1_pswitch_coin_block_9:
-                CanClimb & HasPSwitch & HasFeather,
+                CanClimb & HasFeather,
             Locations.special_zone_1_pswitch_coin_block_10:
-                CanClimb & HasPSwitch & HasFeather,
+                CanClimb & HasFeather,
             Locations.special_zone_1_pswitch_coin_block_11:
-                CanClimb & HasPSwitch & HasFeather,
+                CanClimb & HasFeather,
             Locations.special_zone_1_pswitch_coin_block_12:
-                CanClimb & HasPSwitch & HasFeather,
+                CanClimb & HasFeather,
             Locations.special_zone_1_pswitch_coin_block_13:
-                CanClimb & HasPSwitch & HasFeather,
+                CanClimb & HasFeather,
             Locations.special_zone_1_room_2:
                 CanClimb,
 
@@ -2174,7 +2346,8 @@ class WaffleBasicRules(WaffleRules):
             Locations.special_zone_4_dragon:
                 (CanCarry | HasPSwitch) & HasSuperStar,
             Locations.special_zone_4_star_block_1:
-                CanCarry | HasPSwitch,
+                CanCarry | HasPSwitch | CanBlueYoshiFly | 
+                (CanAnyYoshiFlyBlueShell & True_(options=[OptionFilter(EnemyShuffle, 0)])),
 
             Locations.special_zone_5_dragon:
                 True_(),
@@ -2265,22 +2438,22 @@ class WaffleBasicRules(WaffleRules):
                 CanSwim,
 
             Locations.special_zone_7_dragon:
-                CanCarryOrYoshiTongue,
+                CanCarryOrYoshiTongue | CanCapeFly,
             Locations.special_zone_7_powerup_block_1:
                 True_(),
             Locations.special_zone_7_yoshi_block_1:
-                CanCarryOrYoshiTongue,
+                CanCarryOrYoshiTongue | CanCapeFly,
             Locations.special_zone_7_coin_block_1:
-                CanCarryOrYoshiTongue,
+                CanCarryOrYoshiTongue | CanCapeFly,
             Locations.special_zone_7_powerup_block_2:
-                CanCarryOrYoshiTongue,
+                CanCarryOrYoshiTongue | CanCapeFly,
             Locations.special_zone_7_coin_block_2:
-                CanCarryOrYoshiTongue,
+                CanCarryOrYoshiTongue | CanCapeFly,
 
             Locations.special_zone_8_dragon:
                 CanBreakTurnBlocks | HasFeather | HasYoshi | CanCarry,
             Locations.special_zone_8_yoshi_block_1:
-                CanCarry | HasYoshi,
+                CanCarry | HasYoshi | CanCapeFly,
             Locations.special_zone_8_coin_block_1:
                 True_(),
             Locations.special_zone_8_coin_block_2:
@@ -2344,7 +2517,550 @@ class WaffleBasicRules(WaffleRules):
         super().__init__(world)
 
 
-    def alternate_logic(self, world: "WaffleWorld", options: list[str] = [], is_glitched: bool = False) -> None:
+    def alternate_logic(self, world: "WaffleWorld", options: list[str] = [], is_glitched: bool = False) -> None:            
+        if "Yoshi's Island 4 - Dragon Coin Sacrifice" in options:
+            location_rules = {
+                Locations.yoshis_island_4_dragon:
+                    True_(),
+            }
+            self.update_rules(is_glitched, location_rules=location_rules)
+            
+        if "Donut Plains 1 - Yoshi Jump to Key" in options:
+            connection_rules = {
+                f"{Regions.donut_plains_1_region} -> {Locations.donut_plains_1_exit_2}": 
+                   (CanAnyYoshiFlyBlueShell & True_(options=[OptionFilter(EnemyShuffle, 0)])) | 
+                   CanBlueYoshiFly | (CanCarry & (HasGSP | CanCapeFly | HasYoshi)),
+            }
+            carryless_exit_rules = {
+                f"{Regions.donut_plains_1_region} -> {Locations.donut_plains_1_exit_2}": 
+                    HasGSP | CanCapeFly | HasYoshi,
+            }
+            self.update_rules(is_glitched, connection_rules=connection_rules, 
+                              carryless_exit_rules=carryless_exit_rules)
+            
+        if "Donut Ghost House - Spin Jump off Boo" in options:
+            connection_rules = {
+                f"{Regions.donut_ghost_house_region} -> {Locations.donut_ghost_house_exit_2}": 
+                    CanClimb | CanCapeFly | Has(Items.spin_jump, options=[OptionFilter(EnemyShuffle, 0)]),
+            }
+            self.update_rules(is_glitched, connection_rules=connection_rules)
+            
+        if "Vanilla Dome 1 - Itemless Sinking Platform" in options:
+            connection_rules = {
+                f"{Regions.vanilla_dome_1_region} -> {Locations.vanilla_dome_1_exit_1}": 
+                    True_(),
+            }
+            location_rules = {
+                Locations.vanilla_dome_1_dragon:
+                    CanCarry,
+                Locations.vanilla_dome_1_midway:
+                    True_(),
+                Locations.vanilla_dome_1_powerup_block_4:
+                    True_(),
+                Locations.vanilla_dome_1_coin_block_2:
+                    True_(),
+            }
+            self.update_rules(is_glitched, connection_rules=connection_rules, location_rules=location_rules)
+            
+        if "Vanilla Dome 2 - Climbless Secret via Yoshi and Midway" in options:
+            connection_rules = {
+                f"{Regions.vanilla_dome_2_region} -> {Locations.vanilla_dome_2_exit_2}": 
+                    CanSwim & CanYoshiCarry & HasPSwitch & HasMidway,
+            }
+            carryless_exit_rules = {
+                f"{Regions.vanilla_dome_2_region} -> {Locations.vanilla_dome_2_exit_2}": 
+                    CanSwim & CanYoshiCarry & HasPSwitch & HasMidway,
+            }
+            location_rules = {
+                Locations.vanilla_dome_2_dragon:
+                    CanSwim & CanYoshiCarry & HasPSwitch & HasMidway,
+            }
+            self.update_rules(is_glitched, connection_rules=connection_rules, 
+                              carryless_exit_rules=carryless_exit_rules,
+                              location_rules=location_rules)
+            
+        if "Vanilla Dome 3 - Bonus Room Wall Running" in options:
+            location_rules = {
+                Locations.vanilla_dome_3_room_2:
+                    CanCapeFly | CanWallRun,
+            }
+            self.update_rules(is_glitched, location_rules=location_rules)
+            
+        if "Vanilla Dome 4 - Sacrifice for Coin Block #8" in options:
+            location_rules = {
+                Locations.vanilla_dome_4_coin_block_8:
+                    CanCarry | HasFeather | HasYoshi,
+            }
+            self.update_rules(is_glitched, location_rules=location_rules)
+
+        if "Vanilla Secret 1 - Wall Running" in options:
+            connection_rules = {
+                f"{Regions.vanilla_secret_1_region} -> {Locations.vanilla_secret_1_exit_1}": 
+                    CanClimb | CanWallRun | (CanAnyYoshiFlyRedShell & True_(options=[OptionFilter(EnemyShuffle, 0)])),
+                f"{Regions.vanilla_secret_1_region} -> {Locations.vanilla_secret_1_exit_2}": 
+                    ((CanClimb | CanWallRun) & CanCarry & HasBSP) | 
+                    (CanAnyYoshiFlyRedShell & True_(options=[OptionFilter(EnemyShuffle, 0)])),
+            }
+            location_rules = {
+                Locations.vanilla_secret_1_dragon:
+                    ((CanClimb | CanWallRun) & CanCarry) | 
+                    (CanAnyYoshiFlyRedShell & True_(options=[OptionFilter(EnemyShuffle, 0)])),
+                Locations.vanilla_secret_1_vine_block_2:
+                    CanClimb | CanWallRun | (CanAnyYoshiFlyRedShell & True_(options=[OptionFilter(EnemyShuffle, 0)])),
+                Locations.vanilla_secret_1_coin_block_2:
+                    CanClimb | CanWallRun | (CanAnyYoshiFlyRedShell & True_(options=[OptionFilter(EnemyShuffle, 0)])),
+                Locations.vanilla_secret_1_coin_block_3:
+                    CanClimb | CanWallRun | (CanAnyYoshiFlyRedShell & True_(options=[OptionFilter(EnemyShuffle, 0)])),
+                Locations.vanilla_secret_1_powerup_block_2:
+                    CanClimb | CanWallRun | (CanAnyYoshiFlyRedShell & True_(options=[OptionFilter(EnemyShuffle, 0)])),
+                Locations.vanilla_secret_1_room_2:
+                    CanClimb | CanWallRun | (CanAnyYoshiFlyRedShell & True_(options=[OptionFilter(EnemyShuffle, 0)])),
+                Locations.vanilla_secret_1_room_3:
+                    ((CanClimb | CanWallRun) & CanCarry) | 
+                    (CanAnyYoshiFlyRedShell & True_(options=[OptionFilter(EnemyShuffle, 0)])),
+            }
+            self.update_rules(is_glitched, connection_rules=connection_rules, location_rules=location_rules)
+
+        if "Vanilla Secret 3 - Swimless" in options:
+            connection_rules = {
+                f"{Regions.vanilla_secret_3_region} -> {Locations.vanilla_secret_3_exit_1}": 
+                    True_(),
+            }
+            location_rules = {
+                Locations.vanilla_secret_3_dragon:
+                    True_(),
+                Locations.vanilla_secret_3_midway:
+                    True_(),
+                Locations.vanilla_secret_3_powerup_block_1:
+                    True_(),
+                Locations.vanilla_secret_3_powerup_block_2:
+                    True_(),
+                Locations.vanilla_secret_3_room_2:
+                    True_(),
+            }
+            self.update_rules(is_glitched, connection_rules=connection_rules, location_rules=location_rules)
+
+        if "Lemmy's Castle - Itemless 1-Up blocks" in options:
+            location_rules = {
+                Locations.vanilla_dome_castle_life_block_1:
+                    True_(),
+                Locations.vanilla_dome_castle_life_block_2:
+                    True_(),
+            }
+            self.update_rules(is_glitched, location_rules=location_rules)
+        
+        if "Cheese Bridge Area - Secret Exit with Yoshi" in options:
+            connection_rules = {
+                f"{Regions.cheese_bridge_region} -> {Locations.cheese_bridge_exit_2}": 
+                    CanCapeFly | HasYoshi,
+            }
+            location_rules = {
+                Locations.cheese_bridge_moon:
+                    CanCapeFly | HasYoshi,
+            }
+            self.update_rules(is_glitched, connection_rules=connection_rules, location_rules=location_rules)
+
+        if "Ludwig's Castle - Runless" in options:
+            connection_rules = {
+                f"{Regions.twin_bridges_castle_region} -> {Locations.twin_bridges_castle}": 
+                    CanClimb,
+            }
+            location_rules = {
+                Locations.twin_bridges_castle_powerup_block_1:
+                    CanClimb,
+                Locations.twin_bridges_castle_room_4:
+                    True_(),
+            }
+            self.update_rules(is_glitched, connection_rules=connection_rules, location_rules=location_rules)
+
+        if "Ludwig's Castle - Climbless" in options:
+            connection_rules = {
+                f"{Regions.twin_bridges_castle_region} -> {Locations.twin_bridges_castle}": 
+                    CanWallRun,
+            }
+            location_rules = {
+                Locations.twin_bridges_castle_powerup_block_1:
+                    CanWallRun,
+            }
+            self.update_rules(is_glitched, connection_rules=connection_rules, location_rules=location_rules)
+
+        if "Forest of Illusion 1 - Secret Exit with Yoshi" in options:
+            connection_rules = {
+                f"{Regions.forest_of_illusion_1_region} -> {Locations.forest_of_illusion_1_exit_2}": 
+                    (CanCarry & (HasYoshi | HasPBalloon)) | 
+                    (CanAnyYoshiFlyRedShell & True_(options=[OptionFilter(EnemyShuffle, 0)])),
+            }
+            carryless_exit_rules = {
+                f"{Regions.forest_of_illusion_1_region} -> {Locations.forest_of_illusion_1_exit_2}": 
+                    HasYoshi | HasPBalloon,
+            }
+            location_rules = {
+                Locations.forest_of_illusion_1_key_block_1:
+                    HasYoshi | HasPBalloon,
+            }
+            self.update_rules(is_glitched, connection_rules=connection_rules, 
+                              carryless_exit_rules=carryless_exit_rules,
+                              location_rules=location_rules)
+            
+        if "Forest of Illusion 1 - Secret Exit with Cape" in options:
+            connection_rules = {
+                f"{Regions.forest_of_illusion_1_region} -> {Locations.forest_of_illusion_1_exit_2}": 
+                    (CanCarry & (HasPBalloon | CanCapeFly)) | 
+                    (CanAnyYoshiFlyRedShell & True_(options=[OptionFilter(EnemyShuffle, 0)])),
+            }
+            carryless_exit_rules = {
+                f"{Regions.forest_of_illusion_1_region} -> {Locations.forest_of_illusion_1_exit_2}": 
+                    HasPBalloon | CanCapeFly | 
+                    (CanAnyYoshiFlyRedShell & True_(options=[OptionFilter(EnemyShuffle, 0)])),
+            }
+            location_rules = {
+                Locations.forest_of_illusion_1_key_block_1:
+                    HasPBalloon | CanCapeFly | 
+                    (CanAnyYoshiFlyRedShell & True_(options=[OptionFilter(EnemyShuffle, 0)])),
+            }
+            self.update_rules(is_glitched, connection_rules=connection_rules, 
+                              carryless_exit_rules=carryless_exit_rules,
+                              location_rules=location_rules)
+
+        if "Forest of Illusion 1 - Secret Exit with Yoshi" in options and "Forest of Illusion 1 - Secret Exit with Cape" in options:
+            connection_rules = {
+                f"{Regions.forest_of_illusion_1_region} -> {Locations.forest_of_illusion_1_exit_2}": 
+                    (CanCarry & (HasYoshi | HasPBalloon | CanCapeFly)) | 
+                    (CanAnyYoshiFlyRedShell & True_(options=[OptionFilter(EnemyShuffle, 0)])),
+            }
+            carryless_exit_rules = {
+                f"{Regions.forest_of_illusion_1_region} -> {Locations.forest_of_illusion_1_exit_2}": 
+                    HasYoshi | HasPBalloon | CanCapeFly,
+            }
+            location_rules = {
+                Locations.forest_of_illusion_1_key_block_1:
+                    HasYoshi | HasPBalloon | CanCapeFly,
+            }
+            self.update_rules(is_glitched, connection_rules=connection_rules, 
+                              carryless_exit_rules=carryless_exit_rules,
+                              location_rules=location_rules)
+
+        if "Forest of Illusion 3 - Can pass big pipe itemless" in options:
+            connection_rules = {
+                f"{Regions.forest_of_illusion_3_region} -> {Locations.forest_of_illusion_3_exit_1}": 
+                    True_(),
+                f"{Regions.forest_of_illusion_3_region} -> {Locations.forest_of_illusion_3_exit_2}": 
+                    CanCarryOrYoshiTongue & CanBreakTurnBlocks,
+            }
+            carryless_exit_rules = {
+                f"{Regions.forest_of_illusion_3_region} -> {Locations.forest_of_illusion_3_exit_2}": 
+                    CanBreakTurnBlocks,
+            }
+            location_rules = {
+                Locations.forest_of_illusion_3_dragon:
+                    True_(),
+                Locations.forest_of_illusion_3_hidden_1up:
+                    True_(),
+                Locations.forest_of_illusion_3_coin_block_2:
+                    True_(),
+                Locations.forest_of_illusion_3_multi_coin_block_2:
+                    True_(),
+                Locations.forest_of_illusion_3_coin_block_3:
+                    True_(),
+                Locations.forest_of_illusion_3_coin_block_4:
+                    True_(),
+                Locations.forest_of_illusion_3_coin_block_5:
+                    True_(),
+                Locations.forest_of_illusion_3_coin_block_6:
+                    True_(),
+                Locations.forest_of_illusion_3_coin_block_7:
+                    True_(),
+                Locations.forest_of_illusion_3_coin_block_8:
+                    True_(),
+                Locations.forest_of_illusion_3_coin_block_9:
+                    True_(),
+                Locations.forest_of_illusion_3_coin_block_10:
+                    True_(),
+                Locations.forest_of_illusion_3_coin_block_11:
+                    True_(),
+                Locations.forest_of_illusion_3_coin_block_12:
+                    True_(),
+                Locations.forest_of_illusion_3_coin_block_13:
+                    True_(),
+                Locations.forest_of_illusion_3_coin_block_14:
+                    True_(),
+                Locations.forest_of_illusion_3_coin_block_15:
+                    True_(),
+                Locations.forest_of_illusion_3_coin_block_16:
+                    True_(),
+                Locations.forest_of_illusion_3_coin_block_17:
+                    True_(),
+                Locations.forest_of_illusion_3_coin_block_18:
+                    True_(),
+                Locations.forest_of_illusion_3_coin_block_19:
+                    True_(),
+                Locations.forest_of_illusion_3_coin_block_20:
+                    True_(),
+                Locations.forest_of_illusion_3_coin_block_21:
+                    True_(),
+                Locations.forest_of_illusion_3_coin_block_22:
+                    True_(),
+                Locations.forest_of_illusion_3_coin_block_23:
+                    True_(),
+                Locations.forest_of_illusion_3_coin_block_24:
+                    True_(),
+                Locations.forest_of_illusion_3_midway:
+                    True_(),
+                Locations.forest_of_illusion_3_room_3:
+                    True_(),
+            }
+            self.update_rules(is_glitched, connection_rules=connection_rules, 
+                              carryless_exit_rules=carryless_exit_rules,
+                              location_rules=location_rules)
+
+        if "Forest of Illusion 3 - Secret Exit with Yoshi" in options:
+            self.add_connection_rule(is_glitched,
+                                     f"{Regions.forest_of_illusion_3_region} -> {Locations.forest_of_illusion_3_exit_2}", 
+                                     CanYoshiCarry, "or")
+            self.add_carryless_rule(is_glitched,
+                                    f"{Regions.forest_of_illusion_3_region} -> {Locations.forest_of_illusion_3_exit_2}", 
+                                    CanYoshiCarry, "or")
+
+        if "Forest Ghost House - Skip second room" in options:
+            connection_rules = {
+                f"{Regions.forest_ghost_house_region} -> {Locations.forest_ghost_house_exit_1}": 
+                    HasPSwitch | CanWallRun | CanCapeFly,
+                f"{Regions.forest_ghost_house_region} -> {Locations.forest_ghost_house_exit_2}": 
+                    HasPSwitch | CanWallRun | CanCapeFly,
+            }
+            location_rules = {
+                Locations.forest_ghost_house_dragon:
+                    HasPSwitch | CanWallRun | CanCapeFly,
+                Locations.forest_ghost_house_moon:
+                    HasPSwitch | CanWallRun | CanCapeFly,
+                Locations.forest_ghost_house_room_3:
+                    HasPSwitch | CanWallRun | CanCapeFly,
+                Locations.forest_ghost_house_room_4:
+                    HasPSwitch | CanWallRun | CanCapeFly,
+            }
+            self.update_rules(is_glitched, connection_rules=connection_rules, location_rules=location_rules)
+
+        if "Forest Secret Area - Itemless 1-Up block" in options:
+            location_rules = {
+                Locations.forest_secret_life_block_1:
+                    True_(),
+            }
+            self.update_rules(is_glitched, location_rules=location_rules)
+            
+        if "Chocolate Island 1 - Damage Boost Past Munchers" in options:
+            connection_rules = {
+                f"{Regions.chocolate_island_1_region} -> {Locations.chocolate_island_1_exit_1}": 
+                    HasPSwitch | HasYoshi | CanCarry | HasMushroom,
+            }
+            location_rules = {
+                Locations.chocolate_island_1_dragon:
+                    HasPSwitch | HasYoshi | CanCarry | HasMushroom,
+                Locations.chocolate_island_1_flying_block_2:
+                    HasPSwitch | HasYoshi | CanCarry | HasMushroom,
+                Locations.chocolate_island_1_yoshi_block_1:
+                    HasPSwitch | HasYoshi | CanCarry | HasMushroom,
+                Locations.chocolate_island_1_green_block_1:
+                    (HasPSwitch | HasYoshi | CanCarry | HasMushroom) & 
+                    (HasBSP | HasFeather) & 
+                    (HasGSP | HasYSP),
+                Locations.chocolate_island_1_life_block_1:
+                    HasPSwitch | HasYoshi | CanCarry | HasMushroom,
+                Locations.chocolate_island_1_room_2:
+                    HasPSwitch | HasYoshi | CanCarry | HasMushroom,
+                }
+            self.update_rules(is_glitched, connection_rules=connection_rules, location_rules=location_rules)
+            
+        if "Chocolate Island 4 - Perfect Dragon Coin Timing" in options:
+            location_rules = {
+                Locations.chocolate_island_4_dragon:
+                    HasPSwitch,
+            }
+            self.update_rules(is_glitched, location_rules=location_rules)
+            
+        if "Sunken Ghost Ship - Free Falling Dragon Coins" in options:
+            location_rules = {
+                Locations.sunken_ghost_ship_dragon:
+                    CanSwim,
+            }
+            self.update_rules(is_glitched, location_rules=location_rules)
+            
+        if "Valley of Bowser 1 - Bonus Room Yoshi Jump" in options:
+            location_rules = {
+                Locations.valley_of_bowser_1_room_2:
+                    CanClimb | HasYoshi,
+            }
+            self.update_rules(is_glitched, location_rules=location_rules)
+
+        if "Valley of Bowser 3 - Itemless Powerup block" in options:
+            location_rules = {
+                Locations.valley_of_bowser_3_powerup_block_2:
+                    True_(),
+            }
+            self.update_rules(is_glitched, location_rules=location_rules)
+
+        if "Valley of Bowser 4 - Yoshi Climb" in options:
+            connection_rules = {
+                f"{Regions.valley_of_bowser_4_region} -> {Locations.valley_of_bowser_4_exit_1}": 
+                    CanClimb | HasYoshi,
+                f"{Regions.valley_of_bowser_4_region} -> {Locations.valley_of_bowser_4_exit_2}": 
+                    CanYoshiCarry & CanClimb,
+            }
+            carryless_exit_rules = {
+                f"{Regions.valley_of_bowser_4_region} -> {Locations.valley_of_bowser_4_exit_2}": 
+                    CanClimb | HasYoshi,
+            }
+            location_rules = {
+                Locations.valley_of_bowser_4_yoshi_block_1:
+                    CanClimb | HasYoshi,
+                Locations.valley_of_bowser_4_life_block_1:
+                    (CanClimb & CanBreakTurnBlocks) | (HasYoshi & (CanClimb | CanBreakTurnBlocks)),
+                Locations.valley_of_bowser_4_powerup_block_2:
+                    (CanClimb | HasYoshi) & (HasYSP | HasFeather),
+                Locations.valley_of_bowser_4_midway:
+                    CanClimb | HasYoshi,
+            }
+            self.update_rules(is_glitched, connection_rules=connection_rules, 
+                              carryless_exit_rules=carryless_exit_rules,
+                              location_rules=location_rules)
+            
+        if "Valley of Bowser 4 - Climbless Secret via Yoshi and Midway" in options:
+            connection_rules = {
+                f"{Regions.valley_of_bowser_4_region} -> {Locations.valley_of_bowser_4_exit_2}": 
+                    CanYoshiCarry & (CanClimb | HasMidway),
+            }
+            carryless_exit_rules = {
+                f"{Regions.valley_of_bowser_4_region} -> {Locations.valley_of_bowser_4_exit_2}": 
+                    CanClimb,
+            }
+            location_rules = {
+                Locations.valley_of_bowser_4_life_block_1:
+                    CanClimb & (HasYoshi | CanBreakTurnBlocks),
+            }
+            self.update_rules(is_glitched, connection_rules=connection_rules, 
+                              carryless_exit_rules=carryless_exit_rules,
+                              location_rules=location_rules)
+            
+        if "Valley of Bowser 4 - Yoshi Climb" in options and "Valley of Bowser 4 - Climbless Secret via Yoshi and Midway" in options:
+            connection_rules = {
+                f"{Regions.valley_of_bowser_4_region} -> {Locations.valley_of_bowser_4_exit_2}": 
+                    CanYoshiCarry & (CanClimb | HasMidway),
+            }
+            carryless_exit_rules = {
+                f"{Regions.valley_of_bowser_4_region} -> {Locations.valley_of_bowser_4_exit_2}": 
+                    CanClimb | HasYoshi,
+            }
+            location_rules = {
+                Locations.valley_of_bowser_4_life_block_1:
+                    (CanClimb & CanBreakTurnBlocks) | (HasYoshi & (CanClimb | CanBreakTurnBlocks | HasMidway)),
+            }
+            self.update_rules(is_glitched, connection_rules=connection_rules, 
+                              carryless_exit_rules=carryless_exit_rules,
+                              location_rules=location_rules)
+
+        if "Valley Ghost House - True Carryless Secret Exit" in options:
+            carryless_exit_rules = {
+                f"{Regions.valley_ghost_house_region} -> {Locations.valley_ghost_house_exit_2}": 
+                    HasPSwitch & CanRun,
+            }
+            self.update_rules(is_glitched, carryless_exit_rules=carryless_exit_rules)
+
+        if "Star World 3 - Top area with a Star" in options:
+            self.add_carryless_rule(is_glitched, 
+                                    f"{Regions.star_road_3_region} -> {Locations.star_road_3_exit_2}",
+                                    Has(Items.super_star_active, 1), 
+                                    union="or")
+            self.add_location_rule(is_glitched, 
+                                    Locations.star_road_3_key_block_1,
+                                    Has(Items.super_star_active, 1), 
+                                    union="or")
+
+        if "Star World 4 - Carryless exit with wingless Yoshi" in options:
+            carryless_exit_rules = {
+                f"{Regions.star_road_4_region} -> {Locations.star_road_4_exit_2}": 
+                    HasYoshi | HasFeather | (HasGSP & HasRSP),
+            }
+            self.update_rules(is_glitched,carryless_exit_rules=carryless_exit_rules)
+            
+        if "Gnarly - Climbless with Flight" in options:
+            connection_rules = {
+                f"{Regions.special_zone_1_region} -> {Locations.special_zone_1_exit_1}": 
+                    CanCapeFly | (HasPSwitch & (CanClimb | 
+                    (CanAnyYoshiFlyBlueShell & True_(options=[OptionFilter(EnemyShuffle, 0)])))),
+            }
+            location_rules = {
+                Locations.special_zone_1_dragon:
+                    CanClimb | CanCapeFly | 
+                    (CanAnyYoshiFlyBlueShell & True_(options=[OptionFilter(EnemyShuffle, 0)])),
+                Locations.special_zone_1_hidden_1up:
+                    CanClimb | CanCapeFly | 
+                    (CanAnyYoshiFlyBlueShell & True_(options=[OptionFilter(EnemyShuffle, 0)])),
+                Locations.special_zone_1_life_block_1:
+                    CanClimb | CanCapeFly | 
+                    (CanAnyYoshiFlyBlueShell & True_(options=[OptionFilter(EnemyShuffle, 0)])),
+                Locations.special_zone_1_vine_block_5:
+                    CanClimb | CanCapeFly | 
+                    (CanAnyYoshiFlyBlueShell & True_(options=[OptionFilter(EnemyShuffle, 0)])),
+                Locations.special_zone_1_blue_pow_block_1:
+                    CanClimb | CanCapeFly | 
+                    (CanAnyYoshiFlyBlueShell & True_(options=[OptionFilter(EnemyShuffle, 0)])),
+                Locations.special_zone_1_vine_block_6:
+                    CanClimb | CanCapeFly | 
+                    (CanAnyYoshiFlyBlueShell & True_(options=[OptionFilter(EnemyShuffle, 0)])),
+                Locations.special_zone_1_powerup_block_1:
+                    CanClimb | CanCapeFly | 
+                    (CanAnyYoshiFlyBlueShell & True_(options=[OptionFilter(EnemyShuffle, 0)])),
+                Locations.special_zone_1_pswitch_coin_block_1:
+                    (CanClimb & HasFeather) | CanCapeFly | 
+                    (CanAnyYoshiFlyBlueShell & True_(options=[OptionFilter(EnemyShuffle, 0)])),
+                Locations.special_zone_1_pswitch_coin_block_2:
+                    (CanClimb & HasFeather) | CanCapeFly | 
+                    (CanAnyYoshiFlyBlueShell & True_(options=[OptionFilter(EnemyShuffle, 0)])),
+                Locations.special_zone_1_pswitch_coin_block_3:
+                    (CanClimb & HasFeather) | CanCapeFly | 
+                    (CanAnyYoshiFlyBlueShell & True_(options=[OptionFilter(EnemyShuffle, 0)])),
+                Locations.special_zone_1_pswitch_coin_block_4:
+                    (CanClimb & HasFeather) | CanCapeFly | 
+                    (CanAnyYoshiFlyBlueShell & True_(options=[OptionFilter(EnemyShuffle, 0)])),
+                Locations.special_zone_1_pswitch_coin_block_5:
+                    (CanClimb & HasFeather) | CanCapeFly | 
+                    (CanAnyYoshiFlyBlueShell & True_(options=[OptionFilter(EnemyShuffle, 0)])),
+                Locations.special_zone_1_pswitch_coin_block_6:
+                    (CanClimb & HasFeather) | CanCapeFly | 
+                    (CanAnyYoshiFlyBlueShell & True_(options=[OptionFilter(EnemyShuffle, 0)])),
+                Locations.special_zone_1_pswitch_coin_block_7:
+                    (CanClimb & HasFeather) | CanCapeFly | 
+                    (CanAnyYoshiFlyBlueShell & True_(options=[OptionFilter(EnemyShuffle, 0)])),
+                Locations.special_zone_1_pswitch_coin_block_8:
+                    (CanClimb & HasFeather) | CanCapeFly | 
+                    (CanAnyYoshiFlyBlueShell & True_(options=[OptionFilter(EnemyShuffle, 0)])),
+                Locations.special_zone_1_pswitch_coin_block_9:
+                    (CanClimb & HasFeather) | CanCapeFly | 
+                    (CanAnyYoshiFlyBlueShell & True_(options=[OptionFilter(EnemyShuffle, 0)])),
+                Locations.special_zone_1_pswitch_coin_block_10:
+                    (CanClimb & HasFeather) | CanCapeFly,
+                Locations.special_zone_1_pswitch_coin_block_11:
+                    (CanClimb & HasFeather) | CanCapeFly,
+                Locations.special_zone_1_pswitch_coin_block_12:
+                    (CanClimb & HasFeather) | CanCapeFly,
+                Locations.special_zone_1_pswitch_coin_block_13:
+                    (CanClimb & HasFeather) | CanCapeFly,
+                Locations.special_zone_1_room_2:
+                    CanClimb | CanCapeFly | 
+                    (CanAnyYoshiFlyBlueShell & True_(options=[OptionFilter(EnemyShuffle, 0)])),
+            }
+            self.update_rules(is_glitched, connection_rules=connection_rules, location_rules=location_rules)
+
+        if "Awesome - Itemless" in options:
+            connection_rules = {
+                f"{Regions.special_zone_4_region} -> {Locations.special_zone_4_exit_1}": 
+                    True_(),
+            }
+            location_rules = {
+                Locations.special_zone_4_dragon:
+                    True_(),
+            }
+            self.update_rules(is_glitched, connection_rules=connection_rules, location_rules=location_rules)
+            
         if "Mondo - Swimless" in options:
             connection_rules = {
                 f"{Regions.special_zone_6_region} -> {Locations.special_zone_6_exit_1}": 
@@ -2434,343 +3150,24 @@ class WaffleBasicRules(WaffleRules):
             }
             self.update_rules(is_glitched, connection_rules=connection_rules, location_rules=location_rules)
 
-        if "Vanilla Dome 1 - Itemless Sinking Platform" in options:
-            connection_rules = {
-                f"{Regions.vanilla_dome_1_region} -> {Locations.vanilla_dome_1_exit_1}": 
-                    True_(),
-            }
-            location_rules = {
-                Locations.vanilla_dome_1_dragon:
-                    CanCarry,
-                Locations.vanilla_dome_1_midway:
-                    True_(),
-                Locations.vanilla_dome_1_powerup_block_4:
-                    True_(),
-                Locations.vanilla_dome_1_coin_block_2:
-                    True_(),
-            }
-            self.update_rules(is_glitched, connection_rules=connection_rules, location_rules=location_rules)
-
-        if "Vanilla Secret 1 - Wall Running" in options:
-            connection_rules = {
-                f"{Regions.vanilla_secret_1_region} -> {Locations.vanilla_secret_1_exit_1}": 
-                    CanClimb | CanWallRun,
-                f"{Regions.vanilla_secret_1_region} -> {Locations.vanilla_secret_1_exit_2}": 
-                    (CanClimb | CanWallRun) & CanCarry & HasBSP,
-            }
-            location_rules = {
-                Locations.vanilla_secret_1_dragon:
-                    (CanClimb | CanWallRun) & CanCarry,
-                Locations.vanilla_secret_1_vine_block_2:
-                    CanClimb | CanWallRun,
-                Locations.vanilla_secret_1_coin_block_2:
-                    CanClimb | CanWallRun,
-                Locations.vanilla_secret_1_coin_block_3:
-                    CanClimb | CanWallRun,
-                Locations.vanilla_secret_1_powerup_block_2:
-                    CanClimb | CanWallRun,
-                Locations.vanilla_secret_1_room_2:
-                    CanClimb | CanWallRun,
-                Locations.vanilla_secret_1_room_3:
-                    (CanClimb | CanWallRun) & CanCarry & HasBSP,
-            }
-            self.update_rules(is_glitched, connection_rules=connection_rules, location_rules=location_rules)
-
-        if "Vanilla Secret 3 - Swimless" in options:
-            connection_rules = {
-                f"{Regions.vanilla_secret_3_region} -> {Locations.vanilla_secret_3_exit_1}": 
-                    True_(),
-            }
-            location_rules = {
-                Locations.vanilla_secret_3_dragon:
-                    True_(),
-                Locations.vanilla_secret_3_midway:
-                    True_(),
-                Locations.vanilla_secret_3_powerup_block_1:
-                    True_(),
-                Locations.vanilla_secret_3_powerup_block_2:
-                    True_(),
-                Locations.vanilla_secret_3_room_2:
-                    True_(),
-            }
-            self.update_rules(is_glitched, connection_rules=connection_rules, location_rules=location_rules)
-
-
-        if "Cheese Bridge Area - Secret Exit with Yoshi" in options:
-            connection_rules = {
-                f"{Regions.cheese_bridge_region} -> {Locations.cheese_bridge_exit_2}": 
-                    CanCapeFly | HasYoshi,
-            }
-            location_rules = {
-                Locations.cheese_bridge_moon:
-                    CanCapeFly | HasYoshi,
-            }
-            self.update_rules(is_glitched, connection_rules=connection_rules, location_rules=location_rules)
-
-
-        if "Vanilla Dome 4 - Sacrifice for Coin Block #8" in options:
-            location_rules = {
-                Locations.vanilla_dome_4_coin_block_8:
-                    CanCarry | HasFeather | HasYoshi,
-            }
-            self.update_rules(is_glitched, location_rules=location_rules)
-
-
-        if "Ludwig's Castle - Runless" in options:
-            connection_rules = {
-                f"{Regions.twin_bridges_castle_region} -> {Locations.twin_bridges_castle}": 
-                    CanClimb,
-            }
-            location_rules = {
-                Locations.twin_bridges_castle_powerup_block_1:
-                    CanClimb,
-                Locations.twin_bridges_castle_room_4:
-                    True_(),
-            }
-            self.update_rules(is_glitched, connection_rules=connection_rules, location_rules=location_rules)
-
-
-        if "Ludwig's Castle - Climbless" in options:
-            connection_rules = {
-                f"{Regions.twin_bridges_castle_region} -> {Locations.twin_bridges_castle}": 
-                    CanWallRun,
-            }
-            location_rules = {
-                Locations.twin_bridges_castle_powerup_block_1:
-                    CanWallRun,
-            }
-            self.update_rules(is_glitched, location_rules=location_rules)
-
-
-        if "Forest of Illusion 1 - Secret Exit with Yoshi" in options:
-            connection_rules = {
-                f"{Regions.forest_of_illusion_1_region} -> {Locations.forest_of_illusion_1_exit_2}": 
-                    CanCarry & (HasYoshi | HasPBalloon),
-            }
-            carryless_exit_rules = {
-                f"{Regions.forest_of_illusion_1_region} -> {Locations.forest_of_illusion_1_exit_2}": 
-                    HasYoshi | HasPBalloon,
-            }
-            location_rules = {
-                Locations.forest_of_illusion_1_key_block_1:
-                    HasYoshi | HasPBalloon,
-            }
-            self.update_rules(is_glitched, connection_rules=connection_rules, 
-                              carryless_exit_rules=carryless_exit_rules,
-                              location_rules=location_rules)
-
-
-        if "Forest of Illusion 3 - Can pass big pipe itemless" in options:
-            connection_rules = {
-                f"{Regions.forest_of_illusion_3_region} -> {Locations.forest_of_illusion_3_exit_1}": 
-                    True_(),
-                f"{Regions.forest_of_illusion_3_region} -> {Locations.forest_of_illusion_3_exit_2}": 
-                    CanCarryOrYoshiTongue & CanBreakTurnBlocks,
-            }
-            carryless_exit_rules = {
-                f"{Regions.forest_of_illusion_3_region} -> {Locations.forest_of_illusion_3_exit_2}": 
-                    CanCarryOrYoshiTongue & CanBreakTurnBlocks,
-            }
-            location_rules = {
-                Locations.forest_of_illusion_3_dragon:
-                    True_(),
-                Locations.forest_of_illusion_3_hidden_1up:
-                    True_(),
-                Locations.forest_of_illusion_3_coin_block_2:
-                    True_(),
-                Locations.forest_of_illusion_3_multi_coin_block_2:
-                    True_(),
-                Locations.forest_of_illusion_3_coin_block_3:
-                    True_(),
-                Locations.forest_of_illusion_3_coin_block_4:
-                    True_(),
-                Locations.forest_of_illusion_3_coin_block_5:
-                    True_(),
-                Locations.forest_of_illusion_3_coin_block_6:
-                    True_(),
-                Locations.forest_of_illusion_3_coin_block_7:
-                    True_(),
-                Locations.forest_of_illusion_3_coin_block_8:
-                    True_(),
-                Locations.forest_of_illusion_3_coin_block_9:
-                    True_(),
-                Locations.forest_of_illusion_3_coin_block_10:
-                    True_(),
-                Locations.forest_of_illusion_3_coin_block_11:
-                    True_(),
-                Locations.forest_of_illusion_3_coin_block_12:
-                    True_(),
-                Locations.forest_of_illusion_3_coin_block_13:
-                    True_(),
-                Locations.forest_of_illusion_3_coin_block_14:
-                    True_(),
-                Locations.forest_of_illusion_3_coin_block_15:
-                    True_(),
-                Locations.forest_of_illusion_3_coin_block_16:
-                    True_(),
-                Locations.forest_of_illusion_3_coin_block_17:
-                    True_(),
-                Locations.forest_of_illusion_3_coin_block_18:
-                    True_(),
-                Locations.forest_of_illusion_3_coin_block_19:
-                    True_(),
-                Locations.forest_of_illusion_3_coin_block_20:
-                    True_(),
-                Locations.forest_of_illusion_3_coin_block_21:
-                    True_(),
-                Locations.forest_of_illusion_3_coin_block_22:
-                    True_(),
-                Locations.forest_of_illusion_3_coin_block_23:
-                    True_(),
-                Locations.forest_of_illusion_3_coin_block_24:
-                    True_(),
-                Locations.forest_of_illusion_3_midway:
-                    True_(),
-                Locations.forest_of_illusion_3_room_3:
-                    True_(),
-            }
-            self.update_rules(is_glitched, connection_rules=connection_rules, 
-                              carryless_exit_rules=carryless_exit_rules,
-                              location_rules=location_rules)
-
-
-        if "Forest of Illusion 3 - Secret Exit with Yoshi" in options:
-            self.add_connection_rule(is_glitched,
-                                     f"{Regions.forest_of_illusion_3_region} -> {Locations.forest_of_illusion_3_exit_2}", 
-                                     CanYoshiCarry, "or")
-            self.add_carryless_rule(is_glitched,
-                                    f"{Regions.forest_of_illusion_3_region} -> {Locations.forest_of_illusion_3_exit_2}", 
-                                    CanYoshiCarry, "or")
-
-
-        if "Forest Ghost House - Skip second room" in options:
-            connection_rules = {
-                f"{Regions.forest_ghost_house_region} -> {Locations.forest_ghost_house_exit_1}": 
-                    HasPSwitch | CanWallRun | CanCapeFly,
-                f"{Regions.forest_ghost_house_region} -> {Locations.forest_ghost_house_exit_2}": 
-                    HasPSwitch | CanWallRun | CanCapeFly,
-            }
-            location_rules = {
-                Locations.forest_ghost_house_dragon:
-                    HasPSwitch | CanWallRun | CanCapeFly,
-                Locations.forest_ghost_house_moon:
-                    HasPSwitch | CanWallRun | CanCapeFly,
-                Locations.forest_ghost_house_room_3:
-                    HasPSwitch | CanWallRun | CanCapeFly,
-                Locations.forest_ghost_house_room_4:
-                    HasPSwitch | CanWallRun | CanCapeFly,
-            }
-            self.update_rules(is_glitched, connection_rules=connection_rules, location_rules=location_rules)
-
-
-        if "Valley of Bowser 4 - Yoshi Climb" in options:
-            connection_rules = {
-                f"{Regions.valley_of_bowser_4_region} -> {Locations.valley_of_bowser_4_exit_1}": 
-                    CanClimb | HasYoshi,
-                f"{Regions.valley_of_bowser_4_region} -> {Locations.valley_of_bowser_4_exit_2}": 
-                    CanYoshiCarry & (CanClimb | HasYoshi),
-            }
-            carryless_exit_rules = {
-                f"{Regions.valley_of_bowser_4_region} -> {Locations.valley_of_bowser_4_exit_2}": 
-                    CanClimb | HasYoshi,
-            }
-            location_rules = {
-                Locations.valley_of_bowser_4_yoshi_block_1:
-                    CanClimb | HasYoshi,
-                Locations.valley_of_bowser_4_life_block_1:
-                    (CanClimb | HasYoshi) & CanBreakTurnBlocks,
-                Locations.valley_of_bowser_4_powerup_block_2:
-                    (CanClimb | HasYoshi) & HasYSP,
-                Locations.valley_of_bowser_4_midway:
-                    CanClimb | HasYoshi,
-            }
-            self.update_rules(is_glitched, connection_rules=connection_rules, 
-                              carryless_exit_rules=carryless_exit_rules,
-                              location_rules=location_rules)
-
-
-        if "Awesome - Itemless" in options:
-            connection_rules = {
-                f"{Regions.special_zone_4_region} -> {Locations.special_zone_4_exit_1}": 
-                    True_(),
-            }
-            location_rules = {
-                Locations.special_zone_4_dragon:
-                    True_(),
-            }
-            self.update_rules(is_glitched, connection_rules=connection_rules, location_rules=location_rules)
-
-
-        if "Forest Secret Area - Itemless 1-Up block" in options:
-            location_rules = {
-                Locations.forest_secret_life_block_1:
-                    True_(),
-            }
-            self.update_rules(is_glitched, location_rules=location_rules)
-
-
-        if "Valley of Bowser 3 - Itemless Powerup block" in options:
-            location_rules = {
-                Locations.valley_of_bowser_3_powerup_block_2:
-                    True_(),
-            }
-            self.update_rules(is_glitched, location_rules=location_rules)
-
-
         if "Outrageous - Wall Run pipe" in options:
             connection_rules = {
                 f"{Regions.special_zone_7_region} -> {Locations.special_zone_7_exit_1}": 
-                    CanCarryOrYoshiTongue | (CanWallRun & HasSuperStar),
+                    CanCapeFly | CanCarryOrYoshiTongue | (CanWallRun & HasSuperStar),
             }
             location_rules = {
                 Locations.special_zone_7_dragon:
-                    CanCarryOrYoshiTongue | (CanWallRun & HasSuperStar),
+                    CanCapeFly | CanCarryOrYoshiTongue | (CanWallRun & HasSuperStar),
                 Locations.special_zone_7_yoshi_block_1:
-                    CanCarryOrYoshiTongue | (CanWallRun & HasSuperStar),
+                    CanCapeFly | CanCarryOrYoshiTongue | (CanWallRun & HasSuperStar),
                 Locations.special_zone_7_coin_block_1:
-                    CanCarryOrYoshiTongue | (CanWallRun & HasSuperStar),
+                    CanCapeFly | CanCarryOrYoshiTongue | (CanWallRun & HasSuperStar),
                 Locations.special_zone_7_powerup_block_2:
-                    CanCarryOrYoshiTongue | (CanWallRun & HasSuperStar),
+                    CanCapeFly | CanCarryOrYoshiTongue | (CanWallRun & HasSuperStar),
                 Locations.special_zone_7_coin_block_2:
-                    CanCarryOrYoshiTongue | (CanWallRun & HasSuperStar),
+                    CanCapeFly | CanCarryOrYoshiTongue | (CanWallRun & HasSuperStar),
             }
             self.update_rules(is_glitched, connection_rules=connection_rules, location_rules=location_rules)
-
-
-        if "Lemmy's Castle - Itemless 1-Up blocks" in options:
-            location_rules = {
-                Locations.vanilla_dome_castle_life_block_1:
-                    True_(),
-                Locations.vanilla_dome_castle_life_block_2:
-                    True_(),
-            }
-            self.update_rules(is_glitched, location_rules=location_rules)
-
-
-        if "Star World 3 - Top area with a Star" in options:
-            self.add_carryless_rule(is_glitched, 
-                                    f"{Regions.star_road_3_region} -> {Locations.star_road_3_exit_2}",
-                                    Has(Items.super_star_active, 1), 
-                                    union="or")
-            self.add_location_rule(is_glitched, 
-                                    Locations.star_road_3_key_block_1,
-                                    Has(Items.super_star_active, 1), 
-                                    union="or")
-
-        if "Star World 4 - Carryless exit with wingless Yoshi" in options:
-            carryless_exit_rules = {
-                f"{Regions.star_road_4_region} -> {Locations.star_road_4_exit_2}": 
-                    HasYoshi | HasFeather | (HasGSP & HasRSP),
-            }
-            self.update_rules(is_glitched,carryless_exit_rules=carryless_exit_rules)
-
-        if "Valley Ghost House - True Carryless Secret Exit" in options:
-            carryless_exit_rules = {
-                f"{Regions.valley_ghost_house_region} -> {Locations.valley_ghost_house_exit_2}": 
-                    HasPSwitch & CanRun,
-            }
-            self.update_rules(is_glitched, carryless_exit_rules=carryless_exit_rules)
-
 
         super().alternate_logic()
 

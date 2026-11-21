@@ -63,7 +63,9 @@ class CharacterEntryFlag2(IntFlag):
     TRANSFORMATION = 0x1000000
     CAN_BYPASS_SECURITY = 0x2000000
     HAS_HAZARD_PROTECTION = 0x4000000
-    WALL_JUMP = 0x8000000  # Seems to be set on Extra Toggle characters, while EXTRA_TOGGLE remains unused.
+    # Seems to be set on Extra Toggle characters, while EXTRA_TOGGLE remains unused.
+    # At least when it was set on Yoda, this actually allowed for barely working wall jumps.
+    WALL_JUMP = 0x8000000
     TIGHTROPE_TILT = 0x10000000
     GOT_BATARANG = 0x20000000
     UNKNOWN_COMBAT_ROLL_RELATED = 0x40000000

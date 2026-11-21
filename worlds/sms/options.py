@@ -1,6 +1,6 @@
 from dataclasses import dataclass
 
-from Options import Choice, DeathLink, PerGameCommonOptions, Range, Toggle
+from Options import Choice, DeathLink, PerGameCommonOptions, Range, Toggle, StartInventoryPool
 
 
 class LevelAccess(Choice):
@@ -19,22 +19,21 @@ class EnableCoinShines(Toggle):
 
 # Keep in mind this needs to account for blue coins, nozzles, tickets, and any other progression items and still have
 # Several locations to place filler/move around.
-class CoronaMountainShines(Range):
-    """How many Shine Sprites are required to access Corona Mountain and the Delfino Airstrip revisit.
-    If this is more than the locations available, This will be automatically adjusted to 90-80% of locations available
-    after all other progression items are created / accounted for."""
-    display_name = "Corona Mountain Shines"
+class TotalShines(Range):
+    """Maximum amount of Shine Sprites that can exist in the item pool.
+    The amount created will be lower if there aren't enough locations to place all shines."""
+    display_name = "Total Shines"
     range_start = 0
     range_end = 345
-    default = 50
+    default = 70
 
-class ExtraShines(Range):
-    """How many extra shine sprites you want added to the pool. This is a percentage so it ranges from 0 to 90
-    If more shines would be added than locations possible it will add as many as it can"""
-    display_name = "Extra Shines"
+class RequiredShinesPercentage(Range):
+    """The percentage of Shine Sprites required to access Corona Mountain and the Delfino Airstrip revisit.
+    If required shines take up more than 80% of available locations, the total count may get lowered."""
+    display_name = "Shines Required Percentage"
     range_start = 0
-    range_end = 90
-    default = 15
+    range_end = 100
+    default = 72
 
 
 class BlueCoinSanity(Choice):
@@ -108,10 +107,11 @@ class AllShinesSelectable(Toggle):
 
 @dataclass
 class SmsOptions(PerGameCommonOptions):
+    start_inventory: StartInventoryPool
     level_access: LevelAccess
     enable_coin_shines: EnableCoinShines
-    corona_mountain_shines: CoronaMountainShines
-    extra_shines: ExtraShines
+    total_shines: TotalShines
+    required_shines_percentage: RequiredShinesPercentage
     nozzle_boxes: NozzleBoxes
     all_shines_selectable: AllShinesSelectable
     blue_coin_sanity: BlueCoinSanity

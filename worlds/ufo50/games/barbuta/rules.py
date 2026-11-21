@@ -47,8 +47,6 @@ def create_rules(world: "UFO50World", regions: dict[str, Region]) -> None:
                                      rule=lambda state: state.has_any((pin, umbrella), player))
     regions["Starting Area"].connect(regions["R6C7 and Nearby"],
                                      rule=lambda state: state.has(pin, player))
-    regions["Starting Area"].connect(regions["Mimic Room"],
-                                     rule=lambda state: has_wand(state))
     regions["Starting Area"].connect(regions["R3C7 above Ladders"],
                                      rule=lambda state: state.has(candy, player))
 
@@ -58,6 +56,9 @@ def create_rules(world: "UFO50World", regions: dict[str, Region]) -> None:
                                             rule=lambda state: state.has(key, player))
 
     regions["Above Entrance"].connect(regions["Wand Trade Room"])  # walk through the fake wall after using the door
+
+    regions["R6C7 and Nearby"].connect(regions["Mimic Room"],
+                                       rule=lambda state: has_wand(state))
 
     regions["R7C7 and Nearby"].connect(regions["Wand Trade Room"],
                                        rule=lambda state: state.has(pin, player))

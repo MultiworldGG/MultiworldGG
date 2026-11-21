@@ -15,11 +15,6 @@
     db $01,$07,$20,$13,$e1
     db $01,$20,$20,$68,$e1
     db $01,$42,$20,$14,$e1
-    ; Star ores
-    db $01,$65,$20,$57,$e1
-    db $01,$66,$20,$56,$e1
-    db $01,$75,$20,$27,$e1
-    db $01,$76,$20,$24,$e1
     
     /include additionalTileReplacements
     db $ff

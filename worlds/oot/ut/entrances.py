@@ -1,15 +1,9 @@
-from ..EntranceShuffle import entrance_shuffle_table, invalidate_age_reachability, set_all_entrances_data
+from ..EntranceShuffle import invalidate_age_reachability, set_all_entrances_data
+from ..Patches import ENTRANCE_IDS, blue_warps_are_tracked
 
-ENTRANCE_NAMES = {
-    entrance[0]
-    for row in entrance_shuffle_table
-    for entrance in row[1:]
-}
-ENTRANCE_IDS = {name: index for index, name in enumerate(sorted(ENTRANCE_NAMES))}
-FOUND_ENTRANCES_KEY = "oot_entrances_{team}_{player}"
 
 def tracked_entrances(world):
-    return {entrance.name: entrance for entrance in world.get_entrances() if entrance.name in ENTRANCE_NAMES}
+    return {entrance.name: entrance for entrance in world.get_entrances() if entrance.name in ENTRANCE_IDS}
 
 
 def serialize_entrances(world):
@@ -52,9 +46,13 @@ def defer_entrances(world):
     world.ut_deferred_entrances = {}
     if world.ut_replay_slot_data is None or getattr(world.multiworld, "enforce_deferred_connections", "off") == "off":
         return
+    track_blue_warps = blue_warps_are_tracked(
+        world.shuffle_overworld_entrances, world.shuffle_dungeon_entrances, world.shuffle_bosses,
+    )
     for name, entrance in tracked_entrances(world).items():
-        # Blue warps are rerouted by boss/dungeon ER without being marked shuffled.
-        if not entrance.shuffled and not (entrance.type == "BlueWarp" and entrance.replaces):
+        # Other ER settings also populate BlueWarp.replaces, but their ROMs do
+        # not tag blue warps. Only defer connections whose traversal is recorded.
+        if not entrance.shuffled and not (entrance.type == "BlueWarp" and track_blue_warps):
             continue
         world.ut_deferred_entrances[name] = entrance.connected_region
         entrance.disconnect()

@@ -222,7 +222,7 @@ def place_digdogger(assembler: Z80Assembler, room_data: list[bytearray], dungeon
         room = room_data[0x529]
         removed_bushes = [0x12, 0x1C, 0x21, 0x2D, 0x81, 0x8D, 0x92, 0x9C]
         for tile in removed_bushes:
-            room[tile] = 0x4A
+            room[tile] = 0xA4
     elif dungeon == 3:
         raise NotImplementedError
 

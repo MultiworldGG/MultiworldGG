@@ -99,7 +99,7 @@ star_haven_regions: list[Dict[str, str | Dict[str, Rule | None]]] = [
         "map_id": "5",
         "map_name": "Star Sanctuary",
         "locations": {
-            "SSS Star Sanctuary Gift of the Stars": CanClimbSteps() & HasStarBeamRequirements(),
+            "SSS Star Sanctuary Gift of the Stars": HasStarBeamRequirements(),
         },
         "exits": {
             "SSS Outside the Sanctuary": None,

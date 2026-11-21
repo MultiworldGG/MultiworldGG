@@ -9,6 +9,7 @@
 1. Download and install the latest release of MultiworldGG Multiworld from the link above.
 
 2. Download and install the latest release of Dolphin Emulator from the link above.
+   - If you are on macOS, follow the [macOS code signing requirements](#macos-code-signing-requirements) instructions below
 
 3. If you do not use MWGG: Download the APWorld from the [releases](https://github.com/Joshark/archipelago-sms/releases/latest) page and place it in your `custom_worlds` folder located in your Archipelago install director
 
@@ -65,3 +66,8 @@ If the game is being hosted on the MultiworldGG website download the patch file 
 ### Play the game
 
 Remember to be in the File Select screen **BEFORE** connecting in case of starting any new playthroughs as it might send unwanted checks if you connect while in a different save file
+
+## MacOS code signing
+To use Dolphin with MultiworldGG on macOS, the Dolphin Emulator executable must be signed with a valid certificate and entitlements so that it can be debugged. 
+We recommend reading and following this guide here: https://github.com/aldelaro5/dolphin-memory-engine#macos-1
+Which also requires use of the script mentioned in their instructions, here: https://github.com/aldelaro5/dolphin-memory-engine/blob/master/Tools/MacSetup.sh

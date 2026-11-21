@@ -10,6 +10,9 @@ from worlds.deltarune.LogicHelper import (
     include_secret_bosses_items_requirement_chapter2_weird_route_exclusion,
     include_secret_bosses_items_reward,
     include_secret_bosses_items_reward_chapter2_weird_route_exclusion,
+    progressive_area_unlocks,
+    normal_route_and_not_progressive_area_unlocks,
+    not_progressive_area_unlocks,
 )
 from worlds.deltarune.Items import (
     DeltaruneItem,
@@ -53,6 +56,13 @@ chapter2_items = [
         ItemIDs.bounceblade, ItemClassification.useful, groups=[ItemGroups.weapons, ItemGroups.kris_weapons], amount=1
     ),
     ItemData(
+        ItemIDs.progressive_ch2_area_unlock, 
+        ItemClassification.progression,
+        groups=[ItemGroups.region_blockers, ItemGroups.progressive_area_unlocks], 
+        should_be_included=progressive_area_unlocks,
+        amount=2
+    ),
+    ItemData(
         ItemIDs.tensionbit,
         ItemClassification.filler,
         groups=[ItemGroups.tension_items, ItemGroups.fusion_ingredient],
@@ -74,7 +84,13 @@ chapter2_items = [
         amount=1,
     ),
     ItemData(ItemIDs.silver_watch, ItemClassification.useful, groups=[ItemGroups.armors], amount=1),
-    ItemData(ItemIDs.safety_vest, ItemClassification.progression, groups=[ItemGroups.region_blockers], amount=1),
+    ItemData(
+        ItemIDs.safety_vest, 
+        ItemClassification.progression, 
+        groups=[ItemGroups.region_blockers], 
+        should_be_included=not_progressive_area_unlocks,
+        amount=1
+    ),
     ItemData(
         ItemIDs.keygen_2_segment,
         ItemClassification.progression_skip_balancing,
@@ -190,7 +206,7 @@ chapter2_items = [
     ItemData(
         ItemIDs.mansion_reservation,
         ItemClassification.progression,
-        should_be_included=normal_route,
+        should_be_included=normal_route_and_not_progressive_area_unlocks,
         groups=[ItemGroups.region_blockers],
         amount=1,
     ),

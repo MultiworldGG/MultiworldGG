@@ -1,6 +1,5 @@
 from typing import TYPE_CHECKING
 
-from worlds.generic.Rules import add_rule
 from BaseClasses import Entrance, Region
 
 from .sms_regions.sms_region_helper import (
@@ -196,18 +195,12 @@ def create_region(region: SmsRegion, world: "SmsWorld"):
     ):
         new_entrance.requirements = []
 
-    # Require that the player has the ticket required for the region when ticket mode is enabled
+    # In ticket mode the ticket opens the stage door, but Mario still has to physically reach the
+    # entrance (e.g. Pianta Village's pipe needs the Rocket Nozzle), so the difficulty requirements
+    # are kept. The ticket itself is ANDed onto the entrance in create_sms_region_and_entrance_rules
+    # after the requirements are interpreted.
     if world.options.level_access.value == 1 and region.ticketed:
-        new_entrance.requirements = []
         curr_region.ticket_str = region.ticketed
-        add_rule(
-            new_entrance,
-            (
-                lambda state, ticket_str=region.ticketed: state.has(
-                    ticket_str, world.player
-                )
-            ),
-        )
 
     if (
         world.options.trade_shine_maximum.value == 0
@@ -281,5 +274,7 @@ def create_regions(world: "SmsWorld"):
 
     corona_region: Region = world.get_region(SmsRegionName.CORONA)
     corona_region.add_event(
-        f"{SmsRegionName.CORONA} - Father and Son Shine!", "Victory"
+        f"{SmsRegionName.CORONA} - Father and Son Shine!", "Victory",
+        lambda state: state.has_all(
+        ("Rocket Nozzle", "Spray Nozzle", "Hover Nozzle"), world.player),
     )

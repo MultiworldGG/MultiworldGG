@@ -73,8 +73,8 @@ class StateAdapter:
     def has(self, item: str, player: int, count: int = 1) -> bool:
         if item.endswith("Sword"):
             sword_count = {"Fighter Sword": 1, "Master Sword": 2, "Tempered Sword": 3, "Golden Sword": 4, "Progressive Sword": count}
-            item = "Progressive Sword"
             count = sword_count[item]
+            item = "Progressive Sword"
         elif item == "Bow":
             item = "Progressive Bow"
         elif item == "Silver Arrows":

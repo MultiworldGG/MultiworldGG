@@ -2,9 +2,10 @@ from bisect import bisect_right
 from enum import IntEnum, IntFlag
 from functools import cache
 
-from .common import StaticUChar, StaticFloat, StaticUint, StaticBOOL, FloatField, UCharField
+from .common import StaticUChar, StaticFloat, StaticUint, StaticBOOL, FloatField, UCharField, UShortField, UintField
 from .type_aliases import TCSContext
-from ..levels import AREA_ID_TO_CHAPTER_AREA
+from ..data.areas import ALL_CHAPTER_AREAS
+from ..data.levels import Level
 
 # To use: Iterate to find the first key that the address-to-convert is less than, then add the offset value.
 _GOG_TO_STEAM = {
@@ -112,8 +113,9 @@ def steam_to_gog(address: int):
 
 
 # There are two pointers here, which are NULL when the player is dropped out.
-# The full array of all 8 'player' character pointers, that can be tagged, is found at 0x93d7f0
 HUMAN_CONTROLLED_PLAYER_CHARACTER_POINTERS = 0x93d830
+# The full array of all 8 'player' character pointers, that can be tagged.
+PLAYABLE_CHARACTER_POINTERS = 0x93d810
 
 
 class CharacterFlags1(IntFlag):
@@ -131,10 +133,19 @@ def player_character_entity_iter(ctx: TCSContext):
             yield i + 1, character_address
 
 
+def playable_character_entity_iter(ctx: TCSContext):
+    for i in range(0, 8):
+        character_address = ctx.read_uint(PLAYABLE_CHARACTER_POINTERS + i * 4)
+        if character_address != 0:
+            yield i + 1, character_address
+
+
 # CharacterEntity to index: ((int)char_ent - (int)character_entities_0093d524) / 0x10d8 & 0xffff;
 
 
 CHARACTER_POWER_UP_TIMER = FloatField(0xdec)
+CHARACTER_CHARACTER_DATA_POINTER = UintField(0x50)
+CHARACTER_DATA_ID = UShortField(0x0)
 
 
 # It looks like AREA IDs tend to use 4 bytes, even though they only need 1 byte.
@@ -250,7 +261,7 @@ def is_in_chapter_free_play(ctx: TCSContext, area_id: int | None = None) -> bool
     if area_id is None:
         area_id = CURRENT_AREA_ADDRESS.get(ctx)
 
-    if area_id not in AREA_ID_TO_CHAPTER_AREA:
+    if area_id not in ALL_CHAPTER_AREAS:
         # This eliminates Bonuses that have Free Play.
         return False
 
@@ -291,78 +302,6 @@ class CantinaRoom(IntEnum):
     BOUNTY_HUNTER_MISSIONS = 9
 
 
-_CUSTOM_SAVE_FLAGS_1_ADDRESS = 0x86e506
-
-
-class CustomSaveFlags1(IntFlag):
-    """
-    There are two unused bytes in the save data after the byte that stores whether the Indiana Jones trailer has been
-    watched.
-    BYTE1_AFTER_INDIANA_JONES_TRAILER = 0x86e506
-    BYTE2_AFTER_INDIANA_JONES_TRAILER = 0x86e507
-
-    The client uses these two bytes for storing up to 16 flags.
-    """
-    MINIKIT_GOAL_COMPLETE = 0x1
-    DEATH_LINK_ENABLED = 0x2
-    AUTO_COLLECT_PICKUPS_ENABLED = 0x4
-    AUTO_COLLECT_PICKUPS_VEHICLES_ONLY = 0x8
-    FIELD_5 = 0x10  # Could be DEFEAT_BOSSES_GOAL_COMPLETE to reduce memory reading once the goal is complete.
-    FIELD_6 = 0x20
-    FIELD_7 = 0x40
-    FIELD_8 = 0x80
-    FIELD_9 = 0x100
-    FIELD_10 = 0x200
-    FIELD_11 = 0x400
-    FIELD_12 = 0x800
-    FIELD_13 = 0x1000
-    FIELD_14 = 0x2000
-    FIELD_15 = 0x4000
-    FIELD_16 = 0x8000
-
-    def is_set(self, ctx: TCSContext) -> bool:
-        # noinspection PyTypeChecker
-        v: int = self.value
-        if v <= 0xFF:
-            addr = _CUSTOM_SAVE_FLAGS_1_ADDRESS
-        else:
-            v = v >> 8
-            addr = _CUSTOM_SAVE_FLAGS_1_ADDRESS + 1
-
-        return (ctx.read_uchar(addr) & v) != 0
-
-    def set(self, ctx: TCSContext):
-        # noinspection PyTypeChecker
-        v: int = self.value
-        if v <= 0xFF:
-            addr = _CUSTOM_SAVE_FLAGS_1_ADDRESS
-        else:
-            v = v >> 8
-            addr = _CUSTOM_SAVE_FLAGS_1_ADDRESS + 1
-
-        b = ctx.read_uchar(addr)
-        if not (b & v):
-            ctx.write_byte(_CUSTOM_SAVE_FLAGS_1_ADDRESS, b | v)
-
-    def unset(self, ctx: TCSContext):
-        # noinspection PyTypeChecker
-        v: int = self.value
-        if v <= 0xFF:
-            addr = _CUSTOM_SAVE_FLAGS_1_ADDRESS
-        else:
-            v = v >> 8
-            addr = _CUSTOM_SAVE_FLAGS_1_ADDRESS + 1
-
-        b = ctx.read_uchar(addr)
-        if b & v:
-            ctx.write_byte(_CUSTOM_SAVE_FLAGS_1_ADDRESS, b & ~v)
-
-    def set_bool(self, ctx: TCSContext, b: bool):
-        if b:
-            return self.set(ctx)
-        else:
-            return self.unset(ctx)
-
 # Other potential unused sava-data bytes
 # Some (most?) (all?) bonus levels have enough space reserved for all the Minikits/True Jedi/Power Brick bytes, which
 # they don't use.
@@ -373,10 +312,6 @@ class CustomSaveFlags1(IntFlag):
 
 # -- Game state addresses.
 
-# This value is slightly unstable and occasionally changes to 0 while playing. It is also set to 2 in Mos Espa Pod Race
-# for some reason.
-# Importantly, this value is *not* 0 when watching a Story cutscene, and is instead 1.
-PAUSED_OR_STATUS_WHEN_0_ADDRESS = 0x9737f8
 # This address is usually -1/255 while playing or paused, 1 while tabbed out and 0 while both paused and tabbed out.
 # It is a more unstable than the previous value, while playing, however.
 # Notably, if window focus is forced by setting 0x827610 to 1, thus allowing the game to run in the background, then
@@ -397,11 +332,15 @@ def is_actively_playing(ctx: TCSContext):
 
     Returns False in cases like having a menu open, having the game paused, or having the game tabbed out.
     """
+    current_level_id = ctx.read_current_level_id()
+    if current_level_id not in Level:
+        return False
+    if not Level(current_level_id).is_playable():
+        # Handles Status screens
+        return False
     return (
-            # Handles pause and status screens.
-            ctx.read_uchar(PAUSED_OR_STATUS_WHEN_0_ADDRESS) != 0
             # Handles tabbing out.
-            and ctx.read_uchar(TABBED_OUT_WHEN_1_ADDRESS) != 1
+            ctx.read_uchar(TABBED_OUT_WHEN_1_ADDRESS) != 1
             # Handles pause menu and other menus.
             and ctx.read_uchar(OPENED_MENU_DEPTH_ADDRESS) == 0
             # Handles same-level screen transitions.

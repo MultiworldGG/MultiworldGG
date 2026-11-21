@@ -7,6 +7,8 @@ from worlds.deltarune.LogicHelper import (
     include_secret_bosses_items_requirement,
     include_secret_bosses_items_reward,
     include_unused_items,
+    progressive_area_unlocks,
+    not_progressive_area_unlocks,
 )
 from worlds.deltarune.Items import (
     ItemData,
@@ -49,8 +51,27 @@ chapter1_items = [
         ItemIDs.daintyscarf, ItemClassification.useful, groups=[ItemGroups.weapons, ItemGroups.ralsei_weapons], amount=1
     ),
     ItemData(ItemIDs.manual, ItemClassification.progression, amount=2),
-    ItemData(ItemIDs.bake_sale_ticket, ItemClassification.progression, groups=[ItemGroups.region_blockers], amount=1),
-    ItemData(ItemIDs.castle_key, ItemClassification.progression, groups=[ItemGroups.region_blockers], amount=1),
+    ItemData(
+        ItemIDs.bake_sale_ticket, 
+        ItemClassification.progression, 
+        groups=[ItemGroups.region_blockers], 
+        should_be_included=not_progressive_area_unlocks,
+        amount=1
+    ),
+    ItemData(
+        ItemIDs.castle_key, 
+        ItemClassification.progression,
+        groups=[ItemGroups.region_blockers], 
+        should_be_included=not_progressive_area_unlocks,
+        amount=1
+    ),
+    ItemData(
+        ItemIDs.progressive_ch1_area_unlock, 
+        ItemClassification.progression,
+        groups=[ItemGroups.region_blockers, ItemGroups.progressive_area_unlocks], 
+        should_be_included=progressive_area_unlocks,
+        amount=2
+    ),
     ItemData(ItemIDs.brokencake, ItemClassification.progression, amount=1),
     ItemData(ItemIDs.top_cake, ItemClassification.progression, amount=1),
     ItemData(

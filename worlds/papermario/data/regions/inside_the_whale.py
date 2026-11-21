@@ -6,7 +6,7 @@ from rule_builder.rules import (
     #AtLeast,
     #True_,
     #False_,
-    Has,
+    #Has,
     #HasAll,
     #HasAny,
     #HasAllCounts,
@@ -67,7 +67,6 @@ inside_the_whale_regions: list[Dict[str, str | Dict[str, Rule | None]]] = [
         },
         "exits": {
             "ITW Whale Mouth": None,
-            "TT Port District": Has("RF_CanRideWhale"),
         }
     }
 ]

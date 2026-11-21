@@ -1,31 +1,44 @@
 from BaseClasses import Region, Entrance, Location, CollectionState
-import typing
-
+from typing import NamedTuple
 from .LADXR.checkMetadata import checkMetadataTable
+from .LADXR.locations.tradeSequence import TradeSequenceItem
 from .Common import *
 from worlds.generic.Rules import add_item_rule
-from .Items import ladxr_item_to_la_item_name
+from .Items import ladxr_to_ap_item_name
 
 
 prefilled_events = ["ANGLER_KEYHOLE", "RAFT", "MEDICINE2", "CASTLE_BUTTON"]
 
-links_awakening_dungeon_names = [
-    "Tail Cave",
-    "Bottle Grotto",
-    "Key Cavern",
-    "Angler's Tunnel",
-    "Catfish's Maw",
-    "Face Shrine",
-    "Eagle's Tower",
-    "Turtle Rock",
-    "Color Dungeon"
-]
 
+class DungeonStatus:
+    condensed: bool
+    excluded: bool
+
+class DungeonInfo(NamedTuple):
+    index: int
+    name: str
+    entrance: str
+    instrument: str | None
+    boss: str
+
+dungeon_info = (
+    DungeonInfo(9, "Color Dungeon",   "d0", None,                    "HARDHIT_BEETLE"),
+    DungeonInfo(1, "Tail Cave",       "d1", "Full Moon Cello",       "MOLDORM"),
+    DungeonInfo(2, "Bottle Grotto",   "d2", "Conch Horn",            "GENIE"),
+    DungeonInfo(3, "Key Cavern",      "d3", "Sea Lily's Bell",       "SLIME_EYE"),
+    DungeonInfo(4, "Angler's Tunnel", "d4", "Surf Harp",             "ANGLER_FISH"),
+    DungeonInfo(5, "Catfish's Maw",   "d5", "Wind Marimba",          "SLIME_EEL"),
+    DungeonInfo(6, "Face Shrine",     "d6", "Coral Triangle",        "FACADE"),
+    DungeonInfo(7, "Eagle's Tower",   "d7", "Organ of Evening Calm", "EVIL_EAGLE"),
+    DungeonInfo(8, "Turtle Rock",     "d8", "Thunder Drum",          "HOT_HEAD"),
+)
+
+boss_to_dungeon_index = {d.boss: d.index for d in dungeon_info}
 
 def meta_to_name(meta):
     return f"{meta.name} ({meta.area})"
 
-def get_location_name_groups() -> typing.Dict[str, typing.Set[str]]:
+def get_location_name_groups() -> dict[str, set[str]]:
     groups = {
         "Instrument Pedestals": {
             "Full Moon Cello (Tail Cave)",
@@ -122,13 +135,13 @@ class LinksAwakeningRegion(Region):
 
 
 def translate_item_name(item):
-    if item in ladxr_item_to_la_item_name:
-        return ladxr_item_to_la_item_name[item]
+    if item in ladxr_to_ap_item_name:
+        return ladxr_to_ap_item_name[item]
 
     return item
 
 
-class GameStateAdapater:
+class GameStateAdapter:
     def __init__(self, state, player):
         self.state = state
         self.player = player
@@ -136,8 +149,8 @@ class GameStateAdapater:
     def __contains__(self, item):
         if item.endswith("_USED"):
             return False
-        if item in ladxr_item_to_la_item_name:
-            item = ladxr_item_to_la_item_name[item]
+        if item in ladxr_to_ap_item_name:
+            item = ladxr_to_ap_item_name[item]
 
         return self.state.has(item, self.player)
 
@@ -148,7 +161,7 @@ class GameStateAdapater:
         elif item.endswith("_USED"):
             return 0
         else:
-            item = ladxr_item_to_la_item_name[item]
+            item = ladxr_to_ap_item_name[item]
         return self.state.prog_items[self.player].get(item, default)
 
 
@@ -156,9 +169,9 @@ class LinksAwakeningEntrance(Entrance):
     def __init__(self, player: int, name, region, condition):
         super().__init__(player, name, region)
         if isinstance(condition, str):
-            if condition in ladxr_item_to_la_item_name:
+            if condition in ladxr_to_ap_item_name:
                 # Test if in inventory
-                self.condition = ladxr_item_to_la_item_name[condition]
+                self.condition = ladxr_to_ap_item_name[condition]
             else:
                 # Event
                 self.condition = condition
@@ -175,7 +188,7 @@ class LinksAwakeningEntrance(Entrance):
         if self.condition is None:
             return True
 
-        return self.condition.test(GameStateAdapater(state, self.player))
+        return self.condition.test(GameStateAdapter(state, self.player))
 
 
 # Helper to apply function to every ladxr region
@@ -203,7 +216,7 @@ def ladxr_region_to_name(n):
     return name
 
 
-def create_regions_from_ladxr(player, multiworld, logic):
+def create_regions_from_ladxr(player, multiworld, logic, settings):
     tmp = set()
 
     def print_items(n):
@@ -219,7 +232,6 @@ def create_regions_from_ladxr(player, multiworld, logic):
     used_names = {}
 
     regions = {}
-
     # Create regions
     for l in logic.location_list:
         # Temporarily uniqueify the name, until all regions are named
@@ -231,7 +243,12 @@ def create_regions_from_ladxr(player, multiworld, logic):
 
         r = LinksAwakeningRegion(
             name=name, ladxr_region=l, hint="", player=player, world=multiworld)
-        r.locations += [LinksAwakeningLocation(player, r, i) for i in l.items]
+
+        r.locations += [
+            LinksAwakeningLocation(player, r, i)
+            for i in l.items
+            if settings.tradequest or not isinstance(i, TradeSequenceItem)
+        ]
         regions[l] = r
 
     for ladxr_location in logic.location_list:

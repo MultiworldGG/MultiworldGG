@@ -22,20 +22,33 @@ def validate_options(world: "DeltaruneWorld"):
 
 
 def validate_chapter5_weird_route_only_random_prevention(world: "DeltaruneWorld"):
-    if world.included_chapters == [5] and world.options.chosen_route.value == ChosenRoute.option_weird_route:
+    if world.included_chapters == [5] and world.options.chosen_route.value == ChosenRoute.option_side_b:
         if world.options.random_safety_chapter_inclusion.value == 1:
             chapter = 5
+            funny = 0
             while chapter == 5:
                 chapter = world.random.randint(1, world.max_deltarune_chapter)
-
+                    
                 if chapter == 5:
-                    logging.info(
-                        f"[DELTARUNE] {world.player_name} triggered 'Chapter 5 Weird Route Only Inclusion Safety'. Chapter {chapter} has been randomly chosen. (So we will reroll)"
-                    )
+                    funny += 1 # did this bc i was bored haha. - Emerald
+                    if funny >= 9:
+                        chance = (world.max_deltarune_chapter**funny)
+                        logging.info(
+                            f"[DELTARUNE] {world.player_name} just rolled a 1 in {chance} chance by getting Chapter 5 {funny} times in a row. Tell them to play the lottery or something. I guess we'll reroll again."
+                        )
+                    elif funny >= 3:   
+                        chance = 100/(world.max_deltarune_chapter**funny)
+                        logging.info(
+                            f"[DELTARUNE] Please give me something besides Chapter 5. PLEASE. This is only a {chance}% chance of happening. (Rerolling again...)"
+                        )
+                    else:
+                        logging.info(
+                            f"[DELTARUNE] {world.player_name} triggered 'Chapter 5 Side B Only Inclusion Safety'. Chapter {chapter} has been randomly chosen. (So we will reroll)"
+                        )
                 else:
                     setattr(world.options, f"include_chapter_{chapter}.value", 1)
                     logging.info(
-                        f"[DELTARUNE] {world.player_name} triggered 'Chapter 5 Weird Route Only Inclusion Safety'. Chapter {chapter} has been randomly enabled."
+                        f"[DELTARUNE] {world.player_name} triggered 'Chapter 5 Side B Only Inclusion Safety'. Chapter {chapter} has been randomly enabled."
                     )
 
 

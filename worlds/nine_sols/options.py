@@ -1,5 +1,4 @@
 from dataclasses import dataclass
-from schema import And, Optional, Schema
 
 from Options import Choice, DefaultOnToggle, OptionCounter, PerGameCommonOptions, Range, StartInventoryPool, Toggle
 
@@ -310,12 +309,10 @@ class RandomizeShops(Toggle):
     Same for the other two arrow types.
 
     Logic details:
-    - Kuafu's Jin-only shop locations are available as soon as you unlock him and his "extra inventory".
-    The 6 Dark Steel locations and the 8 Herb Catalyst locations still each require 1 DS or HC to purchase.
-    The Nth DS/HC location becomes "in logic" when you receive the Nth DS/HC item.
-    - Chiyou and 3D Printer shop locations are grouped into low, medium and high cost.
+    - All shop locations are grouped into low, medium and high cost.
     They'll become "in logic" as you gain access to more of the game world.
-    Depending on your first_root_node, low cost locations may be in logic immediately.
+    - Kuafu's 6 Dark Steel locations and 8 Herb Catalyst locations also logically require 1 DS or HC each to purchase.
+    The Nth DS/HC location becomes "in logic" when you receive the Nth DS/HC item.
 
     Jin can get pretty tight if enough important items land in shops, so consider additional mods
     such as Jin Multiplier and No Death Penalty.
@@ -347,7 +344,6 @@ class RandomizeSkillTree(Toggle):
     Logic details:
     - Skill tree locations are grouped into low, medium and high cost.
     They'll become "in logic" as you gain access to more of the game world.
-    Depending on your first_root_node, low cost locations may be in logic immediately.
     - For now, a skill tree node is defined as low/medium/high cost if it needs
     at most 3/9/10 skill points to unlock itself and all of its prerequisite nodes.
     For example, Enhanced Water Flow takes 15 "total skill points" so it's "high cost",
@@ -361,6 +357,31 @@ class RandomizeSkillTree(Toggle):
     so be aware there's an "Experience Multiplier" in the mod's F1 settings.
     """
     display_name = "Randomize Skill Tree"
+
+
+class RandomizeEntrances(Toggle):
+    """
+    Entrance randomization makes many of the doors, transporters, crates, elevators, etc. Yi uses to
+    travel around New Kunlun go somewhere else instead. For example, walking out the right exit of
+    Cortex Center might spawn you inside the crates headed to Inner Warehouse.
+
+    This option currently randomizes 51 two-way connections and 4 one-way connections. Many other connections
+    are intentionally left unrandomized, such as the Central Hall doors to FSP and Control Hub/Eigong,
+    the Jiequan 1 fight into Prison, Lady E's soulscape entrance, the connections between each part of
+    Peach Blossom Village, and the doors into various "puzzle rooms" and "enemy gauntlet rooms".
+    """
+    display_name = "Randomize Entrances"
+
+
+class CoupledEntrances(DefaultOnToggle):
+    """
+    In "coupled" ER, every A->B connection has a B->A connection as well. In other words, if you go into
+    door A and come out of door B, going back into door B will take you back to door A.
+    Highly recommended for your first time doing ER. Uncoupled ER is much less intuitive.
+
+    Has no effect if randomize_entrances is False.
+    """
+    display_name = "Coupled Entrances"
 
 
 # actual Option Groups are specified in the WebWorld in __init__.py for some reason
@@ -404,4 +425,5 @@ class NineSolsGameOptions(PerGameCommonOptions):
     # Additional Randomizations
     randomize_shops: RandomizeShops
     randomize_skill_tree: RandomizeSkillTree
-    # entrance_randomization
+    randomize_entrances: RandomizeEntrances
+    coupled_entrances: CoupledEntrances

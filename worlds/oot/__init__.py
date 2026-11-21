@@ -31,7 +31,7 @@ from .Patches import AP_MAX_PLAYER_ID
 from .appp import OoTProcedurePatch
 from .appp.generate import build_patch_data
 from .ut import apply_replay_options, serialize_generation_results, serialize_slot_options
-from .ut.entrances import FOUND_ENTRANCES_KEY, defer_entrances, reconnect_found_entrances, restore_entrances
+from .ut.entrances import defer_entrances, reconnect_found_entrances, restore_entrances
 from .ut.shops import restore_shop_items
 
 from BaseClasses import MultiWorld, CollectionState, Tutorial
@@ -255,7 +255,7 @@ class OOTWorld(World):
     settings: typing.ClassVar[OOTSettings]
     topology_present: bool = True
     ut_can_gen_without_yaml = True
-    found_entrances_datastorage_key = FOUND_ENTRANCES_KEY
+    found_entrances_datastorage_key = "oot_entrances_{team}_{player}"
     reconnect_found_entrances = reconnect_found_entrances
     # APWorld-specific: generic plando items are generation-only data and contain
     # PlandoItem objects, which cannot be serialized into slot_data.

@@ -1,6 +1,5 @@
 import logging
 
-from ..common import AREA_ID_CANTINA
 from ..common_addresses import (
     player_character_entity_iter,
     CURRENT_AREA_ADDRESS,
@@ -8,29 +7,27 @@ from ..common_addresses import (
 )
 from ..events import subscribe_event, OnGameWatcherTickEvent
 from ..game_state_modifiers import ItemReceiver
-from ...items import GENERIC_BY_NAME
-from ...levels import BONUS_NAME_TO_BONUS_AREA, SHORT_NAME_TO_CHAPTER_AREA
 
 
-debug_logger = logging.getLogger("TCS Debug")
+from ...data.areas import Area
+from ...data.items.generic_items import GENERIC_DATA_BY_NAME, NonDataItemName
 
 
-# todo: Duplicated here for now, but common values like this should be moved to another module.
-LEVEL_ID_CANTINA = 325
+_DEBUG_LOGGER = logging.getLogger("TCS Debug")
 
 # LEGO City and New Town are special levels where the player has to get 1 million studs from the level. Most sources of
 # studs in these levels ignore the 2x multiplier of having a Power Up, only loose studs on the ground get multiplied.
 # 3-1 also ignores Power Ups for most sources of studs.
-BANNED_AREA_IDS = frozenset({
-    BONUS_NAME_TO_BONUS_AREA["LEGO City"].area_id,
-    BONUS_NAME_TO_BONUS_AREA["New Town"].area_id,
-    SHORT_NAME_TO_CHAPTER_AREA["3-1"].area_id,
-    AREA_ID_CANTINA,
+_BANNED_AREAS: frozenset[Area] = frozenset({
+    Area.BONUS,
+    Area.BONUS2,
+    Area.DOGFIGHT,
+    Area.MAP,
 })
 
 
 class PowerUpReceiver(ItemReceiver):
-    receivable_ap_ids = frozenset({GENERIC_BY_NAME["Power Up"].code})
+    receivable_ap_ids = frozenset({GENERIC_DATA_BY_NAME[NonDataItemName.POWER_UP].code})
 
     power_ups_to_give = 0
 
@@ -55,7 +52,7 @@ class PowerUpReceiver(ItemReceiver):
         ctx = event.context
         if (
                 ctx.is_in_game()
-                and CURRENT_AREA_ADDRESS.get(ctx) not in BANNED_AREA_IDS
+                and CURRENT_AREA_ADDRESS.get(ctx) not in _BANNED_AREAS
                 and event.is_actively_playing
         ):
             gave_power_up = False
@@ -76,7 +73,7 @@ class PowerUpReceiver(ItemReceiver):
                 if power_up_timer < 3.5:
                     CHARACTER_POWER_UP_TIMER.set(ctx, character_addresses[0], power_up_timer + 20.0)
                     gave_power_up = True
-                    debug_logger.info("Gave +20s of Power Up to P%i", player_numbers[0])
+                    _DEBUG_LOGGER.info("Gave +20s of Power Up to P%i", player_numbers[0])
             elif len(player_numbers) == 2:
                 max_power_up_timer = max(power_up_timers)
                 if max_power_up_timer < 3.5:
@@ -85,7 +82,7 @@ class PowerUpReceiver(ItemReceiver):
                     for player_number, character_address, power_up_timer in zipped:
                         CHARACTER_POWER_UP_TIMER.set(ctx, character_address, power_up_timer + 20.0)
                         gave_power_up = True
-                        debug_logger.info("Gave +20s of Power Up to P%i", player_number)
+                        _DEBUG_LOGGER.info("Gave +20s of Power Up to P%i", player_number)
                 else:
                     min_power_up_timer = min(power_up_timers)
                     if min_power_up_timer < 3.5:
@@ -119,7 +116,7 @@ class PowerUpReceiver(ItemReceiver):
                                     msg_format = "Averaged P%i Power Up time to %.3f from %.3f"
                                 else:
                                     msg_format = "Synchronized P%i Power Up time to %.3f from %.3f"
-                            debug_logger.info(msg_format, player_number, shared_time, original_power_up_timer)
+                            _DEBUG_LOGGER.info(msg_format, player_number, shared_time, original_power_up_timer)
                     else:
                         # Neither player is running out of time, so there is nothing to do.
                         pass

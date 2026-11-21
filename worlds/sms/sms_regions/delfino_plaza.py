@@ -9,7 +9,8 @@ DELFINO_PLAZA: SmsRegion = SmsRegion(
     shines=[
         Shine(
             "Shine Sprite in the Sand",
-            requirements=[Requirements(SPRAY_OR_HOVER), Requirements(ANY_SPLASHER, skip_forward=True)],
+            requirements=[Requirements(SPROCKET_OR_HOVER),
+                Requirements(SPROCKET_OR_HOVER_OR_YOSHI, skip_forward=True)],
             hard=[Requirements(SPRAY_OR_HOVER_OR_TURBO), Requirements(ANY_SPLASHER_OR_TURBO, skip_forward=True)],
             in_game_bit=117,
         ),
@@ -166,9 +167,9 @@ DELFINO_PLAZA: SmsRegion = SmsRegion(
         ),
         BlueCoin(
             "Burning Pianta",
-            requirements=[Requirements(SPRAY_OR_HOVER), Requirements(ANY_SPLASHER, skip_forward=True)],
-            hard=[Requirements(SPRAY_OR_HOVER_OR_TURBO), Requirements(ANY_SPLASHER_OR_TURBO, skip_forward=True)],
-            tears=[Requirements(SPRAY_OR_HOVER_OR_TURBO), Requirements(manual_none=True, skip_forward=True)],
+            requirements=[Requirements(SPRAY_OR_HOVER, shines=5), Requirements(ANY_SPLASHER, skip_forward=True)],
+            hard=[Requirements(SPRAY_OR_HOVER_OR_TURBO, shines=5), Requirements(ANY_SPLASHER_OR_TURBO, skip_forward=True)],
+            tears=[Requirements(SPRAY_OR_HOVER_OR_TURBO, shines=5), Requirements(manual_none=True, skip_forward=True)],
             in_game_bit=124,
         ),
         BlueCoin(
@@ -198,8 +199,7 @@ DELFINO_PLAZA: SmsRegion = SmsRegion(
         ),
         BlueCoin(
             "Jail Cell",
-            requirements=[Requirements([[NozzleType.hover]])],
-            hard=[Requirements(manual_none=True)],
+            requirements=[Requirements()],
             in_game_bit=134,
         ),
         BlueCoin(

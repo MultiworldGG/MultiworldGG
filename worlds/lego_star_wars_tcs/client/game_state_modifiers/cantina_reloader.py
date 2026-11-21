@@ -11,7 +11,10 @@ from ..events import (
     OnReceiveSlotDataEvent,
     OnGameWatcherTickEvent
 )
-from ...items import CHARACTERS_AND_VEHICLES_BY_NAME, AP_NON_VEHICLE_CHARACTER_INDICES
+
+from ...data.characters import Character
+from ...data.items.character_items import NON_VEHICLE_CHARACTER_TO_ITEM_DATA
+from ...data.levels import Level
 
 
 debug_logger = logging.getLogger("TCS Debug")
@@ -25,18 +28,15 @@ P1_CANTINA_FREE_PLAY_SELECTION_CHARACTER_ID = 0x802bd8
 P2_CANTINA_FREE_PLAY_SELECTION_CHARACTER_ID = 0x802bdc
 
 
-LEVEL_ID_CANTINA = 325
-
-
-ADDITIONAL_OK_IDS = {
+_ADDITIONAL_OK_CHARACTERS = {
     # Womp Rat is the backup character the client forces when the player does not have at least 2 unlocked non-vehicle
     # characters.
-    CHARACTERS_AND_VEHICLES_BY_NAME["Womp Rat"].character_index,
+    Character.WOMP_RAT,
 
     # This is the vehicle found in the outside area of the Cantina.
     # The client could probably check some flag of the character in memory to see if it is a ridable
     # vehicle, but the Cantina only contains this one vehicle, so checking for it individually is simpler.
-    CHARACTERS_AND_VEHICLES_BY_NAME["mapcar"].character_index,
+    Character.MAPCAR,
 }
 
 
@@ -51,7 +51,7 @@ class CantinaReloader(ClientComponent):
     @subscribe_event
     def on_receive_slot_data(self, event: OnReceiveSlotDataEvent):
         # Initialise active state based on the current level ID.
-        self.active = event.context.current_level_id == LEVEL_ID_CANTINA
+        self.active = event.context.current_level_id == Level.MAP
 
         # todo: Is it necessary to check the current character IDs here?:
         # if self.active:
@@ -60,7 +60,7 @@ class CantinaReloader(ClientComponent):
 
     @subscribe_event
     def on_level_change(self, event: OnLevelChangeEvent):
-        self.active = event.new_level_id == LEVEL_ID_CANTINA
+        self.active = event.new_level_id == Level.MAP
 
     @subscribe_event
     def on_player_character_id_change(self, event: OnPlayerCharacterIdChangeEvent):
@@ -76,7 +76,7 @@ class CantinaReloader(ClientComponent):
 
         p1_id = event.new_p1_character_id
         self.last_p1_character_id = p1_id
-        if p1_id is not None and p1_id not in unlocked_characters and p1_id not in ADDITIONAL_OK_IDS:
+        if p1_id is not None and p1_id not in unlocked_characters and p1_id not in _ADDITIONAL_OK_CHARACTERS:
             debug_logger.info(f"Cantina needs to reload because P1's character ID is {p1_id}, which is not an unlocked"
                               f" character ID.")
             self.needs_reload_p1 = True
@@ -85,7 +85,7 @@ class CantinaReloader(ClientComponent):
 
         p2_id = event.new_p2_character_id
         self.last_p2_character_id = p2_id
-        if p2_id is not None and p2_id not in unlocked_characters and p2_id not in ADDITIONAL_OK_IDS:
+        if p2_id is not None and p2_id not in unlocked_characters and p2_id not in _ADDITIONAL_OK_CHARACTERS:
             debug_logger.info(f"Cantina needs to reload because P2's character ID is {p2_id}, which is not an unlocked"
                               f" character ID.")
             self.needs_reload_p2 = True
@@ -121,8 +121,8 @@ class CantinaReloader(ClientComponent):
 
         needed_replacements = self.needs_reload_p1 + self.needs_reload_p2
 
-        unlocked_characters = ctx.acquired_characters.unlocked_characters
-        replacements = self._get_valid_replacement_characters(unlocked_characters, needed_replacements)
+        unlocked_character_ids = ctx.acquired_characters.unlocked_characters
+        replacements = self._get_valid_replacement_characters(unlocked_character_ids, needed_replacements)
 
         # Change the characters that P1 and P2 will spawn as when they reload into the Cantina.
         if self.needs_reload_p1:
@@ -137,7 +137,7 @@ class CantinaReloader(ClientComponent):
             # If the reload failed (e.g. the player is in the shop or the game is paused), try again.
             self._waiting_for_reload = True
 
-    def _get_valid_replacement_characters(self, unlocked_characters: set[int], needed_count: int) -> list[int]:
+    def _get_valid_replacement_characters(self, unlocked_character_ids: set[int], needed_count: int) -> list[int]:
         """
         Get 2 valid replacement characters, or a single 'Glup' replacement character if there are no valid replacement
         characters.
@@ -148,16 +148,18 @@ class CantinaReloader(ClientComponent):
 
         # Pick from unlocked characters, except Custom Characters, who are not allowed in the Cantina because that is
         # where they are edited.
-        not_allowed = {
-            CHARACTERS_AND_VEHICLES_BY_NAME["STRANGER 1"].character_index,
-            CHARACTERS_AND_VEHICLES_BY_NAME["STRANGER 2"].character_index,
+        not_allowed_character_ids = {
+            Character.STRANGER_1,
+            Character.STRANGER_2,
             # If either player is a valid character, do not allow setting both players as the same character.
             # If both players are the same character, then player 2 can pick a locked character when entering a chapter.
             self.last_p1_character_id,
             self.last_p2_character_id,
         }
-        allowed_character_indices = unlocked_characters - not_allowed
-        allowed_character_indices.intersection_update(AP_NON_VEHICLE_CHARACTER_INDICES)
+        allowed_character_indices = unlocked_character_ids - not_allowed_character_ids
+        # Vehicle characters can also be unlocked, but vehicle characters should obviously not be used in the Cantina.
+        # Remove all vehicle character IDs by taking the intersection of non-vehicle characters.
+        allowed_character_indices.intersection_update(NON_VEHICLE_CHARACTER_TO_ITEM_DATA.keys())
 
         to_pick_from = sorted(allowed_character_indices)
         picks = random.sample(to_pick_from, min(needed_remaining, len(to_pick_from)))
@@ -168,5 +170,5 @@ class CantinaReloader(ClientComponent):
             return replacements
         else:
             # Fill remaining spots with the "Womp Rat" "Extra Toggle" character.
-            replacements.extend([CHARACTERS_AND_VEHICLES_BY_NAME["Womp Rat"].character_index] * needed_remaining)
+            replacements.extend([Character.WOMP_RAT] * needed_remaining)
             return replacements

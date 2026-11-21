@@ -130,11 +130,11 @@ locations_data = [
     # Four Seasons Pavilion
     {
         "address": 501, "name": "FSP: Kuafu's 1st Gift",
-        "region": "FSP - Kuafu's Shop", "requires": []
+        "region": "FSP - Kuafu's Shop (No Cost)", "requires": []
     },
     {
         "address": 502, "name": "FSP: Kuafu's 2nd Gift",
-        "region": "FSP - Kuafu's Shop", "requires": []
+        "region": "FSP - Kuafu's Shop (No Cost)", "requires": []
     },
     {
         "address": 503, "name": "FSP: Decode the Ancient Sheet Music",
@@ -207,11 +207,11 @@ locations_data = [
     },
     {
         "address": 514, "name": "FSP: Give Kuafu the Homing Darts",
-        "region": "FSP - Kuafu's Shop", "requires": [ { "item": "Homing Darts" } ]
+        "region": "FSP - Kuafu's Shop (No Cost)", "requires": [ { "item": "Homing Darts" } ]
     },
     {
         "address": 515, "name": "FSP: Give Kuafu the Thunderburst Bomb",
-        "region": "FSP - Kuafu's Shop", "requires": [ { "item": "Thunderburst Bomb" } ]
+        "region": "FSP - Kuafu's Shop (No Cost)", "requires": [ { "item": "Thunderburst Bomb" } ]
     },
 
     # Events
@@ -340,7 +340,7 @@ locations_data = [
                 "option": "randomize_shops",
                 "true": [ { "item": "Progressive Cloud Piercer", "count": 2 } ],
                 "false": [
-                    { "region": "FSP - Kuafu's Shop" }, # so you can actually buy S from him
+                    { "region": "FSP - Kuafu's Shop (Low Cost)" }, # so you can actually buy S from him
                     { "item": "Arrow: Cloud Piercer" },
                     { "item": "Dark Steel" } # just 1 to afford Cloud Piercer S
                 ]
@@ -1879,92 +1879,83 @@ locations_data = [
     # Shop Randomization
     {
         "category": "shop", "address": 4001, "name": "Kuafu's Shop: 1st Normal Purchase",
-        "region": "FSP - Kuafu's Shop", "requires": []
+        "region": "FSP - Kuafu's Shop (Low Cost)", "requires": []
     },
     {
         "category": "shop", "address": 4002, "name": "Kuafu's Shop: 2nd Normal Purchase",
-        "region": "FSP - Kuafu's Shop", "requires": [ { "region": "FSP Shops & Skill Tree (High Cost)" } ]
+        "region": "FSP - Kuafu's Shop (High Cost)", "requires": []
     },
     {
         "category": "shop", "address": 4003, "name": "Kuafu's Extra Inventory: 1st Normal Purchase",
-        "region": "FSP - Kuafu's Extra Inventory", "requires": [ { "region": "FSP Shops & Skill Tree (High Cost)" } ]
+        "region": "FSP - Kuafu's Extra Inventory (High Cost)", "requires": []
     },
     {
         "category": "shop", "address": 4004, "name": "Kuafu's Shop: 1st Dark Steel Purchase",
-        "region": "FSP - Kuafu's Shop", "requires": [ { "item": "Dark Steel", "count": 1 } ]
+        "region": "FSP - Kuafu's Shop (Low Cost)", "requires": [ { "item": "Dark Steel", "count": 1 } ]
     },
     {
         "category": "shop", "address": 4005, "name": "Kuafu's Shop: 2nd Dark Steel Purchase",
-        "region": "FSP - Kuafu's Shop", "requires": [ { "item": "Dark Steel", "count": 2 } ]
+        "region": "FSP - Kuafu's Shop (Low Cost)", "requires": [ { "item": "Dark Steel", "count": 2 } ]
     },
     {
         "category": "shop", "address": 4006, "name": "Kuafu's Shop: 3rd Dark Steel Purchase",
-        "region": "FSP - Kuafu's Shop", "requires": [ { "item": "Dark Steel", "count": 3 } ]
+        "region": "FSP - Kuafu's Shop (Low Cost)", "requires": [ { "item": "Dark Steel", "count": 3 } ]
     },
     {
         "category": "shop", "address": 4007, "name": "Kuafu's Extra Inventory: 1st Dark Steel Purchase",
-        "region": "FSP - Kuafu's Extra Inventory", "requires": [
-            { "item": "Dark Steel", "count": 4 },
-            { "region": "FSP Shops & Skill Tree (High Cost)" }
-        ]
+        "region": "FSP - Kuafu's Extra Inventory (High Cost)", "requires": [ { "item": "Dark Steel", "count": 4 } ]
     },
     {
         "category": "shop", "address": 4008, "name": "Kuafu's Extra Inventory: 2nd Dark Steel Purchase",
-        "region": "FSP - Kuafu's Extra Inventory", "requires": [
-            { "item": "Dark Steel", "count": 5 },
-            { "region": "FSP Shops & Skill Tree (High Cost)" }
-        ]
+        "region": "FSP - Kuafu's Extra Inventory (High Cost)", "requires": [ { "item": "Dark Steel", "count": 5 } ]
     },
     {
         "category": "shop", "address": 4009, "name": "Kuafu's Extra Inventory: 3rd Dark Steel Purchase",
-        "region": "FSP - Kuafu's Extra Inventory", "requires": [
-            { "item": "Dark Steel", "count": 6 },
-            { "region": "FSP Shops & Skill Tree (High Cost)" }
-        ]
+        "region": "FSP - Kuafu's Extra Inventory (High Cost)", "requires": [ { "item": "Dark Steel", "count": 6 } ]
     },
     {
         "category": "shop", "address": 4010, "name": "Kuafu's Shop: 1st Herb Catalyst Purchase",
-        "region": "FSP - Kuafu's Shop", "requires": [ { "item": "Herb Catalyst", "count": 1 } ]
+        "region": "FSP - Kuafu's Shop (Low Cost)", "requires": [ { "item": "Herb Catalyst", "count": 1 } ]
     },
     {
         "category": "shop", "address": 4011, "name": "Kuafu's Shop: 2nd Herb Catalyst Purchase",
-        "region": "FSP - Kuafu's Shop", "requires": [ { "item": "Herb Catalyst", "count": 2 } ]
+        "region": "FSP - Kuafu's Shop (Low Cost)", "requires": [ { "item": "Herb Catalyst", "count": 2 } ]
     },
     {
         "category": "shop", "address": 4012, "name": "Kuafu's Shop: 3rd Herb Catalyst Purchase",
-        "region": "FSP - Kuafu's Shop", "requires": [ { "item": "Herb Catalyst", "count": 3 } ]
+        "region": "FSP - Kuafu's Shop (Low Cost)", "requires": [ { "item": "Herb Catalyst", "count": 3 } ]
     },
     {
         "category": "shop", "address": 4013, "name": "Kuafu's Shop: 4th Herb Catalyst Purchase",
-        "region": "FSP - Kuafu's Shop", "requires": [ { "item": "Herb Catalyst", "count": 4 } ]
+        "region": "FSP - Kuafu's Shop (Low Cost)", "requires": [ { "item": "Herb Catalyst", "count": 4 } ]
     },
     {
         "category": "shop", "address": 4014, "name": "Kuafu's Shop: 5th Herb Catalyst Purchase",
-        "region": "FSP - Kuafu's Shop", "requires": [ { "item": "Herb Catalyst", "count": 5 } ]
+        "region": "FSP - Kuafu's Shop (Low Cost)", "requires": [ { "item": "Herb Catalyst", "count": 5 } ]
     },
     {
         "category": "shop", "address": 4015, "name": "Kuafu's Shop: 6th Herb Catalyst Purchase",
-        "region": "FSP - Kuafu's Shop", "requires": [ { "item": "Herb Catalyst", "count": 6 } ]
+        "region": "FSP - Kuafu's Shop (Low Cost)", "requires": [ { "item": "Herb Catalyst", "count": 6 } ]
     },
     {
         "category": "shop", "address": 4016, "name": "Kuafu's Shop: 7th Herb Catalyst Purchase",
-        "region": "FSP - Kuafu's Shop", "requires": [ { "item": "Herb Catalyst", "count": 7 } ]
+        "region": "FSP - Kuafu's Shop (Low Cost)", "requires": [ { "item": "Herb Catalyst", "count": 7 } ]
     },
     {
         "category": "shop", "address": 4017, "name": "Kuafu's Shop: 8th Herb Catalyst Purchase",
-        "region": "FSP - Kuafu's Shop", "requires": [ { "item": "Herb Catalyst", "count": 8 } ]
+        "region": "FSP - Kuafu's Shop (Low Cost)", "requires": [ { "item": "Herb Catalyst", "count": 8 } ]
     },
     {
         "category": "shop", "address": 4018, "name": "Kuafu's Shop: 3rd Normal Purchase",
-        "region": "FSP - Kuafu's Shop", "requires": []
+        "region": "FSP - Kuafu's Shop (Low Cost)", "requires": []
     },
     {
         "category": "shop", "address": 4019, "name": "Kuafu's Shop: 4th Normal Purchase",
-        "region": "FSP - Kuafu's Shop", "requires": []
+        "region": "FSP - Kuafu's Shop (Low Cost)", "requires": []
     },
     {
         "category": "shop", "address": 4020, "name": "Kuafu's Extra Inventory: 2nd Normal Purchase",
-        "region": "FSP - Kuafu's Extra Inventory", "requires": [ { "region": "FSP Shops & Skill Tree (Medium Cost)" } ]
+        "region": "FSP - Kuafu's Extra Inventory (Medium Cost)", "requires": []
     },
 
     {

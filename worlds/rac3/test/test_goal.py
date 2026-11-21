@@ -1,5 +1,4 @@
 """This module contains UnitTesting for the Goal condition"""
-from options.skillpoints_pick_and_mix_options import SkillPointsPickAndMix
 from worlds.rac3.constants.event import ALL_GOALS, ALL_PLANETS, RAC3EVENT
 from worlds.rac3.constants.items import RAC3ITEM
 from worlds.rac3.constants.locations.tags import RAC3TAG

@@ -33,26 +33,6 @@ Try updating [Universal Tracker](https://github.com/FarisTheAncient/Archipelago/
 Sometimes it just refuses to load the client if you have an outdated version installed. Updating Universal Tracker
 appears to solve this problem for those reporting this issue.
 
-## X check is in logic, but when I go there I don't receive it, why?
-
-Currently, there are some checks that doesn't work with sequence breaking (For example most of the Phoenix checks)
-these are collected into a location group called `Unstable`. If you generate the .yaml for yourself make sure it is in
-the **excluded locations** section (it should be there by default). This will make the unstable locations have only
-filler/trap items.
-
-## OK, but how do I know which locations are getting excluded with each option?
-
-Go to
-the [Locations](https://github.com/Taoshix/Archipelago-RaC3/blob/staging/worlds/rac3/constants/data/location.py#L1254)
-file and search for the following tags with CTRL+F
-
-- Unstable - RAC3TAG.UNSTABLE
-- Weapons - RAC3TAG.WEAPONS
-- Gadgets - RAC3TAG.GADGETS
-
-Any location including one of those tags will be a part of the location group. A location can have multiple tags and be
-part of multiple groups at the same time.
-
 ## Some doors won't open automatically with refractor skip, why is that?
 
 The refractor door on Phoenix Rescue and the one on Command Center don't have a direct progress flag we can use. In the

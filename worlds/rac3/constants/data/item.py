@@ -425,7 +425,7 @@ RAC3_ITEM_DATA_TABLE: dict[str, RAC3ITEMDATA] = {
     RAC3ITEM.INFECTO_BOMB: RAC3ITEMDATA.construct_weapon_level(0x3B, 600, 20, 3800),
     RAC3ITEM.INFECTO_BOMB_V6: RAC3ITEMDATA.construct_weapon_level(0x3C, 4000, 20, tags=[RAC3ITEMTAG.NGPLUS]),
     RAC3ITEM.INFECTO_BOMB_V7: RAC3ITEMDATA.construct_weapon_level(0x3D, 5000, 25, 10000, [RAC3ITEMTAG.NGPLUS]),
-    RAC3ITEM.INFECTO_BOMB_V8: RAC3ITEMDATA.construct_weapon_level(0x3E, 6000, 30, 15000, [RAC3ITEMTAG.NGPLUS]),
+    RAC3ITEM.INFECTO_BOMB_V8: RAC3ITEMDATA.construct_weapon_level(0x3E, 6000, 30, 25000, [RAC3ITEMTAG.NGPLUS]),
     RAC3ITEM.ANNIHILATOR: RAC3ITEMDATA.construct_weapon(0x3F, 500, 20, ItemClassification.progression),
     RAC3ITEM.ANNIHILATOR_V2: RAC3ITEMDATA.construct_weapon_level(0x40, 600, 20, 800),
     RAC3ITEM.ANNIHILATOR_V3: RAC3ITEMDATA.construct_weapon_level(0x41, 800, 20, 2400),
@@ -831,6 +831,7 @@ item_counts: dict[str, int] = {
 ngplus_item_counts: dict[str, int] = {
     **dict.fromkeys(non_prog_weapon_data.keys(), 1),
     **dict.fromkeys(prog_weapon_data.keys(), 8),
+    RAC3ITEM.PROGRESSIVE_RY3N0: 5,
     **dict.fromkeys(prog_wrench_data.keys(), 8),
     **dict.fromkeys(gadget_data.keys(), 1),
     **dict.fromkeys(cheat_data.keys(), 1),

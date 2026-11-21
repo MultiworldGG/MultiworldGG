@@ -1,6 +1,5 @@
-from rule_builder.rules import Rule as BaseRule
-from worlds.tloz_oos import OracleOfSeasonsWorld
+from ...core.rule_builder.rule_import import Rule
+from ...data.regions import RegionName
+from ..transition_type import TransitionType
 
-Rule = BaseRule[OracleOfSeasonsWorld]
-
-LogicLine = tuple[str, str, bool, Rule | None] | tuple[str, str, bool, Rule | None, bool]
+LogicLine = tuple[RegionName, RegionName, TransitionType, Rule]

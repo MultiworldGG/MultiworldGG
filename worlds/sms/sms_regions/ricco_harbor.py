@@ -3,9 +3,9 @@ from .sms_region_helper import *
 RICCO_HARBOR_ENTRANCE: SmsRegion = SmsRegion(
     SmsRegionName.RICCO_ENTRANCE,
     requirements=[Requirements(SPRAY_OR_HOVER, shines=3)],
-    hard=[],
-    advanced=[],
-    tears=[],
+    hard=[Requirements(SPRAY_OR_HOVER, shines=3)],
+    advanced=[Requirements(SPRAY_OR_HOVER_OR_TURBO, shines=3)],
+    tears=[Requirements(SPRAY_OR_HOVER_OR_TURBO, shines=3)],
     ticketed="Ricco Harbor Ticket",
     parent_region=SmsRegionName.PLAZA,
 )
@@ -14,7 +14,7 @@ RICCO_HARBOR_ONE: SmsRegion = SmsRegion(
     SmsRegionName.RICCO_ONE,
     shines=[
         Shine(
-            "Ricco 1 Only - Gooper Blooper Breaks Out",
+            "Gooper Blooper Breaks Out",
             requirements=[Requirements(SPRAY_OR_HOVER)],
             hard=[Requirements(SPRAY_OR_HOVER_OR_TURBO)],
             advanced=[Requirements(ANY_FLUDD)],
@@ -243,7 +243,8 @@ RICCO_HARBOR_ONE: SmsRegion = SmsRegion(
         ),
         BlueCoin(
             "Spawn Building Side M",
-            [Requirements(SPRAY_OR_HOVER)],
+            [Requirements(SPRAY_OR_HOVER_OR_YOSHI,
+            location=f"{SmsRegionName.RICCO_EIGHT} - Yoshi's Fruit Adventure")],
             in_game_bit=241,
         ),
         BlueCoin(
@@ -267,7 +268,7 @@ RICCO_HARBOR_TWO: SmsRegion = SmsRegion(
     SmsRegionName.RICCO_TWO,
     requirements=[
         Requirements(
-            location=f"{SmsRegionName.RICCO_ONE} - Ricco 1 Only - Gooper Blooper Breaks Out"
+            location=f"{SmsRegionName.RICCO_ONE} - Gooper Blooper Breaks Out"
         )
     ],
     shines=[
@@ -318,8 +319,12 @@ RICCO_HARBOR_FOUR: SmsRegion = SmsRegion(
             hard=[Requirements(manual_none=True)],
             in_game_bit=13,
         ),
-        Shine("Red Coins in Ricco Tower", in_game_bit=18),
-    ],  # TODO: Fix logic with difficulties
+        Shine("Red Coins in Ricco Tower",
+            requirements=[Requirements(ROCKET_OR_HOVER)],
+            hard=[Requirements()],
+            in_game_bit=18,
+        ),
+    ],
     blue_coins=[
         BlueCoin(
             "Caged Blooper",
@@ -355,7 +360,17 @@ RICCO_HARBOR_SIX: SmsRegion = SmsRegion(
         Requirements(location=f"{SmsRegionName.RICCO_FIVE} - Gooper Blooper Returns")
     ],
     shines=[Shine("Red Coins on the Water", in_game_bit=15)],
-    blue_coins=[],
+    blue_coins=[
+        BlueCoin(
+            "Fish Basket",
+            requirements=[Requirements(SPRAY_OR_HOVER),
+                Requirements([[NozzleType.yoshi]], location=f"{SmsRegionName.RICCO_EIGHT} - Yoshi's Fruit Adventure")],
+            hard=[Requirements(SPRAY_OR_HOVER_OR_TURBO),
+                Requirements([[NozzleType.yoshi]], location=f"{SmsRegionName.RICCO_EIGHT} - Yoshi's Fruit Adventure")],
+            advanced=[Requirements(ANY_FLUDD),
+                Requirements([[NozzleType.yoshi]], location=f"{SmsRegionName.RICCO_EIGHT} - Yoshi's Fruit Adventure")],
+            in_game_bit=245,
+        ),],
     parent_region=SmsRegionName.RICCO_ENTRANCE,
 )
 
@@ -403,13 +418,6 @@ RICCO_HARBOR_EIGHT: SmsRegion = SmsRegion(
             requirements=[Requirements([[NozzleType.yoshi]])],
             hard=[Requirements(SPROCKET_OR_HOVER)],
             in_game_bit=242,
-        ),
-        BlueCoin(
-            "Fish Basket",
-            requirements=[Requirements(ANY_SPLASHER)],
-            hard=[Requirements(ANY_SPLASHER_OR_TURBO)],
-            advanced=[Requirements(ANY_NOZZLE)],
-            in_game_bit=245,
         ),
     ],
     parent_region=SmsRegionName.RICCO_ENTRANCE,

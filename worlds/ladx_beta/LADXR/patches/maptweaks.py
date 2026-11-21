@@ -47,3 +47,11 @@ def openMabe(rom):
     re.overlay[5 + 1 * 10] = 0x5C
     re.overlay[5 + 2 * 10] = 0x5C
     re.store(rom)
+
+def openBeach(rom):
+    # replaces rocks on east side of beach with bushes
+    re = RoomEditor(rom, 0x0e5)
+    re.changeObject(7, 3, 0x5C)
+    re.overlay[7 + 3 * 10] = 0x5C
+    re.overlay[7 + 4 * 10] = 0x5C
+    re.store(rom)

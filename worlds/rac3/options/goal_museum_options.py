@@ -6,7 +6,7 @@ from worlds.rac3.constants.options import RAC3OPTION
 
 class GoalMuseum(Toggle):
     """
-    Determines if unlocking the Insomniac Museum Teleporter is required to goal
+    Determines if unlocking the Insomniac Museum Teleporter and visiting the Museum is required to goal
     --------------------------------------------------------------------------------------
     Off:  Insomniac Museum Teleporter is not required to goal
     On:   Insomniac Museum Teleporter is required to goal

@@ -240,7 +240,7 @@ cross_chapter_items = [
 ]
 
 def create_items(world: "DeltaruneWorld"):
-    if world.included_chapters == [5] and world.options.chosen_route.value == ChosenRoute.option_weird_route:
+    if world.included_chapters == [5] and world.options.chosen_route.value == ChosenRoute.option_side_b:
         return []
 
     # Only add noelle everybody weapon if chapter 2 is included
@@ -255,7 +255,7 @@ def create_items(world: "DeltaruneWorld"):
 
 
 def get_filler_and_trap_items(world: "DeltaruneWorld"):
-    if world.included_chapters == [5] and world.options.chosen_route.value == ChosenRoute.option_weird_route:
+    if world.included_chapters == [5] and world.options.chosen_route.value == ChosenRoute.option_side_b:
         return []
 
     return generic_get_filler_and_trap_items(world, cross_chapter_items)

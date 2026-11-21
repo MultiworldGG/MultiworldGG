@@ -105,11 +105,11 @@ In Chapter 5, Flowery will supply you with one if you lose a battle or when reac
 
 Play through the story normally! You can either recruit or lose Darkners. Reaching the fountain is your main goal. 
 
-### Weird Route / Side B
+### Side B
 
-In a future update I'll probably replace Weird Route with its proper name, Side B.
+(Also referred to as Weird Route)
 
-Proceed through the Side B storyline. Starting up a new save will automatically put you into the normal amount of Side B progression that you'd start the chapter in. While Chapter 4 does have its own cutscene, it isn't required to do, as there are no locations locked behind it. 
+Proceed through the Side B storyline. Starting up a new save will automatically put you into the normal amount of Side B progression that you'd start the chapter in. While Chapter 4 does have its own cutscene, it isn't required to do (since it otherwise has no strategy or real gameplay to it), and there are no locations locked behind it. 
 
 If this is your first time doing Side B (or if you forgot how), there are many walkthroughs on YouTube and other sites. This route is pretty hidden and easy to accidentally abort if you don't know how to do it properly!
 
@@ -123,7 +123,7 @@ You can check your progress at each save point, and each chapter will let you kn
 
 ### Both Routes
 
-It combines both Weird Route/Side B and All Recruits as explained above. Press K on the Chapter select screen to switch the route that the save file will begin with. Chapters 1, 3, and 4 only have to be done once, as they don't have too major of changes in the Dark World.
+It combines both Side B and All Recruits as explained above. Press K on the Chapter select screen to switch the route that the save file will begin with. Chapters 1, 3, and 4 only have to be done once, as they don't have too major of changes in the Dark World.
 
 ## Universal Tracker Support
 

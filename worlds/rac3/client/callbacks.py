@@ -7,13 +7,14 @@ from typing import TYPE_CHECKING
 from CommonClient import logger
 from NetUtils import ClientStatus
 from worlds.rac3.client.message import ClientMessage
-from worlds.rac3.client.texthelper import colorize_item_name, get_sent_item_message, remove_accents
+from worlds.rac3.client.texthelper import colorize_item_name, get_sent_item_message
 from worlds.rac3.constants.data.location import RAC3_LOCATION_DATA_TABLE
 from worlds.rac3.constants.data.region import RAC3_REGION_DATA_TABLE
 from worlds.rac3.constants.data.vendorslot import (ITEM_TO_ARMOR_VENDOR_LOCATION, ITEM_TO_WEAPON_VENDOR_LOCATION,
                                                    SHIP_VENDOR_INVENTORY)
 from worlds.rac3.constants.input import RAC3INPUT
 from worlds.rac3.constants.items import RAC3ITEM
+from worlds.rac3.constants.locations.general import RAC3LOCATION
 from worlds.rac3.constants.messages.box_theme import RAC3BOXTHEME
 from worlds.rac3.constants.messages.text_strings import RAC3TEXTFORMATSTRING
 from worlds.rac3.constants.moby_flag import HACKER_PUZZLE_TO_REGION
@@ -22,6 +23,8 @@ from worlds.rac3.constants.player_action import PERMITTED_DEATHLINK_SHIP_TELEPOR
 from worlds.rac3.constants.region import PLANET_VENDOR_OFFSET, PLANETS_WITH_HACKER_PUZZLES, RAC3REGION
 from worlds.rac3.constants.shortcuts import RAC3SHORTCUTS
 from worlds.rac3.constants.speedups import RAC3SPEEDUPS
+from worlds.rac3.constants.vendors.vendor import RAC3VENDOR
+from worlds.rac3.locations import get_challenge_locations
 
 ##################################################
 # Only change point: Change filename/Class name  #
@@ -40,45 +43,17 @@ async def pcsx2_sync_task(ctx: "Context") -> None:
                        "There may be bugs present and features that have not been tested fully.\n"
                        "These builds are meant for testing and bug reporting purposes "
                        "and should not be used for normal play!\n")
-    connected_to_game: bool = False
     connection_retry_attempts: int = 0
-    correct_version: bool = True
+    game_initialized = False
     while not ctx.exit_event.is_set():
         try:
-            connected_to_server = (ctx.server is not None) and (ctx.slot is not None)
-            if connected_to_server and not ctx.is_connected_to_server:
-                if ctx.slot_data:
-                    logger.info("Connected to server")
-                    ctx.is_connected_to_server = connected_to_server
-                    if ctx.slot_data.get(RAC3OPTION.VERSION, "0.0.0") < RAC3OPTION.VERSION_NUMBER:
-                        await ctx.disconnect()
-                        correct_version = False
-                        logger.warning(
-                            f"Client is v{RAC3OPTION.VERSION_NUMBER}, please downgrade to v"
-                            f"{ctx.slot_data[RAC3OPTION.VERSION]}")
-                        await sleep(10)
-                        continue
-                    if ctx.slot_data[RAC3OPTION.VERSION] > RAC3OPTION.VERSION_NUMBER:
-                        await ctx.disconnect()
-                        correct_version = False
-                        logger.warning(
-                            f"Client is v{RAC3OPTION.VERSION_NUMBER}, please upgrade to v"
-                            f"{ctx.slot_data[RAC3OPTION.VERSION]}")
-                        await sleep(10)
-                        continue
-                    if connected_to_game:
-                        ctx.game_interface.init()
-                    else:
-                        logger.info("Waiting for game connection...")
-
+            connected_to_server = ctx.server is not None and ctx.slot is not None and ctx.slot_data is not None
             connected_to_game = ctx.game_interface.get_connection_state()
             if connected_to_game and not ctx.is_connected_to_game:
                 logger.info(f"Connected to {RAC3OPTION.GAME_TITLE_FULL}")
                 ctx.last_pine_message = None
                 ctx.is_connected_to_game = connected_to_game
-                if connected_to_server:
-                    ctx.game_interface.init()
-                else:
+                if not connected_to_server:
                     logger.info("Waiting for server connection...")
 
             if not connected_to_game and not ctx.game_interface.is_connecting:
@@ -119,7 +94,10 @@ async def pcsx2_sync_task(ctx: "Context") -> None:
                     logger.info(message)
                     ctx.last_server_message = message
 
-            if connected_to_game and connected_to_server and correct_version:
+            if connected_to_game and connected_to_server:
+                if not game_initialized:
+                    ctx.game_interface.init()
+                    game_initialized = True
                 await _handle_game_ready(ctx)
 
         except ConnectionError:
@@ -149,6 +127,7 @@ async def _handle_game_ready(ctx: "Context") -> None:
         ctx.main_menu = ctx.game_interface.check_main_menu()
 
         if ctx.main_menu:
+            ctx.save_file_identity = None
             if menu:
                 ctx.game_interface.main_menu = True
             if ctx.last_game_message is None:
@@ -158,27 +137,29 @@ async def _handle_game_ready(ctx: "Context") -> None:
             await sleep(5)
 
         if menu is True and ctx.main_menu is False:
+            file_identity = ctx.connected_identity
             ctx.last_game_message = None
             await ctx.send_msgs([ClientMessage.status_update(ClientStatus.CLIENT_PLAYING)])
+            if ctx.connected_identity != file_identity:
+                return
             logger.info("Starting game...")
             ctx.game_interface.reset_file()
             logger.info("Old state removed!")
             logger.info("Checking for items...")
             logger.debug(f"Data Package: {ctx.stored_data.get(RAC3OPTION.PROCESSED_LOCATIONS, 'Empty')}")
-            logger.info(f"Items Received: {len(ctx.items_received)}")
-            items_to_process = ctx.stored_data.get(RAC3OPTION.PROCESSED_LOCATIONS, len(ctx.items_received))
+            received_count = len(ctx.items_received)
+            logger.info(f"Items Received: {received_count}")
+            saved_count = ctx.stored_data.get(RAC3OPTION.PROCESSED_LOCATIONS, received_count)
+            items_to_restore = max(0, min(saved_count, received_count))
             ctx.game_interface.initial_fillers.clear()
-            counter = 0
-            for count, item in enumerate(ctx.items_received):
-                counter += 1
-                logger.debug(f"Processing item {count}: {ctx.item_names.lookup_in_slot(item.item, item.player)}")
-                if count > items_to_process:
-                    logger.debug("Handle Later")
-                    continue
+            for index, item in enumerate(ctx.items_received[:items_to_restore]):
+                logger.debug(f"Restoring item {index}: {ctx.item_names.lookup_in_slot(item.item, item.player)}")
                 ctx.game_interface.important_items(item.item, ctx.player_names[ctx.slot], item.location)
                 ctx.game_interface.filler_items(item.item)
-            ctx.processed_item_count = min(counter, items_to_process)
+            ctx.processed_item_count = items_to_restore
             await ctx.send_msgs([ClientMessage.set_processed(ctx.processed_item_count)])
+            if ctx.connected_identity != file_identity:
+                return
             logger.info(f"Items Processed: {ctx.processed_item_count}")
             logger.info("Checking locations...")
             checks = set()
@@ -191,6 +172,7 @@ async def _handle_game_ready(ctx: "Context") -> None:
             ctx.game_interface.load_save(ctx.save_data)
             ctx.game_interface.init_stored_fillers()
             ctx.game_interface.process_offline_fillers(ctx.data_received)
+            ctx.save_file_identity = file_identity
             ctx.game_interface.reset_death_count()
             ctx.game_interface.setup_challenge_mode()
             ctx.game_interface.setup_settings()
@@ -253,49 +235,74 @@ async def update(ctx: "Context") -> None:
     await handle_respawn(ctx)
     # Check the vendor
     await handle_vendors(ctx)
+    if ctx.code_cave_setup:
+        ctx.game_interface.overwrite_challenge_descriptions()
+        ctx.game_interface.overwrite_pda_vendor_prompts()
     # Check sequence breaks
     await handle_sequence_break(ctx)
     ctx.game_interface.late_update()
     # Save to the server
     await handle_save(ctx)
+    ctx.game_interface.overwrite_planet_location_counts(
+        ctx.server_locations, ctx.checked_locations | ctx.locations_checked)
     # logger.info(f"Update is called")
     ctx.game_interface.batch_write()
 
 
 async def handle_codecave(ctx: "Context") -> None:
-    """Set up the codecave with the current item locations for use in the randomizer
+    """Write item data to the code cave to be used later by vendors and challenges.
     :param ctx: RAC3 context class"""
     if ctx.slot_data is None or ctx.code_cave_setup:
         return
-    all_vendor_locations: list[str] = []
+    # An open Galactic Map may still be reading the previous cave layout.
+    if ctx.game_interface.galactic_map_uses_code_cave():
+        return
+    all_vendor_locations: list[str] = [RAC3LOCATION.HIDEOUT_PDA]
     if ctx.slot_data.get(RAC3OPTION.WEAPON_VENDORS, False):
         all_vendor_locations.extend(ITEM_TO_WEAPON_VENDOR_LOCATION.values())
     if ctx.slot_data.get(RAC3OPTION.ARMOR_VENDOR, False):
         all_vendor_locations.extend(ITEM_TO_ARMOR_VENDOR_LOCATION.values())
     if ctx.slot_data.get(RAC3OPTION.SHIP_VENDOR, False):
         all_vendor_locations.extend(SHIP_VENDOR_INVENTORY.keys())
-    if not all_vendor_locations:
-        return
-
-    ap_codes = [RAC3_LOCATION_DATA_TABLE[loc].AP_CODE for loc in all_vendor_locations]
-    location_data: list[tuple[str, str]] = []
-    for loc_key, ap_code in zip(all_vendor_locations, ap_codes):
-        net_item = ctx.locations_info.get(ap_code, None)
-        if net_item is not None:
-            item_name = colorize_item_name(
-                ctx.item_names.lookup_in_slot(net_item.item, net_item.player),
-                net_item.flags
+    challenges = {location.NAME: location for location in get_challenge_locations()}
+    vendor_strings: dict[str, str] = {}
+    challenge_groups: dict[tuple[str, tuple[int, ...]], list[tuple[str, str]]] = {}
+    for name in (*all_vendor_locations, *challenges):
+        location = RAC3_LOCATION_DATA_TABLE[name]
+        if location.AP_CODE not in ctx.server_locations:
+            continue
+        net_item = ctx.locations_info.get(location.AP_CODE)
+        if net_item is None:
+            return
+        item_name = colorize_item_name(ctx.item_names.lookup_in_slot(net_item.item, net_item.player), net_item.flags)
+        own_item = net_item.player == ctx.slot
+        if not own_item:
+            item_name = f"{RAC3TEXTFORMATSTRING.GREEN}{ctx.player_names.get(net_item.player, '???')}'s {item_name}"
+        if name == RAC3LOCATION.HIDEOUT_PDA:
+            purchase_item_name = f"a {item_name}" if own_item else item_name
+            vendor_strings[name] = f"{RAC3TEXTFORMATSTRING.TRIANGLE} Buy {purchase_item_name} for 250,000 bolts"
+            vendor_strings[RAC3VENDOR.PDA_INSUFFICIENT_BOLTS_KEY] = (
+                f"You need 250,000 bolts to buy {purchase_item_name}"
             )
-            if ctx.slot == net_item.player:
-                string = item_name
-            else:
-                player_name = ctx.player_names.get(net_item.player, "???")
-                string = f"{player_name}'s {item_name}"
-            location_data.append((loc_key, remove_accents(string)))
+        elif name in challenges:
+            group = (location.REGION, location.DESCRIPTION_TEXT_IDS)
+            challenge_groups.setdefault(group, []).append((name, item_name))
+        else:
+            vendor_strings[name] = item_name
 
-    if location_data:
-        ctx.game_interface.setup_code_cave(location_data)
-        ctx.code_cave_setup = True
+    challenge_strings = {
+        name: "Obtain " + ", ".join(item_name for _, item_name in rewards) + " on challenge completion!"
+        for rewards in challenge_groups.values()
+        for name, _ in rewards
+    }
+    qwarktastic = RAC3LOCATION.NATION_QWARKTASTIC_BATTLE
+    if RAC3_LOCATION_DATA_TABLE[qwarktastic].AP_CODE not in ctx.server_locations:
+        challenge_strings[qwarktastic] = (
+            f"To make this a location, enable {RAC3OPTION.GOAL_QWARK} "
+            f"and set {RAC3OPTION.ARENA} to All in a new seed."
+        )
+    ctx.game_interface.setup_code_cave(vendor_strings, challenge_strings)
+    ctx.code_cave_setup = True
 
 
 async def handle_intro_skip(ctx: "Context") -> None:
@@ -418,6 +425,7 @@ async def handle_planet_changed(ctx: "Context") -> None:
                                          HACKER_PUZZLE_TO_REGION, True)
         ctx.game_interface.softlock_warning()
         ctx.game_interface.region_disabled_warning()
+        ctx.game_interface.speedup_unavailable_warning()
         ctx.game_interface.tyhrranosis_fix()
 
     # Handle UT map changes
@@ -498,7 +506,8 @@ async def handle_sequence_break(ctx: "Context") -> None:
 async def handle_save(ctx: "Context") -> None:
     """Checks if any memory values need to be saved to the server
     :param ctx: RAC3 context class"""
-    if ctx.slot_data is None or ctx.slot is None:
+    save_key = ctx.save_key
+    if ctx.slot_data is None or save_key is None or ctx.save_file_identity != ctx.connected_identity:
         return
     if ctx.data_received:
         local_save = ctx.game_interface.update_save()
@@ -511,6 +520,6 @@ async def handle_save(ctx: "Context") -> None:
             ctx.data_received = False
             ctx.skip_save_cooldown = False
             ctx.save_data = local_save
-            await ctx.send_msgs([ClientMessage.update_save(ctx.uuid, local_save)])
+            await ctx.send_msgs([ClientMessage.update_save(save_key, local_save)])
     else:
         logger.debug("Waiting for save data from server")

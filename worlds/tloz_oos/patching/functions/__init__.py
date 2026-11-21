@@ -10,11 +10,12 @@ from ...common.patching.RomData import RomData
 from ...common.patching.text import normalize_text
 from ...common.patching.Util import get_available_random_colors_from_sprite_name, simple_hex
 from ...common.patching.z80asm.Assembler import GameboyAddress, Z80Assembler
-from ...data.Constants import (
+from ...data.constants import (
     COLLECT_CHEST,
     COLLECT_DIVE,
     COLLECT_DROP,
     COLLECT_TOUCH,
+    DUNGEON_NAMES,
     ITEM_GROUPS,
     OLD_MAN_RUPEE_VALUES,
     PORTAL_CONNECTIONS,
@@ -26,22 +27,25 @@ from ...data.Constants import (
     TREASURE_SPAWN_CHEST,
     TREASURE_SPAWN_INSTANT,
     TREASURE_SPAWN_POOF,
+    VANILLA_SHOP_PRICES,
+    SEASON_CHAOTIC,
 )
 from ...data.items import ITEMS_DATA
 from ...data.locations import LOCATIONS_DATA
 from ...options import (
     OracleOfSeasonsAnimalCompanion,
+    OracleOfSeasonsDungeonKeyType,
     OracleOfSeasonsFoolsOre,
     OracleOfSeasonsGoal,
     OracleOfSeasonsLinkedHerosCave,
-    OracleOfSeasonsMasterKeys,
     OracleOfSeasonsOldMenShuffle,
     OracleOfSeasonsShowDungeonsWithEssence,
     OracleOfSeasonsStartingPosition,
+    OracleOfSeasonsRandomizePuzzles,
 )
 from ...world import OracleOfSeasonsWorld
 from ..asm import asm_files
-from ..Constants import (
+from ..constants import (
     CALL_SCRIPT,
     DELAY_6,
     DIRECTION_STRINGS,
@@ -126,7 +130,7 @@ def get_asm_files(patch_data: dict[str, Any]) -> list[str]:
             files += asm_files["d11_in_samasa"]
         elif patch_data["options"]["linked_heros_cave"] & OracleOfSeasonsLinkedHerosCave.heros_cave:
             files += asm_files["d11_in_d0"]
-    if patch_data["options"]["randomize_puzzles"]:
+    if patch_data["options"]["randomize_puzzles"] != OracleOfSeasonsRandomizePuzzles.option_vanilla:
         files += asm_files["random_puzzles"]
 
     if get_settings()["tloz_oos_options"]["remove_music"]:
@@ -217,6 +221,9 @@ def define_compass_rooms_table(
             dungeon = item_subid
         elif item_id == 0x31:  # Boss Key
             dungeon = item_subid + 1
+        elif item_id == 0x5E:  # Unlocks
+            dungeon_name = item["item"].split(":")[0]
+            dungeon = DUNGEON_NAMES.index(dungeon_name)
 
         if dungeon != 0xFF:
             location_data = LOCATIONS_DATA[location_name]
@@ -299,6 +306,17 @@ def define_additional_tile_replacements(assembler: Z80Assembler, patch_data: dic
         ])
         # fmt: on
 
+    # Add only the relevant tile replacement, otherwise the top-right spot also gets dug out
+    seaside_location = patch_data["subrosia_seaside_location"]
+    if seaside_location == 0:
+        table.extend([0x01, 0x65, 0x20, 0x57, 0xe1])
+    elif seaside_location == 1:
+        table.extend([0x01, 0x66, 0x20, 0x56, 0xe1])
+    elif seaside_location == 2:
+        table.extend([0x01, 0x75, 0x20, 0x27, 0xe1])
+    elif seaside_location == 3:
+        table.extend([0x01, 0x76, 0x20, 0x24, 0xe1])
+
     assembler.add_floating_chunk("additionalTileReplacements", table)
 
 
@@ -312,7 +330,10 @@ def define_location_constants(
             patch_data["locations"][location_name] = {"item": "Ore Chunks (50)"}
 
     # Define shop prices as constants
-    for symbolic_name, price in patch_data["shop_prices"].items():
+    shop_prices: dict[str, int] = patch_data["shop_prices"]
+    for symbolic_name, price in VANILLA_SHOP_PRICES.items():
+        if symbolic_name in shop_prices:
+            price = shop_prices[symbolic_name]
         assembler.define_byte(f"shopPrices.{symbolic_name}", RUPEE_VALUES[price])
 
     for location_name, location_data in LOCATIONS_DATA.items():
@@ -320,12 +341,10 @@ def define_location_constants(
             continue
 
         symbolic_name = location_data["symbolic_name"]
-        if location_name in patch_data["locations"]:
-            item: dict[str, str | bool] = patch_data["locations"][location_name]
-        else:
-            # Put a fake item for disabled locations, since they are unreachable anyway
-            item = {"item": "Friendship Ring"}
+        if location_name not in patch_data["locations"]:
+            continue
 
+        item: dict[str, str | bool] = patch_data["locations"][location_name]
         item_id, item_subid = get_item_id_and_subid(item_data, item)
         assembler.define_byte(f"locations.{symbolic_name}.id", item_id)
         assembler.define_byte(f"locations.{symbolic_name}.subid", item_subid)
@@ -368,7 +387,7 @@ def define_option_constants(assembler: Z80Assembler, patch_data: dict[str, Any])
         pos_y = 0x68
         pos_x = 0x68
     elif options["start_position"] == OracleOfSeasonsStartingPosition.option_temple_of_seasons:
-        assembler.define_byte("option.warpingSeason", patch_data["default_seasons"]["HORON_VILLAGE"])
+        assembler.define_byte("option.warpingSeason", SEASON_CHAOTIC)
         assembler.define_byte("temple_start", 0x01)
         group = 0x01
         room = 0x05
@@ -424,12 +443,12 @@ def define_option_constants(assembler: Z80Assembler, patch_data: dict[str, Any])
     keysanity = patch_data["options"]["keysanity_small_keys"] or patch_data["options"]["keysanity_boss_keys"]
     assembler.define_byte("option.customCompassChimes", 1 if keysanity else 0)
 
-    master_keys_as_boss_keys = patch_data["options"]["master_keys"] == OracleOfSeasonsMasterKeys.option_all_dungeon_keys
+    master_keys_as_boss_keys = (
+        patch_data["options"]["dungeon_key_type"] == OracleOfSeasonsDungeonKeyType.option_master_key_all_dungeon_keys
+    )
     assembler.define_byte("option.smallKeySprite", 0x43 if master_keys_as_boss_keys else 0x42)
 
     scrubs_all_refill = not patch_data["options"]["shuffle_business_scrubs"]
-    if scrubs_all_refill:
-        assembler.define_byte("scrubRefillOnly", 0x01)
     assembler.define_byte("var.spoolSwampScrubSubid", 0x04 if scrubs_all_refill else 0x00)
     assembler.define_byte("var.samasaCaveScrubSubid", 0x04 if scrubs_all_refill else 0x01)
     assembler.define_byte("var.d2ScrubSubid", 0x04 if scrubs_all_refill else 0x02)
@@ -609,15 +628,10 @@ def apply_miscellaneous_options(rom: RomData, patch_data: dict[str, Any]) -> Non
         rom.write_byte(GameboyAddress(0x09, 0x4F39).address_in_rom(), 0xA7)
         rom.write_byte(GameboyAddress(0x09, 0x4F3B).address_in_rom(), 0xE7)
 
-    # If horon shop 3 is set to be a renewable Potion, manually edit the shop flag for
-    # that slot to zero to make it stay after buying
-    if patch_data["options"]["enforce_potion_in_shop"]:
-        rom.write_byte(GameboyAddress(0x08, 0x4CFB).address_in_rom(), 0x00)
-
-    if patch_data["options"]["master_keys"] != OracleOfSeasonsMasterKeys.option_disabled:
+    if patch_data["options"]["dungeon_key_type"] >= OracleOfSeasonsDungeonKeyType.option_master_key_all_small_keys:
         # Remove small key consumption on keydoor opened
         rom.write_byte(GameboyAddress(0x06, 0x4357).address_in_rom(), 0x00)
-    if patch_data["options"]["master_keys"] == OracleOfSeasonsMasterKeys.option_all_dungeon_keys:
+    if patch_data["options"]["dungeon_key_type"] == OracleOfSeasonsDungeonKeyType.option_master_key_all_dungeon_keys:
         # Remove boss key consumption on boss keydoor opened
         rom.write_word(GameboyAddress(0x06, 0x434F).address_in_rom(), 0x0000)
     rom.write_byte(GameboyAddress(0x0A, 0x46ED).address_in_rom(), patch_data["options"]["gasha_nut_kill_requirement"])

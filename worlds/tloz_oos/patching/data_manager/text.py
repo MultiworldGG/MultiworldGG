@@ -1,13 +1,14 @@
 import json
 from pathlib import Path
-
 from typing import Any
 
 import Utils
-from ...common.patching.RomData import RomData
-from ...common.patching.Util import simple_hex
+
 from ...common.patching.data_manager.text import get_text_data
+from ...common.patching.RomData import RomData
 from ...common.patching.text import normalize_text
+from ...common.patching.Util import simple_hex
+from .unlock_text import add_unlock_texts
 
 
 def load_modded_seasons_text_data() -> None | tuple[dict[str, str], dict[str, str]]:
@@ -64,11 +65,11 @@ def apply_text_edits(texts: dict[str, str]) -> None:
     texts["TX_0058"] = ("You got 🟥25\n"
                         "Ore Chunks⬜!")
 
-    # Brand-new texts, for 20 bombs
-    texts["TX_0094"] = texts["TX_004d"].replace("ten", "twenty")
-
+    # Brand-new texts
     texts["TX_0095"] = ("You got 🟥100\n"
                         "Ore Chunks⬜!")
+
+    add_unlock_texts(texts)
 
     # Trade items
     # Cuccodex is fine

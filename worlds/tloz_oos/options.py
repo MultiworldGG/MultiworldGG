@@ -11,13 +11,15 @@ from Options import (
     NamedRange,
     OptionGroup,
     PerGameCommonOptions,
+    PlandoBosses,
     Range,
     StartInventoryPool,
     Toggle,
     Visibility,
 )
 
-from .data.items import ITEMS_DATA
+from .data.dungeon_enums import BossName, DungeonName
+from .data.items import ITEMS_DATA, RING_LIST
 
 
 class OracleOfSeasonsGoal(Choice):
@@ -350,21 +352,23 @@ class OracleOfSeasonsShowDungeonsWithEssence(Choice):
     include_in_slot_data = True
 
 
-class OracleOfSeasonsMasterKeys(Choice):
+class OracleOfSeasonsDungeonKeyType(Choice):
     """
-    - Disabled: All dungeon keys must be obtained individually, just like in vanilla
-    - All Small Keys: Small Keys are replaced by a single Master Key for each dungeon which is capable of opening
-      every small keydoor for that dungeon
-    - All Dungeon Keys: the Master Key for each dungeon is also capable of opening the boss keydoor,
+    - Vanilla: All dungeon keys must be obtained individually
+    - Master Key All Small Keys: Small Keys are replaced by a single Master Key for each dungeon
+      which is capable of opening every small keydoor for that dungeon
+    - Master Key All Dungeon Keys: the Master Key for each dungeon is also capable of opening the boss keydoor,
       removing Boss Keys from the item pool
-    Master Keys placement is determined following the "Keysanity (Small Keys)" option.
+    - Unlocks: Small keys are all replaced by unlocks items that immediately open specific doors when obtained
+    Master Keys/Unlocks placement is determined following the "Keysanity (Small Keys)" option.
     """
 
-    display_name = "Master Keys"
+    display_name = "Dungeon Key Type"
 
-    option_disabled = 0
-    option_all_small_keys = 1
-    option_all_dungeon_keys = 2
+    option_vanilla = 0
+    option_unlocks = 1
+    option_master_key_all_small_keys = 2
+    option_master_key_all_dungeon_keys = 3
 
     default = 0
     include_in_patch = True
@@ -514,16 +518,23 @@ class OracleOfSeasonsGashaNutKillRequirement(NamedRange):
     include_in_patch = True
 
 
-class OracleOfSeasonsRandomizePuzzles(Toggle):
+class OracleOfSeasonsRandomizePuzzles(Choice):
     """
-    If enabled, randomize some puzzles and mini-games.
     Puzzles relying on owls will not have their logic affected, and puzzles will not require additional items.
     """
+
+    option_vanilla = 0
+    option_randomized_puzzles_and_minigames = 1
+    option_disabled_minigames = 2
+    alias_false = option_vanilla
+    alias_true = option_randomized_puzzles_and_minigames
 
     display_name = "Randomize Puzzles"
 
     include_in_patch = True
-    default = 1 if (datetime.now().month == 4) else 0  # Default on during april
+    default = (
+        option_randomized_puzzles_and_minigames if (datetime.now().month == 4) else option_vanilla
+    )  # Default on during april
 
 
 class OracleOfSeasonsLostWoodsItemSequence(DefaultOnToggle):
@@ -602,7 +613,7 @@ class OracleOfSeasonsRequiredRings(ItemSet):
     """
 
     display_name = "Required Rings"
-    valid_keys = frozenset(name for name, idata in ITEMS_DATA.items() if "ring" in idata)
+    valid_keys = frozenset(RING_LIST)
 
 
 class OracleOfSeasonsExcludedRings(ItemSet):
@@ -612,8 +623,10 @@ class OracleOfSeasonsExcludedRings(ItemSet):
     """
 
     display_name = "Excluded Rings"
-    default = frozenset(name for name, idata in ITEMS_DATA.items() if "ring" in idata and idata["ring"] == "useless")
-    valid_keys = frozenset(name for name, idata in ITEMS_DATA.items() if "ring" in idata)
+    default = frozenset(
+        str(name) for name, idata in ITEMS_DATA.items() if "ring" in idata and idata["ring"] == "useless"
+    )
+    valid_keys = frozenset(RING_LIST)
 
 
 class OracleOfSeasonsShopPrices(Choice):
@@ -637,6 +650,24 @@ class OracleOfSeasonsShopPrices(Choice):
     option_outrageous = 5
 
     default = 0
+
+
+class OracleOfSeasonsShuffleFreestandingItems(DefaultOnToggle):
+    """
+    Enable the shuffle of items that aren't in a chest
+    (except the vanilla D1 satchel location, which is always shuffled)
+    """
+
+    display_name = "Shuffle Freestanding Items"
+
+
+class OracleOfSeasonsIncludeTradeSequence(DefaultOnToggle):
+    """
+    Include the trade sequence in the randomization, lost woods pedestal always being randomized
+    (if enabled, each prerequisite and reward of the sequence will be shuffled)
+    """
+
+    display_name = "Shuffle Trade Sequence"
 
 
 class OracleOfSeasonsAdvanceShop(Toggle):
@@ -675,12 +706,11 @@ class OracleOfSeasonsFoolsOre(Choice):
 
 class OracleOfSeasonsEnforcePotionInShop(Toggle):
     """
-    When enabled, you are guaranteed to have a renewable Potion for 300 rupees inside Horon shop
+    When enabled, you are guaranteed to have a repeatable Potion for 300 rupees inside Horon shop
     """
 
     display_name = "Enforce Potion in Shop"
 
-    include_in_patch = True
     include_in_slot_data = True
 
 
@@ -734,14 +764,63 @@ class OracleOfSeasonsStartingMapsCompasses(Toggle):
     include_in_slot_data = True
 
 
-class OracleOfSeasonsShuffleBosses(Toggle):
+class OracleOfSeasonsShuffleBosses(PlandoBosses):
     """
-    When enabled, all the dungeon bosses are shuffled together
+    Determines how bosses will be distributed:
+    Vanilla: Places each bosses where it belongs in vanilla
+    Shuffled: Each boss placed should not be a repeat of another
+
+    This supports boss plando in the format described by the generic documentation,
+    so "Gnarled Root Dungeon-Medusa;Sword & Shield Dungeon-Aquamentus;Vanilla" is a valid option value
+    Note that bosses cannot be duplicated
     """
+    # Chaos: Bosses can be placed anywhere
+    # Singularity: A single boss will try being placed everywhere (d3 may have a different one)
+
+
+    option_vanilla = 0
+    option_shuffled = 1
+    # option_chaos = 2
+    # option_singularity = 3
+    alias_false = option_vanilla
+    alias_true = option_shuffled
 
     display_name = "Shuffle Bosses"
 
     include_in_slot_data = True
+    bosses = frozenset(
+        (
+            BossName.d1_boss,
+            BossName.d2_boss,
+            BossName.d3_boss,
+            BossName.d4_boss,
+            BossName.d5_boss,
+            BossName.d6_boss,
+            BossName.d7_boss,
+            BossName.d8_boss,
+        )
+    )
+
+    locations = frozenset(
+        (
+            DungeonName.d1,
+            DungeonName.d2,
+            DungeonName.d3,
+            DungeonName.d4,
+            DungeonName.d5,
+            DungeonName.d6,
+            DungeonName.d7,
+            DungeonName.d8,
+        )
+    )
+
+    # duplicate_bosses = True
+
+    @classmethod
+    def can_place_boss(cls, boss: str, location: str) -> bool:
+        if location == DungeonName.d3:
+            return boss != BossName.d4_boss and boss != BossName.d5_boss
+        return True
 
 
 class OracleOfSeasonsRandomizeAi(Toggle):
@@ -770,6 +849,14 @@ class OracleOfSeasonsRemoveItemsFromPool(ItemDict):
 
     display_name = "Remove Items from Pool"
     verify_item_name = False
+
+
+class OracleOfSeasonsIncludeLinkedItems(DefaultOnToggle):
+    """
+    When enabled, adds bombchus, Biggoron's Sword, a sword and a shield to the item pool
+    """
+
+    display_name = "Linked Items"
 
 
 class OracleOfSeasonsIncludeCrossItems(Toggle):
@@ -886,7 +973,14 @@ class OracleOfSeasonsOptions(PerGameCommonOptions):
     logic_difficulty: OracleOfSeasonsLogicDifficulty
     death_link: OracleOfSeasonsDeathLink
 
+    # Items
+    linked_items: OracleOfSeasonsIncludeLinkedItems
+    cross_items: OracleOfSeasonsIncludeCrossItems
+    fools_ore: OracleOfSeasonsFoolsOre
+
     # Optional locations
+    freestanding: OracleOfSeasonsShuffleFreestandingItems
+    trade_sequence: OracleOfSeasonsIncludeTradeSequence
     advance_shop: OracleOfSeasonsAdvanceShop
     shuffle_old_men: OracleOfSeasonsOldMenShuffle
     shuffle_business_scrubs: OracleOfSeasonsBusinessScrubsShuffle
@@ -918,7 +1012,7 @@ class OracleOfSeasonsOptions(PerGameCommonOptions):
     duplicate_seed_tree: OracleOfSeasonsDuplicateSeedTree
 
     # Dungeon items
-    master_keys: OracleOfSeasonsMasterKeys
+    dungeon_key_type: OracleOfSeasonsDungeonKeyType
     keysanity_small_keys: OracleOfSeasonsSmallKeyShuffle
     keysanity_boss_keys: OracleOfSeasonsBossKeyShuffle
     keysanity_maps_compasses: OracleOfSeasonsMapCompassShuffle
@@ -947,8 +1041,6 @@ class OracleOfSeasonsOptions(PerGameCommonOptions):
     enforce_potion_in_shop: OracleOfSeasonsEnforcePotionInShop
     required_rings: OracleOfSeasonsRequiredRings
     excluded_rings: OracleOfSeasonsExcludedRings
-    fools_ore: OracleOfSeasonsFoolsOre
-    cross_items: OracleOfSeasonsIncludeCrossItems
     combat_difficulty: OracleOfSeasonsCombatDifficulty
     bird_hint: OracleOfSeasonsBirdHint
     shuffle_bosses: OracleOfSeasonsShuffleBosses
@@ -972,6 +1064,7 @@ oos_option_groups = [
     OptionGroup(
         "Items",
         [
+            OracleOfSeasonsIncludeLinkedItems,
             OracleOfSeasonsIncludeCrossItems,
             OracleOfSeasonsFoolsOre,
         ],
@@ -979,6 +1072,8 @@ oos_option_groups = [
     OptionGroup(
         "Optional Locations",
         [
+            OracleOfSeasonsShuffleFreestandingItems,
+            OracleOfSeasonsIncludeTradeSequence,
             OracleOfSeasonsAdvanceShop,
             OracleOfSeasonsOldMenShuffle,
             OracleOfSeasonsBusinessScrubsShuffle,
@@ -1022,7 +1117,7 @@ oos_option_groups = [
     OptionGroup(
         "Dungeon Items",
         [
-            OracleOfSeasonsMasterKeys,
+            OracleOfSeasonsDungeonKeyType,
             OracleOfSeasonsSmallKeyShuffle,
             OracleOfSeasonsBossKeyShuffle,
             OracleOfSeasonsMapCompassShuffle,

@@ -2,12 +2,12 @@ import inspect
 import logging
 from dataclasses import dataclass, field
 from functools import cached_property
-from typing import Callable, TypeVar, Any, ClassVar, Generic, Awaitable, overload, cast
+from typing import Callable, TypeVar, ClassVar, Generic, Awaitable, overload, cast
 
 from ..common import ClientComponent
 from ..common_addresses import AREA_DATA_ID, is_actively_playing
 from ..type_aliases import TCSContext
-
+from ...slot_data import TCSSlotDataOptions
 
 debug_logger = logging.getLogger("TCS Debug")
 
@@ -16,6 +16,8 @@ debug_logger = logging.getLogger("TCS Debug")
 class Event:
     _subclasses: "ClassVar[dict[str, type[Event]]]" = {}
     context: TCSContext
+    no_logging: ClassVar[bool] = False
+    """If true, logging will be disabled for this event type. This is useful for events that are fired frequently."""
 
     def __init_subclass__(cls, **kwargs):
         Event._subclasses[cls.__name__] = cls
@@ -27,6 +29,7 @@ class Event:
 
 _Subscriber = TypeVar("_Subscriber")
 _T = TypeVar("_T")
+_SENTINEL = object()
 
 
 @dataclass
@@ -37,8 +40,7 @@ class EventManager:
     def fire_event(self, event: Event):
         event_type = type(event)
 
-        # The tick event fires too frequently for logging.
-        if event_type is not OnGameWatcherTickEvent:
+        if not event_type.no_logging:
             debug_logger.info("Firing event %s", event)
 
         if event_type in self.async_subscriptions:
@@ -51,8 +53,7 @@ class EventManager:
         """Fire an event, but async, so that the loop awaits before calling each subscribed method."""
         event_type = type(event)
 
-        # The tick event fires too frequently for logging.
-        if event_type is not OnGameWatcherTickEvent:
+        if not event_type.no_logging:
             debug_logger.info("Firing async event %s", event)
 
         for async_subscriber in self.async_subscriptions.get(event_type, ()):
@@ -200,24 +201,22 @@ class OnAreaChangeEvent(Event):
 @dataclass
 class OnReceiveSlotDataEvent(Event):
     """Called when slot data is received."""
-    slot_data: dict[str, Any]
+    slot_data: TCSSlotDataOptions
     first_time_setup: bool
     """Whether first-time setup should be performed."""
-    generator_version: tuple[int, int, int] = field(init=False)
-    """The version of the Lego Star Wars: TCS apworld that generated the multiworld"""
 
-    def __post_init__(self):
-        # Setting the version is structured this way to satisfy type checking.
-        major, minor, patch = self.slot_data["apworld_version"]
-        assert isinstance(major, int)
-        assert isinstance(minor, int)
-        assert isinstance(patch, int)
-        self.generator_version = (major, minor, patch)
+    @property
+    def generator_version(self) -> tuple[int, int, int]:
+        """The version of the Lego Star Wars: TCS apworld that generated the multiworld"""
+        return self.slot_data.apworld_version.value
 
 
 @dataclass
 class OnGameWatcherTickEvent(Event):
     """Called on each tick of the game watcher loop, while loaded into the game."""
+    # The tick event fires too frequently for logging.
+    no_logging = True
+
     tick_count: int
     """
     A strictly increasing tick count of game watcher ticks while loaded into the game.
@@ -238,7 +237,29 @@ class OnGameWatcherTickEvent(Event):
 @dataclass
 class OnPlayerCharacterIdChangeEvent(Event):
     """Called whenever P1 or P2's character ID changes."""
+    # The event can fire quite frequently, especially when P2's AI gets stuck in some places and constantly spams
+    # character swaps.
+    no_logging = True
     old_p1_character_id: int | None
     old_p2_character_id: int | None
     new_p1_character_id: int | None
     new_p2_character_id: int | None
+
+
+@dataclass
+class OnGameWatcherDisconnectedTickEvent(Event):
+    """Similar to OnGameWatcherTickEvent, but fired when there is no slot/seed info. This is fired much less frequently
+    than the tick event."""
+    # The event is still fired around once per second, so don't log it.
+    no_logging = True
+
+
+@dataclass
+class OnUnhookFromGameEvent(Event):
+    """Fired when disconnecting the client from the game.
+
+    This may happen when:
+    - The game has been closed
+    - An error has occurred when communicating with the game, so the connection will be re-established
+    - The client is closing
+    """

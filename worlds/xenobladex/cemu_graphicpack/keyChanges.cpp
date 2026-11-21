@@ -20,11 +20,22 @@ IsReady = 0x021ccdec
 # affinity quests no longer lock you out of other quests
 0x022ce6c4 = li r3,0
 
+# affinity quests ignore required members
+0x02266418 = nop
+0x02266438 = li r3,1
+# affinity quests ignore excluded members
+0x0226663c = nop
+0x0226665c = li r3,1
+# affinity quests ignore max party size
+0x02266fe0 = nop
+
 # disable lock party from affinity quests
 0x02296518 = nop
 0x02290ca4 = nop
 # disable lock for elma on new game
 0x027c5004 = li r4,0
+# disable lock for new recruit quests
+0x027908ac = li r4,0
 
 # max out fuel for doll with one refill
 0x025ce838 = nop
@@ -116,7 +127,7 @@ addItem = 0x02365934
 
 0x02814cf4 = b _prepareBladeTerminal # in loadEnd::ScriptManager
 
-# overwrite setLocal for blade flag
+# overwrite setLocal for blade flag & setting party size limit
 0x0228f018 = bl _setLocal
 
 # add new run speed
@@ -995,13 +1006,26 @@ void _preItemLoopAdjustmentWrapper(){
 	goto *&_itemLoopStart;
 }
 
-// Overwrite the unlock BladeLvl flag from add.cpp
 void _setLocal(const int width, const int position){
 	register int value asm("r5");
+
+	// Overwrite the unlock BladeLvl flag from add.cpp
 	if(width == 2 && value == 1){
 		if((position == _collepediaFlag || position == _bladeFlag) && !_hasPreciousItem(24 + 5 - 1))
 			value = 0;
 	}
+
+	// Overwrite the party size limit
+	int _partySpareSlotsFlag = 0x128d;
+	if(width == 2 && position == _partySpareSlotsFlag)
+		value = 0;
+	
+	// Ignore for now because i dont know the value and its hard to test.
+	// Set character availability to always
+	// this should avoid you from inviting other party members when they are excluded by affinity quests
+	// int _partyBase = 0x7613, characterLength = 18;
+	// if(width == 1 && position > _partyBase && position <= _partyBase + characterLength)
+	// 	value = 1;
 
 	// original instruction from 0x0228f018
 	asm("lis r9, 0x103a");

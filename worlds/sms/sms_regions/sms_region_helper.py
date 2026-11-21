@@ -127,6 +127,8 @@ class Requirements(NamedTuple):
     manual_none: bool = (
         False  # Only matters for higher difficulties. Prevents fallback requirements.
     )
+    fluddless_only: bool = False  # skip_forward req that only applies in fluddless mode,
+    # for physical blockers the ticket itself removes in ticket mode (Sirena's pineapple).
 
     def is_empty(self):
         return (
@@ -204,29 +206,29 @@ def get_correct_requirements(
         case 1:
             return (
                 item.hard
-                if (item.hard != None and item.hard.count != 0)
+                if (item.hard is not None and len(item.hard) > 0)
                 else item.requirements
             )
         case 2:
             return (
                 item.advanced
-                if (item.advanced != None and item.advanced.count != 0)
+                if (item.advanced is not None and len(item.advanced) > 0)
                 else (
                     item.hard
-                    if (item.hard != None and item.hard.count != 0)
+                    if (item.hard is not None and len(item.hard) > 0)
                     else item.requirements
                 )
             )
         case 3:
             return (
                 item.tears
-                if (item.tears != None and item.tears.count != 0)
+                if (item.tears is not None and len(item.tears) > 0)
                 else (
                     item.advanced
-                    if (item.advanced != None and item.advanced.count != 0)
+                    if (item.advanced is not None and len(item.advanced) > 0)
                     else (
                         item.hard
-                        if (item.hard != None and item.hard.count != 0)
+                        if (item.hard is not None and len(item.hard) > 0)
                         else item.requirements
                     )
                 )
@@ -343,6 +345,11 @@ SPRAY_OR_HOVER_OR_ROCKET: list[list[str]] = [
     [NozzleType.spray],
     [NozzleType.hover],
     [NozzleType.rocket],
+]
+SPRAY_OR_HOVER_OR_YOSHI: list[list[str]] = [
+    [NozzleType.spray],
+    [NozzleType.hover],
+    [NozzleType.yoshi],
 ]
 ANY_FLUDD: list[list[str]] = [
     [NozzleType.spray],

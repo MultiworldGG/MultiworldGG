@@ -207,12 +207,12 @@ Some of these are enabled through graphic packs. Some of them can be configured.
 - Segments are touchable by default.
 - Materials drop more often.
 - Drop boxes appear more often.
-- Affinity missions dont lock your party and you can accept as many as you want.
+- Affinity missions dont lock your party and you can accept as many as you want and no special characters required or disallowed.
 - Swim Speed is increased.
 - Flight Speed is increased.
 
 ## What's next?
-- Add Shop items to the available locations.
+- More logic for the shop.
 - Add Schematics/Blueprints to the item pool.
 - Add Basic Quests to the available locations.
 

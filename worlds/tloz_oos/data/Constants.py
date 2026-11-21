@@ -1,5 +1,7 @@
 from enum import IntEnum
 
+from .items import ItemName
+
 ROM_HASH = "f2dc6c4e093e4f8c6cbea80e8dbd62cb"
 AGES_ROM_HASH = "c4639cc61c049e5a085526bb6cac03bb"
 
@@ -39,6 +41,65 @@ SEED_ITEMS = [
     "Mystery Seeds",
 ]
 
+UNLOCK_ITEMS = {
+    "Hero's Cave": ["Hero's Cave: Keydoor Unlock"],
+    "Gnarled Root Dungeon": [
+        "Gnarled Root Dungeon: Keydoor Left of Entrance Unlock",
+        "Gnarled Root Dungeon: Miniboss Keydoor Unlock",
+    ],
+    "Snake's Remains": [
+        "Snake's Remains: Keydoor to Hardhats Unlock",
+        "Snake's Remains: Miniboss Keydoor Unlock",
+        "Snake's Remains: Spinner Keyblock Unlock",
+    ],
+    "Poison Moth's Lair": [
+        ItemName.poison_moth_lair_keydoor_to_mimics_unlock,
+        ItemName.poison_moth_lair_miniboss_keydoor_unlock,
+    ],
+    "Dancing Dragon Dungeon": [
+        ItemName.dancing_dragon_dungeon_entrance_keydoor_unlock,
+        "Dancing Dragon Dungeon: Minecart Keyblock Unlock",
+        "Dancing Dragon Dungeon: Crumbling Floor Keydoor Unlock",
+        "Dancing Dragon Dungeon: Pool Keyblock Unlock",
+        "Dancing Dragon Dungeon: Boss Keyblock Unlock",
+    ],
+    "Unicorn's Cave": [
+        "Unicorn's Cave: Magnet Gloves Keydoor Unlock",
+        "Unicorn's Cave: Miniboss Keydoor Unlock",
+        "Unicorn's Cave: Wall of Flames Keydoor Unlock",
+        "Unicorn's Cave: Basement Keydoor Unlock",
+        "Unicorn's Cave: Boss Keyblock Unlock",
+    ],
+    "Ancient Ruins": [
+        "Ancient Ruins: Entrance Keyblock Unlock",
+        "Ancient Ruins: Right Path Keydoor Unlock",
+        "Ancient Ruins: Miniboss Keydoor Unlock",
+    ],
+    "Explorer's Crypt": [
+        "Explorer's Crypt: Entrance Keydoor Unlock",
+        "Explorer's Crypt: Keydoor to Enclosed Trampoline Unlock",
+        "Explorer's Crypt: Margret's Keydoor Unlock",
+        "Explorer's Crypt: Flying Tile Keyblock Unlock",
+        "Explorer's Crypt: Shining Blue Puzzle Keydoor Unlock",
+    ],
+    "Sword & Shield Dungeon": [
+        "Sword & Shield Dungeon: Entrance Keyblock Unlock",
+        "Sword & Shield Dungeon: Spinner Keydoor Unlock",
+        "Sword & Shield Dungeon: Miniboss Keydoor Unlock",
+        "Sword & Shield Dungeon: Ice Crystals Keydoor Unlock",
+        "Sword & Shield Dungeon: Lava Hole Keyblock Unlock",
+        "Sword & Shield Dungeon: Beamos Keydoor Unlock",
+        "Sword & Shield Dungeon: Boss Keyblock Unlock",
+    ],
+    "Linked Hero's Cave": [
+        "Linked Hero's Cave: Floor 2 Keydoor Unlock",
+        "Linked Hero's Cave: Floor 3 Keyblock Unlock",
+        "Linked Hero's Cave: Floor 3 Keydoor Unlock",
+        "Linked Hero's Cave: Boomerang Maze Keydoor Unlock",
+        "Linked Hero's Cave: Final Challenge Keydoor Unlock",
+    ],
+}
+
 DUNGEON_NAMES = [
     "Hero's Cave",
     "Gnarled Root Dungeon",
@@ -55,7 +116,7 @@ DUNGEON_NAMES = [
 ]
 
 VALID_RUPEE_PRICE_VALUES = [1, 2, 5, 10, 20, 25, 30, 40, 50, 60, 70, 80, 100, 150, 200, 300, 400, 500, 900, 999]
-VALID_RUPEE_ITEM_VALUES = [5, 10, 20, 30, 50, 100, 200] # Exclude 1 from the valid values to be generated
+VALID_RUPEE_ITEM_VALUES = [5, 10, 20, 30, 50, 100, 200]  # Exclude 1 from the valid values to be generated
 VALID_ORE_ITEM_VALUES = [10, 25, 50, 100]
 MARKET_LOCATIONS = ["subrosianMarket2", "subrosianMarket3", "subrosianMarket4", "subrosianMarket5"]
 
@@ -119,6 +180,43 @@ OLD_MAN_RUPEE_VALUES = {
     "old man near d6": -200,
     "old man near holly's house": -50,
     "old man near mrs. ruul": -100,
+}
+
+FREESTANDING_LOCATIONS = {
+    "Horon Village: Item Behind Small Tree",
+    "Woods of Winter: Item Below Lake",
+    "Mt. Cucco: Item on Ledge",
+    "Eastern Suburbs: Item in Windmill Cave",
+    "Western Coast: Item in Graveyard",
+    "Spool Swamp: Item Amidst Currents in Spring",
+    "Temple Remains: Item in Cave Behind Rockslide",
+    "Horon Village: Item Behind Cracked Wall in Mayor's House",
+    "Subrosia: Item in House Above Strange Brothers Portal",
+    "Subrosia: Item in Basement to Tower of Spring",
+    "Holodrum Plain: Underwater Item Below Natzu Bridge",
+    "Horon Village: Item Inside Maku Tree (3+ Essences)",
+    "Horon Village: Item Inside Maku Tree (5+ Essences)",
+    "Horon Village: Item Inside Maku Tree (7+ Essences)",
+}
+
+TRADE_LOCATIONS = {
+    "Horon Village: Dr. Left Reward",
+    "North Horon: Malon Trade",
+    "Maple Trade",
+    "Holodrum Plain: Mrs. Ruul Trade",
+    "Subrosia: Subrosian Chef Trade",
+    "Goron Mountain: Biggoron Trade",
+    "Goron Mountain: Biggoron Secret",
+    "Sunken City: Ingo Trade",
+    "North Horon: Yelling Old Man Trade",
+    "Mt. Cucco: Talon Trade",
+    "Mt. Cucco: Chest Behind Talon",
+    "Sunken City: Syrup Trade",
+    "Sunken City: Syrup Shop #1",
+    "Sunken City: Syrup Shop #2",
+    "Sunken City: Syrup Shop #3",
+    "Horon Village: Tick Tock Trade",
+    "Eastern Suburbs: Guru-Guru Trade",
 }
 
 RUPEE_OLD_MAN_LOCATIONS = [
@@ -257,6 +355,12 @@ ITEM_GROUPS = {
     },
     "Essences": set(ESSENCES),
     "Jewels": {"Square Jewel", "Pyramid Jewel", "Round Jewel", "X-Shaped Jewel"},
+    "Rod of Seasons": {
+        ItemName.rod_of_seasons_spring.value,
+        ItemName.rod_of_seasons_summer.value,
+        ItemName.rod_of_seasons_autumn.value,
+        ItemName.rod_of_seasons_winter.value,
+    },
 }
 
 LOCATION_GROUPS = {

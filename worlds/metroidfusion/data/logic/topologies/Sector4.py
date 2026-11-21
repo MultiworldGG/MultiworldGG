@@ -197,7 +197,7 @@ Sector4SerrisZone.connections = [
             CanDoSimpleWallJump(),
             HasSpaceJump()
         ])
-    ]),
+    ], one_way=True),
     Connection(Sector4ReservoirVault, [
         HasSpeedBooster()
     ], one_way=True)
@@ -285,8 +285,9 @@ Sector4CargoHold.connections= [
 
 Sector4UpperSecurityZone.connections= [
     Connection(Sector4CargoHold, [
-        PONRRequirement("PONR - Enter Cargo Hold Nook", [
-            HasMorph()
+        HasMorph("Enter Cargo Hold Nook", [
+            CanScrewAttackUnderwater(),
+            PONRRequirement("PONR - Enter Cargo Hold Nook")
         ]),
     ], one_way=True),
     Connection(Sector4SecurityZone, [
@@ -646,8 +647,8 @@ Sector4UpperWaterZone.locations = [
 
 Sector4UpperSecurityZone.locations = [
     FusionLocation("Sector 4 (AQA) -- Yard Firing Range", False, [
-        CanDamageToughEnemy(),
-        CanPowerBomb(), # Requires two Power Bombs to kill a Yard
+        CanDamageToughEnemy(enemy_hp=(60*8)),
+        CanPowerBomb(power_bomb_ammo_needed=2), # Requires two Power Bombs to kill a Yard
         CanScrewAttackUnderwater(),
         Requirement("Pacifist", energy_tanks_needed=level_3_e_tanks)
     ])

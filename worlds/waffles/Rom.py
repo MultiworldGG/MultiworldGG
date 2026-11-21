@@ -651,7 +651,31 @@ class WafflePatchExtension(APPatchExtension):
 
         if options["veloz"] == 0x01:
             rom[0x2273] = 0x00
-        
+
+        # Ugly hack to disable destruction on all tiles
+        rom[0x26679] = 0x4C
+        rom[0x2667A] = 0x84
+        rom[0x2667B] = 0xE6
+
+        # Ugly hack to move CI2 last Dragon Coin to be right on the goal tape
+        CI2_SUB_LEVEL_DATA = 0x36C6B
+        # Blue Switch Palace bridge
+        rom[CI2_SUB_LEVEL_DATA+0x00] = 0x78 | 0x80    # 32
+        rom[CI2_SUB_LEVEL_DATA+0x01] = 0x24
+        rom[CI2_SUB_LEVEL_DATA+0x02] = 0x03
+        # Ledge edge
+        rom[CI2_SUB_LEVEL_DATA+0x03] = 0x38     # 13
+        rom[CI2_SUB_LEVEL_DATA+0x04] = 0x38
+        rom[CI2_SUB_LEVEL_DATA+0x05] = 0x23
+        # Goal Tape
+        rom[CI2_SUB_LEVEL_DATA+0x06] = 0x2F     # 15
+        rom[CI2_SUB_LEVEL_DATA+0x07] = 0x5D
+        rom[CI2_SUB_LEVEL_DATA+0x08] = 0x91
+        # Dragon Coin
+        rom[CI2_SUB_LEVEL_DATA+0x09] = 0x16
+        rom[CI2_SUB_LEVEL_DATA+0x0A] = 0x0E
+        rom[CI2_SUB_LEVEL_DATA+0x0B] = 0x41
+
         return bytes(rom)
 
 class WaffleProcedurePatch(APProcedurePatch, APTokenMixin):

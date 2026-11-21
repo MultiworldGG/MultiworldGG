@@ -1,11 +1,8 @@
 # Lego Star Wars: The Complete Saga
 
-This MultiworldGG randomizer implementation is playable, but is a work in progress. This notice will be removed once the
-logic has been rewritten from scratch, into a format that is more suitable for MultiworldGG.
-
 ## What does randomization do to this game?
 
-Story mode is skipped for Chapters within an Episode, which should always be played in Free Play.
+All levels with Free Play are played in Free Play instead of Story mode.
 
 To unlock a Chapter, typically, Story Mode characters for that Chapter must be acquired, but this can be changed in the
 options to other characters or 'Chapter Unlock' items instead. Optionally, an Episode Unlock item must also be acquired.
@@ -31,7 +28,7 @@ character that would have been unlocked if the Chapter had been completed in Sto
 
 Completing the True Jedi for a Chapter can be a location to check.
 
-Every 1-10 number of Minikits collected in a Chapter can be a check.
+Each unique Minikit collected in a Chapter can be a check.
 
 Completing Bonus levels and watching the Indiana Jones trailer can be locations to check. Additional checks can be sent
 for each Story mode character that would have been unlocked if the Bonus had been completed in vanilla.
@@ -40,12 +37,22 @@ Riding unique creatures/turrets/vehicles can be locations to check.
 
 ## What other changes are made to the game?
 
+The pre-unlocked hints in the Cantina Hints Shop are updated to provide information on what levels and goals are enabled.
+
 Purchases in the Characters shop and Extras shop will not award their vanilla Characters/Extras and will display the
 name and classification of the item that is at that shop slot.
 
 Slots in the Characters shop that would normally unlock upon completing Story mode in every Chapter have been changed to
 either unlock once all enabled Episodes are unlocked, or once 6 'Episode Completion Token' items have been received.
 The unlock condition is controlled by an option in the game yaml.
+
+Standing in front of a locked Chapter door will display what items are missing to unlock that Chapter.
+
+All Episode doors in the Cantina that contain enabled levels are forced open, even if you have no Chapters unlocked within
+that Episode yet.
+
+The automatically picked characters for your Free Play roster are expanded to ensure you have access to logically relevant
+characters. This may be configurable in the future.
 
 ## What does another world's item look like in Lego Star Wars: The Complete Saga?
 
@@ -77,10 +84,10 @@ performing that action.
 
 ## Known Issues
 
-### Logic
+### Long load time returning to the Cantina if entering Story mode by mistake
 
-The logic is quite basic and may be overly restrictive (you can get a lot of checks out-of-logic). Work is ongoing to
-rewrite the logic to fix issues and enable more randomization options, such as individual Minikit logic.
+If you mistakenly enter a level in Story mode, that should instead be played in Free Play, you will be loaded back into
+the Cantina, but this load can leave you on a black screen for as long as the cutscene that was playing would have lasted. 
 
 ### Cantina Episode door lights
 
@@ -103,7 +110,7 @@ to be picked back up.
 Collecting studs while an in-game message is displayed will play the sound for collecting Blue/Purple studs, but the
 received value of the collected studs will be normal.
 
-In some cases, the Double Score Zone background audio can start playing when in-game messages are displayed.
+In maps containing a Double Score Zone, the Double Score Zone background audio plays when in-game messages are displayed.
 
 ### 'All Episodes' Character unlocks
 

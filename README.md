@@ -235,7 +235,7 @@ Currently, the following games are supported:
 * Tunic
 * UFO 50
 * Ultrakill
-* Undertale
+* Undertale (Beta)
 * Uncanny Cat Golf
 * Vampire Survivors
 * VVVVVV

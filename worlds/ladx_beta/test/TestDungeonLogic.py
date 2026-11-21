@@ -1,6 +1,7 @@
 from . import LADXTestBase
 
-from ..Items import ItemName
+from ..Items import ladxr_to_ap_item_name as item_name
+from ..LADXR.locations.items import *
 
 class TestD6(LADXTestBase):
     # Force keys into pool for testing
@@ -9,8 +10,16 @@ class TestD6(LADXTestBase):
     }
 
     def test_keylogic(self):
-        keys = self.get_items_by_name(ItemName.KEY6)
-        self.collect_by_name([ItemName.FACE_KEY, ItemName.HOOKSHOT, ItemName.POWER_BRACELET, ItemName.BOMB, ItemName.PEGASUS_BOOTS, ItemName.FEATHER, ItemName.FLIPPERS])
+        keys = self.get_items_by_name(item_name[KEY6])
+        self.collect_by_name([
+            item_name[FACE_KEY],
+            item_name[HOOKSHOT],
+            item_name[POWER_BRACELET],
+            item_name[BOMB],
+            item_name[PEGASUS_BOOTS],
+            item_name[FEATHER],
+            item_name[FLIPPERS],
+        ])
         # Can reach an un-keylocked item in the dungeon
         self.assertTrue(self.can_reach_location("L2 Bracelet Chest (Face Shrine)"))
 

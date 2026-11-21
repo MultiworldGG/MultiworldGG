@@ -12,8 +12,15 @@ if TYPE_CHECKING:
 regions: list[str] = [
     "Menu",
     "Shallows",
+    "Slime",
     "Ruins",
-    "Depths",
+    "Spider",
+    "Jelly",
+    "Sticks",
+    "Mallets",
+    "Lids",
+    "Potions",
+    "Bombs",
     "Boss"
 ]
 

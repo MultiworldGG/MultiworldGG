@@ -1,0 +1,46 @@
+from ...common.patching.text import normalize_text
+
+
+def add_unlock_texts(texts: dict[str, str]) -> None:
+    new_texts = {
+        "TX_0096": "The Keydoor in Hero's Cave was unlocked!",
+        "TX_0097": "The Keydoor Left of Entrance in Gnarled Root Dungeon was unlocked!",
+        "TX_0098": "The Miniboss Keydoor in Gnarled Root Dungeon was unlocked!",
+        "TX_0099": "The Keydoor to Hardhats in Snake's Remains was unlocked!",
+        "TX_009a": "The Miniboss Keydoor in Snake's Remains was unlocked!",
+        "TX_009b": "The Spinner Keyblock in Snake's Remains was unlocked!",
+        "TX_009c": "The Keydoor to Mimics in Poison Moth Lair was unlocked!",
+        "TX_009d": "The Miniboss Keydoor in Poison Moth Lair was unlocked!",
+        "TX_009e": "The Entrance Keydoor in Dancing Dragon Dungeon was unlocked!",
+        "TX_009f": "The Minecart Keyblock in Dancing Dragon Dungeon was unlocked!",
+        "TX_00a0": "The Crumbling Floor Keydoor in Dancing Dragon Dungeon was unlocked!",
+        "TX_00a1": "The Pool Keyblock in Dancing Dragon Dungeon was unlocked!",
+        "TX_00a2": "The Boss Keyblock in Dancing Dragon Dungeon was unlocked!",
+        "TX_00a3": "The Magnet Gloves Keydoor in Unicorn's Cave was unlocked!",
+        "TX_00a4": "The Miniboss Keydoor in Unicorn's Cave was unlocked!",
+        "TX_00a5": "The Wall of Flames Keydoor in Unicorn's Cave was unlocked!",
+        "TX_00a6": "The Basement Keydoor in Unicorn's Cave was unlocked!",
+        "TX_00a7": "The Boss Keyblock in Unicorn's Cave was unlocked!",
+        "TX_00a8": "The Entrance Keyblock in Ancient Ruins was unlocked!",
+        "TX_00a9": "The Right Path Keydoor in Ancient Ruins was unlocked!",
+        "TX_00aa": "The Miniboss Keydoor in Ancient Ruins was unlocked!",
+        "TX_00ab": "The Entrance Keydoor in Explorer's Crypt was unlocked!",
+        "TX_00ac": "The Keydoor to Enclosed Trampoline in Explorer's Crypt was unlocked!",
+        "TX_00ad": "The Margret's Keydoor in Explorer's Crypt was unlocked!",
+        "TX_00ae": "The Flying Tile Keyblock in Explorer's Crypt was unlocked!",
+        "TX_00af": "The Shining Blue Puzzle Keydoor in Explorer's Crypt was unlocked!",
+        "TX_00b0": "The Entrance Keyblock in Sword & Shield Dungeon was unlocked!",
+        "TX_00b1": "The Spinner Keydoor in Sword & Shield Dungeon was unlocked!",
+        "TX_00b2": "The Miniboss Keydoor in Sword & Shield Dungeon was unlocked!",
+        "TX_00b3": "The Ice Crystals Keydoor in Sword & Shield Dungeon was unlocked!",
+        "TX_00b4": "The Lava Hole Keyblock in Sword & Shield Dungeon was unlocked!",
+        "TX_00b5": "The Beamos Keydoor in Sword & Shield Dungeon was unlocked!",
+        "TX_00b6": "The Boss Keyblock in Sword & Shield Dungeon was unlocked!",
+        "TX_00b7": "The Floor 2 Keydoor in Linked Hero's Cave was unlocked!",
+        "TX_00b8": "The Floor 3 Keyblock in Linked Hero's Cave was unlocked!",
+        "TX_00b9": "The Floor 3 Keydoor in Linked Hero's Cave was unlocked!",
+        "TX_00ba": "The Boomerang Maze Keydoor in Linked Hero's Cave was unlocked!",
+        "TX_00bb": "The Final Challenge Keydoor in Linked Hero's Cave was unlocked!",
+    }
+    for key, text in new_texts.items():
+        texts[key] = normalize_text(text)

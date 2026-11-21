@@ -2,7 +2,8 @@ import json
 import typing
 from typing import Any, NamedTuple
 
-from BaseClasses import CollectionState, CollectionRule, Location, Region
+from BaseClasses import CollectionState, Location, Region, EntranceType
+from entrance_rando import disconnect_entrance_for_randomization
 from rule_builder.rules import Has, HasGroup, CanReachLocation, CanReachRegion, True_, False_, Rule
 from .items import item_data_table
 from .options import FirstRootNode, LogicDifficulty, NineSolsGameOptions
@@ -272,7 +273,19 @@ def create_regions(world: "NineSolsWorld") -> None:
         exit_connections = [cd for cd in connections_to_create if cd["from"] == region_name]
         for connection in exit_connections:
             rule = get_combined_rb_rule(connection, world)
-            world.create_entrance(region, mw.get_region(connection["to"], p), rule)
+            name = connection["portal_name"] if "portal_name" in connection else None
+            e = world.create_entrance(region, mw.get_region(connection["to"], p), rule, name)
+
+            if options.randomize_entrances and "portal_name" in connection:
+                # this connection is an ER-able "portal", so do GER setup
+                e.randomization_group = (connection["bow_hovers"] if "bow_hovers" in connection else 0)
+                if "one_way_target_name" in connection:
+                    e.randomization_type = EntranceType.ONE_WAY
+                    target_group = (connection["target_bow_hovers"] if "target_bow_hovers" in connection else None)
+                    disconnect_entrance_for_randomization(e, target_group, connection["one_way_target_name"])
+                else:
+                    e.randomization_type = EntranceType.TWO_WAY
+                    disconnect_entrance_for_randomization(e)  # two-way entrances don't use the target name arg
 
     # add access rules to the created locations
     for ld in locations_data:

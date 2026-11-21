@@ -183,3 +183,20 @@
 # Disable random position enemy failing, since it causes more issues than it solves
 # (This mostly broke the d11 pool room)
 11/5b09/: nop
+
+# Reequip items after Blaino, since there's no reason to stay unequipped
+0b/64ad/: |
+  dwbe reequipItemsBlaino
+  db script_nop
+
+0b//reequipItemsBlaino: |
+  db asm15
+  dw $5c49 ; scriptHelp.blainoScript_setLinkPositionAndState
+  db asm15
+  dw $5cf7 ; scriptHelp.reequipItems
+  dwbe $64b0 ; Go back to where we were
+
+# blaino normally unequips rings by setting bit 6, which turns the friendship
+# ring into the dev ring. don't do that.
+# 00/2376/: ld (hl),$ff
+# I can't find what this dev ring is, and setting the bit 6 is needed to unset it later when reequipping

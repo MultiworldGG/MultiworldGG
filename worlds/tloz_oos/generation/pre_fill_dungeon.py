@@ -3,7 +3,7 @@ from typing import cast
 from BaseClasses import MultiWorld
 from Fill import fill_restrictive
 
-from ..data.Constants import DUNGEON_NAMES
+from ..data.constants import DUNGEON_NAMES
 from ..data.locations import LOCATIONS_DATA
 from ..world import OracleOfSeasonsWorld
 
@@ -49,15 +49,22 @@ def stage_pre_fill_dungeon_items(multiworld: MultiWorld):
             if i == 9:
                 i = 11
             # Build a list of locations in this dungeon
-            dungeon_location_names = [name for name, loc in LOCATIONS_DATA.items()
-                                      if "dungeon" in loc and loc["dungeon"] == i]
-            dungeon_locations = [loc for loc in multiworld.get_locations(filling_player)
-                                 if loc.name in dungeon_location_names and not loc.locked]
+            dungeon_location_names = [
+                name for name, loc in LOCATIONS_DATA.items() if "dungeon" in loc and loc["dungeon"] == i
+            ]
+            dungeon_locations = [
+                loc
+                for loc in multiworld.get_locations(filling_player)
+                if loc.name in dungeon_location_names and not loc.locked
+            ]
 
             # From the list of all dungeon items that needs to be placed restrictively, only filter the ones for the
             # dungeon we are currently processing.
-            confined_dungeon_items = [item for item in filling_world.prog_pre_fill_items
-                                      if item.name.endswith(f"({DUNGEON_NAMES[i]})")]
+            confined_dungeon_items = [
+                item
+                for item in filling_world.prog_pre_fill_items
+                if item.name.endswith(f"({DUNGEON_NAMES[i]})") or item.name.startswith(DUNGEON_NAMES[i])
+            ]
             if len(confined_dungeon_items) != 0:
                 # This list might be empty with some keysanity options
 
@@ -74,15 +81,25 @@ def stage_pre_fill_dungeon_items(multiworld: MultiWorld):
                 collection_state.sweep_for_advancements()
                 # Perform a prefill to place confined items inside locations of this dungeon
                 filling_world.random.shuffle(dungeon_locations)
-                fill_restrictive(multiworld, collection_state, dungeon_locations, confined_dungeon_items,
-                                 single_player_placement=True, lock=True, allow_excluded=True)
+                fill_restrictive(
+                    multiworld,
+                    collection_state,
+                    dungeon_locations,
+                    confined_dungeon_items,
+                    single_player_placement=True,
+                    lock=True,
+                    allow_excluded=True,
+                )
                 for item in confined_dungeon_items:
                     assert item.location is not None
 
             # Now, work on the nonprog items
-            confined_dungeon_items = [item for item in filling_world.nonprog_pre_fill_items
-                                      if item.name.endswith(f"({DUNGEON_NAMES[i]})")]
-            for item in confined_dungeon_items:
+            confined_dungeon_items = [
+                item for item in filling_world.nonprog_pre_fill_items if item.name.endswith(f"({DUNGEON_NAMES[i]})")
+            ]
+            while confined_dungeon_items: # TODO: make it a normal for loop once 6524 is merged
                 location = dungeon_locations.pop()
-                assert location.item is None, "Why is this location filled?"
+                if location.item:
+                    continue # Complain that #6524 isn't merged
+                item = confined_dungeon_items.pop()
                 location.place_locked_item(item)

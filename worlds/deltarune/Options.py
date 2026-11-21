@@ -1,6 +1,6 @@
 from enum import StrEnum
 
-from Options import Choice, FreeText, Toggle, Range, PerGameCommonOptions, NamedRange, OptionGroup
+from Options import Choice, FreeText, Toggle, Range, PerGameCommonOptions, NamedRange, OptionGroup, ItemSet, ItemDict, LocationSet
 from dataclasses import dataclass
 
 
@@ -52,10 +52,11 @@ class OptionsCreatorReminder(Choice): # Yeah, I can't believe we need this eithe
     
     CONTEMPLATE THE TEXT ACCORDINGLY AND MAKE YOUR CHOICE.
 
-    (If you editing this with notepad or something instead of Options Creator, you can ignore this.)
+    (If you editing this with notepad or something instead of Options Creator, you can ignore the above.)
+    (Also a reminder to read the Q&A as listed on the GitHub Releases page! They provide futher insight on options/game changes.)
     """
 
-    display_name = "(Hover Over to) Read Option Description"
+    display_name = "(Hover Over to) Read Option Descriptions"
     option_understood = 0
 
 
@@ -129,7 +130,7 @@ class ExcludeTRankRockVideo(Toggle):
     """
     THE HIGHEST RANK OF THE CONCERTS WILL BE EXCLUDED FROM CONTAINING AN IMPORTANT ITEM.
 
-    (Of course, this only applies if you set Rocky Video Sanity to true.)
+    (Of course, this only applies if you set Rock Video Sanity to true.)
     """
 
     display_name = "Exclude T Rank for rock video"
@@ -141,7 +142,7 @@ class ExcludeZRankRockVideo(Toggle):
     THE LOWEST RANK OF THE CONCERTS WILL BE EXCLUDED FROM CONTAINING AN IMPORTANT ITEM.
 
     (Since Z-Rank is practically impossible on hard difficulty, those are not included.)
-    (Of course, this only applies if you set Rocky Video Sanity to true.)
+    (Of course, this only applies if you set Rock Video Sanity to true.)
     """
 
     display_name = "Exclude Z Rank for rock video"
@@ -220,7 +221,7 @@ class AllowDoomBoardWithoutAllCharacters(Toggle):
     *(If you want to disable this requirement, set this option to true.)*
     *(However, this will make it so that you might have to do fights such as the Knight with only one or two characters unlocked.)*
 
-    *(Of course, this only applies if you set Randomize Characters to true.)*
+    *(Of course, this only applies if you set Unlock Characters to true.)*
     """
 
     display_name = "Doom Board in logic without all characters"
@@ -278,16 +279,16 @@ class ChosenRoute(Choice):
     """
     CHOOSE THE ROUTE THAT YOU PREFER.
 
-    - **Normal Route** *Progress through the story normally.*
-    - **Weird Route** *Proceed through the "Weird Route" storyline. Can we rename this to Side B yet*
+    - **Normal Route** *Progress through the story normally. It doesn't matter who you do or don't recruit.*
+    - **Side B** *Proceed through the Side B storyline. (Also known as Weird Route)*
     - **All Recruits** *Progress through the story normally, but you have to recruit everyone to complete the chapter.*
     - **Both Routes** *Beat each chapter with All Recruits, as well as chapter 2 and 5 a second time for their Side B ending.*
     """
 
     display_name = "Chosen Route"
     option_all_recruits = 0
-    option_weird_route = 1
-    option_both_all_recruits_and_weird_route = 2
+    option_side_b = 1
+    option_both_all_recruits_and_side_b = 2
     option_normal_route = 3
     default = option_normal_route
 
@@ -297,7 +298,7 @@ class RecruitsSanity(Toggle):
     WILL GAINING RECRUITS COUNT AS LOCATIONS?
 
     (Forced enabled if All recruits is selected.)
-    (If you choose Weird Route, specifically the recruits in Cyber City will be force disabled.)
+    (If you choose Side B, specifically the recruits in Cyber City will be force disabled.)
     """
 
     display_name = "Recruits Sanity"
@@ -308,7 +309,7 @@ class LoseRecruitsSanity(Toggle):
     """
     WILL LOSING RECRUITS COUNT AS LOCATIONS?
 
-    (If you choose Weird Route, specifically the recruits you lose in Cyber City will be force enabled to avoid a generation fail.)
+    (If you choose Side B, specifically the recruits you lose in Cyber City will be force enabled to avoid a generation fail.)
     """
 
     display_name = "Lose recruits Sanity"
@@ -755,6 +756,13 @@ class ProgressiveNoelleWeapons(Toggle):
     display_name = "Progressive Noelle Weapons"
     default = 0
 
+class ProgressiveAreaUnlocks(Toggle):
+    """
+    ITEMS NEEDED TO PROGRESS WILL BE IN SEQUENTIAL ORDER OF NECESSITY.
+    """
+
+    display_name = "Progressive Area Unlocks"
+    default = 0
 
 class UnlockCharacters(Choice):
     """
@@ -859,7 +867,7 @@ class SpeedrunGlitchesAsLogic(Toggle):
     (All reasonable glitches will now be in logic.)
     (This includes: Wrong Warp, Bagel Overflow, interaction slide, etc.)
     (This doesn't includes: ARMS)
-    (This will also add locations that can be obtained with Singapore Wrong Warp in chapter 2 Weird Route.)
+    (This will also add locations that can be obtained with Singapore Wrong Warp in chapter 2 Side B.)
     (Do not forget to have multiple saves to keep access to earlier events that may not happen anymore if the plot value updates.)
     (Reminder that Bagel Overflow was re-implemented.)
     **(ONLY TURN THIS TO TRUE IF YOU ARE KNOWLEDGEABLE.)**
@@ -869,20 +877,32 @@ class SpeedrunGlitchesAsLogic(Toggle):
     default = 0
 
 
-class NoHitAsLogic(Toggle):
+class NoHitAsLogic(Choice):
     """
     SHOULD YOU HAVE NO CHARACTERS, TAKING NO DAMAGE WILL BE EXPECTED.
 
     (Fights or sections that require you no no-hit them will now be in logic.)
-    (This includes: Mike fight, Knight Climb, Gerson.)
-    (Reminder that Chapter 1 Lancer fight is always in logic no-hit.)
-    **(ONLY TURN THIS TO TRUE IF YOU ARE EXTREMELY SKILLED AT THE GAME.)**
-
-    *(Of course, this only applies if you set Unlock Characters to true.)*
+    (Easy: Chapter 1 Lancer Spade Brigade, First Lancer, Susie vs. Lancer, Tropical Starwalker Pink Coin, Chapter 4 Knight Climb)
+    (Hard: Mike fight, Chapter 2 Rouxls Fight, Aqua)
+    (Extreme: Hammer of Justice)
+    (Remember, Hammer of Justice without Susie also requires doing the extra attacks to gain stars.)
+    **(ONLY TURN THIS TO ON IF YOU ARE EXTREMELY SKILLED AT THE GAME.)**
+    *(And of course, this only applies if you set Unlock Characters to true.)*
     """
 
     display_name = "[HARD MODE] No Hit as Logic"
-    default = 0
+    option_none = 0
+    option_easy = 1
+    option_hard = 2
+    option_extreme = 3
+    default = option_easy
+
+
+class NoHitAsLogicOptions(StrEnum):
+    none = "None"
+    easy = "Easy"
+    hard = "Hard"
+    extreme = "Extreme"
 
 
 class AnnoyingFarmingAsLogic(Toggle):
@@ -900,16 +920,6 @@ class AnnoyingFarmingAsLogic(Toggle):
 
 deltarune_option_groups = [
     OptionGroup(
-        "Goal",
-        [
-            ChosenRoute,
-            RecruitsSanity,
-            LoseRecruitsSanity,
-            RandomizeSecretBosses,
-            MacGuffinExtra,
-        ],
-    ),
-    OptionGroup(
         "Chapters",
         [
             RandomizeChapters,
@@ -925,11 +935,9 @@ deltarune_option_groups = [
             IncludeChapter3,
             MacGuffinChapter3,
             RandomizeSWORDRoute,
-            ShadowMantleHolderAsSecretBoss,
             IncludeShadowMantle,
             ExcludeTRankBoard,
             ExcludeZRankBoard,
-            AllowDoomBoardWithoutAllCharacters,
             PhysicalChallengeRankSanity,
             ExcludeTRankPhysicalChallenge,
             ExcludeZRankPhysicalChallenge,
@@ -938,25 +946,19 @@ deltarune_option_groups = [
     OptionGroup("Chapter 4", [IncludeChapter4, MacGuffinChapter4, IncludeMike, ExcludeMikePlatinum]),
     OptionGroup("Chapter 5", [IncludeChapter5, MacGuffinChapter5]),
     OptionGroup(
-        "Items",
+        "Goal",
         [
-            IncludeHiddenItems,
-            IncludeSecretBossesItemsRequirement,
-            DoorKeyFromBrokenKeys,
-            MysteryKeyFromPinkCoins,
-            IncludeUnusedItems,
-            ProgressiveKrisWeapons,
-            ProgressiveSusieWeapons,
-            ProgressiveRalseiWeapons,
-            ProgressiveNoelleWeapons,
-            UnlockCharacters,
-            StartWithRandomCharacter,
-            UnlockFunGangActions,
+            ChosenRoute,
+            RecruitsSanity,
+            LoseRecruitsSanity,
+            MacGuffinExtra,
         ],
     ),
     OptionGroup(
         "Gameplay",
         [
+            HaveStarwalker,
+            ShuffleOST,
             BetterOdds,
             ItemBalancing,
             RemoveStartingEquipment,
@@ -967,8 +969,40 @@ deltarune_option_groups = [
         ],
     ),
     OptionGroup(
+        "Shadow Crystal/Secret Bosses",
+        [
+            RandomizeSecretBosses,
+            IncludeSecretBossesItemsRequirement,
+            DoorKeyFromBrokenKeys,
+            ShadowMantleHolderAsSecretBoss,
+            MysteryKeyFromPinkCoins,
+        ],
+    ),
+    OptionGroup(
+        "Items",
+        [
+            IncludeHiddenItems,
+            IncludeUnusedItems,
+            ProgressiveKrisWeapons,
+            ProgressiveSusieWeapons,
+            ProgressiveRalseiWeapons,
+            ProgressiveNoelleWeapons,
+            UnlockFunGangActions,
+            ProgressiveAreaUnlocks,
+        ],
+    ),
+    OptionGroup(
         "Logic Difficulty",
-        [SpeedrunGlitchesAsLogic, NoHitAsLogic, AnnoyingFarmingAsLogic],
+        [SpeedrunGlitchesAsLogic, AnnoyingFarmingAsLogic],
+    ),
+    OptionGroup(
+        "Logic Difficulty - Unlock Characters",
+        [
+            UnlockCharacters,
+            StartWithRandomCharacter,
+            NoHitAsLogic,
+            AllowDoomBoardWithoutAllCharacters,
+        ],
     ),
     OptionGroup("Links", [DeathLink, DeathLinkGroup, DamageLink, DamageLinkGroup]),
     OptionGroup(
@@ -991,15 +1025,6 @@ class DeltaruneOptions(PerGameCommonOptions):
     options_creator_reminder: OptionsCreatorReminder
     progression_balancing: ProgressionBalancing
     accessibility: Accessibility
-    have_starwalker: HaveStarwalker
-    shuffle_ost: ShuffleOST
-
-    # Goal
-    chosen_route: ChosenRoute
-    recruits_sanity: RecruitsSanity
-    lose_recruits_sanity: LoseRecruitsSanity
-    randomize_secret_bosses: RandomizeSecretBosses
-    macguffin_extra: MacGuffinExtra
 
     # Chapters
     randomize_chapters: RandomizeChapters
@@ -1019,14 +1044,12 @@ class DeltaruneOptions(PerGameCommonOptions):
     include_chapter_3: IncludeChapter3
     macguffin_chapter_3: MacGuffinChapter3
     randomize_sword_route: RandomizeSWORDRoute
-    shadow_mantle_holder_as_secret_boss: ShadowMantleHolderAsSecretBoss
     include_shadow_mantle: IncludeShadowMantle
     exclude_t_rank_board: ExcludeTRankBoard
     exclude_z_rank_board: ExcludeZRankBoard
     physical_challenge_rank_sanity: PhysicalChallengeRankSanity
     exclude_t_rank_physical_challenge: ExcludeTRankPhysicalChallenge
     exclude_z_rank_physical_challenge: ExcludeZRankPhysicalChallenge
-    allow_doom_board_without_all_characters: AllowDoomBoardWithoutAllCharacters
 
     # Chapter 4
     include_chapter_4: IncludeChapter4
@@ -1038,21 +1061,32 @@ class DeltaruneOptions(PerGameCommonOptions):
     include_chapter_5: IncludeChapter5
     macguffin_chapter_5: MacGuffinChapter5
 
-    # Items
-    include_hidden_items: IncludeHiddenItems
+    # Goal
+    chosen_route: ChosenRoute
+    recruits_sanity: RecruitsSanity
+    lose_recruits_sanity: LoseRecruitsSanity
+    macguffin_extra: MacGuffinExtra
+
+    # Secret Bosses
+    randomize_secret_bosses: RandomizeSecretBosses
     include_secret_bosses_items_requirement: IncludeSecretBossesItemsRequirement
+    shadow_mantle_holder_as_secret_boss: ShadowMantleHolderAsSecretBoss
     mysterykey_from_pink_coins: MysteryKeyFromPinkCoins
     door_key_from_broken_keys: DoorKeyFromBrokenKeys
+
+    # Items
+    include_hidden_items: IncludeHiddenItems
     include_unused_items: IncludeUnusedItems
     progressive_kris_weapons: ProgressiveKrisWeapons
     progressive_susie_weapons: ProgressiveSusieWeapons
     progressive_ralsei_weapons: ProgressiveRalseiWeapons
     progressive_noelle_weapons: ProgressiveNoelleWeapons
-    unlock_characters: UnlockCharacters
-    start_with_random_character: StartWithRandomCharacter
     unlock_fun_gang_actions: UnlockFunGangActions
+    progressive_area_unlocks: ProgressiveAreaUnlocks
 
     # Gameplay
+    have_starwalker: HaveStarwalker
+    shuffle_ost: ShuffleOST
     better_odds: BetterOdds
     remove_starting_equipment: RemoveStartingEquipment
     item_balancing: ItemBalancing
@@ -1063,8 +1097,13 @@ class DeltaruneOptions(PerGameCommonOptions):
 
     # Logic Difficulty
     speedrun_gliches_as_logic: SpeedrunGlitchesAsLogic
-    nohit_as_logic: NoHitAsLogic
     annoying_farming_as_logic: AnnoyingFarmingAsLogic
+
+    # Character Rando
+    unlock_characters: UnlockCharacters
+    start_with_random_character: StartWithRandomCharacter
+    nohit_as_logic: NoHitAsLogic
+    allow_doom_board_without_all_characters: AllowDoomBoardWithoutAllCharacters
 
     # Links
     death_link: DeathLink
@@ -1083,5 +1122,5 @@ class DeltaruneOptions(PerGameCommonOptions):
 
 options_presets = {
     "Classic All Recruits": {"chosen_route": "all_recruits", "recruits_sanity": True},
-    "Classic Weird Route": {"chosen_route": "weird_route", "recruits_sanity": False, "lose_recruits_sanity": True},
+    "Classic Side B": {"chosen_route": "side_b", "recruits_sanity": False, "lose_recruits_sanity": True},
 }

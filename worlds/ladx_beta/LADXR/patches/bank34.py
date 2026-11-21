@@ -114,12 +114,12 @@ def addBank34(rom, item_list):
     for item in item_list:
         if not item.custom_item_name:
             continue
-        assert item.room < TotalRoomCount, item.room
+        assert item.patch_room < TotalRoomCount, item.patch_room
         # Item names of exactly 255 characters will cause overwrites to occur in the text box
         # assert len(item.custom_item_name) < 0x100
         # Custom text is only 95 bytes long, restrict to 50
         addr = add_or_get_name(item.custom_item_name[:50])
-        rom.patch(0x34, ItemNameLookupTable + item.room *
+        rom.patch(0x34, ItemNameLookupTable + item.patch_room *
                   ItemNameLookupSize, None, to_hex_address(addr))
         if item.extra:
             rom.patch(0x34, ItemNameLookupTable + item.extra *

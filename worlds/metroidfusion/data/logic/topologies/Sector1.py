@@ -116,7 +116,7 @@ Sector1TourianExit.connections = [
             # Must defeat SW or SE Stabilizers
             CanDamageStabilizer(),
             CanDamageAnyGeron()
-        ],  items_needed={"Space Jump", "Wave Beam", "Morph Ball"},
+        ],  items_needed={"Space Jump", "Screw Attack", "Wave Beam", "Morph Ball"},
         energy_tanks_needed=level_4_e_tanks),
     ], one_way=True),
     Connection(Sector1TourianHub, [

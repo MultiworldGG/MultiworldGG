@@ -297,7 +297,7 @@ ITEM_MESSAGES = {
     0x00FC: "\x08\x06\x49\x05\x41WINNER\x05\x40!\x04\x08\x13\x73You got a \x05\x41Piece of Heart\x05\x40!\x01Now you've collected three \x01pieces!",
     0x00FD: "\x08\x06\x49\x05\x41WINNER\x05\x40!\x04\x08\x13\x73You got a \x05\x41Piece of Heart\x05\x40!\x01You've completed another Heart\x01Container!",
     0x90FA: "\x08\x06\x49\x05\x41WINNER\x05\x40!\x04\x08\x13\x73You got a \x05\x41Piece of Heart\x05\x40!\x01You are already at\x01maximum health.",
-    0x9002: "\x08You are a \x05\x43FOOL\x05\x40!",
+    0x9002: "\x08\xF0\xFD a \x05\x43FOOL\x05\x40!",
     0x9003: "\x08You found a piece of the \x05\x41Triforce\x05\x40!",
     0x9019: "\x08\x13\x09You found a \x05\x41Bombchu Bag\x05\x40!\x01It has some \x05\x41Bombchus\x05\x40 inside!\x01Find more in tall grass.",
     0x901A: "\x08You can't buy Bombchus without a\x01\x05\x41Bombchu Bag\x05\x40!",
@@ -1254,6 +1254,7 @@ def shuffle_messages(messages, rand, except_hints=True, always_allow_skip=True):
             0x045C,         # Adult shooting gallery helping message when the player wins without having a bow
             0x90B6,         # AP progression item text with runtime item/player names
             0x90B7,         # AP junk item text with runtime item/player names
+            0x9002,         # Trap text with a runtime local/remote subject
             0x208D,         # "One more lap!" for Cow in House race.
             0xFFFC,         # Character data from JP table used on title and file select screens
         ]

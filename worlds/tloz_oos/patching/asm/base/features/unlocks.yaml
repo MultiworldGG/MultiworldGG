@@ -1,0 +1,156 @@
+3f/5d56/: db $5e ; SND_GETSEED
+
+16//handleUnlockTreasure: |
+  ld a,c
+  add a,a
+  add a,a
+  add a,c
+  ld hl,unlockFlags
+  rst 10  ; addAToHL
+  push hl
+  
+  ldi a,(hl)
+  ld d,$c9 ; <wGroup4RoomFlags
+  cp $04
+  jr z,@setFlag
+  inc d ; <wGroup5RoomFlags
+  
+  @setFlag:
+  ; First flag
+  ldi a,(hl)
+  ld e,a
+  ld a,(de)
+  or (hl)
+  inc hl
+  ld (de),a
+  
+  ; Second flag
+  ldi a,(hl)
+  ld e,a
+  ld a,(de)
+  or (hl)
+  inc hl
+  ld (de),a
+  
+  ; Now try to make an effect if it is the active room
+  pop hl
+  ld a,($cc49) ; active group
+  cp (hl)
+  inc hl
+  ret nz
+  ; Room 1
+  ld a,($cc4c) ; active room
+  cp (hl)
+  jr z,@unlockInRoom
+  ; Room 2
+  inc hl
+  inc hl
+  cp (hl)
+  ret nz
+  @unlockInRoom:
+  inc hl
+  ld a,(hl)
+  ld hl,flagToTileTable
+  ld e,$01
+  call searchKey
+  ld a,(hl)
+  call $15ba ; findTileInRoom
+  ret nz
+  push af ; store searched tile
+  
+  ; createKeySpriteInteraction
+  push hl
+  push af
+  call getFreeInteractionSlot
+  ld (hl),$17 ; INTERAC_DUNGEON_KEY_SPRITE
+  inc l
+  
+  ; Store tile index in subid
+  pop af
+  ld (hl),a
+  ld l,$4b ; Interaction.yh
+  pop bc ; get the position as c
+  call $2077 ; setShortPosition_paramC
+  ; Key interaction has been set
+  
+  pop af
+  cp $1e
+  jr z,@keyBlock
+  
+  push af
+  call getFreeInteractionSlot
+  ld (hl),$1e ; INTERAC_DOOR_CONTROLLER
+  ld l,$4b ; Interaction.yh
+  ld a,c
+  ld (hl),a
+  ld l,$49 ; Interaction.angle
+  pop af
+  sub $70
+  add a,a
+  ld (hl),a
+  ret
+  
+  @keyBlock:
+  ld a,$a0 ; TILEINDEX_STANDARD_FLOOR
+  call setTile
+  
+  ld a,$6c ; SND_OPENCHEST
+  call playSound
+  
+  call getFreeInteractionSlot
+  ld (hl),$05 ; INTERAC_PUFF
+  ld l,$4b ; Interaction.yh
+  jp $2077 ; setShortPosition_paramC
+
+16//unlockFlags: /include unlockFlagsData
+
+16//flagToTileTable: |
+  db $01, $70
+  db $02, $71
+  db $04, $72
+  db $08, $73
+  db $80, $1e
+
+15/52a1/: |
+  db $80
+  dw unlockTreasureData
+
+15//unlockTreasureData: |
+  db $00,$00,$96,$42
+  db $00,$01,$97,$42
+  db $00,$02,$98,$42
+  db $00,$03,$99,$42
+  db $00,$04,$9a,$42
+  db $00,$05,$9b,$42
+  db $00,$06,$9c,$42
+  db $00,$07,$9d,$42
+  db $00,$08,$9e,$42
+  db $00,$09,$9f,$42
+  db $00,$0a,$a0,$42
+  db $00,$0b,$a1,$42
+  db $00,$0c,$a2,$42
+  db $00,$0d,$a3,$42
+  db $00,$0e,$a4,$42
+  db $00,$0f,$a5,$42
+  db $00,$10,$a6,$42
+  db $00,$11,$a7,$42
+  db $00,$12,$a8,$42
+  db $00,$13,$a9,$42
+  db $00,$14,$aa,$42
+  db $00,$15,$ab,$42
+  db $00,$16,$ac,$42
+  db $00,$17,$ad,$42
+  db $00,$18,$ae,$42
+  db $00,$19,$af,$42
+  db $00,$1a,$b0,$42
+  db $00,$1b,$b1,$42
+  db $00,$1c,$b2,$42
+  db $00,$1d,$b3,$42
+  db $00,$1e,$b4,$42
+  db $00,$1f,$b5,$42
+  db $00,$20,$b6,$42
+  db $00,$21,$b7,$42
+  db $00,$22,$b8,$42
+  db $00,$23,$b9,$42
+  db $00,$24,$ba,$42
+  db $00,$25,$bb,$42

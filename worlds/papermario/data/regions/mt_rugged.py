@@ -84,7 +84,7 @@ mt_rugged_regions: list[Dict[str, str | Dict[str, Rule | None]]] = [
             "MR Mt Rugged 1 On Slide": CanClimbSteps(),
             "MR Mt Rugged 2 West": None,
             "MR Mt Rugged 1 West": None,
-            "MR Mt Rugged 1 East Lower": CanClimbSteps(),
+            "MR Mt Rugged 1 East Lower": None,
         }
     },
     {
@@ -107,7 +107,7 @@ mt_rugged_regions: list[Dict[str, str | Dict[str, Rule | None]]] = [
         "map_name": "Mt Rugged 2",
         "exits": {
             "MR Mt Rugged 1 East": None,
-            "MR Mt Rugged 2 Center": CanClimbSteps(),
+            "MR Mt Rugged 2 Center": None,
         }
     },
     {
@@ -134,7 +134,7 @@ mt_rugged_regions: list[Dict[str, str | Dict[str, Rule | None]]] = [
         },
         "exits": {
             "MR Mt Rugged 3 Lower": None,
-            "MR Mt Rugged 2 Center": CanClimbSteps(),
+            "MR Mt Rugged 2 Center": None,
         }
     },
     {
@@ -271,7 +271,7 @@ mt_rugged_regions: list[Dict[str, str | Dict[str, Rule | None]]] = [
         },
         "exits": {
             "MR Mt Rugged 1 West": None,
-            "MR Train Station Lower": HasBoots(),
+            "MR Train Station Lower": None,
         }
     },
     {
@@ -296,7 +296,7 @@ mt_rugged_regions: list[Dict[str, str | Dict[str, Rule | None]]] = [
         "map_id": "5",
         "map_name": "Train Station",
         "exits": {
-            "MR Train Station Lower": HasBoots(),
+            "MR Train Station Lower": None,
             "MR Train Ride Scene": None
         }
     },

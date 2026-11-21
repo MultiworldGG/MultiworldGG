@@ -1,78 +1,7 @@
 from enum import StrEnum
 
-NATZU_REGIONS = {
-    "ricky": ["natzu west (ricky)", "natzu east (ricky)"],
-    "dimitri": ["natzu west (dimitri)", "natzu east (dimitri)"],
-    "moosh": ["natzu west (moosh)", "natzu east (moosh)"],
-}
-GASHA_REGIONS = [
-    "gasha tree 1",
-    "gasha tree 2",
-    "gasha tree 3",
-    "gasha tree 4",
-    "gasha tree 5",
-    "gasha tree 6",
-    "gasha tree 7",
-    "gasha tree 8",
-    "gasha tree 9",
-    "gasha tree 10",
-    "gasha tree 11",
-    "gasha tree 12",
-    "gasha tree 13",
-    "gasha tree 14",
-    "gasha tree 15",
-    "gasha tree 16",
-]
-D11_REGIONS = [
-    "d11 entrance",
-    "d11 alt entrance",
-    "enter d11",
-    "d11 floor 1 chest",
-    "d11 floor 2 keydrop",
-    "d11 floor 2 chest",
-    "d11 floor 3 torch keydrop",
-    "d11 floor 3 flooded room",
-    "d11 floor 3 flooded keydrop",
-    "d11 floor 3 chest",
-    "d11 floor 4 chest",
-    "d11 floor 5 gauntlet",
-    "d11 floor 5 boomerang maze",
-    "d11 final chest",
-]
-SCRUB_REGIONS = [
-    "spool swamp scrub",
-    "samasa desert scrub",
-    "d2 scrub",
-    "d4 scrub",
-]
-GASHA_SPOT_REGIONS = [
-    "impa gasha spot",
-    "horon gasha spot",
-    "suburbs gasha spot",
-    "holodrum plain gasha spot",
-    "holodrum plain island gasha spot",
-    "spool swamp north gasha spot",
-    "spool swamp south gasha spot",
-    "sunken city gasha spot",
-    "mt cucco gasha spot",
-    "goron mountain left gasha spot",
-    "goron mountain right gasha spot",
-    "eyeglass lake gasha spot",
-    "tarm ruins gasha spot",
-    "western coast gasha spot",
-    "samasa desert gasha spot",
-    "onox gasha spot",
-]
-SECRET_REGIONS = [
-    "clock shop secret",
-    "graveyard secret",
-    "subrosian secret",
-    "diver secret",
-    "smith secret",
-    "natzu deku",
-    "deku secret",
-]
-class RegionNames(StrEnum):
+
+class RegionName(StrEnum):
     impas_house = "impa's house"
     horon_village = "horon village"
     horon_village_portal = "horon village portal"
@@ -84,6 +13,7 @@ class RegionNames(StrEnum):
     old_man_trade = "old man trade"
     malon_trade = "malon trade"
     talon_trade = "talon trade"
+    syrup = "syrup"
     syrup_trade = "syrup trade"
     syrup_shop = "syrup shop"
     mrs_ruul_trade = "mrs. ruul trade"
@@ -142,7 +72,7 @@ class RegionNames(StrEnum):
     spool_swamp_cave = "spool swamp cave"
     spool_swamp_heart_piece = "spool swamp heart piece"
     spool_swamp_digging_spot = "spool swamp digging spot"
-    ghastly_stump = "ghastly stump"
+    ruul_stump = "ghastly stump"
     north_horon = "north horon"
     d1_stump = "d1 stump"
     goron_mountain_entrance = "goron mountain entrance"
@@ -196,7 +126,7 @@ class RegionNames(StrEnum):
     dragon_keyhole = "dragon keyhole"
     d4_entrance = "d4 entrance"
     chest_in_goron_mountain = "chest in goron mountain"
-    tarm_ruins = "tarm ruins"
+    tarm_ruins_with_gate_open = "tarm ruins"
     lost_woods_top_statue = "lost woods top statue"
     lost_woods_deku = "lost woods deku"
     lost_woods_phonograph = "lost woods phonograph"
@@ -414,8 +344,6 @@ class RegionNames(StrEnum):
     d8_SW_lava_chest = "d8 SW lava chest"
     d8_SE_lava_chest = "d8 SE lava chest"
     d8_spark_chest = "d8 spark chest"
-    d8_NW_crystal = "d8 NW crystal"
-    d8_SW_crystal = "d8 SW crystal"
     d8_boss = "d8 boss"
     old_man_in_horon = "old man in horon"
     old_man_near_d1 = "old man near d1"
@@ -432,6 +360,8 @@ class RegionNames(StrEnum):
     golden_octorok = "golden octorok"
     d4_miniboss_room_wild_embers = "d4 miniboss room wild embers"
     d7_entrance_wild_embers = "d7 entrance wild embers"
+    reach_sign = "reach sign"
+    break_sign = "break sign"
     subrosian_sign_guy = "subrosian sign guy"
     subrosia_bath_digging_spot = "subrosia bath digging spot"
     subrosia_market_digging_spot = "subrosia market digging spot"
@@ -441,3 +371,173 @@ class RegionNames(StrEnum):
     maple_rare_item_2 = "maple rare item 2"
     maple_rare_item_3 = "maple rare item 3"
     maple_rare_item_4 = "maple rare item 4"
+
+    # Natzu
+    natzu_west_ricky = "natzu west (ricky)"
+    natzu_east_ricky = "natzu east (ricky)"
+    natzu_west_dimitri = "natzu west (dimitri)"
+    natzu_east_dimitri = "natzu east (dimitri)"
+    natzu_west_moosh = "natzu west (moosh)"
+    natzu_east_moosh = "natzu east (moosh)"
+
+    # D11
+    d11_entrance = "d11 entrance"
+    d11_alt_entrance = "d11 alt entrance"
+    enter_d11 = "enter d11"
+    d11_floor_1_chest = "d11 floor 1 chest"
+    d11_floor_2_keydrop = "d11 floor 2 keydrop"
+    d11_floor_2_chest = "d11 floor 2 chest"
+    d11_floor_3_torch_keydrop = "d11 floor 3 torch keydrop"
+    d11_floor_3_flooded_room = "d11 floor 3 flooded room"
+    d11_floor_3_flooded_keydrop = "d11 floor 3 flooded keydrop"
+    d11_floor_3_chest = "d11 floor 3 chest"
+    d11_floor_4_chest = "d11 floor 4 chest"
+    d11_floor_5_gauntlet = "d11 floor 5 gauntlet"
+    d11_floor_5_boomerang_maze = "d11 floor 5 boomerang maze"
+    d11_final_chest = "d11 final chest"
+
+    # Scrubs
+    spool_swamp_scrub = "spool swamp scrub"
+    samasa_desert_scrub = "samasa desert scrub"
+    d2_scrub = "d2 scrub"
+    d4_scrub = "d4 scrub"
+
+    # Gasha spots
+    impa_gasha_spot = "impa gasha spot"
+    horon_gasha_spot = "horon gasha spot"
+    suburbs_gasha_spot = "suburbs gasha spot"
+    holodrum_plain_gasha_spot = "holodrum plain gasha spot"
+    holodrum_plain_island_gasha_spot = "holodrum plain island gasha spot"
+    spool_swamp_north_gasha_spot = "spool swamp north gasha spot"
+    spool_swamp_south_gasha_spot = "spool swamp south gasha spot"
+    sunken_city_gasha_spot = "sunken city gasha spot"
+    mt_cucco_gasha_spot = "mt cucco gasha spot"
+    goron_mountain_left_gasha_spot = "goron mountain left gasha spot"
+    goron_mountain_right_gasha_spot = "goron mountain right gasha spot"
+    eyeglass_lake_gasha_spot = "eyeglass lake gasha spot"
+    tarm_ruins_gasha_spot = "tarm ruins gasha spot"
+    western_coast_gasha_spot = "western coast gasha spot"
+    samasa_desert_gasha_spot = "samasa desert gasha spot"
+    onox_gasha_spot = "onox gasha spot"
+
+    # Gasha rewards
+    gasha_1 = "gasha tree 1"
+    gasha_2 = "gasha tree 2"
+    gasha_3 = "gasha tree 3"
+    gasha_4 = "gasha tree 4"
+    gasha_5 = "gasha tree 5"
+    gasha_6 = "gasha tree 6"
+    gasha_7 = "gasha tree 7"
+    gasha_8 = "gasha tree 8"
+    gasha_9 = "gasha tree 9"
+    gasha_10 = "gasha tree 10"
+    gasha_11 = "gasha tree 11"
+    gasha_12 = "gasha tree 12"
+    gasha_13 = "gasha tree 13"
+    gasha_14 = "gasha tree 14"
+    gasha_15 = "gasha tree 15"
+    gasha_16 = "gasha tree 16"
+
+    # Secrets
+    clock_shop_secret = "clock shop secret"
+    graveyard_secret = "graveyard secret"
+    subrosian_secret = "subrosian secret"
+    diver_secret = "diver secret"
+    smith_secret = "smith secret"
+    natzu_deku = "natzu deku"
+    deku_secret = "deku secret"
+
+    # Misc
+    advance_shop = "advance shop"
+    rooster_adventure = "rooster adventure"
+
+
+NATZU_REGIONS = {
+    "ricky": [RegionName.natzu_west_ricky, RegionName.natzu_east_ricky],
+    "dimitri": [RegionName.natzu_west_dimitri, RegionName.natzu_east_dimitri],
+    "moosh": [RegionName.natzu_west_moosh, RegionName.natzu_east_moosh],
+}
+
+GASHA_REGIONS: list[RegionName] = [
+    RegionName.gasha_1,
+    RegionName.gasha_2,
+    RegionName.gasha_3,
+    RegionName.gasha_4,
+    RegionName.gasha_5,
+    RegionName.gasha_6,
+    RegionName.gasha_7,
+    RegionName.gasha_8,
+    RegionName.gasha_9,
+    RegionName.gasha_10,
+    RegionName.gasha_11,
+    RegionName.gasha_12,
+    RegionName.gasha_13,
+    RegionName.gasha_14,
+    RegionName.gasha_15,
+    RegionName.gasha_16,
+]
+
+D11_REGIONS = [
+    RegionName.d11_entrance,
+    RegionName.d11_alt_entrance,
+    RegionName.enter_d11,
+    RegionName.d11_floor_1_chest,
+    RegionName.d11_floor_2_keydrop,
+    RegionName.d11_floor_2_chest,
+    RegionName.d11_floor_3_torch_keydrop,
+    RegionName.d11_floor_3_flooded_room,
+    RegionName.d11_floor_3_flooded_keydrop,
+    RegionName.d11_floor_3_chest,
+    RegionName.d11_floor_4_chest,
+    RegionName.d11_floor_5_gauntlet,
+    RegionName.d11_floor_5_boomerang_maze,
+    RegionName.d11_final_chest,
+]
+
+SCRUB_REGIONS = [
+    RegionName.spool_swamp_scrub,
+    RegionName.samasa_desert_scrub,
+    RegionName.d2_scrub,
+    RegionName.d4_scrub,
+]
+
+GASHA_SPOT_REGIONS = [
+    RegionName.impa_gasha_spot,
+    RegionName.horon_gasha_spot,
+    RegionName.suburbs_gasha_spot,
+    RegionName.holodrum_plain_gasha_spot,
+    RegionName.holodrum_plain_island_gasha_spot,
+    RegionName.spool_swamp_north_gasha_spot,
+    RegionName.spool_swamp_south_gasha_spot,
+    RegionName.sunken_city_gasha_spot,
+    RegionName.mt_cucco_gasha_spot,
+    RegionName.goron_mountain_left_gasha_spot,
+    RegionName.goron_mountain_right_gasha_spot,
+    RegionName.eyeglass_lake_gasha_spot,
+    RegionName.tarm_ruins_gasha_spot,
+    RegionName.western_coast_gasha_spot,
+    RegionName.samasa_desert_gasha_spot,
+    RegionName.onox_gasha_spot,
+]
+
+SECRET_REGIONS = [
+    RegionName.clock_shop_secret,
+    RegionName.graveyard_secret,
+    RegionName.subrosian_secret,
+    RegionName.diver_secret,
+    RegionName.smith_secret,
+    RegionName.natzu_deku,
+    RegionName.deku_secret,
+]
+
+CONDITIONAL_REGIONS = set(NATZU_REGIONS["ricky"])
+CONDITIONAL_REGIONS.update(NATZU_REGIONS["dimitri"])
+CONDITIONAL_REGIONS.update(NATZU_REGIONS["moosh"])
+CONDITIONAL_REGIONS.update(GASHA_REGIONS)
+CONDITIONAL_REGIONS.update(D11_REGIONS)
+CONDITIONAL_REGIONS.update(SCRUB_REGIONS)
+CONDITIONAL_REGIONS.update(GASHA_SPOT_REGIONS)
+CONDITIONAL_REGIONS.update(SECRET_REGIONS)
+CONDITIONAL_REGIONS.add(RegionName.rooster_adventure)
+CONDITIONAL_REGIONS.add(RegionName.advance_shop)
+CONDITIONAL_REGIONS.add(RegionName.syrup_shop)

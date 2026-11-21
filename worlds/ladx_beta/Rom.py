@@ -9,6 +9,7 @@ import binascii
 import logging
 from typing import TYPE_CHECKING
 from .Common import *
+from .Items import item_prefixes_to_skip_text_in_prefill
 from .LADXR import generator
 from .LADXR.main import get_parser
 
@@ -55,6 +56,7 @@ class LADXProcedurePatch(worlds.Files.APProcedurePatch):
 
 
 def write_patch_data(world: "LinksAwakeningWorld", patch: LADXProcedurePatch):
+
     data_dict = {
         "generated_world_version": world.world_version.as_simple_string(),
         "out_base": world.multiworld.get_out_file_name_base(patch.player),
@@ -66,17 +68,21 @@ def write_patch_data(world: "LinksAwakeningWorld", patch: LADXProcedurePatch):
         "player_name": patch.player_name,
         "other_player_names": list(world.multiworld.player_name.values()),
         "rom_item_placements": world.rom_item_placements,
+        "precollected_items": [item.item_data.ladxr_id for item in world.multiworld.precollected_items[world.player]],
         "hint_texts": {
             k: (v["text"] if v is not None else None)
             for k, v in world.ladx_in_game_hints.items()
         },
         "world_setup": {
-            "goal": world.ladxr_logic.world_setup.goal,
-            "multichest": world.ladxr_logic.world_setup.multichest,
-            "entrance_mapping": world.ladxr_logic.world_setup.entrance_mapping,
-            "boss_mapping": world.ladxr_logic.world_setup.boss_mapping,
-            "miniboss_mapping": world.ladxr_logic.world_setup.miniboss_mapping,
+            "goal": world.ladxr_world_setup.goal,
+            "multichest": world.ladxr_world_setup.multichest,
+            "entrance_mapping": world.ladxr_world_setup.entrance_mapping,
+            "boss_mapping": world.ladxr_world_setup.boss_mapping,
+            "miniboss_mapping": world.ladxr_world_setup.miniboss_mapping,
+            "condensed_dungeons": world.ladxr_world_setup.condensed_dungeons,
+            "excluded_dungeons": world.ladxr_world_setup.excluded_dungeons,
         },
+        "world_setup_seed": world.options.world_setup_seed.value,
         "ladxr_settings_dict": world.ladxr_settings_dict,
     }
     patch.write_file("data.json", json.dumps(data_dict).encode('utf-8'))

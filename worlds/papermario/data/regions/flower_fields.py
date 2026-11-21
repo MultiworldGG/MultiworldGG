@@ -58,7 +58,7 @@ flower_fields_regions: list[Dict[str, str | Dict[str, Rule | None]]] = [
                 "Magical Bean",
                 "Fertile Soil",
                 "Miracle Water",
-            ) & CanClimbSteps(),
+            ),
         },
         "exits": {
             "TT Plaza District": None,
@@ -68,7 +68,7 @@ flower_fields_regions: list[Dict[str, str | Dict[str, Rule | None]]] = [
             "FLO (NE) Elevators West": None,
             "FLO (East) Triple Tree Path": None,
             "FLO (SE) Briar Platforming West": None,
-            "FLO Cloudy Climb": Has("RF_GrewBeanstalk"),
+            "FLO Cloudy Climb": Has("RF_GrewBeanstalk") & CanClimbSteps(),
         }
     },
     {
@@ -229,8 +229,8 @@ flower_fields_regions: list[Dict[str, str | Dict[str, Rule | None]]] = [
         "exits": {
             "FLO (SE) Briar Platforming East": None,
             "FLO (SE) Water Level Room East": (
-                (CanClimbSteps() | Has ("RF_Ch6_ReturnedWaterStone"))
-                & (CanClimbSteps() | CanUseAbilitySushie())
+                CanClimbSteps()
+                | (Has("RF_Ch6_ReturnedWaterStone") & CanUseAbilitySushie())
             ),
         }
     },
@@ -246,8 +246,8 @@ flower_fields_regions: list[Dict[str, str | Dict[str, Rule | None]]] = [
         "exits": {
             "FLO (SE) Lily's Fountain": None,
             "FLO (SE) Water Level Room West": (
-                (CanClimbSteps() | Has("RF_Ch6_ReturnedWaterStone"))
-                & (CanClimbSteps() | CanUseAbilitySushie())
+                CanClimbSteps()
+                | (Has("RF_Ch6_ReturnedWaterStone") & CanUseAbilitySushie())
             ),
         }
     },
@@ -264,7 +264,7 @@ flower_fields_regions: list[Dict[str, str | Dict[str, Rule | None]]] = [
             "FLO (SE) Lily's Fountain In Tree": CanShakeTrees(),
         },
         "exits": {
-            "FLO (SE) Water Level Room West": None,
+            "FLO (SE) Water Level Room East": None,
         }
     },
     {

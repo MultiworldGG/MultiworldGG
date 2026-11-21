@@ -524,7 +524,7 @@ def filter_denied_custom_map(custom_map, denials, drop_denials=None, drops_activ
 def randomize_enemies(world, player):
     if world.enemy_shuffle[player] != 'none':
         data_tables = world.data_tables[player]
-        custom_uw, custom_ow = {}, {}
+        custom_uw, custom_ow, custom_uw_sprite_sheets = {}, {}, {}
         if world.force_enemy[player]:
             for area_id in world.data_tables[player].ow_enemy_table:
                 randomizeable = get_randomize_able_sprites_ow(area_id, data_tables)
@@ -541,9 +541,11 @@ def randomize_enemies(world, player):
                 if player in enemy_map:
                     enemy_map = enemy_map[player]
                 if 'Underworld' in enemy_map:
-                    custom_uw = enemy_map['Underworld']
+                    custom_uw = string_ids_to_int(enemy_map['Underworld'])
                 if 'Overworld' in enemy_map:
-                    custom_ow = enemy_map['Overworld']
+                    custom_ow = string_ids_to_int(enemy_map['Overworld'])
+                if 'UW-Sprite-Sheet' in enemy_map:
+                    custom_uw_sprite_sheets = string_ids_to_int(enemy_map['UW-Sprite-Sheet'])
         # Pre-filter custom maps to remove denied slots so sprite-sheet selection is accurate.
         # The unfiltered maps are still used for enemy placement — placement functions re-check
         # denials at that stage and fall back to random selection for denied slots.
@@ -556,9 +558,24 @@ def randomize_enemies(world, player):
             randomize_underworld_sprite_sheets(data_tables.sprite_sheets, data_tables, filtered_custom_uw, world.limited_run[player], force_enemy=world.force_enemy[player])
             randomize_overworld_sprite_sheets(data_tables.sprite_sheets, data_tables, filtered_custom_ow, force_enemy=world.force_enemy[player])
         else:
-            randomize_underworld_sprite_sheets(data_tables.sprite_sheets, data_tables, custom_uw, world.limited_run[player])
+            randomize_underworld_sprite_sheets(data_tables.sprite_sheets, data_tables, custom_uw, world.limited_run[player], custom_sprite_sheets=custom_uw_sprite_sheets)
             randomize_overworld_sprite_sheets(data_tables.sprite_sheets, data_tables, custom_ow)
-        randomize_underworld_rooms(data_tables, world, player, custom_uw)
+
+        if not custom_uw:
+            randomize_underworld_rooms(data_tables, world, player, custom_uw)
+        else:
+            for room_id in custom_uw:
+                room_map = data_tables.uw_enemy_table.room_map[room_id]
+                for i, sprite_id in custom_uw[room_id].items():
+                    if sprite_id in sprite_translation:  # Should only be enemy sprites we care about
+                        # Might need to adjust the index if the Blind Maiden isn't in the slot data
+                        sprite = room_map[int(i)] if not (room_id == 0x45 and len(room_map) == len(custom_uw[room_id]) + 1) else room_map[int(i) + 1]
+                        if sprite.kind == EnemySprite.Wallmaster:
+                            sprite.sub_type = 0x00
+                        sprite.kind = sprite_translation[sprite_id]
+                        if sprite.kind == EnemySprite.Wallmaster:
+                            sprite.sub_type = 0x07  # Overlord
+
         randomize_overworld_enemies(data_tables, custom_ow)
         # fix thief stats
         # subclass_table = world.damage_table[player].damage_table['SubClassTable']
@@ -652,6 +669,17 @@ def randomize_enemies(world, player):
             sprite = Sprite(0x5E, 0x03, 0, 0, x_pos, y_pos, '', False, None)
             sprite.static = True
             pod.append(sprite)
+
+
+def string_ids_to_int(string_id_dict: dict):
+    string_ids = string_id_dict.keys()
+    for string_id in string_ids:
+        if isinstance(string_id, str) and string_id.isdigit():
+            string_id_dict[int(string_id)] = string_id_dict[string_id]
+            del string_id_dict[string_id]
+
+    return string_id_dict
+
 
 
 def write_enemy_shuffle_settings(world, player, rom):

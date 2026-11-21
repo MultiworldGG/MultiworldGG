@@ -40,6 +40,7 @@ class ItemGroups(str, Enum):
     traps = "Traps"
     characters = "Characters"
     progressive_weapons = "Progressive Weapons"
+    progressive_area_unlocks = "Progressive Area Unlocks"
 
 
 class DeltaruneItem(Item):
@@ -100,7 +101,7 @@ class ItemIDs(IntEnum):
     execbuffet = 38
     deluxedinner = 39
     punchbowl = 40
-    flavinge = 41
+    flavigne = 41
     greentea = 42
     orangejuice = 43
 
@@ -278,6 +279,11 @@ class ItemIDs(IntEnum):
     progressive_susie_weapons = 50001
     progressive_ralsei_weapons = 50002
     progressive_noelle_weapons = 50003
+    progressive_ch1_area_unlock = 50011
+    progressive_ch2_area_unlock = 50012
+    progressive_ch3_area_unlock = 50013
+    progressive_ch4_area_unlock = 50014
+    progressive_ch5_area_unlock = 50015
 
     kris = 60001
     susie = 60002
@@ -467,6 +473,11 @@ items = {
     ItemIDs.progressive_susie_weapons: "Progressive Susie Weapons",
     ItemIDs.progressive_ralsei_weapons: "Progressive Ralsei Weapons",
     ItemIDs.progressive_noelle_weapons: "Progressive Noelle Weapons",
+    ItemIDs.progressive_ch1_area_unlock: "Progressive Ch1 Area Unlock",
+    ItemIDs.progressive_ch2_area_unlock: "Progressive Ch2 Area Unlock",
+    ItemIDs.progressive_ch3_area_unlock: "Progressive Ch3 Area Unlock",
+    ItemIDs.progressive_ch4_area_unlock: "Progressive Ch4 Area Unlock",
+    ItemIDs.progressive_ch5_area_unlock: "Progressive Ch5 Area Unlock",
     ItemIDs.twistedswd: "TwistedSwd",
     ItemIDs.everybodyweapon: "EverybodyWeapon",
     ItemIDs.amber_card: "Amber Card",
@@ -483,7 +494,7 @@ items = {
     ItemIDs.pinkkey: "MysteryKey",
     ItemIDs.chapter_5_unlock: "Chapter 5 Unlock",
     ItemIDs.punchbowl: "PunchBowl",
-    ItemIDs.flavinge: "Flavinge",
+    ItemIDs.flavigne: "Flavigne",
     ItemIDs.greentea: "GreenTea",
     ItemIDs.orangejuice: "OrangeJuice",
     ItemIDs.schadenbrot: "SchadenBrot",

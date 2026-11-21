@@ -1,8 +1,8 @@
 """This module provides constant address offsets, for use when reading data regarding the OmniWrench"""
 
 from worlds.rac3.constants.function import (EQUIP_WRENCH_OFFSET_JP, EQUIP_WRENCH_OFFSET_NTSC, EQUIP_WRENCH_OFFSET_PAL,
-                                            RAC3FUNCTION, SWING_WRENCH_OFFSET_NTSC, SWING_WRENCH_OFFSET_PAL,
-                                            SWING_WRENCH_OFFSET_JP, WRENCH_FUNCTION_OFFSET_JP, 
+                                            RAC3FUNCTION, SWING_WRENCH_OFFSET_JP, SWING_WRENCH_OFFSET_NTSC,
+                                            SWING_WRENCH_OFFSET_PAL, WRENCH_FUNCTION_OFFSET_JP,
                                             WRENCH_FUNCTION_OFFSET_NTSC, WRENCH_FUNCTION_OFFSET_PAL)
 from worlds.rac3.constants.version import RAC3VERSION
 

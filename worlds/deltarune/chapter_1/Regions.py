@@ -8,7 +8,7 @@ from worlds.deltarune.Items import ItemIDs, items, glitched_item_name
 from worlds.deltarune.LogicHelper import all_recruits_route, include_recruits_chapter1
 from worlds.deltarune.Options import MacGuffinChapter1, RandomizeSecretBosses
 from worlds.deltarune.Regions import add_location_to_region, Regions, get_entrance_name
-from worlds.deltarune.Rules import have_kris_or_ralsei, have_kris_susie_or_ralsei, have_kris
+from worlds.deltarune.Rules import have_kris_or_ralsei, have_kris_susie_or_ralsei, have_kris, have_susie, nohit_easy_logic
 from worlds.deltarune.Locations import LocationIDs, locations
 from worlds.deltarune.chapter_1.Locations import chapter1_locations
 
@@ -54,7 +54,7 @@ def create_regions(world: "DeltaruneWorld"):
 
     world.get_region(Regions.chapter_1).connect(unknown)
 
-    unknown.connect(castle_town)
+    unknown.connect(castle_town, rule=have_kris | nohit_easy_logic) # lancer spade brigade
 
     castle_town.connect(fields)
 
@@ -80,7 +80,8 @@ def create_regions(world: "DeltaruneWorld"):
     # Bake Sale Ticket is required to enter and Kris or Ralsei is required for Clover fight unless you do ARMS glitch
     forest.connect(
         bake_sale,
-        rule=Has(items[ItemIDs.bake_sale_ticket]) & have_kris_or_ralsei,
+        rule=(Has(items[ItemIDs.bake_sale_ticket]) | Has(items[ItemIDs.progressive_ch1_area_unlock], 1))
+        & have_kris_or_ralsei,
     )
 
     forest.connect(
@@ -94,9 +95,12 @@ def create_regions(world: "DeltaruneWorld"):
     bake_sale.connect(forest_post_bake_sale)
 
     # Castle key is required with Kris or Ralsei to Vs. Susie and lancer fight
+    # Susie required for Susie Vs. Lancer unless you're not bad Lmao
     forest_post_bake_sale.connect(
         card_castle,
-        rule=Has(items[ItemIDs.castle_key]) & have_kris_or_ralsei,
+        rule=(Has(items[ItemIDs.castle_key]) | Has(items[ItemIDs.progressive_ch1_area_unlock], 2)) 
+        & have_kris_or_ralsei
+        & (have_susie | nohit_easy_logic),
     )
 
     # Door key is required with Kris, Susie or Ralsei

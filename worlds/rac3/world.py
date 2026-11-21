@@ -3,7 +3,7 @@ from collections import Counter
 from logging import DEBUG, getLogger
 from typing import Any, ClassVar, TextIO, TYPE_CHECKING
 
-from BaseClasses import Item, Location, MultiWorld
+from BaseClasses import Item, Location, LocationProgressType, MultiWorld
 from NetUtils import MultiData
 from Options import OptionError
 from worlds.AutoWorld import World
@@ -11,11 +11,12 @@ from worlds.rac3.constants.data.item import item_groups, RAC3_ITEM_DATA_TABLE
 from worlds.rac3.constants.items import RAC3ITEM
 from worlds.rac3.constants.locations.general import RAC3LOCATION
 from worlds.rac3.constants.options import RAC3OPTION
+from worlds.rac3.constants.region import RAC3REGION
 from worlds.rac3.constants.shortcuts import RAC3SHORTCUTS
 from worlds.rac3.items import (create_item, create_itempool, get_filler_selection, process_start_inventory,
                                starting_planets, starting_weapons)
-from worlds.rac3.locations import (get_end_locations, get_location_names, get_region_locations, get_total_locations,
-                                   location_groups)
+from worlds.rac3.locations import (get_completion_location_names, get_location_names, get_region_locations,
+                                   get_total_locations, location_groups)
 from worlds.rac3.rac3options import RaC3Options
 from worlds.rac3.regions import create_regions, get_nanotech_locations, get_regions
 from worlds.rac3.rules import set_rules
@@ -81,7 +82,6 @@ class RaC3World(World):
         process_start_inventory(self)
         starting_weapons(self)
         starting_planets(self)
-        self.handle_option_errors()
         self.dead_seed_check()
 
     def sanitize_options(self):
@@ -114,28 +114,6 @@ class RaC3World(World):
 
     def create_item(self, name: str) -> Item:
         return create_item(self, name)
-
-    def handle_option_errors(self) -> None:
-        """Check for option combinations that will never result in successful seed generation and warn the player"""
-        if (not self.options.shortcuts.value.get(RAC3SHORTCUTS.VELDIN_SKIP, False)
-            and self.options.clank_options.value
-            and not self.options.titanium_bolts.value
-            and not self.options.weapon_vendors.value
-            and len(self.starting_weapon_list) > 1
-            and self.starting_planet_list
-            and (self.multiworld.players == 1 and not self.using_ut)):
-            item = ""
-            match self.options.clank_options.value:
-                case self.options.clank_options.option_shuffled_as_one:
-                    item = RAC3ITEM.CLANK
-                case self.options.clank_options.option_shuffled_independently:
-                    item = RAC3ITEM.HELI_PACK
-                case self.options.clank_options.option_shuffled_progressive:
-                    item = RAC3ITEM.PROGRESSIVE_PACK
-                case _:
-                    raise OptionError(
-                        "A clank option was added that does not have option error handling, Please warn the developer.")
-            self.options.start_inventory_from_pool.value[item] += 1
 
     def dead_seed_check(self) -> None:
         """Check for option combinations that will result in a dead seed and raise an OptionError to warn the player"""
@@ -322,7 +300,64 @@ class RaC3World(World):
     # Resolve Item Plando
 
     def pre_fill(self) -> None:
-        pass
+        self.ensure_florana_access()
+
+    def ensure_florana_access(self) -> None:
+        """Guarantee an early item for reaching Qwark when Veldin skip is disabled."""
+        multiworld = self.multiworld
+        if multiworld.players != 1 or self.using_ut:
+            return
+
+        qwark = self.get_location(RAC3LOCATION.FLORANA_DEFEAT_QWARK)
+        if qwark.item is None or qwark.item.name != RAC3ITEM.STARSHIP_PHOENIX:
+            return
+
+        state = multiworld.state.copy()
+        state.sweep_for_advancements()
+        if (state.can_reach_region(RAC3REGION.STARSHIP_PHOENIX, self.player)
+            or not state.can_reach_region(RAC3REGION.FLORANA, self.player)):
+            return
+
+        reachable_checks = sorted(
+            location for location in multiworld.get_unfilled_locations(self.player)
+            if location.address is not None and not location.locked
+            and location.progress_type != LocationProgressType.EXCLUDED and location.can_reach(state)
+        )
+        unlock_names = [RAC3ITEM.HELI_PACK, RAC3ITEM.CLANK, RAC3ITEM.PROGRESSIVE_PACK, RAC3ITEM.CHARGE_BOOTS]
+        unlock_items = {item.name: (index, item) for index, item in enumerate(multiworld.itempool)
+                        if item.player == self.player and item.name in unlock_names}
+        fallback_unlock = None
+        for name in unlock_names:
+            unlock = unlock_items.get(name)
+            if unlock is None:
+                continue
+            index, item = unlock
+            state_with_item = state.copy()
+            state_with_item.collect(item, prevent_sweep=True)
+            if not qwark.can_reach(state_with_item):
+                continue
+            if fallback_unlock is None:
+                fallback_unlock = unlock
+            eligible_checks = [location for location in reachable_checks if location.can_fill(state, item)]
+            if eligible_checks:
+                multiworld.itempool.pop(index)
+                self.random.choice(eligible_checks).place_locked_item(item)
+                return
+
+        if fallback_unlock is None:
+            raise OptionError(f"{self.player_name} has no item in the pool that can unlock Qwark on Florana. "
+                              "Add a Heli-Pack or Charge Boots to starting inventory.")
+        if self.options.generation_behavior.value == self.options.generation_behavior.option_start_inventory:
+            index, item = fallback_unlock
+            multiworld.itempool[index] = self.create_filler()
+            self.push_precollected(item)
+            inventory = self.options.start_inventory_from_pool.value
+            inventory[item.name] = inventory.get(item.name, 0) + 1
+            return
+
+        raise OptionError(f"{self.player_name} has no reachable check that can hold an item to unlock Qwark on Florana. "
+                          "Make a pre-Qwark check available, add a Heli-Pack or Charge Boots to starting inventory, "
+                          "or set generation_behavior to start_inventory.")
 
     # Begin Fill stage
     # Distribute early items
@@ -427,7 +462,10 @@ class RaC3World(World):
             RAC3OPTION.GOAL_BOSS_GEARS: self.options.goal_boss_gears.value,
             RAC3OPTION.GOAL_BOSS_KLUNK: self.options.goal_boss_klunk.value,
             RAC3OPTION.TOTAL_LOCATIONS: get_total_locations(self),
-            RAC3OPTION.PRE_END: get_total_locations(self) - len(get_end_locations(self)),
+            RAC3OPTION.PRE_END: len(get_completion_location_names(
+                (loc.name for loc in self.get_locations() if loc.address),
+                bool(self.options.lock_command_center.value),
+            )),
         }
 
         return slot_data

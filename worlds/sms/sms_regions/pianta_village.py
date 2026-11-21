@@ -3,12 +3,23 @@ from .sms_region_helper import *
 # Pianta Village
 PIANTA_VILLAGE_ENTRANCE: SmsRegion = SmsRegion(
     SmsRegionName.PIANTA_ENTRANCE,
-    requirements=[Requirements([[NozzleType.rocket]])],
+    requirements=[Requirements([[NozzleType.rocket]]),
+        Requirements([[NozzleType.rocket]], skip_forward=True)],
     hard=[Requirements([[NozzleType.rocket]]), Requirements([[NozzleType.yoshi]], shines=5),
+        Requirements([[NozzleType.rocket]], skip_forward=True),
         Requirements([[NozzleType.yoshi]], skip_forward=True)],
     advanced=[Requirements([[NozzleType.rocket]]), Requirements([[NozzleType.yoshi]], shines=5),
-        Requirements([[NozzleType.yoshi]], skip_forward=True), Requirements([[NozzleType.hover]])],
-    tears=[Requirements()],
+        Requirements([[NozzleType.rocket]], skip_forward=True),
+        Requirements([[NozzleType.yoshi]], skip_forward=True),
+        Requirements([[NozzleType.hover]], skip_forward=True),
+        Requirements([[NozzleType.hover]])],
+    # The documented early-entry tricks need Hover at minimum. Item-less entry via infinite
+    # wall kicks is deliberately NOT in logic, even at salty_tears.
+    tears=[Requirements([[NozzleType.rocket]]), Requirements([[NozzleType.yoshi]], shines=5),
+        Requirements([[NozzleType.rocket]], skip_forward=True),
+        Requirements([[NozzleType.yoshi]], skip_forward=True),
+        Requirements([[NozzleType.hover]], skip_forward=True),
+        Requirements([[NozzleType.hover]])],
     ticketed="Pianta Village Ticket",
     parent_region=SmsRegionName.PLAZA,
 )
@@ -161,7 +172,7 @@ PIANTA_VILLAGE_ONE: SmsRegion = SmsRegion(
             "Moon",
             requirements=[Requirements(SPROVER_OR_SPROCKET)],
             hard=[
-                Requirements(SPRAY_AND_ANY_FLUDD),
+                Requirements([[NozzleType.spray]]),
                 Requirements(
                     [[NozzleType.yoshi]],
                     location=f"{SmsRegionName.PIANTA_FIVE} - Secret of the Village Underside",

@@ -4,12 +4,18 @@ from ..utils import formatText
 
 def updateTarin(rom):
     # Do not give the shield.
+    # Instead, start the loop to process precollected items
     rom.patch(0x05, 0x0CD0, ASM("""
         ld   d, $04
         call $5321
         ld   a, $01
         ld   [$DB44], a
-    """), "", fill_nop=True)
+    """), ASM("""
+        ld   a, $A3 ; %10100011
+        ld   [$DDF8], a ; wMWCommand
+        xor  a
+        ld   [$DDFA], a ; wMWMultipurposeA
+    """), fill_nop=True)
 
     # Instead of showing the usual "your shield back" message, give the proper message and give the item.
     rom.patch(0x05, 0x0CDE, ASM("""

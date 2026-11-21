@@ -13,13 +13,15 @@ from . import options
 
 from .general_items import cartridge_items, cartridge_item_group
 
-from .games import barbuta, porgy, vainger, night_manor, party_house, divers
+from .games import barbuta, porgy, vainger, night_manor, party_house, divers, golfaria, grimstone
 from .games.barbuta import items, locations, regions
 from .games.porgy import items, locations, regions
 from .games.vainger import items, locations, regions
 from .games.night_manor import items, locations, regions
 from .games.party_house import items, locations, regions
 from .games.divers import items, locations, regions
+from .games.golfaria import items, locations, regions
+from .games.grimstone import items, locations, regions
 
 
 def launch_client(*args: str):
@@ -86,11 +88,13 @@ class UFO50Web(WebWorld):
 # try to keep them in the same order as on the main menu
 ufo50_games: dict = {
     "Barbuta": barbuta,
+    "Golfaria": golfaria,
     "Porgy": porgy,
-    "Vainger": vainger,
-    "Night Manor": night_manor,
     "Party House": party_house,
     "Divers": divers,
+    "Vainger": vainger,
+    "Grimstone": grimstone,
+    "Night Manor": night_manor,
 }
 
 allowable_unimplemented: set[str] = {"Ninpek", "Magic Garden", "Velgress", "Waldorf's Journey"}
@@ -164,12 +168,20 @@ class UFO50World(World):
                 self.options.goal_game_amount.value = 50
                 # UT doesn't show locations that aren't actually in your slot, so this is fine
                 self.options.cherry_allowed_games.value = {game_name for game_name in game_ids.keys()}
-
                 self.options.porgy_fuel_difficulty.value = self.ut_passthrough[options.PorgyFuelDifficulty.internal_name]
                 self.options.porgy_check_on_touch.value = self.ut_passthrough[options.PorgyCheckOnTouch.internal_name]
                 self.options.porgy_radar.value = self.ut_passthrough[options.PorgyRadar.internal_name]
                 self.options.porgy_lanternless.value = self.ut_passthrough[options.PorgyLanternless.internal_name]
-                self.options.divers_lever_check.value = self.ut_passthrough[options.DiversLeverCheck.internal_name]
+                self.options.divers_start_flippers.value = self.ut_passthrough[options.DiversStartWithFlippers.internal_name]
+                self.options.divers_relic_mult.value = self.ut_passthrough[options.DiversRelicMult.internal_name]
+                self.options.divers_store_depth.value = self.ut_passthrough[options.DiversStoreDepth.internal_name]
+                self.options.divers_xp_item.value = self.ut_passthrough[options.DiversXpItem.internal_name]
+                self.options.divers_cash_item.value = self.ut_passthrough[options.DiversCashItem.internal_name]
+                self.options.grimstone_shops.value = self.ut_passthrough[options.GrimstoneShops.internal_name]
+                self.options.golfaria_start_brakes.value = self.ut_passthrough[options.GolfariaStartWithBrakes.internal_name]
+                self.options.golfaria_difficulty.value = self.ut_passthrough[options.GolfariaDifficulty.internal_name]
+                self.options.golfaria_handicap.value = self.ut_passthrough[options.GolfariaHandicap.internal_name]
+                self.options.golfaria_hardcore_strokes.value = self.ut_passthrough[options.GolfariaHardcoreStrokes.internal_name]
 
         included_game_names = sorted(self.options.always_on_games.value)
         # exclude always on games from random choice games
@@ -319,7 +331,7 @@ class UFO50World(World):
         self.multiworld.itempool += created_items
 
     # games where the filler is a nothing item, so let's just exclude these where we can
-    bad_filler_games: set[str] = {"Night Manor"}
+    bad_filler_games: set[str] = {"Night Manor", "Golfaria"}
 
     def get_filler_item_name(self) -> str:
         if not self.included_games:
@@ -343,7 +355,23 @@ class UFO50World(World):
             options.PorgyCheckOnTouch.internal_name: self.options.porgy_check_on_touch.value,
             options.PorgyRadar.internal_name: self.options.porgy_radar.value,
             options.PorgyLanternless.internal_name: self.options.porgy_lanternless.value,
-            options.DiversLeverCheck.internal_name: self.options.divers_lever_check.value,
+            options.DiversStartWithFlippers.internal_name: self.options.divers_start_flippers.value,
+            options.DiversRelicMult.internal_name: self.options.divers_relic_mult.value,
+            options.DiversStoreDepth.internal_name: self.options.divers_store_depth.value,
+            options.DiversXp.internal_name: self.options.divers_xp.value,
+            options.DiversCash.internal_name: self.options.divers_cash.value,
+            options.DiversXpItem.internal_name: self.options.divers_xp_item.value,
+            options.DiversCashItem.internal_name: self.options.divers_cash_item.value,
+            options.DiversPearl.internal_name: self.options.divers_pearl.value,
+            options.GrimstoneXp.internal_name: self.options.grimstone_xp.value,
+            options.GrimstoneCash.internal_name: self.options.grimstone_cash.value,
+            options.GrimstoneShops.internal_name: self.options.grimstone_shops.value,
+            options.GrimstoneRandomCharacters.internal_name: self.options.grimstone_random_characters.value,
+            options.GrimstoneDuplicateCharacters.internal_name: self.options.grimstone_duplicate_characters.value,
+            options.GolfariaStartWithBrakes.internal_name: self.options.golfaria_start_brakes.value,
+            options.GolfariaDifficulty.internal_name: self.options.golfaria_difficulty.value,
+            options.GolfariaHandicap.internal_name: self.options.golfaria_handicap.value,
+            options.GolfariaHardcoreStrokes.internal_name: self.options.golfaria_hardcore_strokes.value,
         }
         return slot_data
 

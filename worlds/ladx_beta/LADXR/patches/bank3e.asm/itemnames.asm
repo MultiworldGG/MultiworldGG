@@ -171,16 +171,16 @@ ItemNamePointers:
     dw ItemNameNightmareKey9
     dw ItemNameToadstool
     dw ItemNameGuardianAcorn
-    dw ItemNameNone ; 0x52
-    dw ItemNameNone ; 0x53
-    dw ItemNameNone ; 0x54
-    dw ItemNameNone ; 0x55
-    dw ItemNameNone ; 0x56
-    dw ItemNameNone ; 0x57
-    dw ItemNameNone ; 0x58
-    dw ItemNameNone ; 0x59
-    dw ItemNameNone ; 0x5a
-    dw ItemNameNone ; 0x5b
+    dw ItemNameGel ; 0x52
+    dw ItemNameGel ; 0x53
+    dw ItemNameGel ; 0x54
+    dw ItemNameGel ; 0x55
+    dw ItemNameGel ; 0x56
+    dw ItemNameDeath ; 0x57 deat
+    dw ItemNameSlimeStorm ; 0x58 slime storm
+    dw ItemNameBombDrop ; 0x59 bomb drop
+    dw ItemNameRecoveryHeart ; 0x5a recovery heart
+    dw ItemNameFairy ; 0x5b fairy
     dw ItemNameNone ; 0x5c
     dw ItemNameNone ; 0x5d
     dw ItemNameNone ; 0x5e
@@ -255,6 +255,11 @@ ItemNamePointers:
     dw ItemTradeQuest13
     dw ItemTradeQuest14
     dw ItemPieceOfPower
+    dw ItemNameNone ; Triforce
+    dw ItemNameNone ; AP 1
+    dw ItemNameNone ; AP 2
+    dw ItemNameNone ; AP 3
+    dw ItemNameCuccoParty ; Cucco party
 
 ItemNameNone:
     db m"NONE", $ff
@@ -419,8 +424,6 @@ ItemNameNightmareKey9:
     db m"Got the {NIGHTMARE_KEY9}", $ff
 ItemNameToadstool:
     db m"Got the {TOADSTOOL}", $ff
-ItemNameGuardianAcorn:
-    db m"Got a Guardian Acorn", $ff
 
 ItemNameHeartPiece:
     db m"Got the {HEART_PIECE}", $ff
@@ -472,35 +475,51 @@ ItemRooster:
     db m"You've got the {ROOSTER}", $ff
 
 ItemTradeQuest1:
-    db m"You've got the Yoshi Doll", $ff
+    db m"You've got the {TRADING_ITEM_YOSHI_DOLL}", $ff
 ItemTradeQuest2:
-    db m"You've got the Ribbon", $ff
+    db m"You've got the {TRADING_ITEM_RIBBON}", $ff
 ItemTradeQuest3:
-    db m"You've got the Dog Food", $ff
+    db m"You've got the {TRADING_ITEM_DOG_FOOD}", $ff
 ItemTradeQuest4:
-    db m"You've got the Bananas", $ff
+    db m"You've got the {TRADING_ITEM_BANANAS}", $ff
 ItemTradeQuest5:
-    db m"You've got the Stick", $ff
+    db m"You've got the {TRADING_ITEM_STICK}", $ff
 ItemTradeQuest6:
-    db m"You've got the Honeycomb", $ff
+    db m"You've got the {TRADING_ITEM_HONEYCOMB}", $ff
 ItemTradeQuest7:
-    db m"You've got the Pineapple", $ff
+    db m"You've got the {TRADING_ITEM_PINEAPPLE}", $ff
 ItemTradeQuest8:
-    db m"You've got the Hibiscus", $ff
+    db m"You've got the {TRADING_ITEM_HIBISCUS}", $ff
 ItemTradeQuest9:
-    db m"You've got the Letter", $ff
+    db m"You've got the {TRADING_ITEM_LETTER}", $ff
 ItemTradeQuest10:
-    db m"You've got the Broom", $ff
+    db m"You've got the {TRADING_ITEM_BROOM}", $ff
 ItemTradeQuest11:
-    db m"You've got the Fishing Hook", $ff
+    db m"You've got the {TRADING_ITEM_FISHING_HOOK}", $ff
 ItemTradeQuest12:
-    db m"You've got the Necklace", $ff
+    db m"You've got the {TRADING_ITEM_NECKLACE}", $ff
 ItemTradeQuest13:
-    db m"You've got the Scale", $ff
+    db m"You've got the {TRADING_ITEM_SCALE}", $ff
 ItemTradeQuest14:
-    db m"You've got the Magnifying Lens", $ff
- 
+    db m"You've got the {TRADING_ITEM_MAGNIFYING_GLASS}", $ff
+
+ItemNameGuardianAcorn:
+    db m"Got a {GUARDIAN_ACORN}", $ff
 ItemPieceOfPower:
-    db m"You've got a Piece of Power", $ff
+    db m"You've got a {PIECE_OF_POWER}", $ff
+
+ItemNameDeath:
+    db m"<master>", $ff
+ItemNameSlimeStorm:
+    db m"Got a slime storm", $ff
+ItemNameBombDrop:
+    db m"Got {BOMB}", $ff
+ItemNameRecoveryHeart:
+    db m"Got a little heart", $ff
+ItemNameFairy:
+    db m"Got a fairy", $ff
+
+ItemNameCuccoParty:
+    db m"Got a cucco party", $ff
 
 MultiNamePointers:

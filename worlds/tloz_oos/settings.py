@@ -1,6 +1,6 @@
 import settings
 
-from .data.Constants import AGES_ROM_HASH, ROM_HASH
+from .data.constants import AGES_ROM_HASH, ROM_HASH
 
 
 class OracleOfSeasonsSettings(settings.Group):

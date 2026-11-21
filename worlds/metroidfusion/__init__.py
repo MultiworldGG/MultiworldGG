@@ -6,6 +6,7 @@ from copy import deepcopy, copy
 import Utils
 import settings
 import typing
+import random
 
 from typing import Dict, Any, TextIO
 from BaseClasses import MultiWorld, ItemClassification, Tutorial, Item, Region, EntranceType, CollectionState
@@ -120,7 +121,7 @@ class MetroidFusionWorld(World):
     item_name_groups = {
         "MajorUpgrades": major_upgrades
     }
-    version = "1.22.7"
+    version = "1.23.0"
     debug = False
 
 
@@ -243,7 +244,7 @@ class MetroidFusionWorld(World):
                         else:
                             eligible_elevators = []
                         if origin_region_data in eligible_elevators:
-                            if "TOP" in connection.destination.name:
+                            if "Top" in connection.destination.name:
                                 group = ERGroups.ELEVATOR_BOTTOM
                             else:
                                 group = ERGroups.ELEVATOR_TOP
@@ -774,6 +775,100 @@ class MetroidFusionWorld(World):
             "power_bombs": power_bombs
         }
 
+    def _construct_music_shuffle_dict(self, shuffle_mode: int) -> dict[str, str]:
+
+        rng = random.Random(self.multiworld.seed)
+
+        boss_list = [
+            "ARACHNUS_BATTLE",
+            "ZAZABI_BATTLE",
+            "BOX_BATTLE",
+            "SERRIS_YAKUZA_BATTLE",
+            "VARIA_CORE_X_BATTLE",
+            "NIGHTMARE_BATTLE",
+            "NEO_RIDLEY_BATTLE",
+            "CHOZO_STATUE_CORE_X_BATTLE",
+            "NETTORI_BATTLE",
+            "SA_X_BATTLE",
+        ]
+
+        exploration_list = [
+            "SECTOR_1",
+            "SECTOR_2",
+            "SECTOR_3",
+            "SECTOR_5",
+            "SECTOR_4",
+            "SECTOR_6",
+            "MAIN_DECK_LIVELY",
+            "HEADING_TO_NIGHTMARE_RIDLEY",
+            "MAIN_BOILER_COOLDOWN_MISSION",
+            "SECTOR_4_UNDERWATER",
+            "FINAL_ORDER",
+        ]
+
+        short_list = [
+            "AFTER_EVENT",
+            "NAVIGATION_ROOM",
+            "SECURITY_DATA_ROOM",
+            "SA_X_APPEARANCE",
+            "SA_X_CHASE",
+            "BOSS_TENSION",
+            "MAIN_DECK_AMBIENCE",
+            "SILENCE_1_SHIP",
+            "TENSION",
+            "OMEGA_METROID_DEFEATED",
+            "OPERATIONS_DECK",
+            "OPERATIONS_DECK_ELEVATOR_OFFLINE_SOUND_AND_AMBIENCE",
+            "X_INVASION_DETECTION",
+            "SA_X_ELEVATOR",
+            "OPERATIONS_DECK_ELEVATOR_OFFLINE_AMBIENCE",
+            "STATION_ESCAPE",
+            "DISQUIETING",
+            "SHOCK",
+            "SILENCE_1",
+            "MAIN_BOILER_OVERHEATING",
+            "SILENCE_2",
+            "INTRIGUE",
+            "UNUSED_5E",
+            "UNEASE",
+        ]
+
+        jingle_list = [
+            "ITEM_JINGLE",
+            "LOADING_SAVE",
+            "MESSAGE_POPUP",
+            "OPERATIONS_DECK_ELEVATOR_OFFLINE_SOUND",
+            "OBJECTIVE_COMPLETE",
+            "PRE_TITLE_END",
+            "EPILOGUE_END",
+        ]
+
+        shuffled_boss = boss_list
+        shuffled_exploration = exploration_list
+        shuffled_short = short_list
+        total_new = boss_list + exploration_list + short_list
+
+        if shuffle_mode == 0:
+            return {}
+
+            # Shuffle mode is now either 1 (Type) or 2 (Full)
+        assert shuffle_mode in (1, 2)
+
+        total_orig = boss_list + exploration_list + short_list + jingle_list
+
+        if shuffle_mode == 2:
+            rng.shuffle(total_new)
+            total_new = total_new + jingle_list
+        else:
+            # Shuffle mode is TYPE
+            rng.shuffle(shuffled_boss)
+            rng.shuffle(shuffled_exploration)
+            rng.shuffle(shuffled_short)
+            total_new = shuffled_boss + shuffled_exploration + shuffled_short + jingle_list
+
+        return {f"{orig}": f"{new}" for orig, new in zip(total_orig, total_new, strict=True)}
+
+
     def generate_output(self, output_directory: str):
         patch_dict = dict()
         patch_dict["seed_hash"] = str(self.multiworld.seed)[:8]
@@ -832,12 +927,16 @@ class MetroidFusionWorld(World):
         patch_dict["required_metroid_count"] = infant_metroids_required
         patch_dict["reveal_hidden_tiles"] = bool(self.options.RevealHiddenBlocks.value)
         patch_dict["disable_demos"] = True
+        patch_dict["use_alternative_hud_health_layout"] = self.options.AlternateHealthHudLayout.value
         patch_dict["skip_door_transitions"] = bool(self.options.FastDoorTransitions.value)
         patch_dict["unexplored_map"] = True
         patch_dict["room_names"] = room_names
         patch_dict["title_text"] = [{"text": "         Archipelago", "line_num": 12}]
         patch_dict["credits_text"] = self.build_credits_text()
+        patch_dict["instant_unmorph"] = self.options.InstantMorph.value
         patch_dict["nerf_gerons"] = bool(self.options.NerfGeronWeaknesses.value)
+        patch_dict["use_toggle_for_secondary_weapon_selection"] = self.options.SecondaryWeaponToggle.value
+        patch_dict["music_replacement"] = self._construct_music_shuffle_dict(self.options.MusicRando.value)
 
         if self.options.PaletteRandomization:
             patch_dict["palettes"] = self.create_palette_rando(self.multiworld.seed)
@@ -849,6 +948,13 @@ class MetroidFusionWorld(World):
                 infant_metroids_required)
         else:
             patch_dict["navigation_text"] = self.create_navigation_text([], infant_metroids_required)
+        if self.options.MajorJingles:
+            for location in patch_dict["locations"]["major_locations"]:
+                if location["jingle"] == "MAJOR":
+                    location["jingle"] = "MINOR"
+            for location in patch_dict["locations"]["minor_locations"]:
+                if location["jingle"] == "MAJOR":
+                    location["jingle"] = "MINOR"
         if len(self.options.start_inventory.value) > 0 or len(self.options.start_inventory_from_pool.value) > 0:
             patch_dict["starting_items"] = self.build_starting_items_dict()
         patch_dict["tank_increments"] = {
@@ -937,6 +1043,7 @@ class MetroidFusionWorld(World):
             "PONRsInLogic": self.options.PointOfNoReturnsInLogic.value,
             "ShinesparkDifficulty": self.options.ShinesparkTrickDifficulty.value,
             "NerfGeronWeaknesses": self.options.NerfGeronWeaknesses.value,
+            "MusicRando": self.options.MusicRando.value,
             "WallJumpDifficulty": self.options.WallJumpTrickDifficulty.value,
             "CombatDifficulty": self.options.CombatDifficulty.value,
             "GameMode": self.options.GameMode.value,
@@ -974,4 +1081,3 @@ class MetroidFusionWorld(World):
 
 class MetroidFusionItem(Item):
     game = "Metroid Fusion"
-

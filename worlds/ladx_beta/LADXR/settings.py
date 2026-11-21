@@ -100,8 +100,6 @@ Spoiler logs can not be generated for ROMs generated with race mode enabled, and
                 description='Randomizes the secret sea shells hiding in the ground/trees. (chest are always randomized)'),
             Setting('heartcontainers', 'Items', 'H', 'Randomize heart containers', default=True,
                 description='Includes boss heart container drops in the item pool'),
-            Setting('instruments', 'Items', 'I', 'Randomize instruments', default=False,
-                description='Instruments are placed on random locations, dungeon goal will just contain a random item.'),
             Setting('tradequest', 'Items', 'T', 'Randomize trade quest', default=True,
                 description='Trade quest items are randomized, each NPC takes its normal trade quest item, but gives a random item'),
             Setting('witch', 'Items', 'W', 'Randomize item given by the witch', default=True,
@@ -150,10 +148,12 @@ This does nothing unless other settings are enabled to add entrances to the pool
 [Limited] They are shuffled with each other.
 [Global] They are added to the global entrance pool.
 Use the warp-to-home from the Save & Quit menu if you get stuck (hold A+B+Start+Select until it works)."""),
-            Setting('boss', 'Gameplay', 'B', 'Boss shuffle', options=[('default', '', 'Normal'), ('shuffle', 's', 'Shuffle'), ('random', 'r', 'Randomize')], default='default',
+            Setting('boss', 'Gameplay', 'B', 'Boss shuffle', options=[('disabled', '', 'Normal'), ('shuffle', 's', 'Shuffle'), ('randomize', 'r', 'Randomize')], default='disabled',
                 description='Randomizes the dungeon bosses that each dungeon has'),
-            Setting('miniboss', 'Gameplay', 'b', 'Miniboss shuffle', options=[('default', '', 'Normal'), ('shuffle', 's', 'Shuffle'), ('random', 'r', 'Randomize')], default='default',
+            Setting('miniboss', 'Gameplay', 'b', 'Miniboss shuffle', options=[('disabled', '', 'Normal'), ('shuffle', 's', 'Shuffle'), ('randomize', 'r', 'Randomize')], default='disabled',
                 description='Randomizes the dungeon minibosses that each dungeon has'),
+            Setting('enemies', 'Gameplay', 'e', 'Enemizer', options=[('disabled', '', 'None'), ('overworld', 'o', 'Overworld')], default='disabled',
+                description='Randomizes which enemies are placed.'),
             Setting('goal', 'Gameplay', 'G', 'Goal', options=[('8', '8', '8 instruments'), ('7', '7', '7 instruments'), ('6', '6', '6 instruments'),
                                                          ('5', '5', '5 instruments'), ('4', '4', '4 instruments'), ('3', '3', '3 instruments'),
                                                          ('2', '2', '2 instruments'), ('1', '1', '1 instrument'), ('0', '0', 'No instruments'),
@@ -200,12 +200,12 @@ Use the warp-to-home from the Save & Quit menu if you get stuck (hold A+B+Start+
 [Never] you can never steal from the shop."""),
             Setting('bowwow', 'Special', 'g', 'Good boy mode', options=[('normal', '', 'Disabled'), ('always', 'a', 'Enabled'), ('swordless', 's', 'Enabled (swordless)')], default='normal',
                 description='Allows BowWow to be taken into any area, damage bosses and more enemies. If enabled you always start with bowwow. Swordless option removes the swords from the game and requires you to beat the game without a sword and just bowwow.'),
-            Setting('overworld', 'Special', 'O', 'Overworld', options=[('normal', '', 'Normal'), ('dungeondive', 'D', 'Dungeon dive'), ('nodungeons', 'N', 'No dungeons'), ('random', 'R', 'Randomized'), ('openmabe', 'M', 'Open Mabe')], default='normal',
+            Setting('overworld', 'Special', 'O', 'Overworld', options=[('normal', '', 'Normal'), ('dungeondive', 'D', 'Dungeon dive'), ('nodungeons', 'N', 'No dungeons'), ('random', 'R', 'Randomized'), ('openmabe', 'M', 'Open Mabe'), ('openbeach', 'B', 'Open Beach')], default='normal',
                 description="""
 [Dungeon Dive] Create a different overworld where all the dungeons are directly accessible and almost no chests are located in the overworld.
 [No dungeons] All dungeons only consist of a boss fight and a instrument reward. Rest of the dungeon is removed.
 [Random] Creates a randomized overworld WARNING: This will error out often during generation, work in progress."""),
-            Setting('owlstatues', 'Special', 'o', 'Owl statues', options=[('', '', 'Never'), ('dungeon', 'D', 'In dungeons'), ('overworld', 'O', 'On the overworld'), ('both', 'B', 'Dungeons and Overworld')], default='',
+            Setting('owlstatues', 'Special', 'o', 'Owl statues', options=[('none', '', 'Never'), ('dungeon', 'D', 'In dungeons'), ('overworld', 'O', 'On the overworld'), ('both', 'B', 'Dungeons and Overworld')], default='none',
                 description='Replaces the hints from owl statues with additional randomized items'),
             Setting('superweapons', 'Special', 'q', 'Enable super weapons', default=False,
                 description='All items will be more powerful, faster, harder, bigger stronger. You name it.'),
@@ -213,10 +213,18 @@ Use the warp-to-home from the Save & Quit menu if you get stuck (hold A+B+Start+
                 options=[('easy', 'e', 'Easy'), ('normal', 'n', 'Normal'), ('hard', 'h', 'Hard'), ('harder', 'r', 'Harder'), ('hardest', 't', 'Hardest'), ('impossible', 'i', 'Impossible')], default='normal'),
             Setting('warps', 'Special', 'a', 'Warps', description="",
                 options=[('vanilla', 'v', 'Vanilla'), ('improved', 'i', 'Improved'), ('improvedadditional', 'a', 'Improved Additional')], default='vanilla'),
+            Setting('shuffleinstruments', 'Special', 'a', 'Shuffle Instruments', description="",
+                options=[('vanilla', '-1', 'Vanilla'), ('originaldungeon', '0', 'Original Dungeon'), ('owndungeons', '1', 'Own Dungeons'), ('ownworld', '2', 'Own World'), ('anyworld', '3', 'Any World'), ('differentworld', '4', 'Different World'), ('startinventory', '6', 'Start With')], default="originaldungeon"),
             Setting('shufflenightmarekeys', 'Special', 'a', 'Shuffle Nightmare Keys', description="",
-                options=[('originaldungeon', '0', 'Original Dungeon'), ('owndungeons', '1', 'Own Dungeons'), ('ownworld', '2', 'Own World'), ('anyworld', '3', 'Any World'), ('differentworld', '4', 'Different World')], default="originaldungeon"),
+                options=[('originaldungeon', '0', 'Original Dungeon'), ('owndungeons', '1', 'Own Dungeons'), ('ownworld', '2', 'Own World'), ('anyworld', '3', 'Any World'), ('differentworld', '4', 'Different World'), ('startinventory', '6', 'Start With')], default="originaldungeon"),
             Setting('shufflesmallkeys', 'Special', 'a', 'Shuffle Small Keys', description="",
-                options=[('originaldungeon', '0', 'Original Dungeon'), ('owndungeons', '1', 'Own Dungeons'), ('ownworld', '2', 'Own World'), ('anyworld', '3', 'Any World'), ('differentworld', '4', 'Different World')], default="originaldungeon"),
+                options=[('originaldungeon', '0', 'Original Dungeon'), ('owndungeons', '1', 'Own Dungeons'), ('ownworld', '2', 'Own World'), ('anyworld', '3', 'Any World'), ('differentworld', '4', 'Different World'), ('startinventory', '6', 'Start With')], default="originaldungeon"),
+            Setting('shufflemaps', 'Special', 'a', 'Shuffle Small Keys', description="",
+                options=[('originaldungeon', '0', 'Original Dungeon'), ('owndungeons', '1', 'Own Dungeons'), ('ownworld', '2', 'Own World'), ('anyworld', '3', 'Any World'), ('differentworld', '4', 'Different World'), ('startinventory', '6', 'Start With')], default="originaldungeon"),
+            Setting('shufflecompasses', 'Special', 'a', 'Shuffle Small Keys', description="",
+                options=[('originaldungeon', '0', 'Original Dungeon'), ('owndungeons', '1', 'Own Dungeons'), ('ownworld', '2', 'Own World'), ('anyworld', '3', 'Any World'), ('differentworld', '4', 'Different World'), ('startinventory', '6', 'Start With')], default="originaldungeon"),
+            Setting('shufflestonebeaks', 'Special', 'a', 'Shuffle Small Keys', description="",
+                options=[('originaldungeon', '0', 'Original Dungeon'), ('owndungeons', '1', 'Own Dungeons'), ('ownworld', '2', 'Own World'), ('anyworld', '3', 'Any World'), ('differentworld', '4', 'Different World'), ('startinventory', '6', 'Start With')], default="originaldungeon"),
             Setting('quickswap', 'User options', 'Q', 'Quickswap', options=[('none', '', 'Disabled'), ('a', 'a', 'Swap A button'), ('b', 'b', 'Swap B button')], default='none',
                 description='Adds that the select button swaps with either A or B. The item is swapped with the top inventory slot. The map is not available when quickswap is enabled.',
                 aesthetic=True),
@@ -260,6 +268,7 @@ Use the warp-to-home from the Save & Quit menu if you get stuck (hold A+B+Start+
             Setting('aptitlescreen', 'User options', 'a', 'AP Title Screen', description="", default=True),
             Setting('textshuffle', 'User options', 'a', 'Text Shuffle', description="", default=False),
             Setting('blockfreepowder', 'User options', 'a', 'Block Free Powder', description="", default=False),
+            Setting('specificoptionaldungeons', 'x', 'x', 'x', description="", options=[('normal', 'n', 'Normal'), ('condense', 'c', 'Condense'), ('condenseandexclude', 'e', 'Condense and Exclude')], default='normal')
         ]
         self.__by_key = {s.key: s for s in self.__all}
 

@@ -800,10 +800,24 @@ class TCGRequiresLens(Toggle):
 
 
 class ShuffleLoachReward(Choice):
-    """Shuffle the Hyrule Loach reward from the Fishing Pond.
-    Vanilla Behavior keeps the original loach spawn and sinking lure rules.
-    Easier Behavior always spawns the loach, makes the sinking lure available
-    immediately, and allows the normal fishing prizes to be won with it."""
+    """Enabling this shuffles the reward for catching the
+    Hyrule Loach at the fishing pond into the item pool
+
+    Vanilla Behavior shuffles the reward for catching the loach
+    but otherwise keeps all behavior the same as in
+    the vanilla game. The loach will spawn every fourth play
+    of the fishing minigame and the sinking lure will
+    become available only after obtaining the fishing prize
+    for link's current age.
+
+    Easier Behavior shuffles the loach reward but also modifies
+    some behavior in order to make the loach easier to catch.
+    When enabled the loach will always spawn at the
+    fishing pond, the sinking lure will be available
+    immediately at all four possible positions, and
+    the child/adult fishing prizes are still obtainable
+    if you use the sinking lure.
+    """
     display_name = "Shuffle Hyrule Loach Reward"
     option_off = 0
     option_vanilla = 1

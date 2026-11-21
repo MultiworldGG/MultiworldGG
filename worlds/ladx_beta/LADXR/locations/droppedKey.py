@@ -19,19 +19,23 @@ class DroppedKey(ItemInfo):
             extra = 0x01F8
         super().__init__(room, extra)
     def patch(self, rom, option, *, multiworld=None):
-        if (option.startswith(MAP) and option != MAP) or (option.startswith(COMPASS) and option != COMPASS) or (option.startswith(STONE_BEAK) and option != STONE_BEAK) or (option.startswith(NIGHTMARE_KEY) and option != NIGHTMARE_KEY) or (option.startswith(KEY) and option != KEY):
-            if option[-1] == 'P':
-                print(option)
+        if (
+            (option.startswith(MAP) and option != MAP) or
+            (option.startswith(COMPASS) and option != COMPASS) or
+            (option.startswith(STONE_BEAK) and option != STONE_BEAK) or
+            (option.startswith(NIGHTMARE_KEY) and option != NIGHTMARE_KEY) or
+            (option.startswith(KEY) and option != KEY)
+        ):
             if self._location.dungeon == int(option[-1]) and multiworld is None and self.room not in {0x166, 0x223}:
                 option = option[:-1]
-        rom.banks[0x3E][self.room + 0x3800] = CHEST_ITEMS[option]
-        #assert room not in patched_already, f"{self} {patched_already[room]}"
-        #patched_already[room] = self
-
+        item_id = CHEST_ITEMS[option]
+        if option == GEL:
+            randomnumber = self.room  # TODO: We need some way to get some seed depended randomness in here.
+            item_id = GEL_DISGUISE_MIN + (randomnumber % (GEL_DISGUISE_MAX - GEL_DISGUISE_MIN))
+        rom.banks[0x3E][self.room + 0x3800] = item_id
 
         if self.extra:
-            assert(not self.default_item)
-            rom.banks[0x3E][self.extra + 0x3800] = CHEST_ITEMS[option]
+            rom.banks[0x3E][self.extra + 0x3800] = item_id
 
         if multiworld is not None:
             rom.banks[0x3E][0x3300 + self.room] = multiworld
@@ -42,6 +46,8 @@ class DroppedKey(ItemInfo):
     def read(self, rom):
         assert self._location is not None, hex(self.room)
         value = rom.banks[0x3E][self.room + 0x3800]
+        if GEL_DISGUISE_MIN <= value < GEL_DISGUISE_MAX:
+            return GEL
         for k, v in CHEST_ITEMS.items():
             if v == value:
                 if k in [MAP, COMPASS, STONE_BEAK, NIGHTMARE_KEY, KEY]:

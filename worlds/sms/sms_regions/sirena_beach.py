@@ -3,11 +3,12 @@ from .sms_region_helper import *
 # Non-ticket requires yoshi to clear out the pineapple blocking the pipe. Ticket removes pineapple.
 SIRENA_BEACH_ENTRANCE: SmsRegion = SmsRegion(
     SmsRegionName.SIRENA_ENTRANCE,
-    requirements=[Requirements([[NozzleType.yoshi]], shines=5), Requirements([[NozzleType.yoshi]], skip_forward=True)],
-    hard=[],
-    advanced=[Requirements([[NozzleType.yoshi]], shines=5), Requirements([[NozzleType.yoshi]], skip_forward=True),
+    requirements=[Requirements([[NozzleType.yoshi]], shines=5), Requirements([[NozzleType.yoshi]], skip_forward=True, fluddless_only=True)],
+    hard=[Requirements([[NozzleType.yoshi]], shines=5), Requirements([[NozzleType.yoshi]], skip_forward=True, fluddless_only=True)],
+    advanced=[Requirements([[NozzleType.yoshi]], shines=5), Requirements([[NozzleType.yoshi]], skip_forward=True, fluddless_only=True),
         Requirements([[NozzleType.hover]])],
-    tears=[],
+    tears=[Requirements([[NozzleType.yoshi]], shines=5), Requirements([[NozzleType.yoshi]], skip_forward=True),
+        Requirements([[NozzleType.hover]])],
     ticketed="Sirena Beach Ticket",
     parent_region=SmsRegionName.PLAZA,
 )
@@ -144,7 +145,8 @@ SIRENA_BEACH_THREE: SmsRegion = SmsRegion(
         BlueCoin("Glass Hole", in_game_bit=379),
         BlueCoin(
             "White Painting",
-            requirements=[Requirements(SPRAY_OR_HOVER)],
+            requirements=[Requirements(YOSHI_AND_SPRAY_OR_YOSHI_AND_HOVER,
+                location=f"{SmsRegionName.SIRENA_FOUR} - The Secret of Casino Delfino")],
             hard=[Requirements(SPRAY_OR_HOVER_OR_TURBO)],
             in_game_bit=380,
         ),

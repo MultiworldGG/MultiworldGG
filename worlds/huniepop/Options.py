@@ -83,6 +83,17 @@ class randomize_girl_trait(Toggle):
     display_name = "Girls Traits"
     default = True
 
+class disable_girl_questions(Toggle):
+    """disable girl questions from being locations"""
+    display_name = "Disable Girl Questions"
+    default = False
+
+class disable_girl_gifts(Toggle):
+    """disables giving girls gifts as locations
+    NOTE: this doesn't disable giving kyu panties as locations"""
+    display_name = "Disable Girl Gifts"
+    default = False
+
 
 
 
@@ -131,6 +142,20 @@ class exclude_shop_items(Range):
     range_start = 0
     range_end = 480
     default = 20
+
+class progressive_shop(Toggle):
+    """make shop items only appear based on how many "Shop Pass" items you have"""
+    display_name = "progressive shops"
+    default = False
+
+class progressive_shop_amount(Range):
+    """number of "Shop Pass" items to be added to the multiworld
+    {X shop slot} will require math.ceil({X shop slot}*({num of shop passes}/{num of shop slots})) to access
+    NOTE: requires "progressive_shop" to be set to true"""
+    display_name = "progressive shop number"
+    range_start = 1
+    range_end = 100
+    default = 10
 
 class shop_item_cost(DictRange):
     """sets the cost for Arch Items in the shop
@@ -244,7 +269,13 @@ class hunie_gift_cost(DictRange):
     range_max = 99999
     default = "single-10000"
 
-
+class hunie_to_money(Range):
+    """sets the conversion rate for hunnie to money in the store
+    NOTE: set to 0 to disable converting hunnie to money"""
+    display_name = "puzzle affection add"
+    range_start = 0
+    range_end = 100
+    default = 2
 
 @dataclass
 class HPOptions(PerGameCommonOptions):
@@ -256,6 +287,8 @@ class HPOptions(PerGameCommonOptions):
     number_of_starting_girls: starting_girls
     randomize_girl_gifts:randomize_girl_gifts
     randomize_girl_trait:randomize_girl_trait
+    disable_girl_questions:disable_girl_questions
+    disable_girl_gifts:disable_girl_gifts
     progressive_dates:progressive_dates
 
     puzzle_moves: puzzle_moves
@@ -264,8 +297,12 @@ class HPOptions(PerGameCommonOptions):
 
     number_shop_items: shop_items
     exclude_shop_items: exclude_shop_items
+    progressive_shop:progressive_shop
+    progressive_shop_amount:progressive_shop_amount
     shop_item_cost: shop_item_cost
     shop_gift_cost: shop_gift_cost
     shop_date_gift_cost: shop_date_gift_cost
     hunie_gift_cost: hunie_gift_cost
+
+    hunie_to_money:hunie_to_money
 

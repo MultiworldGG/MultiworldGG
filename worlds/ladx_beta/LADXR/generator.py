@@ -100,6 +100,8 @@ def generateRom(base_rom: bytes, args, patch_data: Dict):
     world_setup.entrance_mapping = patch_data["world_setup"]["entrance_mapping"]
     world_setup.boss_mapping = patch_data["world_setup"]["boss_mapping"]
     world_setup.miniboss_mapping = patch_data["world_setup"]["miniboss_mapping"]
+    world_setup.condensed_dungeons = patch_data["world_setup"]["condensed_dungeons"]
+    world_setup.excluded_dungeons = patch_data["world_setup"]["excluded_dungeons"]
     ladxr_logic = LADXRLogic(configuration_options=ladxr_settings, world_setup=world_setup)
     item_list = [item for item in ladxr_logic.iteminfo_list if not isinstance(item, KeyLocation)]
     for spot in patch_data["rom_item_placements"]:
@@ -153,8 +155,8 @@ def generateRom(base_rom: bytes, args, patch_data: Dict):
     assembler.const("wMWRecvIndexLo", 0xDDF7)
     assembler.const("wMWCommand", 0xDDF8)
     assembler.const("wMWItemCode", 0xDDF9)
-    assembler.const("wMWItemSenderHi", 0xDDFA)
-    assembler.const("wMWItemSenderLo", 0xDDFB)
+    assembler.const("wMWMultipurposeA", 0xDDFA)
+    assembler.const("wMWMultipurposeB", 0xDDFB)
     assembler.const("wMWMultipurposeC", 0xDDFC)
     assembler.const("wMWMultipurposeD", 0xDDFD)
     assembler.const("wMWMultipurposeE", 0xDDFE)
@@ -171,6 +173,7 @@ def generateRom(base_rom: bytes, args, patch_data: Dict):
     patches.core.cleanup(rom)
     patches.core.mapExtraCharacters(rom)
     patches.core.fixD7exit(rom)
+    patches.core.fixHealthFullCheck(rom)
     patches.save.singleSaveSlot(rom)
     patches.phone.patchPhone(rom)
     patches.photographer.fixPhotographer(rom)
@@ -182,7 +185,9 @@ def generateRom(base_rom: bytes, args, patch_data: Dict):
     patches.core.easyColorDungeonAccess(rom)
     patches.owl.removeOwlEvents(rom)
     patches.enemies.fixArmosKnightAsMiniboss(rom)
-    patches.bank3e.addBank3E(rom, multi_key, patch_data["player"], patch_data["other_player_names"])
+    patches.enemies.enemyQoL(rom)
+    patches.bank3e.addBank3E(rom, multi_key, patch_data["player"], patch_data["other_player_names"],
+        patch_data["precollected_items"])
     patches.bank3f.addBank3F(rom)
     patches.bank34.addBank34(rom, item_list)
     patches.core.removeGhost(rom)
@@ -202,6 +207,8 @@ def generateRom(base_rom: bytes, args, patch_data: Dict):
         patches.maptweaks.tweakBirdKeyRoom(rom)
     if ladxr_settings.overworld == 'openmabe':
         patches.maptweaks.openMabe(rom)
+    elif ladxr_settings.overworld == 'openbeach':
+        patches.maptweaks.openBeach(rom)
     patches.chest.fixChests(rom)
     patches.shop.fixShop(rom)
     patches.rooster.patchRooster(rom)
@@ -212,10 +219,10 @@ def generateRom(base_rom: bytes, args, patch_data: Dict):
     patches.tarin.updateTarin(rom)
     patches.fishingMinigame.updateFinishingMinigame(rom)
     patches.health.upgradeHealthContainers(rom)
-    # if ladxr_settings.owlstatues in ("dungeon", "both"):
-    #    patches.owl.upgradeDungeonOwlStatues(rom)
-    # if ladxr_settings.owlstatues in ("overworld", "both"):
-    #    patches.owl.upgradeOverworldOwlStatues(rom)
+    if ladxr_settings.owlstatues in ("dungeon", "both"):
+        patches.owl.upgradeDungeonOwlStatues(rom)
+    if ladxr_settings.owlstatues in ("overworld", "both"):
+        patches.owl.upgradeOverworldOwlStatues(rom)
     patches.goldenLeaf.fixGoldenLeaf(rom)
     patches.heartPiece.fixHeartPiece(rom)
     patches.seashell.fixSeashell(rom)
@@ -232,8 +239,7 @@ def generateRom(base_rom: bytes, args, patch_data: Dict):
     if ladxr_settings.overworld == 'dungeondive':
         patches.overworld.patchOverworldTilesets(rom)
         patches.overworld.createDungeonOnlyOverworld(rom)
-    elif ladxr_settings.overworld == 'nodungeons':
-        patches.dungeon.patchNoDungeons(rom)
+    patches.dungeon.patchNoDungeons(rom, world_setup.condensed_dungeons)
     #elif ladxr_settings.overworld == 'random':
     #    patches.overworld.patchOverworldTilesets(rom)
     #    mapgen.store_map(rom, world.ladxr_logic.world.map)
@@ -267,6 +273,7 @@ def generateRom(base_rom: bytes, args, patch_data: Dict):
     if ladxr_settings.textmode == 'none':
         patches.aesthetics.fastText(rom)
         patches.aesthetics.noText(rom)
+    patches.aesthetics.removeDungeonTexts(rom)
     if not ladxr_settings.nagmessages:
         patches.aesthetics.removeNagMessages(rom)
     if ladxr_settings.lowhpbeep == 'slow':
@@ -275,6 +282,7 @@ def generateRom(base_rom: bytes, args, patch_data: Dict):
         patches.aesthetics.removeLowHPBeep(rom)
     if 0 <= int(ladxr_settings.linkspalette):
         patches.aesthetics.forceLinksPalette(rom, int(ladxr_settings.linkspalette))
+    patches.aesthetics.add_ap_icons(rom)
     if args.romdebugmode:
         # The default rom has this build in, just need to set a flag and we get this save.
         rom.patch(0, 0x0003, "00", "01")
@@ -318,9 +326,13 @@ def generateRom(base_rom: bytes, args, patch_data: Dict):
     if ladxr_settings.overworld not in {"dungeondive", "random"}:
         patches.entrances.changeEntrances(rom, world_setup.entrance_mapping)
     for ladxr_item in item_list:
-        ladxr_item.patch(rom, ladxr_item.item, multiworld=ladxr_item.mw)
+        ladxr_item.patch(rom, ladxr_item.item or ladxr_item.default_item, multiworld=getattr(ladxr_item, 'mw', None))
     patches.enemies.changeBosses(rom, world_setup.boss_mapping)
     patches.enemies.changeMiniBosses(rom, world_setup.miniboss_mapping)
+    if ladxr_settings.enemies == "overworld":
+        world_setup_seed = patch_data["world_setup_seed"]
+        world_setup_rnd = random.Random(f"{world_setup_seed}{patch_data['seed']}") if world_setup_seed else random
+        patches.enemies.randomizeEnemies(rom, world_setup_rnd)
 
     if not args.romdebugmode:
         patches.core.addFrameCounter(rom, len(item_list))

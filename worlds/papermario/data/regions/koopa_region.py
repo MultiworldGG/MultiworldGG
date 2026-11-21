@@ -27,10 +27,10 @@ from rule_builder.rules import (
 
 from .LogicHelpers import (
     HasHammer,
-    HasSuperHammer,
-    HasUltraHammer,
+    #HasSuperHammer,
+    #HasUltraHammer,
     HasBoots,
-    HasSuperBoots,
+    #HasSuperBoots,
     HasUltraBoots,
     CanFlipPanels,
     CanSeeHiddenBlocks,
@@ -38,10 +38,10 @@ from .LogicHelpers import (
     CanUseAbilityKooper,
     CanUseAbilityBombette,
     CanUseAbilityParakarry,
-    CanUseAbilityBow,
-    CanUseAbilityWatt,
-    CanUseAbilitySushie,
-    CanUseAbilityLakilester,
+    #CanUseAbilityBow,
+    #CanUseAbilityWatt,
+    #CanUseAbilitySushie,
+    #CanUseAbilityLakilester,
     CanHitGroundedBlocks,
     CanHitFloatingBlocks,
     CanHitGroundedSwitches,
@@ -200,7 +200,7 @@ koopa_region_regions: list[Dict[str, str | Dict[str, Rule | None]]] = [
         "exits": {
             "KR Koopa Village 1": None,
             "KR Behind Koopa Village": None,
-            "KR Koopa Village 2 Pipe": Has("GF_TIK01_WarpPipes") & HasBoots(),
+            "KR Koopa Village 2 Pipe": HasBoots(),
         }
     },
     {
@@ -209,7 +209,7 @@ koopa_region_regions: list[Dict[str, str | Dict[str, Rule | None]]] = [
         "map_id": "1",
         "map_name": "Koopa Village 2",
         "exits": {
-            "TTT Warp Zone 1 (B1) Koopa Village Pipe": CanReenterVerticalPipes(),
+            "TTT Warp Zone 1 (B1) Koopa Village Pipe": Has("GF_TIK01_WarpPipes") & CanReenterVerticalPipes(),
             "KR Koopa Village 2": None,
         }
     },
@@ -336,6 +336,7 @@ koopa_region_regions: list[Dict[str, str | Dict[str, Rule | None]]] = [
             "KR Pleasant Crossroads Brick Block Puzzle": (
                 CanHitGroundedBlocks()
                 & CanHitFloatingBlocks()
+                & Has("RF_CanSolveAttackFXBPuzzle")
             )
         },
         "exits": {
@@ -401,7 +402,7 @@ koopa_region_regions: list[Dict[str, str | Dict[str, Rule | None]]] = [
         },
         "exits": {
             "KR Path to Fortress 2": None,
-            "KR Path to Fortress 1 West": Has("MF_NOK14_BuiltBridge") & CanClimbSteps(),
+            "KR Path to Fortress 1 West": Has("MF_NOK14_BuiltBridge"),
         }
     },
     {

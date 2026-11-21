@@ -8,7 +8,6 @@ from NetUtils import ClientStatus
 from worlds.AutoSNIClient import SNIClient
 
 from . import Regions, RomAddresses
-from .ALttPDoorRandomizer import Regions as DRRegions
 
 if TYPE_CHECKING:
     from SNIClient import SNIContext
@@ -97,6 +96,8 @@ class ALttPRSNIClient(SNIClient):
         # TODO: Get items from server
         if cmd == "Connected":
             self.missing_blind_maiden = args["slot_data"]["bosses"]["1"]["Thieves Town"] != "Blind"
+            if "enemies" in args["slot_data"]:
+                Regions.init_lookups(args["slot_data"]["enemies"]["1"]["Underworld"])
 
 
     def should_collect(self, ctx, location_id: int) -> bool:
@@ -240,10 +241,10 @@ class ALttPRSNIClient(SNIClient):
                     if pot_value & mask != 0 and location not in ctx.locations_checked:
                         new_check(Regions.lookup_name_to_id[location])
 
-        if not all([location in ctx.locations_checked for location in RomAddresses.location_table_sprite_items.keys()]):
+        if not all([location in ctx.locations_checked for location in Regions.location_table_sprite_items.keys()]):
             sprite_items_data = await snes_read(ctx, RomAddresses.SPRITE_ITEMS_SRAM_START, RomAddresses.ITEM_SRAM_SIZE)
             if sprite_items_data is not None:
-                for location, (offset, mask) in RomAddresses.location_table_sprite_items.items():
+                for location, (offset, mask) in Regions.location_table_sprite_items.items():
                     if offset == 0x8a and self.missing_blind_maiden:
                         # The Blind Maiden is missing in Thieves Town if Blind isn't the boss,
                         # causing the sprite indices to be off by one

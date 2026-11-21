@@ -139,7 +139,8 @@ def create_rules(world: "UFO50World", regions: dict[str, Region]) -> None:
     verdeswarea.connect(verder7c8loc,
                         rule=lambda state: state.has(force_mod, player))  # spike-ng.
     verder7c9.connect(verder7c8loc,
-                      rule=lambda state: state.has(force_mod, player) or spike_tank(state, world))  # here spike tanking is reasonable
+                      rule=lambda state: state.has(security_clearance, player, 1)
+                      and (state.has(force_mod, player) or spike_tank(state, world)))  # here spike tanking is reasonable
 
     # TODO: check how hard this hell run is
     latomr9c3.connect(latomr7c6,

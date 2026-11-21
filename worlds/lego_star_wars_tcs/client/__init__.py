@@ -1,18 +1,18 @@
 import asyncio
 import traceback
 import colorama
-import hashlib
 
 import ModuleUpdate
 import Utils
 from BaseClasses import ItemClassification
 from MultiServer import mark_raw
 from NetUtils import ClientStatus
+from settings import get_settings
 from worlds._bizhawk.context import AuthStatus
 
 ModuleUpdate.update()
 
-
+apname = Utils.instance_name if Utils.instance_name else "Archipelago"
 import logging
 import typing
 from pymem import pymem
@@ -21,23 +21,35 @@ from pymem.exception import ProcessNotFound, ProcessError, PymemError, WinAPIErr
 from CommonClient import server_loop, gui_enabled, get_base_parser
 
 from .. import options, TCSUniversalTrackerAPWorldVersionMismatchError
-from ..constants import GAME_NAME, AP_WORLD_VERSION
-from ..levels import SHORT_NAME_TO_CHAPTER_AREA, CHAPTER_AREAS, ChapterArea
-from ..locations import LOCATION_NAME_TO_ID
+from ..constants import GAME_NAME, AP_WORLD_VERSION, SETTINGS_KEY
+from ..host_yaml_settings import LegoStarWarsTCSSettings
+from ..slot_data import TCSSlotDataOptions, ApWorldVersion, get_slot_data_name
 from .client_text import ClientText, clean_string
-from .common_addresses import ShopType, CantinaRoom, GameState1, OPENED_MENU_DEPTH_ADDRESS, CURRENT_P_AREA_DATA_ADDRESS
-from .location_checkers.free_play_completion import FreePlayChapterCompletionChecker
+from .common_addresses import (
+    ShopType,
+    CantinaRoom,
+    GameState1,
+    OPENED_MENU_DEPTH_ADDRESS,
+    CURRENT_P_AREA_DATA_ADDRESS,
+    CHARACTER_CHARACTER_DATA_POINTER,
+    CHARACTER_DATA_ID,
+)
+from .custom_save_data import CustomSaveDataSections, CUSTOM_SAVE_DATA_SECTION_SIZE, CustomSaveFlags2
+from .location_checkers.free_play_completion import FreePlayAreaCompletionChecker
 from .location_checkers.bonus_level_completion import BonusAreaCompletionChecker
+from .location_checkers.minikits import MinikitChecker
 from .location_checkers.ridesanity import RidesanityChecker
-from .location_checkers.true_jedi_and_minikits import TrueJediAndPowerBrickAndMinikitChecker
+from .location_checkers.true_jedi_and_minikits_gold_brick import TrueJediAndPowerBrickAndMinikitBrickChecker
 from .location_checkers.shop_purchases import PurchasedExtrasChecker, PurchasedCharactersChecker
 from .events import (
     EventManager,
     OnLevelChangeEvent,
     OnAreaChangeEvent,
+    OnUnhookFromGameEvent,
     OnReceiveSlotDataEvent,
     OnGameWatcherTickEvent,
     OnPlayerCharacterIdChangeEvent,
+    OnGameWatcherDisconnectedTickEvent,
 )
 from .game_state_modifiers import ClientComponent
 from .game_state_modifiers.extras import AcquiredExtras
@@ -58,9 +70,21 @@ from .game_state_modifiers.uncap_high_jump import UncapHighJump
 from .game_state_modifiers.level_specific_fixes import LevelSpecificFixes
 from .game_state_modifiers.patches import apply_game_patches
 from .game_state_modifiers.auto_collect_pickups import AutoCollectPickups
+from .game_state_modifiers.run_in_a_window import RunInAWindow
 from .game_version_check import get_game_version, GameVersion, gog_to_steam
 
-apname = Utils.instance_name if Utils.instance_name else "Archipelago"
+from ..data.levels import Level
+from ..data.locations import LOCATION_NAME_TO_ID
+from ..data_storage import (
+    DATA_STORAGE_KEY_SUFFIX,
+    COMPLETED_FREE_PLAY_KEY_PREFIX,
+    COMPLETED_TRUE_JEDI_KEY_PREFIX,
+    COMPLETED_10_MINIKITS_KEY_PREFIX,
+    COMPLETED_BONUSES_KEY_PREFIX,
+    COLLECTED_POWER_BRICKS_KEY_PREFIX,
+    MINIKIT_GOAL_SUBMITTED_PREFIX,
+)
+
 
 # Universal Tracker client integration.
 try:
@@ -68,7 +92,7 @@ try:
         TrackerGameContext as CommonContext,
         TrackerCommandProcessor as ClientCommandProcessor,
     )
-except ImportError as ex:
+except ImportError:
     from CommonClient import CommonContext, ClientCommandProcessor
     UNIVERSAL_TRACKER_LOADED = False
 else:
@@ -135,83 +159,6 @@ ACTIVE_SHOP_TYPE_ADDRESS = 0x8801cc
 # 9 = There is no 9
 CUSTOM_CHARACTER_1_WEAPON = 0x86e510
 
-
-# # Unverified, but seems to be the case.
-# MINIKIT_NAME_LENGTH_BYTES = 8
-# # todo: Need to include location IDs somewhere
-# # todo: Can objects other than minikits get included in these lists? In which case, we might need to read more memory...
-# #   Polly on the Lego TTGames modding discord seemed to have an idea of how minikits were laid out in memory.
-# # todo: This dictionary will be long and will want to go in a different module.
-# _MINIKIT_ADDRESSES_AND_NAMES: dict[int, dict[bytes, int]] = {
-#     # 1-1A
-#     0x0: {
-#         b"m_pup1": 1,
-#         b"m_pup2": 2,
-#         b"m_pup3": 3,
-#         b"m_pup4": 4,
-#         b"m_pup5": 5,
-#         b"pup_2": 6,
-#     },
-#     # 1-1B
-#     0x0: {
-#         b"m_pup1": 7,
-#         b"pup2": 8,
-#     },
-#     # 1-1C
-#     0x0: {
-#         b"m_pup1": 9,
-#         b"m_pup2": 10,
-#     },
-#
-#     0x0: {
-#         b"m_pup2": 11,
-#         b"m_pOOP1": 12,
-#         b"m_pOOP2": 13,
-#         b"m_pOOP3": 14,
-#         b"m_pup1": 15,
-#     },
-#     0x0: {
-#         b"m_pup1": 0,  # todo
-#     }
-# }
-#
-# def _s8(b: bytes) -> bytes:
-#     """Null terminate and pad an 8 byte string"""
-#     if len(b) >= 8:
-#         raise AssertionError(f"String {b} is too long")
-#     return b + b"\x00" * (8 - len(b))
-# MINIKIT_ADDRESSES_AND_NAMES: dict[int, dict[bytes, int]] = {k: {_s8(k2): v2 for k2, v2 in v.items()}
-#                                                             for k, v in _MINIKIT_ADDRESSES_AND_NAMES.items()}
-#
-#
-# def _read_minikit_locations(process: pymem.Pymem) -> set[int]:
-#     s = set()
-#     for address, names_to_ap_locations in MINIKIT_ADDRESSES_AND_NAMES.items():
-#         # Read the bytes for the number of minikit names that can be at this address (the number of minikits in this
-#         # particular sublevel, e.g. Negotiations_A)
-#         length = len(names_to_ap_locations)
-#         names_bytes = process.read_bytes(address, length * MINIKIT_NAME_LENGTH_BYTES)
-#
-#         # Find all the names as 8-byte null-terminated strings.
-#         # names: set[bytes] = set(struct.unpack("8s" * length, names_bytes))
-#         # for name, ap_location in names_to_ap_locations.items():
-#         #     if name in names:
-#         #         s.add(ap_location)
-#
-#         # Alternative. todo: Which is faster?
-#         # Iterate the names as 8-byte null-terminated strings.
-#         for unpacked in struct.unpack("8s" * length, names_bytes):
-#             # The names in the mapping are null-terminated and padded to 8 bytes in advance.
-#             # todo: Could do this. It's faster to start with, but slower once more minikits have been collected.
-#             # if unpacked == b"\x00\x00\x00\x00\x00\x00\x00\x00":
-#             #     # No more to read.
-#             #     break
-#             if unpacked in names_to_ap_locations:
-#                 s.add(names_to_ap_locations[unpacked])
-#             else:
-#                 logger.warning("Unexpected unpacked minikit name %s for sublevel address %s", unpacked, address)
-#     return s
-
 # todo: Add optional gold brick and hint purchase checks (they should go in a different module)
 # class PurchasedGoldBricks:
 #     pass
@@ -222,36 +169,8 @@ class NoProcessError(RuntimeError):
     pass
 
 
-# Each EpisodeGameLevelArea has an unused single-precision float that is written to the save file. The client writes
-# arbitrary data to these bytes.
-# The first normally unused area float bytes are used to store the expected item index.
-UNUSED_AREA_DWORD_EXPECTED_IDX = 0
-# The next 4 normally unused area float bytes are used to store an MD5 hash of the seed name.
-UNUSED_AREA_DWORD_SEED_NAME_HASH_START = UNUSED_AREA_DWORD_EXPECTED_IDX + 1
-UNUSED_AREA_DWORD_SEED_NAME_HASH_END = UNUSED_AREA_DWORD_SEED_NAME_HASH_START + 4
-UNUSED_AREA_DWORD_SEED_NAME_HASH_AREAS = slice(UNUSED_AREA_DWORD_SEED_NAME_HASH_START,
-                                               UNUSED_AREA_DWORD_SEED_NAME_HASH_END)
-# The next 16 normally unused area float bytes are used to store the slot name for automatic authentication.
-# Slot names are up to 16 UTF-8 characters, and a UTF-8 character can be up to 4 bytes, so the bytes of 16 unused floats
-# are used.
-UNUSED_AREA_DWORD_SLOT_NAME_START = UNUSED_AREA_DWORD_SEED_NAME_HASH_END
-UNUSED_AREA_DWORD_SLOT_NAME_END = UNUSED_AREA_DWORD_SLOT_NAME_START + 16
-UNUSED_AREA_DWORD_SLOT_NAME_AREAS = slice(UNUSED_AREA_DWORD_SLOT_NAME_START,
-                                          UNUSED_AREA_DWORD_SLOT_NAME_END)
-
-DATA_STORAGE_KEY_SUFFIX = "{team}_{slot}"
-
-COMPLETED_FREE_PLAY_KEY_PREFIX = "tcs_completed_free_play_"
-COMPLETED_TRUE_JEDI_KEY_PREFIX = "tcs_completed_true_jedi_"
-COMPLETED_10_MINIKITS_KEY_PREFIX = "tcs_completed_10_minikits_"
-COMPLETED_BONUSES_KEY_PREFIX = "tcs_completed_bonuses_"
-COLLECTED_POWER_BRICKS_KEY_PREFIX = "tcs_collected_power_bricks_"
-
 LEVEL_ID_KEY_PREFIX = "tcs_current_level_id_"
 CANTINA_ROOM_KEY_PREFIX = "tcs_cantina_room_"
-# By writing whether the minikit goal has been submitted to datastorage, only one player in same-slot co-op needs to
-# submit the minikits to the minikit display in the cantina's junkyard.
-MINIKIT_GOAL_SUBMITTED_PREFIX = "tcs_minikit_goal_submitted_"
 
 
 class LegoStarWarsTheCompleteSagaCommandProcessor(ClientCommandProcessor):
@@ -340,6 +259,105 @@ class LegoStarWarsTheCompleteSagaCommandProcessor(ClientCommandProcessor):
             else:
                 logger.info("Death Link disabled.")
 
+    def _impl_cmd_debug_memory_peek(self, num_bytes_to_read: str, *addresses: str, delay: int = 0):
+        ctx = self.ctx
+        if not isinstance(ctx, LegoStarWarsTheCompleteSagaContext):
+            return
+        if not addresses:
+            logger.info("At least one address is required")
+            return
+        process = ctx.game_process
+        if process is None:
+            logger.info("The client is not connected to the game. The command cannot run.")
+            return
+        try:
+            bytes_to_read = int(num_bytes_to_read)
+            if bytes_to_read > 256:
+                logger.info("Too many bytes to read, maximum is 256, but got %i", bytes_to_read)
+                return
+            if bytes_to_read < 1:
+                logger.info("Too few bytes to read, minimum is 1, but got %i", bytes_to_read)
+                return
+            address_ints: list[int] = [int(addr, base=16) for addr in addresses]
+        except ValueError as ex:
+            logger.info("Could not parse command arguments: %s", ex)
+        else:
+            if delay > 0:
+                import time
+                # The client freezes for the duration, so there is no point logging and then sleeping 1s at a time in a
+                # loop.
+                time.sleep(delay)
+            path = []
+            # The first address is absolute, and is assumed to be intended for the GOG version of the game, so must be
+            # adjusted if the player is playing the STEAM version of the game.
+            last_address = ctx.adjust_gog_address(address_ints[0])
+            for offset_address in address_ints[1:]:
+                last_address_points_to = process.read_uint(last_address)
+                path.append(last_address)
+                if last_address_points_to == 0:
+                    logger.info("%#x is a null pointer; stopping here.", last_address)
+                    return
+                else:
+                    next_address = last_address_points_to + offset_address
+                    logger.info("%#x points to %#x. Adding offset of %#x gives %#x.",
+                                last_address, last_address_points_to, offset_address, next_address)
+                    last_address = next_address
+            value = process.read_bytes(last_address, bytes_to_read)
+            logger.info("At %#x, read %i bytes to get: %s", last_address, bytes_to_read, value.hex())
+
+    def _cmd_debug_memory_peek(self, num_bytes_to_read: str, *addresses: str):
+        """Debug command to peek at the game's memory, given the number of bytes to read, and a series of offset
+        addresses in hexadecimal. The APWorld developer may provide you a command to run to help identify issues you are
+        having."""
+        self._impl_cmd_debug_memory_peek(num_bytes_to_read, *addresses, delay=0)
+
+    def _cmd_debug_delayed_memory_peek(self, seconds_delay: str, num_bytes_to_read: str, *addresses: str):
+        """Debug command to peek at the game's memory after a delay, given the number of bytes to read, and a series of
+        offset addresses in hexadecimal. The APWorld developer may provide you a command to run to help identify issues
+        you are having. The client will freeze for the duration of the delay."""
+        try:
+            seconds_delay = int(seconds_delay)
+            if seconds_delay < 0:
+                raise ValueError("Minimum delay is 0 seconds")
+            if seconds_delay > 10:
+                raise ValueError("Maximum delay is 10 seconds")
+        except ValueError as ex:
+            logger.info("Could not parse seconds_delay as an integer: %s", ex)
+        else:
+            self._impl_cmd_debug_memory_peek(num_bytes_to_read, *addresses, delay=seconds_delay)
+
+    def _cmd_toggle_windowed(self):
+        """Toggle whether the game should run in a window. You will need to enter the Video Settings menu and Confirm
+        for the game to update, or alt+tab out and back in. This toggle value is stored in your host.yaml and will be
+        applied by the client when connecting to the game (you will still need to enter the Video Settings menu or
+        alt-tab if the windowed toggle is enabled)."""
+        ctx = self.ctx
+        assert isinstance(ctx, LegoStarWarsTheCompleteSagaContext)
+        settings: LegoStarWarsTCSSettings = get_settings()[SETTINGS_KEY]
+        inverted = not settings.run_in_a_window
+        ctx.run_in_a_window.set_windowed(ctx, inverted)
+        settings.run_in_a_window = inverted
+        settings._changed = True
+
+    if UNIVERSAL_TRACKER_LOADED:
+        # noinspection PyUnresolvedReferences
+        def _cmd_ut_toggle_all_glitches(self):
+            """Toggle showing glitched logic for the highest logic difficulty instead of just the next logic difficulty
+            above the logic difficulty you chose in your YAML options (default)."""
+            item_name = "UT_GLITCHED_ALL"
+            if item_name not in self.ctx.tracker_core.manual_items:
+                self._cmd_manually_collect(item_name)
+                logger.info("Glitched logic from the highest logic difficulty will now be shown.")
+            else:
+                # Same as UT's _cmd_reset_manually_collect, but only removing the item that says all glitches should be
+                # used in glitched logic.
+                manual_items = self.ctx.tracker_core.manual_items.copy()
+                manual_items.remove(item_name)
+                self.ctx.tracker_core.manual_items = manual_items
+                self.ctx.persist_seed_data()
+                self.ctx.updateTracker()
+                logger.info("Glitched logic from only the next logic difficulty will now be shown.")
+
 
 class LegoStarWarsTheCompleteSagaContext(CommonContext):
     command_processor = LegoStarWarsTheCompleteSagaCommandProcessor
@@ -382,8 +400,9 @@ class LegoStarWarsTheCompleteSagaContext(CommonContext):
     client_expected_idx: int
 
     # Location checkers.
-    free_play_completion_checker: FreePlayChapterCompletionChecker
-    true_jedi_and_power_brick_and_minikit_checker: TrueJediAndPowerBrickAndMinikitChecker
+    free_play_completion_checker: FreePlayAreaCompletionChecker
+    true_jedi_and_power_brick_and_minikit_brick_checker: TrueJediAndPowerBrickAndMinikitBrickChecker
+    minikit_checker: MinikitChecker
     purchased_extras_checker: PurchasedExtrasChecker
     purchased_characters_checker: PurchasedCharactersChecker
     bonus_area_completion_checker: BonusAreaCompletionChecker
@@ -402,6 +421,7 @@ class LegoStarWarsTheCompleteSagaContext(CommonContext):
     checked_location_messages: bool = True
     client_text: ClientText
     auto_collect_pickups: AutoCollectPickups
+    run_in_a_window: RunInAWindow
 
     # A few components are permanent and will need to be manually re-subscribed to receive events because the components
     # won't be re-created.
@@ -430,30 +450,23 @@ class LegoStarWarsTheCompleteSagaContext(CommonContext):
         self.uncap_high_jump = UncapHighJump()
         self.cantina_reloader = CantinaReloader()
         self.level_specific_fixes = LevelSpecificFixes()
+        self.text_display = InGameTextDisplay()
+        self.run_in_a_window = RunInAWindow()
+        # It is not ideal to leak `self` in __init__. The TextReplacer methods could be updated to include a TCSContext
+        # parameter if needed, instead of leaking `self`. Alternatively, the TextReplacer could be created only when
+        # successfully connecting to the game.
+        self.text_replacer = TextReplacer(self)
         self.permanent_components = (
             self.uncap_high_jump,
             self.cantina_reloader,
             self.locked_cantina_door_info,
             self.level_specific_fixes,
+            self.text_replacer,
+            self.text_display,
+            self.run_in_a_window,
         )
 
-        self.text_display = InGameTextDisplay()
-        self.death_link_manager = DeathLinkManager()
-        self.shop_names_replacer = ShopNamesReplacer()
-        self.auto_collect_pickups = AutoCollectPickups()
-
-        # It is not ideal to leak `self` in __init__. The TextReplacer methods could be updated to include a TCSContext
-        # parameter if needed, instead of leaking `self`. Alternatively, the TextReplacer could be created only when
-        # successfully connecting to the game.
-        self.text_replacer = TextReplacer(self)
-
-        self.unlocked_chapter_manager = UnlockedChapterManager()
-        self.free_play_completion_checker = FreePlayChapterCompletionChecker()
-        self.true_jedi_and_power_brick_and_minikit_checker = TrueJediAndPowerBrickAndMinikitChecker()
-        self.purchased_extras_checker = PurchasedExtrasChecker()
-        self.purchased_characters_checker = PurchasedCharactersChecker()
-        self.bonus_area_completion_checker = BonusAreaCompletionChecker()
-        self.ridesanity_checker = RidesanityChecker()
+        self._reset_non_permanent_components()
 
         self.client_expected_idx = 0
 
@@ -466,10 +479,20 @@ class LegoStarWarsTheCompleteSagaContext(CommonContext):
             self.event_manager.subscribe_events(value)
 
     def _get_datastorage_key(self, key_prefix: str):
-        return key_prefix + DATA_STORAGE_KEY_SUFFIX.format(team=self.team, slot=self.slot)
+        return key_prefix + DATA_STORAGE_KEY_SUFFIX.format(team=self.team, player=self.slot)
 
     def _is_datastorage_key(self, to_check: str, prefix: str):
         return to_check.startswith(prefix) and to_check == self._get_datastorage_key(prefix)
+
+    async def check_locations(self, locations: typing.Collection[int]) -> set[int]:
+        # Filter out locations the client thinks it has already checked and sent to the server.
+        # The base check_locations implementation only filters out locations the server says are checked.
+        # If some locations are sent, but the connection is lost, CommonClient sends the contents of
+        # self.locations_checked to the server when reconnecting. self.locations_checked is not cleared out when an
+        # unintended disconnect (allow_autoreconnect=True) occurs, allowing for any missed location checks to be
+        # re-sent.
+        locations = set(locations).difference(self.locations_checked)
+        return await super().check_locations(locations)
 
     def on_print_json(self, args: dict) -> None:
         super().on_print_json(args)
@@ -531,9 +554,11 @@ class LegoStarWarsTheCompleteSagaContext(CommonContext):
     def _validate_version(slot_data: typing.Mapping[str, typing.Any]) -> bool:
         # All versions of the TCS apworld should have written "apworld_version" into slot data, if it is absent then
         # there is an error.
+        # This accesses the slot data as its raw value because very old versions of the apworld will not have slot data
+        # that is parsable as TCSSlotDataoptions.
         # Ensure the read data from slot_data is a tuple rather than a list so that the comparisons with
         # AP_WORLD_VERSION work as expected.
-        server_apworld_version = tuple(slot_data["apworld_version"])
+        server_apworld_version = tuple(slot_data[get_slot_data_name(ApWorldVersion)])
         if AP_WORLD_VERSION != server_apworld_version:
             # If the major version does not match, the versions are incompatible.
             # If the minor version of the client is less than the server, then the versions are incompatible.
@@ -564,13 +589,12 @@ class LegoStarWarsTheCompleteSagaContext(CommonContext):
 
         return True
 
-    def _validate_seed_name_against_save_data(self, new_seed_name: str) -> tuple[bool, bytes | None]:
-        save_data_seed_name_hash = self.read_seed_name_hash()
-        server_seed_name_hash = self.hash_seed_name(new_seed_name)
-        debug_logger.info("Seed hash from save file is %s", save_data_seed_name_hash)
-        debug_logger.info("Seed hash from server is %s", server_seed_name_hash)
-        if save_data_seed_name_hash is not None:
-            if server_seed_name_hash != save_data_seed_name_hash:
+    def _validate_seed_name_against_save_data(self, new_seed_name: str) -> tuple[bool, str | None]:
+        save_data_seed_name = self.read_seed_name_from_save_data()
+        debug_logger.info("Seed name from save file is %s", save_data_seed_name)
+        debug_logger.info("Seed name from server is %s", new_seed_name)
+        if save_data_seed_name is not None:
+            if new_seed_name != save_data_seed_name:
                 Utils.async_start(self.disconnect())
                 logger.info("Connection aborted: The server's seed does not match the save file's seed.")
                 self.last_connected_seed_name = None
@@ -578,31 +602,19 @@ class LegoStarWarsTheCompleteSagaContext(CommonContext):
                 return False, None
             else:
                 return True, None
-        return True, server_seed_name_hash
+        return True, new_seed_name
 
-    def _read_slot_data(self, slot_data: dict[str, typing.Any], first_time_setup: bool):
+    def _read_slot_data(self, slot_data: TCSSlotDataOptions, first_time_setup: bool):
         # The connection to the server is assumed to be OK by this point, so slot_data can now be used to adjust client
         # behaviour.
-        received_item_messages = slot_data["received_item_messages"]
-
-        self.client_text = ClientText.from_slot_data(slot_data)
 
         on_receive_slot_data_event = OnReceiveSlotDataEvent(self, slot_data, first_time_setup)
-        generator_apworld_version = on_receive_slot_data_event.generator_version
 
-        if generator_apworld_version < (1, 2, 0):
-            # In older versions, "all" was `0` and "none" was `1`. The values have since been swapped.
-            received_item_messages = 1 if received_item_messages == 0 else 0
+        self.client_text = ClientText.from_slot_data(on_receive_slot_data_event.slot_data)
 
-        self.received_item_messages = options.ReceivedItemMessages(received_item_messages)
+        self.received_item_messages = on_receive_slot_data_event.slot_data.received_item_messages
 
-        checked_location_messages = slot_data["checked_location_messages"]
-
-        if generator_apworld_version < (1, 2, 0):
-            # In older versions, "all" was `0` and "none" was `1`. The values have since been swapped.
-            checked_location_messages = 1 if checked_location_messages == 0 else 0
-
-        self.checked_location_messages = checked_location_messages == options.CheckedLocationMessages.option_all
+        self.checked_location_messages = bool(on_receive_slot_data_event.slot_data.checked_location_messages)
 
         # Fire the event so that the various client components initialize themselves from the slot_data.
         self.event_manager.fire_event(on_receive_slot_data_event)
@@ -629,7 +641,7 @@ class LegoStarWarsTheCompleteSagaContext(CommonContext):
             new_seed_name = args["seed_name"]
 
             if self.is_in_game():
-                ok, _server_seed_hash = self._validate_seed_name_against_save_data(new_seed_name)
+                ok, _server_seed_name = self._validate_seed_name_against_save_data(new_seed_name)
                 if not ok:
                     return
 
@@ -662,16 +674,18 @@ class LegoStarWarsTheCompleteSagaContext(CommonContext):
                                 " the APWorld version that generated the multiworld.")
             else:
                 logger.error("Error: slot_data missing from Connected message, something is probably broken.")
+                Utils.async_start(self.disconnect())
+                return
 
             # It is assumed that the player must be loaded into a save file or a new game at this point.
-            ok, server_seed_hash_to_write = self._validate_seed_name_against_save_data(self.last_connected_seed_name)
+            ok, server_seed_name_to_write = self._validate_seed_name_against_save_data(self.last_connected_seed_name)
             if not ok:
                 self.seed_name = None
                 self.last_connected_seed_name = None
                 return
 
-            if server_seed_hash_to_write is not None:
-                self.write_seed_name_hash(self.last_connected_seed_name)
+            if server_seed_name_to_write is not None:
+                self.write_seed_name(server_seed_name_to_write)
 
             new_slot = self.auth
 
@@ -685,7 +699,8 @@ class LegoStarWarsTheCompleteSagaContext(CommonContext):
                 first_time_setup = False
             self.disabled_locations = set(LOCATION_NAME_TO_ID.values()) - self.server_locations
 
-            self._read_slot_data(slot_data, first_time_setup)
+            slot_data_options = TCSSlotDataOptions.from_slot_data(slot_data)
+            self._read_slot_data(slot_data_options, first_time_setup)
 
             # Setting this to non-None indicates to the game watcher loop to start fully running.
             self.last_connected_slot = self.auth
@@ -717,6 +732,9 @@ class LegoStarWarsTheCompleteSagaContext(CommonContext):
                 ]
             ))
         elif cmd == "SetReply":
+            # todo: After receiving Gold Bricks to write into save data, mark some part of ctx as dirty and get the
+            #  client to forcefully autosave the game (Set 0x921e0c/0x921e08 to 1 if the save timers
+            #  (0x00921E10/0x00921E14) are not > 0.0, todo: Check if these addresses were GOG or Steam).
             key: str = args["key"]
             if self._is_datastorage_key(key, COMPLETED_FREE_PLAY_KEY_PREFIX):
                 value = args["value"]
@@ -728,7 +746,7 @@ class LegoStarWarsTheCompleteSagaContext(CommonContext):
                 new_values = set(value)
                 new_values.difference_update(previous_value)
                 if new_values:
-                    self.true_jedi_and_power_brick_and_minikit_checker.update_from_datastorage(
+                    self.true_jedi_and_power_brick_and_minikit_brick_checker.update_from_datastorage(
                         self, new_true_jedi_area_ids=new_values)
             elif self._is_datastorage_key(key, COMPLETED_10_MINIKITS_KEY_PREFIX):
                 value = args["value"] or ()
@@ -736,7 +754,7 @@ class LegoStarWarsTheCompleteSagaContext(CommonContext):
                 new_values = set(value)
                 new_values.difference_update(previous_value)
                 if new_values:
-                    self.true_jedi_and_power_brick_and_minikit_checker.update_from_datastorage(
+                    self.true_jedi_and_power_brick_and_minikit_brick_checker.update_from_datastorage(
                         self, new_minikits_gold_brick_area_ids=new_values)
             elif self._is_datastorage_key(key, COMPLETED_BONUSES_KEY_PREFIX):
                 value = args["value"] or ()
@@ -751,7 +769,7 @@ class LegoStarWarsTheCompleteSagaContext(CommonContext):
                 new_values = set(value)
                 new_values.difference_update(previous_value)
                 if new_values:
-                    self.true_jedi_and_power_brick_and_minikit_checker.update_from_datastorage(
+                    self.true_jedi_and_power_brick_and_minikit_brick_checker.update_from_datastorage(
                         self, new_power_brick_area_ids=new_values)
             elif self._is_datastorage_key(key, MINIKIT_GOAL_SUBMITTED_PREFIX):
                 value = args["value"]
@@ -765,18 +783,18 @@ class LegoStarWarsTheCompleteSagaContext(CommonContext):
                 self.free_play_completion_checker.update_from_datastorage(self, completed_free_play)
             completed_true_jedi = keys.get(self._get_datastorage_key(COMPLETED_TRUE_JEDI_KEY_PREFIX))
             if completed_true_jedi:
-                self.true_jedi_and_power_brick_and_minikit_checker.update_from_datastorage(
+                self.true_jedi_and_power_brick_and_minikit_brick_checker.update_from_datastorage(
                     self, new_true_jedi_area_ids=completed_true_jedi)
             completed_10_minikits = keys.get(self._get_datastorage_key(COMPLETED_10_MINIKITS_KEY_PREFIX))
             if completed_10_minikits:
-                self.true_jedi_and_power_brick_and_minikit_checker.update_from_datastorage(
+                self.true_jedi_and_power_brick_and_minikit_brick_checker.update_from_datastorage(
                     self, new_minikits_gold_brick_area_ids=completed_10_minikits)
             completed_bonuses = keys.get(self._get_datastorage_key(COMPLETED_BONUSES_KEY_PREFIX))
             if completed_bonuses:
                 self.bonus_area_completion_checker.update_from_datastorage(self, completed_bonuses)
             collected_power_bricks = keys.get(self._get_datastorage_key(COLLECTED_POWER_BRICKS_KEY_PREFIX))
             if collected_power_bricks:
-                self.true_jedi_and_power_brick_and_minikit_checker.update_from_datastorage(
+                self.true_jedi_and_power_brick_and_minikit_brick_checker.update_from_datastorage(
                     self, new_power_brick_area_ids=collected_power_bricks)
             completed_minikit_goal = keys.get(self._get_datastorage_key(MINIKIT_GOAL_SUBMITTED_PREFIX))
             if completed_minikit_goal:
@@ -840,12 +858,14 @@ class LegoStarWarsTheCompleteSagaContext(CommonContext):
         self.reset_persisted_client_data()
 
     def is_location_unchecked(self, location_id: int) -> bool:
-        """Return whether a location id exists, but has not been checked according to server state."""
-        return location_id not in self.checked_locations and location_id not in self.disabled_locations
+        """Return whether a location id exists, but has not been checked according to server state and client state."""
+        return ((location_id not in self.locations_checked
+                 and location_id not in self.checked_locations)
+                and self.is_location_sendable(location_id))
 
     def is_location_checked(self, location_id: int) -> bool:
-        """Return whether a location id is checked according to server state."""
-        return location_id in self.checked_locations
+        """Return whether a location id is checked according to server state or client state."""
+        return location_id in self.locations_checked or location_id in self.checked_locations
 
     def is_location_sendable(self, location_id: int) -> bool:
         """Return whether a location exists according to server state."""
@@ -853,7 +873,7 @@ class LegoStarWarsTheCompleteSagaContext(CommonContext):
 
     def make_gui(self):
         ui = super().make_gui()
-        ui.base_title = f"{apname} {self.game} Client"
+        ui.base_title = f"{apname} {self.game} Client (APWorld v{'.'.join(map(str, AP_WORLD_VERSION))})"
         if __debug__ and not Utils.is_frozen():
             ui.logging_pairs.append(("TCS Debug", "Debug"))
         return ui
@@ -870,6 +890,7 @@ class LegoStarWarsTheCompleteSagaContext(CommonContext):
             return
 
         if self.auth is None:
+            # todo: Rework client data clearing to run here for slot name changes within the same multiworld.
             self.auth_status = AuthStatus.NEED_INFO
             await self.set_auth()
 
@@ -890,6 +911,8 @@ class LegoStarWarsTheCompleteSagaContext(CommonContext):
         self.auth_status = AuthStatus.NOT_AUTHENTICATED
         self.server_seed_name = None
         if not allow_autoreconnect:
+            # fixme: CommonClient's connect() calls disconnect(), meaning that the initial client components get
+            #  replaced. This is not really a problem, just unnecessary (and doubles up some of the logging).
             self.reset_persisted_client_data()
             self.last_connected_slot = None
             self.last_connected_seed_name = None
@@ -933,6 +956,11 @@ class LegoStarWarsTheCompleteSagaContext(CommonContext):
                                 " patches, so the connection has been aborted.")
                     self.game_process = None
                     return False
+            # Put the game into a window if the host.yaml settings request doing so. The vanilla game is always
+            # fullscreen, so there is nothing to do if host.yaml says to play in fullscreen.
+            settings: LegoStarWarsTCSSettings = get_settings()[SETTINGS_KEY]
+            if settings.run_in_a_window:
+                self.run_in_a_window.set_windowed(self, True)
             self.text_replacer = TextReplacer(self)
 
             if memory_offset != 0:
@@ -953,19 +981,13 @@ class LegoStarWarsTheCompleteSagaContext(CommonContext):
             return False
 
     async def unhook_game_process(self):
-        if self.game_process is not None:
-            try:
-                self.text_replacer.on_unhook_game_process()
-            except (PymemError, WinAPIError):
-                pass
-            finally:
-                self.text_display = InGameTextDisplay()
+        try:
+            await self.event_manager.fire_event_async(OnUnhookFromGameEvent(self))
+        finally:
+            if self.game_process is not None:
                 self.game_process.close_process()
                 self.game_process = None
-                logger.info("Unhooked game process")
-        # Create a new TextReplacer so that if the game is restarted without the client being restarted, then the client
-        # won't try to read/write to memory that was only applicable to the previous game instance.
-        self.text_replacer = TextReplacer(self)
+            logger.info("Unhooked game process")
 
     @property
     def _game_process(self) -> pymem.Pymem:
@@ -1029,87 +1051,21 @@ class LegoStarWarsTheCompleteSagaContext(CommonContext):
     def free(self, address: MemoryAddress) -> None:
         self._game_process.free(address)
 
-    @staticmethod
-    def hash_seed_name(seed_name: str) -> bytes:
-        encoded = seed_name.encode("utf-8", errors="replace")
-        # 16 bytes
-        hashed = hashlib.md5(encoded).digest()
-        # The default, unused values in each of the sections of 4 bytes we're writing to is 1200.0f.
-        # In the tiny chance that the seed name hashes to the same bytes as these default values
-        if hashed == ChapterArea.UNUSED_CHALLENGE_BEST_TIME_VALUE * 4:
-            # Pick something else.
-            hashed = bytes(range(16))
-        return hashed
+    def write_seed_name(self, seed_name: str):
+        assert not self.is_seed_name_set(), "Error: The multiworld seed name is already set into the save-data."
+        CustomSaveDataSections.MULTIWORLD_SEED_NAME.write_utf8_string(self, seed_name)
 
-    def write_seed_name_hash(self, seed_name: str):
-        hashed = self.hash_seed_name(seed_name)
-        assert len(hashed) == 16
+    def read_seed_name_from_save_data(self) -> str | None:
+        seed_name = CustomSaveDataSections.MULTIWORLD_SEED_NAME.read_utf8_string(self)
+        return seed_name if seed_name else None
 
-        # The normally unused 4 bytes for the first area are being used to store the expected item index, so start from
-        # the second area.
-        areas = CHAPTER_AREAS[UNUSED_AREA_DWORD_SEED_NAME_HASH_AREAS]
-        parts = [hashed[i * 4:i * 4 + 4] for i in range(4)]
-        for part, area in zip(parts, areas, strict=True):
-            address = area.address + area.UNUSED_CHALLENGE_BEST_TIME_OFFSET
-
-            if __debug__:
-                # Ensure the bytes have not already been written to.
-                existing_bytes = self.read_bytes(address, 4)
-                assert existing_bytes == ChapterArea.UNUSED_CHALLENGE_BEST_TIME_VALUE, (
-                    f"The unused bytes the seed hash is being written to at area {area.short_name} are not their"
-                    f" expected value of {ChapterArea.UNUSED_CHALLENGE_BEST_TIME_VALUE!r}, instead found"
-                    f" {existing_bytes!r}"
-                )
-
-            # Write the bytes for this part of the hashed seed name.
-            assert len(part) == 4
-            self.write_bytes(address, part, 4)
-
-    def read_seed_name_hash(self) -> bytes | None:
-        areas = CHAPTER_AREAS[UNUSED_AREA_DWORD_SEED_NAME_HASH_AREAS]
-        hashed = b""
-        for area in areas:
-            address = area.address + area.UNUSED_CHALLENGE_BEST_TIME_OFFSET
-            hashed += self.read_bytes(address, 4)
-        if hashed == ChapterArea.UNUSED_CHALLENGE_BEST_TIME_VALUE * 4:
-            return None
-        else:
-            return hashed
-
-    def is_seed_name_hash_set(self) -> bool:
-        # There is no more efficient way to check this, without forcing the first 4 bytes of seed hashes to not match
-        # the default unused value in the save data, then only the first 4 bytes would need to be checked.
-        return self.read_seed_name_hash() is not None
+    def is_seed_name_set(self) -> bool:
+        return not CustomSaveDataSections.MULTIWORLD_SEED_NAME.is_utf8_string_empty(self)
 
     def write_slot_name(self, name: str) -> None:
-        assert len(name) <= 16, "Error: Slot name to write is too long, this should not happen."
-        encoded_name = name.encode("utf-8")
-        # Each UTF-8 character encodes to no more than 4 bytes.
-        assert len(encoded_name) <= 64, "Error: Slot name to write encodes to too many bytes, this should not happen."
-        # pad with 0xFF bytes. 0xFF never appears in UTF-8.
-        if len(encoded_name) < 64:
-            encoded_name += b"\xFF" * (64 - len(encoded_name))
-        assert len(encoded_name) == 64
-        areas = CHAPTER_AREAS[UNUSED_AREA_DWORD_SLOT_NAME_AREAS]
-        parts = [encoded_name[i * 4: i * 4 + 4] for i in range(16)]
-        for part, area in zip(parts, areas, strict=True):
-            address = area.address + area.UNUSED_CHALLENGE_BEST_TIME_OFFSET
-
-            if __debug__:
-                # Ensure the bytes have not already been written to.
-                existing_bytes = self.read_bytes(address, 4)
-                assert existing_bytes == ChapterArea.UNUSED_CHALLENGE_BEST_TIME_VALUE, (
-                    f"The unused bytes the slot name is being written to at area {area.short_name} are not their"
-                    f" expected value of {ChapterArea.UNUSED_CHALLENGE_BEST_TIME_VALUE!r}, instead found"
-                    f" {existing_bytes!r}"
-                )
-
-            # Write the bytes for this part of the encoded name.
-            assert len(part) == 4
-            self.write_bytes(address, part, 4)
-            if b"\xFF" in part:
-                # Writing can stop once there are padding bytes in a part that was written.
-                break
+        # Ensure the bytes have not already been written to.
+        assert not self.is_slot_name_set(), "Error: The slot name is already set into the save-data."
+        CustomSaveDataSections.SLOT_NAME.write_utf8_string(self, name)
 
     def read_slot_name(self) -> str | None:
         """
@@ -1120,37 +1076,14 @@ class LegoStarWarsTheCompleteSagaContext(CommonContext):
         :return: The slot name in the current save file, or None if no slot name has been written to the current save
         file.
         """
-        areas = CHAPTER_AREAS[UNUSED_AREA_DWORD_SLOT_NAME_AREAS]
-        encoded_name = b""
-        for area in areas:
-            address = area.address + area.UNUSED_CHALLENGE_BEST_TIME_OFFSET
-            read_bytes = self.read_bytes(address, 4)
-            encoded_name += read_bytes
-            if b"\xFF" in read_bytes:
-                # Reading can stop once there are padding bytes in a part that was read.
-                break
-        if encoded_name == ChapterArea.UNUSED_CHALLENGE_BEST_TIME_VALUE * 16:
-            # The default value of the unused bytes is fortunately invalid UTF-8, so it is not possible for a slot name
-            # to produce the same bytes as the default values.
-            return None
-        # Strip any \xFF padding and return the decoded string.
-        debug_logger.info(f"Read slot_name bytes as {[hex(x)[2:] for x in encoded_name]}")
-        return encoded_name.partition(b"\xFF")[0].decode("utf-8")
+        slot_name = CustomSaveDataSections.SLOT_NAME.read_utf8_string(self)
+        return slot_name if slot_name else None
 
     def is_slot_name_set(self) -> bool:
         """
         Return whether the current save data has a slot name set.
-
-        More efficient than checking `self.read_slot_name is not None`.
         """
-        areas = CHAPTER_AREAS[UNUSED_AREA_DWORD_SLOT_NAME_AREAS]
-        # Only the first unused bytes need to be checked.
-        area = areas[0]
-        address = area.address + area.UNUSED_CHALLENGE_BEST_TIME_OFFSET
-        read_bytes = self.read_bytes(address, 4)
-        # The default value is not valid UTF-8, so the default value is not possible to be part of a slot name, so
-        # if the default value is found, then the slot name has not been set and vice versa.
-        return read_bytes != ChapterArea.UNUSED_CHALLENGE_BEST_TIME_VALUE
+        return not CustomSaveDataSections.SLOT_NAME.is_utf8_string_empty(self)
 
     def is_connected_to_server(self):
         return self.server is not None and not self.server.socket.closed
@@ -1238,16 +1171,14 @@ class LegoStarWarsTheCompleteSagaContext(CommonContext):
                 and self.read_uchar(CANTINA_ROOM_ID) == CantinaRoom.SHOP_ROOM.value  # and in the room with the shops.
                 and (shop_type is None or self.read_uchar(ACTIVE_SHOP_TYPE_ADDRESS) == shop_type.value))
 
-    def _load_level(self, level_id: int, reset_door: bool = False, hard_reset: bool = False):
+    def load_level(self, level: Level, reset_door: bool = False, hard_reset: bool = False):
         """
 
-        :param level_id: ID of the level to load
+        :param level: The level to load
         :param reset_door: Reset the saved door. The saved door controls where the player spawns
         :param hard_reset: Fully reload the level, even when the player is in the level already
         :return:
         """
-        if not 0 <= level_id <= 333:
-            raise ValueError(f"{level_id} is not a valid level ID")
         if self.is_in_game():
             # Based on BrickBench, with addresses converted to Steam addresses.
             if reset_door:
@@ -1258,7 +1189,7 @@ class LegoStarWarsTheCompleteSagaContext(CommonContext):
             level_data_start_addr = self.read_uint(0x951b98)
             # Each level struct is 0x130 bytes. Level IDs are consecutive according to the order they are defined in
             # LEVELS.TXT.
-            target_level_data_addr = level_data_start_addr + 0x130 * level_id
+            target_level_data_addr = level_data_start_addr + 0x130 * level.value
             self.write_uint(0x951ba0, target_level_data_addr)
             # Some sort of flag that BrickBench sets. I don't know what this does.
             self.write_uint(0x93d870, 1)
@@ -1275,8 +1206,7 @@ class LegoStarWarsTheCompleteSagaContext(CommonContext):
                 # to fix.
                 return False
             else:
-                # The Cantina's level ID is 325
-                self._load_level(325, hard_reset=hard)
+                self.load_level(Level.MAP, hard_reset=hard)
                 return True
         return False
 
@@ -1311,14 +1241,14 @@ class LegoStarWarsTheCompleteSagaContext(CommonContext):
         if character_address == 0:
             # NULL pointer
             return 0
-        character_data_address = self.read_uint(character_address + 0x50, raw=True)
+        character_data_address = CHARACTER_CHARACTER_DATA_POINTER.get(self, character_address)
         return character_data_address
 
     def _get_character_id(self, character_data_address) -> int | None:
         if character_data_address == 0:
             return None
         # Character ID is the first 2 bytes
-        character_id = self.read_ushort(character_data_address + 0x0, raw=True)
+        character_id = CHARACTER_DATA_ID.get(self, character_data_address)
         return character_id
 
     def _get_player_character_id(self, player: int) -> int | None:
@@ -1339,21 +1269,16 @@ class LegoStarWarsTheCompleteSagaContext(CommonContext):
             self.current_p2_character_id = p2_character_id
 
     def set_game_expected_idx(self, idx: int) -> None:
-        # The expected idx is stored in the unused 4 bytes at the end of Negotiations' (1-1's) save data.
-        negotiations = SHORT_NAME_TO_CHAPTER_AREA["1-1"]
-        self.write_uint(negotiations.address + negotiations.UNUSED_CHALLENGE_BEST_TIME_OFFSET, idx)
+        """Set the expected idx into the custom save flags."""
+        addr = CustomSaveFlags2.get_addr(CustomSaveFlags2.ap_last_received_index)
+        assert CustomSaveFlags2.ap_last_received_index.size == 4
+        self.write_uint(addr, idx)
 
     def get_game_expected_idx(self) -> int:
-        # Retrieve the expected idx from the unused 4 bytes at the end of Negotiations' (1-1's) save data.
-        negotiations = SHORT_NAME_TO_CHAPTER_AREA["1-1"]
-        expected_idx = self.read_uint(negotiations.address + negotiations.UNUSED_CHALLENGE_BEST_TIME_OFFSET)
-        # The default value for new save files is 1200.0f.
-        # 1_150_681_088 == struct.unpack("i", struct.pack("f", 1200))
-        if expected_idx == 1_150_681_088:
-            # Yes, the client will break if you send it this many items, but that should never happen right?
-            return 0
-        else:
-            return expected_idx
+        """Retrieve the expected idx from the custom save flags."""
+        addr = CustomSaveFlags2.get_addr(CustomSaveFlags2.ap_last_received_index)
+        assert CustomSaveFlags2.ap_last_received_index.size == 4
+        return self.read_uint(addr)
 
     def give_item(self, code: int) -> bool:
         if code in STUDS_AP_ID_TO_VALUE:
@@ -1391,7 +1316,35 @@ class LegoStarWarsTheCompleteSagaContext(CommonContext):
         else:
             logger.warning(f"Received unknown item with AP ID {code}")
 
-    def reset_persisted_client_data(self, clear_text_display_queue=True):
+    def _reset_non_permanent_components(self):
+        self.acquired_extras = AcquiredExtras()
+        self.acquired_characters = AcquiredCharacters()
+        self.acquired_generic = AcquiredGeneric()
+        self.acquired_minikits = AcquiredMinikits()
+
+        self.unlocked_chapter_manager = UnlockedChapterManager()
+        self.client_expected_idx = 0
+        self.current_level_id = 0
+        self.current_p_area_data = 0
+        self.current_cantina_room = CantinaRoom.UNKNOWN
+
+        self.free_play_completion_checker = FreePlayAreaCompletionChecker()
+        self.true_jedi_and_power_brick_and_minikit_brick_checker = TrueJediAndPowerBrickAndMinikitBrickChecker()
+        self.minikit_checker = MinikitChecker()
+        self.purchased_extras_checker = PurchasedExtrasChecker()
+        self.purchased_characters_checker = PurchasedCharactersChecker()
+        self.bonus_area_completion_checker = BonusAreaCompletionChecker()
+        self.ridesanity_checker = RidesanityChecker()
+
+        self.goal_manager = GoalManager()
+        self.power_up_receiver = PowerUpReceiver()
+
+        self.shop_names_replacer = ShopNamesReplacer()
+        self.auto_collect_pickups = AutoCollectPickups()
+
+        self.death_link_manager = DeathLinkManager()
+
+    def reset_persisted_client_data(self):
         """
         Reset all client state.
 
@@ -1406,37 +1359,9 @@ class LegoStarWarsTheCompleteSagaContext(CommonContext):
         for client_component in self.permanent_components:
             self.event_manager.subscribe_events(client_component)
 
-        self.text_display = InGameTextDisplay()
-
-        self.acquired_extras = AcquiredExtras()
-        self.acquired_characters = AcquiredCharacters()
-        self.acquired_generic = AcquiredGeneric()
-        self.acquired_minikits = AcquiredMinikits()
-
-        self.unlocked_chapter_manager = UnlockedChapterManager()
-        self.client_expected_idx = 0
-        self.current_level_id = 0
-        self.current_p_area_data = 0
-        self.current_cantina_room = CantinaRoom.UNKNOWN
-
-        self.free_play_completion_checker = FreePlayChapterCompletionChecker()
-        self.true_jedi_and_power_brick_and_minikit_checker = TrueJediAndPowerBrickAndMinikitChecker()
-        self.purchased_extras_checker = PurchasedExtrasChecker()
-        self.purchased_characters_checker = PurchasedCharactersChecker()
-        self.bonus_area_completion_checker = BonusAreaCompletionChecker()
-        self.ridesanity_checker = RidesanityChecker()
-
-        self.goal_manager = GoalManager()
-        self.power_up_receiver = PowerUpReceiver()
-
         self.shop_names_replacer.reset_persisted_client_data(self)
-        self.shop_names_replacer = ShopNamesReplacer()
-        self.auto_collect_pickups = AutoCollectPickups()
+        self._reset_non_permanent_components()
 
-        if clear_text_display_queue:
-            self.text_display.message_queue.clear()
-
-        self.death_link_manager = DeathLinkManager()
 
     def reset_client_received_items(self):
         """
@@ -1547,9 +1472,9 @@ async def game_watcher_check_save_file(ctx: LegoStarWarsTheCompleteSagaContext,
                 if last_slot_name is not None and ctx.read_slot_name() is None:
                     logger.info("Copied the last connected slot name to the new save file.")
                     ctx.write_slot_name(last_slot_name)
-                if last_seed_name is not None and ctx.read_seed_name_hash() is None:
-                    logger.info("Copied the last connected multiworld seed hash to the new save file.")
-                    ctx.write_seed_name_hash(last_seed_name)
+                if last_seed_name is not None and ctx.read_seed_name_from_save_data() is None:
+                    logger.info("Copied the last connected multiworld seed name to the new save file.")
+                    ctx.write_seed_name(last_seed_name)
                 # The save file is new, so run first-time setup.
                 ctx.ap_first_time_setup()
             else:
@@ -1558,7 +1483,7 @@ async def game_watcher_check_save_file(ctx: LegoStarWarsTheCompleteSagaContext,
                 # But if the player tries to load into a save file for a different seed/slot, then they need
                 # to be disconnected.
                 if (last_seed_name is not None
-                        and ctx.hash_seed_name(last_seed_name) != ctx.read_seed_name_hash()):
+                        and last_seed_name != ctx.read_seed_name_from_save_data()):
                     if ctx.slot:
                         logger.info("Disconnecting from the server because the newly loaded save file's"
                                     " seed does not match the connected multiworld's seed.")
@@ -1583,8 +1508,8 @@ async def game_watcher_check_save_file(ctx: LegoStarWarsTheCompleteSagaContext,
                 if not ctx.is_slot_name_set():
                     ctx.write_slot_name(slot_name)
                     logger.info("Restored slot name in save data after save data was rolled back to before it was set")
-                if not ctx.is_seed_name_hash_set():
-                    ctx.write_seed_name_hash(seed_name)
+                if not ctx.is_seed_name_set():
+                    ctx.write_seed_name(seed_name)
                     logger.info("Restored seed name hash in save data after save data was rolled back to before it was"
                                 " set")
     ctx.last_loaded_save_file = current_save_file
@@ -1645,6 +1570,7 @@ async def game_watcher(ctx: LegoStarWarsTheCompleteSagaContext):
                         # There is no previously loaded save file or seed/slot, so the player has just started the game.
                         log_message("Load into a save file or start a new game to continue.")
                     sleep_time = 1.0
+                    await ctx.event_manager.fire_event_async(OnGameWatcherDisconnectedTickEvent(ctx))
                     continue
 
                 # The save file check does some extra checks if the player was previously not loaded into a save
@@ -1669,6 +1595,7 @@ async def game_watcher(ctx: LegoStarWarsTheCompleteSagaContext):
                     else:
                         ctx.auth_status = AuthStatus.NOT_AUTHENTICATED
                         log_message("Connect to a server to continue")
+                    await ctx.event_manager.fire_event_async(OnGameWatcherDisconnectedTickEvent(ctx))
                     continue
 
                 # Even if the client has disconnected from the server, it is still important to run a number of
@@ -1714,26 +1641,33 @@ async def game_watcher(ctx: LegoStarWarsTheCompleteSagaContext):
                         # through the status screen faster than we're polling the game to check for free play!)
                         await ctx.free_play_completion_checker.check_completion(ctx, new_location_checks)
 
-                        # True Jedi and Minikit counts (deprecated) in the save data do not need to be checked often,
-                        # but the in-level True Jedi and Minikit counts (deprecated) do need to be checked often.
+                        # True Jedi and Minikit gold brick in the save data do not need to be checked often.
                         if in_game_watcher_tick_count % 20 == 0:
-                            await ctx.true_jedi_and_power_brick_and_minikit_checker.check_save_data(
+                            await ctx.true_jedi_and_power_brick_and_minikit_brick_checker.check_save_data(
                                 ctx, new_location_checks)
-                        await ctx.true_jedi_and_power_brick_and_minikit_checker.check_current_area(
-                            ctx, new_location_checks)
+                        if in_game_watcher_tick_count % 10 == 1:
+                            await ctx.true_jedi_and_power_brick_and_minikit_brick_checker.check_current_area(
+                                ctx, new_location_checks)
+
+                        # The Minikit checker needs to check frequently for in-area minikits, but handles this itself.
+                        # The checked minikits are stored, so the minikit checker does not need to be as frequently
+                        # polled for locations to send, but still wants to be fairly responsive.
+                        if in_game_watcher_tick_count % 5 == 2:
+                            await ctx.minikit_checker.check_minikits(ctx, new_location_checks)
 
                         # Purchases do not need to be checked often.
-                        if in_game_watcher_tick_count % 10 == 0:
+                        if in_game_watcher_tick_count % 10 == 3:
                             await ctx.purchased_extras_checker.check_extra_purchases(ctx, new_location_checks)
                             await ctx.purchased_characters_checker.check_extra_purchases(ctx, new_location_checks)
 
                         # Bonus level completion is read from the save data, so does not need to be checked often.
-                        if in_game_watcher_tick_count % 20 == 0:
+                        if in_game_watcher_tick_count % 20 == 4:
                             await ctx.bonus_area_completion_checker.check_completion(ctx, new_location_checks)
 
                         # New Ridesanity checks are prepared to be sent by other event callbacks, so Ridesanity is cheap
                         # to check for new locations.
-                        await ctx.ridesanity_checker.check_ridesanity(ctx, new_location_checks)
+                        if in_game_watcher_tick_count % 10 == 5:
+                            await ctx.ridesanity_checker.check_ridesanity(ctx, new_location_checks)
 
                         # Send newly cleared locations to the server, if there are any.
                         actually_new_location_checks = await ctx.check_locations(new_location_checks)

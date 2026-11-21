@@ -102,7 +102,7 @@ mt_lavalava_regions: list[Dict[str, str | Dict[str, Rule | None]]] = [
             "MLL Central Cavern Yellow Block 4": CanHitFloatingBlocks(),
         },
         "exits": {
-            "MLL Central Cavern B2F": CanClimbSteps(),
+            "MLL Central Cavern B2F": None,
             "MLL Central Cavern B1F Brick Block": HasUltraBoots(),
             "MLL Central Cavern 1F": CanClimbSteps(),
         }
@@ -116,7 +116,7 @@ mt_lavalava_regions: list[Dict[str, str | Dict[str, Rule | None]]] = [
             "MLL Central Cavern On Brick Block": None,
         },
         "exits": {
-            "MLL Central Cavern B1F": CanClimbSteps(),
+            "MLL Central Cavern B1F": None,
         }
     },
     {
@@ -125,8 +125,11 @@ mt_lavalava_regions: list[Dict[str, str | Dict[str, Rule | None]]] = [
         "map_id": "2",
         "map_name": "Central Cavern",
         "exits": {
-            "MLL Fire Bar Bridge": CanClimbSteps(),
-            "MLL Central Cavern B1F Brick Block": CanUseAbilityKooper(),
+            "MLL Fire Bar Bridge": None,
+            "MLL Central Cavern B1F Brick Block": (
+                CanUseAbilityKooper()
+                & CanClimbSteps()
+            ),
             "MLL Central Cavern B1F": CanClimbSteps(),
         }
     },
@@ -141,8 +144,7 @@ mt_lavalava_regions: list[Dict[str, str | Dict[str, Rule | None]]] = [
         "exits": {
             "MLL Zipline Cavern B2F": HasUltraHammer() | Has("RF_KZN07_OpenedHammerChest"),
             "MLL Central Cavern B1F": CanClimbSteps(),
-            "MLL Central Cavern B4F West Exit": CanClimbSteps(),
-            "MLL Central Cavern B4F": CanClimbSteps(),
+            "MLL Central Cavern B4F West Exit": None,
         }
     },
     {
@@ -152,7 +154,7 @@ mt_lavalava_regions: list[Dict[str, str | Dict[str, Rule | None]]] = [
         "map_name": "Central Cavern",
         "exits": {
             "MLL Descent Toward Ultra Hammer": None,
-            "MLL Zipline Cavern B4F": None,
+            "MLL Central Cavern B4F": None,
         }
     },
     {
@@ -207,8 +209,7 @@ mt_lavalava_regions: list[Dict[str, str | Dict[str, Rule | None]]] = [
             "MLL Descent Toward Ultra Hammer": None,
             "MLL Flowing Lava Puzzle West": CanUseAbilityParakarry() | CanUseAbilityLakilester(),
             "MLL Flowing Lava Puzzle East Lower Exit": (
-                CanClimbSteps()
-                & (HasUltraHammer() | Has("RF_KZN07_OpenedHammerChest"))
+                HasUltraHammer() | Has("RF_KZN07_OpenedHammerChest")
             ),
         }
     },
@@ -292,7 +293,7 @@ mt_lavalava_regions: list[Dict[str, str | Dict[str, Rule | None]]] = [
         "exits": {
             "MLL Central Cavern B2F": None,
             "MLL Zipline Cavern B3F": None,
-            "MLL Zipline Cavern B4F": CanClimbSteps(),
+            "MLL Zipline Cavern B4F": None,
         }
     },
     {
@@ -302,7 +303,7 @@ mt_lavalava_regions: list[Dict[str, str | Dict[str, Rule | None]]] = [
         "map_name": "Zipline Cavern",
         "exits": {
             "MLL Descent Toward Boss": None,
-            "MLL Zipline Cavern B4F": CanClimbSteps(),
+            "MLL Zipline Cavern B4F Panel": None,
         }
     },
     {
@@ -310,11 +311,21 @@ mt_lavalava_regions: list[Dict[str, str | Dict[str, Rule | None]]] = [
         "area_id": "18",
         "map_id": "8",
         "map_name": "Zipline Cavern",
+        "exits": {
+            "MLL Central Cavern B4F": None,
+            "MLL Zipline Cavern B4F Panel": None,
+        }
+    },
+    {
+        "region_name": "MLL Zipline Cavern B4F Panel",
+        "area_id": "18",
+        "map_id": "8",
+        "map_name": "Zipline Cavern",
         "locations": {
             "MLL Zipline Cavern Hidden Panel": CanFlipPanels(),
         },
         "exits": {
-            "MLL Central Cavern B4F": CanClimbSteps(),
+            "MLL Zipline Cavern B4F": CanClimbSteps(),
         }
     },
     {

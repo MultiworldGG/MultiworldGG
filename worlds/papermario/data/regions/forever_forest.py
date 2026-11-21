@@ -198,7 +198,7 @@ forever_forest_regions: list[Dict[str, str | Dict[str, Rule | None]]] = [
         "exits": {
             "FOR Laughing Rock": Has("Forest Pass") | Has("RF_ForestPass"),
             "FOR Exit to Gusty Gulch West": None,
-            "FOR Outside Boo's Mansion Pipe": Has("GF_TIK09_WarpPipe") & HasBoots(),
+            "FOR Outside Boo's Mansion Pipe": HasBoots(),
             "FOR Outside Boo's Mansion Steps": HasBoots(),
         }
     },
@@ -218,7 +218,7 @@ forever_forest_regions: list[Dict[str, str | Dict[str, Rule | None]]] = [
         "map_id": "10",
         "map_name": "Outside Boo's Mansion",
         "exits": {
-            "TTT Warp Zone 2 (B2) Pipe": CanReenterVerticalPipes(),
+            "TTT Warp Zone 2 (B2) Pipe": Has("GF_TIK09_WarpPipe") & CanReenterVerticalPipes(),
             "FOR Outside Boo's Mansion": None,
         }
     },

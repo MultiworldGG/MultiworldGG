@@ -21,8 +21,8 @@ Dictionary of the state of chapter completion of a player.
 |------------------|------------:|
 | 1                |        bool |
 | 2                |        bool |
-| 2-wr             |        bool |
+| 2b               |        bool |
 | 3                |        bool |
 | 4                |        bool |
 | 5                |        bool |
-| 5-wr             |        bool |
+| 5b               |        bool |

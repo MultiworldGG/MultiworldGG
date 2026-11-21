@@ -1,10 +1,10 @@
 from typing import Dict
 
 from rule_builder.rules import (
-    And,
+    #And,
     #Or,
     #AtLeast,
-    True_,
+    #True_,
     #False_,
     Has,
     HasAll,
@@ -46,7 +46,7 @@ boos_mansion_regions: list[Dict[str, str | Dict[str, Rule | None]]] = [
                 "RF_OpenedGustyGulch",
                 "Letter to Franky",
             ) & CanUseAbilityParakarry(),
-            "BM Foyer Hidden Panel": True_() & CanFlipPanels()
+            "BM Foyer Hidden Panel": CanFlipPanels()
         },
         "exits": {
             "FOR Outside Boo's Mansion Steps": None,
@@ -164,7 +164,7 @@ boos_mansion_regions: list[Dict[str, str | Dict[str, Rule | None]]] = [
       },
       "exits": {
         "BM Foyer 1F": None,
-        "BM Library Upper": And(HasSuperBoots(), CanUseAbilityBombette())
+        "BM Library Upper": HasSuperBoots() & CanUseAbilityBombette()
       }
     },
     {

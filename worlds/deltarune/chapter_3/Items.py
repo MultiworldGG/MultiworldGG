@@ -6,6 +6,8 @@ from worlds.deltarune.LogicHelper import (
     include_shadow_mantle,
     randomized_chapters,
     randomized_sword_route,
+    progressive_area_unlocks,
+    not_progressive_area_unlocks,
 )
 from worlds.deltarune.Items import (
     DeltaruneItem,
@@ -45,6 +47,13 @@ chapter3_items = [
         ItemIDs.flexscarf, ItemClassification.useful, groups=[ItemGroups.weapons, ItemGroups.ralsei_weapons], amount=1
     ),
     ItemData(
+        ItemIDs.progressive_ch3_area_unlock, 
+        ItemClassification.progression,
+        groups=[ItemGroups.region_blockers, ItemGroups.progressive_area_unlocks], 
+        should_be_included=progressive_area_unlocks,
+        amount=2
+    ),
+    ItemData(
         ItemIDs.tvdinner,
         ItemClassification.filler,
         groups=[ItemGroups.healing_item, ItemGroups.fusion_ingredient],
@@ -79,8 +88,20 @@ chapter3_items = [
         changing_classification=True,
         amount=1,
     ),
-    ItemData(ItemIDs.board_2_cartridge, ItemClassification.progression, groups=[ItemGroups.region_blockers], amount=1),
-    ItemData(ItemIDs.vip_pass, ItemClassification.progression, groups=[ItemGroups.region_blockers], amount=1),
+    ItemData(
+        ItemIDs.board_2_cartridge, 
+        ItemClassification.progression, 
+        should_be_included=not_progressive_area_unlocks,
+        groups=[ItemGroups.region_blockers], 
+        amount=1
+    ),
+    ItemData(
+        ItemIDs.vip_pass, 
+        ItemClassification.progression, 
+        should_be_included=not_progressive_area_unlocks,
+        groups=[ItemGroups.region_blockers], 
+        amount=1
+    ),
     ItemData(
         ItemIDs.remote_battery,
         ItemClassification.progression_skip_balancing,

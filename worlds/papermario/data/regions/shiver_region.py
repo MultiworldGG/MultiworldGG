@@ -216,11 +216,9 @@ shiver_region_regions: list[Dict[str, str | Dict[str, Rule | None]]] = [
         "events": {
             "RF_DefeatedFirstDuplighost": CanUseAbilityKooper() & HasHammer(),
         },
-        "locations": {
-            "SR Shiver Mountain Hills Bottom Path": CanClimbSteps(),
-        },
         "exits": {
             "SR Shiver Mountain Passage East": None,
+            "SR Shiver Mountain Hills Bottom": None,
             "SR Shiver Mountain Hills East": CanClimbSteps() & Has("RF_DefeatedFirstDuplighost"),
         }
     },
@@ -237,7 +235,17 @@ shiver_region_regions: list[Dict[str, str | Dict[str, Rule | None]]] = [
         },
         "exits": {
             "SR Shiver Mountain Tunnel": None,
+            "SR Shiver Mountain Hills Bottom": None,
             "SR Shiver Mountain Hills West": CanClimbSteps() | Has("RF_DefeatedFirstDuplighost"),
+        }
+    },
+    {
+        "region_name": "SR Shiver Mountain Hills Bottom",
+        "area_id": "20",
+        "map_id": "7",
+        "map_name": "Shiver Mountain Hills",
+        "locations": {
+            "SR Shiver Mountain Hills Bottom Path": None,
         }
     },
     {
@@ -272,8 +280,12 @@ shiver_region_regions: list[Dict[str, str | Dict[str, Rule | None]]] = [
         "map_id": "9",
         "map_name": "Shiver Mountain Peaks",
         "locations": {
-            "SR Shiver Mountain Peaks Red Block": CanHitFloatingBlocks(),
-            "SR Shiver Mountain Peaks Left Ledge": None,
+            "SR Shiver Mountain Peaks Red Block": (
+                Has("Star Stone")
+                & CanClimbSteps()
+                & CanHitFloatingBlocks()
+            ),
+            "SR Shiver Mountain Peaks Left Ledge": Has("Star Stone") & CanClimbSteps(),
         },
         "exits": {
             "CP Palace Entrance South": None,

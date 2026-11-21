@@ -2,10 +2,10 @@ from .sms_region_helper import *
 
 NOKI_BAY_ENTRANCE: SmsRegion = SmsRegion(
     SmsRegionName.NOKI_ENTRANCE,
-    requirements=[Requirements(shines=20)],
-    hard=[],
-    advanced=[],
-    tears=[],
+    requirements=[Requirements(location=f"{SmsRegionName.GELATO_ONE} - Dune Bud Sand Castle Secret", shines=20)],
+    hard=[Requirements(location=f"{SmsRegionName.GELATO_ONE} - Dune Bud Sand Castle Secret", shines=20)],
+    advanced=[Requirements(location=f"{SmsRegionName.GELATO_ONE} - Dune Bud Sand Castle Secret", shines=20)],
+    tears=[Requirements(location=f"{SmsRegionName.GELATO_ONE} - Dune Bud Sand Castle Secret", shines=20)],
     ticketed="Noki Bay Ticket",
     parent_region=SmsRegionName.PLAZA,
 )
@@ -30,6 +30,7 @@ NOKI_BAY_ONE: SmsRegion = SmsRegion(
             "100 Coins",
             requirements=[Requirements(SPRAY_AND_HOVER)],
             hard=[Requirements(SPRAY_OR_HOVER)],
+            advanced=[Requirements(manual_none=True, location=f"{SmsRegionName.NOKI_FIVE} - Il Piantissimo's Surf Swim")],
             hundred=True,
             in_game_bit=105,
         ),
@@ -42,21 +43,13 @@ NOKI_BAY_ONE: SmsRegion = SmsRegion(
             in_game_bit=470,
         ),
         BlueCoin(
-            "Bottom Secret Path",
-            requirements=[Requirements(SPRAY_AND_HOVER)],
-            hard=[Requirements([[NozzleType.spray]])],
-            in_game_bit=471,
-        ),
-        BlueCoin(
-            "Top Secret Path",
-            requirements=[Requirements(SPRAY_AND_HOVER)],
-            hard=[Requirements([[NozzleType.spray]])],
-            in_game_bit=472,
-        ),
-        BlueCoin(
             "Rocket",
             requirements=[Requirements([[NozzleType.rocket]])],
-            tears=[Requirements(ROCKET_OR_TURBO)],
+            advanced=[Requirements([[NozzleType.rocket]]),
+                Requirements(SPRAY_AND_TURBO)],
+            tears=[Requirements([[NozzleType.rocket]]),
+                Requirements(SPRAY_AND_TURBO),
+                Requirements([[NozzleType.hover]])],
             in_game_bit=473,
         ),
         BlueCoin(
@@ -151,6 +144,18 @@ NOKI_BAY_TWO: SmsRegion = SmsRegion(
         ),
     ],
     blue_coins=[
+        BlueCoin(
+            "Bottom Secret Path",
+            requirements=[Requirements(SPRAY_AND_HOVER)],
+            hard=[Requirements([[NozzleType.spray]])],
+            in_game_bit=471,
+        ),
+        BlueCoin(
+            "Top Secret Path",
+            requirements=[Requirements(SPRAY_AND_HOVER)],
+            hard=[Requirements([[NozzleType.spray]])],
+            in_game_bit=472,
+        ),
         BlueCoin("Right Urn", [Requirements(SPRAY_OR_HOVER)], in_game_bit=488),
         BlueCoin("Left Urn", [Requirements(SPRAY_OR_HOVER)], in_game_bit=489),
     ],
@@ -166,7 +171,7 @@ NOKI_BAY_THREE: SmsRegion = SmsRegion(
         Shine(
             "Red Coins in a Bottle",
             requirements=[Requirements([[NozzleType.hover]])],
-            tears=[Requirements(manual_none=True)],
+            tears=[Requirements(ANY_FLUDD)],
             in_game_bit=52,
         ),
     ],  # Underwater Nozzle
@@ -249,14 +254,14 @@ NOKI_BAY_SIX: SmsRegion = SmsRegion(
     blue_coins=[
         BlueCoin(
             "Spawn O",
-            [Requirements(SPRAY_AND_TURBO_OR_HOVER_AND_TURBO)],
-            [Requirements(SPRAY_OR_HOVER_OR_TURBO)],
+            requirements=[Requirements(SPRAY_AND_TURBO_OR_HOVER_AND_TURBO)],
+            hard=[Requirements(SPRAY_OR_HOVER_OR_TURBO)],
             in_game_bit=494,
         ),
         BlueCoin(
             "Boathouse O",
-            [Requirements(SPRAY_AND_TURBO_OR_HOVER_AND_TURBO)],
-            [Requirements(SPRAY_OR_HOVER_OR_TURBO)],
+            requirements=[Requirements(SPRAY_AND_TURBO_OR_HOVER_AND_TURBO)],
+            hard=[Requirements(SPRAY_OR_HOVER_OR_TURBO)],
             in_game_bit=498,
         ),
     ],
@@ -298,7 +303,7 @@ NOKI_BAY_EIGHT: SmsRegion = SmsRegion(
         Shine(
             "The Red Coin Fish",
             requirements=[Requirements([[NozzleType.hover]])],
-            tears=[Requirements(manual_none=True)],
+            tears=[Requirements(ANY_FLUDD)],
             in_game_bit=57,
         ),
     ],  # Underwater Nozzle

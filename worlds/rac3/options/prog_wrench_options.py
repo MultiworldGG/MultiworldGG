@@ -1,10 +1,10 @@
 """This module contains options for the Progressive OmniWrench in the item pool"""
 
-from Options import Choice
+from Options import Toggle
 from worlds.rac3.constants.options import RAC3OPTION
 
 
-class ProgressiveWrench(Choice):
+class ProgressiveWrench(Toggle):
     """
     Determines if Progressive OmniWrench items are included in the item pool.
     ------------------------------------------------------------------------------------
@@ -16,6 +16,3 @@ class ProgressiveWrench(Choice):
     possibly due to a race condition between our instruction patching and PCSX2's recompiler.
     """
     display_name = RAC3OPTION.PROGRESSIVE_WRENCH
-    option_disabled = 0
-    option_enabled = 1
-    default = 0

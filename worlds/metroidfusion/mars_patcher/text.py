@@ -120,7 +120,7 @@ def center_text(rom: Rom, char_vals: list[int], max_width: int) -> None:
         line_width += get_char_width(rom, char_widths_addr, char_val)
         if char_val in NEWLINE_CHARS or index == len(char_vals):
             if line_width > 0:
-                assert line_width <= max_width
+                assert line_width <= max_width, "Line exceeds maximum width"
                 space_val = SPACE_TAG + (max_width - line_width) // 2
                 char_vals.insert(line_start, space_val)
                 index += 1
@@ -194,7 +194,7 @@ def encode_text(
         else:
             escaped = False
 
-        char_val = char_map[char]
+        char_val = char_map.get(char, char_map["?"])
         char_width = get_char_width(rom, char_widths_addr, char_val)
         line_width += char_width
         width_since_break += char_width
@@ -212,7 +212,8 @@ def encode_text(
             if message_type == MessageType.ONE_LINE:
                 raise ValueError(f'String does not fit on one line:\n"{string}"')
             if width_since_break > max_width:
-                raise ValueError(f'Word does not fit on one line:\n"{string}"')
+                break
+                # raise ValueError(f'Word does not fit on one line:\n"{string}"')
             line_width = width_since_break
             line_number += 1
             extra_char = NEWLINE

@@ -103,14 +103,6 @@ You'll know you patched the game correctly if you get this screen.
 
 <img width="638" height="493.5" alt="image" src="https://github.com/user-attachments/assets/93b00107-9e57-483c-8edc-e831ee761fb6" />
 
-### Linux users
-
-The Linux installation is mostly similar, however, DELTARUNE will be installed on Steam as the Linux variant.
-
-Since this randomizer only supports the Windows version, we must fix this, by right-click the game in Steam, going to `Properties -> Compatibility`, and checking `Force the use of a specific Steam Play compatibility tool`.
-
-This downloads the Windows version of DELTARUNE to use instead of the Linux version. If the play button is greyed out in Steam, be sure to go to `Settings -> Compatibility` and toggle `Enable Steam Play for all other titles`.
-
 ## Hosting
 
 If you are the host, once you have all of the players YAML, use the Generator provided by the MultiworldGG Launcher.

@@ -19,9 +19,9 @@ import subprocess
 import time
 import typing
 from enum import IntEnum
+apname = Utils.instance_name if Utils.instance_name else "Archipelago"
 
-
-from CommonClient import (CommonContext, ClientCommandProcessor, get_base_parser, gui_enabled, logger, server_loop)
+from CommonClient import CommonContext, ClientCommandProcessor, get_base_parser, gui_enabled, logger, server_loop
 from NetUtils import ClientStatus
 from . import LinksAwakeningWorld
 from . import Common
@@ -30,9 +30,22 @@ from .TrackerConsts import storage_key
 from .ItemTracker import ItemTracker
 from .Locations import links_awakening_location_meta_to_id
 from .Tracker import LocationTracker, MagpieBridge, Check
-apname = Utils.instance_name if Utils.instance_name else "Archipelago"
+from .LADXR.locations.constants import CHEST_ITEMS
+from .LADXR.locations.items import *
 
+links_awakening_item_code_to_ladxr_name = {v:k for k,v in CHEST_ITEMS.items()}
 links_awakening_location_id_to_meta = {v:k for k,v in links_awakening_location_meta_to_id.items()}
+
+no_text_exceptions = [
+    GUARDIAN_ACORN,
+    PIECE_OF_POWER,
+    MEDICINE,
+    STONE_BEAK,
+]
+
+yes_text_exceptions = [
+    "RUPEES"
+]
 
 
 class GameboyException(Exception):
@@ -72,8 +85,8 @@ class LAClientConstants:
     wMWRecvIndexLo = 0xDDF7   #     If given something different it will be ignored.
     wMWCommand = 0xDDF8       # RW: See MWCommands
     wMWItemCode = 0xDDF9      # RW: Item code to give the player
-    wMWItemSenderHi = 0xDDFA  # RW: Unused, but maybe will set up more rom banks in the future
-    wMWItemSenderLo = 0xDDFB  # RW: ID for sending player
+    wMWMultipurposeA = 0xDDFA # RW
+    wMWMultipurposeB = 0xDDFB # RW
     wMWMultipurposeC = 0xDDFC # RW
     wMWMultipurposeD = 0xDDFD # RW
     wMWMultipurposeE = 0xDDFE # RW
@@ -93,22 +106,24 @@ class LAClientConstants:
 
 
 class MWCommands(IntEnum):
-    # bit 0: send item
+    # bit 0: send item (a=sender_slot) (slot 0xff hides dialog)
     # bit 1: consider receive index for item send and tick up
-    # bit 2: collect location
-    # bit 3: send death link
-    # bit 4,5: clear trade item (bit in wMWMultipurposeF)
+    # bit 2: collect location (cd=location_address, e=location_mask) TODO: check dungeon key (mp_b?)
+    # bit 3,4: clear trade item (f=trade_mask)
+    # bit 5: run through item sends for precollected items stored on rom (shouldnt be triggered from client)
+    # bit 6: unused
     # bit 7: no commands happen unless this is set, the gb will unset this bit
     #        after executing the command allowing for confirmation in client
-    NONE =              0b00000000
-    SEND_ITEM_SPECIAL = 0b00000001
-    SEND_ITEM =         0b00000011
-    COLLECT =           0b00000100
-    COLLECT_WITH_ITEM = 0b00000101
-    DEATH_LINK =        0b00001000
-    CLEAR_TRADE_1 =     0b00010000
-    CLEAR_TRADE_2 =     0b00100000
-    EXECUTE_COMMAND =   0b10000000
+    NONE =                 0b00000000
+    SEND_ITEM_SPECIAL =    0b00000001
+    SEND_ITEM =            0b00000011
+    COLLECT =              0b00000100
+    COLLECT_WITH_ITEM =    0b00000101
+    CLEAR_TRADE_1 =        0b00001000
+    CLEAR_TRADE_2 =        0b00010000
+    PROCESS_PRECOLLECTED = 0b00100011
+    UNUSED =               0b01000000
+    EXECUTE_COMMAND =      0b10000000
 
 
 class DeathLinkStatus(IntEnum):
@@ -348,16 +363,17 @@ class RAGameboy():
         if splits[2] == "-1":
             logger.info(splits[3])
 
-    def send_mw_command(self, command, item_code=0xFF, item_sender=0x0000,
-                        mp_c=0x00, mp_d=0x00, mp_e=0x00, mp_f=0x00,
-                        mp_cd=0x0000, mp_ef=0x0000):
+    def send_mw_command(self, command, item_code=0xFF,
+                        mp_a=0x00, mp_b=0x00, mp_c=0x00, mp_d=0x00, mp_e=0x00, mp_f=0x00,
+                        mp_ab=0x0000, mp_cd=0x0000, mp_ef=0x0000):
         command |= MWCommands.EXECUTE_COMMAND
-        [sender_high, sender_low] = struct.pack('>H', item_sender)
+        if mp_ab:
+            [mp_a, mp_b] = struct.pack('>H', mp_ab)
         if mp_cd:
             [mp_c, mp_d] = struct.pack('>H', mp_cd)
         if mp_ef:
             [mp_e, mp_f] = struct.pack('>H', mp_ef)
-        msg = [command, item_code, sender_high, sender_low, mp_c, mp_d, mp_e, mp_f]
+        msg = [command, item_code, mp_a, mp_b, mp_c, mp_d, mp_e, mp_f]
         self.write_memory(LAClientConstants.wMWCommand, msg)
 
 
@@ -428,6 +444,18 @@ class LinksAwakeningClient():
         if magpie:
             magpie.gps_tracker = self.gps_tracker
 
+    def get_sender(self, item):
+        item_code = item.item - Common.BASE_ID
+        ladxr_name = links_awakening_item_code_to_ladxr_name[item_code]
+        # sender 0xFF means skip text box
+        if item.flags & 0b001: # progression: skip text only if on exception list
+            if any(prefix for prefix in yes_text_exceptions if ladxr_name.startswith(prefix)):
+                return 0xFF
+        else: # skip text unless on exception list or from server
+            if not any(prefix for prefix in no_text_exceptions if ladxr_name.startswith(prefix)) and item.player > 0:
+                return 0xFF
+        return clamp(0, item.player, 101)
+
     # The key location is blocked from collection unless the value location
     # has also been checked.
     dependent_location_meta_ids = {
@@ -487,10 +515,11 @@ class LinksAwakeningClient():
             if item.player == ctx.slot:
                 args["command"] |= MWCommands.SEND_ITEM_SPECIAL
                 args["item_code"] = item.item - Common.BASE_ID
-                args["item_sender"] = clamp(0, ctx.slot, 101)
+                args["mp_a"] = self.get_sender(item)
             if trade:
                 args["command"] |= trade["cmd"]
                 args["mp_f"] = trade["mask"]
+            # TODO skip dialog?
             self.gameboy.send_mw_command(**args)
             break # one per cycle
         locations_to_scout = ctx.checked_locations - ctx.scouted_locations
@@ -543,32 +572,34 @@ class LinksAwakeningClient():
             return
 
         [wMWRecvIndexHi, wMWRecvIndexLo, wMWCommand] = cmd_block
+        busy = wMWCommand & MWCommands.EXECUTE_COMMAND
 
         if self.death_link_status == DeathLinkStatus.NONE:
             if not wHealth: # natural death
                 await death_link_cb()
                 self.death_link_status = DeathLinkStatus.DYING
         elif self.death_link_status == DeathLinkStatus.PENDING:
-            if wMWCommand & MWCommands.DEATH_LINK:
-                if not wMWCommand & MWCommands.EXECUTE_COMMAND:
-                    self.death_link_status = DeathLinkStatus.DYING
-                    self.gameboy.send_mw_command(command=MWCommands.NONE)
-            else:
-                self.gameboy.send_mw_command(command=MWCommands.DEATH_LINK)
+            if not busy:
+                self.death_link_status = DeathLinkStatus.DYING
+                self.gameboy.send_mw_command(
+                    command=MWCommands.SEND_ITEM_SPECIAL,
+                    item_code=CHEST_ITEMS[DEATH],
+                    mp_a=0xFF)
         elif self.death_link_status == DeathLinkStatus.DYING:
-            if wHealth:
+            if wHealth and not busy:
                 self.death_link_status = DeathLinkStatus.NONE
 
-        if wMWCommand & MWCommands.EXECUTE_COMMAND or self.death_link_status:
+        if busy or self.death_link_status:
             return
 
         recv_index = wMWRecvIndexHi << 8 | wMWRecvIndexLo
         if recv_index in ctx.recvd_checks:
             item = ctx.recvd_checks[recv_index]
-            self.gameboy.send_mw_command(command=MWCommands.SEND_ITEM,
-                                         item_code=item.item - Common.BASE_ID,
-                                         item_sender=clamp(0, item.player, 101),
-                                         mp_cd=recv_index)
+            self.gameboy.send_mw_command(
+                command=MWCommands.SEND_ITEM,
+                item_code=item.item - Common.BASE_ID,
+                mp_a=self.get_sender(item),
+                mp_cd=recv_index)
             return
 
         if self.collect_enabled:

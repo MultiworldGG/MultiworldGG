@@ -171,6 +171,10 @@ class PaletteRandomization(Toggle):
     """Randomize the ingame palettes."""
     display_name = "Palette Randomization"
 
+class AlternateHealthHudLayout(Toggle):
+    """Enables an alternative HUD for health."""
+    display_name = "Alternate Health HUD Layout"
+
 class EnableHints(DefaultOnToggle):
     """Enable ingame hints at Navigation Stations."""
     display_name = "Enable Hints"
@@ -183,9 +187,35 @@ class FastDoorTransitions(DefaultOnToggle):
     """Enables fast door transitions between rooms."""
     display_name = "Fast Door Transitions"
 
+class InstantMorph(DefaultOnToggle):
+    """Enables instant morphing, using the 'SELECT' button."""
+    display_name = "Instant Morph"
+
+class SecondaryWeaponToggle(Toggle):
+    """Sets the missile launcher to be toggled on and off, instead of needing to be held."""
+    display_name = "Secondary Weapon Toggle"
+
 class NerfGeronWeaknesses(Toggle):
     """Makes Gerons only weak to their 'intended' values."""
     display_name = "Nerf Geron Weaknesses"
+
+class MusicRando(Choice):
+    """Changes how music is shuffled.
+    Vanilla: Does not shuffle any songs.
+    Type: Shuffles songs within the same category. This ensures that you won't hear boss music while exploring,
+    or an item jingle as the escape sequence. Jingles are not shuffled. Certain songs, such as the Credits song,
+    are excluded from shuffling.
+    Full: Will shuffle all songs with each other. Jingles are not shuffled. Certain songs, such as the
+    Credits song, are excluded from shuffling."""
+    display_name = "Music Rando"
+    option_vanilla = 0
+    option_type = 1
+    option_full = 2
+    default = 0
+
+class MajorJingles(Toggle):
+    """Replace all major item jingles with the minor jingle instead. Select 'true' to disable major item jingles."""
+    display_name = "Major Jingles"
 
 class MissileDataAmmo(Range):
     """The amount of missiles provided by a Missile Data item."""
@@ -262,8 +292,13 @@ class MetroidFusionOptions(PerGameCommonOptions):
     SectorNavigationRoomHintLocks: SectorNavigationRoomHintLocks
 
     PaletteRandomization: PaletteRandomization
+    AlternateHealthHudLayout: AlternateHealthHudLayout
     EnableHints: EnableHints
+    InstantMorph: InstantMorph
+    SecondaryWeaponToggle: SecondaryWeaponToggle
     NerfGeronWeaknesses: NerfGeronWeaknesses
+    MusicRando: MusicRando
+    MajorJingles: MajorJingles
     RevealHiddenBlocks: RevealHiddenBlocks
     FastDoorTransitions: FastDoorTransitions
     MissileDataAmmo: MissileDataAmmo
@@ -305,10 +340,15 @@ metroid_fusion_option_groups = [
     ]),
     OptionGroup("Minor Options", [
         PaletteRandomization,
+        AlternateHealthHudLayout,
         EnableHints,
-        NerfGeronWeaknesses,
         RevealHiddenBlocks,
         FastDoorTransitions,
+        InstantMorph,
+        SecondaryWeaponToggle,
+        NerfGeronWeaknesses,
+        MusicRando,
+        MajorJingles,
         MissileDataAmmo,
         MissileTankAmmo,
         PowerBombDataAmmo,

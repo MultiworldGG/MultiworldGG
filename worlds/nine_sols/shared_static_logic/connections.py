@@ -10,7 +10,8 @@ connections_data = [
     # since upper AFM is inaccessible otherwise, the mod will unlock AFM's root node when you walk into AFM
 
     { "from": "AF (Monitoring) - Exit", "to": "AF (Elevator) - Upper Root Node", "requires": [], "portal_name": "AFM_RIGHT_PORTAL" },
-    { "from": "AF (Elevator) - Upper Root Node", "to": "AF (Monitoring) - Exit", "requires": [], "portal_name": "AFE_UPPER_LEFT_PORTAL" },
+    { "from": "AF (Elevator) - Upper Root Node", "to": "AF (Monitoring) - Exit", "requires": [],
+      "portal_name": "AFE_UPPER_LEFT_PORTAL", "bow_hovers": 1 },
 
     # Apeman Facility (Elevator)
     {
@@ -166,10 +167,12 @@ connections_data = [
     { "from": "AF (Elevator) - Baichang Arena", "to": "Central Hall - Center", "requires": [] }, # elevator
 
     # CTH's lower *left* exit
-    { "from": "AF (Elevator) - Right Exit", "to": "CTH - Lower Exits", "requires": [], "portal_name": "AFE_RIGHT_PORTAL" },
+    { "from": "AF (Elevator) - Right Exit", "to": "CTH - Lower Exits", "requires": [],
+      "portal_name": "AFE_RIGHT_PORTAL", "bow_hovers": 1 },
     { "from": "CTH - Lower Exits", "to": "AF (Elevator) - Right Exit", "requires": [], "portal_name": "CTH_LOWER_LEFT_PORTAL" },
 
-    { "from": "AF (Elevator) - Lower Left Exit", "to": "AF (Depths) - Right Exit", "requires": [], "portal_name": "AFE_LOWER_LEFT_PORTAL" },
+    { "from": "AF (Elevator) - Lower Left Exit", "to": "AF (Depths) - Right Exit", "requires": [],
+      "portal_name": "AFE_LOWER_LEFT_PORTAL", "bow_hovers": 1 },
     { "from": "AF (Depths) - Right Exit", "to": "AF (Elevator) - Lower Left Exit", "requires": [], "portal_name": "AFD_RIGHT_PORTAL" },
 
     # Apeman Facility (Depths)
@@ -302,7 +305,8 @@ connections_data = [
     ] },
 
     { "from": "AF (Depths) - Upper Left Exit", "to": "Factory (U) - Lower Right Exit", "requires": [], "portal_name": "AFD_UPPER_LEFT_CRATES" },
-    { "from": "Factory (U) - Lower Right Exit", "to": "AF (Depths) - Upper Left Exit", "requires": [], "portal_name": "FU_LOWER_RIGHT_CRATES" },
+    { "from": "Factory (U) - Lower Right Exit", "to": "AF (Depths) - Upper Left Exit", "requires": [],
+      "portal_name": "FU_LOWER_RIGHT_CRATES", "bow_hovers": 1 },
 
     { "from": "AF (Depths) - Lower Left Exit", "to": "PR (West) - Root Node", "requires": [], "portal_name": "AFD_LOWER_LEFT_TRANSPORTER" },
     { "from": "PR (West) - Root Node", "to": "AF (Depths) - Lower Left Exit", "requires": [], "portal_name": "PRW_LEFT_TRANSPORTER" },
@@ -339,7 +343,8 @@ connections_data = [
       "portal_name": "CH_BOTTOM_VENT_SHAFT", "one_way_target_name": "CTH_UPPER_LEFT_VENT_SHAFT" }, # one-way fall
 
     { "from": "Central Hall - Upper Right Exit", "to": "LYR - Left Exit", "requires": [], "portal_name": "CH_UPPER_RIGHT_PORTAL" },
-    { "from": "LYR - Left Exit", "to": "Central Hall - Upper Right Exit", "requires": [], "portal_name": "LYR_LEFT_PORTAL" },
+    { "from": "LYR - Left Exit", "to": "Central Hall - Upper Right Exit", "requires": [],
+      "portal_name": "LYR_LEFT_PORTAL", "bow_hovers": 1 },
 
     { "from": "Central Hall - Lower Right Exit", "to": "CTH - Upper Left Exit", "requires": [], "portal_name": "CH_LOWER_RIGHT_PORTAL" },
     { "from": "CTH - Upper Left Exit", "to": "Central Hall - Lower Right Exit", "requires": [], "portal_name": "CTH_UPPER_LEFT_PORTAL" },
@@ -662,7 +667,8 @@ connections_data = [
     { "from": "PR (East) - Jiaoduan Arena", "to": "PR (East) - Root Node", "requires": [] }, # one-way debris
 
     { "from": "PR (East) - Left Transporter", "to": "PR (Central) - Right Transporter", "requires": [], "portal_name": "PRE_LEFT_TRANSPORTER" },
-    { "from": "PR (Central) - Right Transporter", "to": "PR (East) - Left Transporter", "requires": [], "portal_name": "PRC_RIGHT_TRANSPORTER" },
+    { "from": "PR (Central) - Right Transporter", "to": "PR (East) - Left Transporter", "requires": [],
+      "portal_name": "PRC_RIGHT_TRANSPORTER", "bow_hovers": 1 },
 
     # Power Reservoir (Central)
     {
@@ -856,8 +862,10 @@ connections_data = [
     { "from": "LYR - Root Node", "to": "Yinglong Canal - Upper Exit", "requires": [], "portal_name": "LYR_BOTTOM_PORTAL" },
     { "from": "Yinglong Canal - Upper Exit", "to": "LYR - Root Node", "requires": [], "portal_name": "YC_TOP_PORTAL" },
 
-    { "from": "LYR - Right Exit", "to": "GoS (Entry) - Root Node", "requires": [], "portal_name": "LYR_RIGHT_PORTAL" },
-    { "from": "GoS (Entry) - Root Node", "to": "LYR - Right Exit", "requires": [], "portal_name": "GOSY_LEFT_PORTAL" },
+    { "from": "LYR - Right Exit", "to": "GoS (Entry) - Root Node", "requires": [],
+      "portal_name": "LYR_RIGHT_PORTAL", "bow_hovers": 1 },
+    { "from": "GoS (Entry) - Root Node", "to": "LYR - Right Exit", "requires": [],
+      "portal_name": "GOSY_LEFT_PORTAL", "bow_hovers": 1 },
 
     { "from": "LYR - Upper Exit", "to": "Sky Tower - Lower Exit", "requires": [], "portal_name": "LYR_TOP_ELEVATOR" },
     { "from": "Sky Tower - Lower Exit", "to": "LYR - Upper Exit", "requires": [], "portal_name": "ST_BOTTOM_ELEVATOR" },
@@ -881,7 +889,7 @@ connections_data = [
 
     # one-way fall
     { "from": "Greenhouse - 2nd Waterfall Hack", "to": "W&OS - Center", "requires": [],
-      "portal_name": "GREENHOUSE_BOTTOM_PORTAL", "one_way_target_name": "WOS_TOP_PORTAL" },
+      "portal_name": "GREENHOUSE_BOTTOM_PORTAL", "one_way_target_name": "WOS_TOP_PORTAL", "target_bow_hovers": 1 },
 
     # Water & Oxygen Synthesis
     {
@@ -891,6 +899,13 @@ connections_data = [
         ] } ],
         "medium_requires": [] # just T-dash
     }, # LS is redundant
+    {
+        "from": "W&OS - Left Exit", "to": "W&OS - Center",
+        "requires": [ { "anyOf": [
+            { "item": "Grapple" }, { "item": "Air Dash" }, { "item": "Cloud Leap" }
+        ] } ],
+        "medium_requires": [ { "item": "Trick - Bow Hover" } ] 
+    },
     {
         "from": "W&OS - Center", "to": "W&OS - Pipeline Panel",
         "requires": [ { "item": "Cloud Leap" } ],
@@ -929,7 +944,8 @@ connections_data = [
     { "from": "W&OS - Root Node", "to": "W&OS - Right Exit", "requires": [ { "item": "Charged Strike" } ] }, # one-way dragon boat ride
     # Thunder Buster and Cloud Piercer S arrows do *not* work on the CS bell, it really has to be CS here
 
-    { "from": "W&OS - Left Exit", "to": "Yinglong Canal - Root Node", "requires": [], "portal_name": "WOS_LEFT_PORTAL" },
+    { "from": "W&OS - Left Exit", "to": "Yinglong Canal - Root Node", "requires": [],
+      "portal_name": "WOS_LEFT_PORTAL", "bow_hovers": 2 },
     { "from": "Yinglong Canal - Root Node", "to": "W&OS - Left Exit", "requires": [
         # YC's bottom right exit is blocked by a door until you do the 2nd GH hack to drain W&OS's yellow water
         { "region": "Greenhouse - 3rd Waterfall Hack" }
@@ -983,7 +999,11 @@ connections_data = [
     },
     { "from": "Yinglong Canal - Above Egg Cave", "to": "Yinglong Canal - Farmland Markings", "requires": [] }, # fall
     { "from": "Yinglong Canal - Above Egg Cave", "to": "Yinglong Canal - Egg Cave & Left Exit", "requires": [] }, # fall
-    { "from": "Yinglong Canal - Egg Cave & Left Exit", "to": "Yinglong Canal - Above Egg Cave", "requires": [ { "item": "Cloud Leap" } ] },
+    { "from": "Yinglong Canal - Egg Cave & Left Exit", "to": "Yinglong Canal - Above Egg Cave",
+      "requires": [ { "item": "Cloud Leap" } ],
+      "ls_requires": [ { "item": "Ledge Grab" }, { "item": "Trick - Bow Hover"}, { "item": "Air Dash"} ]
+      # obtain ledge storage then hover to the right below egg check, then vault over spikes and air dash, rest of climb is possible with vaults. 
+    },
     { "from": "Yinglong Canal - Farmland Markings", "to": "Yinglong Canal - Ledges Above Root Node", "requires": [] }, # fall
     { "from": "Yinglong Canal - Farmland Markings", "to": "Yinglong Canal - Root Node", "requires": [] }, # fall
     { "from": "Yinglong Canal - Root Node", "to": "Yinglong Canal - Ledges Above Root Node", "requires": [
@@ -1243,14 +1263,18 @@ connections_data = [
     # I could not get spider leap/wall slide into CS to work ^here, and this would've been the only place
     # it affected logic anyway, so definitely not worth adding "spider CS" to the list of medium tricks.
 
-    { "from": "Factory (U) - Middle Right Exit", "to": "AM - Left Exit", "requires": [], "portal_name": "FU_MIDDLE_RIGHT_PORTAL" },
-    { "from": "AM - Left Exit", "to": "Factory (U) - Middle Right Exit", "requires": [], "portal_name": "AM_LEFT_PORTAL" },
+    { "from": "Factory (U) - Middle Right Exit", "to": "AM - Left Exit", "requires": [],
+      "portal_name": "FU_MIDDLE_RIGHT_PORTAL", "bow_hovers": 2 },
+    { "from": "AM - Left Exit", "to": "Factory (U) - Middle Right Exit", "requires": [],
+      "portal_name": "AM_LEFT_PORTAL", "bow_hovers": 2 },
 
     { "from": "Factory (U) - Root Node & Lower Elevator", "to": "Factory (MR) - Right Elevator", "requires": [], "portal_name": "FU_BOTTOM_ELEVATOR" },
     { "from": "Factory (MR) - Right Elevator", "to": "Factory (U) - Root Node & Lower Elevator", "requires": [], "portal_name": "FMR_RIGHT_ELEVATOR" },
 
-    { "from": "Factory (U) - Left Exit", "to": "OW - Lower Right Exit", "requires": [], "portal_name": "FU_LEFT_PORTAL" },
-    { "from": "OW - Lower Right Exit", "to": "Factory (U) - Left Exit", "requires": [], "portal_name": "OW_LOWER_RIGHT_PORTAL" },
+    { "from": "Factory (U) - Left Exit", "to": "OW - Lower Right Exit", "requires": [],
+      "portal_name": "FU_LEFT_PORTAL", "bow_hovers": 1 },
+    { "from": "OW - Lower Right Exit", "to": "Factory (U) - Left Exit", "requires": [],
+      "portal_name": "OW_LOWER_RIGHT_PORTAL", "bow_hovers": 1 },
 
     # Outer Warehouse
     {
@@ -1676,7 +1700,7 @@ connections_data = [
 
     { "from": "AM - Upper Right Exit", "to": "UC - Left Exit", "requires": [
         { "item": "Abandoned Mines Access Token" }
-    ], "portal_name": "AM_RIGHT_PORTAL" },
+    ], "portal_name": "AM_RIGHT_PORTAL", "bow_hovers": 1 },
     { "from": "UC - Left Exit", "to": "AM - Upper Right Exit", "requires": [], "portal_name": "UC_LEFT_PORTAL" },
 
     # Prison
@@ -1784,7 +1808,10 @@ connections_data = [
     { "from": "Factory (MR) - Moving Platforms", "to": "Factory (MR) - Root Node", "requires": [] }, # fall farther
 
     # Factory (Production Area)
-    { "from": "Factory (PA) - Lower Left Elevator", "to": "Factory (PA) - Root Node", "requires": [ { "item": "Wall Climb" } ] },
+    { "from": "Factory (PA) - Lower Left Elevator", "to": "Factory (PA) - Root Node", 
+      "requires": [ { "item": "Wall Climb" } ],
+      "ls_requires": [ { "item": "Ledge Grab" }, { "item": "Cloud Leap" } ] # wall slide up the WC walls
+    }, # AD setup can be used however it is 1 try as the only available ledge is too high to reach without CL
     { "from": "Factory (PA) - Root Node", "to": "Factory (PA) - Lower Left Elevator", "requires": [
         { "item": "Cloud Leap" }, { "item": "Ledge Grab" }
     ] }, # ledge storage can do one of the high jumps here, but not all of them
@@ -1884,6 +1911,7 @@ connections_data = [
         # after which you only need to do the last two TCK target jumps
         { "item": "Cloud Leap" }, { "item": "Tai-Chi Kick" }
     ] } ] },
+    { "from": "Factory (PA) - Upper Elevator", "to": "Factory (PA) - Right Fire Zone & Wuqiang Arena", "requires": [] }, # fall (matters in ER)
     { "from": "Factory (PA) - Right Fire Zone & Wuqiang Arena", "to": "Factory (PA) - Lower Right Exit", "requires": [] }, # fall
     { "from": "Factory (PA) - Lower Right Exit", "to": "Factory (PA) - Right Fire Zone & Wuqiang Arena", "requires": [
         { "item": "Ledge Grab" }
@@ -2014,7 +2042,8 @@ connections_data = [
       "portal_name": "GOSY_LOWER_ELEVATOR_SHAFT", "one_way_target_name": "GREENHOUSE_TOP_ELEVATOR_SHAFT" }, # one-way fall (scripted on first visit)
 
     { "from": "GoS (Entry) - Upper Right Exit", "to": "GoS (East) - Lower Exit", "requires": [], "portal_name": "GOSY_UPPER_RIGHT_PORTAL" },
-    { "from": "GoS (East) - Lower Exit", "to": "GoS (Entry) - Upper Right Exit", "requires": [], "portal_name": "GOSE_LOWER_PORTAL" },
+    { "from": "GoS (East) - Lower Exit", "to": "GoS (Entry) - Upper Right Exit", "requires": [],
+      "portal_name": "GOSE_LOWER_PORTAL", "bow_hovers": 1 },
 
     # Grotto of Scriptures (East)
     { "from": "GoS (East) - Lower Exit", "to": "GoS (East) - Above Lower Exit", "requires": [ { "item": "Cloud Leap" } ] },
@@ -2045,8 +2074,9 @@ connections_data = [
         { "item": "Cloud Leap" }
     ] }, # tricks help with parts of this, but you'll still need to CL over at least one spike ball no matter what
     { "from": "GoS (East) - Root Node", "to": "GoS (East) - Spike Ball Hall Platforms", "requires": [] }, # fall
-    { "from": "GoS (East) - Root Node", "to": "GoS (East) - Middle Exit", "requires": [] }, # fall
+    { "from": "GoS (East) - Root Node", "to": "GoS (East) - Middle Exit", "requires": [] }, # fall and trigger spike ball
     { "from": "GoS (East) - Middle Exit", "to": "GoS (East) - Root Node", "requires": [
+        { "region": "GoS (East) - Root Node" }, # a pillar blocks the middle exit until you trigger the spike ball
         { "item": "Cloud Leap" } # to jump up to the rope, and then from wooden platforms to node ledge
     ] },
     {
@@ -2108,9 +2138,12 @@ connections_data = [
     ] },
 
     { "from": "GoS (East) - Middle Exit", "to": "GoS (West) - Lower Right Exits", "requires": [], "portal_name": "GOSE_MIDDLE_PORTAL" },
-    { "from": "GoS (West) - Lower Right Exits", "to": "GoS (East) - Middle Exit", "requires": [], "portal_name": "GOSW_MIDDLE_RIGHT_PORTAL" },
+    { "from": "GoS (West) - Lower Right Exits", "to": "GoS (East) - Middle Exit", "requires": [
+        { "region": "GoS (East) - Root Node" }, # a pillar blocks GOSW_MIDDLE_RIGHT_PORTAL until you trigger the GoSE spike ball
+    ], "portal_name": "GOSW_MIDDLE_RIGHT_PORTAL" },
 
-    { "from": "GoS (East) - Upper Exit", "to": "GoS (West) - Upper Right Exit", "requires": [], "portal_name": "GOSE_UPPER_PORTAL" },
+    { "from": "GoS (East) - Upper Exit", "to": "GoS (West) - Upper Right Exit", "requires": [],
+      "portal_name": "GOSE_UPPER_PORTAL", "bow_hovers": 1 },
     { "from": "GoS (West) - Upper Right Exit", "to": "GoS (East) - Upper Exit", "requires": [], "portal_name": "GOSW_UPPER_RIGHT_PORTAL" },
 
     # Grotto of Scriptures (West)
@@ -2240,13 +2273,15 @@ connections_data = [
     { "from": "GoS (West) - Above Western Cliffs", "to": "GoS (West) - Upper Left Exit", "requires": [] }, # one-way bridge hack
     { "from": "GoS (West) - Root Node", "to": "GoS (West) - Lower Right Exits", "requires": [] }, # fall, press button for vertical green platforms, fall, one-way door
 
-    { "from": "GoS (West) - Lower Right Exits", "to": "GoS (Entry) - Elevator", "requires": [], "portal_name": "GOSW_LOWER_RIGHT_ELEVATOR" },
+    { "from": "GoS (West) - Lower Right Exits", "to": "GoS (Entry) - Elevator", "requires": [],
+      "portal_name": "GOSW_LOWER_RIGHT_ELEVATOR", "bow_hovers": 1 },
     # one-way elevator, so this reverse connection is logically redundant / only here to get ER'd
     { "from": "GoS (Entry) - Elevator", "to": "GoS (West) - Lower Right Exits", "requires": [
         { "region": "GoS (West) - Lower Right Exits" }
-    ], "portal_name": "GOSY_UPPER_ELEVATOR" },
+    ], "portal_name": "GOSY_UPPER_ELEVATOR", "bow_hovers": 1 },
 
-    { "from": "GoS (West) - Lower Left Transporter", "to": "ED (Passages) - Lower Right Transporter", "requires": [], "portal_name": "GOSW_LOWER_LEFT_TRANSPORTER" },
+    { "from": "GoS (West) - Lower Left Transporter", "to": "ED (Passages) - Lower Right Transporter", "requires": [],
+      "portal_name": "GOSW_LOWER_LEFT_TRANSPORTER", "bow_hovers": 1 },
     { "from": "ED (Passages) - Lower Right Transporter", "to": "GoS (West) - Lower Left Transporter", "requires": [], "portal_name": "EDP_LOWER_RIGHT_TRANSPORTER" },
 
     { "from": "GoS (West) - Upper Left Exit", "to": "ED (Passages) - Upper Right Exit", "requires": [], "portal_name": "GOSW_UPPER_LEFT_PORTAL" },
@@ -2335,7 +2370,8 @@ connections_data = [
     { "from": "Sky Tower - Upper Exit & Root Node", "to": "TRC - Upper Exit", "requires": [ { "item": "Elevator Access Token" } ] },
 
     { "from": "Sky Tower - Right Exit", "to": "ED (Passages) - Left Exit", "requires": [], "portal_name": "ST_RIGHT_PORTAL" },
-    { "from": "ED (Passages) - Left Exit", "to": "Sky Tower - Right Exit", "requires": [], "portal_name": "EDP_LEFT_PORTAL" },
+    { "from": "ED (Passages) - Left Exit", "to": "Sky Tower - Right Exit", "requires": [],
+      "portal_name": "EDP_LEFT_PORTAL", "bow_hovers": 2 },
 
     # Empyrean Dist. (Passages)
     {
@@ -2715,7 +2751,8 @@ connections_data = [
     { "from": "ED (Living Area) - Left Exit", "to": "ED (Living Area) - Root Node & Lower Elevator", "requires": [] }, # one-way hacking 2 door
 
     { "from": "ED (Living Area) - Left Exit", "to": "ED (Sanctum) - Right Exit", "requires": [], "portal_name": "EDLA_LEFT_PORTAL" },
-    { "from": "ED (Sanctum) - Right Exit", "to": "ED (Living Area) - Left Exit", "requires": [], "portal_name": "EDS_RIGHT_PORTAL" },
+    { "from": "ED (Sanctum) - Right Exit", "to": "ED (Living Area) - Left Exit", "requires": [],
+      "portal_name": "EDS_RIGHT_PORTAL", "bow_hovers": 1 },
 
     # Empyrean Dist. (Sanctum)
     { "from": "ED (Sanctum) - Right Exit", "to": "ED (Sanctum) - Below Root Node", "requires": [ { "item": "Air Dash" } ] },
@@ -2892,10 +2929,6 @@ connections_data = [
         { "item": "Grotto of Scriptures (East) Root Node" }
     ] },
 
-    # Shop logic
-    { "from": "FSP - Root Node", "to": "FSP - Kuafu's Shop", "requires": [ { "item": "Event - Kuafu in FSP" } ] },
-    { "from": "FSP - Root Node", "to": "FSP - Kuafu's Extra Inventory", "requires": [ { "item": "Event - Kuafu Extra Shop Inventory" } ] },
-
     # we don't have a good way of expressing "any 2 of these 3 regions"
     {
         "from": "FSP - Root Node", "to": "Left-Side Map Access",
@@ -2922,6 +2955,7 @@ connections_data = [
         ]}]
     },
 
+    # Shop logic
     {
         "from": "FSP - Root Node", "to": "FSP Shops & Skill Tree (Low Cost)",
         "requires": [ { "anyOf": [
@@ -2948,6 +2982,19 @@ connections_data = [
         ]
     },
 
+    {"from": "FSP - Root Node", "to": "FSP - Kuafu's Shop (No Cost)", "requires": [{"item": "Event - Kuafu in FSP"}]},
+    {
+        "from": "FSP Shops & Skill Tree (Low Cost)", "to": "FSP - Kuafu's Shop (Low Cost)",
+        "requires": [ { "item": "Event - Kuafu in FSP" } ]
+    },
+    {
+        "from": "FSP Shops & Skill Tree (Medium Cost)", "to": "FSP - Kuafu's Shop (Medium Cost)",
+        "requires": [ { "item": "Event - Kuafu in FSP" } ]
+    },
+    {
+        "from": "FSP Shops & Skill Tree (High Cost)", "to": "FSP - Kuafu's Shop (High Cost)",
+        "requires": [ { "item": "Event - Kuafu in FSP" } ]
+    },
     {
         "from": "FSP Shops & Skill Tree (Low Cost)", "to": "FSP - Chiyou's Shop",
         "requires": [ { "item": "Event - Chiyou in FSP" } ]
@@ -2959,6 +3006,18 @@ connections_data = [
     {
         "from": "FSP Shops & Skill Tree (High Cost)", "to": "FSP - Chiyou's Shop (High Cost)",
         "requires": [ { "item": "Event - Chiyou in FSP" } ]
+    },
+    {
+        "from": "FSP Shops & Skill Tree (Low Cost)", "to": "FSP - Kuafu's Extra Inventory (Low Cost)",
+        "requires": [{"item": "Event - Kuafu Extra Shop Inventory"}]
+    },
+    {
+        "from": "FSP Shops & Skill Tree (Medium Cost)", "to": "FSP - Kuafu's Extra Inventory (Medium Cost)",
+        "requires": [{"item": "Event - Kuafu Extra Shop Inventory"}]
+    },
+    {
+        "from": "FSP Shops & Skill Tree (High Cost)", "to": "FSP - Kuafu's Extra Inventory (High Cost)",
+        "requires": [{"item": "Event - Kuafu Extra Shop Inventory"}]
     },
 
     # Skill tree logic

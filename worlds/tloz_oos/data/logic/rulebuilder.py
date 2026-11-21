@@ -7,10 +7,12 @@ from BaseClasses import CollectionState
 from Options import Accessibility, Option
 from rule_builder.field_resolvers import FieldResolver, FromWorldAttr, resolve_field
 from rule_builder.options import OPERATORS, Operator, OptionFilter
-from rule_builder.rules import False_, HasAll, True_
 
+from ...core.rule_builder.rule_import import CanReachRegion, False_, HasAll, True_
+from ...generation.locations import location_is_active
 from ...world import OracleOfSeasonsWorld
-from ..Constants import SEASON_CHAOTIC, SEASON_ITEMS
+from ..constants import SEASON_CHAOTIC, SEASON_ITEMS
+from ..locations import LOCATIONS_DATA
 from . import Rule
 
 
@@ -30,6 +32,7 @@ class Bool(Rule, game=OracleOfSeasonsWorld.game):
 class LostWoods(HasAll[OracleOfSeasonsWorld], game=OracleOfSeasonsWorld.game):
     is_main_sequence: bool
     allow_default: bool
+
     def __init__(self, is_main_sequence: bool, allow_default: bool):
         super().__init__()
         self.is_main_sequence = is_main_sequence
@@ -66,6 +69,9 @@ class ItemInLocation(Rule, game=OracleOfSeasonsWorld.game):
     def _instantiate(self, world: OracleOfSeasonsWorld) -> Rule.Resolved:
         if world.options.accessibility == Accessibility.option_full:
             return False_().resolve(world)
+        location_data = LOCATIONS_DATA[self.location_name]
+        if not location_is_active(world, self.location_name, location_data):
+            return False_().resolve(world)
         return self.Resolved(
             self.location_name,
             self.item_name,
@@ -86,12 +92,34 @@ class ItemInLocation(Rule, game=OracleOfSeasonsWorld.game):
             return f"{self.item_name} in {self.location_name}"
 
 
+@dataclasses.dataclass
+class OoSCanReachRegion(CanReachRegion[OracleOfSeasonsWorld], game=OracleOfSeasonsWorld.game):
+    @override
+    def _instantiate(self, world: OracleOfSeasonsWorld) -> Rule.Resolved:
+        if self.region_name in world.region_replacement:
+            region_name = world.region_replacement[self.region_name]
+        else:
+            region_name = self.region_name
+        return self.Resolved(
+            region_name,
+            player=world.player,
+            caching_enabled=getattr(world, "rule_caching_enabled", False),
+        )
+
+    class Resolved(CanReachRegion.Resolved):
+        @override
+        def _evaluate(self, state: CollectionState) -> bool:
+            # This explicitly calls for the world's function as OoS's get_region checks region_replacement
+            return state.multiworld.worlds[self.player].get_region(self.region_name).can_reach(state)
+
+
 def from_bool(condition: bool) -> Rule:
     return True_() if condition else False_()
 
 
 def from_option(option: type[Option], value: Any, operator: Operator = "eq") -> Rule:
     return True_(options=[OptionFilter(option, value, operator)])
+
 
 def from_world_field(field: str, value: Any, operator: Operator = "eq") -> Rule:
     return Bool(FromWorldAttr(field), value, operator)

@@ -5,6 +5,8 @@ from worlds.deltarune.LogicHelper import (
     randomized_chapters,
     include_hidden_items,
     include_secret_bosses_items_reward,
+    progressive_area_unlocks,
+    not_progressive_area_unlocks,
 )
 from worlds.deltarune.Items import (
     ItemIDs,
@@ -36,8 +38,20 @@ chapter4_items = [
     ItemData(
         ItemIDs.wingblade, ItemClassification.useful, groups=[ItemGroups.weapons, ItemGroups.kris_weapons], amount=1
     ),
-    ItemData(ItemIDs.claimbclaws, ItemClassification.progression, groups=[ItemGroups.region_blockers], amount=1),
-    ItemData(ItemIDs.sheetmusic, ItemClassification.progression, groups=[ItemGroups.region_blockers], amount=1),
+    ItemData(
+        ItemIDs.claimbclaws, 
+        ItemClassification.progression, 
+        groups=[ItemGroups.region_blockers], 
+        should_be_included=not_progressive_area_unlocks,
+        amount=1
+    ),
+    ItemData(
+        ItemIDs.sheetmusic, 
+        ItemClassification.progression, 
+        groups=[ItemGroups.region_blockers], 
+        should_be_included=not_progressive_area_unlocks,
+        amount=1
+    ),
     ItemData(
         ItemIDs.dogdollar,
         ItemClassification.filler,
@@ -50,6 +64,13 @@ chapter4_items = [
         ItemClassification.filler,
         groups=[ItemGroups.healing_item, ItemGroups.fusion_ingredient],
         changing_classification=True,
+    ),
+    ItemData(
+        ItemIDs.progressive_ch4_area_unlock, 
+        ItemClassification.progression,
+        groups=[ItemGroups.region_blockers, ItemGroups.progressive_area_unlocks], 
+        should_be_included=progressive_area_unlocks,
+        amount=2
     ),
     ItemData(
         ItemIDs.goldwidow,

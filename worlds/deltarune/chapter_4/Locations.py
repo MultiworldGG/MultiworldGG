@@ -268,10 +268,6 @@ chapter4_locations = {
             group=LocationGroups.chapter4,
         ),
         LocationData(
-            LocationIDs.ch4_second_sanctuary_fountain_sealed,
-            group=LocationGroups.chapter4,
-        ),
-        LocationData(
             LocationIDs.ch4_recruit_wicabel,
             should_be_included=include_recruits,
             group=LocationGroups.chapter4,
@@ -283,6 +279,10 @@ chapter4_locations = {
         ),
     ],
     Regions.ch4_third_sanctuary: [
+        LocationData(
+            LocationIDs.ch4_second_sanctuary_fountain_sealed,
+            group=LocationGroups.chapter4,
+        ),
         LocationData(
             LocationIDs.ch4_third_sanctuary_annoying_dog,
             group=LocationGroups.chapter4,

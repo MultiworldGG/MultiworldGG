@@ -59,7 +59,7 @@ class RawArray:
     address: int
     item_size: int
 
-    def __getitem__(self, item):
+    def __getitem__(self, item: int) -> int:
         return self.address + self.item_size * item
 
 

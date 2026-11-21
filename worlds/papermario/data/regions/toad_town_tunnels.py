@@ -8,7 +8,7 @@ from rule_builder.rules import (
     #Or,
     #AtLeast,
     True_,
-    #False_,
+    False_,
     Has,
     #HasAll,
     HasAny,
@@ -32,17 +32,17 @@ from .LogicHelpers import (
     HasBoots,
     HasSuperBoots,
     HasUltraBoots,
-    CanFlipPanels,
+    #CanFlipPanels,
     CanSeeHiddenBlocks,
-    CanShakeTrees,
-    CanUseAbilityKooper,
+    #CanShakeTrees,
+    #CanUseAbilityKooper,
     CanUseAbilityBombette,
     CanUseAbilityParakarry,
-    CanUseAbilityBow,
-    CanUseAbilityWatt,
+    #CanUseAbilityBow,
+    #CanUseAbilityWatt,
     CanUseAbilitySushie,
     CanUseAbilityLakilester,
-    CanHitGroundedBlocks,
+    #CanHitGroundedBlocks,
     CanHitFloatingBlocks,
     CanHitGroundedSwitches,
     CanClimbSteps,
@@ -51,6 +51,7 @@ from .LogicHelpers import (
 
 from ...options import BlooperDamageRequirements, Chapter7BridgeVisible, GearShuffleMode
 
+@dataclasses.dataclass()
 class CanBeatAllBloopers(Rule["PaperMarioWorld"], game="Paper Mario"):
     @override
     def _instantiate(self, world) -> Rule.Resolved:
@@ -187,7 +188,7 @@ toad_town_tunnels_regions: list[Dict[str, str | Dict[str, Rule | None]]] = [
             "TTT Spring Room (B2)": None,
             "TTT Short Elevator Room (B1)": None,
             "TTT Scales Room (B2) East": HasBoots(),
-            "TTT Scales Room (B2) Lower": CanClimbSteps(),
+            "TTT Scales Room (B2) Lower": None,
         }
     },
     {
@@ -198,6 +199,7 @@ toad_town_tunnels_regions: list[Dict[str, str | Dict[str, Rule | None]]] = [
         "exits": {
             "TTT Elevator Attic Room (B2) West": None,
             "TTT Scales Room (B2) West": CanClimbSteps(),
+            "TTT Scales Room (B2) Lower Pipe": None
         }
     },
     {
@@ -217,7 +219,7 @@ toad_town_tunnels_regions: list[Dict[str, str | Dict[str, Rule | None]]] = [
         "map_name": "Scales Room (B2)",
         "exits": {
             "TTT Metal Block Room (B3)": CanReenterVerticalPipes(),
-            "TTT Scales Room (B2) Lower": CanClimbSteps(),
+            "TTT Scales Room (B2) Lower": None,
         }
     },
     {
@@ -357,7 +359,7 @@ toad_town_tunnels_regions: list[Dict[str, str | Dict[str, Rule | None]]] = [
         "map_id": "8",
         "map_name": "Warp Zone 2 (B2)",
         "exits": {
-            "FOR Outside Boo's Mansion Pipe": None,
+            "FOR Outside Boo's Mansion Pipe": CanReenterVerticalPipes(),
             "TTT Warp Zone 2 (B2)": None,
         }
     },
@@ -382,7 +384,11 @@ toad_town_tunnels_regions: list[Dict[str, str | Dict[str, Rule | None]]] = [
                 & CanHitFloatingBlocks()
                 & CanClimbSteps()
             ),
-            "TTT Blue Pushblock Room (B2) In SuperBlock": CanClimbSteps() & CanHitFloatingBlocks(),
+            "TTT Blue Pushblock Room (B2) In SuperBlock":(
+                CanSeeHiddenBlocks() # has to have hit the other blocks before
+                & CanHitFloatingBlocks()
+                & CanClimbSteps()
+            ),
         },
         "exits": {
             "TTT Warp Zone 2 (B2)": None,
@@ -528,12 +534,12 @@ toad_town_tunnels_regions: list[Dict[str, str | Dict[str, Rule | None]]] = [
         "events": {
             "RF_BuiltCh7Bridge": (
                 (HasUltraBoots() & CanSeeHiddenBlocks())
-                | HasSuperBoots(
+                | False_(
                     options=[OptionFilter(
                         Chapter7BridgeVisible,
-                        True
+                        False
                     )],
-                    filtered_resolution=False,
+                    filtered_resolution=True,
                 )
             ),
         },
@@ -558,6 +564,7 @@ toad_town_tunnels_regions: list[Dict[str, str | Dict[str, Rule | None]]] = [
         "exits": {
             "TTT Pipe to Frozen Room (B2)": None,
             "TTT Bridge to Shiver City (B2) West": CanClimbSteps(),
+            "TTT Bridge to Shiver City (B2) Pipe": None,
         }
     },
     {

@@ -1,20 +1,21 @@
 from collections import defaultdict
-from typing import Any
+from typing import Any, cast
 
 from ...common.patching.z80asm.Assembler import Z80Assembler
 from ...common.patching.z80asm.Util import parse_hex_string_to_value
-from ...data.Constants import (
+from ...data.constants import (
     SEED_ITEMS,
 )
-from ...data.items import ITEMS_DATA
-from ..Constants import (
+from ...data.items import ITEMS_DATA, ItemName
+from ...world import OracleOfSeasonsWorld
+from ..constants import (
     DEFINES,
 )
 
 
 def set_player_start_inventory(assembler: Z80Assembler, patch_data: dict[str, Any]) -> None:
     obtained_treasures_address = parse_hex_string_to_value(DEFINES["wObtainedTreasureFlags"])
-    start_inventory_changes = defaultdict(int)
+    start_inventory_changes: dict[int, int] = defaultdict(int)
 
     # ###### Base changes ##############################################
     start_inventory_changes[parse_hex_string_to_value(DEFINES["wIsLinkedGame"])] = 0x00  # No linked gaming
@@ -31,11 +32,16 @@ def set_player_start_inventory(assembler: Z80Assembler, patch_data: dict[str, An
         for i in range(dungeon_compass, dungeon_compass + 4):
             start_inventory_changes[i] = 0xFF
 
-    start_inventory_data: dict[str, int] = patch_data["start_inventory"]
+    raw_start_inventory_data: dict[str, int] = patch_data["start_inventory"]
+    start_inventory_data: dict[ItemName, int] = {
+        cast(ItemName, OracleOfSeasonsWorld.item_id_to_name[int(code)] if code.isnumeric() else code): value
+        for code, value in raw_start_inventory_data.items()
+    }
+
     # Handle leveled items
-    if "Progressive Shield" in start_inventory_data:
+    if ItemName.progressive_shield in start_inventory_data:
         start_inventory_changes[parse_hex_string_to_value(DEFINES["wShieldLevel"])] = start_inventory_data[
-            "Progressive Shield"
+            ItemName.progressive_shield
         ]
     bombs = 0
     if "Bombs (10)" in start_inventory_data:
@@ -71,9 +77,9 @@ def set_player_start_inventory(assembler: Z80Assembler, patch_data: dict[str, An
         start_inventory_changes[parse_hex_string_to_value(DEFINES["wFeatherLevel"])] = start_inventory_data[
             "Progressive Feather"
         ]
-    if "Switch Hook" in start_inventory_data:
+    if ItemName.switch_hook in start_inventory_data:
         start_inventory_changes[parse_hex_string_to_value(DEFINES["wSwitchHookLevel"])] = start_inventory_data[
-            "Switch Hook"
+            ItemName.switch_hook
         ]
     bombchus = 0
     if "Bombchus (10)" in start_inventory_data:
@@ -148,14 +154,20 @@ def set_player_start_inventory(assembler: Z80Assembler, patch_data: dict[str, An
             subid = ITEMS_DATA[item]["subid"] % 0x80
             start_inventory_changes[0xC66E + subid] += item_amount
         elif item_id == 0x31:  # Boss keys
-            subid = ITEMS_DATA[item]["subid"]
-            start_inventory_changes[0xC67A + subid // 8] |= 0x01 << subid % 8
+            dungeon = ITEMS_DATA[item]["subid"] + 1
+            start_inventory_changes[0xC67A + dungeon // 8] |= 0x01 << dungeon % 8
         elif item_id == 0x32:  # Compasses
             subid = ITEMS_DATA[item]["subid"]
             start_inventory_changes[0xC67C + subid // 8] |= 0x01 << subid % 8
         elif item_id == 0x33:  # Maps
             subid = ITEMS_DATA[item]["subid"]
             start_inventory_changes[0xC67E + subid // 8] |= 0x01 << subid % 8
+        elif item_id == 0x5e:  # Unlocks
+            subid = ITEMS_DATA[item]["subid"]
+            flag_data = assembler.floating_chunks["unlockFlagsData"][subid * 5 : (subid + 1) * 5]
+            group_flag_address = 0xC500 + flag_data[0] * 0x100
+            start_inventory_changes[group_flag_address + flag_data[1]] |= flag_data[2]
+            start_inventory_changes[group_flag_address + flag_data[3]] |= flag_data[4]
         elif item_id == 0x2D:  # Rings
             subid = ITEMS_DATA[item]["subid"] - 4
             start_inventory_changes[parse_hex_string_to_value(DEFINES["wRingsObtained"]) + subid // 8] |= (
@@ -190,10 +202,12 @@ def set_player_start_inventory(assembler: Z80Assembler, patch_data: dict[str, An
 
     # Make the list used in asm
     start_inventory = []
-    for address in start_inventory_changes:
+    for address, change in start_inventory_changes.items():
+        if not change:
+            continue
         start_inventory.append(address // 0x100)
         start_inventory.append(address % 0x100)
-        start_inventory.append(start_inventory_changes[address])
+        start_inventory.append(change)
 
     start_inventory.append(0x00)  # End of the list
     assembler.add_floating_chunk("startingInventory", start_inventory)

@@ -2,6 +2,8 @@ import os
 import binascii
 from ..assembler import ASM
 from ..utils import preformatText, formatText
+from ..locations.constants import CHEST_ITEMS
+from ...Items import item_prefixes_to_skip_text_in_prefill
 
 import pkgutil
 
@@ -20,7 +22,7 @@ def generate_name(l, i):
 
 # Bank $3E is used for large chunks of custom code.
 #   Mainly for new chest and dropped items handling.
-def addBank3E(rom, seed, player_id, player_name_list):
+def addBank3E(rom, seed, player_id, player_name_list, precollected_items):
     # No default text for getting the bow, so use an unused slot.
     rom.texts[0x89] = formatText("Found the {BOW}!")
     rom.texts[0xD9] = formatText("Found the {BOOMERANG}!")  # owl text slot reuse
@@ -83,6 +85,7 @@ MainJumpTable:
         dw   RenderOwlStatueItem                  ; F
         dw   UpdateInventoryMenu                  ; 10
         dw   LocalOnlyItemAndMessage              ; 11
+        dw   HandleSeashellMansionItem            ; 12
 StartGameMarinMessage:
         ; Injection to reset our frame counter
         call $27D0 ; Enable SRAM
@@ -96,9 +99,7 @@ StartGameMarinMessage:
         ldi  [hl], a ;hour counter
 
         ld   hl, $B010
-        ld   a, $01  ;tarin's gift gets skipped for some reason, so inflate count by 1
         ldi  [hl], a ;check counter low
-        xor  a
         ldi  [hl], a ;check counter high
 
         ; Show the normal message
@@ -216,6 +217,7 @@ LocalOnlyItemAndMessage:
         + get_asm("itemnames.asm")
         + "".join(generate_name(["The Server"] + player_name_list, i ) for i in range(100)) # allocate
         + 'db "another world", $ff\n'
+        + get_precollected_id_block(precollected_items)
         + get_asm("owl.asm"), 0x4000), fill_nop=True)
     # 3E:3300-3616: Multiworld flags per room (for both chests and dropped keys)
     # 3E:3800-3B16: DroppedKey item types
@@ -227,3 +229,31 @@ LocalOnlyItemAndMessage:
 
     # Prevent the photo album from crashing due to serial interrupts
     rom.patch(0x28, 0x00D2, ASM("ld a, $09"), ASM("ld a, $01"))
+
+def get_precollected_id_block(item_names):
+    max_items = 100 # arbitrarily chosen
+    item_names = item_names[:max_items]
+
+    # for certain items, text box should be skipped when running through prefill items in game
+    # these have already been sorted to the back, now we just need to find the index where they
+    # start in order to flag the transition point for the game
+    skip_text_index = next((i for i, x in enumerate(item_names)
+        if any(p for p in item_prefixes_to_skip_text_in_prefill if x.startswith(p))), max_items)
+
+    item_ids = [CHEST_ITEMS[name] for name in item_names]
+    # pad our item id block to be a consistent size
+    filler = [0xFF] * (len(item_ids) - max_items)
+    item_ids.extend(filler)
+    # transition to no text boxes
+    #item_ids.insert(skip_text_index, 0xFF)
+    # actually, just skip all the text
+    item_ids.insert(0, 0xFF)
+    # end
+    item_ids.append(0xFF)
+
+    item_id_strings = [f'${id:X}' for id in item_ids]
+    
+    return f"""
+PrecollectedItemIds:
+    db {", ".join(item_id_strings)}
+    """

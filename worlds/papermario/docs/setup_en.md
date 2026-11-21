@@ -2,8 +2,7 @@
 
 ## Required Software
 
-- [MultiworldGG](https://github.com/MultiworldGG/MultiworldGG/releases) v0.7.100 or higher. Make sure to install the
-  Generator. You will not be able to generate games with Paper Mario on the Archipelago site, only locally.
+- [MultiworldGG](https://github.com/MultiworldGG/MultiworldGG/releases) v0.7.100 or higher.
 - If you want to use Archipelago: [The Paper Mario AP World](https://github.com/icebound777/PMR_APWorld/). To download it, go to the [latest release](https://github.com/icebound777/PMR_APWorld/releases) and download the papermario.apworld file.
 - A legally obtained US 1.0 Paper Mario ROM.
 - Emulator

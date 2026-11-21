@@ -1,5 +1,6 @@
 #include "ap_item_names.h"
 
+#include "ap_items.h"
 #include "item_table.h"
 
 uint16_t AP_ITEM_NAME_OFFSETS[AP_ITEM_NAME_TABLE_SIZE] = { 0 };
@@ -16,7 +17,7 @@ static char* ap_item_names_fallback(uint16_t item_id) {
     if (item_id == GI_AP_PROGRESSION) {
         return AP_IMPORTANT_ITEM_FALLBACK;
     }
-    if (item_id == GI_AP_JUNK) {
+    if (item_id == GI_AP_JUNK || item_id == AP_FILLER_ITEM_ID) {
         return AP_FILLER_ITEM_FALLBACK;
     }
     return AP_ITEM_FALLBACK;

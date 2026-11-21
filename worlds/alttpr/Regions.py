@@ -10,13 +10,14 @@ from .ALttPDoorRandomizer.source.dungeon import EnemyList
 from .ALttPDoorRandomizer import PotShuffle
 from .ALttPDoorRandomizer import Regions as DoorRandomizerRegions
 from .ALttPDoorRandomizer.source.rom import DataTables
-from .RomAddresses import location_table_pot_items, location_table_sprite_items
+from .RomAddresses import location_table_pot_items
 from .StateAdapter import adapt_door_rando_rule
 
 if TYPE_CHECKING:
     from .World import ALttPRWorld
 
 
+location_table_sprite_items = {}
 location_name_to_id = {}
 lookup_id_to_name = {}
 lookup_name_to_id = {}
@@ -463,12 +464,17 @@ def get_event_locations(world: ALttPRWorld):
 
 # Add info on all locations to lookup_id_to_name and lookup_name_to_id.
 # This is used by the client to send items we pick up.
-def init_lookups():
+# enemy_map is a dict of {room_id: dict[index, EnemySprite]}. It's needed with enemy shuffle because overlord sprites,
+# mainly Wallmasters, don't use up space when mapping enemies to memory addresses. Enemy shuffle throws off all the memory
+# lookups for checks.
+def init_lookups(enemy_map=None):
     global lookup_id_to_name
     global lookup_name_to_id
+    global location_table_sprite_items
 
     lookup_id_to_name = {x: y for x, y in DoorRandomizerRegions.lookup_id_to_name.items()}
     lookup_name_to_id = {x: y for x, y in DoorRandomizerRegions.lookup_name_to_id.items()}
+    location_table_sprite_items = {}
 
     for event in DoorRandomizerRegions.location_events:
         lookup_name_to_id[event] = None
@@ -486,11 +492,27 @@ def init_lookups():
                 location_id = DoorRandomizerRegions.pot_address(pot_index, super_tile)
                 lookup_name_to_id[loc_name] = location_id
                 lookup_id_to_name[location_id] = loc_name
+
     uw_table = DataTables.get_uw_enemy_table()
     key_drop_data = {(v[1][1], v[1][2]): k for k, v in PotShuffle.key_drop_data.items() if v[0] == 'Drop'}
     for super_tile, enemy_list in uw_table.room_map.items():
         index_adj = 0
         for index, sprite in enumerate(enemy_list):
+            if enemy_map:
+                # Stupid slot data turning all the numbers into strings
+                if str(super_tile) in enemy_map and str(index) in enemy_map[str(super_tile)]:
+                    new_sprite = enemy_map[str(super_tile)][str(index)]
+                    if sprite.kind != new_sprite and new_sprite in EnemyList.sprite_translation:
+                        # An enemy has been shuffled. 0x09 is the ID for Moldorm, but enemy_shuffle will create Wallmasters with ID 0x09.
+                        # If I change it to 0x90, the correct ID, the ROM crashes when entering a room with a Wallmaster.
+                        # Absolutely no idea what's going on.
+                        if new_sprite == EnemyList.EnemySprite.Wallmaster or new_sprite == 0x09:
+                            # Other overlord sprites should never change
+                            sprite.sub_type = 0x07  # Overlord
+                        elif sprite.kind == EnemyList.EnemySprite.Wallmaster or sprite.kind == 0x09:
+                            sprite.sub_type = 0x00
+                        sprite.kind = new_sprite
+
             if sprite.sub_type == 0x07:  # overlord
                 index_adj += 1
                 continue

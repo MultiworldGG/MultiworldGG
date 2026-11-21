@@ -157,20 +157,37 @@
 # Add behavior to bomb upgrade and bombchus,
 # given that in vanilla, bombchus is always max 99 and bombs upgrades do nothing
 # This overwrites the part where getting items remove items (44cd - 44e2) : $15 bytes
-3f/44cd/: |
-  push bc
+3f/44ce/: |
+  call handleSpecialTreasures
+  jp $44dd
+
+3f//handleSpecialTreasures: |
+  cp TREASURE_UNLOCK
+  jr nz,@notUpgrade
+  ld e,$16 ; Move to a different bank to save space on 3f, the second best bank
+  ld hl,handleUnlockTreasure
+  jp interBankCall
+  @notUpgrade:
   ld hl,bombUpgradeTable
   call $44f0 ; @findItemInTable
-  jr z,@end
+  ret z
   
+  ; Upgrade bomb count
   ld h,c
-  call upgradeBombBombchus
+  ld l,a
+  ld a,(hl)
+  cp $20
+  ld (hl),$20
+  jr c,@end
+  cp $50
+  ld (hl),$50
+  jr c,@end
+  ld (hl),$99
+  @end:
   ld a,(hl)
   dec l ; current item count
   ld (hl),a
-
-  @end:
-  pop bc
+  ret
 
 3f//bombUpgradeTable: |
   db TREASURE_BOMB_UPGRADE
@@ -178,15 +195,3 @@
   db TREASURE_BOMBCHU_UPGRADE
   dw wMaxBombchus
   db $00
-
-3f//upgradeBombBombchus: |
-  ld l,a
-  ld a,(hl)
-  cp $20
-  ld (hl),$20
-  ret c
-  cp $50
-  ld (hl),$50
-  ret c
-  ld (hl),$99
-  ret

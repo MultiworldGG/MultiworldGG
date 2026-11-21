@@ -16,10 +16,10 @@ enemy_list = {
     0x001: EnemyData(0x001, "Red Koopa, no shell", 10, (0,0), ["ground"], ["ground", "bounceable", "upsidedown pipe", "stay on ledge"]),
     0x002: EnemyData(0x002, "Blue Koopa, no shell", 5, (0,0), ["ground"], ["ground", "bounceable", "upsidedown pipe", "stay on ledge"]),
     0x003: EnemyData(0x003, "Yellow Koopa, no shell", 5, (0,0), ["ground"], ["ground", "bounceable", "upsidedown pipe"]),
-    0x004: EnemyData(0x004, "Green Koopa", 20, (0,0), ["ground"], ["ground", "kickable", "bounceable", "upsidedown pipe"]),
-    0x005: EnemyData(0x005, "Red Koopa", 20, (0,0), ["ground"], ["ground", "kickable", "bounceable", "upsidedown pipe", "stay on ledge"]),
-    0x006: EnemyData(0x006, "Blue Koopa", 10, (0,0), ["ground"], ["ground", "kickable", "bounceable", "upsidedown pipe", "stay on ledge"]),
-    0x007: EnemyData(0x007, "Yellow Koopa", 10, (0,0), ["ground"], ["ground", "kickable", "bounceable", "upsidedown pipe"]),
+    0x004: EnemyData(0x004, "Green Koopa", 20, (0,0), ["ground"], ["ground", "kickable", "bounceable", "upsidedown pipe", "koopa"]),
+    0x005: EnemyData(0x005, "Red Koopa", 20, (0,0), ["ground"], ["ground", "kickable", "bounceable", "upsidedown pipe", "stay on ledge", "koopa"]),
+    0x006: EnemyData(0x006, "Blue Koopa", 10, (0,0), ["ground"], ["ground", "kickable", "bounceable", "upsidedown pipe", "stay on ledge", "koopa"]),
+    0x007: EnemyData(0x007, "Yellow Koopa", 10, (0,0), ["ground"], ["ground", "kickable", "bounceable", "upsidedown pipe", "koopa"]),
     0x008: EnemyData(0x008, "Green Koopa, flying left", 20, (0,0), ["flying"], ["floating", "flying"]),
     0x009: EnemyData(0x009, "Green bouncing Koopa (Y&1)", 15, (0,0), ["ground"], ["ground", "kickable", "bounceable", "ambush small", "bouncing koopa"]),
     0x00A: EnemyData(0x00A, "Red vertical flying Koopa", 20, (0,0), ["flying"], ["flying", "floating"]),
@@ -59,10 +59,10 @@ enemy_list = {
     0x0C1: EnemyData(0x0C1, "Flying grey turnblocks, first up/down (X&1)", 20, (0,0), ["skip"], ["skip"]),
     0x0C7: EnemyData(0x0C7, "Invisible mushroom", 20, (0,0), ["skip"], ["skip"]),
     0x0C8: EnemyData(0x0C8, "Light switch block for dark room", 20, (0,0), ["skip"], ["skip"]),
-    0x0DA: EnemyData(0x0DA, "Green Koopa shell", 4, (0,0), ["ground"], ["ground"]),
-    0x0DB: EnemyData(0x0DB, "Red Koopa shell", 2, (0,0), ["ground"], ["ground"]),
-    0x0DC: EnemyData(0x0DC, "Blue Koopa shell", 1, (0,0), ["ground"], ["ground"]),
-    0x0DD: EnemyData(0x0DD, "Yellow Koopa shell", 1, (0,0), ["ground"], ["ground"]),
+    0x0DA: EnemyData(0x0DA, "Green Koopa shell", 4, (0,0), ["ground"], ["ground", "shell"]),
+    0x0DB: EnemyData(0x0DB, "Red Koopa shell", 2, (0,0), ["ground"], ["ground", "shell"]),
+    0x0DC: EnemyData(0x0DC, "Blue Koopa shell", 1, (0,0), ["ground"], ["ground", "shell"]),
+    0x0DD: EnemyData(0x0DD, "Yellow Koopa shell", 1, (0,0), ["ground"], ["ground", "shell"]),
     0x0DF: EnemyData(0x0DF, "Green shell, won't use Special World color", 1, (0,0), ["ground"], ["ground"]),
     0x00D: EnemyData(0x00D, "Bob-omb", 20, (0,0), ["ground"], ["ground", "shooter", "ambush small", "bounceable"]),
     0x011: EnemyData(0x011, "Buzzy Beetle", 15, (0,0), ["ground"], ["ground", "kickable", "bounceable"]),
@@ -249,6 +249,8 @@ tag_list = {
     "mega mole": [],
     "stay on ledge": [],
     "force fish": [],
+    "shell": [],
+    "koopa": [],
 }
 
 SPRITE_POINTERS_ADDR = 0x2EC00
@@ -262,6 +264,13 @@ enemy_list_special_cases = {
     #},
     0x00D: {
         0x071: EnemyData(0x071, "Super Koopa, red cape, swoop", 20, (0,0), ["skip"], ["skip"]),
+        0x0DA: EnemyData(0x0DA, "Green Koopa shell", 4, (0,0), ["shell"], ["shell"]),
+        0x0DB: EnemyData(0x0DB, "Red Koopa shell", 2, (0,0), ["shell"], ["shell"]),
+        0x0DC: EnemyData(0x0DC, "Blue Koopa shell", 1, (0,0), ["shell"], ["shell"]),
+        0x0DD: EnemyData(0x0DD, "Yellow Koopa shell", 1, (0,0), ["shell"], ["shell"]),
+    },
+    0x105: {
+        0x0C5: EnemyData(0x0C5, "Big Boo Boss", 20, (0,0), ["shell"], ["skip"]),
     },
     0x10B: {
         0x0A1: EnemyData(0x0A1, "Bowser's bowling ball", 20, (0,0), ["kickable"], ["skip"]),
@@ -269,6 +278,8 @@ enemy_list_special_cases = {
         0x008: EnemyData(0x008, "Green Koopa, flying left", 20, (0,0), ["flying"], ["floating", "flying", "flying koopa"]),
         0x00A: EnemyData(0x00A, "Red vertical flying Koopa", 20, (0,0), ["flying"], ["flying", "floating", "flying koopa"]),
         0x00B: EnemyData(0x00B, "Red horizontal flying Koopa", 20, (0,0), ["flying"], ["flying", "floating", "flying koopa"]),
+        0x005: EnemyData(0x005, "Red Koopa", 20, (0,0), ["ground"], ["ground", "bounceable", "upsidedown pipe", "stay on ledge"]),
+        0x006: EnemyData(0x006, "Blue Koopa", 10, (0,0), ["ground"], ["ground", "bounceable", "upsidedown pipe", "stay on ledge"]),
     },
     0x134: {
         0x008: EnemyData(0x008, "Green Koopa, flying left", 20, (0,0), ["flying"], ["floating", "flying", "flying koopa"]),
@@ -353,6 +364,7 @@ enemy_list_special_cases = {
         0x0C5: EnemyData(0x0C5, "Big Boo Boss", 20, (0,0), ["bouncing koopa"], ["skip"]),
     },
     0x11A: {
+        0x0DC: EnemyData(0x0DC, "Blue Koopa shell", 1, (0,0), ["skip"], ["skip"]),
         0x0B4: EnemyData(0x0B4, "Grinder, non-line-guided", 17, (0,0), ["ground"], ["skip"]),
         0x04F: EnemyData(0x04F, "Jumping Pirhana Plant", 20, (0,0), ["buried"], ["skip"]),
         0x050: EnemyData(0x050, "Jumping Pirhana Plant, spit fire", 20, (0,0), ["buried"], ["skip"]),
@@ -408,6 +420,7 @@ enemy_list_special_cases = {
         0x028: EnemyData(0x028, "Big Boo", 3, (0,3), ["skip"], ["skip"]),
         0x008: EnemyData(0x008, "Green Koopa, flying left", 20, (0,0), ["flying"], ["floating", "flying", "flying koopa"]),
         0x0A1: EnemyData(0x0A1, "Bowser's bowling ball", 20, (0,0), ["flying koopa"], ["skip"]),
+        0x0C5: EnemyData(0x0C5, "Big Boo Boss", 20, (0,0), ["koopa"], ["skip"]),
     },
     0x1F2: {
         0x0B6: EnemyData(0x0B6, "Reflecting fireball", 20, (0,0), ["boss enemy"], ["boss enemy"]),
@@ -458,7 +471,7 @@ enemy_list_special_cases = {
         0x0D5: EnemyData(0x0D5, "Bullet Bill, generator", 4, (0,0), ["generator"], ["boss enemy"]),
         0x0D6: EnemyData(0x0D6, "Bullet Bill surrounded, generator", 4, (0,0), ["generator"], ["boss enemy"]),
         0x0D7: EnemyData(0x0D7, "Bullet Bill diagonal, generator", 4, (0,0), ["generator"], ["boss enemy"]),
-        0x0AF: EnemyData(0x0AF, "Boo Block", 12, (0,0), ["skip"], ["boss enemy"]),
+        #0x0AF: EnemyData(0x0AF, "Boo Block", 12, (0,0), ["skip"], ["boss enemy"]),
         0x037: EnemyData(0x037, "Boo", 17, (0,0), ["floating"], ["boss enemy"]),
     },
     0x1EB: {
@@ -472,7 +485,7 @@ enemy_list_special_cases = {
         0x0D7: EnemyData(0x0D7, "Bullet Bill diagonal, generator", 4, (0,0), ["generator"], ["boss enemy"]),
         0x0D1: EnemyData(0x0D1, "Jumping fish, generator", 3, (0,0), ["generator"], ["boss enemy"]),
         0x0D3: EnemyData(0x0D3, "Super Koopa, generator", 20, (0,0), ["generator"], ["boss enemy"]),
-        0x0AF: EnemyData(0x0AF, "Boo Block", 12, (0,0), ["skip"], ["boss enemy"]),
+        #0x0AF: EnemyData(0x0AF, "Boo Block", 12, (0,0), ["skip"], ["boss enemy"]),
         0x0B0: EnemyData(0x0B0, "Reflecting stream of Boo Buddies", 10, (0,0), ["flying"], ["boss enemy"]),
         0x037: EnemyData(0x037, "Boo", 17, (0,0), ["floating"], ["boss enemy"]),
     },
@@ -758,8 +771,8 @@ enemy_list_special_cases = {
         0x0DB: EnemyData(0x0DB, "Red Koopa shell", 2, (0,0), ["skip"], ["skip"]),
     },
     0x006: {
-        0x0C5: EnemyData(0x0C5, "Big Boo Boss", 20, (0,0), ["kickable"], ["skip"]),
-        0x0A1: EnemyData(0x0A1, "Bowser's bowling ball", 20, (0,0), ["bounceable"], ["skip"]),
+        0x0C5: EnemyData(0x0C5, "Big Boo Boss", 20, (0,0), ["koopa"], ["skip"]),
+        0x0A1: EnemyData(0x0A1, "Bowser's bowling ball", 20, (0,0), ["kickable"], ["skip"]),
     },
     0x117: {
         0x011: EnemyData(0x011, "Buzzy Beetle", 15, (0,0), ["bounceable", "kickable"], ["ground", "kickable", "bounceable"]),
@@ -769,14 +782,21 @@ enemy_list_special_cases = {
         0x011: EnemyData(0x011, "Buzzy Beetle", 15, (0,0), ["bounceable", "kickable"], ["ground", "kickable", "bounceable"]),
     },
     0x010: {
-        0x0C5: EnemyData(0x0C5, "Big Boo Boss", 20, (0,0), ["kickable"], ["skip"]),
-        0x0A1: EnemyData(0x0A1, "Bowser's bowling ball", 20, (0,0), ["bounceable"], ["skip"]),
+        0x0C5: EnemyData(0x0C5, "Big Boo Boss", 20, (0,0), ["shell"], ["skip"]),
+        0x0A1: EnemyData(0x0A1, "Bowser's bowling ball", 20, (0,0), ["kickable"], ["skip"]),
+        0x04D: EnemyData(0x04D, "Ground dwelling Monty Mole, follow/hop (X&1)", 15, (0,0), ["floating", "buried", "ground"], ["floating", "buried", "kickable"]),
+        0x04E: EnemyData(0x04E, "Ledge dwelling Monty Mole, follow/hop (X&1)", 15, (0,0), ["floating"], ["kickable"]),
+        0x000: EnemyData(0x000, "Green Koopa, no shell", 10, (0,0), ["ground"], ["ground", "bounceable", "upsidedown pipe", "kickable"]),
+        0x001: EnemyData(0x001, "Red Koopa, no shell", 10, (0,0), ["ground"], ["ground", "bounceable", "upsidedown pipe", "stay on ledge", "kickable"]),
+        0x002: EnemyData(0x002, "Blue Koopa, no shell", 5, (0,0), ["ground"], ["ground", "bounceable", "upsidedown pipe", "stay on ledge", "kickable"]),
+        0x003: EnemyData(0x003, "Yellow Koopa, no shell", 5, (0,0), ["ground"], ["ground", "bounceable", "upsidedown pipe", "kickable"]),
     },
     0x125: {
         0x094: EnemyData(0x094, "Whistlin' Chuck, fish/Koopa (X&1)", 5, (0,0), ["ground", "generator"], ["ground"]),
     },
     0x12D: {
         0x00A: EnemyData(0x00A, "Red vertical flying Koopa", 20, (0,0), ["skip"], ["skip"]),
+        0x0A1: EnemyData(0x0A1, "Bowser's bowling ball", 20, (0,0), ["koopa"], ["skip"]),
     },
     0x0DC: {
         0x028: EnemyData(0x028, "Big Boo", 3, (0,3), ["floating"], ["floating", "flying", "ground", "water", "rotating", "buried", "shooter", "pipe", "upsidedown pipe"]),
@@ -813,6 +833,15 @@ enemy_list_special_cases = {
     0x00A: {
         0x0A1: EnemyData(0x0A1, "Bowser's bowling ball", 20, (0,0), ["force fish"], ["skip"]),
         0x016: EnemyData(0x016, "Fish, vertical", 20, (0,0), ["water"], ["water", "force fish"]),
+    },
+    0x119: {
+        0x0A1: EnemyData(0x0A1, "Bowser's bowling ball", 20, (0,0), ["koopa"], ["skip"]),
+    },
+    0x109: {
+        0x009: EnemyData(0x009, "Green bouncing Koopa (Y&1)", 15, (0,0), ["bouncing koopa"], ["bouncing koopa"]),
+    },
+    0x11E: {
+        0x0A1: EnemyData(0x0A1, "Bowser's bowling ball", 20, (0,0), ["koopa"], ["skip"]),
     }
 }
 
@@ -916,6 +945,22 @@ sw5_koopa_placements_2 = [
     0x03E396,
     0x03E39C,
 ]
+sw5_koopa_placements_3 = [
+    0x03E3C0,
+    0x03E3CC,
+]
+
+sz4_koopa_placements = [
+    0x03E54C,
+    0x03E549,
+    0x03E546,
+    0x03E543,
+    0x03E540,
+    0x03E53D,
+    0x03E53A,
+    0x03E537,
+    0x03E534,
+]
 
 dp1_koopa_placements = [
     0x03C6E8,
@@ -931,6 +976,20 @@ dp1_koopa_placements = [
     0x03C733,
     0x03C73F,
     0x03C742,
+]
+
+vd4_koopa_placements = [
+    0x03CD3B,
+    0x03CD41,
+]
+
+fi1_koopa_placements = [
+    0x03D310,
+    0x03D313,
+    0x03D316,
+    0x03D33A,
+    0x03D355,
+    0x03D379,
 ]
 
 def modify_sprite_data(rom: bytearray, seed: int) -> bytearray:
@@ -950,6 +1009,10 @@ def modify_sprite_data(rom: bytearray, seed: int) -> bytearray:
 
     # level 00D edits
     rom[0x03D304-20] = 0x71
+
+    # YI1 (105)
+    # Guarantees a koopa shell
+    rom[0x03C513+2] = 0xC5
 
     # DS2 (10B)
     # Guarantees a kickable sprite at the start
@@ -995,7 +1058,7 @@ def modify_sprite_data(rom: bytearray, seed: int) -> bytearray:
         rom[offset+2] = 0xC5
 
     # Star World 5 (136)
-    # Guarantees some flying koopas
+    # Guarantees some flying koopas and a koopa at the end
     guaranteed_koopas = random.randint(1, 2)
     rom_offsets = random.choices(sw5_koopa_placements_1, k=guaranteed_koopas)
     for offset in rom_offsets:
@@ -1004,6 +1067,8 @@ def modify_sprite_data(rom: bytearray, seed: int) -> bytearray:
     rom_offsets = random.choices(sw5_koopa_placements_2, k=guaranteed_koopas)
     for offset in rom_offsets:
         rom[offset+2] = 0xA1
+    offset = random.choice(sw5_koopa_placements_3)
+    rom[offset+2] = 0xC5
 
     # Star World 1 (135)
     rom[0x03E2C5+1] = 0x94
@@ -1017,9 +1082,19 @@ def modify_sprite_data(rom: bytearray, seed: int) -> bytearray:
     for offset in rom_offsets:
         rom[offset+2] = 0xA1
 
+    # Awesome (12D)
+    # Guarantees one blue koopa
+    offset = random.choice(sz4_koopa_placements)
+    rom[offset+2] = 0xA1
+
     # YI3 (103)
     # Guarantees one blue koopa
     offset = random.choice(yi3_koopa_placements)
+    rom[offset+2] = 0xA1
+
+    # VD4 (119)
+    # Guarantees one koopa
+    offset = random.choice(vd4_koopa_placements)
     rom[offset+2] = 0xA1
 
     # DP1 (015)
@@ -1039,6 +1114,11 @@ def modify_sprite_data(rom: bytearray, seed: int) -> bytearray:
     rom[0x03E5C3+1] = 0x6F
 
     rom[0x03E575+2] = 0xA1
+
+    # FI1 (11E)
+    # Guarantees a koopa anywhere in the level
+    offset = random.choice(fi1_koopa_placements)
+    rom[offset+2] = 0xA1
 
     # DP2 (009)
     # Guarantees a kickable enemy before pipe

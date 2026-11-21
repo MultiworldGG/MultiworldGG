@@ -105,7 +105,10 @@ class UpgradeCounts(OptionCounter):
     This option and upgrade_maxima let you directly change the number of items and the maximum %s.
     The minimum %s cannot be changed from 50% because any less would make locations unreachable and affect logic.
     The effect of each individual upgrade item is indirectly determined by these options. For example, if you choose
-    5 boost upgrades and a maximum boost of 550%, then each boost upgrade item will add 100% to your boost."""
+    5 boost upgrades and a maximum boost of 550%, then each boost upgrade item will add 100% to your boost.
+
+    If you choose 0 of an upgrade, the vanilla stat will no longer be changed, i.e. you'll start at 100% and stay there.
+    """
     schema = Schema({
         Optional("Oxygen Capacity Upgrade"): lambda n: n >= 0,
         Optional("Fuel Capacity Upgrade"): lambda n: n >= 0,
@@ -169,7 +172,12 @@ class ShuffleSpacesuit(Toggle):
 
 class RandomizeDarkBrambleLayout(Choice):
     """Randomizes which Dark Bramble 'rooms' link to which other rooms, so you can't rely on your memory of the vanilla layout.
-    Be aware that randomized layouts are often significantly harder to navigate than vanilla Dark Bramble, since they allow several paths to the same room and more complex loops / recursion.
+
+    Be aware that randomized layouts are often significantly harder to navigate than vanilla Dark Bramble.
+    There may be several paths to the same area, you may need to "back out" of one area before seeing the
+    waypoint/signal/etc you want to follow, there may be more complex loops than the vanilla game's
+    single recursive node, some waypoints/signals/etc may be misleading because of those loops, and so on.
+
     'hub_start' forces the first room to be Hub (same as the vanilla game), which tends to generate shorter and simpler paths than full randomization."""
     display_name = "Randomize Dark Bramble Layout"
     option_false = 0
@@ -224,12 +232,16 @@ class Spawn(Choice):
 
 class EarlyKeyItem(Choice):
     """
-    Ensure that one of Translator, Nomai Warp Codes, Launch Codes, or Stranger Light Modulator will be somewhere
-    in sphere 1 and in your own world, guaranteeing you can find it without waiting on other players.
+    Ensure that one of Translator, Nomai Warp Codes, Launch Codes, Stranger Light Modulator or Interstellar Warp Drive
+    will be somewhere in sphere 1 and in your own world, guaranteeing you can find it without waiting on other players.
 
-    `any` will randomly select one of these items that's relevant to your spawn (especially useful with `spawn: random`).
-    For base game spawns it will choose Translator, NWC or LC, and for stranger spawns it will choose LC or SLM.
-    If split_translator is also on, then "Translator" means the one for your spawn planet.
+    `any` will randomly select one of these items, but only one that's "relevant" given your other options.
+    Launch Codes and Interstellar Warp Drive are always relevant.
+    Translator is relevant for every `spawn` except `stranger`. If split_translator is also on,
+    then "Translator" means whichever translator applies to that spawn.
+    Nomai Warp Codes are relevant if `spawn` is any vanilla system planet with a warp platform.
+    Stranger Light Modulator is only relevant if `spawn` is `stranger`.
+    Signalscope is only relevant if `spawn` is `deep_bramble`.
 
     Recommended for games with non-vanilla spawns, especially async games.
     In addition, without this AP seems to almost always put Launch Codes in sphere 1, so `any` also helps increase variety.
@@ -241,6 +253,8 @@ class EarlyKeyItem(Choice):
     option_nomai_warp_codes = 3
     option_launch_codes = 4
     option_stranger_light_modulator = 5
+    option_signalscope = 6
+    option_interstellar_warp_drive = 7
 
 
 class RandomizeWarpPlatforms(Toggle):

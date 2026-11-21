@@ -1,14 +1,15 @@
 import os
+from collections.abc import Mapping
 from threading import Event
 from typing import Any, ClassVar, TextIO, cast
 
-from BaseClasses import CollectionState, Item, Location, MultiWorld
+from BaseClasses import CollectionRule, CollectionState, Entrance, Item, Location, MultiWorld, Region
 from Options import Option
-from rule_builder.rules import Has
+from rule_builder.rules import Rule
 from worlds.AutoWorld import World
 
 from .common.Util import build_item_name_to_id_dict, build_location_name_to_id_dict
-from .data.Constants import (
+from .data.constants import (
     DEFAULT_SEASONS,
     DUNGEON_CONNECTIONS,
     ESSENCES,
@@ -23,8 +24,9 @@ from .data.Constants import (
     SEASON_NAMES,
     VANILLA_SHOP_PRICES,
 )
-from .data.items import ITEMS_DATA
+from .data.items import ITEMS_DATA, ItemName
 from .data.locations import LOCATIONS_DATA
+from .data.regions import RegionName
 from .options import OracleOfSeasonsOptions
 from .settings import OracleOfSeasonsSettings
 from .web_world import OracleOfSeasonsWeb
@@ -50,7 +52,7 @@ class OracleOfSeasonsWorld(World):
     item_name_to_id = build_item_name_to_id_dict(ITEMS_DATA)
     item_name_groups = ITEM_GROUPS
     location_name_groups = LOCATION_GROUPS
-    origin_region_name = "impa's house"
+    origin_region_name = RegionName.impas_house
     item_mapping: ClassVar[dict[str, str]] = {
         "Rupees (1)": "Rupees",
         "Rupees (5)": "Rupees",
@@ -85,8 +87,8 @@ class OracleOfSeasonsWorld(World):
         self.prog_pre_fill_items: list[Item] = []
         self.nonprog_pre_fill_items: list[Item] = []
         self.default_seasons: dict[str, int] = DEFAULT_SEASONS.copy()
-        self.dungeon_entrances: dict[str, str] = DUNGEON_CONNECTIONS.copy()
-        self.portal_connections: dict[str, str] = PORTAL_CONNECTIONS.copy()
+        self.dungeon_entrances: Mapping[RegionName, RegionName] = DUNGEON_CONNECTIONS
+        self.portal_connections: Mapping[RegionName, RegionName] = PORTAL_CONNECTIONS
         self.lost_woods_item_sequence: list[list] = LOST_WOODS_ITEM_SEQUENCE.copy()
         self.lost_woods_main_sequence: list[list] = LOST_WOODS_MAIN_SEQUENCE.copy()
         self.old_man_rupee_values: dict[str, int] = OLD_MAN_RUPEE_VALUES.copy()
@@ -107,29 +109,52 @@ class OracleOfSeasonsWorld(World):
         self.item_hints: list[Item | None] = []
         self.num_prog: int = 1  # initialized at 1 so that before pre_fill, any prog counts as all the progs
 
+        self.region_replacement: dict[RegionName, RegionName] = {}
+
         self.inventory_locations: list[Location] | None = None
         self.nothing_items: list[Item] | None = None
 
     def generate_early(self) -> None:
-        from .generation.GenerateEarly import generate_early
+        from .generation.generate_early import generate_early
 
         generate_early(self)
 
-    def create_regions(self) -> None:
-        from .generation.create_regions import create_regions
+    def create_entrance(
+        self,
+        from_region: Region,
+        to_region: Region,
+        rule: CollectionRule | Rule[Any] | None = None,
+        name: str | None = None,
+        force_creation: bool = False,
+    ) -> Entrance | None:
+        # We want to run it with pre-resolved rules, which is not handled by core
+        if isinstance(rule, Rule.Resolved):
+            if rule.always_false and not force_creation:
+                return None
+            self.register_rule_dependencies(rule)
+        return super().create_entrance(from_region, to_region, rule, name, force_creation)
 
-        create_regions(self)
+    def create_regions(self) -> None:
+        from .generation.create_rules import create_connections
+        from .generation.locations import exclude_locations_automatically
+
+        create_connections(self)
+        exclude_locations_automatically(self)
+
+    def get_region(self, region_name: str) -> Region:
+        if region_name in self.region_replacement:
+            region_name = self.region_replacement[region_name]
+        return super().get_region(region_name)
 
     def set_rules(self) -> None:
-        from .generation.logic import apply_rule_forbiddance, apply_self_locking_rules, create_connections
+        from .generation.logic import apply_rule_forbiddance, apply_self_locking_rules
 
-        create_connections(self, self.options)
         apply_self_locking_rules(self)
         apply_rule_forbiddance(self)
-        self.set_completion_rule(Has("_beaten_game"))
 
     def create_item(self, name: str) -> Item:
         from .generation.create_items import create_item
+
         return create_item(self, name)
 
     def create_items(self) -> None:
@@ -164,8 +189,12 @@ class OracleOfSeasonsWorld(World):
             "Gasha Seed",
             "Potion",
             "Bombs (10)",
-            "Bombchus (10)",
         ]
+
+        if self.options.linked_items:
+            filler_item_names.append(ItemName.bombchus_10)
+        else:
+            filler_item_names.append(ItemName.bombs_10)
 
         item_name = self.random.choice(filler_item_names)
         if item_name == "Random Ring":
@@ -178,7 +207,7 @@ class OracleOfSeasonsWorld(World):
         return self.get_filler_item_name()  # It might loop but not enough to really matter
 
     def connect_entrances(self) -> None:
-        from .generation.ER import oos_randomize_entrances
+        from .generation.entrance_rando import oos_randomize_entrances
 
         oos_randomize_entrances(self)
 
@@ -215,6 +244,7 @@ class OracleOfSeasonsWorld(World):
                 nothing_item.code = None
 
                 if inventory_item.advancement:
+                    inventory_item.location = None
                     self.multiworld.push_precollected(inventory_item)
                     new_filler = self.create_filler()
                     empty_location.item = new_filler
@@ -247,11 +277,7 @@ class OracleOfSeasonsWorld(World):
         slot_data = {
             "version": f"{self.version()}",
             "options": self.options.as_dict(
-                *[
-                    option_name
-                    for option_name in options
-                    if hasattr(options[option_name], "include_in_slot_data")
-                ]
+                *[option_name for option_name in options if hasattr(options[option_name], "include_in_slot_data")]
             ),
             # "samasa_gate_sequence": ' '.join([str(x) for x in self.samasa_gate_code]),
             "lost_woods_item_sequence": self.lost_woods_item_sequence,
@@ -281,7 +307,7 @@ class OracleOfSeasonsWorld(World):
         return slot_data
 
     def write_spoiler(self, spoiler_handle: TextIO):
-        from .generation.create_regions import location_is_active
+        from .generation.locations import location_is_active
 
         spoiler_handle.write(f"\n\nDefault Seasons ({self.multiworld.player_name[self.player]}):\n")
         for region_name, season in self.default_seasons.items():

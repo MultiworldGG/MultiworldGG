@@ -46,8 +46,6 @@ from .LogicHelpers import (
     #CanReenterVerticalPipes,
 )
 
-from ...options import OpenPrologue
-
 gusty_gulch_regions: list[Dict[str, str | Dict[str, Rule | None]]] = [
     {
         "region_name": "GG Wasteland Ascent 1 West",

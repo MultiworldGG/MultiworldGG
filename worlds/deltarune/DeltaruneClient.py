@@ -19,7 +19,7 @@ from MultiServer import mark_raw, Context, Client, Endpoint
 from Utils import async_start, logging
 from worlds.deltarune.LinuxProxy import encode, proxy, proxy_loop
 
-ap_world_version = "v2.3.0+hotfix1"
+ap_world_version = "v2.3.1+hotfix1"
 deltarune_mod_github = "https://github.com/Tenebrosful/DeltaruneAP-mod/releases"
 
 DEBUG = True
@@ -140,25 +140,6 @@ class DeltaruneCommandProcessor(ClientCommandProcessor):
                 for data in self.ctx.stored_data:
                     self.output(f"{data}: {self.ctx.stored_data[data]}")
 
-    def _cmd_chosen_route(self):
-        """Use this to figure out your chosen route, if you don't know or have forgotten."""
-        if isinstance(self.ctx, DeltaruneContext):
-            if self.ctx.chosen_route == "all_recruits":
-                self.output("""You're doing "All Recruits" - Progress through the story normally. Recruit Everyone!!!
-Gaining recruits has been turned into checks.""")
-            elif self.ctx.chosen_route == "weird_route":
-                self.output(
-                    """You're doing "Weird Route" - Proceed through the "Weird Route" storyline while losing all possible recruits.
-Losing recruits has been turned into checks."""
-                )
-            elif self.ctx.chosen_route == "all_routes":
-                self.output(
-                    """You're doing "All Routes" - All checks from doing both the normal and weird route storylines exist.
-Both gaining and losing recruits have been turned into checks."""
-                )
-            else:
-                self.output("You'll need to connect to a Multiworld, first.")
-
     @mark_raw
     async def _cmd_auto_patch(self, path: typing.Optional[str] = None):
         """Patch the game automatically."""
@@ -267,6 +248,8 @@ Both gaining and losing recruits have been turned into checks."""
 
 class DeltaruneContext(SuperContext):
     tags = {"TextOnly"}
+    if tracker_loaded:
+        tags.add("Tracker")
     game = "DELTARUNE"
     command_processor = DeltaruneCommandProcessor
     items_handling = 0b111

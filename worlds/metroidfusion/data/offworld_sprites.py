@@ -158,7 +158,10 @@ offworld_sprites: dict[str, dict[str, SpriteNames]] = {
         "Progressive Power Beam": SpriteNames.ChargeBeam,
         "Progressive Ice Beam": SpriteNames.IceBeam,
         "Progressive Wave Beam": SpriteNames.WaveBeam,
-        "Progressive Plasma Beam": SpriteNames.PlasmaBeam
+        "Progressive Plasma Beam": SpriteNames.PlasmaBeam,
+        "Progressive Bomb": SpriteNames.Bombs,
+        "Unlimited Missiles": SpriteNames.ShinyMissileTank,
+        "Unlimited Power Bombs": SpriteNames.ShinyPowerBombTank
     },
     "Super Metroid Map Rando": {
         "ETank": SpriteNames.EnergyTank,

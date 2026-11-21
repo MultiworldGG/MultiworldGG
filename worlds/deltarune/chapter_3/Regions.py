@@ -80,7 +80,12 @@ def create_regions(world: "DeltaruneWorld"):
     board_1.connect(green_room)
     board_1.connect(sword_1, rule=Has(items[ItemIDs.odd_controller]))
 
-    green_room.connect(board_2, rule=Has(items[ItemIDs.board_2_cartridge]))
+    green_room.connect(board_2, 
+        rule=(
+            Has(items[ItemIDs.board_2_cartridge])
+            | Has(items[ItemIDs.progressive_ch3_area_unlock], 1)
+        )
+    )
 
     # Require all characters for Turning off Zapper during Doom Board
     board_2.connect(
@@ -90,7 +95,13 @@ def create_regions(world: "DeltaruneWorld"):
     )
     board_2.connect(sword_2, rule=Has(items[ItemIDs.ice_key]) & Has(items[ItemIDs.odd_controller]))
 
-    doom_board.connect(tv_world, rule=Has(items[ItemIDs.vip_pass]))
+    doom_board.connect(
+        tv_world, 
+        rule=(
+            Has(items[ItemIDs.vip_pass])
+            | Has(items[ItemIDs.progressive_ch3_area_unlock], 2)
+        )
+    )
 
     tv_world.connect(
         sword_3,

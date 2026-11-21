@@ -266,6 +266,11 @@ class CustomSettings(object):
     def get_prices(self, player):
         return self.get_attribute_by_player_composite('prices', player)
 
+    def get_prizes(self):
+        if 'prizes' in self.file_source:
+            return self.file_source['prizes']
+        return None
+
     def get_advanced_placements(self):
         if 'advanced_placements' in self.file_source:
             return self.file_source['advanced_placements']
@@ -314,6 +319,11 @@ class CustomSettings(object):
     def get_rooms(self):
         if 'rooms' in self.file_source:
             return self.file_source['rooms']
+        return None
+
+    def get_sprite_sheets(self):
+        if 'sprite-sheets' in self.file_source:
+            return self.file_source['sprite-sheets']
         return None
 
     def get_custom_rooms(self, player):
@@ -386,11 +396,6 @@ class CustomSettings(object):
     def get_drops(self):
         if 'drops' in self.file_source:
             return self.file_source['drops']
-        return None
-
-    def get_sprite_sheets(self):
-        if 'sprite_sheets' in self.file_source:
-            return self.file_source['sprite_sheets']
         return None
 
     def get_enemies(self):
@@ -535,8 +540,13 @@ class CustomSettings(object):
             settings_dict[p]['beemizer'] = world.beemizer[p]
             settings_dict[p]['aga_randomness'] = world.aga_randomness[p]
             settings_dict[p]['money_balance'] = world.money_balance[p]
+            settings_dict[p]['bosses_ganon'] = world.bosses_ganon[p]
+            settings_dict[p]['bosshunt_include_agas'] = world.bosshunt_include_agas[p]
             settings_dict[p]['crystal_book'] = world.crystal_book[p]
+            settings_dict[p]['extra_keys'] = world.extra_keys[p]
             settings_dict[p]['free_lamp_cone'] = world.free_lamp_cone[p]
+            settings_dict[p]['ganon_item'] = world.ganon_item[p]
+            settings_dict[p]['require_ganon_item'] = world.require_ganon_item[p]
             if world.precollected_items:
                 start_inv[p] = []
         for item in world.precollected_items:
@@ -560,6 +570,7 @@ class CustomSettings(object):
         self.world_rep['meta']['seed'] = world.seed
         self.world_rep['bosses'] = bosses = {}
         self.world_rep['medallions'] = medallions = {}
+        self.world_rep['prizes'] = prizes = {}
         for p in self.player_range:
             bosses[p] = {}
             medallions[p] = {}
@@ -568,6 +579,8 @@ class CustomSettings(object):
                 location = dungeon.name if level is None else f'{dungeon.name} ({level})'
                 if boss and 'Agahnim' not in boss.name:
                     bosses[dungeon.player][location] = boss.name
+            if dungeon.prize:
+                prizes[dungeon.name] = dungeon.prize.name
         for p, req_medals in world.required_medallions.items():
             medallions[p]['Misery Mire'] = req_medals[0]
             medallions[p]['Turtle Rock'] = req_medals[1]
@@ -759,7 +772,7 @@ class CustomSettings(object):
     def record_enemies(self, world):
         self.world_rep['enemies'] = enemies_data = {}
         for p in self.player_range:
-            enemies_data[p] = {"Overworld": {}, "Underworld": {}}
+            enemies_data[p] = {"Overworld": {}, "Underworld": {}, "UW-Sprite-Sheet": {}}
 
         for player in self.player_range:
             ow_enemy_table = world.data_tables[player].ow_enemy_table
@@ -775,6 +788,9 @@ class CustomSettings(object):
                 for i in range(len(enemies)):
                     if enemies[i].kind in enemy_names:
                         enemies_data[player]["Underworld"][room_id][i] = enemies[i].kind
+
+            for num in range(0, 128):
+                enemies_data[player]["UW-Sprite-Sheet"][num] = world.data_tables[player].sprite_sheets[num].sub_groups
 
     def write_to_file(self, destination):
         yaml.add_representer(defaultdict, Representer.represent_dict)

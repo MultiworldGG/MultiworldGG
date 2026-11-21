@@ -1,4 +1,4 @@
-import random
+from Options import Option
 
 girllist = (
     "tiffany",
@@ -743,7 +743,7 @@ def rand_girl_data(options, random):
     for girl in girllist:
         outdict[girl] = {}
 
-        if options.randomize_girl_gifts.value!=0:
+        if options.randomize_girl_gifts.value!=0 and not options.disable_girl_gifts.value:
             t = random.sample(giftlist,24)
             outdict[girl]["gift1"] = t[0]
             outdict[girl]["gift2"] = t[1]

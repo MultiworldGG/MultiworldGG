@@ -19,7 +19,9 @@ from worlds.deltarune.Rules import (
     have_kris_and_susie,
     have_susie,
     can_recruit_guei,
-    nohit_logic,
+    nohit_easy_logic,
+    nohit_hard_logic,
+    nohit_extreme_logic,
     speedrun_glitch_logic,
 )
 from worlds.deltarune.Items import items, ItemIDs, glitched_item_name
@@ -67,24 +69,26 @@ def create_regions(world: "DeltaruneWorld"):
 
     castle_town.connect(dojo)
     # Require at least one character until you go for no-hit
-    castle_town.connect(mike_room, rule=have_kris_susie_or_ralsei | nohit_logic)
+    castle_town.connect(mike_room, rule=have_kris_susie_or_ralsei | nohit_hard_logic)
     # Require at least one character for Guei fight
     castle_town.connect(
         dark_sanctuary,
         rule=have_kris_susie_or_ralsei,
     )
 
-    knight_climb = have_kris | nohit_logic
+    knight_climb = have_kris | nohit_easy_logic
 
     # If you get the claimbclaws, you can recreate a save to skip Dark Sanctuary but require Kris or Susie for Wingblade fight.
     castle_town.connect(
         second_sanctuary,
-        rule=Has(items[ItemIDs.claimbclaws]) & knight_climb & have_kris_or_susie & speedrun_glitch_logic,
+        rule=(Has(items[ItemIDs.claimbclaws]) | Has(items[ItemIDs.progressive_ch4_area_unlock], 1))
+        & knight_climb & have_kris_or_susie & speedrun_glitch_logic,
     )
     # If you can go to the Second Sanctuary with the previous rule, then you can Wrong Warp to skip Second Sanctuary
     castle_town.connect(
         third_sanctuary,
-        rule=Has(items[ItemIDs.claimbclaws]) & knight_climb & speedrun_glitch_logic,
+        rule=(Has(items[ItemIDs.claimbclaws]) | Has(items[ItemIDs.progressive_ch4_area_unlock], 1))
+        & knight_climb & speedrun_glitch_logic,
     )
     # However, you can return later with everyone, so ralsei can be there instead
     third_sanctuary.connect(second_sanctuary, rule=have_kris_susie_or_ralsei)
@@ -94,21 +98,24 @@ def create_regions(world: "DeltaruneWorld"):
     third_sanctuary.connect(dark_sanctuary)
 
     dark_sanctuary.connect(old_man_shop)
-    dark_sanctuary.connect(dark_sanctuary_claimbclaws, rule=Has(items[ItemIDs.claimbclaws]))
+    dark_sanctuary.connect(dark_sanctuary_claimbclaws, 
+        rule=Has(items[ItemIDs.claimbclaws]) | Has(items[ItemIDs.progressive_ch4_area_unlock], 1)
+    )
 
     # Require Kris for Knight climb, require Susie for Sound of Justice
     # You can't leave second sanctuary once you enter unless you can beat SoJ so we put the block before
     dark_sanctuary_claimbclaws.connect(
         second_sanctuary,
-        rule=Has(items[ItemIDs.sheetmusic]) & knight_climb & (have_kris_and_susie | Has(glitched_item_name)),
+        rule=(Has(items[ItemIDs.sheetmusic]) | Has(items[ItemIDs.progressive_ch4_area_unlock], 2))
+        & knight_climb & (have_kris_and_susie | Has(glitched_item_name)),
     )
-    dark_sanctuary_claimbclaws.connect(gerson, rule=have_kris & (have_susie | nohit_logic)) # Kris needs to beat jack first if you don't skip dark sanctuary
+    dark_sanctuary_claimbclaws.connect(gerson, rule=have_kris & (have_susie | nohit_extreme_logic)) # Kris needs to beat jack first if you don't skip dark sanctuary
 
     second_sanctuary.connect(second_sanctuary_post_wicabel, rule=have_kris)
 
     second_sanctuary_post_wicabel.connect(third_sanctuary, rule=have_susie)
 
-    third_sanctuary.connect(gerson, rule=have_susie | nohit_logic) # Kris is not necessary as the flag for beating Jack is already set
+    third_sanctuary.connect(gerson, rule=have_susie | nohit_extreme_logic) # Kris is not necessary as the flag for beating Jack is already set
 
     secret_boss_mandatory = CanReachLocation(
         locations[LocationIDs.ch4_dark_sanctuary_hammer_of_justice_defeat_item_1]

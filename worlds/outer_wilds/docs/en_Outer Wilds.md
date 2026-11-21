@@ -15,11 +15,7 @@ Randomizers in the Archipelago/MWGG sense—which are sometimes called "Metroidv
 
 ### In-Game Ship Log Tracker
 
-If you've never played the Outer Wilds Archipelago Randomizer before, this is the tracker you want to focus on. It comes "for free" with the randomizer mod, uses the familiar ship log interface, contains detailed descriptions of every single item and location, and even displays the randomizer's "logic" for which items you need to access each location.
-
-<img src="readme_images/APChecklist.png" height="300">
-<img src="readme_images/TimberHearthChecklist.png" height="300">
-<img src="readme_images/APInventory.png" height="300">
+If you've never played the Outer Wilds MultiworldGG Randomizer before, this is the tracker you want to focus on. It comes "for free" with the randomizer mod, uses the familiar ship log interface, contains detailed descriptions of every single item and location, and even displays the randomizer's "logic" for which items you need to access each location.
 
 
 ### Universal Tracker

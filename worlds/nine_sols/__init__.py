@@ -1,6 +1,7 @@
-from typing import Any, ClassVar, TextIO
+from typing import ClassVar, TextIO
 
-from BaseClasses import Tutorial
+from BaseClasses import Tutorial, EntranceType, Entrance, Region
+from entrance_rando import randomize_entrances
 from worlds.AutoWorld import WebWorld, World
 from Options import OptionError, OptionGroup
 from .items import NineSolsItem, all_non_event_items_table, item_name_groups, create_item, create_items
@@ -9,6 +10,7 @@ from .ut_map_page.map_page_index import map_page_index
 from .jade_costs import generate_random_jade_costs
 from .node_items import select_node_item_names
 from .options import *
+from .shared_static_logic.connections import connections_data
 
 
 class NineSolsWebWorld(WebWorld):
@@ -60,7 +62,8 @@ class NineSolsWebWorld(WebWorld):
         OptionGroup("Additional Randomizations", [
             RandomizeShops,
             RandomizeSkillTree,
-            # entrance_randomization
+            RandomizeEntrances,
+            CoupledEntrances,
         ]),
     ]
 
@@ -87,6 +90,7 @@ class NineSolsWorld(World):
     using_ut: bool
     jade_costs: dict[str, int] | str
     node_items: list[str]
+    er_pairings: list[tuple[str, str]] | None
 
     def __init__(self, multiworld, player):
         super(NineSolsWorld, self).__init__(multiworld, player)
@@ -95,6 +99,7 @@ class NineSolsWorld(World):
         self.jade_costs = 'vanilla'
         self.using_ut = False
         self.node_items = []
+        self.er_pairings = None
 
     def generate_early(self) -> None:
         if self.options.jade_cost_max < self.options.jade_cost_min:
@@ -108,7 +113,9 @@ class NineSolsWorld(World):
                     slot_data = self.multiworld.re_gen_passthrough["Nine Sols"]
 
                     self.node_items = slot_data.get('node_items', [])  # in normal gen this only affects start inventory, but UT needs this for /next_progression
-                    self.options.first_root_node = FirstRootNode.from_text(slot_data['first_root_node_name'])
+                    self.options.first_root_node.value = FirstRootNode.from_text(slot_data['first_root_node_name']).value
+                    if 'er_pairings' in slot_data:
+                        self.er_pairings = slot_data['er_pairings']
 
                     self.options.seals_for_eigong.value = slot_data['seals_for_eigong']
                     self.options.seals_for_prison.value = slot_data['seals_for_prison']
@@ -155,6 +162,49 @@ class NineSolsWorld(World):
     def create_items(self) -> None:
         create_items(self)
 
+    def connect_entrances(self) -> None:
+        if self.er_pairings: # UT regen: we need to "plando" the pairings from slot_data
+            vanilla_one_ways: dict[str, str] = {} # portal_name to one_way_target_name
+            for c in connections_data:
+                if "one_way_target_name" in c:
+                    vanilla_one_ways[c["portal_name"]] = c["one_way_target_name"]
+
+            two_way_portal_to_entrance: dict[str, Entrance] = {}
+            departure_only_portal_to_ap_entrance: dict[str, Entrance] = {}
+            arrival_only_portal_to_ap_region: dict[str, Region | None] = {}
+            for region in self.get_regions():
+                for entrance in region.entrances:
+                    # Unfortunately entrances default to being ONE_WAY, so randomization_type is useless here.
+                    # Instead, we just have to assume that vanilla_one_ways was built correctly.
+                    if entrance.name not in vanilla_one_ways:
+                        two_way_portal_to_entrance[entrance.name] = entrance
+                    else:
+                        one_way_target_name = vanilla_one_ways[entrance.name]
+                        departure_only_portal_to_ap_entrance[entrance.name] = entrance
+                        arrival_only_portal_to_ap_region[one_way_target_name] = entrance.connected_region
+
+            for pairing in self.er_pairings:
+                assert (pairing[0] in two_way_portal_to_entrance or pairing[0] in departure_only_portal_to_ap_entrance), f"entrance {pairing[0]} in slot data not in world"
+                if pairing[0] in two_way_portal_to_entrance:
+                    assert pairing[1] in two_way_portal_to_entrance, f"two-way portal {pairing[0]} mapped to one-way portal {pairing[1]}"
+                    two_way_portal_to_entrance[pairing[0]].connected_region = two_way_portal_to_entrance[pairing[1]].parent_region
+                else:
+                    assert pairing[1] in arrival_only_portal_to_ap_region, f"entrance {pairing[1]} not found in arrival_only_portal_to_ap_region"
+                    departure_only_portal_to_ap_entrance[pairing[0]].connected_region = arrival_only_portal_to_ap_region[pairing[1]]
+
+        elif self.options.randomize_entrances: # regular gen: we need to actually randomize the entrances
+            placement_state = randomize_entrances(
+                self,
+                self.options.coupled_entrances.value == 1,
+                # we use grouping to solve the "what if you need >2 bow hovers to reach the next root node" problem
+                {
+                    0: [0,1,2], # can get here with 0 bow hovers, so it's okay if the other side needs 2
+                    1: [0,1], # if you need 1 to get here, you only have 1 left for the other side
+                    2: [0], # if you need 2 to get here, you have none left
+                }
+            )
+            self.er_pairings = placement_state.pairings
+
     def get_filler_item_name(self) -> str:
         # Used in corner cases (e.g. plando, item_links, start_inventory_from_pool)
         # where even a well-behaved world may end up "missing" items.
@@ -199,6 +249,8 @@ class NineSolsWorld(World):
         slot_data["node_items"] = self.node_items
         # APWorld versions are not (yet?) exposed by AP servers, so the client/mod needs us to put it in slot_data
         slot_data["apworld_version"] = self.world_version.as_simple_string()
+        if self.options.randomize_entrances:
+            slot_data["er_pairings"] = self.er_pairings
         return slot_data
 
     def write_spoiler(self, spoiler_handle: TextIO) -> None:

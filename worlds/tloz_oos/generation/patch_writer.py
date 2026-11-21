@@ -6,11 +6,11 @@ from BaseClasses import Location
 from Options import Option
 from worlds.tloz_oos.data.locations import LOCATIONS_DATA
 
-from ..data.Constants import VALID_RUPEE_PRICE_VALUES
+from ..data.constants import VALID_RUPEE_PRICE_VALUES
 from ..options import OracleOfSeasonsOptions, OracleOfSeasonsShopPrices
 from ..patching.procedure_patch import OoSProcedurePatch
 from ..world import OracleOfSeasonsWorld
-from .create_regions import location_is_active
+from .locations import location_is_active
 
 
 def oos_create_ap_procedure_patch(world: OracleOfSeasonsWorld) -> OoSProcedurePatch:
@@ -40,8 +40,8 @@ def oos_create_ap_procedure_patch(world: OracleOfSeasonsWorld) -> OoSProcedurePa
             item = location.item
             assert item is not None
             if not item.excludable or (
-                # Potion is very good, as renewable, so it goes in the non-excludable pile
-                "renewable" in location_data and item.player == world.player and item.name == "Potion"
+                # Potion is very good, as repeatable, so it goes in the non-excludable pile
+                "repeatable" in location_data and item.player == world.player and item.name == "Potion"
             ):
                 shop_prices[symbolic_name] = world.shop_prices[symbolic_name]
                 continue
@@ -77,9 +77,9 @@ def oos_create_ap_procedure_patch(world: OracleOfSeasonsWorld) -> OoSProcedurePa
             continue
         assert loc.item
         if loc.item.player == loc.player:
-            patch_data["locations"][loc.name] = {"item": loc.item.name}
+            patch_data["locations"][str(loc.address)] = {"item_code": loc.item.code}
         else:
-            patch_data["locations"][loc.name] = {
+            patch_data["locations"][str(loc.address)] = {
                 "item": loc.item.name,
                 "player": world.multiworld.get_player_name(loc.item.player),
                 "progression": loc.item.advancement,
@@ -100,9 +100,9 @@ def oos_create_ap_procedure_patch(world: OracleOfSeasonsWorld) -> OoSProcedurePa
         patch_data_item_hints.append((item_hint.name, location.name, player_name))
     patch_data["item_hints"] = patch_data_item_hints
 
-    start_inventory = defaultdict(int)
+    start_inventory: dict[int, int] = defaultdict(int)
     for item in world.multiworld.precollected_items[world.player]:
-        start_inventory[item.name] += 1
+        start_inventory[cast(int, item.code)] += 1
     patch_data["start_inventory"] = dict(start_inventory)
 
     patch.write_file("patch.json", json.dumps(patch_data).encode("utf-8"))

@@ -9,6 +9,7 @@ class ItemInfo:
         self.item = None
         self._location = None
         self.room = room
+        self.patch_room = room # some items are patched into the "wrong" room
         self.extra = extra
         self.metadata = checkMetadataTable.get(self.nameId, checkMetadataTable["None"])
         self.forced_item = None

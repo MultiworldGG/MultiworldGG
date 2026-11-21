@@ -3,9 +3,10 @@ from typing import Any, cast
 from ...common.patching.text import normalize_text
 from ...common.patching.Util import simple_hex
 from ...common.patching.z80asm.Assembler import Z80Assembler
-from ...data.Constants import SEED_ITEMS
+from ...data.constants import SEED_ITEMS
 from ...data.locations import LOCATIONS_DATA
 from ...generation.hints import make_hint_texts
+from ...options import OracleOfSeasonsDungeonKeyType
 
 
 def process_item_name_for_shop_text(item: dict[str, str | bool]) -> str:
@@ -76,24 +77,23 @@ def make_text_data(assembler: Z80Assembler, text: dict[str, str], patch_data: di
             item_text += "I'll trade for\n🟥\\num1 Ore Chunks⬜.\n\\jump(0b)"
         text[tx_indices[symbolic_name]] = item_text
 
-    business_scrubs = [
-        "Spool Swamp: Business Scrub",
-        "Samasa Desert: Business Scrub",
-        "Snake's Remains: Business Scrub",
-        "Dancing Dragon Dungeon (1F): Business Scrub",
-    ]
-    for location_name in business_scrubs:
-        symbolic_name = LOCATIONS_DATA[location_name]["symbolic_name"]
-        if location_name not in patch_data["locations"]:
-            continue
-        # Scrub string asking the player if they want to buy the item
-        item_text = (
-            "\\sfx(c6)Greetings!\n"
-            + process_item_name_for_shop_text(patch_data["locations"][location_name])
-            + f"for 🟩{patch_data['shop_prices'][symbolic_name]} Rupees⬜\n"
-            "  \\optOK \\optNo thanks"
-        )
-        text[tx_indices[symbolic_name]] = item_text
+    if patch_data["options"]["shuffle_business_scrubs"]:
+        business_scrubs = [
+            "Spool Swamp: Business Scrub",
+            "Samasa Desert: Business Scrub",
+            "Snake's Remains: Business Scrub",
+            "Dancing Dragon Dungeon (1F): Business Scrub",
+        ]
+        for location_name in business_scrubs:
+            symbolic_name = LOCATIONS_DATA[location_name]["symbolic_name"]
+            # Scrub string asking the player if they want to buy the item
+            item_text = (
+                "\\sfx(c6)Greetings!\n"
+                + process_item_name_for_shop_text(patch_data["locations"][location_name])
+                + f"for 🟩{patch_data['shop_prices'][symbolic_name]} Rupees⬜\n"
+                "  \\optOK \\optNo thanks"
+            )
+            text[tx_indices[symbolic_name]] = item_text
 
     # Cross items
     assembler.define_byte("text.hook1.treasure", 0x3B)
@@ -153,6 +153,32 @@ def make_text_data(assembler: Z80Assembler, text: dict[str, str], patch_data: di
     essence_count = patch_data["options"]["required_essences"]
     text["TX_2e00"] = f"Find 🟥{essence_count} essence{'s' if essence_count != 1 else ''}⬜\nto get the seed!"
 
+    # Maku tree nut dialogue
+    maku_dialogue = text["TX_1717"]
+    if essence_count != 8:
+        maku_dialogue = maku_dialogue.replace(" all", "", 1)
+        match essence_count:
+            case 0:
+                essence_count_string = "no"
+            case 1:
+                essence_count_string = "one"
+                maku_dialogue = maku_dialogue.replace("Essences", "Essence", 1)
+            case 2:
+                essence_count_string = "two"
+            case 3:
+                essence_count_string = "three"
+            case 4:
+                essence_count_string = "four"
+            case 5:
+                essence_count_string = "five"
+            case 6:
+                essence_count_string = "six"
+            case _:
+                essence_count_string = "seven"
+        maku_dialogue = maku_dialogue.replace("eight", essence_count_string, 1)
+        text["TX_1717"] = maku_dialogue
+        text["TX_1732"] = maku_dialogue
+
     # Tarm ruins sign
     jewel_count = patch_data["options"]["tarm_gate_required_jewels"]
     text["TX_2e12"] = f"Bring 🟩{jewel_count}⬜ jewel{'s' if jewel_count != 1 else ''}\nfor the door\nto open."
@@ -182,7 +208,7 @@ def define_dungeon_items_text_constants(texts: dict[str, str], patch_data: dict[
 
         # ###### Small keys ##############################################
         small_key_text = "You found a\n🟥"
-        if patch_data["options"]["master_keys"]:
+        if patch_data["options"]["dungeon_key_type"] >= OracleOfSeasonsDungeonKeyType.option_master_key_all_small_keys:
             small_key_text += "Master Key"
         else:
             small_key_text += "Small Key"
@@ -219,5 +245,6 @@ def define_dungeon_items_text_constants(texts: dict[str, str], patch_data: dict[
         compasses_text += "⬜!"
         texts[f"TX_00{simple_hex(base_id + i + 25)}"] = compasses_text
 
-    if patch_data["options"]["master_keys"]:
+    if patch_data["options"]["dungeon_key_type"] >= OracleOfSeasonsDungeonKeyType.option_master_key_all_small_keys:
         texts["TX_001a"] = texts["TX_001a"].replace("Small", "Master")
+    # This occupies the texts from TX_0073 to TX_0094 included

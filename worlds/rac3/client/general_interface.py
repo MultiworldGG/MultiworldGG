@@ -205,8 +205,7 @@ class GameInterface:
                 case RAC3VERSION.JP_ID:
                     self.current_game = game_id
                     logger.info("Version Detected: Japanese release")
-                    logger.warning("WARNING: JP support is currently in beta, but the game is completable, "
-                                   "please inform yuxia228 of any Japanese version-specific issues.")
+                    logger.warning("Please inform yuxia228 of any Japanese version-specific issues.")
                 case RAC3VERSION.JP_TB_ID:
                     self.current_game = game_id
                     logger.info("Version Detected: Japanese The Best release")

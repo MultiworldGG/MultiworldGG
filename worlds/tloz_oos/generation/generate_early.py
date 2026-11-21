@@ -1,0 +1,313 @@
+import logging
+from typing import cast
+
+from Options import OptionError
+
+from ..data.constants import (
+    AVERAGE_PRICE_PER_LOCATION,
+    DIRECTION_LEFT,
+    DIRECTION_UP,
+    DIRECTIONS,
+    SEASON_NAMES,
+    SEASONS,
+    VALID_RUPEE_PRICE_VALUES,
+)
+from ..data.dungeon_enums import DungeonName, boss_name_to_dungeon_mapping, dungeon_name_to_dungeon_mapping
+from ..data.items import RING_LIST
+from ..data.locations import LOCATIONS_DATA
+from ..options import OracleOfSeasonsLogicDifficulty, OracleOfSeasonsOldMenShuffle, OracleOfSeasonsShuffleBosses
+from ..util import get_old_man_values_pool
+from ..world import OracleOfSeasonsWorld
+
+
+def generate_early(world: OracleOfSeasonsWorld) -> None:
+    if world.options.randomize_ai:
+        world.options.golden_beasts_requirement.value = 0
+
+    conflicting_rings = world.options.required_rings.value & world.options.excluded_rings.value
+    if len(conflicting_rings) > 0:
+        raise OptionError("Required Rings and Excluded Rings contain the same element(s)", conflicting_rings)
+
+    world.remaining_progression_gasha_seeds = world.options.deterministic_gasha_locations.value
+
+    pick_essences_in_game(world)
+    if len(world.essences_in_game) < world.options.treehouse_old_man_requirement:
+        world.options.treehouse_old_man_requirement.value = len(world.essences_in_game)
+
+    restrict_non_local_items(world)
+    randomize_default_seasons(world)
+    randomize_old_men(world)
+
+    if world.options.randomize_lost_woods_item_sequence:
+        # Pick 4 random seasons & directions (last one has to be "left")
+        world.lost_woods_item_sequence = []
+        for i in range(4):
+            world.lost_woods_item_sequence.append(
+                [world.random.choice(DIRECTIONS) if i < 3 else DIRECTION_LEFT, world.random.choice(SEASONS)]
+            )
+
+    if world.options.randomize_lost_woods_main_sequence:
+        # Pick 4 random seasons & directions (last one has to be "up")
+        world.lost_woods_main_sequence = []
+        for i in range(4):
+            world.lost_woods_main_sequence.append(
+                [world.random.choice(DIRECTIONS) if i < 3 else DIRECTION_UP, world.random.choice(SEASONS)]
+            )
+
+    if world.options.randomize_samasa_gate_code:
+        world.samasa_gate_code = []
+        for _ in range(world.options.samasa_gate_code_length.value):
+            world.samasa_gate_code.append(world.random.randint(0, 3))
+
+    randomize_shop_order(world)
+    randomize_shop_prices(world)
+    compute_shop_requirements(world)
+
+    create_random_rings_pool(world)
+
+    world.item_mapping_collect = {
+        "Rupees (1)": ("Rupees", 1),
+        "Rupees (5)": ("Rupees", 5),
+        "Rupees (10)": ("Rupees", 10),
+        "Rupees (20)": ("Rupees", 20),
+        "Rupees (30)": ("Rupees", 30),
+        "Rupees (50)": ("Rupees", 50),
+        "Rupees (100)": ("Rupees", 100),
+        "Rupees (200)": ("Rupees", 200),
+        "_reached_d2_rupee_room": ("Rupees", 150),
+        "_reached_d6_rupee_room": ("Rupees", 90),
+        "Ore Chunks (10)": ("Ore Chunks", 10),
+        "Ore Chunks (25)": ("Ore Chunks", 25),
+        "Ore Chunks (50)": ("Ore Chunks", 50),
+        "Ore Chunks (100)": ("Ore Chunks", 100),
+    }
+    for old_man in world.old_man_rupee_values:
+        rupees = world.old_man_rupee_values[old_man]
+        rupees = max(rupees, 0)  # We ignore negative value because they will most often do nothing
+        # If this becomes an issue, state initialisation shall account for negative values
+        world.item_mapping_collect[f"rupees from {old_man}"] = ("Rupees", rupees)
+
+    if world.options.logic_difficulty == OracleOfSeasonsLogicDifficulty.option_casual:
+        world.remaining_progression_containers = 5
+    elif world.options.logic_difficulty == OracleOfSeasonsLogicDifficulty.option_medium:
+        world.remaining_progression_containers = 4
+    else:
+        world.remaining_progression_containers = 2
+
+    current_instruction: str | None = None
+    remaining_instructions: list[str] = OracleOfSeasonsShuffleBosses.get_option_name(
+        world.options.shuffle_bosses.value
+    ).split(";")
+    remaining_dungeons = [1, 2, 4, 5, 6, 7, 8, 3]
+    remaining_bosses = list(range(1, 9))
+    singularity_boss = remaining_bosses[0]
+    world.random.shuffle(remaining_bosses)
+    while len(remaining_dungeons) > 0:
+        if current_instruction is None:
+            if len(remaining_instructions) == 0:
+                raise OptionError(
+                    "Boss Shuffle did not provide enough instructions to fill every dungeon",
+                    world.options.shuffle_bosses,
+                )
+            current_instruction = remaining_instructions.pop(0)
+        placement_instruction = cast(str, current_instruction).split("-")
+        dungeon = remaining_dungeons[-1]
+        if len(placement_instruction) == 2:
+            dungeon = dungeon_name_to_dungeon_mapping[placement_instruction[0]]
+            boss = boss_name_to_dungeon_mapping[placement_instruction[1]]
+            current_instruction = None
+        elif current_instruction in boss_name_to_dungeon_mapping:
+            boss = boss_name_to_dungeon_mapping[current_instruction]
+            if dungeon == 3 and (boss == 4 or boss == 5):
+                if len(remaining_dungeons) > 1:
+                    remaining_dungeons.insert(0, remaining_dungeons.pop())  # Handle that one later
+                else:
+                    current_instruction = None
+                continue
+        else:
+            option = OracleOfSeasonsShuffleBosses.from_text(cast(str, current_instruction))
+            if option == OracleOfSeasonsShuffleBosses.option_vanilla:
+                if dungeon not in remaining_bosses:
+                    raise OptionError(f"No boss was set for dungeon {dungeon}")
+                boss = dungeon
+            elif option == OracleOfSeasonsShuffleBosses.option_shuffled:
+                boss = remaining_bosses.pop()
+            # elif option == OracleOfSeasonsShuffleBosses.option_chaos:
+            #     boss = world.random.randint(1, 8)
+            # else:
+            #     boss = singularity_boss
+            if dungeon == 3 and (boss == 4 or boss == 5):
+                if option == OracleOfSeasonsShuffleBosses.option_shuffled:
+                    # Prevent an infinite loop against a too restrictive option
+                    if len(remaining_bosses) == 0 or (
+                        len(remaining_bosses) == 1 and (remaining_bosses[0] == 4 or remaining_bosses[0] == 5)
+                    ):
+                        raise OptionError(f"Couldn't place {DungeonName.d3}'s boss")
+                    remaining_bosses.insert(0, boss)
+                    continue
+
+                boss = world.random.randint(1, 6)
+                if boss >= 4:
+                    boss += 2
+        world.boss_mapping[dungeon] = boss
+        remaining_dungeons.remove(dungeon)
+        if boss in remaining_bosses:
+            remaining_bosses.remove(boss)
+
+
+def pick_essences_in_game(world: OracleOfSeasonsWorld) -> None:
+    # -1 is the named range to set the placed essences equal to the required essences
+    if world.options.placed_essences.value == -1:
+        world.options.placed_essences.value = world.options.required_essences.value
+
+    # If the value for "Placed Essences" is lower than "Required Essences" (which can happen when using random
+    # values for both), a new random value is automatically picked in the valid range.
+    elif world.options.required_essences > world.options.placed_essences:
+        new_placed_essences = world.random.randint(world.options.required_essences.value, 8)
+        logging.warning(
+            f"Essences placed for {world.player_name} required to be {world.options.placed_essences.value} "
+            f"but {world.options.required_essences} essences are required to beat the seed.\n"
+            f"Increased the value to {new_placed_essences}. "
+            f"You might want to set the range to 'included essences' or use triggers instead."
+        )
+        world.options.placed_essences.value = new_placed_essences
+
+    # If some essence pedestal locations were excluded and essences are not shuffled,
+    # remove those essences in priority
+    if not world.options.shuffle_essences:
+        excluded_locations_data = {
+            name: data for name, data in LOCATIONS_DATA.items() if name in world.options.exclude_locations.value
+        }
+        for loc_data in excluded_locations_data.values():
+            if "essence" in loc_data and loc_data["essence"] is True:
+                world.essences_in_game.remove(loc_data["vanilla_item"])
+        if len(world.essences_in_game) < world.options.required_essences:
+            raise ValueError("Too many essence pedestal locations were excluded, seed will be unbeatable")
+
+    # If we need to remove more essences, pick them randomly
+    world.random.shuffle(world.essences_in_game)
+    world.essences_in_game = world.essences_in_game[0 : world.options.placed_essences]
+
+
+def restrict_non_local_items(world: OracleOfSeasonsWorld) -> None:
+    # Restrict non_local_items option in cases where it's incompatible with other options that enforce items
+    # to be placed locally (e.g. dungeon items with keysanity off)
+    if not world.options.keysanity_small_keys:
+        world.options.non_local_items.value -= world.item_name_groups["Small Keys"]
+        world.options.non_local_items.value -= world.item_name_groups["Master Keys"]
+    if not world.options.keysanity_boss_keys:
+        world.options.non_local_items.value -= world.item_name_groups["Boss Keys"]
+    if not world.options.keysanity_maps_compasses:
+        world.options.non_local_items.value -= world.item_name_groups["Dungeon Maps"]
+        world.options.non_local_items.value -= world.item_name_groups["Compasses"]
+
+
+def randomize_default_seasons(world: OracleOfSeasonsWorld) -> None:
+    if world.options.default_seasons == "randomized":
+        seasons_pool = SEASONS
+    elif world.options.default_seasons.current_key.endswith("singularity"):
+        single_season = world.options.default_seasons.current_key.replace("_singularity", "")
+        if single_season == "random":
+            single_season = world.random.choice(SEASONS)
+        else:
+            single_season = next(byte for byte, name in SEASON_NAMES.items() if name == single_season)
+        seasons_pool = [single_season]
+    else:
+        return
+
+    for region in world.default_seasons:
+        if region == "HORON_VILLAGE" and not world.options.normalize_horon_village_season:
+            continue
+        world.default_seasons[region] = world.random.choice(seasons_pool)
+
+
+def randomize_old_men(world: OracleOfSeasonsWorld) -> None:
+    if world.options.shuffle_old_men == OracleOfSeasonsOldMenShuffle.option_shuffled_values:
+        shuffled_rupees = list(world.old_man_rupee_values.values())
+        world.random.shuffle(shuffled_rupees)
+        world.old_man_rupee_values = dict(zip(world.old_man_rupee_values, shuffled_rupees))
+    elif world.options.shuffle_old_men == OracleOfSeasonsOldMenShuffle.option_random_values:
+        for key in world.old_man_rupee_values.keys():
+            sign = world.random.choice([-1, 1])
+            world.old_man_rupee_values[key] = world.random.choice(get_old_man_values_pool()) * sign
+    elif world.options.shuffle_old_men == OracleOfSeasonsOldMenShuffle.option_random_positive_values:
+        for key in world.old_man_rupee_values.keys():
+            world.old_man_rupee_values[key] = world.random.choice(get_old_man_values_pool())
+    else:
+        # Remove the old man values from the pool so that they don't count negative when they are shuffled as items
+        world.old_man_rupee_values = {}
+
+
+def randomize_shop_order(world: OracleOfSeasonsWorld) -> None:
+    world.shop_order = [
+        ["horonShop1", "horonShop2", "horonShop3"],
+        ["memberShop1", "memberShop2", "memberShop3"],
+    ]
+    if world.options.advance_shop:
+        world.shop_order.append(["advanceShop1", "advanceShop2", "advanceShop3"])
+    if world.options.trade_sequence:
+        world.shop_order.append(["syrupShop1", "syrupShop2", "syrupShop3"])
+    if world.options.shuffle_business_scrubs:
+        world.shop_order.extend([["spoolSwampScrub"], ["samasaCaveScrub"], ["d2Scrub"], ["d4Scrub"]])
+    world.random.shuffle(world.shop_order)
+
+
+def randomize_shop_prices(world: OracleOfSeasonsWorld) -> None:
+    if world.options.shop_prices == "vanilla":
+        if world.options.enforce_potion_in_shop:
+            world.shop_prices["horonShop3"] = 300
+        return
+    if world.options.shop_prices == "free":
+        world.shop_prices = {k: 0 for k in world.shop_prices}
+        return
+
+    # Prices are randomized, get a random price that follow set options for each shop location.
+    # Values must be rounded to nearest valid rupee amount.
+    average = AVERAGE_PRICE_PER_LOCATION[world.options.shop_prices.current_key]
+    deviation = min(19 * (average / 50), 100)
+    for i, shop in enumerate(world.shop_order):
+        shop_price_factor = (i / len(world.shop_order)) + 0.5
+        for location_code in shop:
+            value = world.random.gauss(average, deviation) * shop_price_factor
+            world.shop_prices[location_code] = min(VALID_RUPEE_PRICE_VALUES, key=lambda x: abs(x - value))
+
+    # Subrosia market special cases
+    for i in range(2, 6):
+        value = world.random.gauss(average, deviation) * 0.5
+        value = min(VALID_RUPEE_PRICE_VALUES, key=lambda x: abs(x - value))
+        world.shop_prices[f"subrosianMarket{i}"] = value
+
+
+def compute_shop_requirements(world: OracleOfSeasonsWorld) -> None:
+    # Compute global rupee requirements for each shop, based on shop order and item prices
+    cumulated_requirement = 0
+    for shop in world.shop_order:
+        # Add the price of each shop location in there to the requirement
+        for shop_location in shop:
+            cumulated_requirement += world.shop_prices[shop_location]
+        # Deduce the shop name from the code of the first location
+        shop_name = shop[0]
+        if not shop_name.endswith("Scrub"):
+            shop_name = shop_name[:-1]
+        # Divide the requirement by 2 as the player will likely skip/grind
+        world.shop_requirements[shop_name] = cumulated_requirement // 2
+
+    subrosia_total_price = 0
+    for i in range(2, 6):
+        subrosia_total_price += world.shop_prices[f"subrosianMarket{i}"]
+    world.shop_requirements["subrosianMarket"] = subrosia_total_price // 2
+
+
+def create_random_rings_pool(world: OracleOfSeasonsWorld) -> None:
+    # Get a subset of as many rings as needed, with a potential filter depending on chosen options
+    ring_names = RING_LIST
+
+    # Remove required rings because they'll be added later anyway
+    ring_names = [
+        name
+        for name in ring_names
+        if name not in world.options.required_rings.value and name not in world.options.excluded_rings.value
+    ]
+
+    world.random.shuffle(ring_names)
+    world.random_rings_pool = ring_names

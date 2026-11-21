@@ -5,7 +5,11 @@ from worlds.rac3.constants.options import RAC3OPTION
 
 
 class GoalTbolts(Range):
-    """Determines how many Titanium Bolts are required to goal, 0 - 40"""
+    """
+    Determines how many Titanium Bolts (Archipelago Item, not locations) are required to goal, 0 - 40
+    If Titanium Bolts are not randomized, the Titanium Bolts picked up in game are counted instead
+    Reduced by 1 if Command Center Lock is enabled
+    """
 
     display_name = RAC3OPTION.GOAL_TBOLTS
     range_start = 0

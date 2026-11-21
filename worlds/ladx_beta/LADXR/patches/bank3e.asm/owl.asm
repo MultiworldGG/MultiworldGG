@@ -7,14 +7,39 @@ HandleOwlStatue:
     or   $20
     ld   [hl], a
 
-    ld   hl, $7B16
+    ; use OffsetPointerByRoomNumber to get current map
+    ; we're going to set our fake room differently depending on it
+    ; see locations.owlStatue for transformation
+    ld   hl, $0000
     call OffsetPointerByRoomNumber
-    ld   a, [hl]
-    ldh  [$FFF1], a
-    call ItemMessage
-    call GiveItemFromChest
+    push hl ; store it to fix at end
+    ld   a, h
+    and  a
+    jr   z, .mapZero
+    dec  a
+    jr   z, .mapOne
+    dec  a
+    jr   z, .mapTwo
+.mapThree:
+.mapZero:
+    inc  hl
+    ld   a, l
+    jr   .finish
+.mapTwo:
+    inc  hl
+    inc  hl
+    jr   .mapZero
+.mapOne:
+    ld   a, l
+    sub  $31
+    xor  $75
+.finish:
+    ldh  [$FFF6], a
+    call GiveItemAndMessageForRoomMultiworld
+    pop  hl
+    ld   a, l
+    ldh  [$FFF6], a
     ret
-
 
 
 GetRoomStatusAddressInHL:

@@ -42,7 +42,7 @@ from .LogicHelpers import (
     #CanHitFloatingBlocks,
     #CanHitGroundedSwitches,
     #CanClimbSteps,
-    #CanReenterVerticalPipes,
+    CanReenterVerticalPipes,
 )
 
 dry_dry_outpost_regions: list[Dict[str, str | Dict[str, Rule | None]]] = [
@@ -85,7 +85,10 @@ dry_dry_outpost_regions: list[Dict[str, str | Dict[str, Rule | None]]] = [
         "map_id": "0",
         "map_name": "Outpost 1",
         "exits": {
-            "TTT Warp Zone 1 (B1) Outpost Pipe": None,
+            "TTT Warp Zone 1 (B1) Outpost Pipe": (
+                Has("GF_TIK01_WarpPipes")
+                & CanReenterVerticalPipes()
+            ),
             "DDO Outpost 1": None,
         }
     },

@@ -322,10 +322,8 @@ This YAML is going in the bucket, isn't it?
 Oh, this is a terrible seed for a Sync
 Oh, this is a terrible seed for an Async
 What does BK stand for anyway?
-Check out the #future-game-design forum
 This is actually a Free trial of the critically acclaimed MMORPG Final Fantasy XIV, including the entirety of A Realm Reborn and the award winning Heavensward and Stormblood expansions up to level 70 with no restrictions on playtime!
 Is it April yet? Can I play ArchipIDLE again?
-https://archipelago.gg/datapackage
 Hello, Link! (Disregard message if your player sprite is not Link.)
 Go back to sleep, Outer Wilds isn't supported yet.
 :)\nWelcome back!
@@ -393,7 +391,7 @@ My boy, this peace is what all true warriors strive for!
 Dear Mario:\nPlease come to the castle, I've baked a cake for you. Yours truly--\nPrincess Toadstool\nPeach
 Grass-sanity mode activated. Have fun!
 Don't forget to bring rupees to the signpost maze this time.
-UP UP DOWN DOWN LEFT RIGHT LEFT RIGHT B A START
+<arrowU><arrowU><arrowD><arrowD><arrowL><arrowR><arrowL><arrowR>\nB A START
 Try LADX!\nWait a minute...
 ERROR! Unable to verify player. Please drink a verification can.
 We have been trying to reach you about your raft's extended warranty
@@ -402,7 +400,6 @@ Hello, welcome to the world of Pokemon!\nMy name is Marin, and I'm--
 Alright, this is very important, I need you to listen to what I'm about to tell you--\nHey, wait, where are you going?!
 Cheques?\nSorry we don't accept cheques here
 Hi! \nMarin. \nWho...? \nHow...? \nWait... \nWhy??? \nSorry... \n...\nThanks. \nBye!
-AHHH WHY IS THERE SO MUCH GRASS? \nHOLY SH*T GRASS SNAKE AHHHH
 Could you buy some strawberries on your way home? \nHuh it's out of logic??? What??
 I heard you sleeptalking about skeletons and genocide... Your past must have been full of misery (mire)
 It's time to let go... \nIt wasn't your fault... \nYou couldn't have known your first check was going to be hardmode...
@@ -458,3 +455,4 @@ This is it, #####.\nJust breathe.\nWhy are you so nervous?
 Hey, you. You're finally awake.\nYou were trying to cross the border, huh?
 Hey, you. You're finally awake.\nYou were trying to leave the island, huh?\nSwam straight into that whirlpool, same as us, and that thief over there.
 Is my Triforce locked behind your Wind Fish?
+<yoshi> <arrowR> <ribbon> <arrowR> <dogfood> <arrowR> <bananas> <arrowR> <stick> <arrowR> <honeycomb> <arrowR> <pineapple> <arrowR> <hibiscus> <arrowR> <letter> <arrowR> <broom> <arrowR> <hook> <arrowR> <necklace> <arrowR> <scale> <arrowR> <glass>

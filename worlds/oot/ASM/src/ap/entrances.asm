@@ -1,5 +1,5 @@
 ; Universal Tracker entrance discovery. All AP hooks live here; grotto.asm stays upstream.
-; ut/rom.py replaces shuffled source indices with 0x2000 + source_id * 4 + variant.
+; Patches.py replaces shuffled source indices with 0x2000 + source_id * 4 + variant.
 ; The four variants preserve blue-warp age/cutscene aliases. Resolve tags BEFORE any
 ; vanilla entrance-table lookup, then record discovery when Play_Init loads that destination.
 ; The RAM bitset lasts until reset. The client merges it into server datastorage.

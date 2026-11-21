@@ -80,10 +80,10 @@ You only have to do these steps once. Note, RetroArch 1.9.x will not work as it 
 #### BizHawk 2.8 or newer (older versions untested)
 
 1. Load the ROM.
-2. Navigate to the folder MultiworldGG is installed in, then `data/lua`, and drag+drop `connector_ladx_bizhawk_beta.lua` onto
+2. Navigate to the folder MultiworldGG is installed in, then `data/lua`, and drag+drop `connector_ladx_bizhawk.lua` onto
    the main EmuHawk window.
     - You could instead open the Lua Console manually, click `Script` 〉 `Open Script`, and navigate to
-      `connector_ladx_bizhawk_beta.lua` with the file picker.
+      `connector_ladx_bizhawk.lua` with the file picker.
 3. Keep the Lua Console open during gameplay (minimizing it is fine!)
 
 ### Connect to the MultiworldGG Server

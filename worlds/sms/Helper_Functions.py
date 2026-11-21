@@ -1,5 +1,3 @@
-from typing import NamedTuple, Optional
-
 class StringByteFunction:
     @staticmethod
     def string_to_bytes(user_string: str, encoded_byte_length: int) -> bytes:

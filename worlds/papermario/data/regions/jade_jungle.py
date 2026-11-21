@@ -22,7 +22,7 @@ from rule_builder.rules import (
     #CanReachRegion,
     #CanReachEntrance,
     Rule,
-    OptionFilter,
+    #OptionFilter,
 )
 
 from .LogicHelpers import (
@@ -171,7 +171,7 @@ jade_jungle_regions: list[Dict[str, str | Dict[str, Rule | None]]] = [
             "JJ Village Cove": None,
             "JJ SE Jungle (Quake Hammer) East": None,
             "JJ Path to the Volcano": None,
-            "JJ Village Buildings Pipe": Has("GF_TIK08_WarpPipe") & HasBoots(),
+            "JJ Village Buildings Pipe": HasBoots(),
         }
     },
     {
@@ -180,7 +180,7 @@ jade_jungle_regions: list[Dict[str, str | Dict[str, Rule | None]]] = [
         "map_id": "3",
         "map_name": "Village Buildings",
         "exits": {
-            "TTT Second Level Entry (B2) Blue Pipe": CanReenterVerticalPipes(),
+            "TTT Second Level Entry (B2) Blue Pipe": Has("GF_TIK08_WarpPipe") & CanReenterVerticalPipes(),
             "JJ Village Buildings": None,
         }
     },
@@ -252,7 +252,6 @@ jade_jungle_regions: list[Dict[str, str | Dict[str, Rule | None]]] = [
         "exits": {
             "JJ Small Jungle Ledge": None,
             "JJ NE Jungle (Raven Statue) South": CanUseAbilitySushie(),
-            "JJ NE Jungle (Raven Statue) North": CanUseAbilitySushie(),
             "JJ NE Jungle (Raven Statue) West": Has("GF_JAN06_CreateLogBridge"),
         }
     },
@@ -267,7 +266,6 @@ jade_jungle_regions: list[Dict[str, str | Dict[str, Rule | None]]] = [
         },
         "exits": {
             "JJ Deep Jungle 1": Has("Jade Raven"),
-            "JJ NE Jungle (Raven Statue) East": CanUseAbilitySushie(),
             "JJ NE Jungle (Raven Statue) South": CanUseAbilitySushie(),
         }
     },
@@ -313,6 +311,7 @@ jade_jungle_regions: list[Dict[str, str | Dict[str, Rule | None]]] = [
         "exits": {
             "JJ Whale Cove NE Exit": None,
             "JJ SW Jungle (Super Block) NE": CanUseAbilitySushie(),
+            "JJ SE Jungle (Quake Hammer) East": CanUseAbilitySushie(),
         }
     },
     {
@@ -358,7 +357,6 @@ jade_jungle_regions: list[Dict[str, str | Dict[str, Rule | None]]] = [
         "map_id": "9",
         "map_name": "NW Jungle (Large Ledge)",
         "exits": {
-            "JJ Western Dead End": CanUseAbilitySushie(),
             "JJ NW Jungle (Large Ledge) SE": CanUseAbilitySushie(),
             "JJ NW Jungle (Large Ledge) Ledge": CanClimbSteps(),
         }
@@ -399,7 +397,6 @@ jade_jungle_regions: list[Dict[str, str | Dict[str, Rule | None]]] = [
         },
         "exits": {
             "JJ NW Jungle (Large Ledge) SE": CanUseAbilitySushie(),
-            "JJ NW Jungle (Large Ledge) NW": CanUseAbilitySushie(),
         }
     },
     {

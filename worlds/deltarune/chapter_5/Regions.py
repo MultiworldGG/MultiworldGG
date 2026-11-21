@@ -19,6 +19,7 @@ from worlds.deltarune.Rules import (
     have_kris_susie_or_ralsei,
     have_kris_susie_and_ralsei,
     have_kris,
+    nohit_hard_logic,
 )
 
 if TYPE_CHECKING:
@@ -102,12 +103,16 @@ def create_regions(world: "DeltaruneWorld"):
 
         # The only two locations here are Hopschef & Tropical Starwalker pink coin, both of which don't need anyone
         # For Tropical Starwalker, you can use the trick that makes Zenlooker tell you to take a shower instead of needing to fight.
-        garden_no_character_required.connect(garden_petal_feather, rule=Has(items[ItemIDs.petalfeather]))
+        garden_no_character_required.connect(garden_petal_feather,
+            rule=Has(items[ItemIDs.petalfeather]) | Has(items[ItemIDs.progressive_ch5_area_unlock], 1)
+        )
 
-        # aqua fight needs kris
-        dark_garden.connect(garden_aqua, rule=have_kris)
+        # aqua fight needs kris, though you can beat her by no hitting
+        dark_garden.connect(garden_aqua, rule=(have_kris | nohit_hard_logic))
 
-        garden_aqua.connect(dark_garden_petal_feather, rule=Has(items[ItemIDs.petalfeather]))
+        garden_aqua.connect(dark_garden_petal_feather, 
+            rule=Has(items[ItemIDs.petalfeather]) | Has(items[ItemIDs.progressive_ch5_area_unlock], 1)
+        )
 
         dark_garden_petal_feather.connect(cliffs)
 
@@ -117,16 +122,24 @@ def create_regions(world: "DeltaruneWorld"):
 
         flower_castle.connect(vending_machine)
 
-        flower_castle.connect(castle_east, rule=Has(items[ItemIDs.compliment_list_green]))
+        flower_castle.connect(castle_west, 
+            rule=Has(items[ItemIDs.compliment_list_yellow])
+            | Has(items[ItemIDs.progressive_ch5_area_unlock], 2)
+        )
 
-        flower_castle.connect(castle_west, rule=Has(items[ItemIDs.compliment_list_yellow]))
+        flower_castle.connect(castle_east,
+            rule=Has(items[ItemIDs.compliment_list_green])
+            | Has(items[ItemIDs.progressive_ch5_area_unlock], 3)
+        )
 
         # need everyone for green & orange fight and blue & yellow fight
         flower_castle.connect(
             castle_top,
             rule=have_kris_susie_and_ralsei
-            & Has(items[ItemIDs.compliment_list_green])
-            & Has(items[ItemIDs.compliment_list_yellow]),
+            & (
+                (Has(items[ItemIDs.compliment_list_green]) & Has(items[ItemIDs.compliment_list_yellow]))
+                | Has(items[ItemIDs.progressive_ch5_area_unlock], 3)
+            ),
         )
 
         castle_top.connect(pink_room, rule=Has(items[ItemIDs.pinkkey]))

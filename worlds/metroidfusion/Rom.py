@@ -74,7 +74,7 @@ class MetroidFusionProcedurePatch(APProcedurePatch, APTokenMixin):
     hash = "27D02A4F03E172E029C9B82AC3DB79F7"
     patch_file_ending = ".apmetfus"
     result_file_ending = ".gba"
-    minimum_patch_version = Version(1, 22, 7)
+    minimum_patch_version = Version(1, 23, 0)
 
     procedure = [
         ("call_mars", ["patch_file.json"])

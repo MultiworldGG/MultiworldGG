@@ -654,7 +654,7 @@ locations = {
     LocationIDs.ch2_spamton_shop_3: "CH2: Spamton's Shop 3",
     LocationIDs.ch2_spamton_shop_4: "CH2: Spamton's Shop 4",
     LocationIDs.ch2_fountain_sealed: "CH2: Cyber World - Fountain Sealed",
-    LocationIDs.ch2_fountain_sealed_weird_route: "CH2: Cyber World - Fountain Sealed (Weird Route)",
+    LocationIDs.ch2_fountain_sealed_weird_route: "CH2: Cyber World - Fountain Sealed (Side B)",
     LocationIDs.ch2_cyber_field_warp_door: "CH2: Cyber Field - Warp Door",
     LocationIDs.ch2_trash_zone_warp_door: "CH2: Trash Zone - Warp Door",
     LocationIDs.ch2_mansion_warp_door: "CH2: Mansion - Warp Door",

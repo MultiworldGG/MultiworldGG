@@ -12,7 +12,6 @@ from worlds.rac3.client.message import ClientMessage
 from worlds.rac3.client.rac3_interface import Rac3Interface
 from worlds.rac3.client.texthelper import colorize_item_name
 from worlds.rac3.constants.check_type import CHECKTYPE
-from worlds.rac3.constants.data.address import SAVE_DATA
 from worlds.rac3.constants.data.item import RAC3_ITEM_DATA_TABLE
 from worlds.rac3.constants.data.region import RAC3_REGION_DATA_TABLE
 from worlds.rac3.constants.items import RAC3ITEM
@@ -374,6 +373,13 @@ class CommandProcessor(ClientCommandProcessor):
             self.ctx.fps = 1 / float(args[0])
             self.output(f"Client update set to every {self.ctx.fps}s")
 
+    def _cmd_goal_status(self) -> None:
+        """Displays the current status of the goal requirements"""
+        if not self.verify():
+            return
+        if isinstance(self.ctx, Rac3Context):
+            self.ctx.game_interface.get_goal_status(self.ctx.server_locations)
+
 
 class Rac3Context(CommonContext):
     """Class for handling server connection with the game client"""
@@ -387,7 +393,6 @@ class Rac3Context(CommonContext):
     game: str = RAC3OPTION.GAME_TITLE_FULL
     game_interface: Rac3Interface
     is_connected_to_game: bool = False
-    is_connected_to_server: bool = False
     items_handling: int = 0b111  # This is mandatory
     last_game_message: str | None = None
     last_pine_message: str | None = None
@@ -402,7 +407,9 @@ class Rac3Context(CommonContext):
     code_cave_setup: bool = False
     data_package: int = 0
     data_received: bool = False
-    save_data: dict[int, tuple[int, int]] = {}
+    save_data: dict[int, tuple[int, int]]
+    connected_identity: tuple[str, int, int] | None = None  # Archipelago 0.6.8+ sets this on the instance.
+    save_file_identity: tuple[str, int, int] | None = None
     last_saved: float = 0.0
     skip_save_cooldown: bool = False
     fps: float = 0.1
@@ -416,7 +423,14 @@ class Rac3Context(CommonContext):
         super().__init__(server_address, password)
         self.game_interface = Rac3Interface()
         self.uuid = Utils.get_unique_identifier()
-        self.save_data = {data.ADDRESS: (data.TYPE, data.VALUE) for data in SAVE_DATA}
+        self.save_data = {}
+
+    @property
+    def save_key(self) -> str | None:
+        """Return the server-side save key for this installation and slot."""
+        if self.team is None or self.slot is None:
+            return None
+        return f"{self.uuid}_save_data_{self.team}_{self.slot}"
 
     def on_deathlink(self, data: dict[str, Any]) -> None:
         """:param data:"""
@@ -437,7 +451,7 @@ class Rac3Context(CommonContext):
             ui.base_title += f" | Universal Tracker {UT_VERSION}"
 
         # AP version is added behind this automatically
-        ui.base_title += " | {apname}"
+        ui.base_title += f" | {apname}"
         return ui
 
     async def server_auth(self, password_requested: bool = False) -> None:
@@ -448,23 +462,54 @@ class Rac3Context(CommonContext):
         await self.get_username()
         await self.send_connect()
 
+    def reset_server_state(self) -> None:
+        super().reset_server_state()
+        self.slot_data = None
+
+    def reset_session_state(self) -> None:
+        super().reset_session_state()
+        self.game_interface.reset_tracked_progress()
+        self.save_data = {}
+        self.data_received = False
+        self.last_saved = 0.0
+        self.skip_save_cooldown = False
+
     def on_package(self, cmd: str, args: dict) -> None:
         """Handle receiving a package from the server.
         :param cmd: Package Command
         :param args: Package Contents
         """
         super().on_package(cmd, args)
+        save_key = self.save_key
         if cmd == "Connected":
-            self.slot_data: dict[str, Any] = args["slot_data"]
+            self.slot_data = None
+            slot_data = args.get("slot_data") or {}
             # logger.info(f"Received data: {args}")
-            self.game_interface.proc_option(self.slot_data)
+            slot_data_apworld_version = slot_data.get(RAC3OPTION.VERSION)
+            if slot_data_apworld_version != RAC3OPTION.VERSION_NUMBER:
+                if slot_data_apworld_version is None:
+                    logger.warning("RaC3 version not found in slot data.")
+                else:
+                    logger.warning(f"This seed requires RaC3 client v{slot_data_apworld_version}. "
+                                   f"The current client is v{RAC3OPTION.VERSION_NUMBER}.")
+                async_start(self.disconnect())
+                return
+
+            self.game_interface.proc_option(slot_data)
+            self.slot_data = slot_data
+            logger.info("Connected to server")
+            if not self.is_connected_to_game:
+                logger.info("Waiting for game connection...")
             self.locations_scouted = self.server_locations
             self.code_cave_setup = False
             async_start(self.send_msgs([ClientMessage.location_scouts(list(self.server_locations))]))
             async_start(self.send_msgs([{"cmd": "GetDataPackage", "games": [RAC3OPTION.GAME_TITLE_FULL]}]))
             self.data_received = False
-            async_start(self.send_msgs([ClientMessage.get_save(self.uuid)]))
-            logger.debug("Requested Save Data on Connection")
+            if save_key is not None:
+                async_start(self.send_msgs([ClientMessage.get_save(save_key)]))
+                logger.debug("Requested Save Data on Connection")
+            if self.save_file_identity is not None and self.save_file_identity != self.connected_identity:
+                logger.info("Load this slot's save file from the main menu to resume server-side saves.")
             # Set death link tag if it was requested in options
             if RAC3OPTION.DEATHLINK in self.slot_data:
                 if self.slot_data[RAC3OPTION.DEATHLINK]:
@@ -473,6 +518,11 @@ class Rac3Context(CommonContext):
 
             # async_start(self.send_msgs([ClientMessage.location_scouts(
             #     [Locations.location_table[location].ap_code for location in Locations.location_groups["Purchase"]])]))
+
+        # Stop any other commands if we dont have slot data yet
+        if self.slot_data is None:
+            return
+
         if cmd == "DataPackage":
             logger.debug(f"Data Package received with args {args}")
             if RAC3OPTION.GAME_TITLE_FULL in args["data"]["games"]:
@@ -482,27 +532,20 @@ class Rac3Context(CommonContext):
                 # logger.debug(f"Requesting Save Data from server for slot {self.uuid}")
                 # self.data_received = False
                 # async_start(self.send_msgs([ClientMessage.get_save(self.uuid)]))
+        if cmd == "Retrieved" and save_key is not None and save_key in args["keys"]:
+            logger.debug("Save Data received")
+            server_save = args["keys"][save_key] or {}
+            self.save_data = {int(address): (CHECKTYPE(data[0]), data[1]) for address, data in server_save.items()}
+            self.data_received = True
+            if (self.is_connected_to_game and not self.main_menu
+                    and self.save_file_identity == self.connected_identity):
+                if self.save_data:
+                    self.game_interface.load_save(self.save_data)
+                self.game_interface.process_offline_fillers(self.data_received)
 
-        if cmd == "Retrieved":
-            logger.debug(f"{cmd} server packet: {args}")
-            if args["keys"]:
-                if f"{self.uuid}_save_data" in args["keys"]:
-                    logger.debug("Save Data received")
-                    self.data_received = True
-                    if args["keys"][f"{self.uuid}_save_data"]:
-                        logger.debug(f"Valid Save data from Server {args['keys'][f'{self.uuid}_save_data']}")
-                        for address, data in args["keys"][f"{self.uuid}_save_data"].items():
-                            self.save_data.update({int(address): (CHECKTYPE(data[0]), data[1])})
-                        if self.is_connected_to_game and not self.main_menu:
-                            self.game_interface.load_save(self.save_data)
-                            self.game_interface.process_offline_fillers(self.data_received)
-
-        if cmd == "SetReply":
-            logger.debug(f"{cmd} server packet: {args}")
-            if args["key"]:
-                if f"{self.uuid}_save_data" == args["key"]:
-                    logger.debug("Save Data received by the server")
-                    self.data_received = True
+        if cmd == "SetReply" and save_key is not None and args["key"] == save_key:
+            logger.debug("Save Data received by the server")
+            self.data_received = True
 
         if cmd == "PrintJSON":
             if args.get("type") == "Hint" and self.is_connected_to_game and not self.main_menu:

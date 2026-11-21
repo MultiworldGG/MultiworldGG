@@ -1,8 +1,7 @@
 import dataclasses
 
-from rule_builder.rules import And, Or
-
-from ... import OracleOfSeasonsWorld
+from ...core.rule_builder.rule_import import And, Or
+from ...world import OracleOfSeasonsWorld
 from . import Rule
 from .logic_predicates import (
     oos_can_kill_armored_enemy,

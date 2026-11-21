@@ -2779,14 +2779,14 @@ _keyChanges_L228:
 	mtctr r9
 	bctr
 _setLocal:
-	stwu r1,-32(r1)
+	stwu r1,-48(r1)
 	mflr r0
-	stw r0,36(r1)
-	stw r31,28(r1)
+	stw r0,52(r1)
+	stw r31,44(r1)
 	mr r31,r1
-	stw r3,8(r31)
-	stw r4,12(r31)
-	lwz r9,8(r31)
+	stw r3,24(r31)
+	stw r4,28(r31)
+	lwz r9,24(r31)
 	cmpwi cr0,r9,2
 	bne cr0,_keyChanges_L230
 	mr r9,r5
@@ -2794,12 +2794,12 @@ _setLocal:
 	bne cr0,_keyChanges_L230
 	lis r9,_collepediaFlag@ha
 	lwz r9,_collepediaFlag@l(r9)
-	lwz r10,12(r31)
+	lwz r10,28(r31)
 	cmpw cr0,r10,r9
 	beq cr0,_keyChanges_L231
 	lis r9,_bladeFlag@ha
 	lwz r9,_bladeFlag@l(r9)
-	lwz r10,12(r31)
+	lwz r10,28(r31)
 	cmpw cr0,r10,r9
 	bne cr0,_keyChanges_L232
 _keyChanges_L231:
@@ -2818,9 +2818,20 @@ _keyChanges_L233:
 	beq cr0,_keyChanges_L230
 	li r5,0
 _keyChanges_L230:
+	li r9,4749
+	stw r9,8(r31)
+	lwz r9,24(r31)
+	cmpwi cr0,r9,2
+	bne cr0,_keyChanges_L234
+	lwz r10,28(r31)
+	lwz r9,8(r31)
+	cmpw cr0,r10,r9
+	bne cr0,_keyChanges_L234
+	li r5,0
+_keyChanges_L234:
 	lis r9, 0x103a
 	nop
-	addi r11,r31,32
+	addi r11,r31,48
 	lwz r0,4(r11)
 	mtlr r0
 	lwz r31,-4(r11)
@@ -2845,11 +2856,22 @@ IsReady = 0x021ccdec
 # affinity quests no longer lock you out of other quests
 0x022ce6c4 = li r3,0
 
+# affinity quests ignore required members
+0x02266418 = nop
+0x02266438 = li r3,1
+# affinity quests ignore excluded members
+0x0226663c = nop
+0x0226665c = li r3,1
+# affinity quests ignore max party size
+0x02266fe0 = nop
+
 # disable lock party from affinity quests
 0x02296518 = nop
 0x02290ca4 = nop
 # disable lock for elma on new game
 0x027c5004 = li r4,0
+# disable lock for new recruit quests
+0x027908ac = li r4,0
 
 # max out fuel for doll with one refill
 0x025ce838 = nop
@@ -2941,7 +2963,7 @@ addItem = 0x02365934
 
 0x02814cf4 = b _prepareBladeTerminal # in loadEnd::ScriptManager
 
-# overwrite setLocal for blade flag
+# overwrite setLocal for blade flag & setting party size limit
 0x0228f018 = bl _setLocal
 
 # add new run speed

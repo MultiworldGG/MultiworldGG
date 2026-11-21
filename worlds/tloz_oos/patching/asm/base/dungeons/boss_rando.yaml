@@ -60,6 +60,12 @@
   jp $67dc ; @in_spikes
   /endif
 
+# Move the d4 reward
+11/7458/: |
+  /ifdef d2_boss_in_d4
+  db $88
+  /endif
+
 # Move the d6 reward
 11/7834/: |
   /ifdef d2_boss_in_d6
@@ -170,7 +176,14 @@
 0f/66e1/: |
   ; Make gleeok open the room below
   /ifdef d7_boss_in_d3
-  dw $6a9e ; enemyCode7a@dead
+  dw gleeokDeadInD3
+  /endif
+
+0f//gleeokDeadInD3: |
+  /ifdef d7_boss_in_d3
+  ld e,$0e
+  ld hl,$6a9e ; enemyCode7a@dead
+  jp interBankCall
   /endif
 
 0f/67c4/: |

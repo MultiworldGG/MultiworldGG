@@ -9,14 +9,14 @@ import yaml
 import Utils
 from settings import get_settings
 from worlds.Files import APPatchExtension, APProcedurePatch, APTokenMixin
+from .functions.unlocks import define_unlocks
 
 from ..common.patching.RomData import RomData
 from ..common.patching.rooms.encoding import write_room_data
 from ..common.patching.text.encoding import write_text_data
 from ..common.patching.z80asm.Assembler import GameboyAddress, Z80Assembler, Z80Block
-from ..data.Constants import ROM_HASH
 from ..options import OracleOfSeasonsLinkedHerosCave
-from .Constants import CAVE_DATA, DEFINES, DUNGEON_ENTRANCES, DUNGEON_EXITS
+from .constants import CAVE_DATA, DEFINES, DUNGEON_ENTRANCES, DUNGEON_EXITS
 from .data_manager.text import apply_ages_edits, get_modded_seasons_text_data
 from .functions import (
     alter_treasure_types,
@@ -46,6 +46,7 @@ from .functions import (
     write_chest_contents,
 )
 from .functions.boss_rando import place_bosses
+from .functions.patch_data_items import interpret_location_data
 from .functions.room_edits import apply_room_edits
 from .functions.start_inventory import set_player_start_inventory
 from .functions.text_edits import define_dungeon_items_text_constants, make_text_data
@@ -107,6 +108,7 @@ class OoSPatchExtensions(APPatchExtension):
         room_data = apply_room_edits(rom_data, patch_data)
 
         # Define assembly constants & floating chunks
+        interpret_location_data(patch_data)
         item_data = define_foreign_item_data(assembler, texts, patch_data)
         define_location_constants(assembler, patch_data, item_data)
         define_option_constants(assembler, patch_data)
@@ -120,6 +122,7 @@ class OoSPatchExtensions(APPatchExtension):
         define_essence_sparkle_constants(assembler, patch_data, dungeon_entrances)
         define_lost_woods_sequences(assembler, texts, patch_data)
         define_tree_sprites(assembler, patch_data, item_data)
+        define_unlocks(assembler)
         set_file_select_text(assembler, caller.player_name)
         set_player_start_inventory(assembler, patch_data)
         randomize_puzzles(rom_data, texts, assembler, room_data, patch_data)

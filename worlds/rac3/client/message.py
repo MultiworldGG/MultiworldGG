@@ -62,17 +62,15 @@ class ClientMessage:
         return attributes
 
     @staticmethod
-    def get_save(uuid: str) -> dict:
+    def get_save(key: str) -> dict:
         """Constructs a message for getting save data from the server"""
         cmd = "Get"
-        keys = [f"{uuid}_save_data"]
-        return ClientMessage(cmd, keys=keys, want_reply=True).output()
+        return ClientMessage(cmd, keys=[key], want_reply=True).output()
 
     @staticmethod
-    def update_save(uuid: str, data: dict[int, tuple[int, int]]) -> dict:
+    def update_save(key: str, data: dict[int, tuple[int, int]]) -> dict:
         """Constructs a message for updating save data on the server"""
         cmd = "Set"
-        key = f"{uuid}_save_data"
         default = {data.ADDRESS: (data.TYPE, data.VALUE) for data in SAVE_DATA}
         want_reply = True
         operations = [{

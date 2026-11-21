@@ -303,5 +303,3 @@ location_table_misc = {'Bottle Merchant': (0x3c9, 0x2),
                        'Hobo': (0x3c9, 0x1)}
 
 location_table_pot_items = {}
-
-location_table_sprite_items = {}

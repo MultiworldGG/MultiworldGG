@@ -25,7 +25,7 @@
     db $02,$0b,$6b,$2f  ; Ore Chunks x50 (orange sprite)
     db $02,$0a,$58,$03  ; Ore Chunks x25 (blue sprite)
     db $02,$04,$4e,$4d  ; Ore Chunks x10 (red sprite)
-    db $02,$0c,$95,$4e  ; Ore Chunks x100 (red sprite)
+    db $02,$0c,$95,$4e  ; Ore Chunks x100 (green sprite)
 15/5205/: |
     db $80
     dw oreChunksSubidsBlock

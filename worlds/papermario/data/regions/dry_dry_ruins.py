@@ -89,7 +89,7 @@ dry_dry_ruins_regions: list[Dict[str, str | Dict[str, Rule | None]]] = [
         "map_id": "1",
         "map_name": "Sarcophagus Hall 1",
         "exits": {
-            "DDR Sand Drainage Room 1 1F": None,
+            "DDR Sand Drainage Room 1 1F On Stairs": None,
             "DDR Sarcophagus Hall 1": CanClimbSteps(),
         }
     },
@@ -106,7 +106,17 @@ dry_dry_ruins_regions: list[Dict[str, str | Dict[str, Rule | None]]] = [
         }
     },
     {
-        "region_name": "DDR Sand Drainage Room 1 1F",
+        "region_name": "DDR Sand Drainage Room 1 1F On Stairs",
+        "area_id": "11",
+        "map_id": "2",
+        "map_name": "Sand Drainage Room 1",
+        "exits": {
+            "DDR Sarcophagus Hall 1 Lower Door": None,
+            "DDR Sand Drainage Room 1 1F Lower Area": None,
+        }
+    },
+    {
+        "region_name": "DDR Sand Drainage Room 1 1F Lower Area",
         "area_id": "11",
         "map_id": "2",
         "map_name": "Sand Drainage Room 1",
@@ -117,7 +127,7 @@ dry_dry_ruins_regions: list[Dict[str, str | Dict[str, Rule | None]]] = [
             ),
         },
         "exits": {
-            "DDR Sarcophagus Hall 1 Lower Door": None,
+            "DDR Sand Drainage Room 1 1F On Stairs": CanClimbSteps(),
             "DDR Descending Stairs 1 1F": Has("MF_ISK03_DrainedFirstSandRoom") & HasBoots(),
         }
     },
@@ -127,7 +137,7 @@ dry_dry_ruins_regions: list[Dict[str, str | Dict[str, Rule | None]]] = [
         "map_id": "3",
         "map_name": "Descending Stairs 1",
         "exits": {
-            "DDR Sand Drainage Room 1 1F": None,
+            "DDR Sand Drainage Room 1 1F Lower Area": None,
             "DDR Sand Drainage Room 2 1F": None,
             "DDR Descending Stairs 1 B2F Door": None,
             "DDR Descending Stairs 1 2F Door": CanUseAbilityParakarry(),
@@ -142,7 +152,6 @@ dry_dry_ruins_regions: list[Dict[str, str | Dict[str, Rule | None]]] = [
         "exits": {
             "DDR Sarcophagus Hall 2 East Door": Has("Ruins Key", count=2),
             "DDR Descending Stairs 1 1F": CanClimbSteps(),
-            "DDR Descending Stairs 1 B1F Door": CanClimbSteps(),
         }
     },
     {
@@ -215,7 +224,7 @@ dry_dry_ruins_regions: list[Dict[str, str | Dict[str, Rule | None]]] = [
         "map_name": "Sarcophagus Hall 2",
         "exits": {
             "DDR Descending Stairs 1 B2F Door": None,
-            "DDR Sarcophagus Hall 2": CanClimbSteps(),
+            "DDR Sarcophagus Hall 2": None,
         }
     },
     {
@@ -242,7 +251,7 @@ dry_dry_ruins_regions: list[Dict[str, str | Dict[str, Rule | None]]] = [
         "map_name": "Descending Stairs 2",
         "exits": {
             "DDR Descending Stairs 2 B2F West Door": CanUseAbilityParakarry(),
-            "DDR Descending Stairs 2 B3F": CanClimbSteps(),
+            "DDR Descending Stairs 2 B3F": None,
             "DDR Sarcophagus Hall 2": None,
         }
     },
@@ -253,6 +262,7 @@ dry_dry_ruins_regions: list[Dict[str, str | Dict[str, Rule | None]]] = [
         "map_name": "Descending Stairs 2",
         "exits": {
             "DDR Super Hammer Room": None,
+            "DDR Descending Stairs 2 B3F": None,
         }
     },
     {
@@ -457,9 +467,9 @@ dry_dry_ruins_regions: list[Dict[str, str | Dict[str, Rule | None]]] = [
         "map_id": "14",
         "map_name": "Tutankoopa Room",
         "events": {
-            "STARSPIRIT_2": Has("MB_Ch2_Spirit_ISK11_SolvedArtifactPuzzle"),
-            "STARSPIRIT": Has("MB_Ch2_Spirit_ISK11_SolvedArtifactPuzzle"),
-            "RF_Ch2_SavedStarSpirit": Has("MB_Ch2_Spirit_ISK11_SolvedArtifactPuzzle"),
+            "STARSPIRIT_2": None,
+            "STARSPIRIT": None,
+            "RF_Ch2_SavedStarSpirit": None,
         },
         "exits": {
             "DDR Ruins Boss Antechamber": None,

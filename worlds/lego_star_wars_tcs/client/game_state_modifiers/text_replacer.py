@@ -2,8 +2,11 @@ import logging
 from dataclasses import dataclass
 from enum import IntEnum
 
+from pymem.exception import PymemError, WinAPIError
+
 from . import ClientComponent
-from ..events import subscribe_event, OnGameWatcherTickEvent
+from ..common import StaticPointer
+from ..events import subscribe_event, OnGameWatcherTickEvent, OnUnhookFromGameEvent
 from ..type_aliases import TCSContext
 
 
@@ -63,15 +66,14 @@ class TextId(IntEnum):
     WII_MOTION_CONTROL_HINT_1 = 1675
 
 
-logger = logging.getLogger("Client")
-debug_logger = logging.getLogger("TCS Debug")
+_DEBUG_LOGGER = logging.getLogger("TCS Debug")
 
 # char***
-LOCALIZED_TEXT_ARRAY_POINTER = 0x926c40  # _TTab
+LOCALIZED_TEXT_ARRAY_POINTER = StaticPointer(0x926c40)  # _TTab
 
 
 @dataclass
-class LocalizedStringData:
+class _LocalizedStringData:
     address_of_pointer_to_vanilla_string: int
     pointer_to_vanilla_string: int
     vanilla_string: bytes
@@ -80,15 +82,15 @@ class LocalizedStringData:
     last_set_allocated_string: bytes | None = None
 
 
-EXPECTED_CHARACTER_NAME_R2_D2 = b"R2-D2\x00"
-EXPECTED_CHARACTER_NAME_C_3PO = b"C-3PO\x00"
+_EXPECTED_CHARACTER_NAME_R2_D2 = b"R2-D2\x00"
+_EXPECTED_CHARACTER_NAME_C_3PO = b"C-3PO\x00"
 
-# As a safety measure, now more than this many bytes are ever allocated for a single string.
-MAXIMUM_SAFE_ALLOCATE_SIZE = 1024
+# As a safety measure, no more than this many bytes are ever allocated for a single string.
+_MAXIMUM_SAFE_ALLOCATE_SIZE = 1024
 
 
 class TextReplacer(ClientComponent):
-    localized_string_data: dict[int, LocalizedStringData]
+    localized_string_data: dict[int, _LocalizedStringData]
     ctx: TCSContext
 
     _initialized: bool = False
@@ -97,37 +99,39 @@ class TextReplacer(ClientComponent):
         self.localized_string_data = {}
         self.ctx = ctx
 
-    def _ensure_localized_string_data(self, string_index: int) -> LocalizedStringData:
+    def _ensure_localized_string_data(self, string_index: int) -> _LocalizedStringData:
         if string_index in self.localized_string_data:
             return self.localized_string_data[string_index]
         ctx = self.ctx
-        # char*** or the char** of the first string in the array.
-        array_address = ctx.read_uint(LOCALIZED_TEXT_ARRAY_POINTER)
-        # char**, the address of the pointer to the string
-        address_of_pointer_to_vanilla_string = array_address + string_index * 4  # 4 bytes per pointer.
-        # char*, the address of the first character in the string
-        pointer_to_vanilla_string = ctx.read_uint(address_of_pointer_to_vanilla_string, raw=True)
+        # char* [<several thousand>]
+        array_of_pointers_to_vanilla_strings = LOCALIZED_TEXT_ARRAY_POINTER.to_array(ctx, 4)
+        # char**
+        address_of_pointer_to_vanilla_string = array_of_pointers_to_vanilla_strings[string_index]
+        # char*
+        address_of_first_char_of_vanilla_string = ctx.read_uint(address_of_pointer_to_vanilla_string, raw=True)
         # The longest localized string looks to be one of the Russian strings, at 372 bytes. 512 should cover all
         # strings.
-        vanilla_string_oversize = ctx.read_bytes(pointer_to_vanilla_string, 512, raw=True)
+        vanilla_string_oversize = ctx.read_bytes(address_of_first_char_of_vanilla_string, 512, raw=True)
         vanilla_string = vanilla_string_oversize.partition(b"\x00")[0] + b"\x00"
-        data = LocalizedStringData(address_of_pointer_to_vanilla_string, pointer_to_vanilla_string, vanilla_string)
+        data = _LocalizedStringData(address_of_pointer_to_vanilla_string,
+                                   address_of_first_char_of_vanilla_string,
+                                   vanilla_string)
         self.localized_string_data[string_index] = data
         return data
 
     # The notoriously long FFXIV meme item from ArchipIDLE is only 198 bytes.
     def _set_custom_bytes(self, string_index: int, replacement: bytes, minimum_allocate_size: int):
         # Sanity check minimum allocation size.
-        if minimum_allocate_size > MAXIMUM_SAFE_ALLOCATE_SIZE:
+        if minimum_allocate_size > _MAXIMUM_SAFE_ALLOCATE_SIZE:
             raise ValueError(f"minimum_allocate_size of {minimum_allocate_size} is too large. Maximum allowed is"
-                             f" {MAXIMUM_SAFE_ALLOCATE_SIZE}")
+                             f" {_MAXIMUM_SAFE_ALLOCATE_SIZE}")
         if minimum_allocate_size < 1:
             raise ValueError(f"minimum_allocate_size must be greater than zero, not {minimum_allocate_size}")
 
         # Sanity check replacement bytes.
-        if len(replacement) > MAXIMUM_SAFE_ALLOCATE_SIZE:
+        if len(replacement) > _MAXIMUM_SAFE_ALLOCATE_SIZE:
             # Restrict the replacement to no larger than the maximum safe size.
-            replacement = replacement[:MAXIMUM_SAFE_ALLOCATE_SIZE - 1] + b"\x00"
+            replacement = replacement[:_MAXIMUM_SAFE_ALLOCATE_SIZE - 1] + b"\x00"
 
         vanilla_data = self._ensure_localized_string_data(string_index)
 
@@ -157,9 +161,9 @@ class TextReplacer(ClientComponent):
         # Finally write the replacement bytes.
         if string_index in TextId:
             text_id = TextId(string_index)
-            # debug_logger.info("Writing %s to %s", replacement, text_id.name)
+            # _DEBUG_LOGGER.info("Writing %s to %s", replacement, text_id.name)
         # else:
-        #     debug_logger.info("Writing %s to Text ID %i", replacement, string_index)
+        #     _DEBUG_LOGGER.info("Writing %s to Text ID %i", replacement, string_index)
         vanilla_data.last_set_allocated_string = replacement
         self.ctx.write_bytes(pointer_to_allocated_string, replacement, len(replacement), raw=True)
 
@@ -212,15 +216,16 @@ class TextReplacer(ClientComponent):
         if not self._initialized:
             # Check that the R2-D2 and C-3PO strings match what is expected. These strings are the same in every
             # language.
-            if self.get_vanilla_string(TextId.CHARACTER_NAME_R2_D2) != EXPECTED_CHARACTER_NAME_R2_D2:
+            if self.get_vanilla_string(TextId.CHARACTER_NAME_R2_D2) != _EXPECTED_CHARACTER_NAME_R2_D2:
                 raise RuntimeError("Failed to access the localized text array. If you have mods installed for Lego Star"
                                    " Wars: The Complete Saga, please try uninstalling the mods and try again.")
-            if self.get_vanilla_string(TextId.CHARACTER_NAME_C_3PO) != EXPECTED_CHARACTER_NAME_C_3PO:
+            if self.get_vanilla_string(TextId.CHARACTER_NAME_C_3PO) != _EXPECTED_CHARACTER_NAME_C_3PO:
                 raise RuntimeError("Failed to access the localized text array. If you have mods installed for Lego Star"
                                    " Wars: The Complete Saga, please try uninstalling the mods and try again.")
             self._initialized = True
 
-    def on_unhook_game_process(self):
+    @subscribe_event
+    def on_unhook_game_process(self, _event: OnUnhookFromGameEvent):
         data = self.localized_string_data
         try:
             # Write the vanilla strings to the allocated memory first as a precaution.
@@ -231,7 +236,13 @@ class TextReplacer(ClientComponent):
                 self.ctx.write_uint(v.address_of_pointer_to_vanilla_string, v.pointer_to_vanilla_string, raw=True)
             # Finally free the allocated memory.
             for v in data.values():
-                self.ctx.free(v.pointer_to_allocated_string)
+                pointer = v.pointer_to_allocated_string
+                if pointer is not None:
+                    self.ctx.free(pointer)
+        except (PymemError, WinAPIError):
+            # The event may be fired because the game has been closed, rather than because the client is closing, so
+            # reading/writing memory to try to clean up will fail in that case.
+            pass
         finally:
             self.localized_string_data = {}
 

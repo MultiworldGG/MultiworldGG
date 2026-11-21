@@ -2,7 +2,7 @@
 
 ## Logiciels requis
 
-- [Oracle of Seasons .apworld](https://github.com/Dinopony/ArchipelagoOoS/releases/latest) (N'est pas necessaire avec MWGG)
+- [Oracle of Seasons .apworld](https://github.com/Ishigh1/Oracle-of-Seasons-apworld) (N'est pas necessaire avec MWGG)
 - [Bizhawk 2.10 (x64)](https://tasvideos.org/BizHawk/ReleaseHistory)
 - Votre ROM Oracle of Seasons US obtenue légalement
 

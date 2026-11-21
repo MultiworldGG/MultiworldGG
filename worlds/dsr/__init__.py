@@ -3,7 +3,7 @@ from typing import Dict, Set, List, ClassVar, TextIO, Any, Optional
 
 from BaseClasses import MultiWorld, Region, Item, Entrance, Tutorial, ItemClassification, Location, LocationProgressType
 from Fill import FillError
-from Options import Toggle, OptionError, Option
+from Options import Toggle, OptionError, Option, DefaultOnToggle
 
 from worlds.AutoWorld import World, WebWorld
 from worlds.generic.Rules import add_rule, add_item_rule
@@ -29,7 +29,7 @@ class DSRWeb(WebWorld):
     theme = "stone"
     setup_en = Tutorial(
         "Multiworld Setup Guide",
-        "A guide to setting up the MultiworldGG Dark Souls Remastered randomizer on your computer.",
+        "A guide to setting up the Archipelago Dark Souls Remastered randomizer on your computer.",
         "English",
         "setup_en.md",
         "setup/en",
@@ -233,11 +233,11 @@ class DSRWorld(World):
 
         # If goal_condition is o+s, force no dlc
         if self.options.include_dlc.value == True and self.options.goal_condition.value == GoalConditionOption.option_ornstein_and_smough:
-            self.options.include_dlc.value = False
+            self.options.include_dlc.value = DefaultOnToggle.option_false
 
         # If goal_condition is manus, force dlc
         if self.options.include_dlc.value == False and self.options.goal_condition.value == GoalConditionOption.option_manus:
-            self.options.include_dlc.value = True
+            self.options.include_dlc.value = DefaultOnToggle.option_true
 
 
 
@@ -747,7 +747,7 @@ class DSRWorld(World):
             "seed": self.multiworld.seed_name,  # to verify the server's multiworld
             "slot": self.multiworld.player_name[self.player],  # to connect to server
             "base_id": self.base_id,  # to merge location and items lists
-            "apworld_api_version" : "0.3.0" # Manually set our apworld api level, for detecting compatibility with client
+            "apworld_api_version" : "0.3.1" # Manually set our apworld api level, for detecting compatibility with client
         }
 
         self.items_id = items_id

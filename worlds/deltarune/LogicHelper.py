@@ -188,31 +188,31 @@ def have_access_to_rock_video(world: "DeltaruneWorld") -> bool:
 
 def weird_route(world: "DeltaruneWorld") -> bool:
     return world.options.chosen_route.value in [
-        ChosenRoute.option_weird_route,
-        ChosenRoute.option_both_all_recruits_and_weird_route,
+        ChosenRoute.option_side_b,
+        ChosenRoute.option_both_all_recruits_and_side_b,
     ]
 
 
 def not_weird_route_only(world: "DeltaruneWorld") -> bool:
-    return world.options.chosen_route.value != ChosenRoute.option_weird_route
+    return world.options.chosen_route.value != ChosenRoute.option_side_b
 
 
 def all_recruits_route(world: "DeltaruneWorld") -> bool:
     return world.options.chosen_route.value in [
         ChosenRoute.option_all_recruits,
-        ChosenRoute.option_both_all_recruits_and_weird_route,
+        ChosenRoute.option_both_all_recruits_and_side_b,
     ]
 
 
 def both_routes(world: "DeltaruneWorld") -> bool:
-    return world.options.chosen_route == ChosenRoute.option_both_all_recruits_and_weird_route
+    return world.options.chosen_route == ChosenRoute.option_both_all_recruits_and_side_b
 
 
 def normal_route(world: "DeltaruneWorld") -> bool:
     return world.options.chosen_route.value in [
         ChosenRoute.option_all_recruits,
         ChosenRoute.option_normal_route,
-        ChosenRoute.option_both_all_recruits_and_weird_route,
+        ChosenRoute.option_both_all_recruits_and_side_b,
     ]
 
 
@@ -300,6 +300,14 @@ def progressive_weapons_ralsei(world: "DeltaruneWorld"):
 def progressive_weapons_noelle(world: "DeltaruneWorld"):
     return world.options.progressive_noelle_weapons.value == 1 and included_chapter(world, 2)
 
+def progressive_area_unlocks(world: "DeltaruneWorld"):
+    return world.options.progressive_area_unlocks.value == 1
+
+def not_progressive_area_unlocks(world: "DeltaruneWorld"):
+    return world.options.progressive_area_unlocks.value == 0
+
+def normal_route_and_not_progressive_area_unlocks(world: "DeltaruneWorld"):
+    return world.options.progressive_area_unlocks.value == 0 and normal_route(world)
 
 def include_characters(world: "DeltaruneWorld"):
     return world.options.unlock_characters.value in [
@@ -349,14 +357,14 @@ def excluded_z_rank_physical_challenge(world: "DeltaruneWorld") -> bool:
 
 
 def can_access_fusion(world: "DeltaruneWorld"):
-    if world.options.chosen_route.value == ChosenRoute.option_weird_route:
+    if world.options.chosen_route.value == ChosenRoute.option_side_b:
         return any_included_chapter(world, [2, 4])
     else:
         return any_included_chapter(world, [2, 4, 5])
 
 
 def can_access_fusion_post_chapter_5(world: "DeltaruneWorld"):
-    if world.options.chosen_route.value == ChosenRoute.option_weird_route:
+    if world.options.chosen_route.value == ChosenRoute.option_side_b:
         return False
     else:
         return any_included_chapter(world, [5])
@@ -389,10 +397,14 @@ def all_included_chapter(world: "DeltaruneWorld", chapters: list[int]):
 def is_speedrun_logic(world: "DeltaruneWorld") -> bool:
     return world.options.speedrun_gliches_as_logic == 1
 
+def nohit_easy_as_logic(world: "DeltaruneWorld") -> bool:
+    return world.options.nohit_as_logic.value >= IncludeUnusedItems.option_easy
 
-def is_nohit_logic(world: "DeltaruneWorld") -> bool:
-    return world.options.nohit_as_logic == 1
+def nohit_hard_as_logic(world: "DeltaruneWorld") -> bool:
+    return world.options.nohit_as_logic.value >= IncludeUnusedItems.option_hard
 
+def nohit_extreme_as_logic(world: "DeltaruneWorld") -> bool:
+    return world.options.nohit_as_logic.value >= IncludeUnusedItems.option_extreme
 
 def is_annoying_logic(world: "DeltaruneWorld") -> bool:
     return world.options.annoying_farming_as_logic == 1
