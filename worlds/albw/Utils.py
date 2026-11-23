@@ -18,17 +18,6 @@ def get_temp_path():
 def setup_lib():
     global tmp_path
 
-    # clean up any files from old versions of the apworld
-    for path in [local_path("."), local_path("lib")]:
-        if os.path.exists(path):
-            for entry in os.scandir(path):
-                if entry.name.startswith("albwrandomizer"):
-                    fullpath = os.path.join(path, entry.name)
-                    if entry.is_dir():
-                        shutil.rmtree(fullpath)
-                    else:
-                        os.remove(fullpath)
-
     # clean up old temp directories
     for directory in os.listdir(tempfile.gettempdir()):
         if directory.startswith("albwrandomizer"):
